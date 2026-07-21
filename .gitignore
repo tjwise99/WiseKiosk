@@ -1,0 +1,25 @@
+# Go
+/bin/
+*.exe
+*.out
+*.test
+
+# Node / frontend build
+node_modules/
+dist/
+.vite/
+
+# Secrets and env — never committed (secrets are delivered, not configured)
+.env
+.env.*
+*.local
+secrets/
+
+# Coverage / logs
+coverage/
+*.log
+
+# OS / editor
+.DS_Store
+Thumbs.db
+*.swp

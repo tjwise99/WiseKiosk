@@ -1,0 +1,13 @@
+version: 2
+updates:
+  # GitHub Actions — the only ecosystem with a manifest today. Grouped so a
+  # week's bumps land as one PR, not a flood.
+  - package-ecosystem: github-actions
+    directory: "/"
+    schedule:
+      interval: weekly
+    groups:
+      actions:
+        patterns: ["*"]
+
+  # gomod and npm ecosystems are added here once go.mod / package.json exist.

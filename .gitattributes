@@ -1,0 +1,14 @@
+# Normalise all text to LF in the repo; a rewrite must never depend on a
+# contributor's autocrlf setting. Enforced in CI (checks.yml line-endings job).
+* text=auto eol=lf
+
+# Binary assets: never touched.
+*.png  binary
+*.jpg  binary
+*.jpeg binary
+*.gif  binary
+*.ico  binary
+*.webp binary
+*.woff  binary
+*.woff2 binary
+*.pdf  binary
