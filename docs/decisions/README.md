@@ -1,0 +1,14 @@
+# Architecture decision records
+
+An ADR captures a decision **with a rejected alternative** — the "why not the other way" is the whole
+point of writing one down. A decision with no real alternative considered is a changelog entry and
+belongs in a commit message, not here. New ADR: copy [`TEMPLATE.md`](TEMPLATE.md), number it one past
+the highest below, and add it to the table.
+
+**Numbers are chronological and immutable.** Once an ADR is merged its number never changes, even if
+it is later superseded: mark the old one `superseded by NNNN` and write a new one. Each entry carries
+a **Decided** date — when the choice was *taken*, not when the work merged.
+
+| # | Decided | Decision |
+|---|---|---|
+| [0001](0001-backend-language-go.md) | 2026-07-21 | Backend in Go; the frontend/backend boundary contract is generated from one schema |
