@@ -43,3 +43,31 @@ validates-then-serves it verbatim. Secrets delivered via `<NAME>_FILE`/`<NAME>`,
 
 _To be documented as it is built._ Container image, bind-mounted config, `_FILE` secrets, fixed-port
 healthcheck, `unless-stopped` (FOUNDATIONS §3).
+
+## Security & hardening backlog
+
+Forward-looking gates and controls to wire up **as the code and container land**. Nothing here is a
+current defect — each is a control with no artifact to attach to yet. Each row is written to become a
+**testable requirement**: a future session can lift these into tickets, and each converts into an
+obligation in [`TESTING.md`](TESTING.md) as it lands. That framing is deliberate — a hardening control
+with no test that proves it *functions* is the "security by vigilance" this project rejects
+(FOUNDATIONS §5); a control is done when a test would fail if it regressed.
+
+The posture **already enforced** (branch protection with required review + checks, secret scanning +
+push protection, SHA-pinned Actions, least-privilege `GITHUB_TOKEN`, secret-free CI, Dependabot for
+Actions) lives in `.github/` and the repo's branch-protection settings, not in this backlog.
+
+| Control | Applies once | Verified by |
+|---|---|---|
+| **CodeQL / code scanning** (Go + Svelte/TS) | first backend or frontend code exists | scanning workflow runs on every PR; a seeded finding surfaces as a required check |
+| **Lint in CI, blocking** (`golangci-lint`; `eslint` / `svelte-check`) | first code in each package | CI job fails on a seeded lint violation |
+| **Dependency CVE gates** (`govulncheck`; `npm audit`) | `go.mod` / `package.json` exist | CI fails on a known-vulnerable pinned dependency in a test |
+| **Dependabot `gomod` + `npm` ecosystems** | those manifests exist | grouped update PRs appear for each ecosystem |
+| **Container: non-root `USER`** | a Dockerfile exists | image runs as a non-root uid (asserted in an image test) |
+| **Container: digest-pinned base image**, kept fresh | a Dockerfile exists | base reference is a `@sha256:` digest; Dependabot bumps it |
+| **Container: `HEALTHCHECK`** on the fixed port | a Dockerfile exists | an integration test hits the endpoint; orchestrator restarts on unhealthy |
+| **Container: `.dockerignore`** excludes `.git`, secrets, `node_modules` | a Dockerfile exists | build context excludes them (asserted against the context) |
+| **Container image scan** (`trivy` / `grype`) as a CI gate | the image builds in CI | scan job fails on a seeded high-severity finding |
+| **Publish integrity**: SBOM (`syft`), build-provenance attestation, `cosign` signing | the image is published | signature + provenance verify; SBOM attached to the release |
+| **Runtime: CSP `connect-src 'self'`** + standard security headers | the backend serves the frontend | response headers asserted in an integration test |
+| **Runtime: constant bind + route rate-limiting** (FOUNDATIONS §3) | routes exist | rate limit returns 429 past threshold in a test; bind address is a constant, not a config key |
