@@ -80,7 +80,6 @@ jobs:
         run: |
           docs/architecture/node_modules/.bin/likec4 validate docs/architecture/model
           docs/architecture/node_modules/.bin/likec4 codegen mermaid docs/architecture/model -o docs/architecture/generated
-          docs/architecture/node_modules/.bin/likec4 export json docs/architecture/model --skip-layout --pretty -o docs/architecture/generated/model.json
           node scripts/splice-arch-diagrams.mjs
           git diff --exit-code docs/architecture/ docs/ARCHITECTURE.md
 

@@ -41,18 +41,19 @@ arch-install:
     npm --prefix docs/architecture ci
 
 # Validate the architecture model and regenerate every generated artifact,
-# including the diagrams spliced into docs/ARCHITECTURE.md. The four commands
+# including the diagrams spliced into docs/ARCHITECTURE.md. The three commands
 # below are the SINGLE source of truth for what CI runs — the `architecture` job
 # in .github/workflows/checks.yml inlines them byte-for-byte. `validate` is the
 # real gate (codegen does NOT fail on model errors); it runs first so a broken
 # model fails fast. Everything is browser-free: bundled WASM graphviz, no
-# system `dot`, no chromium.
+# system `dot`, no chromium. (No model.json snapshot is committed: it has no
+# consumer today, and its ids are not deterministic across machines — a future
+# consumer regenerates it on demand with `likec4 export json`.)
 [group('docs')]
 [doc('Validate the architecture model and regenerate its browser-free artifacts')]
 arch-export:
     docs/architecture/node_modules/.bin/likec4 validate docs/architecture/model
     docs/architecture/node_modules/.bin/likec4 codegen mermaid docs/architecture/model -o docs/architecture/generated
-    docs/architecture/node_modules/.bin/likec4 export json docs/architecture/model --skip-layout --pretty -o docs/architecture/generated/model.json
     node scripts/splice-arch-diagrams.mjs
 
 # The architecture staleness gate: regenerate everything, then fail if any

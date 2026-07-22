@@ -20,9 +20,11 @@ and Container view. It is:
 
 - **Validated** — `likec4 validate` exits non-zero on an undefined element, an unresolved
   relationship, or an invalid view. This is the property none of the alternatives offered.
-- **Rendered browser-free** — `likec4 codegen mermaid` emits Mermaid, which GitHub renders inline; the
-  computed model is snapshotted with `likec4 export json`. Both use bundled WASM graphviz, so the
-  whole pipeline runs in CI with no headless browser.
+- **Rendered browser-free** — `likec4 codegen mermaid` emits Mermaid, which GitHub renders inline,
+  using bundled WASM graphviz, so the whole pipeline runs in CI with no headless browser. A committed
+  `model.json` snapshot (`likec4 export json`) was tried and dropped: it had no consumer, and its
+  internal relation ids are not deterministic across machines, so it could never pass the staleness
+  gate — a future consumer regenerates it on demand instead.
 - **Staleness-gated** — `just check-arch` (and the `architecture` CI job, byte-identically)
   regenerates every generated output — the artifacts under `docs/architecture/` and the diagrams
   spliced into `ARCHITECTURE.md` — and runs `git diff --exit-code` on them, extending the "CI fails

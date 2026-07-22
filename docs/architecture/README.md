@@ -20,7 +20,6 @@ docs/architecture/
   generated/            regenerated artifacts — DO NOT hand-edit (staleness-gated)
     index.mmd           System Context view (Mermaid)
     containers.mmd      Container view (Mermaid)
-    model.json          computed model snapshot (browser-free `export json`)
 ```
 
 ## Editing the model
@@ -53,9 +52,11 @@ Two properties are enforced, both browser-free and both run in CI:
 ## Rendering (browser-free)
 
 Diagrams are produced by `likec4 codegen mermaid`, which GitHub renders inline — no image binaries, no
-headless browser. `likec4 export json` snapshots the computed model with `--skip-layout` so the
-artifact is stable across runs (layout coordinates would otherwise churn). Image export (`export
-png`/`jpg`) *does* need a headless browser and is deliberately **not** part of any gate.
+headless browser. Image export (`export png`/`jpg`) *does* need a headless browser and is deliberately
+**not** part of any gate. No JSON model snapshot is committed either: `likec4 export json` exists for
+programmatic consumers, and nothing consumes it here yet — a future consumer (e.g. a tag→SRS
+cross-check after issue #18) regenerates it on demand rather than reading a committed copy, whose
+internal ids are not deterministic across machines anyway.
 
 GitHub cannot transclude an external `.mmd` file into Markdown, so [`../ARCHITECTURE.md`](../ARCHITECTURE.md)
 carries an inline `mermaid` fence per diagram — **generated, not hand-maintained**: the final step of
