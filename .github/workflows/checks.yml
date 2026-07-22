@@ -54,6 +54,32 @@ jobs:
       - name: Requirements tree validates (refs resolve, no suspect/unreviewed/orphan)
         run: docs/requirements/.venv/bin/doorstop --error-all
 
+  docs-site:
+    # Builds the documentation site with warnings-as-errors, exactly as
+    # `just site-build` does — a broken cross-reference or an orphaned page
+    # fails the gate rather than shipping. The tool is siloed under
+    # docs/site/ with the feature it serves (ADR 0004). This job only
+    # BUILDS the site; deploying it to GitHub Pages is a separate workflow
+    # (.github/workflows/pages.yml) so this read-only job never needs
+    # elevated permissions. No secrets: pure static-site build.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.12"
+
+      - name: Install the docs-site toolchain into a local venv (siloed under docs/site/)
+        run: |
+          python -m venv docs/site/.venv
+          docs/site/.venv/bin/pip install -r docs/site/requirements-dev.txt
+
+      - name: Regenerate needs pages from Doorstop and build the docs site (mirrors `just site-build`)
+        run: |
+          docs/site/.venv/bin/python docs/site/doorstop_to_needs.py
+          docs/site/.venv/bin/sphinx-build -W -b html -c docs/site docs docs/site/_build/html
+
   architecture:
     # Validates the LikeC4 architecture model and regenerates every generated
     # output — the artifacts under docs/architecture/ and the diagrams spliced

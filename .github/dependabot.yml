@@ -21,6 +21,17 @@ updates:
       pip:
         patterns: ["*"]
 
+  # Python dev tooling (Sphinx + MyST + sphinx-needs docs site) — siloed under
+  # docs/site/ with the feature it serves. Grouped like the blocks above so a
+  # week's bumps land as one PR.
+  - package-ecosystem: pip
+    directory: "/docs/site"
+    schedule:
+      interval: weekly
+    groups:
+      pip:
+        patterns: ["*"]
+
   # Node dev tooling (LikeC4 architecture-as-code) — siloed under
   # docs/architecture/ with the feature it serves, so its manifest and lockfile
   # live there and this block points at that directory, not the repo root.
