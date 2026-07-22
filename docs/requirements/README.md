@@ -69,7 +69,6 @@ Then:
 ```sh
 just check-reqs      # docs/requirements/.venv/bin/doorstop --error-all  — the strict gate (fails on any issue)
 just verify          # runs check-reqs alongside the other repo gates
-just reqs-publish     # render the traceability matrix to docs/requirements/_published (gitignored)
 ```
 
 `just check-reqs` runs the **exact** command CI runs (see
@@ -77,6 +76,10 @@ just reqs-publish     # render the traceability matrix to docs/requirements/_pub
 `docs/requirements/.venv/bin/doorstop --error-all`. The `--error-all` flag promotes Doorstop's suspect / unreviewed /
 orphan / unresolved-reference warnings to errors, so the process exits non-zero and the gate actually
 blocks — plain `doorstop` only warns.
+
+The browsable, click-through traceability view of this tree (needtables, link graphs, matrices) is
+built by the documentation site silo, [`../site/README.md`](../site/README.md) (ADR 0004); this
+directory is the requirements' canonical source and gate, not its presentation.
 
 ## Adding or changing requirements
 

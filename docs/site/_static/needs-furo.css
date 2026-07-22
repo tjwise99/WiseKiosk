@@ -1,0 +1,15 @@
+/* Maps sphinx-needs' --sn-* color variables onto furo's theme variables, so
+   need blocks and needtables follow furo's light/dark mode instead of
+   sphinx-needs' static light palette. Scoped to body: wins over the :root
+   definitions in sphinx-needs' own stylesheet, and furo defines its
+   variables on body. */
+body {
+    --sn-color-need-bg: var(--color-background-secondary);
+    --sn-color-need-border: var(--color-background-border);
+    --sn-color-need-row-border: var(--color-background-border);
+    --sn-color-bg-gray: var(--color-background-secondary);
+    --sn-color-bg-lightgray: var(--color-background-secondary);
+    --sn-color-border-lightgray: var(--color-background-border);
+    --sn-color-datatable-label: var(--color-foreground-primary);
+    --sn-color-datatable-btn-border: var(--color-foreground-border);
+}
