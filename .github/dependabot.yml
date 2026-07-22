@@ -21,4 +21,16 @@ updates:
       pip:
         patterns: ["*"]
 
-  # gomod and npm ecosystems are added here once go.mod / package.json exist.
+  # Node dev tooling (LikeC4 architecture-as-code) — siloed under
+  # docs/architecture/ with the feature it serves, so its manifest and lockfile
+  # live there and this block points at that directory, not the repo root.
+  # Grouped like the blocks above so a week's bumps land as one PR.
+  - package-ecosystem: npm
+    directory: "/docs/architecture"
+    schedule:
+      interval: weekly
+    groups:
+      npm:
+        patterns: ["*"]
+
+  # The gomod ecosystem is added here once go.mod exists.

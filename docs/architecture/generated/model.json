@@ -1,0 +1,410 @@
+{
+  "_stage": "computed",
+  "projectId": "default",
+  "project": {
+    "id": "default",
+    "title": "default"
+  },
+  "specification": {
+    "tags": {
+      "needs-srs": {
+        "color": "tomato"
+      }
+    },
+    "elements": {
+      "person": {
+        "style": {
+          "shape": "person"
+        }
+      },
+      "system": {
+        "style": {}
+      },
+      "container": {
+        "style": {}
+      },
+      "externalSystem": {
+        "style": {
+          "color": "muted"
+        }
+      }
+    },
+    "relationships": {},
+    "deployments": {},
+    "customColors": {}
+  },
+  "elements": {
+    "operator": {
+      "style": {
+        "shape": "person"
+      },
+      "description": {
+        "txt": "Installs, configures (config.json) and views the WiseKiosk display."
+      },
+      "title": "Operator",
+      "kind": "person",
+      "id": "operator"
+    },
+    "wisekiosk": {
+      "style": {},
+      "description": {
+        "md": "Full-screen, config-driven smart-mirror display, shipped as one published\ncontainer image."
+      },
+      "title": "WiseKiosk",
+      "kind": "system",
+      "id": "wisekiosk"
+    },
+    "publicApis": {
+      "style": {
+        "color": "muted"
+      },
+      "description": {
+        "txt": "Third-party public data sources (e.g. weather) the backend proxies."
+      },
+      "title": "Public APIs",
+      "kind": "externalSystem",
+      "id": "publicApis"
+    },
+    "wisekiosk.backend": {
+      "style": {},
+      "tags": [
+        "needs-srs"
+      ],
+      "technology": "Go",
+      "description": {
+        "md": "Stateless REST proxy with a TTL response cache; validates the frontend's\nconfig and serves the built SPA as static files."
+      },
+      "title": "Go backend",
+      "kind": "container",
+      "id": "wisekiosk.backend"
+    },
+    "wisekiosk.frontend": {
+      "style": {},
+      "tags": [
+        "needs-srs"
+      ],
+      "technology": "Svelte 5 + Vite",
+      "description": {
+        "md": "Renders modules into regions of the page; payload types are generated\nfrom the boundary schema, never hand-declared."
+      },
+      "title": "Svelte SPA",
+      "kind": "container",
+      "id": "wisekiosk.frontend"
+    }
+  },
+  "relations": {
+    "vhlfd5": {
+      "title": "Views the mirror; provides config.json",
+      "source": {
+        "model": "operator"
+      },
+      "target": {
+        "model": "wisekiosk"
+      },
+      "id": "vhlfd5"
+    },
+    "jojq4u": {
+      "technology": "HTTPS",
+      "title": "Proxies read-only, server-side, TTL-cached",
+      "source": {
+        "model": "wisekiosk.backend"
+      },
+      "target": {
+        "model": "publicApis"
+      },
+      "id": "jojq4u"
+    },
+    "12jukyb": {
+      "technology": "HTTP / JSON",
+      "title": "Boundary contract: types generated from one schema",
+      "source": {
+        "model": "wisekiosk.frontend"
+      },
+      "target": {
+        "model": "wisekiosk.backend"
+      },
+      "id": "12jukyb"
+    }
+  },
+  "globals": {
+    "predicates": {},
+    "dynamicPredicates": {},
+    "styles": {}
+  },
+  "views": {
+    "index": {
+      "_type": "element",
+      "tags": null,
+      "links": null,
+      "_stage": "computed",
+      "sourcePath": "views.likec4",
+      "description": null,
+      "title": "WiseKiosk — System Context (C4 L1)",
+      "id": "index",
+      "autoLayout": {
+        "direction": "TB"
+      },
+      "edges": [
+        {
+          "id": "1b0lupj",
+          "parent": null,
+          "source": "operator",
+          "target": "wisekiosk",
+          "label": "Views the mirror; provides config.json",
+          "relations": [
+            "vhlfd5"
+          ],
+          "color": "gray",
+          "line": "dashed",
+          "head": "normal"
+        },
+        {
+          "id": "lhwzbx",
+          "parent": null,
+          "source": "wisekiosk",
+          "target": "publicApis",
+          "label": "Proxies read-only, server-side, TTL-cached",
+          "relations": [
+            "jojq4u"
+          ],
+          "color": "gray",
+          "line": "dashed",
+          "head": "normal",
+          "technology": "HTTPS"
+        }
+      ],
+      "nodes": [
+        {
+          "id": "operator",
+          "parent": null,
+          "level": 0,
+          "children": [],
+          "inEdges": [],
+          "outEdges": [
+            "1b0lupj"
+          ],
+          "title": "Operator",
+          "modelRef": "operator",
+          "shape": "person",
+          "color": "primary",
+          "style": {
+            "opacity": 15,
+            "size": "md"
+          },
+          "description": {
+            "txt": "Installs, configures (config.json) and views the WiseKiosk display."
+          },
+          "tags": [],
+          "kind": "person"
+        },
+        {
+          "id": "wisekiosk",
+          "parent": null,
+          "level": 0,
+          "children": [],
+          "inEdges": [
+            "1b0lupj"
+          ],
+          "outEdges": [
+            "lhwzbx"
+          ],
+          "title": "WiseKiosk",
+          "modelRef": "wisekiosk",
+          "shape": "rectangle",
+          "color": "primary",
+          "style": {
+            "opacity": 15,
+            "size": "md"
+          },
+          "description": {
+            "md": "Full-screen, config-driven smart-mirror display, shipped as one published\ncontainer image."
+          },
+          "tags": [],
+          "kind": "system",
+          "navigateTo": "containers"
+        },
+        {
+          "id": "publicApis",
+          "parent": null,
+          "level": 0,
+          "children": [],
+          "inEdges": [
+            "lhwzbx"
+          ],
+          "outEdges": [],
+          "title": "Public APIs",
+          "modelRef": "publicApis",
+          "shape": "rectangle",
+          "color": "muted",
+          "style": {
+            "opacity": 15,
+            "size": "md"
+          },
+          "description": {
+            "txt": "Third-party public data sources (e.g. weather) the backend proxies."
+          },
+          "tags": [],
+          "kind": "externalSystem"
+        }
+      ],
+      "hash": "E0igBwFLOttGBZJW5C6wTWQwi-BCSDy-6mdFfWYVFc4"
+    },
+    "containers": {
+      "_type": "element",
+      "tags": null,
+      "links": null,
+      "viewOf": "wisekiosk",
+      "_stage": "computed",
+      "sourcePath": "views.likec4",
+      "description": null,
+      "title": "WiseKiosk — Containers (C4 L2)",
+      "id": "containers",
+      "autoLayout": {
+        "direction": "TB"
+      },
+      "edges": [
+        {
+          "id": "ljcbs0",
+          "parent": "wisekiosk",
+          "source": "wisekiosk.frontend",
+          "target": "wisekiosk.backend",
+          "label": "Boundary contract: types generated from one schema",
+          "relations": [
+            "12jukyb"
+          ],
+          "color": "gray",
+          "line": "dashed",
+          "head": "normal",
+          "technology": "HTTP / JSON"
+        },
+        {
+          "id": "9vwriv",
+          "parent": null,
+          "source": "wisekiosk.backend",
+          "target": "publicApis",
+          "label": "Proxies read-only, server-side, TTL-cached",
+          "relations": [
+            "jojq4u"
+          ],
+          "color": "gray",
+          "line": "dashed",
+          "head": "normal",
+          "technology": "HTTPS"
+        }
+      ],
+      "nodes": [
+        {
+          "id": "wisekiosk",
+          "parent": null,
+          "level": 0,
+          "children": [
+            "wisekiosk.frontend",
+            "wisekiosk.backend"
+          ],
+          "inEdges": [],
+          "outEdges": [
+            "9vwriv"
+          ],
+          "title": "WiseKiosk",
+          "modelRef": "wisekiosk",
+          "shape": "rectangle",
+          "color": "primary",
+          "style": {
+            "opacity": 15,
+            "size": "md"
+          },
+          "description": {
+            "md": "Full-screen, config-driven smart-mirror display, shipped as one published\ncontainer image."
+          },
+          "tags": [],
+          "kind": "system",
+          "depth": 1
+        },
+        {
+          "id": "wisekiosk.frontend",
+          "parent": "wisekiosk",
+          "level": 1,
+          "children": [],
+          "inEdges": [],
+          "outEdges": [
+            "ljcbs0"
+          ],
+          "title": "Svelte SPA",
+          "modelRef": "wisekiosk.frontend",
+          "shape": "rectangle",
+          "color": "primary",
+          "style": {
+            "opacity": 15,
+            "size": "md"
+          },
+          "description": {
+            "md": "Renders modules into regions of the page; payload types are generated\nfrom the boundary schema, never hand-declared."
+          },
+          "tags": [
+            "needs-srs"
+          ],
+          "technology": "Svelte 5 + Vite",
+          "kind": "container"
+        },
+        {
+          "id": "wisekiosk.backend",
+          "parent": "wisekiosk",
+          "level": 1,
+          "children": [],
+          "inEdges": [
+            "ljcbs0"
+          ],
+          "outEdges": [
+            "9vwriv"
+          ],
+          "title": "Go backend",
+          "modelRef": "wisekiosk.backend",
+          "shape": "rectangle",
+          "color": "primary",
+          "style": {
+            "opacity": 15,
+            "size": "md"
+          },
+          "description": {
+            "md": "Stateless REST proxy with a TTL response cache; validates the frontend's\nconfig and serves the built SPA as static files."
+          },
+          "tags": [
+            "needs-srs"
+          ],
+          "technology": "Go",
+          "kind": "container"
+        },
+        {
+          "id": "publicApis",
+          "parent": null,
+          "level": 0,
+          "children": [],
+          "inEdges": [
+            "9vwriv"
+          ],
+          "outEdges": [],
+          "title": "Public APIs",
+          "modelRef": "publicApis",
+          "shape": "rectangle",
+          "color": "muted",
+          "style": {
+            "opacity": 15,
+            "size": "md"
+          },
+          "description": {
+            "txt": "Third-party public data sources (e.g. weather) the backend proxies."
+          },
+          "tags": [],
+          "kind": "externalSystem"
+        }
+      ],
+      "hash": "YBk7-bnIwxRoBke9eYXwr3gVKBUnXaAD_HhFXAQhW7k"
+    }
+  },
+  "deployments": {
+    "elements": {},
+    "relations": {}
+  },
+  "imports": {},
+  "manualLayouts": {}
+}
