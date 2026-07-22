@@ -20,6 +20,7 @@ Output is generated and gitignored — never hand-edited, never committed.
 
 from __future__ import annotations
 
+import re
 import sys
 from pathlib import Path
 
@@ -84,27 +85,40 @@ def simple_references(item: dict) -> list[str]:
     return paths
 
 
+def fence_for(body: str) -> str:
+    """Return a backtick fence longer than any backtick run inside `body`.
+
+    An item's `text` is copied across verbatim; if it ever contains a code
+    fence of its own, a fixed three-backtick directive fence would terminate
+    early and silently leak content outside the need object. Sizing the fence
+    from the content makes that impossible by construction.
+    """
+    longest = max((len(run) for run in re.findall(r"`+", body)), default=0)
+    return "`" * max(3, longest + 1)
+
+
 def render_item(item: dict, directive: str) -> str:
     title = (item.get("header") or "").strip()
     text = (item.get("text") or "").strip()
     status = "active" if item.get("active") else "inactive"
     links = parent_links(item)
 
-    lines = [f"```{{{directive}}} {title}", f":id: {item['id']}", f":status: {status}"]
+    body_lines = [f":id: {item['id']}", f":status: {status}"]
     if links:
-        lines.append(f":links: {', '.join(links)}")
-    lines.append("")
-    lines.append(text)
+        body_lines.append(f":links: {', '.join(links)}")
+    body_lines.append("")
+    body_lines.append(text)
 
     refs = simple_references(item)
     if refs:
-        lines.append("")
-        lines.append("References:")
+        body_lines.append("")
+        body_lines.append("References:")
         for ref in refs:
-            lines.append(f"- `{ref}`")
+            body_lines.append(f"- `{ref}`")
 
-    lines.append("```")
-    return "\n".join(lines)
+    body = "\n".join(body_lines)
+    fence = fence_for(body)
+    return "\n".join([f"{fence}{{{directive}}} {title}", body, fence])
 
 
 def render_document(doc_title: str, directive: str, items: list[dict]) -> str:
