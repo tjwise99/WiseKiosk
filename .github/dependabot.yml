@@ -10,4 +10,14 @@ updates:
       actions:
         patterns: ["*"]
 
+  # Python dev tooling (requirements-dev.txt — Doorstop). Grouped like the
+  # Actions block so a week's bumps land as one PR.
+  - package-ecosystem: pip
+    directory: "/"
+    schedule:
+      interval: weekly
+    groups:
+      pip:
+        patterns: ["*"]
+
   # gomod and npm ecosystems are added here once go.mod / package.json exist.

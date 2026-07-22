@@ -12,3 +12,4 @@ a **Decided** date — when the choice was *taken*, not when the work merged.
 | # | Decided | Decision |
 |---|---|---|
 | [0001](0001-backend-language-go.md) | 2026-07-21 | Backend in Go; the frontend/backend boundary contract is generated from one schema |
+| [0002](0002-requirements-management-doorstop.md) | 2026-07-21 | Requirements tracked and V&V-gated with Doorstop (SYS→SRS→TST tree) |

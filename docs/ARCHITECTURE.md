@@ -53,6 +53,15 @@ obligation in [`TESTING.md`](TESTING.md) as it lands. That framing is deliberate
 with no test that proves it *functions* is the "security by vigilance" this project rejects
 (FOUNDATIONS §5); a control is done when a test would fail if it regressed.
 
+That proto-traceability is now mechanised in the [Doorstop requirements tree](requirements/README.md):
+a row here graduates into an `SRS` "shall" statement and a `TST` verification item whose `references`
+point at the proving artifact, gated by `just check-reqs`. The load-bearing invariants already seeded
+are the worked template — documentation is self-contained
+([`SYS001`](requirements/sys/SYS001.yml) → [`SRS001`](requirements/srs/SRS001.yml) →
+[`TST001`](requirements/tst/TST001.yml)), boundary values generated from one schema
+([`SRS005`](requirements/srs/SRS005.yml)), and secrets never leaking by construction
+([`SRS006`](requirements/srs/SRS006.yml)) — and the remaining rows below join them as their code lands.
+
 The posture **already enforced** (branch protection with required review + checks, secret scanning +
 push protection, SHA-pinned Actions, least-privilege `GITHUB_TOKEN`, secret-free CI, Dependabot for
 Actions) lives in `.github/` and the repo's branch-protection settings, not in this backlog.

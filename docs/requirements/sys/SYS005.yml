@@ -1,0 +1,13 @@
+active: true
+derived: false
+header: |
+  Boundary values never silently disagree
+level: 1.4
+links: []
+normative: true
+ref: ''
+reviewed: 9Vv-d8ZebkQOiiqwMNyo2BpQe-fxSkIfLKfOCeEmH6A=
+text: |
+  Values exchanged across the frontend/backend boundary shall never silently
+  disagree. This is the single worst defect class the design guards against.
+  Source: FOUNDATIONS.md section 4 and ADR 0001.

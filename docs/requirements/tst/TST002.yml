@@ -1,0 +1,15 @@
+active: false
+derived: false
+header: |
+  Standalone validator rejects a bad config (pending)
+level: 1.1
+links:
+- SRS002: null
+normative: true
+ref: ''
+reviewed: ruLephWH1CaF1k9RvBkCIa9JS2QTpk79sLaEtBR7G7w=
+text: |
+  Will be verified by a test that runs the standalone config validator against a
+  known-bad config and asserts a legible, non-zero failure before boot. Inactive
+  until the validator and config schema exist (no app code yet); activate and add
+  a references entry when the test lands.

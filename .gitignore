@@ -15,6 +15,11 @@ dist/
 *.local
 secrets/
 
+# Python dev tooling — Doorstop runs from a local venv; its rendered output is
+# regenerated on demand and never committed.
+.venv/
+docs/requirements/_published/
+
 # Coverage / logs
 coverage/
 *.log

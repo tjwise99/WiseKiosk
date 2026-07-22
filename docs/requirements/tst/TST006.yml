@@ -1,0 +1,15 @@
+active: false
+derived: false
+header: |
+  Secrets resolve by file path, none in config (pending)
+level: 1.5
+links:
+- SRS006: null
+normative: true
+ref: ''
+reviewed: ciaRAoa6qaHYhHW8TA-Ghg4i_tO9hs2IwyWfcfq19ck=
+text: |
+  Will be verified by a test asserting readSecret resolves <NAME>_FILE then the
+  bare <NAME> env var, and that no secret is present in the served config. Inactive
+  until the backend secret-resolution code exists; activate and add a references
+  entry when the test lands.
