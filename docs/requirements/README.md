@@ -56,30 +56,31 @@ not a failure (the run still exits 0).
 
 ## Running the gate
 
-Requires a local venv with the pinned tool ([`../../requirements-dev.txt`](../../requirements-dev.txt)):
+Requires a local venv — siloed here beside the requirements it serves — with the pinned tool
+([`requirements-dev.txt`](requirements-dev.txt)). Create it from the repo root:
 
 ```sh
-python3 -m venv .venv
-.venv/bin/pip install -r requirements-dev.txt
+python3 -m venv docs/requirements/.venv
+docs/requirements/.venv/bin/pip install -r docs/requirements/requirements-dev.txt
 ```
 
 Then:
 
 ```sh
-just check-reqs      # .venv/bin/doorstop --error-all  — the strict gate (fails on any issue)
+just check-reqs      # docs/requirements/.venv/bin/doorstop --error-all  — the strict gate (fails on any issue)
 just verify          # runs check-reqs alongside the other repo gates
 just reqs-publish     # render the traceability matrix to docs/requirements/_published (gitignored)
 ```
 
 `just check-reqs` runs the **exact** command CI runs (see
 [`../../.github/workflows/checks.yml`](../../.github/workflows/checks.yml), job `requirements`):
-`.venv/bin/doorstop --error-all`. The `--error-all` flag promotes Doorstop's suspect / unreviewed /
+`docs/requirements/.venv/bin/doorstop --error-all`. The `--error-all` flag promotes Doorstop's suspect / unreviewed /
 orphan / unresolved-reference warnings to errors, so the process exits non-zero and the gate actually
 blocks — plain `doorstop` only warns.
 
 ## Adding or changing requirements
 
-Run all commands with the venv (`.venv/bin/doorstop …`):
+Run all commands with the venv (`docs/requirements/.venv/bin/doorstop …`):
 
 - **Add an item:** `doorstop add SRS` (creates the next `SRS0NN.yml`). Edit its `text` to a single
   "shall" statement; write a `header` summarising it.

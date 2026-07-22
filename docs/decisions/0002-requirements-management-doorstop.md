@@ -24,8 +24,8 @@ whose `references` point at the real verifying files). Validation is wired into 
 developers and CI already run: a strict `just check-reqs` (`doorstop --error-all`) that fails on any
 suspect, unreviewed, orphaned, or unresolved-reference item, mirrored exactly by the `requirements`
 job in [`../../.github/workflows/checks.yml`](../../.github/workflows/checks.yml). The pin lives in
-[`../../requirements-dev.txt`](../../requirements-dev.txt); it is dev tooling only — no application
-Python ships.
+[`../requirements/requirements-dev.txt`](../requirements/requirements-dev.txt) — siloed with the
+requirements it serves, not at the repo root; it is dev tooling only, no application Python ships.
 
 ## Alternatives considered
 

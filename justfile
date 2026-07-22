@@ -25,12 +25,12 @@ check-eol:
 [group('checks')]
 [doc('Requirements tree validates: refs resolve, no suspect/unreviewed/orphan items')]
 check-reqs:
-    .venv/bin/doorstop --error-all
+    docs/requirements/.venv/bin/doorstop --error-all
 
 [group('docs')]
 [doc('Render the Doorstop traceability matrix to docs/requirements/_published (gitignored)')]
 reqs-publish:
-    .venv/bin/doorstop publish all docs/requirements/_published
+    docs/requirements/.venv/bin/doorstop publish all docs/requirements/_published
 
 [group('checks')]
 [doc('Run every check the PR gate runs')]

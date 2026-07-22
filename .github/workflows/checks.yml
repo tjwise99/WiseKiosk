@@ -35,8 +35,9 @@ jobs:
   requirements:
     # Validates the Doorstop requirements tree: every TST reference resolves, no
     # suspect/unreviewed/orphan items. Runs the exact gate `just check-reqs`
-    # runs — `.venv/bin/doorstop --error-all` — so CI and local cannot diverge.
-    # No secrets: pure tree validation.
+    # runs — `docs/requirements/.venv/bin/doorstop --error-all` — so CI and local
+    # cannot diverge. The tool is siloed under docs/requirements/ with the feature
+    # it serves. No secrets: pure tree validation.
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
@@ -45,13 +46,13 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Install Doorstop into a local venv
+      - name: Install Doorstop into a local venv (siloed under docs/requirements/)
         run: |
-          python -m venv .venv
-          .venv/bin/pip install -r requirements-dev.txt
+          python -m venv docs/requirements/.venv
+          docs/requirements/.venv/bin/pip install -r docs/requirements/requirements-dev.txt
 
       - name: Requirements tree validates (refs resolve, no suspect/unreviewed/orphan)
-        run: .venv/bin/doorstop --error-all
+        run: docs/requirements/.venv/bin/doorstop --error-all
 
   secret-scan:
     runs-on: ubuntu-latest
