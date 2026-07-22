@@ -27,10 +27,30 @@ check-eol:
 check-reqs:
     docs/requirements/.venv/bin/doorstop --error-all
 
+# First-time setup for the docs-site tooling, siloed under docs/site/
+# (FOUNDATIONS §2), matching the docs/requirements/ pattern.
 [group('docs')]
-[doc('Render the Doorstop traceability matrix to docs/requirements/_published (gitignored)')]
-reqs-publish:
-    docs/requirements/.venv/bin/doorstop publish all docs/requirements/_published
+[doc('First-time setup: install the pinned Sphinx toolchain into docs/site/')]
+site-install:
+    python3 -m venv docs/site/.venv
+    docs/site/.venv/bin/pip install -r docs/site/requirements-dev.txt
+
+# Regenerate the sphinx-needs pages from the Doorstop tree, then build the
+# site with warnings-as-errors. This is the SINGLE source of truth for what
+# CI runs — the `docs-site` job in .github/workflows/checks.yml inlines it
+# byte-for-byte. -W fails the build on any Sphinx warning (a broken
+# cross-reference, an orphaned page) rather than shipping it silently.
+# Assumes `just site-install` has run.
+[group('docs')]
+[doc('Regenerate the needs pages from Doorstop and build the docs site (warnings-as-errors)')]
+site-build:
+    docs/site/.venv/bin/python docs/site/doorstop_to_needs.py
+    docs/site/.venv/bin/sphinx-build -W -b html -c docs/site docs docs/site/_build/html
+
+[group('checks')]
+[doc('Docs site builds clean with warnings-as-errors')]
+check-site:
+    just site-build
 
 # First-time setup for the architecture tooling, siloed under docs/architecture/
 # (FOUNDATIONS §2). The gate recipes below assume it has run, matching the
@@ -74,4 +94,4 @@ arch-dev:
 
 [group('checks')]
 [doc('Run every check the PR gate runs')]
-verify: check-links check-eol check-reqs check-arch
+verify: check-links check-eol check-reqs check-arch check-site

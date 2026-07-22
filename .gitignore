@@ -21,9 +21,8 @@ docs/architecture/node_modules/
 secrets/
 
 # Python dev tooling — Doorstop runs from a local venv siloed beside the
-# requirements it serves; its rendered output is regenerated on demand, never committed.
+# requirements it serves.
 docs/requirements/.venv/
-docs/requirements/_published/
 
 # Python dev tooling — the Sphinx docs site runs from a local venv siloed
 # beside it (docs/site/); the need objects generated from the Doorstop tree
