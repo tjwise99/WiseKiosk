@@ -54,6 +54,35 @@ jobs:
       - name: Requirements tree validates (refs resolve, no suspect/unreviewed/orphan)
         run: docs/requirements/.venv/bin/doorstop --error-all
 
+  architecture:
+    # Validates the LikeC4 architecture model and regenerates every generated
+    # output — the artifacts under docs/architecture/ and the diagrams spliced
+    # into docs/ARCHITECTURE.md — then fails on any drift (`git diff
+    # --exit-code`): the staleness gate that mirrors the repo's "CI fails on
+    # stale generated code" rule for the architecture layer. The gate step is
+    # byte-identical to `just check-arch` (whose regenerate half is the
+    # `arch-export` recipe) — CI and local cannot diverge; the install step
+    # equals `just arch-install`. The tool is siloed under docs/architecture/
+    # with the feature it serves. Browser-free: bundled WASM graphviz, no
+    # chromium. No secrets: pure model validation + codegen.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 24
+
+      - name: Install LikeC4 into the silo (docs/architecture/), locked
+        run: npm --prefix docs/architecture ci
+
+      - name: Architecture model validates and generated artifacts are not stale
+        run: |
+          docs/architecture/node_modules/.bin/likec4 validate docs/architecture/model
+          docs/architecture/node_modules/.bin/likec4 codegen mermaid docs/architecture/model -o docs/architecture/generated
+          node scripts/splice-arch-diagrams.mjs
+          git diff --exit-code docs/architecture/ docs/ARCHITECTURE.md
+
   secret-scan:
     runs-on: ubuntu-latest
     steps:

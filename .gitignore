@@ -9,6 +9,11 @@ node_modules/
 dist/
 .vite/
 
+# Node dev tooling (LikeC4) — siloed beside the architecture model it serves;
+# installed on demand from the committed lockfile, never committed. (Covered by
+# the blanket node_modules/ above; spelled out for parity with the Python silo.)
+docs/architecture/node_modules/
+
 # Secrets and env — never committed (secrets are delivered, not configured)
 .env
 .env.*

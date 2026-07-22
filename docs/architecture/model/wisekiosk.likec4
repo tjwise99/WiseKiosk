@@ -1,0 +1,85 @@
+// WiseKiosk architecture model — C4 Context + Container.
+//
+// This is the single source of truth for the architecture diagrams. It is
+// validated (`just check-arch`) and its rendered outputs are regenerated and
+// staleness-gated. Edit this file, then run `just arch-export`.
+//
+// Extensibility (see README): Component and Code levels are ADDED LATER without
+// restructuring — `component` children nest inside a `container { ... }` block,
+// and a `link` property on any element points at the real source path
+// (backend/..., frontend/...) once that code exists. Nothing here needs to move
+// for that to happen.
+
+specification {
+  element person {
+    style {
+      shape person
+    }
+  }
+  element system
+  element container
+  element externalSystem {
+    style {
+      color muted
+    }
+  }
+
+  // Traceability hook (mechanism only — no real IDs bound yet).
+  //
+  // A LikeC4 tag is how an element carries its Doorstop SRS requirement id, e.g.
+  // a container that satisfies SRS042 would declare `tag SRS042` here and apply
+  // `#SRS042` on the element. That tag IS the architecture -> requirements link.
+  //
+  // TODO(#18): the current SRS items are PLACEHOLDER and will be wiped by the
+  // fresh requirements pass (issue #18). Do NOT bind today's throwaway SRS
+  // numbers. When #18 lands, declare one tag per real SRS id and apply it to the
+  // container(s) that satisfy it. `#needs-srs` below marks elements awaiting that.
+  tag needs-srs
+}
+
+model {
+  operator = person 'Operator' {
+    description 'Installs, configures (config.json) and views the WiseKiosk display.'
+  }
+
+  wisekiosk = system 'WiseKiosk' {
+    description '''
+      Full-screen, config-driven smart-mirror display, shipped as one published
+      container image.
+    '''
+
+    backend = container 'Go backend' {
+      #needs-srs
+      technology 'Go'
+      description '''
+        Stateless REST proxy with a TTL response cache; validates the frontend's
+        config and serves the built SPA as static files.
+      '''
+      // link: backend/    (add once the Go code exists — wires the model to source)
+    }
+
+    frontend = container 'Svelte SPA' {
+      #needs-srs
+      technology 'Svelte 5 + Vite'
+      description '''
+        Renders modules into regions of the page; payload types are generated
+        from the boundary schema, never hand-declared.
+      '''
+      // link: frontend/   (add once the Svelte code exists)
+    }
+
+    // The load-bearing structural constraint: one schema, both sides generated.
+    frontend -> backend 'Boundary contract: types generated from one schema' {
+      technology 'HTTP / JSON'
+    }
+  }
+
+  publicApis = externalSystem 'Public APIs' {
+    description 'Third-party public data sources (e.g. weather) the backend proxies.'
+  }
+
+  operator -> wisekiosk 'Views the mirror; provides config.json'
+  backend -> publicApis 'Proxies read-only, server-side, TTL-cached' {
+    technology 'HTTPS'
+  }
+}

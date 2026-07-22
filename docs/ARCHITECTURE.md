@@ -16,6 +16,55 @@ proxies a handful of public APIs and serves the built frontend; a Svelte SPA ren
 regions of the page. See [`FOUNDATIONS.md`](FOUNDATIONS.md) §1 for the product and §3 for the intended
 architecture until this section describes the built one.
 
+The diagrams below are **generated from the validated [LikeC4 model](architecture/README.md)**, not
+drawn by hand — edit `docs/architecture/model/` and run `just arch-export`, which regenerates the
+Mermaid artifacts in [`docs/architecture/generated/`](architecture/generated/) and splices them
+between the marker comments below (`scripts/splice-arch-diagrams.mjs`). Hand edits inside a marker
+region are overwritten on the next export, and drift fails the staleness gate — see the
+[architecture README](architecture/README.md) for the workflow.
+
+**System context (C4 L1)** — the Operator, the WiseKiosk system, and the public APIs it proxies:
+
+<!-- arch-export:begin generated/index.mmd -->
+
+```mermaid
+---
+title: "WiseKiosk — System Context (C4 L1)"
+---
+graph TB
+  Operator@{ icon: "fa:user", shape: rounded, label: "Operator" }
+  Wisekiosk@{ shape: rectangle, label: "WiseKiosk" }
+  PublicApis@{ shape: rectangle, label: "Public APIs" }
+  Operator -. "`Views the mirror; provides config.json`" .-> Wisekiosk
+  Wisekiosk -. "`Proxies read-only, server-side, 
+TTL-cached`" .-> PublicApis
+```
+
+<!-- arch-export:end generated/index.mmd -->
+
+**Containers (C4 L2)** — inside WiseKiosk: the Go backend and the Svelte SPA, the boundary contract
+between them (one schema, both sides generated), and the backend's outbound API calls:
+
+<!-- arch-export:begin generated/containers.mmd -->
+
+```mermaid
+---
+title: "WiseKiosk — Containers (C4 L2)"
+---
+graph TB
+  subgraph Wisekiosk["`WiseKiosk`"]
+    Wisekiosk.Frontend@{ shape: rectangle, label: "Svelte SPA" }
+    Wisekiosk.Backend@{ shape: rectangle, label: "Go backend" }
+  end
+  PublicApis@{ shape: rectangle, label: "Public APIs" }
+  Wisekiosk.Frontend -. "`Boundary contract: types generated from 
+one schema`" .-> Wisekiosk.Backend
+  Wisekiosk.Backend -. "`Proxies read-only, server-side, 
+TTL-cached`" .-> PublicApis
+```
+
+<!-- arch-export:end generated/containers.mmd -->
+
 ## Backend
 
 _To be documented as it is built._ Language and boundary-contract decision:

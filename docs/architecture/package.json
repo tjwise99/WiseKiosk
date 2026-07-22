@@ -1,0 +1,15 @@
+{
+  "name": "wisekiosk-architecture",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Dev-only: the LikeC4 architecture-as-code model for WiseKiosk. Siloed with the feature it serves (FOUNDATIONS §2); nothing depends on it at app build or runtime.",
+  "engines": {
+    "node": "24"
+  },
+  "scripts": {
+    "codegen": "likec4 codegen"
+  },
+  "devDependencies": {
+    "likec4": "1.59.1"
+  }
+}

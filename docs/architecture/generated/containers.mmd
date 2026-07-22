@@ -1,0 +1,13 @@
+---
+title: "WiseKiosk — Containers (C4 L2)"
+---
+graph TB
+  subgraph Wisekiosk["`WiseKiosk`"]
+    Wisekiosk.Frontend@{ shape: rectangle, label: "Svelte SPA" }
+    Wisekiosk.Backend@{ shape: rectangle, label: "Go backend" }
+  end
+  PublicApis@{ shape: rectangle, label: "Public APIs" }
+  Wisekiosk.Frontend -. "`Boundary contract: types generated from 
+one schema`" .-> Wisekiosk.Backend
+  Wisekiosk.Backend -. "`Proxies read-only, server-side, 
+TTL-cached`" .-> PublicApis

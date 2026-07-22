@@ -1,0 +1,10 @@
+---
+title: "WiseKiosk — System Context (C4 L1)"
+---
+graph TB
+  Operator@{ icon: "fa:user", shape: rounded, label: "Operator" }
+  Wisekiosk@{ shape: rectangle, label: "WiseKiosk" }
+  PublicApis@{ shape: rectangle, label: "Public APIs" }
+  Operator -. "`Views the mirror; provides config.json`" .-> Wisekiosk
+  Wisekiosk -. "`Proxies read-only, server-side, 
+TTL-cached`" .-> PublicApis
