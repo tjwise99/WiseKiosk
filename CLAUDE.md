@@ -31,5 +31,4 @@ review inline.
 
 ## Verify, don't assume
 
-Run `just verify` before proposing merge; confirm green via CI, not a local pass. Commit or push only
-when asked.
+Run `just verify` before proposing merge; confirm green via CI, not a local pass.
