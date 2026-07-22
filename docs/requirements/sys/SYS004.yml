@@ -1,0 +1,13 @@
+active: true
+derived: false
+header: |
+  Malformed configuration is rejected loudly
+level: 1.3
+links: []
+normative: true
+ref: ''
+reviewed: oaUiVqevRjBT4yHKnyzSJCCbBoxD8cgEdRNHhH5_ebE=
+text: |
+  A malformed configuration shall be rejected loudly and legibly before it can
+  produce a silent or blank-screen failure on a headless kiosk. Validation
+  failing correctly is a product feature. Source: FOUNDATIONS.md section 1.

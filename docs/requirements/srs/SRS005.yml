@@ -1,0 +1,14 @@
+active: true
+derived: false
+header: |
+  Boundary values generated from one schema
+level: 1.4
+links:
+- SYS005: 9Vv-d8ZebkQOiiqwMNyo2BpQe-fxSkIfLKfOCeEmH6A=
+normative: true
+ref: ''
+reviewed: W42ydJPHzhR5_MNkN_Hzo2LhcdC_-TqbJl-n03knYK4=
+text: |
+  Every value crossing the frontend/backend boundary shall be generated from a
+  single schema, never hand-declared on both sides, and CI shall fail when the
+  committed generated code differs from the schema. Source: FOUNDATIONS section 4.

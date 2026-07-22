@@ -46,15 +46,19 @@ This tier exists specifically to make that impossible.
 
 ## Standing obligations
 
-Gate on these — they name what must be proven. Not on a coverage number.
+Gate on these — they name what must be proven. Not on a coverage number. Each is also carried as an
+identified requirement in the [Doorstop tree](requirements/README.md), so the obligation and its
+verification item are traceable and CI-checked, not only prose here.
 
 - **Every value crossing the frontend/backend boundary is generated from one definition** (see above).
+  Tracked as [`SRS005`](requirements/srs/SRS005.yml) → [`TST005`](requirements/tst/TST005.yml).
 - **Every module supplies unit tests for its shaping library and a render test for its component.**
 - **Every config schema rejects at least one realistic malformed input, in a test.** The operator is
   not the author, so validation failing correctly and legibly is a product feature, and it is tested
-  as one.
+  as one. Tracked as [`SRS004`](requirements/srs/SRS004.yml) → [`TST004`](requirements/tst/TST004.yml).
 - **The standalone validator is exercised in CI against known-good and known-bad configs.** The
-  validator failing to reject a malformed config is a product bug, not a testing gap.
+  validator failing to reject a malformed config is a product bug, not a testing gap. Tracked under
+  [`SRS002`](requirements/srs/SRS002.yml) → [`TST002`](requirements/tst/TST002.yml).
 - **Repo-wide checks live at repo level**, not inside whichever package happened to have a test runner
   first.
 - **Every test file is wired into CI.** A test that has never run is worse than no test — it is a false

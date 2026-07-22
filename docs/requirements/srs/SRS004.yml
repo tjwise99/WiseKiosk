@@ -1,0 +1,14 @@
+active: true
+derived: false
+header: |
+  Config schema rejects malformed input in a test
+level: 1.3
+links:
+- SYS004: oaUiVqevRjBT4yHKnyzSJCCbBoxD8cgEdRNHhH5_ebE=
+normative: true
+ref: ''
+reviewed: sGYv2XqOIzDeJ1hYpOu8zdKaP2TOQBcPvhukTRM_bxE=
+text: |
+  The configuration schema shall reject at least one realistic malformed input,
+  proven by a test, and the standalone validator shall be exercised in CI
+  against known-good and known-bad configs. Source: TESTING.md obligations.

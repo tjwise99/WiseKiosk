@@ -1,0 +1,13 @@
+active: true
+derived: false
+header: |
+  Configuration knobs are operator-tunable
+level: 1.2
+links: []
+normative: true
+ref: ''
+reviewed: mZ3iU3vb9J3fYNllBqcKyg2CAneh5pEFtksQcIthulw=
+text: |
+  Every value the operator is offered as configuration shall be safely
+  changeable by the operator; anything whose alteration would break the
+  deployment is a constant, not a config key. Source: FOUNDATIONS.md section 5.

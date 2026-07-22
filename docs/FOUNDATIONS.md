@@ -86,6 +86,12 @@ Dependency-footprint discipline generalises: **prefer the standard library and a
 over a package**, and treat any dependency pulling a native build toolchain as disqualified unless
 nothing else will do.
 
+**Dev tooling is siloed with the feature it serves, not dropped at the repo root.** A tool's
+dependency manifest, lockfile, and virtual environment live in that feature's directory, and its
+Dependabot ecosystem points there — so the requirements tool's `requirements-dev.txt` and venv sit
+under [`requirements/`](requirements/README.md), not `/`. This keeps each tool's footprint legible
+and removable as a unit, and stops the root filling with unrelated manifests as tooling accretes.
+
 ---
 
 ## 3. Day-one architecture

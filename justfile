@@ -23,5 +23,15 @@ check-eol:
     echo "No CRLF line endings."
 
 [group('checks')]
+[doc('Requirements tree validates: refs resolve, no suspect/unreviewed/orphan items')]
+check-reqs:
+    docs/requirements/.venv/bin/doorstop --error-all
+
+[group('docs')]
+[doc('Render the Doorstop traceability matrix to docs/requirements/_published (gitignored)')]
+reqs-publish:
+    docs/requirements/.venv/bin/doorstop publish all docs/requirements/_published
+
+[group('checks')]
 [doc('Run every check the PR gate runs')]
-verify: check-links check-eol
+verify: check-links check-eol check-reqs
