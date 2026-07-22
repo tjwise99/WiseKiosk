@@ -1,0 +1,14 @@
+# Dev-only tooling. No application Python ships in WiseKiosk — this pins the
+# documentation-site toolchain (Sphinx + MyST + sphinx-needs) used by the
+# `check-site` gate. The tool is siloed here with the feature it serves (not
+# the repo root); install into a local venv beside it, never globally, run
+# from the repo root:
+#   python3 -m venv docs/site/.venv
+#   docs/site/.venv/bin/pip install -r docs/site/requirements-dev.txt
+# CI installs the same pins (see .github/workflows/checks.yml, job `docs-site`).
+sphinx==9.1.0
+myst-parser==5.1.0
+sphinx-needs==8.3.0
+sphinxcontrib-mermaid==2.1.0
+sphinx-immaterial==0.13.9
+PyYAML==6.0.3

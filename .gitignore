@@ -25,6 +25,13 @@ secrets/
 docs/requirements/.venv/
 docs/requirements/_published/
 
+# Python dev tooling — the Sphinx docs site runs from a local venv siloed
+# beside it (docs/site/); the need objects generated from the Doorstop tree
+# and the built HTML are both regenerated on demand, never committed.
+docs/site/.venv/
+docs/site/generated/
+docs/site/_build/
+
 # Coverage / logs
 coverage/
 *.log
