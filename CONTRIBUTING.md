@@ -27,6 +27,11 @@ Current gates (they grow as code lands):
 
 - `just check-links` — every relative link in every tracked Markdown file resolves inside the repo.
 - `just check-eol`   — no tracked text file has CRLF line endings.
+- `just check-reqs`  — the Doorstop requirements tree validates: refs resolve, no
+  suspect/unreviewed/orphan items.
+- `just check-arch`  — the LikeC4 architecture model validates and its generated artifacts are not
+  stale.
+- `just check-site`  — the documentation site builds clean with warnings-as-errors.
 
 ## Getting a change merged
 
