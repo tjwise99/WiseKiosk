@@ -67,11 +67,14 @@ the single documentation toolchain.
   nothing for the driving requirement: the traceability UI — tables, matrices, link graphs —
   would be hand-built and hand-maintained on top of it, which is the two-toolchain problem
   wearing a different hat.
-- **Astro Starlight / Docusaurus** — structurally require per-page frontmatter (content
-  collections, sidebar metadata); the no-frontmatter constraint eliminates both outright, before
-  their content-ownership friction is even weighed.
-- **mdBook** — renders linear books, not multi-source trees; no requirements machinery, no
-  `attr_list`-style anchors, thin plugin story.
+- **Astro Starlight** — structurally requires per-page frontmatter (its content-collection schema
+  demands it); the no-frontmatter constraint eliminates it outright, before its content-ownership
+  friction is even weighed.
+- **Docusaurus** — frontmatter is conventional rather than structural there, so it survives that
+  constraint; rejected on the driving requirement instead: like MkDocs it has no traceability
+  machinery, without MkDocs's zero-dialect prose story to compensate.
+- **mdBook** — renders linear books, not multi-source trees; no requirements machinery and a thin
+  plugin story.
 - **Hybrid (MkDocs for prose + a sphinx-needs sub-site)** — the Pages artifact is just a
   directory, so this composes technically; rejected because it is two toolchains by definition.
 - **Keep Doorstop HTML** — the baseline that prompted this. Covers only requirements, and its
@@ -92,7 +95,10 @@ unchanged, Python silo, single toolchain) is still met.
   the toctree requirement.
 - **A thin transform joins the build.** Doorstop YAML → need objects is generated glue with no
   presentation logic; it must stay that way. If it starts growing UI decisions, that is scope
-  creep toward the bespoke renderer this ADR rejected.
+  creep toward the bespoke renderer this ADR rejected. The traceability *display* pages —
+  hand-authored `needtable`/`needflow`/matrix directives — are legitimate silo content, distinct
+  from both the transform output and the toctree shims; hand-authoring them does not violate this
+  boundary.
 - **Second Python silo.** Another pinned requirements file, venv, and Dependabot `pip` entry.
 - **First workflow with elevated permissions.** `checks.yml` stays read-only; the Pages workflow
   alone holds `write` scopes, kept separate so the verification pipeline's blast radius does not
