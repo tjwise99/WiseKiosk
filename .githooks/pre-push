@@ -1,0 +1,13 @@
+#!/bin/sh
+# Advisory fast feedback; the binding gate is CI's required `process` check,
+# which also verifies the linked issue via the API (`just check-branch`).
+# Pattern is defined once in scripts/branch-shape.regex (also read by
+# scripts/check-branch.sh).
+branch=$(git symbolic-ref --short -q HEAD) || exit 0
+case "$branch" in
+    main|dependabot/*) exit 0 ;;
+esac
+if ! printf '%s' "$branch" | grep -Eqf scripts/branch-shape.regex; then
+    echo "pre-push: branch '$branch' does not match type_number-snake_name (see scripts/branch-shape.regex)." >&2
+    exit 1
+fi

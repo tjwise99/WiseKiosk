@@ -16,3 +16,4 @@ a **Decided** date — when the choice was *taken*, not when the work merged.
 | [0003](0003-architecture-as-code-likec4.md) | 2026-07-22 | Architecture modeled as code with LikeC4; browser-free Mermaid codegen, staleness-gated |
 | [0004](0004-docs-site-sphinx-needs.md) | 2026-07-22 | Documentation site built with Sphinx + MyST + sphinx-needs; traceability rendered by sphinx-needs, deployed to GitHub Pages |
 | [0005](0005-traceability-gating.md) | 2026-07-22 | All work traces to the requirements tree via four in-repo gates; per-test attribution, derived verification status, tree as backlog |
+| [0006](0006-process-gates.md) | 2026-07-22 | Process gates: branches named type_number-snake_name, typed by ticket template and linked to an open issue; Conventional-Commit PR titles |

@@ -1,7 +1,7 @@
 ---
 name: Design decision (ADR)
 about: Open a trade discussion that ends in an ADR
-labels: documentation
+labels: design, documentation
 ---
 
 An ADR captures a decision **with a rejected alternative** (`docs/decisions/README.md`).
