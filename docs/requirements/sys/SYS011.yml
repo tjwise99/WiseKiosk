@@ -17,6 +17,5 @@ status: proposed
 text: |
   The system's security model shall be network-boundary trust: a deployment
   serves exactly one trusted LAN, with no user accounts, no sessions, and no
-  application-level authentication or access control. One instance shall
-  serve one configuration.
+  application-level authentication or access control.
 verification-method: analysis

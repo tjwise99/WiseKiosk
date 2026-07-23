@@ -15,5 +15,6 @@ status: proposed
 text: |
   WiseKiosk shall be published as one container image. Per-deployment
   customization shall occur through configuration only, never through a
-  per-deployment fork, branch, or rebuild.
+  per-deployment fork, branch, or rebuild. One deployed instance shall serve
+  exactly one configuration.
 verification-method: inspection
