@@ -1,0 +1,22 @@
+active: false
+derived: false
+header: |
+  Display priorities: kiosk, then desktop, then phone
+level: 1.8
+links: []
+normative: true
+rationale: |
+  The kiosk is the product; a desktop browser view is a convenience check; a
+  phone view earns effort only where it costs nearly nothing. The stretch case
+  is a budget, not a feature: if supporting it starts requiring architecture,
+  it has exceeded that budget.
+ref: ''
+reviewed: 5CX-N-Pyi6Ajn7ede8QcivSICIOS4Ju_L18ktlO2J2A=
+status: proposed
+text: |
+  The primary display target shall be a full-screen kiosk page. The page
+  shall also render sensibly at desktop browser window sizes, and shall not
+  actively break (overlap or become unreadable) at phone widths. No
+  per-client profiles, device detection, or responsive-design programme shall
+  exist for the stretch case.
+verification-method: demonstration

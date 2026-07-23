@@ -1,0 +1,17 @@
+active: true
+derived: false
+header: |
+  Module renders a legible error state on data failure
+level: 1.2
+links:
+- SYS005: ZL5TKFyrHPDZmdc6CDmpAIXf-LWQrkNsQgQ4L5IlYhY=
+normative: true
+rationale: ''
+ref: ''
+reviewed: U4OYBHkV7VHkTs40_nfnAWuSoD4yPB_av16WrVG0X6Q=
+status: proposed
+text: |
+  A module whose data request returns an error shall render a plain-language
+  error state within its own display region; rendering of all other modules
+  shall be unaffected.
+verification-method: test

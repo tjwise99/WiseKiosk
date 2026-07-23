@@ -1,0 +1,18 @@
+active: false
+derived: false
+header: |
+  Upgrades require no code literacy
+level: 1.6
+links: []
+normative: true
+rationale: |
+  The operator upgrades by pulling a newer image. If an upgrade required
+  reading a diff or editing code, every deployment would become
+  author-maintained, defeating the deployment model.
+ref: ''
+reviewed: Sw94fSoC2fO1zVrk3kpMAX9zHX1gIPU0ZA8yJ1DuGBE=
+status: proposed
+text: |
+  Upgrading a deployment to a newer released image shall not require the
+  operator to read a diff, edit code, or understand the stack.
+verification-method: analysis

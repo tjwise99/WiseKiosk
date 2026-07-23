@@ -1,0 +1,18 @@
+active: false
+derived: false
+header: |
+  Configuration validatable before deployment
+level: 1.4
+links: []
+normative: true
+rationale: |
+  Config errors must be catchable at the desk, before the deployment is
+  touched. Discovering them at boot, on a mirror across town, is too late for
+  a non-technical operator.
+ref: ''
+reviewed: 8RJKPJuyxrABEtVqJ3Ox7TsL7dvxBWe_ZIVSJ0sB44I=
+status: proposed
+text: |
+  It shall be possible to validate a configuration before deployment, without
+  starting the system.
+verification-method: test

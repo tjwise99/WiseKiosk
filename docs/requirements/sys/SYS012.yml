@@ -1,0 +1,19 @@
+active: true
+derived: false
+header: |
+  Repository is self-contained
+level: 1.12
+links: []
+normative: true
+rationale: |
+  The repository is the product's complete specification and operating
+  manual. A reference resolving outside it can rot invisibly and strands the
+  reader without the referenced context.
+ref: ''
+reviewed: FL9dIItBGBf7DLvDNyb0R6qJExSW8Vr1EnlqAAIzRLs=
+status: proposed
+text: |
+  Everything needed to build, verify, and operate WiseKiosk shall live inside
+  this repository; its documentation shall contain no reference that resolves
+  outside it.
+verification-method: analysis

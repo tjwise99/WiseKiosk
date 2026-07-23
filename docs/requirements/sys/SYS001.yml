@@ -1,0 +1,19 @@
+active: false
+derived: false
+header: |
+  Config-driven smart-mirror display
+level: 1.1
+links: []
+normative: true
+rationale: |
+  Defines the product. A smart mirror is a display behind one-way glass showing
+  a fixed set of information modules; every render, module, and configuration
+  requirement decomposes from this need.
+ref: ''
+reviewed: 3ujjWxIoiJWk-Y5kMgcaKvLeXE6YAHH_vAtfZSsGKxM=
+status: proposed
+text: |
+  WiseKiosk shall render a fixed, configuration-driven set of display modules
+  as a single full-screen browser page, operating unattended on a kiosk
+  display.
+verification-method: demonstration

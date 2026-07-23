@@ -1,0 +1,16 @@
+active: false
+derived: false
+header: |
+  Pending: module error-state render test
+level: '1.2'
+links:
+- SRS002: null
+normative: true
+rationale: ''
+ref: ''
+status: proposed
+text: |
+  Pending: render test asserting a module renders its error state from an
+  error payload while sibling modules render normally. Lands with the
+  frontend skeleton; activated and given a references entry then.
+verification-method: test

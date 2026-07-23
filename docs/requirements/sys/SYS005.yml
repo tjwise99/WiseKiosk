@@ -1,0 +1,21 @@
+active: true
+derived: false
+header: |
+  Upstream failures degrade legibly, per module
+level: 1.5
+links: []
+normative: true
+rationale: |
+  The fail-loud ethos extends to runtime. An upstream outage must read as a
+  data problem in one module, not a broken mirror, and must not take down
+  unrelated modules. Owner decision 2026-07-22: legible per-module error state,
+  not stale-data display and not a blanked region.
+ref: ''
+reviewed: ZL5TKFyrHPDZmdc6CDmpAIXf-LWQrkNsQgQ4L5IlYhY=
+status: proposed
+text: |
+  When a module's upstream data source fails at runtime (unreachable, rejected
+  credentials, timeout, or malformed response), that module's display region
+  shall show a legible plain-language error state while all other modules
+  continue to operate normally.
+verification-method: test

@@ -1,0 +1,19 @@
+active: false
+derived: false
+header: |
+  One image; customization through configuration only
+level: 1.7
+links: []
+normative: true
+rationale: |
+  One published image serving many independent deployments, each customised
+  by its own configuration, is the entire reason this repository exists.
+  Per-deployment forks or rebuilds would fragment it.
+ref: ''
+reviewed: 4k7lerjS-UELCU00aZI1dRY-4UKeMt19sScy_mviLOI=
+status: proposed
+text: |
+  WiseKiosk shall be published as one container image. Per-deployment
+  customization shall occur through configuration only, never through a
+  per-deployment fork, branch, or rebuild.
+verification-method: inspection

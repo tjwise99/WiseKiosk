@@ -1,0 +1,17 @@
+active: false
+derived: false
+header: |
+  Pending: upstream-failure error payload test
+level: '1.1'
+links:
+- SRS001: null
+normative: true
+rationale: ''
+ref: ''
+status: proposed
+text: |
+  Pending: backend integration test asserting the structured error payload for
+  each failure class (unreachable, timeout, non-success status, malformed
+  payload). Lands with the proxy skeleton; activated and given a references
+  entry then.
+verification-method: test
