@@ -67,6 +67,15 @@ given a real `references` entry as its test lands. Inactive `TST` items surface 
 `no item with UID: TST00x` line during validation — that is Doorstop noting a stubbed verification,
 not a failure (the run still exits 0).
 
+### Pending decomposition
+
+The same idiom extends upward while the tree is being built out: a `SYS` or `SRS` item whose
+decomposition round has not yet arrived is committed **`active: false`** with its full content and
+attributes. The strict gate errors on any *active* parent with no child links, so an item is
+activated in the same change that writes its first child. Elsewhere `active: false` means
+retirement (ADR 0005); an item carrying a pending note is awaiting decomposition or its verifying
+artifact, not retired.
+
 ## Running the gate
 
 Requires a local venv — siloed here beside the requirements it serves — with the pinned tool
