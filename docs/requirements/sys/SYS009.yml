@@ -1,0 +1,22 @@
+active: false
+derived: false
+header: |
+  Reference platforms and system boundary
+level: 1.9
+links: []
+normative: true
+rationale: |
+  Pins the known-working display hardware: a Raspberry Pi Zero already drives
+  a deployment's browser today. The container host is constrained separately
+  because Docker does not run on a Pi Zero. Owner decision 2026-07-22: the
+  kiosk host's OS, browser, and autostart configuration are the operator's
+  platform, outside the system boundary.
+ref: ''
+reviewed: MiEgDtY0PS1aFpw6ZcA5eI9spWet1JGL0grkJBWiOAY=
+status: proposed
+text: |
+  The frontend shall operate on a Raspberry Pi Zero-class browser host
+  driving the display. The backend container shall run on a Docker-capable
+  amd64 or arm64 host. The kiosk host's operating system, browser, and
+  autostart configuration lie outside the system boundary.
+verification-method: demonstration

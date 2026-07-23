@@ -23,10 +23,24 @@ Each item is one YAML file named for its ID (`SYS001.yml`, `SRS001.yml`, `TST001
 prefix plus a zero-padded 3-digit number. **An ID is permanent** — once assigned it is never reused or
 renumbered, so external references to it stay valid.
 
-The seeded chains trace load-bearing invariants from
-[`../FOUNDATIONS.md`](../FOUNDATIONS.md) and [`../TESTING.md`](../TESTING.md). The complete worked
-example is the "docs are standalone" chain: [`SYS001`](sys/SYS001.yml) → [`SRS001`](srs/SRS001.yml) →
-[`TST001`](tst/TST001.yml), whose verification (`scripts/check-links.mjs`) exists and passes today.
+> **One-time ID reset.** The tree seeded alongside the tooling (`SYS001`–`006` and children) was
+> placeholder content and was cleared by the requirements rewrite; IDs were re-established from
+> `001` with new meanings. Permanence applies from that reset forward.
+
+## Item attributes
+
+Beyond Doorstop's native fields, every item carries three stored attributes
+([ADR 0005](../decisions/0005-traceability-gating.md)):
+
+| Attribute | Values | Meaning |
+|---|---|---|
+| `status` | `proposed` \| `accepted` | Human review state. `proposed` items live on `main` — the tree is the backlog — but implementing against one is building on unbaselined spec |
+| `verification-method` | `test` \| `inspection` \| `analysis` \| `demonstration` | How the requirement is verified; gates route on it |
+| `rationale` | free text | Why the requirement exists. **Required at the `SYS` tier**, optional below |
+
+`verification-method` and `rationale` are fenced by the review fingerprint (editing them re-flags
+review); `status` is not, because a state transition is not a content change. Verified/implemented
+is **derived by tooling from evidence, never stored** (ADR 0005).
 
 ## The V&V model: Doorstop proves linkage, the test suite proves correctness
 
@@ -41,9 +55,8 @@ complete and current:
   until re-reviewed. A silent divergence is impossible.
 
 What Doorstop does **not** do is prove the referenced check actually passes. That is the job of
-[`just verify`](../../justfile) and the CI suite. Doorstop proves `TST001` *points at*
-[`scripts/check-links.mjs`](../../scripts/check-links.mjs); `just check-links` proves that script
-*passes*. Both are required.
+[`just verify`](../../justfile) and the CI suite. Doorstop proves a `TST` item *points at* a real
+verifying file; the corresponding `just` gate proves that check *passes*. Both are required.
 
 ### Pending verifications
 
@@ -53,6 +66,20 @@ excluded from reference/review checking, so the tree still validates clean; each
 given a real `references` entry as its test lands. Inactive `TST` items surface as an informational
 `no item with UID: TST00x` line during validation — that is Doorstop noting a stubbed verification,
 not a failure (the run still exits 0).
+
+### Pending decomposition
+
+The same idiom extends upward while the tree is being built out: a `SYS` or `SRS` item whose
+decomposition round has not yet arrived is committed **`active: false`** with its full content and
+attributes. The strict gate errors on any *active* parent with no child links, so an item is
+activated in the same change that writes its first child. Elsewhere `active: false` means
+retirement (ADR 0005); an item carrying a pending note is awaiting decomposition or its verifying
+artifact, not retired.
+
+**Activation is a review act.** Doorstop skips inactive items entirely, so a `reviewed` stamp on a
+pending item carries no authority and edits to pending items are invisible to the gate. The fence
+lands at activation: the change that activates an item re-reads it in full and stamps its review
+(`doorstop review <UID>`) then — never before, never scripted.
 
 ## Running the gate
 

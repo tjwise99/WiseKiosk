@@ -1,14 +1,17 @@
 active: true
 derived: false
 header: |
-  Relative Markdown links resolve inside the repo
-level: 1.0
+  Backend returns structured errors for upstream failures
+level: 1.1
 links:
-- SYS001: ogmPJrSPtzLEL1piOfmqMY0P4tXewbztzHlYKQMd6w8=
+- SYS005: ZL5TKFyrHPDZmdc6CDmpAIXf-LWQrkNsQgQ4L5IlYhY=
 normative: true
+rationale: ''
 ref: ''
-reviewed: Iwwgt2rH7bD0UN_XzqepBFgH4vNvNULk0X9LF8-ZtMs=
+reviewed: MqrSrlPrybMT7vpWwJOItdkv2qnQxybb7GQZffBoAVE=
+status: accepted
 text: |
-  Every relative Markdown link in every tracked file shall resolve to a path
-  inside the repository; a link that escapes the repo or points at a missing
-  file is a defect. Source: FOUNDATIONS.md standalone-docs rule.
+  On an upstream request failure (unreachable host, timeout, non-success
+  status, or malformed payload), the backend shall return a structured error
+  response identifying the failing source and the failure class.
+verification-method: test

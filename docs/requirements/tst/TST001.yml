@@ -1,24 +1,17 @@
-active: true
+active: false
 derived: false
 header: |
-  check-links resolves every relative Markdown link
-level: 1.0
+  Pending: upstream-failure error payload test
+level: '1.1'
 links:
-- SRS001: 3_w-Wcba0ziUDO4XjGDHJklvKNEAT6vI6P-_bTcjMA8=
+- SRS001: null
 normative: true
+rationale: ''
 ref: ''
-references:
-- path: scripts/check-links.mjs
-  type: file
-reviewed: iRatjvctHrSQsCg6wNzrLFrkWRtkMyNGDNTWTHmybMQ=
+status: proposed
 text: |
-  Verified by scripts/check-links.mjs, which walks every tracked Markdown file
-  and exits non-zero on the first relative link that escapes the repo or points
-  at a missing file. It is wired into CI as the "Markdown links resolve inside
-  the repo" step of the docs-and-hygiene job in .github/workflows/checks.yml,
-  and runnable locally as `just check-links`.
-
-  Note: the machine-checked reference above points only at scripts/check-links.mjs.
-  Doorstop 3.2 cannot resolve a file reference under a dot-prefixed directory
-  such as .github/, so the CI wiring (.github/workflows/checks.yml) is cited in
-  prose rather than as a references entry. See ADR 0002.
+  Pending: backend integration test asserting the structured error payload for
+  each failure class (unreachable, timeout, non-success status, malformed
+  payload). Lands with the proxy skeleton; activated and given a references
+  entry then.
+verification-method: test

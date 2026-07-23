@@ -1,0 +1,21 @@
+active: false
+derived: false
+header: |
+  Security model: network-boundary trust
+level: 1.11
+links: []
+normative: true
+rationale: |
+  Records the security model as designed so a future security pass does not
+  "fix" the absence of authentication: deployments sit on a single trusted
+  LAN, and security comes from network boundaries, not the application.
+  Build-scope prohibitions (no plugin machinery, no legacy-framework
+  compatibility) are deliberately not stated here — they are constraint
+  requirements in the process domain, one home per rule.
+ref: ''
+status: proposed
+text: |
+  The system's security model shall be network-boundary trust: a deployment
+  serves exactly one trusted LAN, with no user accounts, no sessions, and no
+  application-level authentication or access control.
+verification-method: analysis

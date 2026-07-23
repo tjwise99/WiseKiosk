@@ -1,14 +1,17 @@
 active: true
 derived: false
 header: |
-  Bad config fails loudly and is pre-validatable
-level: 1.1
+  Module renders a legible error state on data failure
+level: 1.2
 links:
-- SYS002: FPhMhEmyyu-Z31cp2PvzCJt_iAVqnU1yJq18cZSNjGU=
+- SYS005: ZL5TKFyrHPDZmdc6CDmpAIXf-LWQrkNsQgQ4L5IlYhY=
 normative: true
+rationale: ''
 ref: ''
-reviewed: 99diArB0HBztPSn9EL98YGGa3WY3n5qxfMeeTHpQKhQ=
+reviewed: U4OYBHkV7VHkTs40_nfnAWuSoD4yPB_av16WrVG0X6Q=
+status: accepted
 text: |
-  A bad configuration shall fail loudly and legibly, never as a blank screen,
-  and shall be validatable before deployment by a standalone tool that reports
-  what is wrong and what to change, exiting non-zero. Source: FOUNDATIONS.md.
+  A module whose data request returns an error shall render a plain-language
+  error state within its own display region; rendering of all other modules
+  shall be unaffected.
+verification-method: test

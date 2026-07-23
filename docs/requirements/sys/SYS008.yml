@@ -1,0 +1,20 @@
+active: false
+derived: false
+header: |
+  Kiosk full-screen rendering is the primary target
+level: 1.8
+links: []
+normative: true
+rationale: |
+  The kiosk behind mirror glass is the product; every layout decision defers
+  to it. Testable with viewport-driven render tests (Playwright-class):
+  assert no overlapping module regions, no clipping, no scrollbars at the
+  kiosk viewport. The residual aesthetic judgment stays human, but the
+  structural properties are machine-checked.
+ref: ''
+status: proposed
+text: |
+  The page shall render the configured module layout full-screen at the kiosk
+  display's viewport: every configured module visible in its region, with no
+  overlap, no clipping, and no scrollbars.
+verification-method: test

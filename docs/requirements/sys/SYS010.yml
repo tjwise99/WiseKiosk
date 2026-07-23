@@ -1,0 +1,18 @@
+active: false
+derived: false
+header: |
+  Thirty days unattended
+level: '1.10'
+links: []
+normative: true
+rationale: |
+  "Runs forever" is untestable prose. A quantified endurance target makes the
+  property verifiable: unbounded-growth analysis at design time, and a soak
+  demonstration on the reference platform before release.
+ref: ''
+reviewed: ifmtvht3nYnBVmX2DECHOt7Hl-jnYsDrhDi7H4DDcZQ=
+status: proposed
+text: |
+  The system shall operate continuously and unattended for at least 30 days
+  without visible degradation and without operator intervention.
+verification-method: demonstration

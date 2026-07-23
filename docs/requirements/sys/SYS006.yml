@@ -1,13 +1,18 @@
-active: true
+active: false
 derived: false
 header: |
-  Secrets never leak by construction
-level: 1.5
+  Upgrades require no code literacy
+level: 1.6
 links: []
 normative: true
+rationale: |
+  The operator upgrades by pulling a newer image. If an upgrade required
+  reading a diff or editing code, every deployment would become
+  author-maintained, defeating the deployment model.
 ref: ''
-reviewed: mZtgtX7M56gn4ZB-XMy1WS2JsHqCS2tfpXzMwUETmdA=
+reviewed: Sw94fSoC2fO1zVrk3kpMAX9zHX1gIPU0ZA8yJ1DuGBE=
+status: proposed
 text: |
-  A secret shall never reach the browser and shall never leak through
-  configuration delivery. Secret handling is structural, not policy, and must
-  not depend on a denylist that fails open. Source: FOUNDATIONS.md section 5.
+  Upgrading a deployment to a newer released image shall not require the
+  operator to read a diff, edit code, or understand the stack.
+verification-method: analysis

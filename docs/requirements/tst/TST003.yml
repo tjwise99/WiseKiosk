@@ -1,15 +1,23 @@
-active: false
+active: true
 derived: false
 header: |
-  Every config key is operator-tunable (pending)
-level: 1.2
+  check-links resolves every relative Markdown link
+level: 1.3
 links:
-- SRS003: null
+- SRS003: 1O_uDmXwtA7YDWt9OCpUCLpxOTlP7M4Y9dkm8bpePIM=
 normative: true
+rationale: ''
 ref: ''
-reviewed: odBYGLJICIdlnOAugamGDkmrSZ3j0LIUP505lFayYZs=
+references:
+- path: scripts/check-links.mjs
+  type: file
+reviewed: wAB37G2QvHDjxP2gVOHDFhFXa3SKukIPnhq0QG-WoJY=
+status: accepted
 text: |
-  Will be verified by a test asserting the bind address and port are constants
-  (not config keys) and that no shipped config key breaks the deployment when
-  changed. Inactive until backend config handling exists; activate and add a
-  references entry when the test lands.
+  Verified by scripts/check-links.mjs, which walks every tracked Markdown file
+  and exits non-zero on the first relative link that escapes the repo or
+  points at a missing file. Runnable locally as `just check-links`; wired into
+  CI as the docs-and-hygiene job's link step in .github/workflows/checks.yml,
+  cited here in prose because Doorstop cannot reference files under
+  dot-directories (ADR 0002).
+verification-method: test

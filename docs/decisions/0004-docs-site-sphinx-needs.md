@@ -25,7 +25,7 @@ Constraints the discussion under issue #21 made hard:
   lives in its own files elsewhere in the repo — never embedded metadata.
 - **Siloed toolchain** (FOUNDATIONS §2): own directory, exact-pinned, local venv — the
   [`docs/requirements/`](../requirements/README.md) pattern.
-- The site is a *generated view*: the repo stays self-contained (SYS001) and loses nothing if
+- The site is a *generated view*: the repo stays self-contained (SYS012) and loses nothing if
   Pages disappears; no document may reference the published site.
 
 ## Decision

@@ -1,13 +1,18 @@
-active: true
+active: false
 derived: false
 header: |
-  Malformed configuration is rejected loudly
-level: 1.3
+  Configuration validatable before deployment
+level: 1.4
 links: []
 normative: true
+rationale: |
+  Config errors must be catchable at the desk, before the deployment is
+  touched. Discovering them at boot, on a mirror across town, is too late for
+  a non-technical operator.
 ref: ''
-reviewed: oaUiVqevRjBT4yHKnyzSJCCbBoxD8cgEdRNHhH5_ebE=
+reviewed: 8RJKPJuyxrABEtVqJ3Ox7TsL7dvxBWe_ZIVSJ0sB44I=
+status: proposed
 text: |
-  A malformed configuration shall be rejected loudly and legibly before it can
-  produce a silent or blank-screen failure on a headless kiosk. Validation
-  failing correctly is a product feature. Source: FOUNDATIONS.md section 1.
+  It shall be possible to validate a configuration before deployment, without
+  starting the system.
+verification-method: test

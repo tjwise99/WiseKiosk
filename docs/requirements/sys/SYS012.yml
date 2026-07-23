@@ -1,0 +1,25 @@
+active: true
+derived: false
+header: |
+  Repository is self-contained
+level: 1.12
+links: []
+normative: true
+rationale: |
+  The repository is the product's complete specification and operating
+  manual. Verification splits explicitly: the machine-testable half is link
+  hygiene (SRS003 — every relative link resolves in-repo, gated by
+  check-links); the half no script can decide is sufficiency — that nothing
+  *required* is missing — verified by demonstration (SRS004 — a fresh
+  environment succeeds using only in-repo docs). External links are permitted
+  only to third-party projects' own documentation (e.g. upstream tool docs),
+  never to material WiseKiosk requires.
+ref: ''
+reviewed: o3eU6fzYR8y08IYrZ2Az9EjVr2hQ6nERiNbAfhoudtw=
+status: accepted
+text: |
+  Everything required to build, verify, and operate WiseKiosk shall live
+  inside this repository. External references may point only at third-party
+  projects' own documentation, never at material required to build, verify,
+  or operate WiseKiosk.
+verification-method: analysis

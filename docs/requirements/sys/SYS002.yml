@@ -1,13 +1,19 @@
-active: true
+active: false
 derived: false
 header: |
-  Operator is frequently not the author
-level: 1.1
+  Operable by a non-author operator
+level: 1.2
 links: []
 normative: true
+rationale: |
+  Deployments run at the author's house and at friends' and family's houses:
+  separate networks, separate configs, separate owners. The operator is
+  frequently not the author, and may be non-technical. This is the most
+  load-bearing premise in the product.
 ref: ''
-reviewed: FPhMhEmyyu-Z31cp2PvzCJt_iAVqnU1yJq18cZSNjGU=
+reviewed: v5uk4LOys3WeZHAHYahYSDTg7TYE1cpnhE2hy-nvD_w=
+status: proposed
 text: |
-  A deployment's operator is frequently not its author, on a separate network
-  with a separate config. The system shall remain operable and diagnosable by a
-  non-technical, non-author operator. Source: FOUNDATIONS.md section 1.
+  The system shall be deployable, operable, and diagnosable by a non-technical
+  operator who is not the system's author.
+verification-method: analysis

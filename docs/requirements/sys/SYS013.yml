@@ -1,0 +1,21 @@
+active: false
+derived: false
+header: |
+  Desktop browser rendering is a supported secondary
+level: 1.13
+links: []
+normative: true
+rationale: |
+  The secondary use case: loaded in a desktop browser for a quick check.
+  Testable the same way as the kiosk target — viewport-driven render tests
+  asserting the same structural properties at desktop window sizes. Phone
+  widths are deliberately not a requirement; if wanted later, support arrives
+  as a new item with its own review (owner decision 2026-07-22 — nothing in
+  the planned layout precludes it).
+ref: ''
+status: proposed
+text: |
+  The page shall render sensibly at desktop browser window sizes: every
+  configured module visible, with no overlap, no clipping, and no horizontal
+  scrolling.
+verification-method: test

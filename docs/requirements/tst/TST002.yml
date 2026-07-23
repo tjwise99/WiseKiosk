@@ -1,15 +1,16 @@
 active: false
 derived: false
 header: |
-  Standalone validator rejects a bad config (pending)
-level: 1.1
+  Pending: module error-state render test
+level: '1.2'
 links:
 - SRS002: null
 normative: true
+rationale: ''
 ref: ''
-reviewed: ruLephWH1CaF1k9RvBkCIa9JS2QTpk79sLaEtBR7G7w=
+status: proposed
 text: |
-  Will be verified by a test that runs the standalone config validator against a
-  known-bad config and asserts a legible, non-zero failure before boot. Inactive
-  until the validator and config schema exist (no app code yet); activate and add
-  a references entry when the test lands.
+  Pending: render test asserting a module renders its error state from an
+  error payload while sibling modules render normally. Lands with the
+  frontend skeleton; activated and given a references entry then.
+verification-method: test

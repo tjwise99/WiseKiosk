@@ -1,15 +1,17 @@
 active: false
 derived: false
 header: |
-  Config schema rejects a malformed input (pending)
-level: 1.3
+  Pending: bring-up demonstration procedure and record
+level: 1.4
 links:
 - SRS004: null
 normative: true
+rationale: ''
 ref: ''
-reviewed: 6qSm6Hx9LuwBIm4VDqCZb6yHwxZerda6ZIAdjh5FSzQ=
+status: proposed
 text: |
-  Will be verified by a unit test feeding a realistic malformed input to the
-  config schema and asserting rejection, plus a CI run of the standalone
-  validator over known-good and known-bad fixtures. Inactive until the config
-  schema exists; activate and add a references entry when the test lands.
+  Pending: a written bring-up procedure (fresh clone, clean environment,
+  in-repo docs only — build, verify, deploy) plus a record of each performed
+  run. Lands when the system first becomes deployable; activated and given a
+  references entry pointing at the procedure document then.
+verification-method: demonstration
