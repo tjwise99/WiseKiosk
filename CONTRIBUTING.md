@@ -34,6 +34,11 @@ Current gates (they grow as code lands):
 - `just check-branch` — the branch is named `type_number-snake_name`, links an open issue labeled
   with its type, and its default-base PR records the ticket linkage (plain sh + curl + jq, like
   the hooks — no toolchain).
+- `just check-reqs`  — the Doorstop requirements tree validates: refs resolve, no
+  suspect/unreviewed/orphan items.
+- `just check-arch`  — the LikeC4 architecture model validates and its generated artifacts are not
+  stale.
+- `just check-site`  — the documentation site builds clean with warnings-as-errors.
 
 ## Tickets, branches, and titles
 

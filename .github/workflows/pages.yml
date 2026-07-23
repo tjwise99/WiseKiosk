@@ -1,0 +1,58 @@
+name: pages
+
+# Separate from checks.yml so the read-only verification pipeline never needs
+# elevated permissions: only this workflow holds `pages: write` +
+# `id-token: write`, scoped to OIDC deployment, no stored credential.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.12"
+
+      - name: Install the docs-site toolchain into a local venv (siloed under docs/site/)
+        run: |
+          python -m venv docs/site/.venv
+          docs/site/.venv/bin/pip install -r docs/site/requirements-dev.txt
+
+      - name: Regenerate needs pages from Doorstop and build the docs site (mirrors `just site-build`)
+        run: |
+          docs/site/.venv/bin/python docs/site/doorstop_to_needs.py
+          docs/site/.venv/bin/sphinx-build -W -b html -c docs/site docs docs/site/_build/html
+
+      - uses: actions/configure-pages@45bfe0192ca1faeb007ade9deae92b16b8254a0d # v6.0.0
+
+      - uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
+        with:
+          path: docs/site/_build/html
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@cd2ce8fcbc39b97be8ca5fce6e763baed58fa128 # v5.0.0
