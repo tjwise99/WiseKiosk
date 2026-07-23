@@ -1,0 +1,18 @@
+active: false
+derived: false
+header: |
+  Backend serves the configuration verbatim
+level: 1.9
+links:
+- SYS014: null
+normative: true
+rationale: |
+  Validating without owning (FOUNDATIONS §3). Any rewrite is a second
+  definition of the configuration — what the frontend renders is no longer
+  what the operator authored or what the validator checked.
+ref: ''
+status: proposed
+text: |
+  The backend shall serve the configuration to the frontend byte-for-byte as
+  authored. It shall not rewrite, reorder, augment, or default any value.
+verification-method: test

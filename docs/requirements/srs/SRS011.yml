@@ -1,0 +1,19 @@
+active: false
+derived: false
+header: |
+  The backend owns no configuration
+level: 1.11
+links:
+- SYS016: null
+normative: true
+rationale: |
+  Every plausible backend knob turns out to be a constant, a test seam, or
+  code (FOUNDATIONS §3). Secret delivery via the environment is not
+  configuration and is specified in the secrets domain (#35).
+ref: ''
+status: proposed
+text: |
+  The backend shall read no configuration file and shall offer no tunable keys
+  of its own; operational constants such as bind address and port shall be
+  fixed in code.
+verification-method: inspection

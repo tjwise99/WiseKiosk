@@ -1,0 +1,17 @@
+active: false
+derived: false
+header: |
+  Valid starting configuration without blank-file authoring
+level: 1.15
+links: []
+normative: true
+rationale: |
+  The operator is not the author. A blank file, or an example edited blind,
+  makes the first deployment an exercise in guessing the schema; generating
+  from the schema makes the first configuration valid by construction.
+ref: ''
+status: proposed
+text: |
+  It shall be possible to produce a valid starting configuration without
+  authoring from a blank file or editing an example blind.
+verification-method: test

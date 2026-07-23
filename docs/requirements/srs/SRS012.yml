@@ -1,0 +1,19 @@
+active: false
+derived: false
+header: |
+  A configuration change applies no later than the next restart
+level: 1.12
+links:
+- SYS002: null
+normative: true
+rationale: |
+  Owner decision 2026-07-22: restart is the guaranteed floor, phrased as "no
+  later than" so a future live-apply path (e.g. a remote configuration editor)
+  is not designed out.
+ref: ''
+status: proposed
+text: |
+  A modified configuration shall take effect no later than the next restart of
+  the deployment; restarting with a valid configuration shall always be
+  sufficient to apply it.
+verification-method: test

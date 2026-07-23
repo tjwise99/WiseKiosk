@@ -1,0 +1,17 @@
+active: false
+derived: false
+header: |
+  Pending: standalone validator CLI test
+level: 1.8
+links:
+- SRS008: null
+normative: true
+rationale: ''
+ref: ''
+status: proposed
+text: |
+  Pending: CLI test asserting the validator accepts a known-good configuration
+  (exit zero) and rejects a known-bad one (exit non-zero, operator-language
+  errors) without starting the application. Lands with the validator;
+  activated and given a references entry then.
+verification-method: test

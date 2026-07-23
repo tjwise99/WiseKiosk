@@ -1,0 +1,18 @@
+active: false
+derived: false
+header: |
+  Pending: config-error-page test
+level: 1.6
+links:
+- SRS006: null
+normative: true
+rationale: ''
+ref: ''
+status: proposed
+text: |
+  Pending: integration test asserting that with an invalid configuration the
+  backend serves the static error page listing each validation error, reports
+  unhealthy on its healthcheck, and serves no configuration or module API.
+  Lands with the backend skeleton (#9); activated and given a references entry
+  then.
+verification-method: test

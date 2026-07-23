@@ -1,0 +1,16 @@
+active: false
+derived: false
+header: |
+  Pending: unknown-key rejection test
+level: 1.7
+links:
+- SRS007: null
+normative: true
+rationale: ''
+ref: ''
+status: proposed
+text: |
+  Pending: validation test asserting a configuration containing a key not in
+  the schema is rejected, with the unrecognized key named in the error. Lands
+  with the config schema (#8); activated and given a references entry then.
+verification-method: test

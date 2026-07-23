@@ -1,0 +1,16 @@
+active: false
+derived: false
+header: |
+  Pending: restart-applies-config test
+level: 1.12
+links:
+- SRS012: null
+normative: true
+rationale: ''
+ref: ''
+status: proposed
+text: |
+  Pending: integration test asserting a configuration edit takes effect after
+  a restart. Lands with the backend skeleton (#9); activated and given a
+  references entry then.
+verification-method: test

@@ -1,0 +1,17 @@
+active: false
+derived: false
+header: |
+  Pending: boot-validation rejection test
+level: 1.5
+links:
+- SRS005: null
+normative: true
+rationale: ''
+ref: ''
+status: proposed
+text: |
+  Pending: backend integration test asserting an invalid configuration is not
+  served — boot validation fails, no defaults merged, no module subset
+  rendered. Lands with the backend skeleton (#9); activated and given a
+  references entry then.
+verification-method: test

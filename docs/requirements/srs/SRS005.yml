@@ -1,0 +1,20 @@
+active: false
+derived: false
+header: |
+  Boot validation is fail-fast, with no defaults merge
+level: 1.5
+links:
+- SYS003: null
+normative: true
+rationale: |
+  Partial recovery converts a configuration error into silent degradation —
+  the blank or wrong module the operator cannot diagnose. Refusing outright
+  keeps the failure at the loud, legible boundary SYS003 requires.
+ref: ''
+status: proposed
+text: |
+  At boot, the backend shall validate the configuration file against the
+  configuration schema. A configuration that fails validation shall not be
+  served in whole or in part: no defaults merged over invalid or missing
+  values, no failing portion dropped, no module subset rendered.
+verification-method: test
