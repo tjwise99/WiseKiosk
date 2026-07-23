@@ -91,10 +91,10 @@ jobs:
     # validator, here with --pr-title, dropping the fixup!/squash!/merge
     # allowances that never reach main): plain sh + curl + jq over the
     # single-definition patterns in scripts/*.regex — no toolchain. The branch
-    # check also gates the recorded PR↔ticket linkage: closingIssuesReferences
-    # must name the branch's issue — GitHub records these only for PRs whose
-    # base is the default branch, so non-default bases are exempt until
-    # retarget. head_ref and the PR title are attacker-controlled, so they
+    # check also gates the recorded PR↔ticket linkage: the PR's Development
+    # field (closingIssuesReferences) must link the branch's issue on every
+    # base, so the ticket closes when the PR merges into the default branch.
+    # head_ref and the PR title are attacker-controlled, so they
     # enter run steps only via env mapping, never inline. GITHUB_TOKEN is the
     # GitHub-provided read-only token (API rate limits, GraphQL read), not a
     # custom credential.

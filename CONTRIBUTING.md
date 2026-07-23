@@ -48,8 +48,8 @@ Enforced by the `process` CI check ([ADR 0006](docs/decisions/0006-process-gates
   the title becomes the commit on `main`. Branch commit messages are advised on locally by the
   `commit-msg` hook but not gated in CI.
 - **The PR's Development field must link its ticket** — link the issue there (a `Closes #N` body
-  keyword writes the same record); the CI gate checks GitHub's recorded linkage on PRs into the
-  default branch.
+  keyword writes the same record on default-base PRs); the CI gate checks GitHub's recorded
+  linkage on every open PR, and the linked ticket closes when the PR merges.
 
 ## Getting a change merged
 

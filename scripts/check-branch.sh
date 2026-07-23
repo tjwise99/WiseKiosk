@@ -2,10 +2,10 @@
 # The branch name must follow type_number-snake_name (ADR 0006): the shape is
 # defined once in scripts/branch-shape.regex, shared with the pre-push hook;
 # the number resolves via the GitHub API to an open issue whose labels include
-# the type. main and dependabot/* are exempt. When an open PR exists with the
-# default branch as base, the PR's recorded closing references
-# (closingIssuesReferences — GitHub records them only against the default
-# branch) must include the branch's issue. Owner/repo come from the origin
+# the type. main and dependabot/* are exempt. When an open PR exists, its
+# Development field (closingIssuesReferences) must link the branch's issue —
+# any base; body keywords only write the record against the default branch,
+# so other bases need the manual link. Owner/repo come from the origin
 # remote, so the check works on any clone. GITHUB_TOKEN or GH_TOKEN is used as
 # a bearer token when set (rate limits, CI); the GraphQL phase requires it.
 #
@@ -94,10 +94,6 @@ fi
 pr_number=$(jq -r .number "$tmp")
 base_ref=$(jq -r .base.ref "$tmp")
 default_branch=$(jq -r .base.repo.default_branch "$tmp")
-if [ "$base_ref" != "$default_branch" ]; then
-    echo "PR #$pr_number targets '$base_ref', not the default branch '$default_branch': GitHub records closing references only against the default branch, so there is nothing to gate — the gate binds on retarget."
-    exit 0
-fi
 
 [ -n "$token" ] || fail "PR #$pr_number requires the recorded-linkage check, which needs GraphQL auth — export GH_TOKEN; a silently skipped gate is a false pass"
 
@@ -110,6 +106,10 @@ if jq -e 'has("errors")' "$tmp" >/dev/null; then
     fail "GitHub GraphQL errors: $(jq -r '[.errors[].message] | join("; ")' "$tmp")"
 fi
 if ! jq -e --argjson n "$number" '.data.repository.pullRequest.closingIssuesReferences.nodes | any(.number == $n)' "$tmp" >/dev/null; then
-    fail "PR #$pr_number's Development field does not link issue #$number — link it there (a 'Closes #$number' body keyword writes the same record); the gate reads GitHub's recorded state"
+    hint="link it there (a 'Closes #$number' body keyword writes the same record)"
+    if [ "$base_ref" != "$default_branch" ]; then
+        hint="link it there manually — body keywords record nothing against base '$base_ref'; if the platform still records nothing, retarget to '$default_branch'"
+    fi
+    fail "PR #$pr_number's Development field does not link issue #$number — $hint; the gate reads GitHub's recorded state"
 fi
 echo "PR #$pr_number records a closing reference to issue #$number."

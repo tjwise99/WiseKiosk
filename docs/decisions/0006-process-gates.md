@@ -29,8 +29,9 @@ entire gate path is plain sh + curl + jq — no toolchain:
    `type(scope)?!?: subject` with `type` one of `feat`, `fix`, `docs`, `style`, `refactor`, `perf`,
    `test`, `build`, `ci`, `chore`, `revert`. The repo squash-merges, so the title is the commit
    that reaches `main`.
-4. **Recorded PR↔ticket linkage.** Once an open PR targets the default branch, GitHub's recorded
-   closing references for that PR (`closingIssuesReferences`) must include the branch's issue.
+4. **Recorded PR↔ticket linkage.** Every open PR's Development field (`closingIssuesReferences`)
+   must link the branch's issue, whatever the PR's base — so the ticket closes when the PR merges
+   into the default branch.
 
 - **The branch types are exactly the issue-template set**, so branch type and ticket template
   cannot drift: a `bug_…` branch links a bug-report ticket, a `design_…` branch a design-decision
@@ -42,10 +43,11 @@ entire gate path is plain sh + curl + jq — no toolchain:
   alike — never declared twice.
 - **Gate 4 constrains GitHub's recorded state, not prose.** The record is the PR's Development
   field (`closingIssuesReferences`): link the issue there, or let a body keyword (`Closes #N`)
-  write the same record — the gate checks the record pre-merge as a
-  required-check constraint. PRs whose base is not the default branch are exempt: observed live,
-  GitHub records no closing references against a non-default base, so there is nothing to gate
-  until the PR is retargeted.
+  write the same record — the gate checks the record pre-merge as a required-check constraint, on
+  every base. Body keywords observably record nothing against a non-default base, so a PR based
+  elsewhere needs the manual Development link; if the platform records nothing even then, that PR
+  cannot pass until it targets the default branch — accepted, since the mainline is where work
+  merges.
 - **This is a process/scheduling control, explicitly not a traceability channel.** Requirements
   trace stays diff-derived per [ADR 0005](0005-traceability-gating.md); the branch↔issue link
   schedules work, it never evidences it.
