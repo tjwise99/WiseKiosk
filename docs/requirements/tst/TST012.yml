@@ -1,7 +1,7 @@
 active: false
 derived: false
 header: |
-  Pending: restart-applies-config test
+  Pending: page-load-applies-config test
 level: 1.12
 links:
 - SRS012: null
@@ -10,7 +10,7 @@ rationale: ''
 ref: ''
 status: proposed
 text: |
-  Pending: integration test asserting a configuration edit takes effect after
-  a restart. Lands with the backend skeleton (#9); activated and given a
-  references entry then.
+  Pending: integration test asserting a configuration edit takes effect on the
+  next display page load, with no rebuild or redeployment. Lands with the
+  frontend skeleton (#10); activated and given a references entry then.
 verification-method: test

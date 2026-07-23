@@ -10,8 +10,8 @@ rationale: ''
 ref: ''
 status: proposed
 text: |
-  Pending: render test asserting the page shell renders an operator-language
-  error state from a validation-report payload, without a valid configuration
-  loaded. Lands with the frontend skeleton (#10); activated and given a
-  references entry then.
+  Pending: render test asserting the page shell loads with an invalid
+  configuration and renders an operator-language error state — each error with
+  what is wrong, where, and what to change. Lands with the frontend skeleton
+  (#10); activated and given a references entry then.
 verification-method: test

@@ -1,18 +1,20 @@
 active: false
 derived: false
 header: |
-  Backend serves the configuration verbatim
+  Configuration is delivered to the page unmodified
 level: 1.9
 links:
 - SYS014: null
 normative: true
 rationale: |
-  Validating without owning (FOUNDATIONS §3). Any rewrite is a second
-  definition of the configuration — what the frontend renders is no longer
-  what the operator authored or what the validator checked.
+  The configuration is a static file the page fetches; no component parses or
+  rewrites it in transit (ADR 0007). Any rewrite would be a second definition
+  of the configuration — what the page validates and renders would no longer
+  be what the operator authored or what the desk validator checked.
 ref: ''
 status: proposed
 text: |
-  The backend shall serve the configuration to the frontend byte-for-byte as
-  authored. It shall not rewrite, reorder, augment, or default any value.
+  The configuration shall be delivered to the display page byte-for-byte as
+  authored on the deploy host. No component shall rewrite, reorder, augment,
+  or default it in transit.
 verification-method: test

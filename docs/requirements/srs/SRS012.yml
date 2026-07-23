@@ -1,19 +1,20 @@
 active: false
 derived: false
 header: |
-  A configuration change applies no later than the next restart
+  A configuration change applies no later than the next page load
 level: 1.12
 links:
 - SYS002: null
 normative: true
 rationale: |
-  Owner decision 2026-07-22: restart is the guaranteed floor, phrased as "no
-  later than" so a future live-apply path (e.g. a remote configuration editor)
-  is not designed out.
+  Owner decision 2026-07-23 (ADR 0007): page load is the guaranteed floor,
+  phrased as "no later than" so a future live-apply path (e.g. a remote
+  configuration editor) is not designed out. No container restart, rebuild, or
+  redeploy stands between an edit and the display.
 ref: ''
 status: proposed
 text: |
-  A modified configuration shall take effect no later than the next restart of
-  the deployment; restarting with a valid configuration shall always be
-  sufficient to apply it.
+  A modified configuration shall take effect no later than the next load of
+  the display page; no rebuild or redeployment shall be required to apply a
+  configuration change.
 verification-method: test

@@ -1,7 +1,7 @@
 active: false
 derived: false
 header: |
-  Pending: backend-owns-no-config inspection
+  Pending: backend-config-blind inspection
 level: 1.11
 links:
 - SRS011: null
@@ -10,7 +10,7 @@ rationale: ''
 ref: ''
 status: proposed
 text: |
-  Pending: inspection check that the backend reads no configuration file and
-  exposes no tunable keys; form (repo check or review checklist) decided when
-  the backend skeleton (#9) lands.
+  Pending: inspection check that the backend has no code path reading or
+  parsing the display configuration and no tunable keys; form (repo check or
+  review checklist) decided when the backend skeleton (#9) lands.
 verification-method: inspection

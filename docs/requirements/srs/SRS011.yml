@@ -1,19 +1,21 @@
 active: false
 derived: false
 header: |
-  The backend owns no configuration
+  The backend is config-blind
 level: 1.11
 links:
 - SYS016: null
 normative: true
 rationale: |
-  Every plausible backend knob turns out to be a constant, a test seam, or
-  code (FOUNDATIONS §3). Secret delivery via the environment is not
+  ADR 0007: the backend has no code path that knows the display configuration
+  exists — no read, no parse, no endpoint. Operational constants are §5's
+  answer to non-tunable keys; secret delivery via the environment is not
   configuration and is specified in the secrets domain (#35).
 ref: ''
 status: proposed
 text: |
-  The backend shall read no configuration file and shall offer no tunable keys
-  of its own; operational constants such as bind address and port shall be
+  The backend shall have no configuration concept: no configuration file of
+  its own, no code path that reads or parses the display configuration, and no
+  tunable keys. Operational constants such as bind address and port shall be
   fixed in code.
 verification-method: inspection

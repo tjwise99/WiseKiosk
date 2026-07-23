@@ -8,12 +8,12 @@ links:
 normative: true
 rationale: |
   A second engine enforces the schema slightly differently, and the divergence
-  surfaces as a validator that accepts what boot rejects — the defect class
-  the single-definition rule exists to kill (ADR 0007).
+  surfaces as a desk validator that accepts what the page rejects — the defect
+  class the single-definition rule exists to kill (ADR 0007).
 ref: ''
 status: proposed
 text: |
-  Boot validation and the standalone validator shall execute the same
-  validation implementation; the configuration schema's rules shall not be
-  enforced by a second, parallel implementation.
+  Page-load validation and the standalone desk validator shall execute the
+  same validation implementation; the configuration schema's rules shall not
+  be enforced by a second, parallel implementation.
 verification-method: inspection

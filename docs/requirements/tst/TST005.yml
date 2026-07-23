@@ -1,7 +1,7 @@
 active: false
 derived: false
 header: |
-  Pending: boot-validation rejection test
+  Pending: invalid-config-not-applied test
 level: 1.5
 links:
 - SRS005: null
@@ -10,8 +10,8 @@ rationale: ''
 ref: ''
 status: proposed
 text: |
-  Pending: backend integration test asserting an invalid configuration is not
-  served — boot validation fails, no defaults merged, no module subset
-  rendered. Lands with the backend skeleton (#9); activated and given a
-  references entry then.
+  Pending: render test asserting an invalid configuration is never applied —
+  no module rendered, no defaults merged, no failing portion dropped. Lands
+  with the frontend skeleton (#10); activated and given a references entry
+  then.
 verification-method: test
