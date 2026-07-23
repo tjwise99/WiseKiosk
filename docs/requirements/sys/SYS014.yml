@@ -8,14 +8,14 @@ normative: true
 rationale: |
   The same single-definition rule the boundary contract follows (FOUNDATIONS
   §8). A second declaration of the configuration shape drifts from the first,
-  and the divergence surfaces as a validator that accepts what boot rejects —
-  a defect class eliminated by construction, not by review.
+  and the divergence surfaces as a desk validator that accepts what the page
+  rejects — a defect class eliminated by construction, not by review.
 ref: ''
 status: proposed
 text: |
   The configuration format shall be defined by exactly one machine-readable
-  schema. Boot validation, the standalone validator, the configuration
-  generator, and any future configuration editor shall all consume that single
-  definition; the configuration shape shall not be declared a second time
-  anywhere in the system.
+  schema. Page-load (apply-time) validation, the standalone desk validator,
+  the configuration generator, and any future configuration editor shall all
+  consume that single definition; the configuration shape shall not be
+  declared a second time anywhere in the system.
 verification-method: inspection

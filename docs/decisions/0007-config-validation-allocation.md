@@ -68,4 +68,11 @@ owner challenged it; it fell; the allocation below is what remains when it does.
 - A future remote config editor composes naturally: same schema, same engine.
 - The page shell acquires a hard obligation to load and render diagnostics without a valid
   configuration (TST013).
-- FOUNDATIONS §3's backend-validates sentence is superseded here; the prose dissolves under #42.
+- The freshness floor (SRS012) is frontend-owned: the page must fetch the configuration bypassing
+  HTTP caches (`cache: 'no-store'` or equivalent), because the conventional server-side fix — a
+  no-cache header on the config path — is a config-aware code path SRS011 forbids.
+- A healthy healthcheck coexists with a display showing an error report. Accepted, not accidental:
+  the mirror is the monitoring surface — nobody watches healthchecks at a family member's house. A
+  future observability pass must not "fix" this by re-adding a config-aware healthcheck.
+- FOUNDATIONS §3's backend-validates sentence and §8's "boot validation" phrasing are superseded
+  here; both dissolve under #42.
