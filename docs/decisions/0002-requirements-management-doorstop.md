@@ -1,6 +1,6 @@
 # 0002 — Requirements tracking and V&V with Doorstop
 
-**Status:** accepted
+**Status:** accepted; Test-method linkage mechanism superseded by [0005](0005-traceability-gating.md)
 **Decided:** 2026-07-21 (requirements-system spike, issue #14)
 
 ## Context

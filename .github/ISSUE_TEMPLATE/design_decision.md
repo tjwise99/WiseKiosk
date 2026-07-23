@@ -4,7 +4,7 @@ about: Open a trade discussion that ends in an ADR
 labels: documentation
 ---
 
-An ADR captures a decision **with a rejected alternative** ([`docs/decisions/`](../../docs/decisions/README.md)).
+An ADR captures a decision **with a rejected alternative** (`docs/decisions/README.md`).
 This ticket is the entry point: the trades are walked conversationally and the owner decides — the
 ADR transcribes the outcome, it never buries a choice nobody discussed. If there is no real
 alternative to weigh, this doesn't need a ticket or an ADR.
@@ -28,8 +28,8 @@ alternative to weigh, this doesn't need a ticket or an ADR.
 **Definition of done**
 
 - [ ] Trades walked conversationally; owner decided each point (none resolved silently in a draft).
-- [ ] ADR merged: numbered per [`docs/decisions/TEMPLATE.md`](../../docs/decisions/TEMPLATE.md),
-      indexed in the README table, at least one real rejected alternative with the why.
+- [ ] ADR merged: numbered per `docs/decisions/TEMPLATE.md`, indexed in the README table, at least
+      one real rejected alternative with the why.
 - [ ] Anything left open is carried to the implementation ticket **explicitly marked open**.
 - [ ] Implementation ticket created citing the ADR (or explicitly not needed).
 - [ ] Operative docs untouched — they describe current behavior and change only when

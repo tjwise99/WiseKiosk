@@ -18,20 +18,31 @@ and [`../FOUNDATIONS.md`](../FOUNDATIONS.md) is scheduled to dissolve into hard 
 ## Decision
 
 Every requirement carries a `verification-method` attribute (`test` | `inspection` | `analysis` |
-`demonstration`) and a `rationale`; gates route on the method. Four gates, all in-repo, each run by
-`just verify` and mirrored byte-identically in CI:
+`demonstration`); gates route on the method. `rationale` is required at the `SYS` tier, where there
+is no parent to inherit from; lower items may carry one but are not gated on it.
+
+This partially supersedes [ADR 0002](0002-requirements-management-doorstop.md): per-test in-code
+attribution replaces `TST` `references` to verifying files as the evidence channel for Test-method
+items. Doorstop `references` remain the channel for inspection, analysis, and demonstration
+artifacts; 0002's adoption of Doorstop, the tree shape, and `check-reqs` stand unchanged.
+
+Four gates, all in-repo, each run by `just verify` and mirrored byte-identically in CI:
 
 | # | Gate | Proves |
 |---|---|---|
 | 1 | `check-reqs` (exists) | Tree integrity: parent links, no suspect/unreviewed/orphan items |
 | 2 | Attribution scanner | Every cited requirement ID resolves; no unattributed tests; no attribution to a non-`accepted` item |
-| 3 | Coverage closure | Uncovered source is unjustified source (visible exemptions) |
+| 3 | Coverage closure (when source exists) | Uncovered source is unjustified source (visible exemptions) |
 | 4 | Inspection file-claim | Every tracked file in non-code silos is claimed by an Inspection-method item or exempted visibly |
 
 - **Attribution is per-test and in-code.** A test names the `TST` item it verifies in its own
   source; the scanner closes both directions (cited ID exists; Test-method item has evidence; no
   test cites nothing). Coverage then makes the closure transitive: source → test → TST → SRS → SYS,
   so coverage is traceability closure here, not a quality threshold.
+- **Analysis and demonstration items close through referenced artifacts** — the item references the
+  analysis document or demonstration procedure, and derived verification is that reference resolving
+  plus the item's `reviewed` fingerprint. Human judgment stays in the sign-off; only the linkage is
+  mechanized.
 - **Stored state records human decisions only**: `status: proposed | accepted`, where acceptance is
   the review act (fingerprint, rationale, method present). Verified/implemented is **derived** by
   the scanner from evidence and is never stored. Retirement is Doorstop's existing `active: false`.
@@ -56,6 +67,9 @@ nothing by design, gated by review.
   contradiction the diff is the truth. PR metadata lives outside the checked zone: no scanner reads
   it, no page renders it, nothing fails when it rots. Issues remain as scheduling views over the
   backlog; branch names carrying issue numbers remain a convention for log archaeology, not a gate.
+  The partition also obliges gate 4's claim mechanism to reach files Doorstop references cannot —
+  paths under dot-directories, a limit 0002 records — so that claim check is scanner-side or those
+  paths ride the exemption manifest; the mechanism choice is open in #25.
 - **A stored `implemented`/`verified` state.** Rejected: it is derivable from evidence the scanner
   already has, and a hand-set flag survives the deletion of the test that justified it — the same
   hand-declared-in-two-places defect class the boundary-contract rule exists to kill.
@@ -80,6 +94,5 @@ nothing by design, gated by review.
   quality, and no gate pretends otherwise.
 - **Exactly one ungated surface remains** — the axiom tier — held by human review, mechanized by
   fingerprints. Everything below it is machine-checked.
-- Open implementation decisions (attribution syntax per language, which levels require `rationale`,
-  exemption mechanism shape) are deferred to #25 **explicitly marked open**, not resolved silently
-  here.
+- Open implementation decisions (attribution syntax per language, exemption mechanism shape) are
+  deferred to #25 **explicitly marked open**, not resolved silently here.
