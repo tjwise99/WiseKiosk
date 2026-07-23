@@ -1,0 +1,22 @@
+active: false
+derived: false
+header: |
+  Display renders the validation report when no valid configuration is applied
+level: 1.13
+links:
+- SYS003: null
+normative: true
+rationale: |
+  ADR 0007: presentation lives in the frontend — the same backend-reports /
+  frontend-renders split the tree blesses for runtime failures (SRS001/
+  SRS002). Scoped to "no valid configuration applied" so a future live-apply
+  path keeps the freedom to hold last-good on a bad reload. The report crosses
+  the boundary as a generated payload (ADR 0001).
+ref: ''
+status: proposed
+text: |
+  When no valid configuration has been applied, the display page shall render
+  the validation report in operator language — for each error: what is wrong,
+  where, and what to change. The page shell shall render this state without
+  requiring a valid configuration.
+verification-method: test

@@ -1,22 +1,21 @@
 active: false
 derived: false
 header: |
-  Invalid configuration yields an error page, not a dead server
+  Invalid configuration: backend refuses, reports, and flags unhealthy
 level: 1.6
 links:
 - SYS003: null
 normative: true
 rationale: |
-  Owner decision 2026-07-22: error-mode serving over hard exit. A hard exit
-  leaves the headless display showing a browser connection error that names
-  nothing; the served error page is the one place the operator is actually
-  looking.
+  Owner decisions 2026-07-22/23 (ADR 0007): refuse-and-report over hard exit.
+  A hard exit leaves the headless display showing a browser connection error
+  that names nothing, and the healthcheck is the only health signal the
+  deployment has. Presentation of the report belongs to the frontend (SRS013).
 ref: ''
 status: proposed
 text: |
-  When boot validation fails, the backend shall serve a static error page in
-  place of the kiosk page, listing each validation error in operator language
-  — what is wrong, where, and what to change — and its healthcheck shall
-  report unhealthy. No configuration or module API shall be served in this
-  state.
+  When boot validation fails, the backend shall serve no configuration and no
+  module API. It shall expose a structured validation report listing every
+  validation error — what is wrong, where, and what to change — and its
+  healthcheck shall report unhealthy.
 verification-method: test

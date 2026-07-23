@@ -1,20 +1,22 @@
 active: false
 derived: false
 header: |
-  Boot validation is fail-fast, with no defaults merge
+  Configuration is validated before it is applied; never partially
 level: 1.5
 links:
 - SYS003: null
 normative: true
 rationale: |
   Partial recovery converts a configuration error into silent degradation —
-  the blank or wrong module the operator cannot diagnose. Refusing outright
-  keeps the failure at the loud, legible boundary SYS003 requires.
+  the blank or wrong module the operator cannot diagnose. Phrased against
+  "apply", not "boot", so a future live-apply path validates the same way
+  without a rewrite (ADR 0007); boot is today's only apply point.
 ref: ''
 status: proposed
 text: |
-  At boot, the backend shall validate the configuration file against the
-  configuration schema. A configuration that fails validation shall not be
-  served in whole or in part: no defaults merged over invalid or missing
-  values, no failing portion dropped, no module subset rendered.
+  A configuration shall be validated against the configuration schema before
+  it is applied. A configuration that fails validation shall not be applied in
+  whole or in part: no defaults merged over invalid or missing values, no
+  failing portion dropped, no module subset rendered. At boot, the backend
+  shall run this validation before serving the configuration.
 verification-method: test

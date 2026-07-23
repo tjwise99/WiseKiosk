@@ -1,0 +1,17 @@
+active: false
+derived: false
+header: |
+  Pending: validation-report render test
+level: 1.13
+links:
+- SRS013: null
+normative: true
+rationale: ''
+ref: ''
+status: proposed
+text: |
+  Pending: render test asserting the page shell renders an operator-language
+  error state from a validation-report payload, without a valid configuration
+  loaded. Lands with the frontend skeleton (#10); activated and given a
+  references entry then.
+verification-method: test
