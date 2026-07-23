@@ -7,6 +7,8 @@ on:
   push:
     branches: [main]
   pull_request:
+    # edited: the process gate validates the PR title, so title fixes must re-run it
+    types: [opened, edited, synchronize, reopened]
 
 permissions:
   contents: read
