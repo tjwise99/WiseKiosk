@@ -46,9 +46,10 @@ This tier exists specifically to make that impossible.
 
 ## Standing obligations
 
-Gate on these — they name what must be proven. Not on a coverage number. Each is also carried as an
-identified requirement in the [Doorstop tree](requirements/README.md), so the obligation and its
-verification item are traceable and CI-checked, not only prose here.
+Gate on these — they name what must be proven. Not on a coverage number. Each obligation is carried
+as an identified requirement in the [Doorstop tree](requirements/README.md) as the requirements
+rewrite reaches its domain, so obligation and verification item are traceable and CI-checked, not
+only prose here.
 
 - **Every value crossing the frontend/backend boundary is generated from one definition** (see above).
 - **Every module supplies unit tests for its shaping library and a render test for its component.**

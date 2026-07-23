@@ -93,7 +93,7 @@ this site and deploys it to GitHub Pages on push to `main`. It runs the same bui
 `checks.yml` stays read-only (ADR 0004).
 
 No document in this repository references the deployed site's URL: the repo stays self-contained
-(`SYS001`) and loses nothing if Pages disappears.
+(`SYS012`) and loses nothing if Pages disappears.
 
 ## What this silo deliberately does not do
 

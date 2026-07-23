@@ -76,6 +76,11 @@ activated in the same change that writes its first child. Elsewhere `active: fal
 retirement (ADR 0005); an item carrying a pending note is awaiting decomposition or its verifying
 artifact, not retired.
 
+**Activation is a review act.** Doorstop skips inactive items entirely, so a `reviewed` stamp on a
+pending item carries no authority and edits to pending items are invisible to the gate. The fence
+lands at activation: the change that activates an item re-reads it in full and stamps its review
+(`doorstop review <UID>`) then — never before, never scripted.
+
 ## Running the gate
 
 Requires a local venv — siloed here beside the requirements it serves — with the pinned tool
