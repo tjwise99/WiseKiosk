@@ -1,10 +1,10 @@
-active: false
+active: true
 derived: false
 header: |
   Page renders a legible error state for every configuration failure class
 level: 1.13
 links:
-- SYS003: null
+- SYS003: aSQQyqh7BYee_G_L0dq4pvHc6YNknfsElUx7DwetxA0=
 normative: true
 rationale: |
   ADR 0007: the page shell runs validation itself and owns the presentation of
@@ -14,7 +14,8 @@ rationale: |
   configuration applied" so a future live-apply path keeps the freedom to hold
   last-good on a bad reload.
 ref: ''
-status: proposed
+reviewed: vu5dkEyOAEF93MseegHQAdGzFyTWH7l6X7encRskvZo=
+status: accepted
 text: |
   When no valid configuration has been applied — the configuration file
   absent, unfetchable, unparseable, or failing schema validation — the display

@@ -1,4 +1,4 @@
-active: false
+active: true
 derived: false
 header: |
   Every offered configuration key is operator-tunable
@@ -10,7 +10,8 @@ rationale: |
   an address that must always hold one value, keys that are never read. If
   turning it breaks the deployment, it is a constant, not a key.
 ref: ''
-status: proposed
+reviewed: lWhR4w-T1Vt_s76tWJ38otpQYsRApntSr193B8QF8WA=
+status: accepted
 text: |
   Every key offered by the configuration format shall be operator-tunable:
   setting it to any schema-valid value shall produce its documented effect

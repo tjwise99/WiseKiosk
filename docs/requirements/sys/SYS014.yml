@@ -1,4 +1,4 @@
-active: false
+active: true
 derived: false
 header: |
   One machine-readable configuration schema
@@ -11,7 +11,8 @@ rationale: |
   and the divergence surfaces as a desk validator that accepts what the page
   rejects — a defect class eliminated by construction, not by review.
 ref: ''
-status: proposed
+reviewed: -TQZS24GIMnd2tSwd5DHbkufzhlLs36z6XeYGabdiYA=
+status: accepted
 text: |
   The configuration format shall be defined by exactly one machine-readable
   schema. Page-load (apply-time) validation, the standalone desk validator,

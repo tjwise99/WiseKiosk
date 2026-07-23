@@ -1,4 +1,4 @@
-active: false
+active: true
 derived: false
 header: |
   Configuration validatable before deployment
@@ -11,7 +11,7 @@ rationale: |
   a non-technical operator.
 ref: ''
 reviewed: 8RJKPJuyxrABEtVqJ3Ox7TsL7dvxBWe_ZIVSJ0sB44I=
-status: proposed
+status: accepted
 text: |
   It shall be possible to validate a configuration before deployment, without
   starting the system.

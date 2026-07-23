@@ -1,17 +1,18 @@
-active: false
+active: true
 derived: false
 header: |
   One validation implementation
 level: 1.14
 links:
-- SYS014: null
+- SYS014: -TQZS24GIMnd2tSwd5DHbkufzhlLs36z6XeYGabdiYA=
 normative: true
 rationale: |
   A second engine enforces the schema slightly differently, and the divergence
   surfaces as a desk validator that accepts what the page rejects — the defect
   class the single-definition rule exists to kill (ADR 0007).
 ref: ''
-status: proposed
+reviewed: U2DnUKu3-wh_GQq3ZeLCwEsQVljO-2fiRFG929cpC1k=
+status: accepted
 text: |
   Page-load validation and the standalone desk validator shall execute the
   same validation implementation; the configuration schema's rules shall not

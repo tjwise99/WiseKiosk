@@ -1,14 +1,15 @@
-active: false
+active: true
 derived: false
 header: |
   Standalone validator: operator-language errors, non-zero exit
 level: 1.8
 links:
-- SYS004: null
+- SYS004: 8RJKPJuyxrABEtVqJ3Ox7TsL7dvxBWe_ZIVSJ0sB44I=
 normative: true
 rationale: ''
 ref: ''
-status: proposed
+reviewed: CcfkNIYq3vmj96PQcmhNiW0zDePuGUCrbGXOQfJ21cQ=
+status: accepted
 text: |
   A standalone validator shall check a configuration file against the
   configuration schema without starting the application. It shall report every

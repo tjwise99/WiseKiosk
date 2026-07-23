@@ -1,10 +1,10 @@
-active: false
+active: true
 derived: false
 header: |
   A configuration change applies no later than the next page load
 level: 1.12
 links:
-- SYS002: null
+- SYS002: v5uk4LOys3WeZHAHYahYSDTg7TYE1cpnhE2hy-nvD_w=
 normative: true
 rationale: |
   Owner decision 2026-07-23 (ADR 0007): page load is the guaranteed floor,
@@ -16,7 +16,8 @@ rationale: |
   header on the config path — is exactly the config-aware code path SRS011
   forbids.
 ref: ''
-status: proposed
+reviewed: gC0kYOMQNP7MR3qKfcAOEkwl7f_ZH8jNnFtXq6hO0HE=
+status: accepted
 text: |
   A modified configuration shall take effect no later than the next load of
   the display page; no rebuild or redeployment shall be required to apply a

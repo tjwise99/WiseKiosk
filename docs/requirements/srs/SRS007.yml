@@ -1,17 +1,18 @@
-active: false
+active: true
 derived: false
 header: |
   Unknown configuration keys are rejected
 level: 1.7
 links:
-- SYS003: null
+- SYS003: aSQQyqh7BYee_G_L0dq4pvHc6YNknfsElUx7DwetxA0=
 normative: true
 rationale: |
   Owner decision 2026-07-22: strict rejection. A typo'd key ignored by a
   lenient schema is silently inert — the operator set it, nothing happened,
   and nothing said why.
 ref: ''
-status: proposed
+reviewed: bJl2yBm4kIoKn-Hemyc0-dGrWhDGgcO_EZ9fhvISqno=
+status: accepted
 text: |
   Configuration validation shall reject any key not defined by the
   configuration schema, identifying the unrecognized key by name and location.
