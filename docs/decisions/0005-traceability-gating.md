@@ -12,7 +12,7 @@ but nothing checks the reverse arrow: that work entering the repo points back in
 project ethos is that no work exists without a requirement authorizing it, and an ethos nothing
 enforces decays silently. Two constraints shaped the answer: all trace information must live in
 code, where automation can check it and the docs site can render it (never in out-of-band metadata);
-and [`../FOUNDATIONS.md`](../FOUNDATIONS.md) is scheduled to dissolve into hard requirements under
+and `FOUNDATIONS.md` is scheduled to dissolve into hard requirements under
 #18, so the model must stand without a prose document as its axiom.
 
 ## Decision
