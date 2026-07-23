@@ -1,4 +1,4 @@
-if y# 0004 — Build the documentation site with Sphinx, MyST, and sphinx-needs
+# 0004 — Build the documentation site with Sphinx, MyST, and sphinx-needs
 
 **Status:** accepted
 **Decided:** 2026-07-22 (issue #21)
