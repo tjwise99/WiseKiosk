@@ -1,0 +1,21 @@
+active: true
+derived: false
+header: |
+  Configuration is delivered to the page unmodified
+level: 1.9
+links:
+- SYS014: -TQZS24GIMnd2tSwd5DHbkufzhlLs36z6XeYGabdiYA=
+normative: true
+rationale: |
+  The configuration is a static file the page fetches; no component parses or
+  rewrites it in transit (ADR 0007). Any rewrite would be a second definition
+  of the configuration — what the page validates and renders would no longer
+  be what the operator authored or what the desk validator checked.
+ref: ''
+reviewed: RwW3MbqLLk7uTy-ITIKDXgjAQKhHsU2rZCp18-r0dVg=
+status: accepted
+text: |
+  The configuration shall be delivered to the display page byte-for-byte as
+  authored on the deploy host. No component shall rewrite, reorder, augment,
+  or default it in transit.
+verification-method: test

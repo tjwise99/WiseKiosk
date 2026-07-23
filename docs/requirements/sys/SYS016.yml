@@ -1,0 +1,20 @@
+active: true
+derived: false
+header: |
+  Every offered configuration key is operator-tunable
+level: 1.16
+links: []
+normative: true
+rationale: |
+  FOUNDATIONS §5 forbidden row: a port that breaks the healthcheck if changed,
+  an address that must always hold one value, keys that are never read. If
+  turning it breaks the deployment, it is a constant, not a key.
+ref: ''
+reviewed: lWhR4w-T1Vt_s76tWJ38otpQYsRApntSr193B8QF8WA=
+status: accepted
+text: |
+  Every key offered by the configuration format shall be operator-tunable:
+  setting it to any schema-valid value shall produce its documented effect
+  without breaking the deployment. A value that cannot be safely changed shall
+  be a constant in code, not a configuration key.
+verification-method: analysis

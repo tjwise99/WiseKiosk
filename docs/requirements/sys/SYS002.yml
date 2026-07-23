@@ -1,4 +1,4 @@
-active: false
+active: true
 derived: false
 header: |
   Operable by a non-author operator
@@ -12,7 +12,7 @@ rationale: |
   load-bearing premise in the product.
 ref: ''
 reviewed: v5uk4LOys3WeZHAHYahYSDTg7TYE1cpnhE2hy-nvD_w=
-status: proposed
+status: accepted
 text: |
   The system shall be deployable, operable, and diagnosable by a non-technical
   operator who is not the system's author.

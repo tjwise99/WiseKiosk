@@ -1,4 +1,4 @@
-active: false
+active: true
 derived: false
 header: |
   Invalid configuration fails loudly and legibly
@@ -11,7 +11,7 @@ rationale: |
   plain-language, and actionable by a non-technical operator.
 ref: ''
 reviewed: aSQQyqh7BYee_G_L0dq4pvHc6YNknfsElUx7DwetxA0=
-status: proposed
+status: accepted
 text: |
   An invalid configuration shall produce a loud, legible failure that states
   what is wrong and what to change. It shall never produce a blank screen or

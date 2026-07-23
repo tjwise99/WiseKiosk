@@ -1,0 +1,22 @@
+active: true
+derived: false
+header: |
+  One machine-readable configuration schema
+level: 1.14
+links: []
+normative: true
+rationale: |
+  The same single-definition rule the boundary contract follows (FOUNDATIONS
+  §8). A second declaration of the configuration shape drifts from the first,
+  and the divergence surfaces as a desk validator that accepts what the page
+  rejects — a defect class eliminated by construction, not by review.
+ref: ''
+reviewed: -TQZS24GIMnd2tSwd5DHbkufzhlLs36z6XeYGabdiYA=
+status: accepted
+text: |
+  The configuration format shall be defined by exactly one machine-readable
+  schema. Page-load (apply-time) validation, the standalone desk validator,
+  the configuration generator, and any future configuration editor shall all
+  consume that single definition; the configuration shape shall not be
+  declared a second time anywhere in the system.
+verification-method: inspection

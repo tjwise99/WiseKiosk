@@ -1,0 +1,16 @@
+active: false
+derived: false
+header: |
+  Pending: page-load-applies-config test
+level: 1.12
+links:
+- SRS012: null
+normative: true
+rationale: ''
+ref: ''
+status: proposed
+text: |
+  Pending: integration test asserting a configuration edit takes effect on the
+  next display page load, with no rebuild or redeployment. Lands with the
+  frontend skeleton (#10); activated and given a references entry then.
+verification-method: test

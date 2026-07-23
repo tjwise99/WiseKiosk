@@ -1,0 +1,17 @@
+active: false
+derived: false
+header: |
+  Pending: invalid-config-not-applied test
+level: 1.5
+links:
+- SRS005: null
+normative: true
+rationale: ''
+ref: ''
+status: proposed
+text: |
+  Pending: render test asserting an invalid configuration is never applied —
+  no module rendered, no defaults merged, no failing portion dropped. Lands
+  with the frontend skeleton (#10); activated and given a references entry
+  then.
+verification-method: test

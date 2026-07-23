@@ -1,0 +1,17 @@
+active: true
+derived: false
+header: |
+  Generator output passes validation unedited
+level: '1.10'
+links:
+- SYS015: 4FKE5yFnsflNCWXDVvbO6GnATtXOmw9A6WD-9O-3GIE=
+normative: true
+rationale: ''
+ref: ''
+reviewed: uD1BAEmNQTFAXnUg11ItB5NP_bdgBVU88R-DNWLCGOg=
+status: accepted
+text: |
+  The configuration generator shall produce, from a template or from prompted
+  input, a configuration that the standalone validator accepts without manual
+  edits.
+verification-method: test

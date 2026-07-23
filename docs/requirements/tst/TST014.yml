@@ -1,0 +1,16 @@
+active: false
+derived: false
+header: |
+  Pending: one-validation-implementation inspection
+level: 1.14
+links:
+- SRS014: null
+normative: true
+rationale: ''
+ref: ''
+status: proposed
+text: |
+  Pending: inspection check that page-load validation and the standalone desk
+  validator wrap the same validation library; form (repo check or review
+  checklist) decided when the validator lands.
+verification-method: inspection

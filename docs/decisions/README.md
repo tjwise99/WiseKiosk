@@ -17,3 +17,4 @@ a **Decided** date — when the choice was *taken*, not when the work merged.
 | [0004](0004-docs-site-sphinx-needs.md) | 2026-07-22 | Documentation site built with Sphinx + MyST + sphinx-needs; traceability rendered by sphinx-needs, deployed to GitHub Pages |
 | [0005](0005-traceability-gating.md) | 2026-07-22 | All work traces to the requirements tree via four in-repo gates; per-test attribution, derived verification status, tree as backlog |
 | [0006](0006-process-gates.md) | 2026-07-22 | Process gates: branches named type_number-snake_name, typed by ticket template and linked to an open issue; Conventional-Commit PR titles |
+| [0007](0007-config-validation-allocation.md) | 2026-07-23 | Config validation is frontend-owned: one TS engine runs in the page and as the desk CLI; the backend is config-blind |

@@ -1,0 +1,22 @@
+active: true
+derived: false
+header: |
+  The backend is config-blind
+level: 1.11
+links:
+- SYS016: lWhR4w-T1Vt_s76tWJ38otpQYsRApntSr193B8QF8WA=
+normative: true
+rationale: |
+  ADR 0007: the backend has no code path that knows the display configuration
+  exists — no read, no parse, no endpoint. Operational constants are §5's
+  answer to non-tunable keys; secret delivery via the environment is not
+  configuration and is specified in the secrets domain (#35).
+ref: ''
+reviewed: cZO9QbqDqaQqku8rQG4yTlxJmp7tUldwBDVCVuUkeAc=
+status: accepted
+text: |
+  The backend shall have no configuration concept: no configuration file of
+  its own, no code path that reads or parses the display configuration, and no
+  tunable keys. Operational constants such as bind address and port shall be
+  fixed in code.
+verification-method: inspection

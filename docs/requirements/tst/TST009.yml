@@ -1,0 +1,17 @@
+active: false
+derived: false
+header: |
+  Pending: unmodified config delivery test
+level: 1.9
+links:
+- SRS009: null
+normative: true
+rationale: ''
+ref: ''
+status: proposed
+text: |
+  Pending: integration test asserting the configuration fetched from the
+  serving origin is byte-for-byte identical to the authored file on the deploy
+  host. Lands with the backend skeleton (#9); activated and given a references
+  entry then.
+verification-method: test
