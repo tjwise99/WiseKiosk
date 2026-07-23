@@ -1,0 +1,22 @@
+active: true
+derived: false
+header: |
+  Workflows hold no credentials; Contract tier excluded from CI
+level: 1.19
+links:
+- SYS019: Q7m5vTXwUB3LSQgXTYNDuBlDeiAGcEQcOXgPn7pKpp0=
+normative: true
+rationale: |
+  SYS019 decomposed to the repository surface that could violate it: the
+  workflow files are where a credential secret would be introduced and
+  where a credential-dependent job would be wired. CI wiring lives under
+  .github/workflows/, which Doorstop cannot reference (ADR 0002), so the
+  verifying inspection cites it here rather than in a references entry.
+ref: ''
+reviewed: Y0aWhILLbARkJLoFbEdFMBqBV0nMLz5kgNPqYQwDmno=
+status: accepted
+text: |
+  No CI workflow shall store or reference an API key or other upstream
+  credential, and no CI job shall run a check that requires one.
+  Contract-tier checks (TESTING.md) shall be wired to run outside CI.
+verification-method: inspection

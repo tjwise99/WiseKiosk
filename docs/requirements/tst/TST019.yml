@@ -1,0 +1,17 @@
+active: false
+derived: false
+header: |
+  Pending: workflow credential inspection
+level: 1.19
+links:
+- SRS019: null
+normative: true
+rationale: ''
+ref: ''
+status: proposed
+text: |
+  Pending: inspection that no workflow under .github/workflows/ stores or
+  references an API key or upstream credential and no CI job runs a
+  Contract-tier check; form (repo check or review checklist) decided in
+  the security & CI gates round (#40). Activated then.
+verification-method: inspection

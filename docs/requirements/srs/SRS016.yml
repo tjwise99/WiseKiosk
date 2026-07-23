@@ -1,0 +1,28 @@
+active: true
+derived: false
+header: |
+  Unresolvable secret surfaces as that source's upstream failure
+level: 1.16
+links:
+- SYS005: ZL5TKFyrHPDZmdc6CDmpAIXf-LWQrkNsQgQ4L5IlYhY=
+- SYS018: XbqkgZn-AXeUwSMDNSKdZOY8fp57KO6Xe2SeCuCGgVM=
+normative: true
+rationale: |
+  The backend is config-blind (ADR 0007) and cannot know which sources a
+  deployment uses, so a boot-time secrets gate would brick deployments
+  that use a subset of sources. A per-source failure at the kiosk names
+  what is missing and leaves the rest of the display running (SYS005) —
+  the debuggable outcome chosen on #35 over failing to boot.
+ref: ''
+reviewed: HA_4i5wkWA_3U8HHeynLHFOGxjnVOr7Xmziiy6BEpFI=
+status: accepted
+text: |
+  The backend shall resolve a secret when handling a request for the
+  source that needs it, not at boot; the backend shall boot successfully
+  regardless of which secrets are deliverable. When a source's secret is
+  unresolvable — <NAME>_FILE unset, or the file missing or unreadable —
+  requests to that source's route shall fail with the same legible
+  per-source failure treatment as any other upstream failure, identifying
+  the unresolvable secret by name, while all other sources remain
+  unaffected.
+verification-method: test

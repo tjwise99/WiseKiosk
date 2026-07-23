@@ -1,0 +1,25 @@
+active: true
+derived: false
+header: |
+  Secret resolution: file at <NAME>_FILE, trailing newlines stripped
+level: 1.15
+links:
+- SYS018: XbqkgZn-AXeUwSMDNSKdZOY8fp57KO6Xe2SeCuCGgVM=
+normative: true
+rationale: |
+  One delivery path keeps delivery unambiguous — no shadowing between a
+  file and an environment variable — and a file path is what container
+  platforms and secrets managers already provide (decision on #35,
+  superseding the FOUNDATIONS §3 env-var-fallback sketch). Trailing-
+  newline stripping removes the `echo > file` footgun that presents as
+  rejected credentials while the file looks correct on inspection.
+ref: ''
+reviewed: -oqyvQaY28qWG16152KY6nqVpYXcfrIZ9BiBe5dyw_A=
+status: accepted
+text: |
+  The backend shall resolve a secret named NAME by reading the file at the
+  path given by the environment variable <NAME>_FILE. The secret value
+  shall be the file content with trailing newline characters stripped. No
+  other delivery path shall exist; in particular, the backend shall not
+  read a secret from a bare <NAME> environment variable.
+verification-method: test

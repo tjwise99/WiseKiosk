@@ -1,0 +1,23 @@
+active: true
+derived: false
+header: |
+  No secret value in any backend output
+level: 1.18
+links:
+- SYS017: X-_LkUxibUnQ62vebwuFwC3sK95PhxhHBtd8FMrG_0M=
+normative: true
+rationale: |
+  The falsifiable edge of by-construction confinement (SYS017): a canary
+  secret planted through the delivery path and asserted absent from every
+  response and log line turns the structural claim into a failing test.
+  Upstream request URLs and echoed upstream errors are the classic leak
+  paths this guards.
+ref: ''
+reviewed: 34djr3FBRGoiPHaSREl3YCwvhAAg3qiMAG8FO5gPk1Y=
+status: accepted
+text: |
+  No secret value shall appear in any HTTP response body or header, nor
+  in any log output, produced by the backend. Where backend output must
+  refer to a secret — as in the failure treatment of SRS016 — it shall do
+  so by the secret's name, never its value.
+verification-method: test
