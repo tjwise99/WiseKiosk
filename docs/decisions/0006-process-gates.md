@@ -48,7 +48,10 @@ entire gate path is plain sh + curl + jq — no toolchain:
   record nothing against a non-default base, so a PR into one carries its link via the manual
   Development-field link instead. The close semantics compose correctly — a linked ticket closes
   only when the PR merges into the default branch, so an epic-internal merge leaves its ticket
-  open until the work reaches the mainline.
+  open until the work reaches the mainline. Write paths are asymmetric and closed: no public API,
+  GraphQL mutation, or CLI writes the manual link (schema introspected, 254 mutations) — the body
+  keyword is the only scriptable writer, and only against the default base; the manual link is
+  UI-only and confirmed live to satisfy the gate.
 - **This is a process/scheduling control, explicitly not a traceability channel.** Requirements
   trace stays diff-derived per [ADR 0005](0005-traceability-gating.md); the branch↔issue link
   schedules work, it never evidences it.

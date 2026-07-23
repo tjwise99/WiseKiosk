@@ -111,9 +111,10 @@ are the worked template — documentation is self-contained
 ([`SRS005`](requirements/srs/SRS005.yml)), and secrets never leaking by construction
 ([`SRS006`](requirements/srs/SRS006.yml)) — and the remaining rows below join them as their code lands.
 
-The posture **already enforced** (branch protection with required review + checks, secret scanning +
-push protection, SHA-pinned Actions, least-privilege `GITHUB_TOKEN`, secret-free CI, Dependabot for
-Actions) lives in `.github/` and the repo's branch-protection settings, not in this backlog.
+The posture **already enforced** (branch protection: all five checks required, strict, admins
+bound — review is the gates, mechanized; secret scanning + push protection, SHA-pinned Actions,
+least-privilege `GITHUB_TOKEN`, no custom credentials in CI, Dependabot for Actions) lives in
+`.github/` and the repo's branch-protection settings, not in this backlog.
 
 | Control | Applies once | Verified by |
 |---|---|---|
