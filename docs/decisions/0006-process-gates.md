@@ -28,6 +28,8 @@ mirrored locally by `just check-branch` and the advisory hooks `just install-hoo
    `type(scope)?!?: subject` with `type` one of `feat`, `fix`, `docs`, `style`, `refactor`, `perf`,
    `test`, `build`, `ci`, `chore`, `revert`. The repo squash-merges, so the title is the commit
    that reaches `main`.
+4. **Recorded PR↔ticket linkage.** Once an open PR targets the default branch, GitHub's recorded
+   closing references for that PR (`closingIssuesReferences`) must include the branch's issue.
 
 - **The branch types are exactly the issue-template set**, so branch type and ticket template
   cannot drift: a `bug_…` branch links a bug-report ticket, a `design_…` branch a design-decision
@@ -35,6 +37,12 @@ mirrored locally by `just check-branch` and the advisory hooks `just install-hoo
 - **CI gates only what survives the squash.** Branch commit messages are discarded at merge; the
   same validator runs locally as an advisory `commit-msg` hook, additionally passing
   `fixup!`/`squash!`-prefixed and merge messages, which never reach `main`.
+- **Gate 4 constrains GitHub's recorded state, not prose.** The closing reference is satisfiable
+  by a body keyword (`Closes #N`) or by manually linking the issue in the PR's Development section
+  — either way the platform records it, and the gate checks the record pre-merge as a
+  required-check constraint. PRs whose base is not the default branch are exempt: observed live,
+  GitHub records no closing references against a non-default base, so there is nothing to gate
+  until the PR is retargeted.
 - **This is a process/scheduling control, explicitly not a traceability channel.** Requirements
   trace stays diff-derived per [ADR 0005](0005-traceability-gating.md); the branch↔issue link
   schedules work, it never evidences it.
@@ -52,10 +60,15 @@ mirrored locally by `just check-branch` and the advisory hooks `just install-hoo
   branch's type names the template its ticket was opened from.
 - **Shape-only check without resolving the issue.** Rejected: a typo'd number passes, and the link
   the gate exists to prove goes unchecked.
+- **Regex over the PR body for a closing keyword.** Rejected: prose can claim a link the platform
+  never recorded — observed live on a stacked PR carrying the keyword with an empty
+  `closingIssuesReferences`. The gate reads the recorded state, not the text.
+- **CI creating the linkage itself via a write-scoped token.** Rejected: gates verify, they do not
+  mutate, and CI stays read-only.
 
 ## Consequences
 
 - PRs from nonconforming branches cannot merge once the check is required.
-- In-flight legacy branches (`feat/21-docs-site`, `feat/25-adr-0005-traceability`) must be renamed
-  and their tickets labeled before the check is made required.
+- The in-flight legacy branch (`feat/21-docs-site`) must be renamed and its ticket labeled before
+  the check is made required.
 - Dependabot is exempt from branch shape; its PR titles already conform (`build(deps): …`).

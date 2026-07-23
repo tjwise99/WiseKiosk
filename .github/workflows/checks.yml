@@ -89,10 +89,14 @@ jobs:
     # reaches main under squash-merge — is a Conventional Commit. Byte-identical
     # to the local recipes: `just check-branch`, and the same validator the
     # .githooks/commit-msg hook runs (here with --pr-title, dropping the
-    # fixup!/squash!/merge allowances that never reach main). head_ref and the
-    # PR title are attacker-controlled, so they enter run steps only via env
-    # mapping, never inline. GITHUB_TOKEN is the GitHub-provided read-only
-    # token (API rate limits), not a custom credential.
+    # fixup!/squash!/merge allowances that never reach main). The branch check
+    # also gates the recorded PR↔ticket linkage: closingIssuesReferences must
+    # name the branch's issue — GitHub records these only for PRs whose base is
+    # the default branch, so non-default bases are exempt until retarget.
+    # head_ref and the PR title are attacker-controlled, so they enter run
+    # steps only via env mapping, never inline. GITHUB_TOKEN is the
+    # GitHub-provided read-only token (API rate limits, GraphQL read), not a
+    # custom credential.
     if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     steps:
@@ -105,6 +109,7 @@ jobs:
       - name: Branch named type_number-snake_name and linked to an open, type-labeled issue
         env:
           HEAD_REF: ${{ github.head_ref }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: node scripts/check-branch.mjs "$HEAD_REF"
 

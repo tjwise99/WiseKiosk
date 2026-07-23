@@ -45,6 +45,8 @@ Enforced by the `process` CI check ([ADR 0006](docs/decisions/0006-process-gates
 - **PR titles are Conventional Commits** (`feat: …`, `fix(scope): …`) — the repo squash-merges, so
   the title becomes the commit on `main`. Branch commit messages are advised on locally by the
   `commit-msg` hook but not gated in CI.
+- **The PR must be linked to its ticket** — add `Closes #N` to the body or use the Development
+  section; the CI gate checks GitHub's recorded linkage on PRs into the default branch.
 
 ## Getting a change merged
 
