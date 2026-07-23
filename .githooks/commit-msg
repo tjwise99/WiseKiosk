@@ -1,2 +1,8 @@
 #!/bin/sh
-node scripts/check-commit-msg.mjs "$1"
+# Advisory: CI's required `process` check is the binding gate. Without node the
+# hook cannot advise, so it warns and passes rather than blocking the commit.
+if ! command -v node >/dev/null 2>&1; then
+    echo "commit-msg hook: node not found; skipping local check (CI still gates)." >&2
+    exit 0
+fi
+exec node scripts/check-commit-msg.mjs "$1"

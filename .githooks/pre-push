@@ -1,2 +1,8 @@
 #!/bin/sh
-node scripts/check-branch.mjs
+# Advisory: CI's required `process` check is the binding gate. Without node the
+# hook cannot advise, so it warns and passes rather than blocking the push.
+if ! command -v node >/dev/null 2>&1; then
+    echo "pre-push hook: node not found; skipping local check (CI still gates)." >&2
+    exit 0
+fi
+exec node scripts/check-branch.mjs
