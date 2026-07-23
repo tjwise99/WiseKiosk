@@ -12,7 +12,8 @@ status: proposed
 text: |
   Pending: proxy test asserting the backend boots with no secrets
   delivered, and a request to a source whose secret is unresolvable
-  (<NAME>_FILE unset; file missing; file unreadable) returns that
+  (<NAME>_FILE unset; file missing; file unreadable; file empty after
+  trailing-newline stripping) returns that
   source's legible upstream-failure response naming the secret, while
   other sources still serve. Lands with the backend skeleton (#9);
   activated and given a references entry then.
