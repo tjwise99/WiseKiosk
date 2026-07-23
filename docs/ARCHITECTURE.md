@@ -104,12 +104,8 @@ with no test that proves it *functions* is the "security by vigilance" this proj
 
 That proto-traceability is now mechanised in the [Doorstop requirements tree](requirements/README.md):
 a row here graduates into an `SRS` "shall" statement and a `TST` verification item whose `references`
-point at the proving artifact, gated by `just check-reqs`. The load-bearing invariants already seeded
-are the worked template — documentation is self-contained
-([`SYS001`](requirements/sys/SYS001.yml) → [`SRS001`](requirements/srs/SRS001.yml) →
-[`TST001`](requirements/tst/TST001.yml)), boundary values generated from one schema
-([`SRS005`](requirements/srs/SRS005.yml)), and secrets never leaking by construction
-([`SRS006`](requirements/srs/SRS006.yml)) — and the remaining rows below join them as their code lands.
+point at the proving artifact, gated by `just check-reqs`. The rows below are codified in the tree
+by the requirements rewrite and join it as their code lands.
 
 The posture **already enforced** (branch protection: all five checks required, strict, admins
 bound — review is the gates, mechanized; secret scanning + push protection, SHA-pinned Actions,

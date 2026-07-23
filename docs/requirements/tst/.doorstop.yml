@@ -4,3 +4,11 @@ settings:
   parent: SRS
   prefix: TST
   sep: ''
+attributes:
+  defaults:
+    status: proposed
+    verification-method: ''
+    rationale: ''
+  reviewed:
+  - rationale
+  - verification-method

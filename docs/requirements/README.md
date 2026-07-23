@@ -23,10 +23,24 @@ Each item is one YAML file named for its ID (`SYS001.yml`, `SRS001.yml`, `TST001
 prefix plus a zero-padded 3-digit number. **An ID is permanent** — once assigned it is never reused or
 renumbered, so external references to it stay valid.
 
-The seeded chains trace load-bearing invariants from
-[`../FOUNDATIONS.md`](../FOUNDATIONS.md) and [`../TESTING.md`](../TESTING.md). The complete worked
-example is the "docs are standalone" chain: [`SYS001`](sys/SYS001.yml) → [`SRS001`](srs/SRS001.yml) →
-[`TST001`](tst/TST001.yml), whose verification (`scripts/check-links.mjs`) exists and passes today.
+> **One-time ID reset.** The tree seeded alongside the tooling (`SYS001`–`006` and children) was
+> placeholder content and was cleared by the requirements rewrite; IDs were re-established from
+> `001` with new meanings. Permanence applies from that reset forward.
+
+## Item attributes
+
+Beyond Doorstop's native fields, every item carries three stored attributes
+([ADR 0005](../decisions/0005-traceability-gating.md)):
+
+| Attribute | Values | Meaning |
+|---|---|---|
+| `status` | `proposed` \| `accepted` | Human review state. `proposed` items live on `main` — the tree is the backlog — but implementing against one is building on unbaselined spec |
+| `verification-method` | `test` \| `inspection` \| `analysis` \| `demonstration` | How the requirement is verified; gates route on it |
+| `rationale` | free text | Why the requirement exists. **Required at the `SYS` tier**, optional below |
+
+`verification-method` and `rationale` are fenced by the review fingerprint (editing them re-flags
+review); `status` is not, because a state transition is not a content change. Verified/implemented
+is **derived by tooling from evidence, never stored** (ADR 0005).
 
 ## The V&V model: Doorstop proves linkage, the test suite proves correctness
 
@@ -41,9 +55,8 @@ complete and current:
   until re-reviewed. A silent divergence is impossible.
 
 What Doorstop does **not** do is prove the referenced check actually passes. That is the job of
-[`just verify`](../../justfile) and the CI suite. Doorstop proves `TST001` *points at*
-[`scripts/check-links.mjs`](../../scripts/check-links.mjs); `just check-links` proves that script
-*passes*. Both are required.
+[`just verify`](../../justfile) and the CI suite. Doorstop proves a `TST` item *points at* a real
+verifying file; the corresponding `just` gate proves that check *passes*. Both are required.
 
 ### Pending verifications
 

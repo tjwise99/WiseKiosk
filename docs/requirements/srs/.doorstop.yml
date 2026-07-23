@@ -4,3 +4,11 @@ settings:
   parent: SYS
   prefix: SRS
   sep: ''
+attributes:
+  defaults:
+    status: proposed
+    verification-method: ''
+    rationale: ''
+  reviewed:
+  - rationale
+  - verification-method

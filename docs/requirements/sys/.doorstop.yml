@@ -3,3 +3,11 @@ settings:
   itemformat: yaml
   prefix: SYS
   sep: ''
+attributes:
+  defaults:
+    status: proposed
+    verification-method: ''
+    rationale: ''
+  reviewed:
+  - rationale
+  - verification-method
