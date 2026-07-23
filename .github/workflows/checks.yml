@@ -86,15 +86,16 @@ jobs:
   process:
     # Process gates (ADR 0006): the branch is named type_number-snake_name and
     # links an open issue labeled with its type; the PR title — the commit that
-    # reaches main under squash-merge — is a Conventional Commit. Byte-identical
-    # to the local recipes: `just check-branch`, and the same single-definition
-    # patterns (scripts/*.regex) the sh hooks grep (here with --pr-title,
-    # dropping the fixup!/squash!/merge allowances that never reach main). The branch check
-    # also gates the recorded PR↔ticket linkage: closingIssuesReferences must
-    # name the branch's issue — GitHub records these only for PRs whose base is
-    # the default branch, so non-default bases are exempt until retarget.
-    # head_ref and the PR title are attacker-controlled, so they enter run
-    # steps only via env mapping, never inline. GITHUB_TOKEN is the
+    # reaches main under squash-merge — is a Conventional Commit. Runs the exact
+    # scripts the local recipes run (`just check-branch`; the commit-msg hook's
+    # validator, here with --pr-title, dropping the fixup!/squash!/merge
+    # allowances that never reach main): plain sh + curl + jq over the
+    # single-definition patterns in scripts/*.regex — no toolchain. The branch
+    # check also gates the recorded PR↔ticket linkage: closingIssuesReferences
+    # must name the branch's issue — GitHub records these only for PRs whose
+    # base is the default branch, so non-default bases are exempt until
+    # retarget. head_ref and the PR title are attacker-controlled, so they
+    # enter run steps only via env mapping, never inline. GITHUB_TOKEN is the
     # GitHub-provided read-only token (API rate limits, GraphQL read), not a
     # custom credential.
     if: github.event_name == 'pull_request'
@@ -102,23 +103,19 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
-      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
-        with:
-          node-version: 24
-
       - name: Branch named type_number-snake_name and linked to an open, type-labeled issue
         env:
           HEAD_REF: ${{ github.head_ref }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: node scripts/check-branch.mjs "$HEAD_REF"
+        run: sh scripts/check-branch.sh "$HEAD_REF"
 
       - name: PR title is a Conventional Commit (the squash-merge commit on main)
         env:
           PR_TITLE: ${{ github.event.pull_request.title }}
         run: |
           printf '%s\n' "$PR_TITLE" > "$RUNNER_TEMP/pr-title"
-          node scripts/check-commit-msg.mjs --pr-title "$RUNNER_TEMP/pr-title"
+          sh scripts/check-commit-msg.sh --pr-title "$RUNNER_TEMP/pr-title"
 
   secret-scan:
     runs-on: ubuntu-latest

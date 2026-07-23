@@ -31,8 +31,9 @@ Current gates (they grow as code lands):
 
 - `just check-links` — every relative link in every tracked Markdown file resolves inside the repo.
 - `just check-eol`   — no tracked text file has CRLF line endings.
-- `just check-branch` — the branch is named `type_number-snake_name` and links an open issue
-  labeled with its type.
+- `just check-branch` — the branch is named `type_number-snake_name`, links an open issue labeled
+  with its type, and its default-base PR records the ticket linkage (plain sh + curl + jq, like
+  the hooks — no toolchain).
 
 ## Tickets, branches, and titles
 

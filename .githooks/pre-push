@@ -2,7 +2,7 @@
 # Advisory fast feedback; the binding gate is CI's required `process` check,
 # which also verifies the linked issue via the API (`just check-branch`).
 # Pattern is defined once in scripts/branch-shape.regex (also read by
-# scripts/check-branch.mjs).
+# scripts/check-branch.sh).
 branch=$(git symbolic-ref --short -q HEAD) || exit 0
 case "$branch" in
     main|dependabot/*) exit 0 ;;

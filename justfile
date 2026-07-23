@@ -25,7 +25,7 @@ check-eol:
 [group('checks')]
 [doc('Branch is named type_number-snake_name, links an open type-labeled issue, and its PR records the ticket linkage')]
 check-branch:
-    node scripts/check-branch.mjs
+    sh scripts/check-branch.sh
 
 [group('setup')]
 [doc('Point git at the repo hooks (.githooks/): advisory commit-msg and pre-push')]

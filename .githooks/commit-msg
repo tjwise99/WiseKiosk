@@ -1,7 +1,7 @@
 #!/bin/sh
 # Advisory fast feedback; the binding gate is CI's required `process` check.
 # Pattern is defined once in scripts/conventional-commit.regex (also read by
-# scripts/check-commit-msg.mjs). fixup!/squash!/merge messages pass: they never
+# scripts/check-commit-msg.sh). fixup!/squash!/merge messages pass: they never
 # survive the squash merge.
 first=$(head -n 1 "$1")
 case "$first" in

@@ -14,8 +14,9 @@ the repo runs.
 
 ## Decision
 
-Three gates, enforced by a `process` CI job on `pull_request` (to become a required check) and
-mirrored locally by `just check-branch` and the advisory hooks `just install-hooks` installs:
+Four gates, enforced by a `process` CI job on `pull_request` (to become a required check) and
+mirrored locally by `just check-branch` and the advisory hooks `just install-hooks` installs. The
+entire gate path is plain sh + curl + jq — no toolchain:
 
 1. **Branch shape.** Branches are named `type_number-snake_name` — `type` one of `task`, `bug`,
    `design`, `module`; `number` a GitHub issue number; `snake_name` lowercase snake_case. The full
@@ -35,10 +36,10 @@ mirrored locally by `just check-branch` and the advisory hooks `just install-hoo
   cannot drift: a `bug_…` branch links a bug-report ticket, a `design_…` branch a design-decision
   ticket, and a new template implies a new branch type in the same change.
 - **CI gates only what survives the squash.** Branch commit messages are discarded at merge; an
-  advisory `commit-msg` hook (plain sh + grep, no toolchain) applies the same pattern locally,
-  additionally passing `fixup!`/`squash!`-prefixed and merge messages, which never reach `main`.
-  Each pattern is defined once (`scripts/*.regex`, valid as both ERE and JS regex) and read by
-  hook and scanner alike — never declared twice.
+  advisory `commit-msg` hook (plain sh + grep) applies the same pattern locally, additionally
+  passing `fixup!`/`squash!`-prefixed and merge messages, which never reach `main`. Each pattern
+  is defined once (`scripts/*.regex`, POSIX ERE) and read by the hooks and the sh gate scripts
+  alike — never declared twice.
 - **Gate 4 constrains GitHub's recorded state, not prose.** The closing reference is satisfiable
   by a body keyword (`Closes #N`) or by manually linking the issue in the PR's Development section
   — either way the platform records it, and the gate checks the record pre-merge as a
@@ -70,7 +71,8 @@ mirrored locally by `just check-branch` and the advisory hooks `just install-hoo
 
 ## Consequences
 
-- PRs from nonconforming branches cannot merge once the check is required.
-- The in-flight legacy branch (`feat/21-docs-site`) must be renamed and its ticket labeled before
-  the check is made required.
+- All five CI checks, `process` included, are required on `main` (strict, admins bound): PRs from
+  nonconforming branches cannot merge.
+- The in-flight legacy branch (`feat/21-docs-site`) is blocked until renamed and its ticket
+  labeled.
 - Dependabot is exempt from branch shape; its PR titles already conform (`build(deps): …`).
