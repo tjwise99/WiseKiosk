@@ -9,7 +9,7 @@ normative: true
 rationale: ''
 ref: ''
 reviewed: XQ7azUihO1wjDZgZoN3fcBgTUn8ppIcCRjrvItHL5Pg=
-status: proposed
+status: accepted
 text: |
   Every relative Markdown link in every tracked file shall resolve to a path
   inside the repository; a link that escapes the repo or points at a missing

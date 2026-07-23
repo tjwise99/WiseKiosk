@@ -12,7 +12,7 @@ rationale: |
   not stale-data display and not a blanked region.
 ref: ''
 reviewed: ZL5TKFyrHPDZmdc6CDmpAIXf-LWQrkNsQgQ4L5IlYhY=
-status: proposed
+status: accepted
 text: |
   When a module's upstream data source fails at runtime (unreachable, rejected
   credentials, timeout, or malformed response), that module's display region

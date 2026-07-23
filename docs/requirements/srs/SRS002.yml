@@ -9,7 +9,7 @@ normative: true
 rationale: ''
 ref: ''
 reviewed: U4OYBHkV7VHkTs40_nfnAWuSoD4yPB_av16WrVG0X6Q=
-status: proposed
+status: accepted
 text: |
   A module whose data request returns an error shall render a plain-language
   error state within its own display region; rendering of all other modules

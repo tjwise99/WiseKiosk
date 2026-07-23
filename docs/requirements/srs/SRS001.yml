@@ -9,7 +9,7 @@ normative: true
 rationale: ''
 ref: ''
 reviewed: MqrSrlPrybMT7vpWwJOItdkv2qnQxybb7GQZffBoAVE=
-status: proposed
+status: accepted
 text: |
   On an upstream request failure (unreachable host, timeout, non-success
   status, or malformed payload), the backend shall return a structured error

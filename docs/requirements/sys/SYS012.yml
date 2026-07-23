@@ -16,7 +16,7 @@ rationale: |
   never to material WiseKiosk requires.
 ref: ''
 reviewed: o3eU6fzYR8y08IYrZ2Az9EjVr2hQ6nERiNbAfhoudtw=
-status: proposed
+status: accepted
 text: |
   Everything required to build, verify, and operate WiseKiosk shall live
   inside this repository. External references may point only at third-party

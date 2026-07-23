@@ -12,7 +12,7 @@ references:
 - path: scripts/check-links.mjs
   type: file
 reviewed: wAB37G2QvHDjxP2gVOHDFhFXa3SKukIPnhq0QG-WoJY=
-status: proposed
+status: accepted
 text: |
   Verified by scripts/check-links.mjs, which walks every tracked Markdown file
   and exits non-zero on the first relative link that escapes the repo or
