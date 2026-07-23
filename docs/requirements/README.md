@@ -128,3 +128,7 @@ Run all commands with the venv (`docs/requirements/.venv/bin/doorstop …`):
 - **Inactive items are not rewritten by Doorstop**, so write their parent links in dict form,
   `- UID: null` (the form Doorstop itself stamps); a plain-string link breaks the docs-site
   needs generator.
+- **Quote two-digit levels** (`level: '1.10'`) — unquoted, YAML parses a float and collapses it
+  to `1.1`.
+- **A document can never be empty** — "no items" is a gate error, so a tree reset must land in
+  the same change as its first new items.
