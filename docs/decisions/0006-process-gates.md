@@ -44,10 +44,11 @@ entire gate path is plain sh + curl + jq — no toolchain:
 - **Gate 4 constrains GitHub's recorded state, not prose.** The record is the PR's Development
   field (`closingIssuesReferences`): link the issue there, or let a body keyword (`Closes #N`)
   write the same record — the gate checks the record pre-merge as a required-check constraint, on
-  every base. Body keywords observably record nothing against a non-default base, so a PR based
-  elsewhere needs the manual Development link; if the platform records nothing even then, that PR
-  cannot pass until it targets the default branch — accepted, since the mainline is where work
-  merges.
+  every base. Integration and epic branches are supported practice: body keywords observably
+  record nothing against a non-default base, so a PR into one carries its link via the manual
+  Development-field link instead. The close semantics compose correctly — a linked ticket closes
+  only when the PR merges into the default branch, so an epic-internal merge leaves its ticket
+  open until the work reaches the mainline.
 - **This is a process/scheduling control, explicitly not a traceability channel.** Requirements
   trace stays diff-derived per [ADR 0005](0005-traceability-gating.md); the branch↔issue link
   schedules work, it never evidences it.

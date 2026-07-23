@@ -108,7 +108,7 @@ fi
 if ! jq -e --argjson n "$number" '.data.repository.pullRequest.closingIssuesReferences.nodes | any(.number == $n)' "$tmp" >/dev/null; then
     hint="link it there (a 'Closes #$number' body keyword writes the same record)"
     if [ "$base_ref" != "$default_branch" ]; then
-        hint="link it there manually — body keywords record nothing against base '$base_ref'; if the platform still records nothing, retarget to '$default_branch'"
+        hint="link it there manually — body keywords record nothing against base '$base_ref'"
     fi
     fail "PR #$pr_number's Development field does not link issue #$number — $hint; the gate reads GitHub's recorded state"
 fi
