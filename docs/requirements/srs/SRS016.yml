@@ -14,7 +14,7 @@ rationale: |
   what is missing and leaves the rest of the display running (SYS005) —
   the debuggable outcome chosen on #35 over failing to boot.
 ref: ''
-reviewed: ue9RsFPWvy9YMitR65eFBJ4l49GgKTmLkzA8AogHRVQ=
+reviewed: 8K2OhDHtk6XcYpDL7kaWcliD0y9XkerrxcKgJDBHb98=
 status: accepted
 text: |
   The backend shall resolve a secret when handling a request for the
