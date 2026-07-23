@@ -120,6 +120,11 @@ Run all commands with the venv (`docs/requirements/.venv/bin/doorstop …`):
   file}`. The path must resolve to a real tracked file. **Doorstop cannot reference a file under a
   dot-directory** (e.g. anything in `.github/`) — see ADR 0002; cite such wiring in the item's `text`
   instead.
-- **After editing a parent,** its children go suspect. Re-read them, then clear:
-  `doorstop review <UID>` (or `doorstop review all`). Reviewing is the human act of re-blessing a
-  downstream item after its parent moved — do not script it blindly.
+- **After editing a parent,** its children go suspect. Re-read each child, then run
+  `doorstop clear <UID>` followed by `doorstop review <UID>` — `clear` updates the stored parent
+  fingerprint in the child's `links:`; `review` alone re-stamps the item but leaves the link
+  suspect. Re-blessing is the human act of re-reading a downstream item after its parent moved —
+  do not script it blindly.
+- **Inactive items are not rewritten by Doorstop**, so write their parent links in dict form,
+  `- UID: null` (the form Doorstop itself stamps); a plain-string link breaks the docs-site
+  needs generator.
