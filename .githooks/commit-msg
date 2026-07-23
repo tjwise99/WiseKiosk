@@ -1,8 +1,13 @@
 #!/bin/sh
-# Advisory: CI's required `process` check is the binding gate. Without node the
-# hook cannot advise, so it warns and passes rather than blocking the commit.
-if ! command -v node >/dev/null 2>&1; then
-    echo "commit-msg hook: node not found; skipping local check (CI still gates)." >&2
-    exit 0
+# Advisory fast feedback; the binding gate is CI's required `process` check.
+# Pattern is defined once in scripts/conventional-commit.regex (also read by
+# scripts/check-commit-msg.mjs). fixup!/squash!/merge messages pass: they never
+# survive the squash merge.
+first=$(head -n 1 "$1")
+case "$first" in
+    fixup!*|squash!*|"Merge "*) exit 0 ;;
+esac
+if ! printf '%s' "$first" | grep -Eqf scripts/conventional-commit.regex; then
+    echo "commit-msg: '$first' is not a Conventional Commit (see scripts/conventional-commit.regex)." >&2
+    exit 1
 fi
-exec node scripts/check-commit-msg.mjs "$1"

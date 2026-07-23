@@ -1,8 +1,13 @@
 #!/bin/sh
-# Advisory: CI's required `process` check is the binding gate. Without node the
-# hook cannot advise, so it warns and passes rather than blocking the push.
-if ! command -v node >/dev/null 2>&1; then
-    echo "pre-push hook: node not found; skipping local check (CI still gates)." >&2
-    exit 0
+# Advisory fast feedback; the binding gate is CI's required `process` check,
+# which also verifies the linked issue via the API (`just check-branch`).
+# Pattern is defined once in scripts/branch-shape.regex (also read by
+# scripts/check-branch.mjs).
+branch=$(git symbolic-ref --short -q HEAD) || exit 0
+case "$branch" in
+    main|dependabot/*) exit 0 ;;
+esac
+if ! printf '%s' "$branch" | grep -Eqf scripts/branch-shape.regex; then
+    echo "pre-push: branch '$branch' does not match type_number-snake_name (see scripts/branch-shape.regex)." >&2
+    exit 1
 fi
-exec node scripts/check-branch.mjs

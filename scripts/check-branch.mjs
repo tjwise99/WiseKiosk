@@ -11,6 +11,7 @@
 // No dependencies: `git` for branch/remote discovery and Node's stdlib fetch.
 
 import { execSync } from "node:child_process";
+import { readFileSync } from "node:fs";
 
 const fail = (msg) => {
   console.error(`check-branch: ${msg}`);
@@ -29,7 +30,7 @@ if (branch.startsWith("dependabot/")) {
   process.exit(0);
 }
 
-const shape = /^(task|bug|design|module)_([1-9][0-9]*)-[a-z0-9]+(?:_[a-z0-9]+)*$/;
+const shape = new RegExp(readFileSync(new URL("branch-shape.regex", import.meta.url), "utf8").trim());
 const m = branch.match(shape);
 if (!m) {
   fail(

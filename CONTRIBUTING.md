@@ -23,7 +23,8 @@ just              # list recipes
 just verify       # run every check the PR gate runs
 ```
 
-Once per clone, `just install-hooks` points git at the repo's hooks (`.githooks/`): an advisory
+Once per clone, `just install-hooks` points git at the repo's hooks (`.githooks/`, plain sh +
+grep — no toolchain needed): an advisory
 `commit-msg` check and a `pre-push` branch check, so the process gates fire before CI does.
 
 Current gates (they grow as code lands):

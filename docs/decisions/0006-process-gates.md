@@ -34,9 +34,11 @@ mirrored locally by `just check-branch` and the advisory hooks `just install-hoo
 - **The branch types are exactly the issue-template set**, so branch type and ticket template
   cannot drift: a `bug_…` branch links a bug-report ticket, a `design_…` branch a design-decision
   ticket, and a new template implies a new branch type in the same change.
-- **CI gates only what survives the squash.** Branch commit messages are discarded at merge; the
-  same validator runs locally as an advisory `commit-msg` hook, additionally passing
-  `fixup!`/`squash!`-prefixed and merge messages, which never reach `main`.
+- **CI gates only what survives the squash.** Branch commit messages are discarded at merge; an
+  advisory `commit-msg` hook (plain sh + grep, no toolchain) applies the same pattern locally,
+  additionally passing `fixup!`/`squash!`-prefixed and merge messages, which never reach `main`.
+  Each pattern is defined once (`scripts/*.regex`, valid as both ERE and JS regex) and read by
+  hook and scanner alike — never declared twice.
 - **Gate 4 constrains GitHub's recorded state, not prose.** The closing reference is satisfiable
   by a body keyword (`Closes #N`) or by manually linking the issue in the PR's Development section
   — either way the platform records it, and the gate checks the record pre-merge as a
