@@ -1,0 +1,20 @@
+active: true
+derived: false
+header: |
+  Fresh-environment bring-up from in-repo docs alone
+level: 1.4
+links:
+- SYS012: o3eU6fzYR8y08IYrZ2Az9EjVr2hQ6nERiNbAfhoudtw=
+normative: true
+rationale: |
+  The executable form of "nothing required is missing": if a fresh clone in a
+  clean environment can build, verify, and deploy by following only in-repo
+  documentation, the docs are sufficient. Performed per release; the
+  procedure and its recorded runs live in-repo.
+ref: ''
+reviewed: TLvfxUcpsRxFYICT6QadiL17dRZ7zy_-uvT_b0RDhKs=
+status: proposed
+text: |
+  Following only documentation inside the repository, a fresh clone in a
+  clean environment shall be able to build, verify, and deploy WiseKiosk.
+verification-method: demonstration

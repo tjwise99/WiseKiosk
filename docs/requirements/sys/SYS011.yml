@@ -1,21 +1,22 @@
 active: false
 derived: false
 header: |
-  Scope exclusions
+  Security model: network-boundary trust
 level: 1.11
 links: []
 normative: true
 rationale: |
-  Each exclusion is machinery bought against a case that does not exist: no
-  third-party modules will exist, one instance serves one configuration, and
-  the single-trusted-LAN deployment model is what makes running without
-  authentication sound.
+  Records the security model as designed so a future security pass does not
+  "fix" the absence of authentication: deployments sit on a single trusted
+  LAN, and security comes from network boundaries, not the application.
+  Build-scope prohibitions (no plugin machinery, no legacy-framework
+  compatibility) are deliberately not stated here — they are constraint
+  requirements in the process domain, one home per rule.
 ref: ''
-reviewed: rV12ddLsNLDdE5SJ9nnNhkIsH1VsuyWyET8jfoqHxiE=
 status: proposed
 text: |
-  The system shall include no plugin host or third-party module loading, no
-  multi-tenant serving, no user accounts, sessions, or authentication, and no
-  compatibility layer with any prior mirror framework. Deployments are
-  LAN-only on a single trusted network.
-verification-method: inspection
+  The system's security model shall be network-boundary trust: a deployment
+  serves exactly one trusted LAN, with no user accounts, no sessions, and no
+  application-level authentication or access control. One instance shall
+  serve one configuration.
+verification-method: analysis

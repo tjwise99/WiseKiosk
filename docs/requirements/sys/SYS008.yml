@@ -1,22 +1,20 @@
 active: false
 derived: false
 header: |
-  Display priorities: kiosk, then desktop, then phone
+  Kiosk full-screen rendering is the primary target
 level: 1.8
 links: []
 normative: true
 rationale: |
-  The kiosk is the product; a desktop browser view is a convenience check; a
-  phone view earns effort only where it costs nearly nothing. The stretch case
-  is a budget, not a feature: if supporting it starts requiring architecture,
-  it has exceeded that budget.
+  The kiosk behind mirror glass is the product; every layout decision defers
+  to it. Testable with viewport-driven render tests (Playwright-class):
+  assert no overlapping module regions, no clipping, no scrollbars at the
+  kiosk viewport. The residual aesthetic judgment stays human, but the
+  structural properties are machine-checked.
 ref: ''
-reviewed: 5CX-N-Pyi6Ajn7ede8QcivSICIOS4Ju_L18ktlO2J2A=
 status: proposed
 text: |
-  The primary display target shall be a full-screen kiosk page. The page
-  shall also render sensibly at desktop browser window sizes, and shall not
-  actively break (overlap or become unreadable) at phone widths. No
-  per-client profiles, device detection, or responsive-design programme shall
-  exist for the stretch case.
-verification-method: demonstration
+  The page shall render the configured module layout full-screen at the kiosk
+  display's viewport: every configured module visible in its region, with no
+  overlap, no clipping, and no scrollbars.
+verification-method: test
