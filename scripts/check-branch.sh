@@ -110,6 +110,6 @@ if jq -e 'has("errors")' "$tmp" >/dev/null; then
     fail "GitHub GraphQL errors: $(jq -r '[.errors[].message] | join("; ")' "$tmp")"
 fi
 if ! jq -e --argjson n "$number" '.data.repository.pullRequest.closingIssuesReferences.nodes | any(.number == $n)' "$tmp" >/dev/null; then
-    fail "PR #$pr_number has no recorded closing reference to issue #$number — add 'Closes #$number' to the PR body or link the issue in the PR's Development section; the gate reads GitHub's recorded state, either works"
+    fail "PR #$pr_number's Development field does not link issue #$number — link it there (a 'Closes #$number' body keyword writes the same record); the gate reads GitHub's recorded state"
 fi
 echo "PR #$pr_number records a closing reference to issue #$number."

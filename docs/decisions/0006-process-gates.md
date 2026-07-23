@@ -40,9 +40,9 @@ entire gate path is plain sh + curl + jq — no toolchain:
   passing `fixup!`/`squash!`-prefixed and merge messages, which never reach `main`. Each pattern
   is defined once (`scripts/*.regex`, POSIX ERE) and read by the hooks and the sh gate scripts
   alike — never declared twice.
-- **Gate 4 constrains GitHub's recorded state, not prose.** The closing reference is satisfiable
-  by a body keyword (`Closes #N`) or by manually linking the issue in the PR's Development section
-  — either way the platform records it, and the gate checks the record pre-merge as a
+- **Gate 4 constrains GitHub's recorded state, not prose.** The record is the PR's Development
+  field (`closingIssuesReferences`): link the issue there, or let a body keyword (`Closes #N`)
+  write the same record — the gate checks the record pre-merge as a
   required-check constraint. PRs whose base is not the default branch are exempt: observed live,
   GitHub records no closing references against a non-default base, so there is nothing to gate
   until the PR is retargeted.
