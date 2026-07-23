@@ -23,10 +23,28 @@ just              # list recipes
 just verify       # run every check the PR gate runs
 ```
 
+Once per clone, `just install-hooks` points git at the repo's hooks (`.githooks/`): an advisory
+`commit-msg` check and a `pre-push` branch check, so the process gates fire before CI does.
+
 Current gates (they grow as code lands):
 
 - `just check-links` — every relative link in every tracked Markdown file resolves inside the repo.
 - `just check-eol`   — no tracked text file has CRLF line endings.
+- `just check-branch` — the branch is named `type_number-snake_name` and links an open issue
+  labeled with its type.
+
+## Tickets, branches, and titles
+
+Enforced by the `process` CI check ([ADR 0006](docs/decisions/0006-process-gates.md)):
+
+- **Ticket first.** Open an issue from one of the templates before branching; the branch embeds
+  its number.
+- **Branch names** follow `type_number-snake_name`, e.g. `task_27-process_gates` — `type` is the
+  issue-template set (`task`, `bug`, `design`, `module`), `number` the issue's number, the name
+  lowercase snake_case. `main` and Dependabot branches are exempt.
+- **PR titles are Conventional Commits** (`feat: …`, `fix(scope): …`) — the repo squash-merges, so
+  the title becomes the commit on `main`. Branch commit messages are advised on locally by the
+  `commit-msg` hook but not gated in CI.
 
 ## Getting a change merged
 

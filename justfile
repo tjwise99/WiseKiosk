@@ -23,6 +23,16 @@ check-eol:
     echo "No CRLF line endings."
 
 [group('checks')]
+[doc('Branch is named type_number-snake_name and links an open, type-labeled issue')]
+check-branch:
+    node scripts/check-branch.mjs
+
+[group('setup')]
+[doc('Point git at the repo hooks (.githooks/): advisory commit-msg and pre-push')]
+install-hooks:
+    git config core.hooksPath .githooks
+
+[group('checks')]
 [doc('Requirements tree validates: refs resolve, no suspect/unreviewed/orphan items')]
 check-reqs:
     docs/requirements/.venv/bin/doorstop --error-all
@@ -74,4 +84,4 @@ arch-dev:
 
 [group('checks')]
 [doc('Run every check the PR gate runs')]
-verify: check-links check-eol check-reqs check-arch
+verify: check-links check-eol check-branch check-reqs check-arch

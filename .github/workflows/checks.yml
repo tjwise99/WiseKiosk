@@ -83,6 +83,38 @@ jobs:
           node scripts/splice-arch-diagrams.mjs
           git diff --exit-code docs/architecture/ docs/ARCHITECTURE.md
 
+  process:
+    # Process gates (ADR 0006): the branch is named type_number-snake_name and
+    # links an open issue labeled with its type; the PR title — the commit that
+    # reaches main under squash-merge — is a Conventional Commit. Byte-identical
+    # to the local recipes: `just check-branch`, and the same validator the
+    # .githooks/commit-msg hook runs (here with --pr-title, dropping the
+    # fixup!/squash!/merge allowances that never reach main). head_ref and the
+    # PR title are attacker-controlled, so they enter run steps only via env
+    # mapping, never inline. GITHUB_TOKEN is the GitHub-provided read-only
+    # token (API rate limits), not a custom credential.
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 24
+
+      - name: Branch named type_number-snake_name and linked to an open, type-labeled issue
+        env:
+          HEAD_REF: ${{ github.head_ref }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: node scripts/check-branch.mjs "$HEAD_REF"
+
+      - name: PR title is a Conventional Commit (the squash-merge commit on main)
+        env:
+          PR_TITLE: ${{ github.event.pull_request.title }}
+        run: |
+          printf '%s\n' "$PR_TITLE" > "$RUNNER_TEMP/pr-title"
+          node scripts/check-commit-msg.mjs --pr-title "$RUNNER_TEMP/pr-title"
+
   secret-scan:
     runs-on: ubuntu-latest
     steps:
