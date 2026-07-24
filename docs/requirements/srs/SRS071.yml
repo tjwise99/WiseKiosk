@@ -12,13 +12,13 @@ rationale: |
 
   TST `review-cadence-inspection` — verification-method: inspection — ACTIVE — references
   `docs/TESTING.md` (the Review cadence section). Confirms the two triggers are named and cross-linked
-  to the change procedure / ADR 0006.
+  to the module-add procedure.
 ref: ''
-reviewed: eAlf78hhIjZNOq9eZnD7EOxcHnbfF4QXj8HwcEaxpPY=
+reviewed: o6Q5jg3r8myKjK9TPGaHAIVFsB7koNvlFhH1l1v9js4=
 status: proposed
 text: |
   TESTING.md shall name the two test-architecture review triggers — a display module is added; the
   boundary transport (the OpenAPI schema / codegen mechanism, ADR 0008) changes — and the module-add
-  procedure and process gates (ADR 0006) shall reference the test-architecture review, so a triggering
-  change surfaces it.
+  procedure, when it is authored, shall reference the test-architecture review, so a triggering change
+  surfaces it.
 verification-method: inspection

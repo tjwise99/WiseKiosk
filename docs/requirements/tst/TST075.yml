@@ -4,17 +4,17 @@ header: |
   The two review triggers are named and cross-linked to the change procedure
 level: 1.7
 links:
-- SRS071: sk0wowGiU4A59qfFBAk12qCbUEGSEhhadKbiVc4FqJ8=
+- SRS071: Tu6t1wb1GrMX8y1KNKgMW7-hp17x9tGiU9mK5IyWx74=
 normative: true
 rationale: ''
 ref: ''
 references:
 - path: docs/TESTING.md
   type: file
-reviewed: xVCeAJcVRu-kRNCBe-L-ZNbryLuW6z7ncBI7tFU8cG8=
+reviewed: zkluv_8v9xm5xv2y6Z_3h6QwoL8W9Jm_S7C9cFlxUC0=
 status: proposed
 text: |
   Verified by inspecting `docs/TESTING.md`'s Review cadence section: the two triggers — a display
-  module is added; the boundary transport changes (ADR 0008) — are named, and cross-linked to the
-  module-add procedure and process gates (ADR 0006).
+  module is added; the boundary transport changes (ADR 0008) — are named, and the module-add
+  procedure, when it is authored, is required to cross-link to the test-architecture review.
 verification-method: inspection
