@@ -1,0 +1,14 @@
+active: false
+derived: false
+header: |
+  Pending: frontend lint and type-check blocking-gate test
+level: 1.47
+links:
+- SRS059: null
+normative: true
+rationale: ''
+ref: ''
+status: proposed
+text: |
+  Pending: check asserting a seeded eslint or svelte-check violation fails the frontend lint job (non-zero), a required check (expected: eslint plus svelte-check). Fails if either is missing, advisory-only, or non-blocking. Lands with the first frontend code; activated with a references entry to the seeded fixture then.
+verification-method: test

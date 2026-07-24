@@ -1,0 +1,20 @@
+active: true
+derived: false
+header: |
+  Static security scanning of first-party source
+level: 1.58
+links:
+- SYS027: vjglWTW7NXHV68E5QQAfuRvwrh-6GzBxhihkcB9H5fs=
+normative: true
+rationale: |
+  Mechanises the security review the solo project has no second human to
+  perform, across both languages it ships.
+ref: ''
+reviewed: 5crdcarA7C0ajgCJ4anoQzGZMrlgWy35vY1PuU3K7hA=
+status: accepted
+text: |
+  Continuous integration shall statically scan the project's own Go and
+  Svelte/TypeScript source for security-defect patterns on every pull request,
+  and shall fail the pull request as a required check when a finding at or above
+  the configured severity is present.
+verification-method: test
