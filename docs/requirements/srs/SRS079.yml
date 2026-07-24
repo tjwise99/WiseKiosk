@@ -11,7 +11,7 @@ rationale: |
   (the recipe's diff step).
 ref: ''
 reviewed: yjTs8TfCMXJ9gRmEh1gbII5-xjohJDXbRR2r5cmT7eM=
-status: proposed
+status: accepted
 text: |
   The Mermaid diagrams spliced into ARCHITECTURE.md and the artifacts under
   docs/architecture/generated/ shall be byte-identical to a fresh regeneration.

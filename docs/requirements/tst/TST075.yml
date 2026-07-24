@@ -12,7 +12,7 @@ references:
 - path: docs/TESTING.md
   type: file
 reviewed: zkluv_8v9xm5xv2y6Z_3h6QwoL8W9Jm_S7C9cFlxUC0=
-status: proposed
+status: accepted
 text: |
   Verified by inspecting `docs/TESTING.md`'s Review cadence section: the two triggers — a display
   module is added; the boundary transport changes (ADR 0008) — are named, and the module-add

@@ -15,7 +15,7 @@ rationale: |
   to the change procedure.
 ref: ''
 reviewed: oxmz2H9EpUxoz-pO8V-RVgj62Mh4Xxa3HL_7pCmtkBo=
-status: proposed
+status: accepted
 text: |
   TESTING.md shall name the two test-architecture review triggers — a display module is added; the
   boundary transport (the OpenAPI schema / codegen mechanism, ADR 0008) changes — and the module-add

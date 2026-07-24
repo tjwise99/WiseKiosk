@@ -12,7 +12,7 @@ references:
 - path: justfile
   type: file
 reviewed: QaPPUlNXld3eQBvkJvba0jzV6tYOQPHKcYAYiF1US1Y=
-status: proposed
+status: accepted
 text: |
   Verified by `justfile`'s `check-eol` recipe (`git grep -lIP '\r$' -- .`); a match fails the gate.
   Wired into CI as the docs-and-hygiene job's CRLF step.

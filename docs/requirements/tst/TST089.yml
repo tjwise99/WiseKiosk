@@ -16,7 +16,7 @@ references:
 - path: scripts/conventional-commit.regex
   type: file
 reviewed: jHPirwD-8OGvbNlBI1ROC8xmeWxmthUKQrSUSUeozYo=
-status: proposed
+status: accepted
 text: |
   Verified by `scripts/check-branch.sh` (branch shape against `scripts/branch-shape.regex`, issue
   linkage and Development-field record via the GitHub API) and, for the PR title, `scripts/

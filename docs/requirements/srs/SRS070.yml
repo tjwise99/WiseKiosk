@@ -15,7 +15,7 @@ rationale: |
   bar. (While no coverage gate yet exists, the inspection confirms the absence.)
 ref: ''
 reviewed: pCJ3BMgnokZvE9fsG-yX-u82WktazwW6IMGz_Tpvjog=
-status: proposed
+status: accepted
 text: |
   No gate in `just verify` or CI shall assert a coverage percentage as a pass/fail quality threshold;
   the coverage gate, where present, shall fail only on uncovered source that is neither exempted nor

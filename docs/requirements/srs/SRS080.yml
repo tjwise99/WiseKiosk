@@ -11,7 +11,7 @@ rationale: |
   `site-build` recipe).
 ref: ''
 reviewed: j4zCD_HD_qddVontI9mJ_tS8cymVcOvSBrSITH3XGrI=
-status: proposed
+status: accepted
 text: |
   The docs site shall build under Sphinx warnings-as-errors, with needs pages regenerated from the
   Doorstop tree.

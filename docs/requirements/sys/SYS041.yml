@@ -15,7 +15,7 @@ rationale: |
   artifact).
 ref: ''
 reviewed: duSqbaOnifp47cK2RMEy7rr8THC8Cqb35hZ1M46ZSwI=
-status: proposed
+status: accepted
 text: |
   The system shall not contain an abstraction or extension point that has a single implementation and
   no second consumer. At design review the system shall be inspected to confirm that generality is

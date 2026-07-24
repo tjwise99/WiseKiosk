@@ -12,7 +12,7 @@ references:
 - path: scripts/check-verify-ci-parity.mjs
   type: file
 reviewed: OgODiUphkDG051-TJmzXLCNcpX5_eABdiuqywKr0QRI=
-status: proposed
+status: accepted
 text: |
   Verified by scripts/check-verify-ci-parity.mjs, which extracts the check tokens `just verify`
   depends on, asserts each appears in .github/workflows/checks.yml, and asserts every CI step matches

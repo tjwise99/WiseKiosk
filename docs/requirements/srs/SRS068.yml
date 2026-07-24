@@ -19,7 +19,7 @@ rationale: |
   tier is already covered by `doorstop --error-all` — do not re-encode it here.
 ref: ''
 reviewed: WBpfqKymjsAIdE-GGiqM5kZdPi6FZwHTc5Y10fiP8rg=
-status: proposed
+status: accepted
 text: |
   Each language test runner shall be invoked in its whole-tree discovery form (e.g. `go test ./...`,
   the frontend runner's default glob), with no hand-maintained per-file test list and no

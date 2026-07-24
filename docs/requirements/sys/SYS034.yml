@@ -13,7 +13,7 @@ rationale: |
   one (that would be a control that does not function where deployed, FOUNDATIONS §5).
 ref: ''
 reviewed: oejNji_hLH_4nN0L2T2x0YcwqOmTEp656mFcn69bhII=
-status: proposed
+status: accepted
 text: |
   The test architecture shall be reviewed whenever a display module is added and whenever the boundary
   transport changes; these triggers shall be documented and wired to the change procedure so the

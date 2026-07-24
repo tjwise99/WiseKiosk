@@ -12,7 +12,7 @@ references:
 - path: justfile
   type: file
 reviewed: cdTzSFYZCQStCXjMF9qQiTiAvf0jRL5q6M-q7HYk1Xs=
-status: proposed
+status: accepted
 text: |
   Verified by inspecting `justfile`'s `verify` recipe: every check that spans both packages or the
   repository as a whole (links, line endings, requirements-tree integrity, boundary/lint/build,

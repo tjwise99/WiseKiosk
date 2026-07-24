@@ -11,7 +11,7 @@ rationale: |
   recipe's `likec4 validate` step, run by `check-arch`).
 ref: ''
 reviewed: ONwfuZdvP1lOC1y_Rq5QO3B5F0gmQDWmapR9bxw8B3I=
-status: proposed
+status: accepted
 text: |
   The architecture model shall validate — no undefined element, unresolved relationship, or invalid
   view.

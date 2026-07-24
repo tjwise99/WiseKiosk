@@ -15,7 +15,7 @@ rationale: |
   the PR2 rationale-by-reference requirement.)
 ref: ''
 reviewed: 1fBU5F-_aVxwoDmzauUQYlHRuWNeX3xfbsUvJ35Dhw0=
-status: proposed
+status: accepted
 text: |
   Every bare-text citation of a requirement ID (SYS/SRS/TST + number) or ADR number in tracked
   documentation shall resolve to an existing item or decision.

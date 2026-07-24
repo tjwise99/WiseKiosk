@@ -14,7 +14,7 @@ references:
 - path: docs/FOUNDATIONS.md
   type: file
 reviewed: VqmZPzFQBAh9Si7JU5-ab1nO27zj80w6t1xEZ04YXg8=
-status: proposed
+status: accepted
 text: |
   Verified by inspecting `docs/TESTING.md` and `docs/FOUNDATIONS.md`: this PR's own graduation edits
   (the no-dead-test, check-altitude, coverage-stance, review-cadence, dev-tooling-siloing, and

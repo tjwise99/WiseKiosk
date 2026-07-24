@@ -12,7 +12,7 @@ rationale: |
   relative link is today.
 ref: ''
 reviewed: Nz5pPzvXlLQK82gQlLsMLeptQ4-bmPELdmTMUk897AE=
-status: proposed
+status: accepted
 text: |
   Every citation in tracked documentation to a file, a requirement ID, or an ADR number — whether a
   Markdown link or a bare-text mention — shall resolve to something that currently exists; a citation

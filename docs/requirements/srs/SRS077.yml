@@ -12,7 +12,7 @@ rationale: |
   a stated review obligation, not assumed practice — it stays outside CI by nature, not by omission.
 ref: ''
 reviewed: gHHizX-bdth-Un2XeEwI39xB0Co-mJ7rsHyneB6GEN8=
-status: proposed
+status: accepted
 text: |
   When a change touches code or configuration that a canonical document describes, the change shall
   update the describing document or state explicitly that no update is needed.

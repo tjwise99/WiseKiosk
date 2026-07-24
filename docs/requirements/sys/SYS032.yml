@@ -11,7 +11,7 @@ rationale: |
   architecture. Raised to a need so placement is inspectable rather than trusted.
 ref: ''
 reviewed: 7iK8tC8wVheogsu9yqpieQ2IqP0CVMfSwBNSQPWw2cQ=
-status: proposed
+status: accepted
 text: |
   Every check that spans both packages or concerns the repository as a whole — link and line-ending
   hygiene, boundary agreement, lint, build, requirements-tree integrity, coverage closure, dead-test —

@@ -17,7 +17,7 @@ rationale: |
   of its script; activated with a `references` entry when the check lands.
 ref: ''
 reviewed: ZORIsp2rtcJ8sTPVzI18uRYaQxJcUa1YpRIbC_ssiIE=
-status: proposed
+status: accepted
 text: |
   No language dependency manifest, lockfile, or virtual environment (package.json,
   package-lock.json, requirements*.txt, pyproject.toml, go.mod, and the like, or a `.venv/`) shall

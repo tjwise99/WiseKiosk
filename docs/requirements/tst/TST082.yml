@@ -12,7 +12,7 @@ references:
 - path: justfile
   type: file
 reviewed: DwJhDTkhyzXH5sY4apWu9XLqb7fajBE9yxTNYLs0-zM=
-status: proposed
+status: accepted
 text: |
   Verified by `justfile`'s `arch-export` recipe, whose first step runs `likec4 validate
   docs/architecture/model`; run in CI by `check-arch`.

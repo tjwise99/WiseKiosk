@@ -13,7 +13,7 @@ rationale: |
   general — this is a stated review discipline, not a gate.
 ref: ''
 reviewed: OKZU1T6kdWe1EBxIQKK6msz9V98hi1dRkxXFFRtps0U=
-status: proposed
+status: accepted
 text: |
   Every fact about WiseKiosk's product definition, settled decisions, architecture, test strategy, or
   normative obligations shall be authored in exactly one canonical document per the documentation

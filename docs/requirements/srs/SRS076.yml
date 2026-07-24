@@ -12,7 +12,7 @@ rationale: |
   references-resolve gate; the "stopped restating" half is review.
 ref: ''
 reviewed: 0YOQmME3IpqAXbNV8vYkh0c_2Dy2uCR6KaMAZ5rlrAw=
-status: proposed
+status: accepted
 text: |
   When a prose obligation in FOUNDATIONS.md or TESTING.md is formalized as a requirement, the same
   change shall edit the prose to cite the new requirement ID and shall stop stating the obligation as

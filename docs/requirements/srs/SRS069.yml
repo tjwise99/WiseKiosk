@@ -14,7 +14,7 @@ rationale: |
   invoked at repo level, none nested in a package suite.
 ref: ''
 reviewed: yLrPFy-1peWYPG5zhz94ZWNbBvjnAzwFIYsdK0Vkn5g=
-status: proposed
+status: accepted
 text: |
   The repository-level verification target (`just verify`, mirrored in CI) shall own every
   repo-spanning check; no repo-spanning check shall be hosted inside a single package's own test

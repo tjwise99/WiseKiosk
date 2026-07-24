@@ -12,7 +12,7 @@ references:
 - path: scripts/splice-arch-diagrams.mjs
   type: file
 reviewed: T3FGD5snlobcOTiReDEsi84GMVPhK_ue7ErKvI8K8W8=
-status: proposed
+status: accepted
 text: |
   Verified by `scripts/splice-arch-diagrams.mjs` regenerating the spliced diagrams, followed by
   `check-arch`'s `git diff --exit-code docs/architecture/ docs/ARCHITECTURE.md`, which fails the gate

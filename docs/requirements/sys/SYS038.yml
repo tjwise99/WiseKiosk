@@ -11,7 +11,7 @@ rationale: |
   `check-site`); this gives it a tree citation.
 ref: ''
 reviewed: jzRACTZ93mPwIqQNfJ_4Be7yhIgkdEg3_Cb30ec3YtU=
-status: proposed
+status: accepted
 text: |
   Every documentation artifact produced by a generator — architecture diagrams from the LikeC4 model,
   needs pages from the Doorstop tree, and any future generated doc — shall be regenerated in CI and

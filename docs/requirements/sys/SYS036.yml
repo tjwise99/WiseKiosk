@@ -16,7 +16,7 @@ rationale: |
   it being a settled-decision reversal.
 ref: ''
 reviewed: GVSUTkMgBTt2cA4J-MFAboLa8nCBn6h57amUY8f6wCk=
-status: proposed
+status: accepted
 text: |
   The system shall be built on the smallest viable third-party dependency footprint. The standard
   library and a direct HTTP call shall be preferred over introducing a package, and no dependency

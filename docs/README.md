@@ -2,7 +2,7 @@
 
 Every fact about WiseKiosk has exactly one canonical home (SYS037): a document that guarantees it.
 Every other document may cite or summarize that fact, but never restates it as independent content
-(SRS doc-taxonomy-table). This table is that referenceable definition.
+(SRS075). This table is that referenceable definition.
 
 | Document | Guarantees | Excludes |
 |---|---|---|

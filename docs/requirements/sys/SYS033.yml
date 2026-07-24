@@ -13,7 +13,7 @@ rationale: |
   ordinary CI.
 ref: ''
 reviewed: 7JvWZKSExgfB4UBrQXjxBm8HlbA4mogdgdOXzzT9Qg0=
-status: proposed
+status: accepted
 text: |
   The merge gate set shall gate on the standing test obligations and on traceability closure; no gate
   shall pass or fail a merge on a coverage percentage treated as evidence of test adequacy. Coverage

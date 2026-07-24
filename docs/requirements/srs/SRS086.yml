@@ -13,7 +13,7 @@ rationale: |
   system-wide review obligation.
 ref: ''
 reviewed: h_WARiLbu-LOPrSxfMaVFCWZBzlK5t_976YA1LhA7qk=
-status: proposed
+status: accepted
 text: |
   The design-review record for each change shall confirm that the change introduces no abstraction or
   extension point that has a single implementation and no second consumer, so generality is not added

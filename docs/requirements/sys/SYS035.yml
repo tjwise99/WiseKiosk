@@ -13,7 +13,7 @@ rationale: |
   (SYS028/SRS060/SRS061).
 ref: ''
 reviewed: H-qv-tubKGqdIs_zFQYiLx1Qc59P-u9nl6MaCxKO4c8=
-status: proposed
+status: accepted
 text: |
   Each development tool's dependency manifest, lockfile, and virtual environment shall live in the
   directory of the feature it serves, and its Dependabot ecosystem entry shall point at that

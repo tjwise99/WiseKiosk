@@ -13,7 +13,7 @@ rationale: |
   lands.
 ref: ''
 reviewed: caBIIBpZnT1ccadXku46sH87U775ymvOvdgXKJwwQfs=
-status: proposed
+status: accepted
 text: |
   Every file under docs/decisions/ matching the ADR filename pattern shall appear as a row in
   decisions/README.md, numbered sequentially with no gap or duplicate, and every table row shall

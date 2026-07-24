@@ -17,7 +17,7 @@ rationale: |
   the live justfile and workflow, and fails on an induced divergence.
 ref: ''
 reviewed: ZNTg-4XTnFrCG6TIks4KUgU5miJDG-eV1Eaw3YKAiYI=
-status: proposed
+status: accepted
 text: |
   Every check invoked by `just verify` shall also run in the CI checks workflow; a check present in
   `just verify` but absent from CI, or the reverse, shall fail. CI targets that cannot run locally —

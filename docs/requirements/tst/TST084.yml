@@ -12,7 +12,7 @@ references:
 - path: justfile
   type: file
 reviewed: o_pZCUcgNHvCRPfFwE1v0YIuGv2a2Gb-cBtrjFwTKZ8=
-status: proposed
+status: accepted
 text: |
   Verified by `justfile`'s `site-build` recipe: regenerates the needs pages from the Doorstop tree
   (`doorstop_to_needs.py`), then builds the docs site with `sphinx-build -W`, run in CI by

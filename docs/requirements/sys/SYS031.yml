@@ -14,7 +14,7 @@ rationale: |
   (Go/Svelte test files reached by a runner) is pending until first-party source exists.
 ref: ''
 reviewed: d-AVJQjdaz13MMBcZhMMsqJdbHyFDpIFfKxEzdjJdVc=
-status: proposed
+status: accepted
 text: |
   Every test and check present in the repository shall be executed by CI. A test or check that exists
   but that no CI target runs shall fail the verification gate rather than pass silently by never

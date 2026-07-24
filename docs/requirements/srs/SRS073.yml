@@ -16,7 +16,7 @@ rationale: |
   Activated when a first-party build manifest exists.
 ref: ''
 reviewed: p_BVgJ83L2zwF-yfA1yF_KRyTxSBVooLBVvIt5E__Cw=
-status: proposed
+status: accepted
 text: |
   Every third-party dependency in a build manifest shall be justifiable at review as work the standard
   library cannot reasonably do; any admitted dependency that requires a native build toolchain shall

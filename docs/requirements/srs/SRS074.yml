@@ -17,7 +17,7 @@ rationale: |
   entry then.
 ref: ''
 reviewed: xiihOTm8lYmg47C_2s49YsbB5pud6bz3lH33U7PNkm4=
-status: proposed
+status: accepted
 text: |
   The backend shall build successfully as a statically linked binary with the native build toolchain
   (cgo) disabled, demonstrating that no backend dependency has introduced a native-toolchain

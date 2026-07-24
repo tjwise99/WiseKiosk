@@ -12,7 +12,7 @@ rationale: |
   by nature — reference the script/regex, not the workflow (ADR 0002).
 ref: ''
 reviewed: zbA3NRp3bGIalZyIF5-1zYiUYHi6dCw48wKDV1ZLWw0=
-status: proposed
+status: accepted
 text: |
   A working branch shall be named `type_number-snake_name` and link to an open, type-labeled issue,
   and a pull request's title shall be a Conventional Commit, per ADR 0006.

@@ -13,7 +13,7 @@ rationale: |
   header `Pending: model-to-code link review`; activated when first-party source exists.
 ref: ''
 reviewed: 0ZojBTI-DRNREQOFIc71Ma5p1fCpY7CbdeyK3x1LMeQ=
-status: proposed
+status: accepted
 text: |
   As an architecture element gains a real implementation, its LikeC4 `link` shall be updated to the
   corresponding source, verified in review.
