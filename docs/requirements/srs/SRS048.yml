@@ -1,0 +1,18 @@
+active: true
+derived: false
+header: |
+  Restart policy unless-stopped
+level: 1.48
+links: []
+normative: true
+rationale: |
+  Self-healing without masking a deliberate stop; this concerns crash and
+  reboot recovery, not configuration or secret reloads (SRS012, SRS025).
+ref: ''
+reviewed: null
+status: accepted
+text: |
+  The deployment shall run the container under restart policy unless-stopped,
+  so that it recovers automatically from a crash or host reboot yet remains
+  stopped when deliberately stopped by the operator.
+verification-method: inspection

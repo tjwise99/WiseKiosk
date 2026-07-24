@@ -1,0 +1,16 @@
+active: true
+derived: false
+header: |
+  Docker-capable amd64/arm64 backend host
+level: 1.51
+links: []
+normative: true
+rationale: |
+  Pins the container host platform.
+ref: ''
+reviewed: null
+status: accepted
+text: |
+  The backend container shall run on a Docker-capable amd64 or arm64 host,
+  and the image shall be published for both architectures.
+verification-method: demonstration

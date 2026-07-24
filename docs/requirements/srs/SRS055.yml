@@ -1,0 +1,17 @@
+active: true
+derived: false
+header: |
+  Build context excludes development and secret material
+level: 1.55
+links: []
+normative: true
+rationale: |
+  Keeps development and secret material out of image layers; reinforces
+  SYS018 (no secret in the image).
+ref: ''
+reviewed: null
+status: accepted
+text: |
+  A .dockerignore shall exclude .git, secret material, and node_modules from
+  the image build context.
+verification-method: test

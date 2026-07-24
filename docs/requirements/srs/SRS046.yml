@@ -1,0 +1,18 @@
+active: true
+derived: false
+header: |
+  Configuration supplied by bind mount
+level: 1.46
+links: []
+normative: true
+rationale: |
+  Fixes the configuration supply vector at the container boundary; the
+  fidelity of that configuration in transit is SRS009's concern, not this
+  one.
+ref: ''
+reviewed: null
+status: accepted
+text: |
+  The display configuration shall be supplied to the running container by a
+  bind mount from the deploy host; the image shall embed no configuration.
+verification-method: demonstration

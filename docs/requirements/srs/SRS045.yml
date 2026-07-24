@@ -1,0 +1,18 @@
+active: true
+derived: false
+header: |
+  Per-deployment independence
+level: 1.45
+links: []
+normative: true
+rationale: |
+  The operator-independence property: instances are isolated by construction,
+  not coordinated.
+ref: ''
+reviewed: null
+status: accepted
+text: |
+  Each running WiseKiosk instance shall be determined solely by its externally
+  supplied configuration and secrets, shall share no runtime state with any
+  other instance, and shall serve exactly one configuration.
+verification-method: inspection

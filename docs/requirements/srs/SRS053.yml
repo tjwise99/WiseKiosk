@@ -1,0 +1,15 @@
+active: true
+derived: false
+header: |
+  Non-root container user
+level: 1.53
+links: []
+normative: true
+rationale: |
+  Container-hardening control made testable.
+ref: ''
+reviewed: null
+status: accepted
+text: |
+  The container image shall run as a non-root user.
+verification-method: test

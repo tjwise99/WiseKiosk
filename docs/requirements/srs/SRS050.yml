@@ -1,0 +1,17 @@
+active: true
+derived: false
+header: |
+  Thirty-day soak without unbounded growth
+level: '1.50'
+links: []
+normative: true
+rationale: |
+  Turns SYS010's endurance target into a soak obligation.
+ref: ''
+reviewed: null
+status: accepted
+text: |
+  WiseKiosk shall sustain at least thirty days of continuous unattended
+  operation on the reference platform with no unbounded resource growth and
+  no visible degradation.
+verification-method: demonstration
