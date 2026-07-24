@@ -12,9 +12,9 @@ rationale: |
 
   TST `review-cadence-inspection` — verification-method: inspection — ACTIVE — references
   `docs/TESTING.md` (the Review cadence section). Confirms the two triggers are named and cross-linked
-  to the module-add procedure.
+  to the change procedure.
 ref: ''
-reviewed: o6Q5jg3r8myKjK9TPGaHAIVFsB7koNvlFhH1l1v9js4=
+reviewed: oxmz2H9EpUxoz-pO8V-RVgj62Mh4Xxa3HL_7pCmtkBo=
 status: proposed
 text: |
   TESTING.md shall name the two test-architecture review triggers — a display module is added; the
