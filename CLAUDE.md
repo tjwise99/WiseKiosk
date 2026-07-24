@@ -20,10 +20,10 @@ rules layered on top.
   types; every value crossing the boundary is **generated from one schema**, never hand-declared on
   both sides. This is the single worst defect class this design guards against — see
   [ADR 0001](docs/decisions/0001-backend-language-go.md). CI fails on stale generated code.
-- **Do not build what FOUNDATIONS §5 forbids** — no plugin system, no abstraction without a second
-  consumer, no transport chosen before the access pattern, no comment-enforced invariants, no
-  denylist secret handling, no non-tunable config keys, no controls that do not function where
-  deployed.
+- **Do not build generality against a case that does not exist** — no plugin system, no abstraction
+  without a second consumer, no transport chosen before the access pattern, no comment-enforced
+  invariants, no denylist secret handling, no non-tunable config keys, no controls that do not
+  function where deployed.
 - **Keep the docs standalone.** No reference points outside this repository. Every relative Markdown
   link resolves inside the repo (`just check-links`).
 
