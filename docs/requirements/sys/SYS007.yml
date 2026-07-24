@@ -1,4 +1,4 @@
-active: false
+active: true
 derived: false
 header: |
   One image; customization through configuration only
@@ -11,7 +11,7 @@ rationale: |
   Per-deployment forks or rebuilds would fragment it.
 ref: ''
 reviewed: 4k7lerjS-UELCU00aZI1dRY-4UKeMt19sScy_mviLOI=
-status: proposed
+status: accepted
 text: |
   WiseKiosk shall be published as one container image. Per-deployment
   customization shall occur through configuration only, never through a

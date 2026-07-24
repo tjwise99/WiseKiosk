@@ -1,4 +1,4 @@
-active: false
+active: true
 derived: false
 header: |
   Upgrades require no code literacy
@@ -11,7 +11,7 @@ rationale: |
   author-maintained, defeating the deployment model.
 ref: ''
 reviewed: Sw94fSoC2fO1zVrk3kpMAX9zHX1gIPU0ZA8yJ1DuGBE=
-status: proposed
+status: accepted
 text: |
   Upgrading a deployment to a newer released image shall not require the
   operator to read a diff, edit code, or understand the stack.

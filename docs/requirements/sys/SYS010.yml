@@ -1,4 +1,4 @@
-active: false
+active: true
 derived: false
 header: |
   Thirty days unattended
@@ -11,7 +11,7 @@ rationale: |
   demonstration on the reference platform before release.
 ref: ''
 reviewed: ifmtvht3nYnBVmX2DECHOt7Hl-jnYsDrhDi7H4DDcZQ=
-status: proposed
+status: accepted
 text: |
   The system shall operate continuously and unattended for at least 30 days
   without visible degradation and without operator intervention.
