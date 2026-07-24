@@ -1,0 +1,17 @@
+active: false
+derived: false
+header: |
+  Pending: parameter-validation rejection test
+level: '1.23'
+links:
+- SRS023: null
+normative: true
+rationale: ''
+ref: ''
+status: proposed
+text: |
+  Pending: test asserting a request whose parameters do not match the source's
+  known-good pattern (for example a malformed ICAO code or an unknown park ID) is
+  rejected with no upstream call. Lands with the backend skeleton (#9); activated
+  and given a references entry then.
+verification-method: test

@@ -1,0 +1,18 @@
+active: false
+derived: false
+header: |
+  Pending: proxy endpoint & statelessness test
+level: '1.20'
+links:
+- SRS020: null
+normative: true
+rationale: ''
+ref: ''
+status: proposed
+text: |
+  Pending: backend integration test asserting GET /api/<source> returns the
+  boundary-contract-shaped payload for a supported source, and that identical
+  requests yield equivalent responses with no per-client or cross-request state
+  retained. Lands with the backend skeleton (#9); activated and given a
+  references entry then.
+verification-method: test

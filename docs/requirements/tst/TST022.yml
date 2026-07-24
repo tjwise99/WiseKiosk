@@ -1,0 +1,19 @@
+active: false
+derived: false
+header: |
+  Pending: TTL cache-behaviour test (liveness canary)
+level: '1.22'
+links:
+- SRS022: null
+normative: true
+rationale: ''
+ref: ''
+status: proposed
+text: |
+  Pending: integration test asserting the (source, query) TTL cache serves an
+  identical request from cache within the TTL without an upstream call and
+  refetches after expiry, using a fake upstream that counts calls. This
+  cache-behaviour test is the standing liveness canary for the REST transport
+  (FOUNDATIONS §9 open-Q6 / #11). Lands with the backend skeleton (#9); activated
+  and given a references entry then.
+verification-method: test
