@@ -1,13 +1,23 @@
 active: true
 derived: false
-header: ''
+header: |
+  No gate asserts a coverage percentage as a quality bar
 level: '1.70'
 links:
 - SYS033: null
 normative: true
-rationale: ''
+rationale: |
+  Distinguishes coverage-as-closure (permitted, ADR 0005 gate 3) from coverage-as-quality-number
+  (forbidden), so the requirement does not read as "no coverage gate at all".
+
+  TST `coverage-stance-inspection` — verification-method: inspection — ACTIVE — references `justfile`
+  and, once it exists, the coverage-closure gate config. Confirms no gate asserts a coverage % quality
+  bar. (While no coverage gate yet exists, the inspection confirms the absence.)
 ref: ''
-reviewed: null
+reviewed: pCJ3BMgnokZvE9fsG-yX-u82WktazwW6IMGz_Tpvjog=
 status: proposed
-text: ''
-verification-method: ''
+text: |
+  No gate in `just verify` or CI shall assert a coverage percentage as a pass/fail quality threshold;
+  the coverage gate, where present, shall fail only on uncovered source that is neither exempted nor
+  justified (ADR 0005 gate 3), not on a target number.
+verification-method: inspection

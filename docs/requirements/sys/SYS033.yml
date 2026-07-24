@@ -1,12 +1,22 @@
 active: true
 derived: false
-header: ''
+header: |
+  Coverage is diagnostic; the gate set proves obligations, not a number
 level: 1.33
 links: []
 normative: true
-rationale: ''
+rationale: |
+  TESTING.md "On coverage" and ADR 0005 — a line can be fully covered while the invariant that matters
+  is untested by construction, so a high number buys unearned confidence. Coverage here is
+  traceability closure, never a chosen quality bar. Raised to a need so the gate set's stance is an
+  inspectable property, preventing a percentage-threshold gate from later creeping in reviewed as
+  ordinary CI.
 ref: ''
-reviewed: null
+reviewed: 7JvWZKSExgfB4UBrQXjxBm8HlbA4mogdgdOXzzT9Qg0=
 status: proposed
-text: ''
-verification-method: ''
+text: |
+  The merge gate set shall gate on the standing test obligations and on traceability closure; no gate
+  shall pass or fail a merge on a coverage percentage treated as evidence of test adequacy. Coverage
+  shall be reported for diagnosis and, as traceability closure only, may gate the "uncovered source is
+  unjustified source" invariant (ADR 0005 gate 3).
+verification-method: inspection
