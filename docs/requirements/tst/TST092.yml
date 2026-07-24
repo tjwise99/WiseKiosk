@@ -1,0 +1,17 @@
+active: false
+derived: false
+header: |
+  Pending: citation-not-restatement review
+level: 1.17
+links:
+- SRS088: null
+normative: true
+rationale: ''
+ref: ''
+status: proposed
+text: |
+  Pending: a design-review checklist item applying the strip-the-identifier test to each comment that
+  cites a requirement ID or ADR number — if an assertion still stands once the identifier is removed, the
+  comment is a restatement and fails. Activated with a references entry when the design-review checklist
+  is formalized.
+verification-method: inspection

@@ -1,0 +1,21 @@
+active: true
+derived: false
+header: |
+  Design review confirms a mechanically-clean comment is not misplaced rationale
+level: 1.89
+links:
+- SYS042: zSftWlqCKYGFrIztL6VLKF-27b-3tVZkzysxcdkfqj0=
+normative: true
+rationale: |
+  The honest ceiling. Every mechanical check in this domain decides form and position; none decides whether
+  a sentence is rationale. A one-line comment carrying no banned phrasing and citing nothing can still be
+  an ADR's content sitting in code, and it passes every gate. Naming that residue as a review obligation
+  keeps the gate set from being read as proof of something it does not decide (SYS031). Follows the shape
+  of SRS086, and activates on the same design-review checklist.
+ref: ''
+reviewed: 1vGJtt9NEpOkjy_nwGnYI28ahKxyp1R6GCaj8sAXrx8=
+status: accepted
+text: |
+  The design-review record for each change shall confirm that each comment the change adds or modifies,
+  having satisfied the repository's mechanical comment checks, is nonetheless not misplaced rationale.
+verification-method: inspection
