@@ -16,12 +16,12 @@ rationale: |
   dependencies is a distinct need (SYS028) - different origin, remediation, and
   cadence; scanning the whole built image is SYS029.
 ref: ''
-reviewed: vjglWTW7NXHV68E5QQAfuRvwrh-6GzBxhihkcB9H5fs=
+reviewed: 3T38wo5b-NGHKqfq-ESd3d4trWsojs8Bvf50rXCCm-s=
 status: accepted
 text: |
   Source code the project authors shall not merge while it carries a detectable
   security defect or a lint or type-correctness violation. Continuous
   integration shall statically analyse first-party Go and Svelte/TypeScript
   source on every pull request and shall block merge when a finding at or above
-  the configured severity is present.
+  the configured severity threshold is present.
 verification-method: test
