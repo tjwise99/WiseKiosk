@@ -8,7 +8,7 @@ links:
 normative: true
 rationale: |
   ADR 0007: the backend has no code path that knows the display configuration
-  exists — no read, no parse, no endpoint. Operational constants are §5's
+  exists — no read, no parse, no endpoint. Operational constants are the
   answer to non-tunable keys; secret delivery via the environment is not
   configuration and is specified in the secrets domain (#35).
 ref: ''

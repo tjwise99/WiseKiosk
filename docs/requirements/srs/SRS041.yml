@@ -16,8 +16,8 @@ rationale: |
   desktop window sizes the secondary use case must render sensibly at. Phone
   widths are deliberately not a requirement (SYS013; owner decision 2026-07-22) —
   if wanted later, support arrives as its own reviewed system need, not a clause
-  here. "No device detection or per-client layout profile" holds the FOUNDATIONS
-  §1 line that this costs relative units and a reflowing layout, not a
+  here. "No device detection or per-client layout profile" holds the line
+  that this costs relative units and a reflowing layout, not a
   responsive-design programme. Verified by viewport-driven render tests
   (Playwright-class) asserting the structural properties at each size; the
   residual aesthetic judgement stays human.
