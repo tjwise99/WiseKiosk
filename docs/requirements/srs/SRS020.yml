@@ -1,0 +1,28 @@
+active: true
+derived: false
+header: |
+  Stateless GET /api/<source> returns the shaped payload
+level: '1.20'
+links:
+- SYS020: NfdW-FS-JHgzypQXWbo9MTkZZvjslZko1suFru3-bH4=
+normative: true
+rationale: |
+  The payload's shape is defined once by the boundary contract (#37) and
+  generated on both sides; this requirement governs the transport — that the
+  route exists, is stateless, and returns that payload — not the shape's
+  definition. Statelessness is stated as an observable so it can be tested
+  rather than asserted.
+ref: ''
+reviewed: xL2DoR2hHf0lMQFQYtYUy80Vzq1rheBfN8ALUbPlo7o=
+status: accepted
+text: |
+  For each supported external source, the backend shall expose a stateless
+  endpoint GET /api/<source> that fetches the source's upstream data and returns
+  it as JSON shaped to the payload the frontend renders. The endpoint shall hold
+  no per-client or session state: it shall not distinguish between clients, and
+  the payload it returns for a request shall be determined solely by that
+  request, not by who sent it or by earlier requests. The shared response cache
+  (SRS022), keyed on the request itself, is not per-client state — it may
+  determine whether a request is served from cache, but not the payload a client
+  receives.
+verification-method: test

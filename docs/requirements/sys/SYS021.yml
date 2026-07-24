@@ -1,0 +1,24 @@
+active: true
+derived: false
+header: |
+  Bounded, polite use of upstream public APIs
+level: 1.21
+links: []
+normative: true
+rationale: |
+  The upstreams are free public third-party APIs that rate-limit or ban abusive
+  callers. The bound rests on the closed, known source set together with
+  parameter validation against known-good patterns (SRS023), request
+  deduplication and short-lived negative caching (SRS022, SRS028), per-route
+  rate limiting (SRS024), and outbound timeout and response-size limits
+  (SRS027) — not on rate limiting alone. FOUNDATIONS §3 bounds the proxy this
+  way; §5 anticipates the static-analysis rate-limiting finding.
+ref: ''
+reviewed: iDFNl3INnR6LXeRlHUt0mPuuu4hVYgASAMic3R19skU=
+status: accepted
+text: |
+  The system shall bound the requests it issues to upstream public APIs — in
+  rate, in volume, and to well-formed, recognized requests — so that it stays
+  within upstream fair-use expectations and never acts as an unbounded or
+  abusive relay toward them.
+verification-method: analysis

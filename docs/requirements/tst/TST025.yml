@@ -1,0 +1,17 @@
+active: false
+derived: false
+header: |
+  Pending: secret rotation-without-restart test
+level: 1.25
+links:
+- SRS025: null
+normative: true
+rationale: ''
+ref: ''
+status: proposed
+text: |
+  Pending: test asserting a secret value changed in the <NAME>_FILE file is
+  reflected on the next cache-missing request that resolves it, with no process
+  restart and no in-memory value cache. Lands with the backend skeleton (#9);
+  activated and given a references entry then.
+verification-method: test

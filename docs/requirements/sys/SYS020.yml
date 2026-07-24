@@ -1,0 +1,22 @@
+active: true
+derived: false
+header: |
+  Live data from external data sources
+level: '1.20'
+links: []
+normative: true
+rationale: |
+  WiseKiosk's data-backed modules render live public-API data on a slow refresh
+  cadence; obtaining that data is the positive need the backend proxy serves,
+  where SYS005 governs only what happens when the data path fails. Scoped to
+  modules that draw on an external source: the clock renders client-side and
+  compliments is a local list, so neither has an upstream. End-to-end
+  verification exercises live upstreams and therefore runs outside CI, on a
+  credentialed host, per SYS019 (the Contract test tier).
+ref: ''
+reviewed: NfdW-FS-JHgzypQXWbo9MTkZZvjslZko1suFru3-bH4=
+status: accepted
+text: |
+  Each display module that draws on an external data source shall obtain that
+  data from the module's upstream public data source.
+verification-method: demonstration

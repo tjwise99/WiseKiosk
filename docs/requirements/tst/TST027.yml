@@ -1,0 +1,17 @@
+active: false
+derived: false
+header: |
+  Pending: upstream timeout & size-bound test
+level: 1.27
+links:
+- SRS027: null
+normative: true
+rationale: ''
+ref: ''
+status: proposed
+text: |
+  Pending: test asserting an upstream that hangs past the outbound timeout, or
+  returns a response over the size bound, is handled as an SRS001 upstream
+  failure without wedging the request handler or exhausting process memory. Lands
+  with the backend skeleton (#9); activated and given a references entry then.
+verification-method: test

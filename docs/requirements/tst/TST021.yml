@@ -1,0 +1,16 @@
+active: false
+derived: false
+header: |
+  Pending: all-sources-proxied inspection
+level: 1.21
+links:
+- SRS021: null
+normative: true
+rationale: ''
+ref: ''
+status: proposed
+text: |
+  Pending: inspection asserting every external source has a backend proxy route,
+  including CORS-permitting sources, with no source exempted; form (repo check or
+  review checklist) decided when the backend skeleton (#9) lands. Activated then.
+verification-method: inspection

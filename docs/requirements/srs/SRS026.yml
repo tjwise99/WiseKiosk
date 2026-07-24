@@ -1,0 +1,26 @@
+active: true
+derived: false
+header: |
+  Client-facing contract for rejected requests
+level: 1.26
+links:
+- SYS021: iDFNl3INnR6LXeRlHUt0mPuuu4hVYgASAMic3R19skU=
+normative: true
+rationale: |
+  SRS023 and SRS024 reject invalid and over-limit requests but do not say what
+  the client receives; a module still needs something renderable, and it must be
+  able to tell an operator misconfiguration from a source outage. The concrete
+  body shape is defined by the boundary contract (#37); this item fixes the
+  status codes, the reject-before-upstream behaviour, and the separation from
+  the upstream-failure shape.
+ref: ''
+reviewed: PMMiygvOt6IID7RRIW3Tf-j4CaBo2dcUaJZKfOyW9tM=
+status: accepted
+text: |
+  A request the backend rejects before making any upstream call shall return a
+  client-error status distinct to its cause — 400 for an invalid parameter, 404
+  for an unknown source, 405 for a non-GET method, and 429 for exceeding a rate
+  limit — with a response body the frontend can render. This body shall be
+  distinct from the upstream-failure error shape of SRS001: a rejected request
+  is a client error, not an upstream outage.
+verification-method: test
