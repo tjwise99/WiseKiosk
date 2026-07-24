@@ -1,13 +1,26 @@
 active: true
 derived: false
-header: ''
+header: |
+  No siloed-tool manifest at the repository root; Dependabot ecosystems point at feature dirs
 level: 1.72
 links:
 - SYS035: null
 normative: true
-rationale: ''
+rationale: |
+  Partially realised already by SRS061 (Dependabot ecosystems per FOUNDATIONS §2); this states the
+  general physical-placement principle that SRS061's Dependabot-config consequence derives from.
+
+  TST `silo-inspection` — verification-method: inspection — PENDING (active: false) — header
+  `Pending: repo-root silo check`. Text: a depth-1 scan of the repo root finds no language
+  manifest/lockfile/venv except repo-level config; each Dependabot `updates[]` except github-actions
+  targets a non-root dir holding the matching manifest. Buildable now (~15 lines) but authored ahead
+  of its script; activated with a `references` entry when the check lands.
 ref: ''
-reviewed: null
+reviewed: ZORIsp2rtcJ8sTPVzI18uRYaQxJcUa1YpRIbC_ssiIE=
 status: proposed
-text: ''
-verification-method: ''
+text: |
+  No language dependency manifest, lockfile, or virtual environment (package.json,
+  package-lock.json, requirements*.txt, pyproject.toml, go.mod, and the like, or a `.venv/`) shall
+  exist at the repository root; every Dependabot `updates[].directory` other than the github-actions
+  ecosystem shall resolve to a non-root feature directory that contains the corresponding manifest.
+verification-method: inspection
