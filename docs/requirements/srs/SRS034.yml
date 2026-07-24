@@ -1,0 +1,23 @@
+active: true
+derived: false
+header: |
+  Route registration is a single static compile-time list entry; no registry or discovery
+level: 1.34
+links:
+- SYS024: wrmOV72U1ifi18wtYCbklpJIuchPXqAKHuWt_7L1JRo=
+normative: true
+rationale: |
+  FOUNDATIONS §6.2 — "A static list, resolved at compile time. Not a registry,
+  not discovery, not dynamic loading" — and §5's plugin-system-with-no-plugins
+  anti-pattern. This governs how the SRS020 route is registered (the mechanism),
+  not the route's runtime behaviour; the per-route cache TTL it carries is the
+  one governed by SRS022.
+ref: ''
+reviewed: A7fDwUdM4gU5NvwqBfekzUs1cLpKlUOB3YauOrFQDHs=
+status: accepted
+text: |
+  Each module shall be bound to its GET /api/<source> route by exactly one
+  registration entry in a static list resolved at compile time, carrying that
+  route's parameter validation and cache TTL. The backend shall implement no
+  runtime module registry, no route discovery, and no dynamic route loading.
+verification-method: inspection

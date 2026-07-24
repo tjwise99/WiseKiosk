@@ -1,0 +1,27 @@
+active: true
+derived: false
+header: |
+  Adding a module changes no shared framework code
+level: 1.36
+links:
+- SYS024: wrmOV72U1ifi18wtYCbklpJIuchPXqAKHuWt_7L1JRo=
+normative: true
+rationale: |
+  FOUNDATIONS §6 — "Adding a module means adding five things in five known
+  places. Adding a module must never mean changing the framework." Expressed as
+  a positive, checkable property: the framework holds no per-module knowledge,
+  so no framework file names a module except the one registration list, and a
+  module's blast radius is its own scope plus that entry. This is the testable
+  form of the §6 invariant; the verification form (repo script vs review
+  checklist) is deferred to the repo layout (#5).
+ref: ''
+reviewed: nFdTpb0sx5L53zdMuE9ps8w06iR4L06cbLItEJ_hKto=
+status: accepted
+text: |
+  The parts a module comprises shall be confined to module-scoped locations.
+  Adding or removing a module shall touch only that module's own files — its
+  shaping library, component, configuration-schema fragment, and tests — plus
+  the single static registration list (SRS034), and shall require no edit to any
+  shared framework file. No shared framework source shall name a specific module
+  except that one registration list.
+verification-method: inspection

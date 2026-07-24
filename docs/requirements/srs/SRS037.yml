@@ -1,0 +1,25 @@
+active: true
+derived: false
+header: |
+  Tests are the contract's fifth part; a module is incomplete without them
+level: 1.37
+links:
+- SYS024: wrmOV72U1ifi18wtYCbklpJIuchPXqAKHuWt_7L1JRo=
+normative: true
+rationale: |
+  FOUNDATIONS §6.5 ("the specific obligations in TESTING.md, not 'some tests'")
+  and the TESTING.md standing obligation "Every module supplies unit tests for
+  its shaping library and a render test for its component," lifted into the tree
+  so per-module test presence is gated rather than trusted. This requirement
+  owns the completeness obligation — that both tests exist and are wired — and
+  references the render test; what the render test itself asserts (the component
+  renders supplied props without fetching) is the frontend lane's separate
+  behavioural verification, not re-derived here.
+ref: ''
+reviewed: PiPkgrMC-Ys84OmytV3cQqpphwbQ9nUHz42aWI2ybDY=
+status: accepted
+text: |
+  Each module shall supply, as part of its contract, unit tests for its shaping
+  library and a render test for its component, both wired into CI. A module
+  missing either is an incomplete module, not a passing one.
+verification-method: inspection
