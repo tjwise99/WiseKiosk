@@ -30,6 +30,13 @@ security
 
 ```{toctree}
 :hidden:
+:caption: Contracts
+
+../contracts/module-contract
+```
+
+```{toctree}
+:hidden:
 :caption: Requirements & traceability
 :glob:
 
