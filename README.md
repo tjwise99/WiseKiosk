@@ -1,11 +1,23 @@
 # WiseKiosk
 
-A config-driven smart-mirror display. A full-screen browser page renders a fixed set of modules —
-clock, compliments, weather, aviation METAR/TAF, theme-park wait times — from a handful of public
-APIs, running unattended on a display behind one-way glass. Shipped as one container image; each
-deployment is independent, customised through configuration, never through a fork.
+A config-driven smart-mirror display. A full-screen browser page renders a fixed set of five
+modules — `clock`, `compliments`, `OpenMeteo` weather, `AviationWeather` (CheckWX METAR/TAF), and
+`DisneyWaitTimes` (themeparks.wiki) — from a handful of public APIs, running unattended on a display
+behind one-way glass. The layout is fixed and there is nothing to interact with: it renders, it
+refreshes, it runs for months (SYS010). Shipped as one container image; each deployment is
+independent, customised through configuration, never through a fork (SYS007). A sixth module is
+added by a documented five-part contract, never by a plugin system (SYS024).
 
-> **Status: bootstrapping (pre-code).** The foundations are written; no application code exists yet.
+**The operator is frequently not the author.** Deployments run at the author's house and at friends'
+and family's houses — separate networks, separate configs, separate owners. This constraint outranks
+every other requirement here: it is why a bad configuration must fail loudly and legibly rather than
+as a blank screen (SYS003), why a configuration must be validatable before deployment rather than
+only at boot (SYS004), and why an upgrade must never ask the operator to read a diff or edit code
+(SYS006). → SYS002.
+
+Nothing is inherited from any prior mirror framework, and there is no compatibility layer.
+
+> **Status: bootstrapping (pre-code).** The specification is written; no application code exists yet.
 
 ## Stack
 
@@ -15,12 +27,24 @@ deployment is independent, customised through configuration, never through a for
 
 ## Documentation
 
-Start with the foundations spec; it is standalone and everything else hangs off it.
+**The requirements tree is the specification.** Every obligation WiseKiosk is built against is a
+numbered item in [`docs/requirements/`](docs/requirements/README.md) — system needs (`SYS`)
+decomposed into testable "shall" statements (`SRS`), each traced to a verification item (`TST`), with
+CI failing on a broken chain. If a statement is normative, it has an ID. The documents below explain,
+orient, and cite; none of them carries an obligation of its own.
 
-- [`docs/FOUNDATIONS.md`](docs/FOUNDATIONS.md) — what WiseKiosk is, who operates it, the settled
-  decisions, the day-one architecture, what must not be built, and the module contract.
+- [`docs/README.md`](docs/README.md) — the documentation index: which document guarantees which kind
+  of fact, and what each one excludes. Read this before adding to any document.
+- [`docs/requirements/`](docs/requirements/README.md) — the specification, and how the tree is gated
+  ([ADR 0002](docs/decisions/0002-requirements-management-doorstop.md),
+  [ADR 0005](docs/decisions/0005-traceability-gating.md)).
+- [`docs/FOUNDATIONS.md`](docs/FOUNDATIONS.md) — the settled decisions, each with the premise that
+  would reopen it. Settled means settled: do not relitigate one without its premise moving.
 - [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) — the living description of the system as built
   (a skeleton until code lands).
 - [`docs/TESTING.md`](docs/TESTING.md) — the test architecture, written as a specification before any
   tests exist.
-- [`docs/decisions/`](docs/decisions/README.md) — architecture decision records.
+- [`docs/decisions/`](docs/decisions/README.md) — the decisions that carried a rejected alternative.
+- [`docs/contracts/module-contract.md`](docs/contracts/module-contract.md) — the five-part contract
+  for adding a display module (SYS024, SRS033–SRS037).
+- [`CONTRIBUTING.md`](CONTRIBUTING.md) — running the checks and getting a change merged.

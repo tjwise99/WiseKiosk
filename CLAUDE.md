@@ -1,9 +1,14 @@
 # Agent working rules — WiseKiosk
 
-Working conventions for an AI agent in this repo. **Project facts are not here** — they live in
-[`docs/FOUNDATIONS.md`](docs/FOUNDATIONS.md) (standalone; everything hangs off it),
-[`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md), [`docs/TESTING.md`](docs/TESTING.md), and
-[`docs/decisions/`](docs/decisions/README.md). This file holds only the rules layered on top.
+Working conventions for an AI agent in this repo. **Project facts are not here.** The specification is
+the requirements tree, [`docs/requirements/`](docs/requirements/README.md) — every normative
+obligation is a numbered SYS/SRS/TST item there. Product definition lives in the
+[README](README.md), settled decisions and their reopen premises in
+[`docs/FOUNDATIONS.md`](docs/FOUNDATIONS.md), as-built structure in
+[`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md), test strategy in [`docs/TESTING.md`](docs/TESTING.md),
+and decisions with a rejected alternative in [`docs/decisions/`](docs/decisions/README.md); the index
+at [`docs/README.md`](docs/README.md) is authoritative on which holds what. This file holds only the
+rules layered on top.
 
 ## Non-negotiables
 
