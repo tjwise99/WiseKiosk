@@ -1,0 +1,16 @@
+active: false
+derived: false
+header: |
+  Pending: added-comment-volume bound on a change
+level: 1.21
+links:
+- SRS092: null
+normative: true
+rationale: ''
+ref: ''
+status: proposed
+text: |
+  Pending: a check failing a change that adds more comment lines outside a documentation facility than the
+  configured bound allows, with the bound read from configuration rather than from the checking code.
+  Activated with a references entry when the gate lands (#59).
+verification-method: test

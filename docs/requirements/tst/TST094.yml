@@ -1,0 +1,18 @@
+active: false
+derived: false
+header: |
+  Pending: classifier fixtures and language-coverage registry
+level: 1.19
+links:
+- SRS090: null
+normative: true
+rationale: ''
+ref: ''
+status: proposed
+text: |
+  Pending: a fixture suite proving, per covered language, that a narrative comment is flagged and that a
+  declaration-attached doc comment, a docstring, a justfile doc attribute, a marked shdoc block, and a
+  workflow name field are never flagged; plus a registry check failing on a tracked file extension with
+  neither a classifier arm nor a recorded exclusion. Activated with a references entry when the gate
+  lands (#59).
+verification-method: test

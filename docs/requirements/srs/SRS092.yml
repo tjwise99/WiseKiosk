@@ -1,0 +1,23 @@
+active: true
+derived: false
+header: |
+  The volume of comment prose a change adds is bounded
+level: 1.92
+links:
+- SYS043: v0892nFH1_ptHaW3_A00SDf0ukhzFBUdXkLfwDDDD9I=
+normative: true
+rationale: |
+  SRS091 constrains the steady state, which is the wrong altitude for the failure mode that motivated
+  this domain: a single change dumping explanation into source. A per-comment cap is satisfied by many
+  short comments, so the delta is measured directly. Evading it requires spreading prose across many
+  changes, which is both a high bar and visible in review. The bound is configured rather than written
+  into the check because the right value is a judgment that will move (SYS016); unlike the rejected
+  consecutive-line threshold it is not a proxy for anything — it measures exactly the quantity of concern.
+ref: ''
+reviewed: ryS6j7MfmAvz0G6CGvPrIa0ZDIncLdhdQbTN-_Dq9ic=
+status: accepted
+text: |
+  The number of comment lines outside a documentation facility that a single change adds shall be bounded,
+  and a change exceeding that bound shall fail the repository's checks. The bound shall be a configured
+  value rather than a literal in the checking code.
+verification-method: test

@@ -1,0 +1,25 @@
+active: true
+derived: false
+header: |
+  Enumerated temporal-change phrasings fail the comment checks
+level: 1.93
+links:
+- SYS043: v0892nFH1_ptHaW3_A00SDf0ukhzFBUdXkLfwDDDD9I=
+normative: true
+rationale: |
+  A comment describing what the repository used to do is stale the moment it is written, and it is the
+  one form of rot cheap to detect. The obligation is deliberately worded as "the enumerated phrasings
+  fail" rather than "temporal phrasing is prevented": the phrasing space is open, so a claim of
+  prevention would be a false signal (SYS031) while a claim about an enumerated list is decidable. This
+  is a denylist and fails open on the first phrasing nobody listed — stated here rather than discovered
+  later. It is not the control; SRS089's review obligation is. The live instance this was written
+  against is scripts/check-verify-ci-parity.mjs, whose header describes a convention the repository no
+  longer follows.
+ref: ''
+reviewed: CKIPTNVw1aJlRqxPCZVLo-lGPH2cS57XnKHA6c0KpKc=
+status: accepted
+text: |
+  A comment containing one of the enumerated temporal-change phrasings shall fail the repository's comment
+  checks. The enumerated set shall be a configured value rather than a literal in the checking code, and
+  the check shall not be represented as proving the absence of superseded claims.
+verification-method: test

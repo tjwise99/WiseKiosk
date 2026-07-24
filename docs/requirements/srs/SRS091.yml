@@ -1,0 +1,27 @@
+active: true
+derived: false
+header: |
+  A comment outside its language's documentation facility is at most one line
+level: 1.91
+links:
+- SYS043: v0892nFH1_ptHaW3_A00SDf0ukhzFBUdXkLfwDDDD9I=
+normative: true
+rationale: |
+  The volume constraint, and the reason the documentation facility is named rather than assumed. A
+  tunable limit on consecutive narrative lines was considered and rejected: it is a proxy for a judgment
+  the classifier already makes directly, and a long passage split across several shorter blocks satisfies
+  it while defeating the intent. A hard one-line cap has the opposite property — the only way to pass is
+  to be terse, which is the behaviour wanted. It costs no configuration key, and it is the repository's
+  existing comment style rather than a new threshold. The cap is liveable only because every artifact
+  class has an unbounded documentation facility to hold real explanation; where that facility is not a
+  comment at all — an OCI LABEL, a workflow name field, a justfile attribute — the cap does not reach it.
+ref: ''
+reviewed: 6-AEwYqCQOLNTdCJQvfv_Mdd2H2fsdUqHVQsxnF1MWA=
+status: accepted
+text: |
+  A comment that is not part of its language's marked or structural documentation facility — a
+  declaration-attached doc comment in Go or TypeScript, a Python docstring, a justfile doc attribute, a
+  marked shdoc block in shell, an OCI label in a Dockerfile, or a name field in workflow YAML — shall be
+  at most one line. Content within that documentation facility shall be unbounded in length and shall not
+  be penalised by any comment-length check.
+verification-method: test

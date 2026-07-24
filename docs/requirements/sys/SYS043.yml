@@ -1,0 +1,28 @@
+active: true
+derived: false
+header: |
+  An authored comment cannot silently rot
+level: 1.43
+links: []
+normative: true
+rationale: |
+  A comment has no compiler and no test: it can contradict the code beside it for years and nothing
+  reports it. FOUNDATIONS §5 names the boundary-specific case, where a comment is the only thing holding
+  two sides in agreement (SYS023 owns it); the general case is duller and more common — a deferred task
+  nobody tracked, a reference to an item that was renumbered, a sentence describing a repository state
+  that has since changed. Each is mechanically decidable, which is what separates this need from SYS042:
+  form and resolution can be gated, whereas whether a sentence is rationale cannot. The gated set is a
+  floor and fails open by construction — enumerated phrasings catch the phrasings enumerated and nothing
+  else. That is tolerable here because the harm is a misleading comment rather than a leaked secret, and
+  because the residue is carried as a named review obligation rather than assumed away; it is stated
+  plainly so no reader mistakes the floor for proof (SYS031).
+ref: ''
+reviewed: v0892nFH1_ptHaW3_A00SDf0ukhzFBUdXkLfwDDDD9I=
+status: accepted
+text: |
+  A comment in a first-party authored artifact shall not fall out of date undetected. Every deferred-work
+  marker shall name a tracked issue, every requirement or decision cited in a comment shall resolve, and
+  the enumerated phrasings that assert a superseded repository state shall fail the repository's checks.
+  Properties of a comment that are not mechanically decidable shall be carried as named review
+  obligations rather than assumed.
+verification-method: test

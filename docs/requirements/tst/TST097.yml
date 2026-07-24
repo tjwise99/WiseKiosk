@@ -1,0 +1,15 @@
+active: false
+derived: false
+header: |
+  Pending: enumerated temporal-change phrasing rejected
+level: 1.22
+links:
+- SRS093: null
+normative: true
+rationale: ''
+ref: ''
+status: proposed
+text: |
+  Pending: a check failing an induced comment containing an enumerated temporal-change phrasing, with the
+  enumerated set read from configuration. Activated with a references entry when the gate lands (#59).
+verification-method: test
