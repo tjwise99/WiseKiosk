@@ -4,7 +4,7 @@ header: |
   Frontend does not runtime-re-validate proxied payloads
 level: 1.32
 links:
-- SYS023: Atk7HXMyRvSN_SCxSwc2M0538nq16WUIr4lz3AUFY-U=
+- SYS023: vqoPBOFlW4NRIpov_HBa66bXY8P8VLnuvFp2lNyicUk=
 normative: true
 rationale: |
   Compile-time types are erased at runtime, but the failure a runtime validator
@@ -16,7 +16,7 @@ rationale: |
   that does not exist. Revisit only if the two sides ever become
   independently deployable.
 ref: ''
-reviewed: s3bzFCpmAynUMq1SVWon-JEqODAJ_Dlz2cvIXmxGkOc=
+reviewed: igmPWO6ZXfcMVSGuzFYLRYcYjnt8bzT97Tf3PgpBAG8=
 status: accepted
 text: |
   The frontend shall not re-validate proxied payloads at runtime; cross-boundary

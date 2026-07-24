@@ -4,7 +4,7 @@ header: |
   Design review confirms no single-implementation abstraction lacking a second consumer
 level: 1.86
 links:
-- SYS041: duSqbaOnifp47cK2RMEy7rr8THC8Cqb35hZ1M46ZSwI=
+- SYS041: flc7zNad92_-mjob2BjfvqsrRtrNxKUOmHwGtjuLWuk=
 normative: true
 rationale: |
   Locates "abstraction without a second consumer" at its actual verification event —
@@ -12,7 +12,7 @@ rationale: |
   module-adding form (no plugin system, registry, or discovery); this is the complementary
   system-wide review obligation.
 ref: ''
-reviewed: h_WARiLbu-LOPrSxfMaVFCWZBzlK5t_976YA1LhA7qk=
+reviewed: QvriRGJT9ikQff5EoQ7Mvbgh1isYYXyjZqquZqaFbgQ=
 status: accepted
 text: |
   The design-review record for each change shall confirm that the change introduces no abstraction or

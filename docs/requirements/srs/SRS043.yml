@@ -24,7 +24,7 @@ rationale: |
   (obtaining live data over time); SYS022's single-origin constraint is already
   carried by SRS042.
 ref: ''
-reviewed: bkwBpqi-FT68OIKmT1CFkDu4zjaCMcJiHQH_tQ48pvw=
+reviewed: jb952Z7a4PzFe3-fBArCnnaMprtZrz5HHpFBR4VGo1c=
 status: accepted
 text: |
   The frontend shall refresh module data by polling and shall depend on no

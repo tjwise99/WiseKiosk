@@ -4,7 +4,7 @@ header: |
   A comment references rationale by citation, never by restatement
 level: 1.88
 links:
-- SYS042: zSftWlqCKYGFrIztL6VLKF-27b-3tVZkzysxcdkfqj0=
+- SYS042: Xof7xtbjGBvB2q9bGzp0y-Hkn5q0qQV4aFaDulZF7Sg=
 normative: true
 rationale: |
   Without a stated boundary, "cite the home" degrades into copying a sentence and appending an ID, which
@@ -13,7 +13,7 @@ rationale: |
   all. A bare document-section citation fails on a second count: a section anchor is not an identifier the
   citation resolver can check, so the ID form is what the obligation asks for.
 ref: ''
-reviewed: jniXxwAHFsFbomglOhCI6AR9zmgAUIb8e4Idr_-9B6U=
+reviewed: 0993OmvoAzgi1xWga0PlQrLbaEH-z56kA05GfKF9sG4=
 status: accepted
 text: |
   Where a comment reaches rationale, it shall do so by citing a requirement ID or ADR number and shall not

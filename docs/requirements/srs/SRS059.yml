@@ -4,7 +4,7 @@ header: |
   Blocking lint and type checks per package
 level: 1.59
 links:
-- SYS027: 3T38wo5b-NGHKqfq-ESd3d4trWsojs8Bvf50rXCCm-s=
+- SYS027: FRnXIxh_X2oPBzF0B0hP0HQxNN0oy3zLgHTrz_wLDas=
 normative: true
 rationale: |
   Keeps the cheapest correctness gate from silently degrading to advisory-only;

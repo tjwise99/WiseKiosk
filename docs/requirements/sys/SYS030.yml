@@ -19,7 +19,7 @@ rationale: |
   header would be inert or harmful - a control that does not function where
   deployed.
 ref: ''
-reviewed: YDGw098jQ7Q4hRdENhRzzX10Sf9EmroNymqq-SIqV18=
+reviewed: a_TnT2iDMzkqB4Aj2ySH1fYaq1pyGupBv6iXo3mOnz0=
 status: accepted
 text: |
   When serving the display frontend, the backend shall accompany its responses

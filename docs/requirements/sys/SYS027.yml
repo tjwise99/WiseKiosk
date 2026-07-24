@@ -16,7 +16,7 @@ rationale: |
   dependencies is a distinct need (SYS028) - different origin, remediation, and
   cadence; scanning the whole built image is SYS029.
 ref: ''
-reviewed: 3T38wo5b-NGHKqfq-ESd3d4trWsojs8Bvf50rXCCm-s=
+reviewed: FRnXIxh_X2oPBzF0B0hP0HQxNN0oy3zLgHTrz_wLDas=
 status: accepted
 text: |
   Source code the project authors shall not merge while it carries a detectable

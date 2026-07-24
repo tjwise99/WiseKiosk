@@ -4,7 +4,7 @@ header: |
   Shaping library is pure functions with no I/O, unit-testable in isolation
 level: 1.33
 links:
-- SYS024: wrmOV72U1ifi18wtYCbklpJIuchPXqAKHuWt_7L1JRo=
+- SYS024: h3-BB26CIO3s86rk1gJVjLpPnDr6NuByu5coK4iPu3o=
 normative: true
 rationale: |
   The shaping library is pure functions with no I/O, unit-tested directly — the
@@ -14,7 +14,7 @@ rationale: |
   these functions produce is the value the single boundary schema defines
   (SRS029) and the module component renders from the generated type (SRS031).
 ref: ''
-reviewed: 9Vuifm5MlGlRObeO6BbN-msdzdIAuVzXLndB42A0JiA=
+reviewed: pg5QqyC_bKblpWzENCiCJ6XNOrFO5H-4E-T43cuDbY0=
 status: accepted
 text: |
   Each module's construction of its upstream request URL and its parsing and

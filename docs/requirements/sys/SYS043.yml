@@ -20,7 +20,7 @@ rationale: |
   convention for a need of mixed method is the weaker one — SYS031, SYS036, and SYS040 all land
   inspection while carrying gated children, and only the wholly mechanical SYS039 claims test.
 ref: ''
-reviewed: kcIFBI_e2x7kEmU51iZ60SAGMklrSIODgfL-kcLXBDQ=
+reviewed: mUGmCRgMKlPo_nP-uh-E5L6FI87bqVgVOSv3oQhWiRQ=
 status: accepted
 text: |
   A comment in a first-party authored artifact shall not fall out of date undetected. Every deferred-work

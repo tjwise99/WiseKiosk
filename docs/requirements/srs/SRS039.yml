@@ -16,7 +16,7 @@ rationale: |
   upstream — so the honest home for a client-side-render fact is the
   static-SPA/client-render axiom, not the live-data one.
 ref: ''
-reviewed: GhL5HsKXBfEzmFogLNiFZa3SGUd4FD0PJKWWqp4lvBo=
+reviewed: Tj3lWsNDcxd_BACvfIdin5Op6-hzODsSapArApiyzOU=
 status: accepted
 text: |
   The clock module shall render and advance entirely client-side from the

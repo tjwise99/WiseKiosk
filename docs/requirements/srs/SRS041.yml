@@ -22,7 +22,7 @@ rationale: |
   (Playwright-class) asserting the structural properties at each size; the
   residual aesthetic judgement stays human.
 ref: ''
-reviewed: pw9wCnJqy6Lv6FzWAJ9wlnMraxgl9fcR6B05stHZlZs=
+reviewed: 7EPcNMjsVkQtAa-hBumcw7lWDTJXler_pP99wq51cLk=
 status: accepted
 text: |
   The display page shall assemble the modules named in the configuration, each

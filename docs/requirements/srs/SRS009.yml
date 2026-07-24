@@ -4,7 +4,7 @@ header: |
   Configuration is delivered to the page unmodified
 level: 1.9
 links:
-- SYS014: -TQZS24GIMnd2tSwd5DHbkufzhlLs36z6XeYGabdiYA=
+- SYS014: kTjk8XFN2g4F4f4a2xWzoe9UPEY89kEB0F5J6CkBluM=
 normative: true
 rationale: |
   The configuration is a static file the page fetches; no component parses or

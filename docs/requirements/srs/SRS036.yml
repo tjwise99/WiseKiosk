@@ -4,7 +4,7 @@ header: |
   Adding a module changes no shared framework code
 level: 1.36
 links:
-- SYS024: wrmOV72U1ifi18wtYCbklpJIuchPXqAKHuWt_7L1JRo=
+- SYS024: h3-BB26CIO3s86rk1gJVjLpPnDr6NuByu5coK4iPu3o=
 normative: true
 rationale: |
   The module contract — adding a module means adding five things in five known
@@ -15,7 +15,7 @@ rationale: |
   form of that invariant; the verification form (repo script vs review
   checklist) is deferred to the repo layout (#5).
 ref: ''
-reviewed: nFdTpb0sx5L53zdMuE9ps8w06iR4L06cbLItEJ_hKto=
+reviewed: 8Iz8FuzhMmTOvgCDQToH5TshJxmBl31MnJyxl6y0HtA=
 status: accepted
 text: |
   The parts a module comprises shall be confined to module-scoped locations.

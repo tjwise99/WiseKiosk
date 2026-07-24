@@ -4,7 +4,7 @@ header: |
   Static security scanning of first-party source
 level: 1.58
 links:
-- SYS027: 3T38wo5b-NGHKqfq-ESd3d4trWsojs8Bvf50rXCCm-s=
+- SYS027: FRnXIxh_X2oPBzF0B0hP0HQxNN0oy3zLgHTrz_wLDas=
 normative: true
 rationale: |
   Mechanises the security review the solo project has no second human to

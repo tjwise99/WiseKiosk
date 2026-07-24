@@ -10,7 +10,7 @@ rationale: |
   an address that must always hold one value, keys that are never read. If
   turning it breaks the deployment, it is a constant, not a key.
 ref: ''
-reviewed: lWhR4w-T1Vt_s76tWJ38otpQYsRApntSr193B8QF8WA=
+reviewed: yJnvlCKpHBVwFJM3ZmGJRcer-EzrbedxtexqGPvDHJw=
 status: accepted
 text: |
   Every key offered by the configuration format shall be operator-tunable:

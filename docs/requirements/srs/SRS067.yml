@@ -16,7 +16,7 @@ rationale: |
   `scripts/check-verify-ci-parity.mjs` script (see Build task B1). Asserts the parity holds against
   the live justfile and workflow, and fails on an induced divergence.
 ref: ''
-reviewed: ZNTg-4XTnFrCG6TIks4KUgU5miJDG-eV1Eaw3YKAiYI=
+reviewed: RfsDIGdob9jOXIqd99BRqN41qzLrUk_fGM-jKtPyEeQ=
 status: accepted
 text: |
   Every check invoked by `just verify` shall also run in the CI checks workflow; a check present in

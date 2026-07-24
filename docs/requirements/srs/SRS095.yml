@@ -4,7 +4,7 @@ header: |
   A requirement or decision cited in a comment resolves
 level: 1.95
 links:
-- SYS043: kcIFBI_e2x7kEmU51iZ60SAGMklrSIODgfL-kcLXBDQ=
+- SYS043: mUGmCRgMKlPo_nP-uh-E5L6FI87bqVgVOSv3oQhWiRQ=
 normative: true
 rationale: |
   SRS088 makes citation the only legal way for a comment to reach rationale, which is worth nothing if

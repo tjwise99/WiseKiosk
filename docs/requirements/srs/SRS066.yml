@@ -4,7 +4,7 @@ header: |
   Standard browser-hardening response headers
 level: 1.66
 links:
-- SYS030: YDGw098jQ7Q4hRdENhRzzX10Sf9EmroNymqq-SIqV18=
+- SYS030: a_TnT2iDMzkqB4Aj2ySH1fYaq1pyGupBv6iXo3mOnz0=
 normative: true
 rationale: |
   Closes MIME-confusion, clickjacking, referrer-leakage, and unused-capability

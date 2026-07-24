@@ -14,7 +14,7 @@ rationale: |
   (SRS027) — not on rate limiting alone. The proxy is bounded this way by
   design, and a static-analysis rate-limiting finding is expected.
 ref: ''
-reviewed: iDFNl3INnR6LXeRlHUt0mPuuu4hVYgASAMic3R19skU=
+reviewed: szam5gPHPMXdmfL7WtI-9KiX_Buai2NqsFGsqXwXkB8=
 status: accepted
 text: |
   The system shall bound the requests it issues to upstream public APIs — in

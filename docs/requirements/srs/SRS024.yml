@@ -4,7 +4,7 @@ header: |
   Per-route rate limiting on the upstream path
 level: 1.24
 links:
-- SYS021: iDFNl3INnR6LXeRlHUt0mPuuu4hVYgASAMic3R19skU=
+- SYS021: szam5gPHPMXdmfL7WtI-9KiX_Buai2NqsFGsqXwXkB8=
 normative: true
 rationale: |
   Rate limiting bounds request volume toward upstream regardless of client
@@ -15,7 +15,7 @@ rationale: |
   hit issues no upstream request and so needs no limiting.
   Thresholds are chosen in #6.
 ref: ''
-reviewed: H_xXAE1u2y0hjZ0ld-wfjlrTTr8aMJi5by0UyWF2dXs=
+reviewed: _HaEgMpTqPYL63XduDcWDshzPjAzyGMLND_uyCbyn9k=
 status: accepted
 text: |
   Each proxy route shall enforce a rate limit that is global to the route, not

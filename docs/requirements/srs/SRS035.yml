@@ -4,7 +4,7 @@ header: |
   Config schema fragment composes into the single configuration schema
 level: 1.35
 links:
-- SYS024: wrmOV72U1ifi18wtYCbklpJIuchPXqAKHuWt_7L1JRo=
+- SYS024: h3-BB26CIO3s86rk1gJVjLpPnDr6NuByu5coK4iPu3o=
 normative: true
 rationale: |
   The module contract gives the fragment concept, reconciled here with ADR 0007
@@ -18,7 +18,7 @@ rationale: |
   receipt of that configuration as props is the frontend lane's render concern,
   not this requirement's.
 ref: ''
-reviewed: PSiIKJE16OSVyRrS8DOv9D-E2Gcn2Hr6FgmhsmZJq5U=
+reviewed: b5akMlzL9rY-UK_F0RsrnLbCA9BLqGSn8LSb-7eMpME=
 status: accepted
 text: |
   Each module shall declare the configuration it accepts as a fragment composed

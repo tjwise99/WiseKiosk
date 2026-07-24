@@ -16,7 +16,7 @@ rationale: |
   the value presents as rejected credentials while the file looks correct
   on inspection.
 ref: ''
-reviewed: sWRgV7r64N-8uOS8Hwsa45CXOCXQKZhO8dGVWkTocXg=
+reviewed: Kv2FXxkUIE0Dwl_hDS9K2oDbV5JI6ZFAwOoKKcMnz-c=
 status: accepted
 text: |
   The backend shall resolve a secret named NAME by reading the file at the

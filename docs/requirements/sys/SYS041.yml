@@ -14,7 +14,7 @@ rationale: |
   client-side) — so this is the one uncaptured case. Decided by judgment at review; inspection is the
   honest method (no test artifact).
 ref: ''
-reviewed: duSqbaOnifp47cK2RMEy7rr8THC8Cqb35hZ1M46ZSwI=
+reviewed: flc7zNad92_-mjob2BjfvqsrRtrNxKUOmHwGtjuLWuk=
 status: accepted
 text: |
   The system shall not contain an abstraction or extension point that has a single implementation and

@@ -4,7 +4,7 @@ header: |
   One schema, package-neutral, all boundary value classes
 level: 1.29
 links:
-- SYS023: Atk7HXMyRvSN_SCxSwc2M0538nq16WUIr4lz3AUFY-U=
+- SYS023: vqoPBOFlW4NRIpov_HBa66bXY8P8VLnuvFp2lNyicUk=
 normative: true
 rationale: |
   "Every payload shape and every parameter name" (TESTING.md Boundary tier)

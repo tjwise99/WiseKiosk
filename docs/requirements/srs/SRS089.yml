@@ -4,8 +4,8 @@ header: |
   Design review confirms a mechanically-clean comment is not misplaced rationale
 level: 1.89
 links:
-- SYS042: zSftWlqCKYGFrIztL6VLKF-27b-3tVZkzysxcdkfqj0=
-- SYS043: kcIFBI_e2x7kEmU51iZ60SAGMklrSIODgfL-kcLXBDQ=
+- SYS042: Xof7xtbjGBvB2q9bGzp0y-Hkn5q0qQV4aFaDulZF7Sg=
+- SYS043: mUGmCRgMKlPo_nP-uh-E5L6FI87bqVgVOSv3oQhWiRQ=
 normative: true
 rationale: |
   The honest ceiling. Every mechanical check in this domain decides form and position; none decides whether

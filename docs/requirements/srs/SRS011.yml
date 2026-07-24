@@ -4,7 +4,7 @@ header: |
   The backend is config-blind
 level: 1.11
 links:
-- SYS016: lWhR4w-T1Vt_s76tWJ38otpQYsRApntSr193B8QF8WA=
+- SYS016: yJnvlCKpHBVwFJM3ZmGJRcer-EzrbedxtexqGPvDHJw=
 normative: true
 rationale: |
   ADR 0007: the backend has no code path that knows the display configuration
@@ -12,7 +12,7 @@ rationale: |
   answer to non-tunable keys; secret delivery via the environment is not
   configuration and is specified in the secrets domain (#35).
 ref: ''
-reviewed: cZO9QbqDqaQqku8rQG4yTlxJmp7tUldwBDVCVuUkeAc=
+reviewed: cutMCaWpxfsmqcYht3MrChs9iXgtAL288aq6Q_zEGuE=
 status: accepted
 text: |
   The backend shall have no configuration concept: no configuration file of

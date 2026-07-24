@@ -4,7 +4,7 @@ header: |
   Module component renders from props; owns no cross-cutting policy
 level: '1.40'
 links:
-- SYS024: wrmOV72U1ifi18wtYCbklpJIuchPXqAKHuWt_7L1JRo=
+- SYS024: h3-BB26CIO3s86rk1gJVjLpPnDr6NuByu5coK4iPu3o=
 normative: true
 rationale: |
   The module contract defines its Svelte-component part: it
@@ -21,7 +21,7 @@ rationale: |
   domain), not here. Parented to the module-contract SYS024, of which the Svelte
   component is contract part three.
 ref: ''
-reviewed: O6fg0yGfH4GDOo4ccE1-h2_7IcA8TRH60L3jjCRmmMc=
+reviewed: 4lng2Xeylj1V2l2YDyoWBnb1VLQioZGnCyw2c3Ll0Gg=
 status: accepted
 text: |
   Each display module shall be rendered by a Svelte component that receives its
