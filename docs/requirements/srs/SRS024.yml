@@ -8,11 +8,11 @@ links:
 normative: true
 rationale: |
   Rate limiting bounds request volume toward upstream regardless of client
-  behaviour (SYS021; FOUNDATIONS §3, which anticipates a static-analysis finding
-  absent it). It is global per route because a per-client-address limit is inert
-  behind container NAT, where every client presents the same masqueraded address
-  (a §5 control that does not function where deployed). It gates the upstream
-  path because a cache hit issues no upstream request and so needs no limiting.
+  behaviour (SYS021); a static-analysis finding is expected absent it. It is
+  global per route because a per-client-address limit is inert behind container
+  NAT, where every client presents the same masqueraded address (a control that
+  does not function where deployed). It gates the upstream path because a cache
+  hit issues no upstream request and so needs no limiting.
   Thresholds are chosen in #6.
 ref: ''
 reviewed: H_xXAE1u2y0hjZ0ld-wfjlrTTr8aMJi5by0UyWF2dXs=

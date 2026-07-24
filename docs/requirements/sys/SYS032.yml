@@ -6,7 +6,7 @@ level: 1.32
 links: []
 normative: true
 rationale: |
-  TESTING.md "Where a check belongs" and FOUNDATIONS §7 — a check placed by convenience ("here,
+  TESTING.md "Where a check belongs" — a check placed by convenience ("here,
   because a test runner already existed") rather than by altitude is a defect in the suite's
   architecture. Raised to a need so placement is inspectable rather than trusted.
 ref: ''

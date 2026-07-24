@@ -7,7 +7,7 @@ links: []
 normative: true
 rationale: |
   This is a solo project with no second human reviewer, so the automated gates
-  are the review function - FOUNDATIONS §5 rejects security by vigilance. The
+  are the review function - security resting on vigilance is not a control. The
   regression this need guards against is a defect in code the project itself
   authored reaching a deployed image: static security analysis catches
   injection and taint-class flaws, and blocking lint and type checks catch

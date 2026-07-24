@@ -9,7 +9,7 @@ normative: true
 rationale: |
   Validating against known-good patterns keeps malformed or unrecognized
   requests from reaching upstream and bounds the proxy so it cannot be driven to
-  forward arbitrary requests (SYS021; FOUNDATIONS §3). The client-facing form of
+  forward arbitrary requests (SYS021). The client-facing form of
   a rejection is specified by SRS026.
 ref: ''
 reviewed: sSeoJbdBo1EYrJVWtTd-NCHzQP4DcTVE335Qb_dYrac=

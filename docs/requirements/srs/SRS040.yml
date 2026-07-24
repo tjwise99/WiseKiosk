@@ -7,7 +7,7 @@ links:
 - SYS024: wrmOV72U1ifi18wtYCbklpJIuchPXqAKHuWt_7L1JRo=
 normative: true
 rationale: |
-  FOUNDATIONS §6.3 defines the Svelte-component part of the module contract: it
+  The module contract defines its Svelte-component part: it
   renders the payload and receives its config as props. This item fixes the
   component's role and boundaries — it renders what it is given and owns no
   cross-cutting policy — the frontend expression of the principle that a component

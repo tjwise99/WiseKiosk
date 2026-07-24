@@ -14,10 +14,10 @@ rationale: |
   close standard browser-side abuse classes - framing and clickjacking, MIME
   confusion, referrer leakage - the same-origin design does not itself address.
   Raised to a stakeholder need so each converts to a testable response-header
-  obligation rather than living as vigilance (FOUNDATIONS §5). Transport
-  security headers (HSTS) are excluded by intent: the kiosk serves HTTP on a
-  trusted LAN (FOUNDATIONS §3), so an HSTS header would be inert or harmful - a
-  control that does not function where deployed.
+  obligation rather than living as vigilance. Transport security headers (HSTS)
+  are excluded by intent: the kiosk serves HTTP on a trusted LAN, so an HSTS
+  header would be inert or harmful - a control that does not function where
+  deployed.
 ref: ''
 reviewed: YDGw098jQ7Q4hRdENhRzzX10Sf9EmroNymqq-SIqV18=
 status: accepted

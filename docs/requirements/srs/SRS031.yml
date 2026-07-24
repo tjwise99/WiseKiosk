@@ -18,7 +18,7 @@ status: accepted
 text: |
   The generated types shall be the types used on both sides: the backend route
   handlers shall use the generated request and response types; each module
-  component shall consume its generated success-payload type (FOUNDATIONS §6.3);
+  component shall consume its generated success-payload type;
   and the frontend's per-module error-render path (SYS005) shall consume the
   generated upstream-failure and rejection body types. No boundary payload,
   parameter, or error body shall be served or rendered through a hand-declared

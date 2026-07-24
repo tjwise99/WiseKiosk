@@ -6,10 +6,10 @@ level: 1.24
 links: []
 normative: true
 rationale: |
-  FOUNDATIONS §1 requires that growth to a sixth module be "a documented
-  contract, not a plugin system," and §6 fixes both the five parts and the
-  invariant that adding a module never means changing the framework. §5 forbids
-  a plugin system with no plugins and abstraction without a second consumer, so
+  Growth to a sixth module must be a documented contract, not a plugin system,
+  and the contract fixes both the five parts and the invariant that adding a
+  module never means changing the framework. A plugin system with no plugins,
+  and abstraction without a second consumer (SYS041), are both forbidden, so
   the contract is documentation an author follows, not runtime machinery to
   maintain. This is the anchor need SRS033–037 decompose; it is distinct from
   SYS007 (operator customisation through configuration), which governs the

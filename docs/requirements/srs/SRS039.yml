@@ -7,15 +7,14 @@ links:
 - SYS025: 0Rl-mTTDYV-uhd-e42p1ZTSnmooOBdPL9jMSkQtzorI=
 normative: true
 rationale: |
-  FOUNDATIONS §3 states "The clock renders client-side," and §5 names "a
-  backend-driven clock that exists only to exercise a transport" as an
-  anti-pattern: the data modules refresh every ten to fifteen minutes, nothing
-  needs a live channel, and a server tick for the clock would be machinery bought
-  against a case that does not exist. The parent is SYS025, not SYS020: SYS020
-  governs modules that draw on an external data source, and its own rationale
-  explicitly excludes the clock because it has no upstream — so the honest home
-  for a client-side-render fact is the static-SPA/client-render axiom, not the
-  live-data one.
+  The clock renders client-side, and a backend-driven clock that exists only to
+  exercise a transport is an anti-pattern: the data modules refresh every ten to
+  fifteen minutes, nothing needs a live channel, and a server tick for the clock
+  would be machinery bought against a case that does not exist. The parent is
+  SYS025, not SYS020: SYS020 governs modules that draw on an external data
+  source, and its own rationale explicitly excludes the clock because it has no
+  upstream — so the honest home for a client-side-render fact is the
+  static-SPA/client-render axiom, not the live-data one.
 ref: ''
 reviewed: GhL5HsKXBfEzmFogLNiFZa3SGUd4FD0PJKWWqp4lvBo=
 status: accepted

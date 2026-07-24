@@ -6,7 +6,7 @@ level: 1.16
 links: []
 normative: true
 rationale: |
-  FOUNDATIONS §5 forbidden row: a port that breaks the healthcheck if changed,
+  A forbidden config-key shape: a port that breaks the healthcheck if changed,
   an address that must always hold one value, keys that are never read. If
   turning it breaks the deployment, it is a constant, not a key.
 ref: ''

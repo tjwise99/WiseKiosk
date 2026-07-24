@@ -7,8 +7,8 @@ links:
 - SYS024: wrmOV72U1ifi18wtYCbklpJIuchPXqAKHuWt_7L1JRo=
 normative: true
 rationale: |
-  FOUNDATIONS §6.1 — "Pure functions, no I/O, unit-tested directly… this is the
-  valuable part" — and the TESTING.md Unit tier, whose speed and totality depend
+  The shaping library is pure functions with no I/O, unit-tested directly — the
+  valuable part — and the TESTING.md Unit tier, whose speed and totality depend
   on that purity. Complements SRS020, which governs the route's transport
   behaviour, by constraining the internal design the route invokes; the payload
   these functions produce is the value the single boundary schema defines

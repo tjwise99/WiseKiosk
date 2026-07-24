@@ -7,19 +7,19 @@ links:
 - SYS020: NfdW-FS-JHgzypQXWbo9MTkZZvjslZko1suFru3-bH4=
 normative: true
 rationale: |
-  FOUNDATIONS §3 states the refresh is frontend-driven, and §5 rejects a
-  server-push channel for ten-to-fifteen-minute data as a transport chosen before
-  the access pattern — so the frontend polls and introduces no live channel. Each
+  The refresh is frontend-driven; a server-push channel for ten-to-fifteen-minute
+  data is a transport chosen before the access pattern, so the frontend polls and
+  introduces no live channel. Each
   module refreshes on its own cadence rather than a single global interval because
   the sources differ in how often they change and how tolerant they are of request
   volume. The cadence is a module-owned constant set by the author, not an
-  operator configuration key: it is a source-determined value, and FOUNDATIONS §5
-  holds that such a value is a constant, not a knob — exposing it would invite an
+  operator configuration key: it is a source-determined value, and such a value
+  is a constant, not a knob — exposing it would invite an
   operator to set a wrong value and provoke upstream rate-limiting (429s), so
   SYS016 (every offered key is operator-tunable) is deliberately not engaged
   because no key is offered. The per-module cadence is the front-of-house twin of
-  the route's response-cache TTL (the software-architect's SRS034 / FOUNDATIONS
-  §6.2), and the two are chosen together so the poll does not out-run the cache.
+  the route's response-cache TTL (the software-architect's SRS034), and the two
+  are chosen together so the poll does not out-run the cache.
   Concrete interval values are deferred to open-question #6. Parented to SYS020
   (obtaining live data over time); SYS022's single-origin constraint is already
   carried by SRS042.

@@ -7,7 +7,7 @@ links:
 - SYS024: wrmOV72U1ifi18wtYCbklpJIuchPXqAKHuWt_7L1JRo=
 normative: true
 rationale: |
-  FOUNDATIONS §6.5 ("the specific obligations in TESTING.md, not 'some tests'")
+  The contract ("the specific obligations in TESTING.md, not 'some tests'")
   and the TESTING.md standing obligation "Every module supplies unit tests for
   its shaping library and a render test for its component," lifted into the tree
   so per-module test presence is gated rather than trusted. This requirement

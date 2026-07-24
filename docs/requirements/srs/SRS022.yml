@@ -8,11 +8,11 @@ links:
 normative: true
 rationale: |
   The cache provides request dedupe and upstream politeness for a 10–15 minute
-  refresh cadence (FOUNDATIONS §3). Keying on (source, query) rather than the
+  refresh cadence. Keying on (source, query) rather than the
   query alone keeps sources from colliding on a shared parameter. The query
   string is used as delivered by the trusted frontend — no normalization and no
   concurrent-miss coalescing, which would be generality against a caller that
-  does not exist (§5). The TTL values and their reasoning are chosen in #6; this
+  does not exist. The TTL values and their reasoning are chosen in #6; this
   fixes the mechanism and that the TTL is a code constant, not a tunable key
   (consistent with SRS011).
 ref: ''

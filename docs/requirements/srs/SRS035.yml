@@ -7,13 +7,13 @@ links:
 - SYS024: wrmOV72U1ifi18wtYCbklpJIuchPXqAKHuWt_7L1JRo=
 normative: true
 rationale: |
-  FOUNDATIONS §6.4 gives the fragment concept, reconciled here with ADR 0007
+  The module contract gives the fragment concept, reconciled here with ADR 0007
   (configuration validation is frontend-owned, run at apply time and by the desk
   validator; the backend is config-blind) and with ADR 0008's consequence that
   the configuration schema is a separate artifact from the boundary schema and
-  never crosses the wire. §6.4's phrase "validated at boot" is superseded by
-  ADR 0007 and dissolves at the FOUNDATIONS sunset (#42); this requirement
-  follows ADR 0007. Keeps the module contract from re-declaring configuration
+  never crosses the wire. The "validated at boot" phrasing in the earlier
+  module-contract prose is superseded by ADR 0007; this requirement follows
+  ADR 0007. Keeps the module contract from re-declaring configuration
   shape or opening a second single-definition regime. The module component's
   receipt of that configuration as props is the frontend lane's render concern,
   not this requirement's.

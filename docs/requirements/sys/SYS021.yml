@@ -11,8 +11,8 @@ rationale: |
   parameter validation against known-good patterns (SRS023), request
   deduplication and short-lived negative caching (SRS022, SRS028), per-route
   rate limiting (SRS024), and outbound timeout and response-size limits
-  (SRS027) — not on rate limiting alone. FOUNDATIONS §3 bounds the proxy this
-  way; §5 anticipates the static-analysis rate-limiting finding.
+  (SRS027) — not on rate limiting alone. The proxy is bounded this way by
+  design, and a static-analysis rate-limiting finding is expected.
 ref: ''
 reviewed: iDFNl3INnR6LXeRlHUt0mPuuu4hVYgASAMic3R19skU=
 status: accepted

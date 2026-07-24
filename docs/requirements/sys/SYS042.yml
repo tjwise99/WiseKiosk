@@ -9,8 +9,8 @@ rationale: |
   SYS037 places every fact about WiseKiosk in one canonical document, but its text reaches documents
   only — a source file is not one, so rationale copied into a comment sits outside the rule that would
   otherwise catch it. That copy is the failure: it reviews as ordinary code, drifts from the home it was
-  taken from, and nothing resolves the disagreement. FOUNDATIONS §5 already forbids the boundary-specific
-  instance (an invariant held by a comment pointing at its twin, owned by SYS023); this is the general
+  taken from, and nothing resolves the disagreement. The boundary-specific instance — an invariant held
+  by a comment pointing at its twin — is already forbidden and owned by SYS023; this is the general
   need. Four homes, not three: the taxonomy in docs/README.md gives FOUNDATIONS prose, TESTING prose, an
   ADR, and a requirement's rationale field, ARCHITECTURE being explicitly excluded from carrying decision
   rationale. Mechanism comments are untouched — how a loop works is a fact about that code, not about

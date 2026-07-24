@@ -7,8 +7,8 @@ links:
 - SYS024: wrmOV72U1ifi18wtYCbklpJIuchPXqAKHuWt_7L1JRo=
 normative: true
 rationale: |
-  FOUNDATIONS §6.2 — "A static list, resolved at compile time. Not a registry,
-  not discovery, not dynamic loading" — and §5's plugin-system-with-no-plugins
+  Route registration is a static list resolved at compile time: not a registry,
+  not discovery, not dynamic loading — and not the plugin-system-with-no-plugins
   anti-pattern. This governs how the SRS020 route is registered (the mechanism),
   not the route's runtime behaviour; the per-route cache TTL it carries is the
   one governed by SRS022.
