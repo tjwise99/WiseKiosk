@@ -1,0 +1,14 @@
+active: false
+derived: false
+header: |
+  Pending: same-origin CSP header test
+level: 1.55
+links:
+- SRS065: null
+normative: true
+rationale: ''
+ref: ''
+status: proposed
+text: |
+  Pending: integration test requesting the backend's frontend-serving route and asserting the response carries a Content-Security-Policy whose connect-src is exactly 'self' and whose default-src is 'self', and asserting the page still renders under the served policy. Fails if the header is absent, if connect-src admits any host, wildcard, scheme-source, or 'unsafe-' form, or if the served policy breaks rendering. Lands with the backend that serves the frontend; activated with a references entry to the integration test then.
+verification-method: test

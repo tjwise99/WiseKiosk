@@ -1,0 +1,23 @@
+active: true
+derived: false
+header: |
+  Same-origin content-security policy
+level: 1.65
+links:
+- SYS022: UxmZaGNutKPkxXAqgD0JJ79j_MVK8yfgwjayCZM1QqA=
+- SYS030: YDGw098jQ7Q4hRdENhRzzX10Sf9EmroNymqq-SIqV18=
+normative: true
+rationale: |
+  Converts the single-origin data plane (SYS022) from a code convention into a
+  browser-enforced invariant a test can assert on the wire; this is the
+  connect-src enforcement SYS022 deferred to the security domain.
+ref: ''
+reviewed: JFrgwz89S4v6vEURreH2vkap72jUgtdOJlkRdWh65-8=
+status: accepted
+text: |
+  When serving the display frontend, the backend shall accompany its responses
+  with a Content-Security-Policy that restricts the page's resource and
+  connection origins to its own origin - at minimum default-src 'self' and
+  connect-src 'self' - so the browser permits no cross-origin fetch or resource
+  load. The policy shall admit no origin beyond 'self' for connect-src.
+verification-method: test

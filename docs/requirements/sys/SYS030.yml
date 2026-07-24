@@ -1,0 +1,30 @@
+active: true
+derived: false
+header: |
+  Runtime responses enforce the browser security posture
+level: '1.30'
+links: []
+normative: true
+rationale: |
+  The single-origin data plane (SYS022) is a backend and frontend behavioural
+  property that nothing forces the browser to honour until the served response
+  says so. A Content-Security-Policy restricting connect-src to the page's own
+  origin makes that posture falsifiable at the browser, where a test can assert
+  on the wire that no cross-origin fetch is permitted. The remaining headers
+  close standard browser-side abuse classes - framing and clickjacking, MIME
+  confusion, referrer leakage - the same-origin design does not itself address.
+  Raised to a stakeholder need so each converts to a testable response-header
+  obligation rather than living as vigilance (FOUNDATIONS §5). Transport
+  security headers (HSTS) are excluded by intent: the kiosk serves HTTP on a
+  trusted LAN (FOUNDATIONS §3), so an HSTS header would be inert or harmful - a
+  control that does not function where deployed.
+ref: ''
+reviewed: YDGw098jQ7Q4hRdENhRzzX10Sf9EmroNymqq-SIqV18=
+status: accepted
+text: |
+  When serving the display frontend, the backend shall accompany its responses
+  with security headers that constrain the browser's handling of the page -
+  restricting the origins it may connect to and load resources from, denying
+  framing, suppressing MIME-type sniffing, and minimising referrer disclosure -
+  so the page's security posture is enforced at the browser rather than assumed.
+verification-method: test
