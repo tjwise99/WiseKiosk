@@ -1,0 +1,20 @@
+active: true
+derived: false
+header: |
+  Every documentation citation resolves
+level: 1.39
+links: []
+normative: true
+rationale: |
+  SRS003/TST003 already prove this for Markdown-link syntax — do not re-author that half; cited here.
+  Extending the same check-links idiom to bare-text ID citations is what closes the fact-graduation
+  loop — a back-reference left stale by a rename or retirement is caught the same way a broken
+  relative link is today.
+ref: ''
+reviewed: Nz5pPzvXlLQK82gQlLsMLeptQ4-bmPELdmTMUk897AE=
+status: proposed
+text: |
+  Every citation in tracked documentation to a file, a requirement ID, or an ADR number — whether a
+  Markdown link or a bare-text mention — shall resolve to something that currently exists; a citation
+  to a renamed, deleted, or renumbered target shall fail.
+verification-method: test

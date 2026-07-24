@@ -1,0 +1,21 @@
+active: true
+derived: false
+header: |
+  The ADR index and the decisions directory agree
+level: 1.83
+links:
+- SYS039: null
+normative: true
+rationale: |
+  TST `adr-index-completeness-check` — verification-method: test — PENDING (active: false) — header
+  `Pending: ADR index completeness check`. Text: a small script (check-links.mjs shape) asserting the
+  decisions/ directory and README table agree. Activated with a `references` entry when the script
+  lands.
+ref: ''
+reviewed: caBIIBpZnT1ccadXku46sH87U775ymvOvdgXKJwwQfs=
+status: proposed
+text: |
+  Every file under docs/decisions/ matching the ADR filename pattern shall appear as a row in
+  decisions/README.md, numbered sequentially with no gap or duplicate, and every table row shall
+  resolve to a real file.
+verification-method: test

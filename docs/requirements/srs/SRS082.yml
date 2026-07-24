@@ -1,0 +1,22 @@
+active: true
+derived: false
+header: |
+  Bare-text requirement-ID and ADR citations in docs resolve
+level: 1.82
+links:
+- SYS039: null
+normative: true
+rationale: |
+  TST `bare-text-citation-resolver` — verification-method: test — PENDING (active: false) — header
+  `Pending: bare-text citation resolver`. Text: a scanner extending scripts/check-links.mjs
+  enumerates valid IDs from the Doorstop tree and ADR index and fails on any bare-text citation to an
+  absent ID. One scanner, stdlib-only, same job step as check-links — do not add a second tool.
+  Activated with a `references` entry when the scanner lands. (This same scanner is the artifact for
+  the PR2 rationale-by-reference requirement.)
+ref: ''
+reviewed: 1fBU5F-_aVxwoDmzauUQYlHRuWNeX3xfbsUvJ35Dhw0=
+status: proposed
+text: |
+  Every bare-text citation of a requirement ID (SYS/SRS/TST + number) or ADR number in tracked
+  documentation shall resolve to an existing item or decision.
+verification-method: test
