@@ -1,7 +1,7 @@
 active: true
 derived: false
 header: |
-  Secret resolution: file at <NAME>_FILE, trailing newlines stripped
+  Secret resolution: file at <NAME>_FILE, trailing whitespace stripped
 level: 1.15
 links:
 - SYS018: XbqkgZn-AXeUwSMDNSKdZOY8fp57KO6Xe2SeCuCGgVM=
@@ -11,15 +11,17 @@ rationale: |
   file and an environment variable — and a file path is what container
   platforms and secrets managers already provide (decision on #35,
   superseding the FOUNDATIONS §3 env-var-fallback sketch). Trailing-
-  newline stripping removes the `echo > file` footgun that presents as
-  rejected credentials while the file looks correct on inspection.
+  whitespace stripping removes the `echo > file` footgun — and reduces a
+  whitespace-only file to empty, which is unresolvable per SRS016 — where
+  the value presents as rejected credentials while the file looks correct
+  on inspection.
 ref: ''
-reviewed: -oqyvQaY28qWG16152KY6nqVpYXcfrIZ9BiBe5dyw_A=
+reviewed: sWRgV7r64N-8uOS8Hwsa45CXOCXQKZhO8dGVWkTocXg=
 status: accepted
 text: |
   The backend shall resolve a secret named NAME by reading the file at the
   path given by the environment variable <NAME>_FILE. The secret value
-  shall be the file content with trailing newline characters stripped. No
+  shall be the file content with trailing whitespace stripped. No
   other delivery path shall exist; in particular, the backend shall not
   read a secret from a bare <NAME> environment variable.
 verification-method: test

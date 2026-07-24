@@ -14,14 +14,14 @@ rationale: |
   what is missing and leaves the rest of the display running (SYS005) —
   the debuggable outcome chosen on #35 over failing to boot.
 ref: ''
-reviewed: 8K2OhDHtk6XcYpDL7kaWcliD0y9XkerrxcKgJDBHb98=
+reviewed: hNqEgS_2nCqcZNoNnMxF2kiZ5fGLzvAockExJk1t4pY=
 status: accepted
 text: |
   The backend shall resolve a secret when handling a request for the
   source that needs it, not at boot; the backend shall boot successfully
   regardless of which secrets are deliverable. When a source's secret is
   unresolvable — <NAME>_FILE unset, or the file missing, unreadable, or
-  empty after trailing-newline stripping — requests to that source's
+  empty after trailing-whitespace stripping — requests to that source's
   route shall fail with the same legible
   per-source failure treatment as any other upstream failure, identifying
   the unresolvable secret by name, while all other sources remain

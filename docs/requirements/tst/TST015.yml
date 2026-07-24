@@ -11,7 +11,7 @@ ref: ''
 status: proposed
 text: |
   Pending: unit tests of secret resolution — value read from the file at
-  <NAME>_FILE; trailing newline characters stripped; a bare <NAME>
+  <NAME>_FILE; trailing whitespace stripped; a bare <NAME>
   environment variable ignored. Lands with the backend skeleton (#9);
   activated and given a references entry then.
 verification-method: test
