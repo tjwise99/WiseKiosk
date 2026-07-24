@@ -4,7 +4,7 @@ header: |
   Bare-text requirement-ID and ADR citations in docs resolve
 level: 1.82
 links:
-- SYS039: null
+- SYS039: Nz5pPzvXlLQK82gQlLsMLeptQ4-bmPELdmTMUk897AE=
 normative: true
 rationale: |
   TST `bare-text-citation-resolver` — verification-method: test — PENDING (active: false) — header

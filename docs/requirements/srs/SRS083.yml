@@ -4,7 +4,7 @@ header: |
   The ADR index and the decisions directory agree
 level: 1.83
 links:
-- SYS039: null
+- SYS039: Nz5pPzvXlLQK82gQlLsMLeptQ4-bmPELdmTMUk897AE=
 normative: true
 rationale: |
   TST `adr-index-completeness-check` — verification-method: test — PENDING (active: false) — header

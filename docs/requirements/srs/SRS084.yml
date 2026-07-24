@@ -4,7 +4,7 @@ header: |
   No CRLF line endings in tracked text
 level: 1.84
 links:
-- SYS040: null
+- SYS040: S42ba0WgC2CqlnptPhwb1btqlC2O_VNaUSJa3pXYO3Y=
 normative: true
 rationale: |
   The verifying TST — verification-method: test — ACTIVE — references the `just check-eol` recipe.

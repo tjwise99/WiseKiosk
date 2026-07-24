@@ -4,7 +4,7 @@ header: |
   The repo-level verify target owns repo-spanning checks
 level: 1.69
 links:
-- SYS032: null
+- SYS032: 7iK8tC8wVheogsu9yqpieQ2IqP0CVMfSwBNSQPWw2cQ=
 normative: true
 rationale: |
   Gives the altitude rule a concrete home in the existing `just verify` / CI structure.

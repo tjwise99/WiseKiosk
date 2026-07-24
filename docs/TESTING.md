@@ -59,10 +59,8 @@ only prose here.
   as one.
 - **The standalone validator is exercised in CI against known-good and known-bad configs.** The
   validator failing to reject a malformed config is a product bug, not a testing gap.
-- **Repo-wide checks live at repo level**, not inside whichever package happened to have a test runner
-  first.
-- **Every test file is wired into CI.** A test that has never run is worse than no test — it is a false
-  signal.
+- **Repo-wide checks live at repo level** → SYS032 / SRS069.
+- **Every test file is wired into CI** → SYS031 / SRS067 / SRS068.
 
 ---
 
@@ -73,7 +71,7 @@ matters — that two things agree, that a control functions where deployed — i
 construction. A high number buys confidence it has not earned.
 
 Report coverage. Read it to find untested areas. **Do not gate on a number, and do not treat a high
-number as safety.** Gate on the standing obligations above.
+number as safety.** Gate on the standing obligations above. → SYS033 / SRS070.
 
 ---
 
@@ -86,13 +84,15 @@ Put a check at the altitude it is true at:
 - **A module's shaping/rendering** → with that module.
 
 A check placed by convenience — "here, because a test runner already existed" — instead of by altitude
-is a defect in the suite's architecture, not a neutral choice.
+is a defect in the suite's architecture, not a neutral choice. → SYS032 / SRS069.
 
 ---
 
 ## Review cadence
 
-The test architecture is reviewed **whenever a module is added** and **whenever the transport
-changes**. This is scheduled deliberately: removing or reshaping a test feels like a regression even
+The test architecture is reviewed **whenever a module is added** and **whenever the boundary
+transport** (the OpenAPI schema / codegen mechanism, [ADR 0008](decisions/0008-boundary-contract-openapi-codegen.md))
+**changes**. This is scheduled deliberately: removing or reshaping a test feels like a regression even
 when the test proves nothing, so without a scheduled review the suite silently becomes permanent
 architecture nobody revisits. Code gets that review by default; tests must be given it explicitly.
+→ SYS034 / SRS071.

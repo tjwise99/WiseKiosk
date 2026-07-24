@@ -4,7 +4,7 @@ header: |
   No gate in `just verify` or CI asserts a coverage percentage as a quality bar
 level: 1.6
 links:
-- SRS070: null
+- SRS070: Le0aomXbyQbjtg9DaWm1AblLfW0ZBWrJ3rYCZFBYnDY=
 normative: true
 rationale: ''
 ref: ''

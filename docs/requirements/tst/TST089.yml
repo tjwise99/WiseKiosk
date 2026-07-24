@@ -4,7 +4,7 @@ header: |
   check-branch.sh gates branch shape, issue linkage, and the PR-title convention
 level: 1.14
 links:
-- SRS085: null
+- SRS085: ReVOuyFQaHVGAtUCZqV6TrawcK3UEyXLkifNldY4Lto=
 normative: true
 rationale: ''
 ref: ''

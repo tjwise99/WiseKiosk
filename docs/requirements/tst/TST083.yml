@@ -4,7 +4,7 @@ header: |
   Spliced diagrams and generated architecture artifacts are byte-identical to a fresh regeneration
 level: 1.11
 links:
-- SRS079: null
+- SRS079: 600fysQLyGwJxXViwRQr2hL5evs58w8u3isP_rbFuew=
 normative: true
 rationale: ''
 ref: ''

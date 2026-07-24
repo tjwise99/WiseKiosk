@@ -4,7 +4,7 @@ header: |
   Generated architecture diagrams are not stale
 level: 1.79
 links:
-- SYS038: null
+- SYS038: jzRACTZ93mPwIqQNfJ_4Be7yhIgkdEg3_Cb30ec3YtU=
 normative: true
 rationale: |
   The verifying TST — verification-method: test — ACTIVE — references `scripts/splice-arch-diagrams.mjs`

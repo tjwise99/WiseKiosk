@@ -4,7 +4,7 @@ header: |
   Formalizing a prose obligation edits the prose to cite the new ID and stop restating it
 level: 1.76
 links:
-- SYS037: null
+- SYS037: OKZU1T6kdWe1EBxIQKK6msz9V98hi1dRkxXFFRtps0U=
 normative: true
 rationale: |
   Names this rewrite's load-bearing convention so it is applied by rule, not memory, each round; gives

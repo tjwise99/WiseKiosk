@@ -4,7 +4,7 @@ header: |
   Each third-party dependency justified at review; native-toolchain exceptions recorded in an ADR
 level: 1.73
 links:
-- SYS036: null
+- SYS036: GVSUTkMgBTt2cA4J-MFAboLa8nCBn6h57amUY8f6wCk=
 normative: true
 rationale: |
   Puts the admission decision where judgment lives — review — and gives the native-toolchain exception

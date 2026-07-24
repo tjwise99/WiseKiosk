@@ -4,7 +4,7 @@ header: |
   Review triggers are documented and wired to the change procedure
 level: 1.71
 links:
-- SYS034: null
+- SYS034: oejNji_hLH_4nN0L2T2x0YcwqOmTEp656mFcn69bhII=
 normative: true
 rationale: |
   Makes the trigger detectable against concrete artifacts (the module-add procedure; an ADR 0008

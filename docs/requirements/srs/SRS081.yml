@@ -4,7 +4,7 @@ header: |
   Each architecture element's link to real code is checked in review
 level: 1.81
 links:
-- SYS038: null
+- SYS038: jzRACTZ93mPwIqQNfJ_4Be7yhIgkdEg3_Cb30ec3YtU=
 normative: true
 rationale: |
   Cites ADR 0003 ("Model-vs-real-code drift is not auto-verified... carried by review").

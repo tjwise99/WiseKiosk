@@ -4,7 +4,7 @@ header: |
   `likec4 validate` passes: no undefined element, unresolved relationship, or invalid view
 level: '1.10'
 links:
-- SRS078: null
+- SRS078: VkfTVE2PZyDYIf7BATrf6ZrXo0IfWAyqC_ICBGdVuO8=
 normative: true
 rationale: ''
 ref: ''

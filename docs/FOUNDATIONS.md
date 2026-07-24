@@ -84,13 +84,14 @@ true. Where a decision carries a rejected alternative worth preserving, it gradu
 
 Dependency-footprint discipline generalises: **prefer the standard library and a direct HTTP call
 over a package**, and treat any dependency pulling a native build toolchain as disqualified unless
-nothing else will do.
+nothing else will do. → SYS036 / SRS073 / SRS074.
 
 **Dev tooling is siloed with the feature it serves, not dropped at the repo root.** A tool's
 dependency manifest, lockfile, and virtual environment live in that feature's directory, and its
 Dependabot ecosystem points there — so the requirements tool's `requirements-dev.txt` and venv sit
 under [`requirements/`](requirements/README.md), not `/`. This keeps each tool's footprint legible
 and removable as a unit, and stops the root filling with unrelated manifests as tooling accretes.
+→ SYS035 / SRS072.
 
 ---
 
@@ -228,15 +229,13 @@ shaping libraries expect — run locally/scheduled, since CI holds no keys).
 - **Every module supplies unit tests for its shaping library and a render test for its component.**
 - **Every config schema rejects at least one realistic malformed input in a test** — the operator is
   not the author, so validation failing correctly is a product feature.
-- **Repo-wide checks live at repo level**, not inside whichever package happened to have a test
-  runner first.
-- **Every test file is wired into CI.** A test that has never run is worse than no test — it is a
-  false signal.
+- **Repo-wide checks live at repo level** → SYS032 / SRS069.
+- **Every test file is wired into CI** → SYS031 / SRS067 / SRS068.
 
 Coverage is **diagnostic, never evidence.** Report it, read it to find untested areas, and gate on
-the obligations above — which name what must be *proven*. Reviewed whenever a module is added and
-whenever the transport changes; scheduled, because tests resist deletion and the review will not
-arise naturally.
+the obligations above — which name what must be *proven*. → SYS033 / SRS070. Reviewed whenever a
+module is added and whenever the boundary transport changes (ADR 0008); scheduled, because tests
+resist deletion and the review will not arise naturally. → SYS034 / SRS071.
 
 ---
 

@@ -4,7 +4,7 @@ header: |
   No gate asserts a coverage percentage as a quality bar
 level: '1.70'
 links:
-- SYS033: null
+- SYS033: 7JvWZKSExgfB4UBrQXjxBm8HlbA4mogdgdOXzzT9Qg0=
 normative: true
 rationale: |
   Distinguishes coverage-as-closure (permitted, ADR 0005 gate 3) from coverage-as-quality-number
