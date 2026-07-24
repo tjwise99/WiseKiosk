@@ -1,0 +1,27 @@
+active: true
+derived: false
+header: |
+  Third-party dependency risk gated and tracked
+level: 1.28
+links: []
+normative: true
+rationale: |
+  The project is largely glue over third-party libraries it did not write and
+  cannot patch in place, so inherited and transitive dependency vulnerabilities
+  are its highest-yield supply-chain exposure. Blocking a known-vulnerable
+  version at merge and surfacing updates automatically manages that risk by
+  tracking it rather than discovering it after disclosure. Distinct from
+  first-party defect gating (SYS027): different origin, a different remediation
+  (a version bump, not a code fix), and a different cadence. Scanning the whole
+  built image, including base-layer packages the application never imports, is
+  SYS029.
+ref: ''
+reviewed: tMsclKoaX_K5Ky22TJz-N1RFnYVaIosKPkFaD4BfGPM=
+status: accepted
+text: |
+  The project shall not merge a change that introduces a dependency with a
+  known vulnerability, and shall keep its dependency set current through
+  automated update proposals. Continuous integration shall fail a pull request
+  when any resolved dependency has a known vulnerability at or above the
+  configured severity threshold.
+verification-method: test

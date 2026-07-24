@@ -1,0 +1,14 @@
+active: false
+derived: false
+header: |
+  Pending: npm dependency vulnerability gate test
+level: 1.49
+links:
+- SRS060: null
+normative: true
+rationale: ''
+ref: ''
+status: proposed
+text: |
+  Pending: check asserting a pinned npm dependency with a known advisory at or above the gate's severity threshold fails the dependency-vulnerability job (expected: npm audit). Fails if a vulnerable pin at or above the threshold passes. Lands with package.json; activated with a references entry to the fixture then.
+verification-method: test

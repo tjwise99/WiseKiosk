@@ -1,0 +1,14 @@
+active: false
+derived: false
+header: |
+  Pending: Dependabot ecosystem configuration inspection
+level: '1.50'
+links:
+- SRS061: null
+normative: true
+rationale: ''
+ref: ''
+status: proposed
+text: |
+  Pending: inspection of .github/dependabot.yml asserting a gomod ecosystem entry and an npm ecosystem entry, each grouped and each targeting the directory its manifest lives in (per FOUNDATIONS §2). Inspection only - it proves the configuration shape, not that update proposals are produced. Fails if either ecosystem is absent or ungrouped. Lands when go.mod and package.json exist; activated with a references entry then.
+verification-method: inspection

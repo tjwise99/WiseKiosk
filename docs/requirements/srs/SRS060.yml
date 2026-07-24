@@ -1,0 +1,21 @@
+active: true
+derived: false
+header: |
+  Dependency vulnerability gate
+level: '1.60'
+links:
+- SYS028: tMsclKoaX_K5Ky22TJz-N1RFnYVaIosKPkFaD4BfGPM=
+normative: true
+rationale: |
+  Turns "a dependency should be updated" into "merge is blocked". The
+  reachability allowance keeps the Go gate actionable rather than noisy.
+ref: ''
+reviewed: bBN_RJTBeZfiYXUdJygOkHRFbdGjZLzJYzIkJJmMLTM=
+status: accepted
+text: |
+  Continuous integration shall fail a pull request as a required check when any
+  resolved Go-module or npm dependency has a known vulnerability at or above the
+  configured severity threshold. For the Go toolchain the gate may consider
+  reachability - a vulnerability in code that is present but never called need
+  not fail the gate.
+verification-method: test
