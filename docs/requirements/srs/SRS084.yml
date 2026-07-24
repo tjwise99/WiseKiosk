@@ -1,0 +1,16 @@
+active: true
+derived: false
+header: |
+  No CRLF line endings in tracked text
+level: 1.84
+links:
+- SYS040: null
+normative: true
+rationale: |
+  The verifying TST — verification-method: test — ACTIVE — references the `just check-eol` recipe.
+ref: ''
+reviewed: zGRPbV972n1GsGxnf_a93lOkgUoqmjnwegoy1IH3OJs=
+status: proposed
+text: |
+  Tracked text files shall use LF line endings; a CRLF shall fail the gate.
+verification-method: test

@@ -1,0 +1,26 @@
+active: true
+derived: false
+header: |
+  check-branch.sh gates branch shape, issue linkage, and the PR-title convention
+level: 1.14
+links:
+- SRS085: null
+normative: true
+rationale: ''
+ref: ''
+references:
+- path: scripts/check-branch.sh
+  type: file
+- path: scripts/branch-shape.regex
+  type: file
+- path: scripts/conventional-commit.regex
+  type: file
+reviewed: jHPirwD-8OGvbNlBI1ROC8xmeWxmthUKQrSUSUeozYo=
+status: proposed
+text: |
+  Verified by `scripts/check-branch.sh` (branch shape against `scripts/branch-shape.regex`, issue
+  linkage and Development-field record via the GitHub API) and, for the PR title, `scripts/
+  check-commit-msg.sh --pr-title` against `scripts/conventional-commit.regex`. Wired into CI as the
+  process job; the PR-title half is CI-only by nature (ADR 0002) — cited here in prose, not
+  referenced against `.github/`.
+verification-method: test

@@ -1,0 +1,19 @@
+active: true
+derived: false
+header: |
+  Branch shape, issue linkage, and PR-title convention are gated
+level: 1.85
+links:
+- SYS040: null
+normative: true
+rationale: |
+  The verifying TST — verification-method: test — ACTIVE — references `scripts/check-branch.sh` (and
+  `scripts/conventional-commit.regex` / `scripts/branch-shape.regex`). The PR-title check is CI-only
+  by nature — reference the script/regex, not the workflow (ADR 0002).
+ref: ''
+reviewed: zbA3NRp3bGIalZyIF5-1zYiUYHi6dCw48wKDV1ZLWw0=
+status: proposed
+text: |
+  A working branch shall be named `type_number-snake_name` and link to an open, type-labeled issue,
+  and a pull request's title shall be a Conventional Commit, per ADR 0006.
+verification-method: test

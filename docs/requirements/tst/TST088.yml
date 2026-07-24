@@ -1,0 +1,19 @@
+active: true
+derived: false
+header: |
+  `git grep -lIP '\r$'` finds no CRLF in tracked text
+level: 1.13
+links:
+- SRS084: null
+normative: true
+rationale: ''
+ref: ''
+references:
+- path: justfile
+  type: file
+reviewed: QaPPUlNXld3eQBvkJvba0jzV6tYOQPHKcYAYiF1US1Y=
+status: proposed
+text: |
+  Verified by `justfile`'s `check-eol` recipe (`git grep -lIP '\r$' -- .`); a match fails the gate.
+  Wired into CI as the docs-and-hygiene job's CRLF step.
+verification-method: test
