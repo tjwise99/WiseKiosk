@@ -1,0 +1,23 @@
+active: true
+derived: false
+header: |
+  A graduated obligation's prose cites its requirement ID and stops restating it
+level: 1.9
+links:
+- SRS076: null
+normative: true
+rationale: ''
+ref: ''
+references:
+- path: docs/TESTING.md
+  type: file
+- path: docs/FOUNDATIONS.md
+  type: file
+reviewed: VqmZPzFQBAh9Si7JU5-ab1nO27zj80w6t1xEZ04YXg8=
+status: proposed
+text: |
+  Verified by inspecting `docs/TESTING.md` and `docs/FOUNDATIONS.md`: this PR's own graduation edits
+  (the no-dead-test, check-altitude, coverage-stance, review-cadence, dev-tooling-siloing, and
+  dep-footprint obligations) cite their new requirement IDs and no longer restate the obligation as
+  independent normative text.
+verification-method: inspection

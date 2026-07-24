@@ -1,0 +1,20 @@
+active: true
+derived: false
+header: |
+  A maintained table names each canonical document, its guarantee, and its exclusion
+level: 1.75
+links:
+- SYS037: null
+normative: true
+rationale: |
+  Makes the taxonomy a standing artifact rather than an implicit convention. Placed at
+  `docs/README.md` (new file): the taxonomy spans every canonical document (FOUNDATIONS,
+  ARCHITECTURE, TESTING, the ADR index, the requirements tree, the docs site), so it belongs at a
+  repo-wide docs index rather than nested inside the Doorstop-specific `docs/requirements/README.md`.
+ref: ''
+reviewed: XoYz_IGLf_h0gsCDP1Bd1Yy8x3KdRNcxnI1bqDxwYgM=
+status: proposed
+text: |
+  The repository shall maintain an explicit table naming each canonical document, what it guarantees,
+  and what it explicitly excludes, so the single-home rule has a referenceable definition.
+verification-method: inspection
