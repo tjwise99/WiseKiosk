@@ -1,0 +1,23 @@
+active: true
+derived: false
+header: |
+  No abstraction is built without a second consumer
+level: 1.41
+links: []
+normative: true
+rationale: |
+  FOUNDATIONS §5 — "abstraction without a second consumer," and "if something exists to support a
+  case that does not exist yet, it should not exist yet." SYS024 already forbids this in the
+  module-adding path (no plugin system); this generalizes it system-wide. The sibling §5 residuals are
+  already captured concretely — transport-before-access by SRS043 (frontend polls; no server-push),
+  and production-architecture-serving-a-test by SRS039 (the clock renders client-side) — so this is
+  the one uncaptured row. Decided by judgment at review; inspection is the honest method (no test
+  artifact).
+ref: ''
+reviewed: duSqbaOnifp47cK2RMEy7rr8THC8Cqb35hZ1M46ZSwI=
+status: proposed
+text: |
+  The system shall not contain an abstraction or extension point that has a single implementation and
+  no second consumer. At design review the system shall be inspected to confirm that generality is
+  not introduced ahead of a demonstrated second use.
+verification-method: inspection

@@ -1,0 +1,21 @@
+active: true
+derived: false
+header: |
+  Design review confirms no single-implementation abstraction lacking a second consumer
+level: 1.86
+links:
+- SYS041: duSqbaOnifp47cK2RMEy7rr8THC8Cqb35hZ1M46ZSwI=
+normative: true
+rationale: |
+  Locates FOUNDATIONS §5's "abstraction without a second consumer" at its actual verification event —
+  a reviewer reading the diff — because no test artifact can decide it. SYS024 already gates the
+  module-adding form (no plugin system, registry, or discovery); this is the complementary
+  system-wide review obligation.
+ref: ''
+reviewed: h_WARiLbu-LOPrSxfMaVFCWZBzlK5t_976YA1LhA7qk=
+status: proposed
+text: |
+  The design-review record for each change shall confirm that the change introduces no abstraction or
+  extension point that has a single implementation and no second consumer, so generality is not added
+  ahead of a demonstrated second use.
+verification-method: inspection
