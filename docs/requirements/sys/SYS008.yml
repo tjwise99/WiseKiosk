@@ -1,4 +1,4 @@
-active: false
+active: true
 derived: false
 header: |
   Kiosk full-screen rendering is the primary target
@@ -12,7 +12,8 @@ rationale: |
   kiosk viewport. The residual aesthetic judgment stays human, but the
   structural properties are machine-checked.
 ref: ''
-status: proposed
+reviewed: yukJzgqQiw3ve8PqGKbF8DLMIeNAq5X4MEdYWUk3FGI=
+status: accepted
 text: |
   The page shall render the configured module layout full-screen at the kiosk
   display's viewport: every configured module visible in its region, with no
