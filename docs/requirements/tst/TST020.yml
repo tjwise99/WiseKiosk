@@ -11,8 +11,9 @@ ref: ''
 status: proposed
 text: |
   Pending: backend integration test asserting GET /api/<source> returns the
-  boundary-contract-shaped payload for a supported source, and that identical
-  requests yield equivalent responses with no per-client or cross-request state
-  retained. Lands with the backend skeleton (#9); activated and given a
-  references entry then.
+  boundary-contract-shaped payload for a supported source, and that the payload
+  for a request is determined solely by that request — no per-client or session
+  state — with cache-hit/miss behaviour (whether an upstream call occurs)
+  covered separately by TST022. Lands with the backend skeleton (#9); activated
+  and given a references entry then.
 verification-method: test

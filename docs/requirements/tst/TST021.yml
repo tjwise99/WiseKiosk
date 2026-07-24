@@ -2,7 +2,7 @@ active: false
 derived: false
 header: |
   Pending: all-sources-proxied inspection
-level: '1.21'
+level: 1.21
 links:
 - SRS021: null
 normative: true

@@ -2,7 +2,7 @@ active: false
 derived: false
 header: |
   Pending: rejected-request client-contract test
-level: '1.26'
+level: 1.26
 links:
 - SRS026: null
 normative: true

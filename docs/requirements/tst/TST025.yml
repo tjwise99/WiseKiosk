@@ -2,7 +2,7 @@ active: false
 derived: false
 header: |
   Pending: secret rotation-without-restart test
-level: '1.25'
+level: 1.25
 links:
 - SRS025: null
 normative: true

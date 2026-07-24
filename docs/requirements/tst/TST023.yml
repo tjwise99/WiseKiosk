@@ -2,7 +2,7 @@ active: false
 derived: false
 header: |
   Pending: parameter-validation rejection test
-level: '1.23'
+level: 1.23
 links:
 - SRS023: null
 normative: true

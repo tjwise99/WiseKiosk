@@ -2,7 +2,7 @@ active: false
 derived: false
 header: |
   Pending: TTL cache-behaviour test (liveness canary)
-level: '1.22'
+level: 1.22
 links:
 - SRS022: null
 normative: true

@@ -2,7 +2,7 @@ active: false
 derived: false
 header: |
   Pending: upstream timeout & size-bound test
-level: '1.27'
+level: 1.27
 links:
 - SRS027: null
 normative: true

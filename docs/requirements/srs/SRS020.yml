@@ -13,13 +13,16 @@ rationale: |
   definition. Statelessness is stated as an observable so it can be tested
   rather than asserted.
 ref: ''
-reviewed: 23whCA1e99ku0ycuYQYdeu17OgzSTusy60cgSkeIr_E=
+reviewed: xL2DoR2hHf0lMQFQYtYUy80Vzq1rheBfN8ALUbPlo7o=
 status: accepted
 text: |
   For each supported external source, the backend shall expose a stateless
   endpoint GET /api/<source> that fetches the source's upstream data and returns
-  it as JSON shaped to the payload the frontend renders. The endpoint shall
-  retain no per-client or cross-request state: identical requests shall yield
-  equivalent responses independent of request history, and no per-client
-  identifier shall be retained.
+  it as JSON shaped to the payload the frontend renders. The endpoint shall hold
+  no per-client or session state: it shall not distinguish between clients, and
+  the payload it returns for a request shall be determined solely by that
+  request, not by who sent it or by earlier requests. The shared response cache
+  (SRS022), keyed on the request itself, is not per-client state — it may
+  determine whether a request is served from cache, but not the payload a client
+  receives.
 verification-method: test

@@ -4,7 +4,7 @@ header: |
   Client-facing contract for rejected requests
 level: 1.26
 links:
-- SYS020: NfdW-FS-JHgzypQXWbo9MTkZZvjslZko1suFru3-bH4=
+- SYS021: iDFNl3INnR6LXeRlHUt0mPuuu4hVYgASAMic3R19skU=
 normative: true
 rationale: |
   SRS023 and SRS024 reject invalid and over-limit requests but do not say what
@@ -14,7 +14,7 @@ rationale: |
   status codes, the reject-before-upstream behaviour, and the separation from
   the upstream-failure shape.
 ref: ''
-reviewed: mvDXVSI9cYR6yqRonGQnFElgBOJ6Dlm36ih5GaopeJg=
+reviewed: PMMiygvOt6IID7RRIW3Tf-j4CaBo2dcUaJZKfOyW9tM=
 status: accepted
 text: |
   A request the backend rejects before making any upstream call shall return a

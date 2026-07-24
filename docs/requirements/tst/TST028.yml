@@ -2,7 +2,7 @@ active: false
 derived: false
 header: |
   Pending: negative-caching test
-level: '1.28'
+level: 1.28
 links:
 - SRS028: null
 normative: true
