@@ -1,0 +1,21 @@
+active: true
+derived: false
+header: |
+  Repo-spanning checks are invoked at repo level, none nested in a package suite
+level: 1.5
+links:
+- SRS069: rNN0tV88xJZymsYjzUb-df5USPtT-RC8T-ENmZbUptA=
+normative: true
+rationale: ''
+ref: ''
+references:
+- path: justfile
+  type: file
+reviewed: cdTzSFYZCQStCXjMF9qQiTiAvf0jRL5q6M-q7HYk1Xs=
+status: accepted
+text: |
+  Verified by inspecting `justfile`'s `verify` recipe: every check that spans both packages or the
+  repository as a whole (links, line endings, requirements-tree integrity, boundary/lint/build,
+  docs-site, architecture) is a `verify` dependency invoked at repo level, and none is hosted inside a
+  single package's own test target.
+verification-method: inspection

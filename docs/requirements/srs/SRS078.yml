@@ -1,0 +1,18 @@
+active: true
+derived: false
+header: |
+  The LikeC4 architecture model validates
+level: 1.78
+links:
+- SYS038: jzRACTZ93mPwIqQNfJ_4Be7yhIgkdEg3_Cb30ec3YtU=
+normative: true
+rationale: |
+  The verifying TST — verification-method: test — ACTIVE — references `justfile` (the `arch-export`
+  recipe's `likec4 validate` step, run by `check-arch`).
+ref: ''
+reviewed: ONwfuZdvP1lOC1y_Rq5QO3B5F0gmQDWmapR9bxw8B3I=
+status: accepted
+text: |
+  The architecture model shall validate — no undefined element, unresolved relationship, or invalid
+  view.
+verification-method: test

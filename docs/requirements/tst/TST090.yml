@@ -1,0 +1,16 @@
+active: false
+derived: false
+header: |
+  Pending: speculative-abstraction review
+level: 1.15
+links:
+- SRS086: null
+normative: true
+rationale: ''
+ref: ''
+status: proposed
+text: |
+  Pending: a design-review checklist item confirming a change introduces no abstraction with a single
+  implementation and no second consumer. Activated with a references entry when the design-review
+  checklist is formalized.
+verification-method: inspection

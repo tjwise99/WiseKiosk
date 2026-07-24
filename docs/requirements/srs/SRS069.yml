@@ -1,0 +1,22 @@
+active: true
+derived: false
+header: |
+  The repo-level verify target owns repo-spanning checks
+level: 1.69
+links:
+- SYS032: 7iK8tC8wVheogsu9yqpieQ2IqP0CVMfSwBNSQPWw2cQ=
+normative: true
+rationale: |
+  Gives the altitude rule a concrete home in the existing `just verify` / CI structure.
+
+  TST `check-altitude-inspection` — verification-method: inspection — ACTIVE — references `justfile`
+  (the `verify` recipe enumerating the repo-spanning checks). Confirms the repo-spanning checks are
+  invoked at repo level, none nested in a package suite.
+ref: ''
+reviewed: yLrPFy-1peWYPG5zhz94ZWNbBvjnAzwFIYsdK0Vkn5g=
+status: accepted
+text: |
+  The repository-level verification target (`just verify`, mirrored in CI) shall own every
+  repo-spanning check; no repo-spanning check shall be hosted inside a single package's own test
+  target.
+verification-method: inspection

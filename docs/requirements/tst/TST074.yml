@@ -1,0 +1,21 @@
+active: true
+derived: false
+header: |
+  No gate in `just verify` or CI asserts a coverage percentage as a quality bar
+level: 1.6
+links:
+- SRS070: Le0aomXbyQbjtg9DaWm1AblLfW0ZBWrJ3rYCZFBYnDY=
+normative: true
+rationale: ''
+ref: ''
+references:
+- path: justfile
+  type: file
+reviewed: 37jYEyhUuHCSG4hhL6AYzG-WtsbvmCtWKBuKg7aKzYQ=
+status: accepted
+text: |
+  Verified by inspecting `justfile` (and, once it exists, the coverage-closure gate config): no gate
+  fails a merge on a coverage percentage treated as a quality threshold. Today no coverage gate exists
+  at all, so the inspection confirms the absence; when a coverage-closure gate lands (ADR 0005 gate 3)
+  this item is re-inspected against it.
+verification-method: inspection

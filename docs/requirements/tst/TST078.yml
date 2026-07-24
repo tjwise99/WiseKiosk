@@ -1,0 +1,15 @@
+active: false
+derived: false
+header: |
+  Pending: CGO-disabled static build
+level: 1.9
+links:
+- SRS074: null
+normative: true
+rationale: ''
+ref: ''
+status: proposed
+text: |
+  Pending: a CI build of the backend with cgo disabled completes and produces a statically linked
+  binary. Lands with the Go backend; activated with a references entry then.
+verification-method: test

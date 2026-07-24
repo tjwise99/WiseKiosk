@@ -1,0 +1,15 @@
+active: false
+derived: false
+header: |
+  Pending: content-drift review obligation
+level: '1.10'
+links:
+- SRS077: null
+normative: true
+rationale: ''
+ref: ''
+status: proposed
+text: |
+  Pending: a design-review checklist item confirming a change to described code/config updated the
+  describing doc or declared it unaffected. Activated when the review checklist is formalized.
+verification-method: inspection

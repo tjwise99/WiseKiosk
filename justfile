@@ -35,6 +35,11 @@ install-hooks:
 check-reqs:
     docs/requirements/.venv/bin/doorstop --error-all
 
+[group('checks')]
+[doc('Every `just verify` check also runs in CI, and vice versa')]
+check-verify-ci-parity:
+    node scripts/check-verify-ci-parity.mjs
+
 [group('docs')]
 [doc('First-time setup: install the pinned Sphinx toolchain into docs/site/')]
 site-install:
@@ -79,4 +84,4 @@ arch-dev:
 
 [group('checks')]
 [doc('Run every check the PR gate runs')]
-verify: check-links check-eol check-branch check-reqs check-arch check-site
+verify: check-links check-eol check-branch check-reqs check-arch check-site check-verify-ci-parity

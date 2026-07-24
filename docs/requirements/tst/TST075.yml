@@ -1,0 +1,20 @@
+active: true
+derived: false
+header: |
+  The two review triggers are named and cross-linked to the change procedure
+level: 1.7
+links:
+- SRS071: EauIVNuXge9Vvdp9sLBuu8WUFIEAoESDpQjhqZDo3nk=
+normative: true
+rationale: ''
+ref: ''
+references:
+- path: docs/TESTING.md
+  type: file
+reviewed: zkluv_8v9xm5xv2y6Z_3h6QwoL8W9Jm_S7C9cFlxUC0=
+status: accepted
+text: |
+  Verified by inspecting `docs/TESTING.md`'s Review cadence section: the two triggers — a display
+  module is added; the boundary transport changes (ADR 0008) — are named, and the module-add
+  procedure, when it is authored, is required to cross-link to the test-architecture review.
+verification-method: inspection

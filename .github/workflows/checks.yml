@@ -34,6 +34,9 @@ jobs:
           fi
           echo "No CRLF line endings."
 
+      - name: Every `just verify` check runs in CI, and vice versa
+        run: node scripts/check-verify-ci-parity.mjs
+
   requirements:
     # Validates the Doorstop requirements tree: every TST reference resolves, no
     # suspect/unreviewed/orphan items. Runs the exact gate `just check-reqs`
@@ -83,12 +86,9 @@ jobs:
     # output — the artifacts under docs/architecture/ and the diagrams spliced
     # into docs/ARCHITECTURE.md — then fails on any drift (`git diff
     # --exit-code`): the staleness gate that mirrors the repo's "CI fails on
-    # stale generated code" rule for the architecture layer. The gate step is
-    # byte-identical to `just check-arch` (whose regenerate half is the
-    # `arch-export` recipe) — CI and local cannot diverge; the install step
-    # equals `just arch-install`. The tool is siloed under docs/architecture/
-    # with the feature it serves. Browser-free: bundled WASM graphviz, no
-    # chromium. No secrets: pure model validation + codegen.
+    # stale generated code" rule for the architecture layer. The tool is siloed
+    # under docs/architecture/ with the feature it serves. Browser-free: bundled
+    # WASM graphviz, no chromium. No secrets: pure model validation + codegen.
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1

@@ -84,13 +84,14 @@ true. Where a decision carries a rejected alternative worth preserving, it gradu
 
 Dependency-footprint discipline generalises: **prefer the standard library and a direct HTTP call
 over a package**, and treat any dependency pulling a native build toolchain as disqualified unless
-nothing else will do.
+nothing else will do. → SYS036 / SRS073 / SRS074.
 
 **Dev tooling is siloed with the feature it serves, not dropped at the repo root.** A tool's
 dependency manifest, lockfile, and virtual environment live in that feature's directory, and its
 Dependabot ecosystem points there — so the requirements tool's `requirements-dev.txt` and venv sit
 under [`requirements/`](requirements/README.md), not `/`. This keeps each tool's footprint legible
 and removable as a unit, and stops the root filling with unrelated manifests as tooling accretes.
+→ SYS035 / SRS072.
 
 ---
 
@@ -174,7 +175,7 @@ exists to support a case that does not exist yet, it should not exist yet.**
 | Anti-pattern | What it looks like |
 |---|---|
 | **A plugin system with no plugins** | A helper API, per-module event namespaces, a catch-all event relay, static-file serving for module `public/` directories — machinery for third-party modules that will never exist |
-| **Abstraction without a second consumer** | Extension points with one implementation. Generality bought against a future that never arrives — and everything downstream must accommodate it |
+| **Abstraction without a second consumer** → SYS041 / SRS086 | Extension points with one implementation. Generality bought against a future that never arrives — and everything downstream must accommodate it |
 | **A transport chosen before the access pattern** | A bidirectional live channel for data refreshed every 10–15 minutes. The refresh is frontend-driven, so a server-push channel serves nothing here but a clock tick, which belongs client-side |
 | **Cross-boundary invariants enforced by comments** | The same value computed independently on both sides, agreement guaranteed by a comment pointing at its twin. Silent failure on divergence — this is exactly why the boundary contract is generated (§4) |
 | **Secret handling by denylist** | A list of keys to strip before delivery. Fails open the moment a secret is added and the list is not |
@@ -228,15 +229,13 @@ shaping libraries expect — run locally/scheduled, since CI holds no keys).
 - **Every module supplies unit tests for its shaping library and a render test for its component.**
 - **Every config schema rejects at least one realistic malformed input in a test** — the operator is
   not the author, so validation failing correctly is a product feature.
-- **Repo-wide checks live at repo level**, not inside whichever package happened to have a test
-  runner first.
-- **Every test file is wired into CI.** A test that has never run is worse than no test — it is a
-  false signal.
+- **Repo-wide checks live at repo level** → SYS032 / SRS069.
+- **Every test file is wired into CI** → SYS031 / SRS067 / SRS068.
 
 Coverage is **diagnostic, never evidence.** Report it, read it to find untested areas, and gate on
-the obligations above — which name what must be *proven*. Reviewed whenever a module is added and
-whenever the transport changes; scheduled, because tests resist deletion and the review will not
-arise naturally.
+the obligations above — which name what must be *proven*. → SYS033 / SRS070. Reviewed whenever a
+module is added and whenever the boundary transport changes (ADR 0008); scheduled, because tests
+resist deletion and the review will not arise naturally. → SYS034 / SRS071.
 
 ---
 

@@ -1,0 +1,20 @@
+active: true
+derived: false
+header: |
+  Each check runs at the altitude it is true at
+level: 1.32
+links: []
+normative: true
+rationale: |
+  TESTING.md "Where a check belongs" and FOUNDATIONS §7 — a check placed by convenience ("here,
+  because a test runner already existed") rather than by altitude is a defect in the suite's
+  architecture. Raised to a need so placement is inspectable rather than trusted.
+ref: ''
+reviewed: 7iK8tC8wVheogsu9yqpieQ2IqP0CVMfSwBNSQPWw2cQ=
+status: accepted
+text: |
+  Every check that spans both packages or concerns the repository as a whole — link and line-ending
+  hygiene, boundary agreement, lint, build, requirements-tree integrity, coverage closure, dead-test —
+  shall be invoked from a repository-level verification target, not from inside a single package's
+  test suite; a package-local check shall verify only that package's own logic.
+verification-method: inspection

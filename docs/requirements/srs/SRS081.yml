@@ -1,0 +1,20 @@
+active: true
+derived: false
+header: |
+  Each architecture element's link to real code is checked in review
+level: 1.81
+links:
+- SYS038: jzRACTZ93mPwIqQNfJ_4Be7yhIgkdEg3_Cb30ec3YtU=
+normative: true
+rationale: |
+  Cites ADR 0003 ("Model-vs-real-code drift is not auto-verified... carried by review").
+
+  TST `model-to-code-link-review` — verification-method: inspection — PENDING (active: false) —
+  header `Pending: model-to-code link review`; activated when first-party source exists.
+ref: ''
+reviewed: 0ZojBTI-DRNREQOFIc71Ma5p1fCpY7CbdeyK3x1LMeQ=
+status: accepted
+text: |
+  As an architecture element gains a real implementation, its LikeC4 `link` shall be updated to the
+  corresponding source, verified in review.
+verification-method: inspection

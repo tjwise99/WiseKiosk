@@ -1,0 +1,16 @@
+active: false
+derived: false
+header: |
+  Pending: ADR index completeness check
+level: 1.14
+links:
+- SRS083: null
+normative: true
+rationale: ''
+ref: ''
+status: proposed
+text: |
+  Pending: a small script (check-links.mjs shape) asserting the decisions/ directory and README table
+  agree — every ADR file has a row, no gap or duplicate in numbering, every row resolves to a real
+  file. Activated with a references entry when the script lands.
+verification-method: test

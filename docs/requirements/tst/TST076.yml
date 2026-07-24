@@ -1,0 +1,17 @@
+active: false
+derived: false
+header: |
+  Pending: repo-root silo check
+level: 1.8
+links:
+- SRS072: null
+normative: true
+rationale: ''
+ref: ''
+status: proposed
+text: |
+  Pending: a depth-1 scan of the repo root finds no language manifest/lockfile/venv except
+  repo-level config; each Dependabot `updates[]` entry except github-actions targets a non-root
+  directory holding the matching manifest. Buildable now (~15 lines) but authored ahead of its
+  script; activated with a `references` entry when the check lands.
+verification-method: inspection

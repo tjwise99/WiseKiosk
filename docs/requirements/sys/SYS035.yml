@@ -1,0 +1,22 @@
+active: true
+derived: false
+header: |
+  Dev tooling is siloed with the feature it serves
+level: 1.35
+links: []
+normative: true
+rationale: |
+  FOUNDATIONS §2 "Dev tooling is siloed with the feature it serves." Keeps each tool's footprint
+  legible and removable as a unit and stops the root accreting unrelated manifests (Doorstop under
+  docs/requirements/, Sphinx under docs/site/, LikeC4 under docs/architecture/). This owns only WHERE
+  the manifest lives; the grouped-update and vulnerability-scan behaviour is the security domain's
+  (SYS028/SRS060/SRS061).
+ref: ''
+reviewed: H-qv-tubKGqdIs_zFQYiLx1Qc59P-u9nl6MaCxKO4c8=
+status: accepted
+text: |
+  Each development tool's dependency manifest, lockfile, and virtual environment shall live in the
+  directory of the feature it serves, and its Dependabot ecosystem entry shall point at that
+  directory; the repository root shall carry only genuinely repo-level configuration (the CI
+  workflows and the repo-level task runner), not a tool's dependency manifest.
+verification-method: inspection

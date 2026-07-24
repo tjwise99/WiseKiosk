@@ -1,0 +1,19 @@
+active: true
+derived: false
+header: |
+  Repository process and hygiene gates are enforced in CI
+level: '1.40'
+links: []
+normative: true
+rationale: |
+  check-eol and check-branch already run green in CI but have no presence in the requirements tree —
+  the same "the gate exists and passes, but nothing says it must" gap this domain closes for the
+  generated-doc gates. Squarely process & repo meta.
+ref: ''
+reviewed: S42ba0WgC2CqlnptPhwb1btqlC2O_VNaUSJa3pXYO3Y=
+status: accepted
+text: |
+  The repository shall enforce, in CI, its line-ending hygiene (no CRLF in tracked text) and its
+  process gates (branch naming, branch-to-issue linkage, and a Conventional-Commit pull-request
+  title, per ADR 0006), so these conventions are checked rather than trusted.
+verification-method: inspection
