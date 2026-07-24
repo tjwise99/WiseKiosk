@@ -1,0 +1,17 @@
+active: false
+derived: false
+header: |
+  Pending: static-bundle / no-router inspection
+level: 1.38
+links:
+- SRS038: null
+normative: true
+rationale: ''
+ref: ''
+status: proposed
+text: |
+  Pending: inspection that the frontend build emits a single static bundle served
+  as static files, with no server-rendered markup and no routing library or
+  meta-framework runtime reaching the shipped bundle. Lands with the frontend
+  skeleton (#10); activated and given a references entry then.
+verification-method: inspection

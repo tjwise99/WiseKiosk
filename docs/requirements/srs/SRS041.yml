@@ -1,0 +1,35 @@
+active: true
+derived: false
+header: |
+  Full-screen assembly at kiosk; reflow, not overlap, at narrower widths
+level: 1.41
+links:
+- SYS008: yukJzgqQiw3ve8PqGKbF8DLMIeNAq5X4MEdYWUk3FGI=
+- SYS013: seHuE2dq_J0EUW5j7J17xkDJMndT3Qp2-Wdy2yClkBM=
+normative: true
+rationale: |
+  Decomposes SYS008 (kiosk full-screen, the primary target) and SYS013 (desktop,
+  the supported secondary) into the concrete viewport-driven render obligations
+  their rationales anticipate. The deployed display is a 16:9 television, so
+  1920×1080 landscape is the canonical kiosk test viewport; relative units carry
+  the same layout to 4K without a second viewport. 1280×800 and 1440×900 are the
+  desktop window sizes the secondary use case must render sensibly at. Phone
+  widths are deliberately not a requirement (SYS013; owner decision 2026-07-22) —
+  if wanted later, support arrives as its own reviewed system need, not a clause
+  here. "No device detection or per-client layout profile" holds the FOUNDATIONS
+  §1 line that this costs relative units and a reflowing layout, not a
+  responsive-design programme. Verified by viewport-driven render tests
+  (Playwright-class) asserting the structural properties at each size; the
+  residual aesthetic judgement stays human.
+ref: ''
+reviewed: pw9wCnJqy6Lv6FzWAJ9wlnMraxgl9fcR6B05stHZlZs=
+status: accepted
+text: |
+  The display page shall assemble the modules named in the configuration, each
+  into its configured region of a single full-screen layout, using relative units.
+  At the kiosk viewport (1920×1080, 16:9 landscape) the assembled layout shall
+  exhibit no overlapping regions, no clipped content, and no scrollbars. At the
+  desktop viewports 1280×800 and 1440×900 the layout shall reflow so that regions
+  do not overlap and content is not clipped, and the page shall not scroll
+  horizontally. No device detection or per-client layout profile shall be used.
+verification-method: test

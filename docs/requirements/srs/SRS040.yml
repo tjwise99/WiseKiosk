@@ -1,0 +1,31 @@
+active: true
+derived: false
+header: |
+  Module component renders from props; owns no cross-cutting policy
+level: '1.40'
+links:
+- SYS024: wrmOV72U1ifi18wtYCbklpJIuchPXqAKHuWt_7L1JRo=
+normative: true
+rationale: |
+  FOUNDATIONS §6.3 defines the Svelte-component part of the module contract: it
+  renders the payload and receives its config as props. This item fixes the
+  component's role and boundaries — it renders what it is given and owns no
+  cross-cutting policy — the frontend expression of the principle that a component
+  turns a payload and config into pixels while data fetching, configuration
+  parsing, and payload validation live at known edges (the refresh path SRS043,
+  the config gate of ADR 0007, the boundary contract SRS031/SRS032), not smeared
+  through the component tree. It is distinct from SRS031, which fixes that the
+  component consumes the generated payload type rather than a hand-declared one;
+  this item is about the component's responsibilities, not its typing. The shape
+  of the config props is defined by the module's config schema fragment (config
+  domain), not here. Parented to the module-contract SYS024, of which the Svelte
+  component is contract part three.
+ref: ''
+reviewed: O6fg0yGfH4GDOo4ccE1-h2_7IcA8TRH60L3jjCRmmMc=
+status: accepted
+text: |
+  Each display module shall be rendered by a Svelte component that receives its
+  configuration and its payload as props and is responsible solely for rendering
+  them into the module's region. The component shall perform no data fetching, no
+  configuration parsing, and no payload validation of its own.
+verification-method: test

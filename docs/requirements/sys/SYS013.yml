@@ -1,4 +1,4 @@
-active: false
+active: true
 derived: false
 header: |
   Desktop browser rendering is a supported secondary
@@ -13,7 +13,8 @@ rationale: |
   as a new item with its own review (owner decision 2026-07-22 — nothing in
   the planned layout precludes it).
 ref: ''
-status: proposed
+reviewed: seHuE2dq_J0EUW5j7J17xkDJMndT3Qp2-Wdy2yClkBM=
+status: accepted
 text: |
   The page shall render sensibly at desktop browser window sizes: every
   configured module visible, with no overlap, no clipping, and no horizontal

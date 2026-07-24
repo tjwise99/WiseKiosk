@@ -1,0 +1,25 @@
+active: true
+derived: false
+header: |
+  Shaping library is pure functions with no I/O, unit-testable in isolation
+level: 1.33
+links:
+- SYS024: wrmOV72U1ifi18wtYCbklpJIuchPXqAKHuWt_7L1JRo=
+normative: true
+rationale: |
+  FOUNDATIONS §6.1 — "Pure functions, no I/O, unit-tested directly… this is the
+  valuable part" — and the TESTING.md Unit tier, whose speed and totality depend
+  on that purity. Complements SRS020, which governs the route's transport
+  behaviour, by constraining the internal design the route invokes; the payload
+  these functions produce is the value the single boundary schema defines
+  (SRS029) and the module component renders from the generated type (SRS031).
+ref: ''
+reviewed: 9Vuifm5MlGlRObeO6BbN-msdzdIAuVzXLndB42A0JiA=
+status: accepted
+text: |
+  Each module's construction of its upstream request URL and its parsing and
+  reshaping of the upstream response into the frontend payload shall be
+  implemented as a library of pure functions that perform no I/O and can be
+  exercised in isolation against a known upstream response without network
+  access.
+verification-method: inspection

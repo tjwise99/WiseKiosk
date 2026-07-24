@@ -1,0 +1,17 @@
+active: false
+derived: false
+header: |
+  Pending: polling-cadence inspection
+level: 1.43
+links:
+- SRS043: null
+normative: true
+rationale: ''
+ref: ''
+status: proposed
+text: |
+  Pending: inspection that module data refresh is poll-based with no server-push
+  client, and that each module's refresh cadence is a module-owned constant rather
+  than an operator configuration key. Lands with the frontend skeleton (#10);
+  activated and given a references entry then.
+verification-method: inspection

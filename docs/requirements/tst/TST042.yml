@@ -1,0 +1,18 @@
+active: false
+derived: false
+header: |
+  Pending: same-origin-fetch inspection
+level: 1.42
+links:
+- SRS042: null
+normative: true
+rationale: ''
+ref: ''
+status: proposed
+text: |
+  Pending: inspection/render check that the page issues no direct cross-origin
+  request and obtains all module data via the same-origin /api routes. CSP
+  connect-src 'self' enforcement is verified in the security domain (#40), not
+  here. Lands with the frontend skeleton (#10); activated and given a references
+  entry then.
+verification-method: inspection

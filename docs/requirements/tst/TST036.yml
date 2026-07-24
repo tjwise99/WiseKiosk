@@ -1,0 +1,17 @@
+active: false
+derived: false
+header: |
+  Pending: no-framework-change inspection
+level: 1.36
+links:
+- SRS036: null
+normative: true
+rationale: ''
+ref: ''
+status: proposed
+text: |
+  Pending: inspection that adding a module touches only module-scoped files plus
+  the single registration list, and that no shared framework source names a
+  specific module except that list. Lands with the repo layout (#5) and the first
+  module; form (repo script vs review checklist) decided then.
+verification-method: inspection

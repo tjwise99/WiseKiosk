@@ -1,0 +1,30 @@
+active: true
+derived: false
+header: |
+  Modules are added by a fixed five-part contract, not a plugin system
+level: 1.24
+links: []
+normative: true
+rationale: |
+  FOUNDATIONS §1 requires that growth to a sixth module be "a documented
+  contract, not a plugin system," and §6 fixes both the five parts and the
+  invariant that adding a module never means changing the framework. §5 forbids
+  a plugin system with no plugins and abstraction without a second consumer, so
+  the contract is documentation an author follows, not runtime machinery to
+  maintain. This is the anchor need SRS033–037 decompose; it is distinct from
+  SYS007 (operator customisation through configuration), which governs the
+  operator configuring a deployment, not the author adding a module. The prose
+  home for the contract is the dedicated docs/contracts/module-contract.md
+  (owner decision, #38).
+ref: ''
+reviewed: wrmOV72U1ifi18wtYCbklpJIuchPXqAKHuWt_7L1JRo=
+status: accepted
+text: |
+  The system shall support adding a display module by following a documented
+  contract of exactly five parts — a shaping library, a route registration, a
+  component, a configuration-schema fragment, and tests — each added in a known
+  place. Adding a module shall not require any change to shared framework code,
+  and the system shall provide no runtime plugin mechanism: no dynamic module
+  loading, no module discovery, no module registry, and no third-party
+  extension API.
+verification-method: inspection
