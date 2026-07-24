@@ -1,0 +1,25 @@
+active: true
+derived: false
+header: |
+  Minimal, native-toolchain-free dependency footprint
+level: 1.36
+links: []
+normative: true
+rationale: |
+  FOUNDATIONS §2 — "prefer the standard library and a direct HTTP call over a package," and "treat any
+  dependency pulling a native build toolchain as disqualified unless nothing else will do." The
+  backend ships as a single static binary and one image serves the fleet; a native-toolchain
+  dependency breaks that deploy model and enlarges the fleet-wide attack surface. Governs whether a
+  dependency is ADMITTED — distinct from SYS028, which gates vulnerabilities in dependencies already
+  admitted. The "prefer stdlib" half is design judgment (inspection, not a hard gate); the
+  native-toolchain clause is the verifiable half. Recording the exception venue as an ADR follows from
+  it being a settled-decision reversal.
+ref: ''
+reviewed: GVSUTkMgBTt2cA4J-MFAboLa8nCBn6h57amUY8f6wCk=
+status: proposed
+text: |
+  The system shall be built on the smallest viable third-party dependency footprint. The standard
+  library and a direct HTTP call shall be preferred over introducing a package, and no dependency
+  requiring a native build toolchain shall be admitted unless no standard-library or pure-language
+  alternative can satisfy the requirement, in which case the exception shall be recorded in an ADR.
+verification-method: inspection

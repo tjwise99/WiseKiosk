@@ -1,0 +1,25 @@
+active: true
+derived: false
+header: |
+  The backend builds as a static binary with the native toolchain disabled
+level: 1.74
+links:
+- SYS036: null
+normative: true
+rationale: |
+  A falsifiable form of the native-toolchain-free rule for the Go backend. Verified against no
+  existing #39 item (deployment #39 covers non-root, digest-pin, and build-context exclusion, not the
+  build mode).
+
+  TST `cgo-build` — verification-method: test — PENDING (active: false) — header
+  `Pending: CGO-disabled static build`. Text: a CI build of the backend with cgo disabled completes
+  and produces a statically linked binary. Lands with the Go backend; activated with a `references`
+  entry then.
+ref: ''
+reviewed: xiihOTm8lYmg47C_2s49YsbB5pud6bz3lH33U7PNkm4=
+status: proposed
+text: |
+  The backend shall build successfully as a statically linked binary with the native build toolchain
+  (cgo) disabled, demonstrating that no backend dependency has introduced a native-toolchain
+  requirement.
+verification-method: test

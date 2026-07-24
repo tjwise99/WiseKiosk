@@ -1,0 +1,24 @@
+active: true
+derived: false
+header: |
+  Each third-party dependency justified at review; native-toolchain exceptions recorded in an ADR
+level: 1.73
+links:
+- SYS036: null
+normative: true
+rationale: |
+  Puts the admission decision where judgment lives — review — and gives the native-toolchain exception
+  a durable, reviewable home.
+
+  TST `dep-review-inspection` — verification-method: inspection — PENDING (active: false) — header
+  `Pending: dependency-footprint review check`. Text: a review-time inspection that each build
+  manifest's dependencies are justified and any native-toolchain dependency carries an ADR exception.
+  Activated when a first-party build manifest exists.
+ref: ''
+reviewed: p_BVgJ83L2zwF-yfA1yF_KRyTxSBVooLBVvIt5E__Cw=
+status: proposed
+text: |
+  Every third-party dependency in a build manifest shall be justifiable at review as work the standard
+  library cannot reasonably do; any admitted dependency that requires a native build toolchain shall
+  carry a recorded ADR justification that no alternative meets the requirement.
+verification-method: inspection
