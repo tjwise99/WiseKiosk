@@ -1,0 +1,18 @@
+active: true
+derived: false
+header: |
+  Digest-pinned base image
+level: 1.54
+links:
+- SYS026: _m8BJ8JAZMsCQBBQgn23Qw8YXeKj21ZfVt168hmOO3k=
+normative: true
+rationale: |
+  Reproducibility and supply-chain integrity; Dependabot keeps the digest
+  fresh (a #40 / dependency-automation concern).
+ref: ''
+reviewed: iK4kHnOlj-BiDIb1ZaaxerLHfZhqT_B88CxQFtBJdm4=
+status: accepted
+text: |
+  The image's base shall be referenced by @sha256: content digest, not a
+  floating tag.
+verification-method: test

@@ -1,0 +1,14 @@
+active: false
+derived: false
+header: |
+  Pending: restart-policy test
+level: 1.8
+links:
+- SRS048: null
+normative: true
+rationale: ''
+ref: ''
+status: proposed
+text: |
+  Pending: a scripted assertion that the committed deployment recipe (compose or run manifest) carries restart policy unless-stopped, failing CI otherwise. Lands with the container image build / deployment recipe (#54); activated then.
+verification-method: test

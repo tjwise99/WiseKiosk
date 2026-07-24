@@ -1,0 +1,25 @@
+active: true
+derived: false
+header: |
+  Hardened, reproducible container image
+level: 1.26
+links: []
+normative: true
+rationale: |
+  One image serves every deployment, so its baseline security posture is
+  inherited fleet-wide and cannot be patched per site. An image that runs as
+  root, floats its base tag, or bakes the repository's .git or secrets into a
+  layer turns one packaging mistake into a fleet-wide exposure. These are the
+  container-hardening controls from the architecture backlog, raised to a
+  stakeholder need so each converts to a testable obligation rather than living
+  as vigilance. Image supply-chain gating (scanning, signing, provenance) is the
+  security domain's concern (#40), not this need.
+ref: ''
+reviewed: _m8BJ8JAZMsCQBBQgn23Qw8YXeKj21ZfVt168hmOO3k=
+status: accepted
+text: |
+  The published container image shall be built to a hardened, reproducible
+  baseline: it shall run as a non-root user, reference its base image by content
+  digest rather than a floating tag, and exclude development and secret material
+  from its build context.
+verification-method: inspection

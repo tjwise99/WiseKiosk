@@ -1,0 +1,18 @@
+active: true
+derived: false
+header: |
+  Drop-in image upgrade
+level: 1.47
+links:
+- SYS006: Sw94fSoC2fO1zVrk3kpMAX9zHX1gIPU0ZA8yJ1DuGBE=
+normative: true
+rationale: |
+  Makes SYS006's no-code-literacy upgrade concrete and demonstrable.
+ref: ''
+reviewed: NtZzmYoT9GN2JyVrJeoT775iNhX3-xfnnhcLKSxYJIY=
+status: accepted
+text: |
+  Upgrading a deployment shall consist of replacing its running image with a
+  newer published digest while retaining the same mounted configuration and
+  secrets, requiring no diff review, code edit, or per-deployment build.
+verification-method: demonstration

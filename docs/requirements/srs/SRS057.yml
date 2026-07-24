@@ -1,0 +1,20 @@
+active: true
+derived: false
+header: |
+  Bounded resource use
+level: 1.57
+links:
+- SYS010: ifmtvht3nYnBVmX2DECHOt7Hl-jnYsDrhDi7H4DDcZQ=
+normative: true
+rationale: |
+  Decomposes SYS010's unbounded-growth concern into an obligation provable
+  early — from a bounded instrumented run rather than a full-length soak —
+  and continuously, rather than only at a pre-release demonstration.
+ref: ''
+reviewed: coKyDzHv_JC13GfSqFpAGPW3VzB_svhUg7wtw5q6z_w=
+status: accepted
+text: |
+  WiseKiosk shall exhibit no unbounded growth in memory or other finite
+  resources under sustained operation, established by trend analysis of an
+  instrumented bounded run.
+verification-method: analysis

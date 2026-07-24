@@ -1,4 +1,4 @@
-active: false
+active: true
 derived: false
 header: |
   Reference platforms and system boundary
@@ -13,7 +13,7 @@ rationale: |
   platform, outside the system boundary.
 ref: ''
 reviewed: MiEgDtY0PS1aFpw6ZcA5eI9spWet1JGL0grkJBWiOAY=
-status: proposed
+status: accepted
 text: |
   The frontend shall operate on a Raspberry Pi Zero-class browser host
   driving the display. The backend container shall run on a Docker-capable

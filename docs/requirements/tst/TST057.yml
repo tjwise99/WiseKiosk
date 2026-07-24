@@ -1,0 +1,14 @@
+active: false
+derived: false
+header: |
+  Pending: bounded-resource-growth analysis
+level: 1.4
+links:
+- SRS057: null
+normative: true
+rationale: ''
+ref: ''
+status: proposed
+text: |
+  Pending: analysis of an instrumented bounded run of the backend asserting memory and other finite resources show no unbounded growth trend. Lands with the backend skeleton (#9); activated and given a references entry then.
+verification-method: analysis

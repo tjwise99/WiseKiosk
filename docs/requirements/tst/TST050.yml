@@ -1,0 +1,14 @@
+active: false
+derived: false
+header: |
+  Pending: thirty-day soak demonstration
+level: '1.10'
+links:
+- SRS050: null
+normative: true
+rationale: ''
+ref: ''
+status: proposed
+text: |
+  Pending: soak demonstration of at least 30 days continuous unattended operation on the reference platform without operator intervention or visible degradation. Lands with the container image build and a reference-platform deployment (#54); activated then.
+verification-method: demonstration

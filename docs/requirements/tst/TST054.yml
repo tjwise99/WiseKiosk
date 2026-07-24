@@ -1,0 +1,14 @@
+active: false
+derived: false
+header: |
+  Pending: drop-in upgrade demonstration
+level: 1.14
+links:
+- SRS047: null
+normative: true
+rationale: ''
+ref: ''
+status: proposed
+text: |
+  Pending: demonstration that replacing the running image with a newer published digest, retaining the same mounted configuration and secrets, upgrades a deployment with no diff review, code edit, or rebuild. Lands with the container image build (#54); activated then.
+verification-method: demonstration

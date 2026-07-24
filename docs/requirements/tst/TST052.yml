@@ -1,0 +1,14 @@
+active: false
+derived: false
+header: |
+  Pending: single-image packaging inspection
+level: 1.12
+links:
+- SRS044: null
+normative: true
+rationale: ''
+ref: ''
+status: proposed
+text: |
+  Pending: inspection that the build publishes exactly one image carrying the Go backend and the built frontend it serves, with no deployment-specific configuration or secret baked in. Lands with the container image build (#54); activated then.
+verification-method: inspection

@@ -1,0 +1,18 @@
+active: true
+derived: false
+header: |
+  Frontend runs on a Pi Zero-class browser host
+level: 1.56
+links:
+- SYS009: MiEgDtY0PS1aFpw6ZcA5eI9spWet1JGL0grkJBWiOAY=
+normative: true
+rationale: |
+  Decomposes SYS009's reference-hardware clause; demonstrated on reference
+  hardware, sharing evidence with the SRS050 soak.
+ref: ''
+reviewed: cfBLqV9pRKIdTG-dphfcHo-SH-mQ2rW-d8mEwNnCUaY=
+status: accepted
+text: |
+  The frontend shall operate on a Raspberry Pi Zero-class browser host
+  driving the display.
+verification-method: demonstration

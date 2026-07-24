@@ -1,0 +1,19 @@
+active: true
+derived: false
+header: |
+  Fixed-port healthcheck
+level: 1.49
+links:
+- SYS010: ifmtvht3nYnBVmX2DECHOt7Hl-jnYsDrhDi7H4DDcZQ=
+normative: true
+rationale: |
+  Orchestrator-driven recovery; the port is already a constant (SYS016,
+  SRS011), reinforced here.
+ref: ''
+reviewed: rdvFAnYpt0-05KEtMfaHABIUPsdDYZUHrQICEolP_lE=
+status: accepted
+text: |
+  The container image shall declare a healthcheck that probes the service on
+  its fixed port, so that an unhealthy container is restarted by the
+  orchestrator.
+verification-method: test
