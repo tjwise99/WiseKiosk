@@ -1,0 +1,26 @@
+active: true
+derived: false
+header: |
+  Frontend fetches module data same-origin only
+level: 1.42
+links:
+- SYS022: UxmZaGNutKPkxXAqgD0JJ79j_MVK8yfgwjayCZM1QqA=
+normative: true
+rationale: |
+  The frontend complement to SRS021: SRS021 requires the backend to proxy every
+  external source, and this item requires the page to actually use those
+  same-origin routes and issue no direct cross-origin request, so the
+  single-origin data plane (SYS022) holds end to end rather than depending on the
+  backend alone. This item states the behavioral obligation only — that the page
+  fetches same-origin. Enforcement of that boundary by Content-Security-Policy
+  (connect-src 'self') is a security control that lives in the security domain
+  (#40), handed off there so a single owner holds the CSP requirement and the two
+  do not double-declare.
+ref: ''
+reviewed: uoGqawXlhyYUfJJxEvbUpylbqi8y_yrcMT1OF4ipbNc=
+status: accepted
+text: |
+  The display page shall obtain all module data by fetching the backend's
+  same-origin /api/<source> routes. It shall issue no direct cross-origin request
+  to any upstream data source.
+verification-method: inspection

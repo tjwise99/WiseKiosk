@@ -1,0 +1,25 @@
+active: true
+derived: false
+header: |
+  Frontend builds to a static bundle with no SSR or router
+level: 1.38
+links:
+- SYS025: 0Rl-mTTDYV-uhd-e42p1ZTSnmooOBdPL9jMSkQtzorI=
+normative: true
+rationale: |
+  SYS025 states the constraint; this item makes it verifiable at the artifact. A
+  static SPA with no SSR, router, or meta-framework is observable in two places:
+  the build output (a single static bundle served as files, not server-rendered
+  markup) and the shipped dependency graph (no routing library or meta-framework
+  runtime reaching the bundle). Phrasing the requirement against those observables
+  keeps the SYS025 axiom from being an untestable assertion and catches the
+  realistic regression — a contributor reaching for a router or an SSR adapter —
+  at CI rather than in review prose.
+ref: ''
+reviewed: _SZCjVWEH-_37ADDomAY7N8CAJFqXC0mP7BLaQ7c5Qw=
+status: accepted
+text: |
+  The frontend shall build to a static single-page bundle served as static files.
+  The build shall emit no server-rendered markup, and the shipped bundle shall
+  contain no routing library and no meta-framework runtime.
+verification-method: inspection
