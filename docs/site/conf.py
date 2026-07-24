@@ -34,9 +34,9 @@ exclude_patterns = [
 # told to invoke sphinxcontrib-mermaid's directive instead.
 myst_fence_as_directive = ["mermaid"]
 
-# The canonical docs use GitHub-style "## " anchor links MyST doesn't
-# generate by default (e.g. FOUNDATIONS.md's #6-module-contract); depth 2
-# covers every such link.
+# Generates ids for `#` and `##` headings — MyST generates none by default —
+# so the canonical docs' "FILE.md#heading-slug" links resolve. Nothing links
+# deeper than `##`.
 myst_heading_anchors = 2
 
 # --- sphinx-needs -----------------------------------------------------------

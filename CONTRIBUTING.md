@@ -16,7 +16,7 @@ This project is **design-first**: nothing is implemented that has not been writt
 - A new module follows the five-part contract in
   [`docs/contracts/module-contract.md`](docs/contracts/module-contract.md) (SYS024, SRS033–SRS037)
   and the test obligations in [`docs/TESTING.md`](docs/TESTING.md).
-- Do not build anything on the "what must not be built" list (FOUNDATIONS §5).
+- Do not build generality against a case that does not exist.
 
 ## Running the checks
 

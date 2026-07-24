@@ -1,12 +1,8 @@
 #!/usr/bin/env node
-// Asserts `just verify` and the CI checks workflow stay in agreement: every check
-// `just verify` depends on must also run in .github/workflows/checks.yml (verify
-// ⊆ CI), and every named CI step must be either one of those checks or a named
-// CI-only exception (secret scanning; the PR-title Conventional-Commit check) —
-// so a check dropped from one side, or a CI-only step added silently, fails the
-// build instead of drifting unnoticed. Supersedes the "byte-identical to `just
-// check-arch`"-style comments that previously held this agreement by convention
-// only (FOUNDATIONS §5: no cross-boundary invariant enforced by a comment).
+// Checks SRS067: every check `just verify` depends on must also run in
+// .github/workflows/checks.yml, and every named CI step must be either one of
+// those checks or an enumerated CI-only exception (secret scanning; the
+// PR-title Conventional-Commit check).
 //
 // No dependencies: Node stdlib only, plain text scanning (no YAML parser) —
 // matches scripts/check-links.mjs's idiom.
@@ -25,9 +21,7 @@ const fail = (msg) => {
 };
 
 // Each `just verify` check → a stable token proving the same work runs in CI
-// (the script path or command it runs). This map is the one maintained
-// artifact here — but unlike the comment it replaces, a wrong or missing entry
-// fails the build rather than silently drifting.
+// (the script path or command it runs).
 const CHECK_TOKENS = {
   "check-links": "scripts/check-links.mjs",
   "check-eol": "git grep -lIP '\\r$'",
