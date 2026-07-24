@@ -1,0 +1,14 @@
+active: false
+derived: false
+header: |
+  Pending: image signature verification
+level: 1.52
+links:
+- SRS063: null
+normative: true
+rationale: ''
+ref: ''
+status: proposed
+text: |
+  Pending: demonstration asserting the published image's signature verifies against the expected keyless identity and OIDC issuer, and that an unsigned or wrong-identity image fails verification (expected: cosign keyless verify with GitHub OIDC). Fails if the signature is absent or does not verify. Lands when the image is published; activated with a references entry to the verify script then.
+verification-method: demonstration
