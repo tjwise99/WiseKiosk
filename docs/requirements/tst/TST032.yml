@@ -10,8 +10,11 @@ rationale: ''
 ref: ''
 status: proposed
 text: |
-  Pending: inspection that the frontend ships no runtime re-validation of proxied
-  payloads — cross-boundary agreement rests on the schema and the drift gate, not
-  on a bundled validator. Lands with the frontend skeleton and codegen mechanism
-  (#7); form decided then.
+  Pending: inspection that the frontend ships no runtime re-validation of
+  proxied payloads — cross-boundary agreement rests on the schema and the drift
+  gate, not on a bundled validator. Lands with the frontend skeleton and codegen
+  mechanism (#7). Its form must be structural — the render path consumes proxied
+  payloads with no validation call on them — not a denylist of named validator
+  libraries, which fails open the first time a contributor hand-rolls one
+  (FOUNDATIONS §5).
 verification-method: inspection
