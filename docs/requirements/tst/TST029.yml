@@ -1,0 +1,18 @@
+active: false
+derived: false
+header: |
+  Pending: boundary-schema single-definition inspection
+level: 1.29
+links:
+- SRS029: null
+normative: true
+rationale: ''
+ref: ''
+status: proposed
+text: |
+  Pending: inspection that exactly one boundary schema artifact exists, owned by
+  neither package, and that it defines every boundary value class — request
+  parameters, success payloads, the SRS001 upstream-failure body, the SRS026
+  rejection body, and the discriminated response status codes. Lands with the
+  codegen mechanism (#7); form (repo check or review checklist) decided then.
+verification-method: inspection

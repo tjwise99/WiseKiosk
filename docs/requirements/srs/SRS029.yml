@@ -1,0 +1,24 @@
+active: true
+derived: false
+header: |
+  One schema, package-neutral, all boundary value classes
+level: 1.29
+links:
+- SYS023: Atk7HXMyRvSN_SCxSwc2M0538nq16WUIr4lz3AUFY-U=
+normative: true
+rationale: |
+  "Every payload shape and every parameter name" (TESTING.md Boundary tier)
+  includes the error and status contracts the frontend renders from; enumerating
+  the value classes keeps them from being the uncovered value the tier warns
+  about. The schema's repository location is allocated by #5 and not fixed here.
+ref: ''
+reviewed: CmASlD84V-o8te7RExcppR_qRXQzwWj0s65s0GGMvls=
+status: accepted
+text: |
+  The boundary contract shall be defined by exactly one schema artifact, owned by
+  neither the backend nor the frontend package. It shall define every value
+  crossing the boundary: request parameter names and types, success response
+  payloads, the structured upstream-failure body (SRS001), the client-error
+  rejection body (SRS026), and every response status code the frontend
+  discriminates on to choose an error state.
+verification-method: inspection

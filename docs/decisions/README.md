@@ -18,3 +18,4 @@ a **Decided** date — when the choice was *taken*, not when the work merged.
 | [0005](0005-traceability-gating.md) | 2026-07-22 | All work traces to the requirements tree via four in-repo gates; per-test attribution, derived verification status, tree as backlog |
 | [0006](0006-process-gates.md) | 2026-07-22 | Process gates: branches named type_number-snake_name, typed by ticket template and linked to an open issue; Conventional-Commit PR titles |
 | [0007](0007-config-validation-allocation.md) | 2026-07-23 | Config validation is frontend-owned: one TS engine runs in the page and as the desk CLI; the backend is config-blind |
+| [0008](0008-boundary-contract-openapi-codegen.md) | 2026-07-23 | Boundary contract: one OpenAPI schema (3.0.3 now, 3.1 later), Go + TypeScript types generated from it, CI drift-gated; frontend types-only |

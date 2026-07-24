@@ -33,7 +33,8 @@ The backend is Go and the frontend is TypeScript, so they share no types
 hand-maintained type declarations checked for agreement by a test — it is **one schema, with both
 sides generated from it**. The tier's job in CI is to prove the generation is real and current:
 
-- Both sides are generated from the single schema by the codegen mechanism (open question 2).
+- Both sides are generated from the single schema by the codegen mechanism
+  ([ADR 0008](decisions/0008-boundary-contract-openapi-codegen.md)).
 - **CI regenerates and fails if the committed generated code differs from the schema** — a stale or
   hand-edited generated file is a build failure, not a silent drift.
 - No payload type and no parameter name is hand-declared on either side.
