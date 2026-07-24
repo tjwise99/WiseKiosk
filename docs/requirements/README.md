@@ -132,3 +132,18 @@ Run all commands with the venv (`docs/requirements/.venv/bin/doorstop …`):
   to `1.1`.
 - **A document can never be empty** — "no items" is a gate error, so a tree reset must land in
   the same change as its first new items.
+- **Check the tree before adding a normative clause.** A new `shall` can contradict a decision
+  already recorded in an existing item's `rationale` — a deliberately-excluded case, a boundary an
+  owner already fixed. `--error-all` cannot see this; grep the relevant items' rationales first. A
+  clause that reverses a recorded decision is a finding: either the decision is reopened with its own
+  review, or the clause does not land. (A phone-width `shall` slipped this way in the #38 round,
+  against a scope decision recorded in `SYS013` — caught only by independent review.)
+- **Traceability is item-level; individual clauses are not checked.** An item that links two parents
+  satisfies the orphan gate at item granularity, yet a single clause inside its `text` can be
+  supported by *neither* parent — an orphan the gate cannot see. Prefer one obligation per parent;
+  when an item must span parents, confirm by hand that every clause traces to one of them.
+- **A baselined round lands its `SYS`/`SRS` `accepted` + `active: true`** (reviewed in the same
+  change). Only items awaiting decomposition or a verifying artifact stay `active: false` (see
+  *Pending* above). "Active" and "reviewed" arrive together — an active-but-unreviewed item fails
+  `--error-all` — so a domain's requirements are never left `proposed`/inactive, which would leave
+  them un-baselined and outside the gate.
