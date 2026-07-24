@@ -1,12 +1,21 @@
 active: true
 derived: false
-header: ''
+header: |
+  The test architecture is reviewed on defined triggers
 level: 1.34
 links: []
 normative: true
-rationale: ''
+rationale: |
+  TESTING.md "Review cadence" — tests resist deletion more strongly than code, so the review will not
+  arise on its own; without a wired trigger the suite silently becomes permanent architecture nobody
+  revisits. Inspection is the honest floor: it verifies the triggers are documented and wired, not
+  that a given review happened — no recorded-review mechanism exists and this domain does not invent
+  one (that would be a control that does not function where deployed, FOUNDATIONS §5).
 ref: ''
-reviewed: null
+reviewed: oejNji_hLH_4nN0L2T2x0YcwqOmTEp656mFcn69bhII=
 status: proposed
-text: ''
-verification-method: ''
+text: |
+  The test architecture shall be reviewed whenever a display module is added and whenever the boundary
+  transport changes; these triggers shall be documented and wired to the change procedure so the
+  review is prompted rather than left to arise on its own.
+verification-method: inspection

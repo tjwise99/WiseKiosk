@@ -1,13 +1,24 @@
 active: true
 derived: false
-header: ''
+header: |
+  Review triggers are documented and wired to the change procedure
 level: 1.71
 links:
 - SYS034: null
 normative: true
-rationale: ''
+rationale: |
+  Makes the trigger detectable against concrete artifacts (the module-add procedure; an ADR 0008
+  supersession) rather than a remembered habit.
+
+  TST `review-cadence-inspection` — verification-method: inspection — ACTIVE — references
+  `docs/TESTING.md` (the Review cadence section). Confirms the two triggers are named and cross-linked
+  to the change procedure / ADR 0006.
 ref: ''
-reviewed: null
+reviewed: eAlf78hhIjZNOq9eZnD7EOxcHnbfF4QXj8HwcEaxpPY=
 status: proposed
-text: ''
-verification-method: ''
+text: |
+  TESTING.md shall name the two test-architecture review triggers — a display module is added; the
+  boundary transport (the OpenAPI schema / codegen mechanism, ADR 0008) changes — and the module-add
+  procedure and process gates (ADR 0006) shall reference the test-architecture review, so a triggering
+  change surfaces it.
+verification-method: inspection
