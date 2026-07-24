@@ -4,7 +4,7 @@ header: |
   Enumerated temporal-change phrasings fail the comment checks
 level: 1.93
 links:
-- SYS043: v0892nFH1_ptHaW3_A00SDf0ukhzFBUdXkLfwDDDD9I=
+- SYS043: kcIFBI_e2x7kEmU51iZ60SAGMklrSIODgfL-kcLXBDQ=
 normative: true
 rationale: |
   A comment describing what the repository used to do is stale the moment it is written, and it is the

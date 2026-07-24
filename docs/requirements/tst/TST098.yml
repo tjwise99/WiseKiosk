@@ -11,5 +11,7 @@ ref: ''
 status: proposed
 text: |
   Pending: a check rejecting a bare deferred-work marker and accepting one naming a tracked issue, run
-  without network access. Activated with a references entry when the gate lands (#59).
+  without network access. Buildable today and green today — the repository contains no deferred-work
+  marker — so it is preventive rather than corrective. Activated with a references entry when the gate
+  lands (#59).
 verification-method: test

@@ -6,14 +6,14 @@ Every other document may cite or summarize that fact, but never restates it as i
 
 The scope is facts *about WiseKiosk*. How a particular piece of code works is a fact about that code,
 not about the product — it has no home in this table and belongs beside the code it explains.
-Rationale is the part that may not live in a source artifact: source carries mechanism and reaches
-rationale by citation instead (SYS042, SRS087).
+Rationale is the part that may not live in a source artifact; SYS042 and SRS087 state that obligation
+and the homes it routes to.
 
 | Document | Guarantees | Excludes |
 |---|---|---|
 | [`FOUNDATIONS.md`](FOUNDATIONS.md) | Product definition, settled decisions, day-one architecture (a design hypothesis), the module contract, non-goals. Standalone rationale. | As-built structure (`ARCHITECTURE.md`); a decision's rejected alternative (an ADR); a testable "shall" obligation (the requirements tree) |
 | [`ARCHITECTURE.md`](ARCHITECTURE.md) | The as-built structural description of the system, and its generated diagrams | The intended/hypothetical architecture before code lands (`FOUNDATIONS.md` §3); decision rationale with a rejected alternative (an ADR) |
-| [`TESTING.md`](TESTING.md) | The test architecture — tiers, standing obligations, coverage stance, review cadence — written as a specification before tests exist | Individual test implementations; per-requirement traceability (the requirements tree) |
+| [`TESTING.md`](TESTING.md) | The test architecture — tiers, standing obligations, coverage stance, review cadence — written as a specification before tests exist, and the rationale for those choices | Individual test implementations; per-requirement traceability (the requirements tree) |
 | [`decisions/`](decisions/README.md) | A decision with a rejected alternative, numbered chronologically, immutable once merged | A decision with no real alternative considered (belongs in a commit message); restated settled-decision prose (`FOUNDATIONS.md` §2 cites these, never restates them) |
-| [`requirements/`](requirements/README.md) | Testable "shall" obligations; SYS→SRS→TST traceability; verification-reference gating (Doorstop) | Prose rationale narrative (the documents above); presentation or browsing (the docs site) |
+| [`requirements/`](requirements/README.md) | Testable "shall" obligations; SYS→SRS→TST traceability; verification-reference gating (Doorstop); each item's own `rationale` for why that obligation exists | Prose rationale *narrative* (the documents above); presentation or browsing (the docs site) |
 | [`site/`](site/README.md) | A browsable, click-through presentation of the documents above, plus traceability views (needtables, matrices) | Being a source of truth — a generated view only, never original content |

@@ -4,7 +4,7 @@ header: |
   A comment outside its language's documentation facility is at most one line
 level: 1.91
 links:
-- SYS043: v0892nFH1_ptHaW3_A00SDf0ukhzFBUdXkLfwDDDD9I=
+- SYS043: kcIFBI_e2x7kEmU51iZ60SAGMklrSIODgfL-kcLXBDQ=
 normative: true
 rationale: |
   The volume constraint, and the reason the documentation facility is named rather than assumed. A
@@ -12,16 +12,19 @@ rationale: |
   the classifier already makes directly, and a long passage split across several shorter blocks satisfies
   it while defeating the intent. A hard one-line cap has the opposite property — the only way to pass is
   to be terse, which is the behaviour wanted. It costs no configuration key, and it is the repository's
-  existing comment style rather than a new threshold. The cap is liveable only because every artifact
-  class has an unbounded documentation facility to hold real explanation; where that facility is not a
-  comment at all — an OCI LABEL, a workflow name field, a justfile attribute — the cap does not reach it.
+  existing comment style rather than a new threshold. The cap is liveable only because every covered
+  language has an unbounded documentation facility to hold real explanation, and where that facility is
+  not a comment at all the cap does not reach it. The facilities are deliberately not enumerated here:
+  a list written into this text would name languages the repository does not yet contain while omitting
+  ones it does, and it would put the same fact in two places against SYS037. The registry SRS090
+  requires is that fact's single home.
 ref: ''
-reviewed: 6-AEwYqCQOLNTdCJQvfv_Mdd2H2fsdUqHVQsxnF1MWA=
+reviewed: LGqBHYTaC4-e9VN21yaNWUB0IdyBSgtqgmPyZFqFQM8=
 status: accepted
 text: |
-  A comment that is not part of its language's marked or structural documentation facility — a
-  declaration-attached doc comment in Go or TypeScript, a Python docstring, a justfile doc attribute, a
-  marked shdoc block in shell, an OCI label in a Dockerfile, or a name field in workflow YAML — shall be
-  at most one line. Content within that documentation facility shall be unbounded in length and shall not
-  be penalised by any comment-length check.
+  A comment that is not part of its language's marked or structural documentation facility shall be at
+  most one line. Each covered language's documentation facility shall be recorded alongside that
+  language's classifier arm, so the facility a file is judged against is a stated fact rather than a
+  choice made in the checking code. Content within that facility shall be unbounded in length and shall
+  not be penalised by any comment-length check.
 verification-method: test

@@ -15,9 +15,12 @@ rationale: |
   floor and fails open by construction — enumerated phrasings catch the phrasings enumerated and nothing
   else. That is tolerable here because the harm is a misleading comment rather than a leaked secret, and
   because the residue is carried as a named review obligation rather than assumed away; it is stated
-  plainly so no reader mistakes the floor for proof (SYS031).
+  plainly so no reader mistakes the floor for proof (SYS031). Inspection rather than test for that same
+  reason: most of this need is gated, but the residual clause is a review obligation, and the tree's
+  convention for a need of mixed method is the weaker one — SYS031, SYS036, and SYS040 all land
+  inspection while carrying gated children, and only the wholly mechanical SYS039 claims test.
 ref: ''
-reviewed: v0892nFH1_ptHaW3_A00SDf0ukhzFBUdXkLfwDDDD9I=
+reviewed: kcIFBI_e2x7kEmU51iZ60SAGMklrSIODgfL-kcLXBDQ=
 status: accepted
 text: |
   A comment in a first-party authored artifact shall not fall out of date undetected. Every deferred-work
@@ -25,4 +28,4 @@ text: |
   the enumerated phrasings that assert a superseded repository state shall fail the repository's checks.
   Properties of a comment that are not mechanically decidable shall be carried as named review
   obligations rather than assumed.
-verification-method: test
+verification-method: inspection

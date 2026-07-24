@@ -4,7 +4,7 @@ header: |
   A structure-aware classifier partitions comments, and every language present is covered
 level: '1.90'
 links:
-- SYS043: v0892nFH1_ptHaW3_A00SDf0ukhzFBUdXkLfwDDDD9I=
+- SYS043: kcIFBI_e2x7kEmU51iZ60SAGMklrSIODgfL-kcLXBDQ=
 normative: true
 rationale: |
   The enabler every other check in this domain depends on: a rule about comments outside a documentation

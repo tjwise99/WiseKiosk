@@ -4,7 +4,7 @@ header: |
   The volume of comment prose a change adds is bounded
 level: 1.92
 links:
-- SYS043: v0892nFH1_ptHaW3_A00SDf0ukhzFBUdXkLfwDDDD9I=
+- SYS043: kcIFBI_e2x7kEmU51iZ60SAGMklrSIODgfL-kcLXBDQ=
 normative: true
 rationale: |
   SRS091 constrains the steady state, which is the wrong altitude for the failure mode that motivated
@@ -13,11 +13,13 @@ rationale: |
   changes, which is both a high bar and visible in review. The bound is configured rather than written
   into the check because the right value is a judgment that will move (SYS016); unlike the rejected
   consecutive-line threshold it is not a proxy for anything — it measures exactly the quantity of concern.
+  Measured against the merge base rather than per commit: a per-commit bound is defeated by splitting the
+  same prose across commits, and under squash-merge the commit boundary does not survive anyway.
 ref: ''
-reviewed: ryS6j7MfmAvz0G6CGvPrIa0ZDIncLdhdQbTN-_Dq9ic=
+reviewed: 0Olp32IEcc1emMqp524cwzhW6c3iJNBY_ShS-Ow5Fyg=
 status: accepted
 text: |
-  The number of comment lines outside a documentation facility that a single change adds shall be bounded,
-  and a change exceeding that bound shall fail the repository's checks. The bound shall be a configured
-  value rather than a literal in the checking code.
+  The number of comment lines outside a documentation facility that a change adds, measured against the
+  base it is proposed for merge into, shall be bounded, and a change exceeding that bound shall fail the
+  repository's checks. The bound shall be a configured value rather than a literal in the checking code.
 verification-method: test

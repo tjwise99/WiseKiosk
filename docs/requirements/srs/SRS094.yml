@@ -4,7 +4,7 @@ header: |
   A deferred-work marker names a tracked issue
 level: 1.94
 links:
-- SYS043: v0892nFH1_ptHaW3_A00SDf0ukhzFBUdXkLfwDDDD9I=
+- SYS043: kcIFBI_e2x7kEmU51iZ60SAGMklrSIODgfL-kcLXBDQ=
 normative: true
 rationale: |
   An untracked TODO is an obligation with no owner and no expiry — it survives every review because it
@@ -13,11 +13,14 @@ rationale: |
   decision: verifying that the issue exists and is open costs one API call per marker against an
   unauthenticated hourly limit, and would turn CI red on unrelated branches the moment an issue closes,
   training authors to strip the reference rather than finish the work. A dangling number is partly
-  reachable by SRS095 in any case.
+  reachable by SRS095 in any case. The token set is configured for the same reason SRS093's phrasing set
+  is: leaving it implicit would let a bare FIXME satisfy the requirement by never being counted.
 ref: ''
-reviewed: 9a_8aSNmTddQeG98L7nfEbYZClxe2Jt2fnlf0G_HZSI=
+reviewed: f4d5uUdSk4eAp3VYgqSkvefcB6XVC5xiTyKHPg5CEj8=
 status: accepted
 text: |
   A deferred-work marker in a first-party authored artifact shall name a tracked issue, in the form
-  TODO(#nnn). The check shall verify the marker's form without requiring network access.
+  TODO(#nnn). The set of tokens counted as deferred-work markers shall be a configured value rather than
+  a literal in the checking code. The check shall verify the marker's form without requiring network
+  access.
 verification-method: test
