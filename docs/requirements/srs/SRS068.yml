@@ -1,0 +1,28 @@
+active: true
+derived: false
+header: |
+  Test runners are invoked over whole-tree discovery, with no silent exclusion
+level: 1.68
+links:
+- SYS031: d-AVJQjdaz13MMBcZhMMsqJdbHyFDpIFfKxEzdjJdVc=
+normative: true
+rationale: |
+  Structural wiring makes "wired into CI" the default for a new test rather than a step an author can
+  forget. Distinct from SRS037, which owns per-module *presence* of the two required test kinds; this
+  owns repo-wide runner *reachability*.
+
+  TST `dead-test-scanner` — verification-method: test — PENDING (active: false) — header
+  `Pending: repo-level dead-test detector`. Text: enumerates committed test files (Go `_test.go`;
+  frontend `*.test.*`/`*.spec.*`) and asserts each falls under a configured runner's reach; fails on a
+  file excluded by skip, build tag, glob gap, or wrong directory. Lands with the first application
+  test runners (go.mod / Vitest config); activated with a `references` entry then. The requirements
+  tier is already covered by `doorstop --error-all` — do not re-encode it here.
+ref: ''
+reviewed: WBpfqKymjsAIdE-GGiqM5kZdPi6FZwHTc5Y10fiP8rg=
+status: proposed
+text: |
+  Each language test runner shall be invoked in its whole-tree discovery form (e.g. `go test ./...`,
+  the frontend runner's default glob), with no hand-maintained per-file test list and no
+  skip/build-tag/ignore entry that silences a committed test file, so a new test file is wired into
+  CI by its location alone.
+verification-method: inspection

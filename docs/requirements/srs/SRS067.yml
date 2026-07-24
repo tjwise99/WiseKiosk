@@ -1,0 +1,26 @@
+active: true
+derived: false
+header: |
+  Every `just verify` check runs in CI
+level: 1.67
+links:
+- SYS031: d-AVJQjdaz13MMBcZhMMsqJdbHyFDpIFfKxEzdjJdVc=
+normative: true
+rationale: |
+  `just verify` and the CI workflow are today two hand-maintained lists held in agreement only by
+  comments in the workflow ("byte-identical to `just check-arch`") — the comment-enforced
+  cross-boundary invariant FOUNDATIONS §5 forbids, failing silently on divergence. This makes the
+  agreement a checked property instead of a trusted one.
+
+  TST `verify-ci-parity` — verification-method: test — ACTIVE — references the new
+  `scripts/check-verify-ci-parity.mjs` script (see Build task B1). Asserts the parity holds against
+  the live justfile and workflow, and fails on an induced divergence.
+ref: ''
+reviewed: ZNTg-4XTnFrCG6TIks4KUgU5miJDG-eV1Eaw3YKAiYI=
+status: proposed
+text: |
+  Every check invoked by `just verify` shall also run in the CI checks workflow; a check present in
+  `just verify` but absent from CI, or the reverse, shall fail. CI targets that cannot run locally —
+  secret scanning and the pull-request-title Conventional-Commit check — are the only permitted
+  CI-only entries and shall be enumerated explicitly, not left implicit.
+verification-method: test

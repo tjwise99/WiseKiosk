@@ -1,0 +1,22 @@
+active: true
+derived: false
+header: |
+  Every test is executed by CI; none is a false signal
+level: 1.31
+links: []
+normative: true
+rationale: |
+  TESTING.md standing obligation — "Every test file is wired into CI. A test that has never run is
+  worse than no test — it is a false signal." An ethos nothing enforces decays silently (ADR 0005),
+  so this is raised to a stakeholder need and gated. The obligation spans three tiers: the
+  requirements tier is already gated (`doorstop --error-all` rejects orphan/unresolved TST refs); the
+  repo-check tier is gated by the verify↔CI parity check this domain adds; the application-test tier
+  (Go/Svelte test files reached by a runner) is pending until first-party source exists.
+ref: ''
+reviewed: d-AVJQjdaz13MMBcZhMMsqJdbHyFDpIFfKxEzdjJdVc=
+status: proposed
+text: |
+  Every test and check present in the repository shall be executed by CI. A test or check that exists
+  but that no CI target runs shall fail the verification gate rather than pass silently by never
+  running, so no test can be a false signal by never executing.
+verification-method: inspection
