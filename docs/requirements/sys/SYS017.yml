@@ -1,0 +1,23 @@
+active: true
+derived: false
+header: |
+  Secrets are confined to the backend, by construction
+level: 1.17
+links: []
+normative: true
+rationale: |
+  Settled decision (never reopened): a key never reaches the browser, and
+  the guarantee is structural, not policy. A stripping or redaction step
+  fails open the moment a secret is added and the step is not updated; a
+  design with no secret-carrying path toward a client has nothing to
+  forget.
+ref: ''
+reviewed: X-_LkUxibUnQ62vebwuFwC3sK95PhxhHBtd8FMrG_0M=
+status: accepted
+text: |
+  No secret shall ever reach a client: not through configuration delivery,
+  not in any API response body or header, and not in any error or log
+  output a client can observe. This confinement shall hold by construction
+  — the system shall have no code path that carries a secret toward a
+  client — never by a stripping or redaction step applied before delivery.
+verification-method: test

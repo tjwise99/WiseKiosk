@@ -1,0 +1,23 @@
+active: true
+derived: false
+header: |
+  Configuration schema offers no secret-bearing key
+level: 1.17
+links:
+- SYS017: X-_LkUxibUnQ62vebwuFwC3sK95PhxhHBtd8FMrG_0M=
+normative: true
+rationale: |
+  The configuration is the one channel a client fetches wholesale, so the
+  confinement (SYS017) is structural only if the configuration cannot
+  carry a secret in the first place. Excluding secret-bearing keys from
+  the schema leaves nothing to strip; a denylist applied at delivery
+  would fail open.
+ref: ''
+reviewed: OBpDcUX0BESRjRqd_PfH8BsCsCsLS-geiUzw4AOW9Wg=
+status: accepted
+text: |
+  The configuration schema shall offer no key whose value is a secret —
+  no API key, token, credential, or password. Configuration delivery
+  shall therefore carry no secret to remove: the delivered configuration
+  shall be secret-free by construction, not by a redaction step.
+verification-method: inspection

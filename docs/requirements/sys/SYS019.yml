@@ -1,0 +1,23 @@
+active: true
+derived: false
+header: |
+  Verification requiring live credentials runs outside CI
+level: 1.19
+links: []
+normative: true
+rationale: |
+  Settled decision: a credential held by CI is an internet-facing leak
+  surface with no compensating benefit while no secrets manager exists.
+  Checks that need a live upstream credential (the Contract tier) run
+  locally or scheduled on a credentialed host instead. Reopen only if a
+  secrets manager makes key-bearing CI genuinely safe and something needs
+  it.
+ref: ''
+reviewed: Q7m5vTXwUB3LSQgXTYNDuBlDeiAGcEQcOXgPn7pKpp0=
+status: accepted
+text: |
+  CI shall hold no API keys or other upstream credentials. Any
+  verification that requires a live credential shall run outside CI.
+  Adding a credential-dependent check shall mean wiring it to run outside
+  CI, never granting CI the credential.
+verification-method: inspection
