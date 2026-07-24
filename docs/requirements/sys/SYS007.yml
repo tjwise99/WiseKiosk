@@ -10,7 +10,7 @@ rationale: |
   by its own configuration, is the entire reason this repository exists.
   Per-deployment forks or rebuilds would fragment it.
 ref: ''
-reviewed: 4k7lerjS-UELCU00aZI1dRY-4UKeMt19sScy_mviLOI=
+reviewed: XQ-nwWSE_19RZzvbJvX5FgezARrcLDgoTrz5ztQupKc=
 status: accepted
 text: |
   WiseKiosk shall be published as one container image. Per-deployment

@@ -3,13 +3,14 @@ derived: false
 header: |
   One generic published image
 level: 1.44
-links: []
+links:
+- SYS007: null
 normative: true
 rationale: |
   Keeps the one-image model falsifiable: any deployment-specific content baked
   into the image is a defect.
 ref: ''
-reviewed: null
+reviewed: WSSHHJn1nDKLWInemTgevHPnxeng40Szkk3Hu7Zxr3Y=
 status: accepted
 text: |
   WiseKiosk shall be published as a single container image that carries no

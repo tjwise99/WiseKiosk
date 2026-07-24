@@ -3,13 +3,14 @@ derived: false
 header: |
   Frontend runs on a Pi Zero-class browser host
 level: 1.56
-links: []
+links:
+- SYS009: null
 normative: true
 rationale: |
   Decomposes SYS009's reference-hardware clause; demonstrated on reference
   hardware, sharing evidence with the SRS050 soak.
 ref: ''
-reviewed: null
+reviewed: cfBLqV9pRKIdTG-dphfcHo-SH-mQ2rW-d8mEwNnCUaY=
 status: accepted
 text: |
   The frontend shall operate on a Raspberry Pi Zero-class browser host

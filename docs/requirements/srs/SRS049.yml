@@ -3,13 +3,14 @@ derived: false
 header: |
   Fixed-port healthcheck
 level: 1.49
-links: []
+links:
+- SYS010: null
 normative: true
 rationale: |
   Orchestrator-driven recovery; the port is already a constant (SYS016,
   SRS011), reinforced here.
 ref: ''
-reviewed: null
+reviewed: rdvFAnYpt0-05KEtMfaHABIUPsdDYZUHrQICEolP_lE=
 status: accepted
 text: |
   The container image shall declare a healthcheck that probes the service on

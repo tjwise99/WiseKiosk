@@ -3,12 +3,13 @@ derived: false
 header: |
   Docker-capable amd64/arm64 backend host
 level: 1.51
-links: []
+links:
+- SYS009: null
 normative: true
 rationale: |
   Pins the container host platform.
 ref: ''
-reviewed: null
+reviewed: y9N_pHQ7jTTa0TT7pCj-409U_s11R9bvgUnjoH_OHPo=
 status: accepted
 text: |
   The backend container shall run on a Docker-capable amd64 or arm64 host,

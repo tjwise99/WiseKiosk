@@ -3,13 +3,14 @@ derived: false
 header: |
   Per-deployment independence
 level: 1.45
-links: []
+links:
+- SYS007: null
 normative: true
 rationale: |
   The operator-independence property: instances are isolated by construction,
   not coordinated.
 ref: ''
-reviewed: null
+reviewed: HuXC3q0DQP0LOiVfXIGiTi34cL9GDMRU0yzGeVkxT_4=
 status: accepted
 text: |
   Each running WiseKiosk instance shall be determined solely by its externally

@@ -3,12 +3,13 @@ derived: false
 header: |
   Non-root container user
 level: 1.53
-links: []
+links:
+- SYS026: null
 normative: true
 rationale: |
   Container-hardening control made testable.
 ref: ''
-reviewed: null
+reviewed: KkQobI7a7ULMm6JpakzxyZnEYbvy8C--X1XyJrN8GMQ=
 status: accepted
 text: |
   The container image shall run as a non-root user.

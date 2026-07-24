@@ -3,12 +3,13 @@ derived: false
 header: |
   Drop-in image upgrade
 level: 1.47
-links: []
+links:
+- SYS006: null
 normative: true
 rationale: |
   Makes SYS006's no-code-literacy upgrade concrete and demonstrable.
 ref: ''
-reviewed: null
+reviewed: NtZzmYoT9GN2JyVrJeoT775iNhX3-xfnnhcLKSxYJIY=
 status: accepted
 text: |
   Upgrading a deployment shall consist of replacing its running image with a

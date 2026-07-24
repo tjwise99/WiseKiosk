@@ -3,14 +3,15 @@ derived: false
 header: |
   Configuration supplied by bind mount
 level: 1.46
-links: []
+links:
+- SYS007: null
 normative: true
 rationale: |
   Fixes the configuration supply vector at the container boundary; the
   fidelity of that configuration in transit is SRS009's concern, not this
   one.
 ref: ''
-reviewed: null
+reviewed: 5khM8wQ4mI7uRPfPVJ089shGjlnfgJSoPynWciYIQ-0=
 status: accepted
 text: |
   The display configuration shall be supplied to the running container by a

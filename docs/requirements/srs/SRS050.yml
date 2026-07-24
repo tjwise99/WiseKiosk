@@ -3,12 +3,13 @@ derived: false
 header: |
   Thirty-day soak without unbounded growth
 level: '1.50'
-links: []
+links:
+- SYS010: null
 normative: true
 rationale: |
   Turns SYS010's endurance target into a soak obligation.
 ref: ''
-reviewed: null
+reviewed: a8qM5u05h_aGDDeJoytGV-2XtAiQC5eBE862x_RXQBo=
 status: accepted
 text: |
   WiseKiosk shall sustain at least thirty days of continuous unattended

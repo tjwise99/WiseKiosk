@@ -3,13 +3,14 @@ derived: false
 header: |
   Build context excludes development and secret material
 level: 1.55
-links: []
+links:
+- SYS026: null
 normative: true
 rationale: |
   Keeps development and secret material out of image layers; reinforces
   SYS018 (no secret in the image).
 ref: ''
-reviewed: null
+reviewed: GAqsifYP2bcCSdPWWUrpEl-7ueUuu4Y6vBPixBt2KSw=
 status: accepted
 text: |
   A .dockerignore shall exclude .git, secret material, and node_modules from
