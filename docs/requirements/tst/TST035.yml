@@ -1,0 +1,17 @@
+active: false
+derived: false
+header: |
+  Pending: config-fragment single-schema composition inspection
+level: 1.35
+links:
+- SRS035: null
+normative: true
+rationale: ''
+ref: ''
+status: proposed
+text: |
+  Pending: inspection that each module's configuration fragment composes into the
+  one configuration schema, is enforced by the single validation implementation,
+  is not declared a second time, and does not cross the boundary. Lands with the
+  configuration schema and the first module; form decided then.
+verification-method: inspection

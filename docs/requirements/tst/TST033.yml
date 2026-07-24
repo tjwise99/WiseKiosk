@@ -1,0 +1,17 @@
+active: false
+derived: false
+header: |
+  Pending: shaping-library purity and isolation inspection
+level: 1.33
+links:
+- SRS033: null
+normative: true
+rationale: ''
+ref: ''
+status: proposed
+text: |
+  Pending: inspection that each module's shaping library performs no I/O and that
+  its unit tests exercise it against known upstream responses without network
+  access. Lands with the first module and the repo layout (#5); form (repo check
+  or review checklist) decided then.
+verification-method: inspection

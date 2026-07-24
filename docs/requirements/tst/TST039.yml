@@ -1,0 +1,17 @@
+active: false
+derived: false
+header: |
+  Pending: clock client-side render test
+level: 1.39
+links:
+- SRS039: null
+normative: true
+rationale: ''
+ref: ''
+status: proposed
+text: |
+  Pending: render test that the clock module displays and advances the current
+  time with no network activity attributable to the clock — no backend request for
+  the time and no server-pushed tick. Lands with the frontend skeleton (#10);
+  activated and given a references entry then.
+verification-method: test

@@ -1,0 +1,18 @@
+active: false
+derived: false
+header: |
+  Pending: per-module test-completeness check
+level: 1.37
+links:
+- SRS037: null
+normative: true
+rationale: ''
+ref: ''
+status: proposed
+text: |
+  Pending: repo-level check that enumerates the modules and asserts each supplies
+  a shaping-library unit test and a component render test wired into CI. Lands
+  with the first module; form decided then. This is the completeness meta-check;
+  what a module's render test itself asserts is verified by the frontend lane's
+  behavioural render test.
+verification-method: inspection
