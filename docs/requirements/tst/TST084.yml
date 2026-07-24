@@ -1,0 +1,20 @@
+active: true
+derived: false
+header: |
+  The docs site builds under Sphinx warnings-as-errors with regenerated needs pages
+level: 1.12
+links:
+- SRS080: null
+normative: true
+rationale: ''
+ref: ''
+references:
+- path: justfile
+  type: file
+reviewed: o_pZCUcgNHvCRPfFwE1v0YIuGv2a2Gb-cBtrjFwTKZ8=
+status: proposed
+text: |
+  Verified by `justfile`'s `site-build` recipe: regenerates the needs pages from the Doorstop tree
+  (`doorstop_to_needs.py`), then builds the docs site with `sphinx-build -W`, run in CI by
+  `check-site`.
+verification-method: test

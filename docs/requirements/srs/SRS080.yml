@@ -1,0 +1,18 @@
+active: true
+derived: false
+header: |
+  The docs site builds warnings-as-errors with freshly regenerated needs pages
+level: '1.80'
+links:
+- SYS038: null
+normative: true
+rationale: |
+  The verifying TST — verification-method: test — ACTIVE — references `justfile` (the `check-site` /
+  `site-build` recipe).
+ref: ''
+reviewed: j4zCD_HD_qddVontI9mJ_tS8cymVcOvSBrSITH3XGrI=
+status: proposed
+text: |
+  The docs site shall build under Sphinx warnings-as-errors, with needs pages regenerated from the
+  Doorstop tree.
+verification-method: test

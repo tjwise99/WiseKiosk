@@ -1,0 +1,19 @@
+active: true
+derived: false
+header: |
+  `likec4 validate` passes: no undefined element, unresolved relationship, or invalid view
+level: '1.10'
+links:
+- SRS078: null
+normative: true
+rationale: ''
+ref: ''
+references:
+- path: justfile
+  type: file
+reviewed: DwJhDTkhyzXH5sY4apWu9XLqb7fajBE9yxTNYLs0-zM=
+status: proposed
+text: |
+  Verified by `justfile`'s `arch-export` recipe, whose first step runs `likec4 validate
+  docs/architecture/model`; run in CI by `check-arch`.
+verification-method: test

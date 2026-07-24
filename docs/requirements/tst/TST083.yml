@@ -1,0 +1,20 @@
+active: true
+derived: false
+header: |
+  Spliced diagrams and generated architecture artifacts are byte-identical to a fresh regeneration
+level: 1.11
+links:
+- SRS079: null
+normative: true
+rationale: ''
+ref: ''
+references:
+- path: scripts/splice-arch-diagrams.mjs
+  type: file
+reviewed: T3FGD5snlobcOTiReDEsi84GMVPhK_ue7ErKvI8K8W8=
+status: proposed
+text: |
+  Verified by `scripts/splice-arch-diagrams.mjs` regenerating the spliced diagrams, followed by
+  `check-arch`'s `git diff --exit-code docs/architecture/ docs/ARCHITECTURE.md`, which fails the gate
+  on any drift from a fresh regeneration.
+verification-method: test
