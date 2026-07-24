@@ -175,7 +175,7 @@ exists to support a case that does not exist yet, it should not exist yet.**
 | Anti-pattern | What it looks like |
 |---|---|
 | **A plugin system with no plugins** | A helper API, per-module event namespaces, a catch-all event relay, static-file serving for module `public/` directories — machinery for third-party modules that will never exist |
-| **Abstraction without a second consumer** | Extension points with one implementation. Generality bought against a future that never arrives — and everything downstream must accommodate it |
+| **Abstraction without a second consumer** → SYS041 / SRS086 | Extension points with one implementation. Generality bought against a future that never arrives — and everything downstream must accommodate it |
 | **A transport chosen before the access pattern** | A bidirectional live channel for data refreshed every 10–15 minutes. The refresh is frontend-driven, so a server-push channel serves nothing here but a clock tick, which belongs client-side |
 | **Cross-boundary invariants enforced by comments** | The same value computed independently on both sides, agreement guaranteed by a comment pointing at its twin. Silent failure on divergence — this is exactly why the boundary contract is generated (§4) |
 | **Secret handling by denylist** | A list of keys to strip before delivery. Fails open the moment a secret is added and the list is not |
