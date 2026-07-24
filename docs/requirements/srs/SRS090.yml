@@ -4,7 +4,7 @@ header: |
   A structure-aware classifier partitions comments, and every language present is covered
 level: '1.90'
 links:
-- SYS043: kcIFBI_e2x7kEmU51iZ60SAGMklrSIODgfL-kcLXBDQ=
+- SYS044: 8Fx5gwSLUyY7OJ_m9iXYtU-Tp4Ck2htdVqR4hpa_9Cg=
 normative: true
 rationale: |
   The enabler every other check in this domain depends on: a rule about comments outside a documentation
@@ -16,7 +16,7 @@ rationale: |
   today, and the day a file in an uncovered language lands the check fails and the arm gets written
   against real source rather than an imagined one — no arm is built ahead of a consumer (SYS041).
 ref: ''
-reviewed: 00GvCPAlCQkd05WA0VcnZ80LC8q3w_ymm3D2Pazbo-M=
+reviewed: jLd133NNMIrB2r4dA4m_G5btizuZMSnIoD5XUdEj5dw=
 status: accepted
 text: |
   The repository's comment checks shall determine whether a comment belongs to its language's

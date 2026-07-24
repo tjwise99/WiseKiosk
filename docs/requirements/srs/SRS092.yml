@@ -4,7 +4,7 @@ header: |
   The volume of comment prose a change adds is bounded
 level: 1.92
 links:
-- SYS043: kcIFBI_e2x7kEmU51iZ60SAGMklrSIODgfL-kcLXBDQ=
+- SYS044: 8Fx5gwSLUyY7OJ_m9iXYtU-Tp4Ck2htdVqR4hpa_9Cg=
 normative: true
 rationale: |
   SRS091 constrains the steady state, which is the wrong altitude for the failure mode that motivated
@@ -16,7 +16,7 @@ rationale: |
   Measured against the merge base rather than per commit: a per-commit bound is defeated by splitting the
   same prose across commits, and under squash-merge the commit boundary does not survive anyway.
 ref: ''
-reviewed: 0Olp32IEcc1emMqp524cwzhW6c3iJNBY_ShS-Ow5Fyg=
+reviewed: In9iGBs5E7pBe0cH5aSB5FO-aOnrd7Y0PU5-xC-L5fk=
 status: accepted
 text: |
   The number of comment lines outside a documentation facility that a change adds, measured against the
