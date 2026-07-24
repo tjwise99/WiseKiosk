@@ -5,15 +5,20 @@ header: |
 level: 1.89
 links:
 - SYS042: zSftWlqCKYGFrIztL6VLKF-27b-3tVZkzysxcdkfqj0=
+- SYS043: kcIFBI_e2x7kEmU51iZ60SAGMklrSIODgfL-kcLXBDQ=
 normative: true
 rationale: |
   The honest ceiling. Every mechanical check in this domain decides form and position; none decides whether
   a sentence is rationale. A one-line comment carrying no banned phrasing and citing nothing can still be
   an ADR's content sitting in code, and it passes every gate. Naming that residue as a review obligation
   keeps the gate set from being read as proof of something it does not decide (SYS031). Follows the shape
-  of SRS086, and activates on the same design-review checklist.
+  of SRS086, and activates on the same design-review checklist. Dual-parented, and checked by hand as the
+  requirements README asks: the item asserts one obligation, not a span, and that obligation is supported
+  by each parent independently — SYS042 because misplaced rationale is precisely what the reviewer is
+  looking for, and SYS043 because its closing clause reserves the undecidable residue for review rather
+  than assuming it away.
 ref: ''
-reviewed: 1vGJtt9NEpOkjy_nwGnYI28ahKxyp1R6GCaj8sAXrx8=
+reviewed: H4Sqowt_dFfvXqXGxBuSGgf_Lv1CTY3Z1W-JZ5BVuRE=
 status: accepted
 text: |
   The design-review record for each change shall confirm that each comment the change adds or modifies,
