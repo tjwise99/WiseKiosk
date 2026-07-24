@@ -1,0 +1,14 @@
+active: false
+derived: false
+header: |
+  Pending: browser-hardening headers test
+level: 1.56
+links:
+- SRS066: null
+normative: true
+rationale: ''
+ref: ''
+status: proposed
+text: |
+  Pending: integration test asserting the frontend-serving response carries X-Content-Type-Options: nosniff, a frame denial via frame-ancestors 'none', Referrer-Policy: no-referrer, and a Permissions-Policy disabling unused features, each present and no weaker than stated. Fails if any required header is absent or weakened. Lands with the backend that serves the frontend; activated with a references entry to the integration test then.
+verification-method: test

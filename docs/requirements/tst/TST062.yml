@@ -1,0 +1,14 @@
+active: false
+derived: false
+header: |
+  Pending: Go dependency vulnerability gate test
+level: 1.48
+links:
+- SRS060: null
+normative: true
+rationale: ''
+ref: ''
+status: proposed
+text: |
+  Pending: check asserting a pinned, known-vulnerable Go module with a reachable call in a fixture makes the dependency-vulnerability job fail, and that bumping past the advisory clears it (expected: govulncheck; the fixture must call the vulnerable symbol, since the gate considers reachability). Fails if a reachable vulnerable pin passes. Lands with go.mod; activated with a references entry to the fixture then.
+verification-method: test

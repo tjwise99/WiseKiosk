@@ -1,0 +1,27 @@
+active: true
+derived: false
+header: |
+  Published-artifact supply-chain integrity
+level: 1.29
+links: []
+normative: true
+rationale: |
+  One generic image serves the whole fleet (SYS026), so a base-layer
+  vulnerability or a substituted image is a fleet-wide exposure the operator
+  cannot independently detect. Scanning the whole image catches operating-system
+  and base-layer vulnerabilities that source-level dependency gates (SYS028)
+  never see; a signature and build provenance let a deployer prove the image is
+  the one the project built; a bill of materials makes the fleet's dependency
+  inventory auditable after a disclosure without a rebuild. Keyless signing is
+  required because the settled decision that continuous integration holds no
+  keys (FOUNDATIONS §2) forbids a stored signing secret.
+ref: ''
+reviewed: evcBEbEYMAVaOFsRhUIS4u4Udn3UfVn1pm4tchwLBos=
+status: accepted
+text: |
+  The published container image shall be verifiably trustworthy to the operator
+  who pulls it: scanned for known vulnerabilities before release,
+  cryptographically signed with verifiable build provenance, and accompanied by
+  a software bill of materials - all produced without any signing secret held
+  in continuous integration.
+verification-method: demonstration

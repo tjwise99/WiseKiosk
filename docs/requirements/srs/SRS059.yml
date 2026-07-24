@@ -1,0 +1,19 @@
+active: true
+derived: false
+header: |
+  Blocking lint and type checks per package
+level: 1.59
+links:
+- SYS027: 3T38wo5b-NGHKqfq-ESd3d4trWsojs8Bvf50rXCCm-s=
+normative: true
+rationale: |
+  Keeps the cheapest correctness gate from silently degrading to advisory-only;
+  the frontend type check also guards the generated boundary contract.
+ref: ''
+reviewed: yUaeEmxY_rUQWMNFl3Y1Ic2M5TKEGP081UYMqH6xdy0=
+status: accepted
+text: |
+  Continuous integration shall run each source package's linters as blocking
+  checks and shall fail the pull request when a lint or type-correctness
+  violation is present. No linter shall be advisory-only.
+verification-method: test

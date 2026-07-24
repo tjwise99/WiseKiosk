@@ -1,0 +1,14 @@
+active: false
+derived: false
+header: |
+  Pending: Svelte/TypeScript static security scan gate test
+level: 1.45
+links:
+- SRS058: null
+normative: true
+rationale: ''
+ref: ''
+status: proposed
+text: |
+  Pending: check asserting a seeded, deliberately vulnerable Svelte/TypeScript pattern causes the code-scanning workflow to report a failing required status on the pull request (expected: CodeQL javascript-typescript analysis). Fails if the workflow is absent, skips the frontend tree, or lets the seeded finding pass. Lands with the first frontend code; activated with a references entry to the seeded fixture then.
+verification-method: test

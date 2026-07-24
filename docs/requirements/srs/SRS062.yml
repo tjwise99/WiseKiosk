@@ -1,0 +1,19 @@
+active: true
+derived: false
+header: |
+  Container image vulnerability scan gate
+level: 1.62
+links:
+- SYS029: evcBEbEYMAVaOFsRhUIS4u4Udn3UfVn1pm4tchwLBos=
+normative: true
+rationale: |
+  Gates the whole image - operating-system and base-layer packages included -
+  which the source-level dependency gate never inspects.
+ref: ''
+reviewed: geyMlKPOiiPZtS2-ifxWcjB77a3eU0zVHllnIKm2_FI=
+status: accepted
+text: |
+  Continuous integration shall scan the built container image for known
+  vulnerabilities and shall fail the build as a required gate when a finding at
+  or above the configured severity threshold is present.
+verification-method: test
