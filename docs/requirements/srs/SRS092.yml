@@ -14,9 +14,12 @@ rationale: |
   into the check because the right value is a judgment that will move (SYS016); unlike the rejected
   consecutive-line threshold it is not a proxy for anything — it measures exactly the quantity of concern.
   Measured against the merge base rather than per commit: a per-commit bound is defeated by splitting the
-  same prose across commits, and under squash-merge the commit boundary does not survive anyway.
+  same prose across commits, and under squash-merge the commit boundary does not survive anyway. Whether
+  a change may carry a recorded override of the bound is an open decision deferred to #59: the obligation
+  as written admits none, and a bound whose only lever is its global value ratchets toward inertness —
+  the override's shape is a design decision and is not invented here.
 ref: ''
-reviewed: In9iGBs5E7pBe0cH5aSB5FO-aOnrd7Y0PU5-xC-L5fk=
+reviewed: uI1YglIELJSiRh3G4uCFumyLlmjNmWHObkZ7V8Y-BfA=
 status: accepted
 text: |
   The number of comment lines outside a documentation facility that a change adds, measured against the
