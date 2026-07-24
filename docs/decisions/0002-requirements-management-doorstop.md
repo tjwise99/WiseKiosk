@@ -5,10 +5,9 @@
 
 ## Context
 
-WiseKiosk is design-first, but its requirements live only as prose: the load-bearing invariants in
-[`../FOUNDATIONS.md`](../FOUNDATIONS.md), the standing obligations in [`../TESTING.md`](../TESTING.md),
-and the "each row becomes a testable requirement… verified by" table in
-[`../ARCHITECTURE.md`](../ARCHITECTURE.md). None of it has stable IDs, and nothing enforces that a
+WiseKiosk is design-first, but its requirements live only as prose scattered across its design
+documents — load-bearing invariants, standing test obligations, and an "each row becomes a testable
+requirement… verified by" table. None of it has stable IDs, and nothing enforces that a
 requirement actually traces to an artifact that verifies it. That proto-traceability is exactly the
 kind of invariant this project prefers to mechanise rather than trust to vigilance: a "verified by"
 column with nothing checking it decays silently. The project also has an explicit learning goal, and
@@ -33,8 +32,8 @@ requirements it serves, not at the repo root; it is dev tooling only, no applica
   Rejected as heavier than warranted: more methodology surface to learn and maintain than a pre-code
   project of this size needs, for capability it will not use soon.
 - **OpenFastTrace** — a mature trace tool, but JVM-based. Rejected: it drags a Java toolchain into a
-  Go + Svelte repo whose dependency-footprint discipline (FOUNDATIONS §2) actively resists exactly
-  that. Doorstop's Python is a lighter, more idiomatic addition.
+  Go + Svelte repo whose minimal, native-toolchain-free dependency footprint (SYS036) actively
+  resists exactly that. Doorstop's Python is a lighter, more idiomatic addition.
 - **A homegrown Markdown register + validator script** — a table of IDs plus a `check-reqs.mjs` in
   the existing `scripts/` style. Rejected: it would work, but it teaches no established methodology
   (a stated goal), and it reinvents suspect-link fingerprinting and traceability that Doorstop

@@ -7,8 +7,8 @@ carried by #7). This ADR records the mechanism **decision**; the **build** is #7
 ## Context
 
 The Go backend and the TypeScript frontend share no types
-([ADR 0001](0001-backend-language-go.md)), so FOUNDATIONS §4 makes the boundary contract
-non-negotiable: **one schema, both sides generated from it**, CI failing on stale generated code.
+([ADR 0001](0001-backend-language-go.md)), which makes the boundary contract non-negotiable:
+**one schema, both sides generated from it**, CI failing on stale generated code.
 Round #37 elicited the requirements for that property (SYS023; SRS029–032) deliberately
 **mechanism-agnostic** — a "shall" that names a tool churns when the tool changes. This ADR chooses
 the tool, which is the decision half of #7.
@@ -51,14 +51,16 @@ and #7's acceptance — schema file present, both generators wired, drift gate g
   `sphinxcontrib-openapi` both lag 3.1); adopted as the migration target rather than dropped.
 - **TypeSpec → OpenAPI** — a more ergonomic authoring DSL, but it adds a Node compile hop and a
   second generation stage in the drift gate, and makes the OpenAPI itself a generated artifact. An
-  authoring abstraction whose only consumer is ~5 routes (FOUNDATIONS §5).
+  authoring abstraction whose only consumer is ~5 routes — generality ahead of a second use
+  (SYS041 / SRS086).
 - **JSON Schema only** (json-schema-to-typescript / quicktype) — models payload bodies but not
   operations, parameters, or status codes, so the request-parameter and rejection-status contract
   would live in a second definition: the exact silent-divergence defect the single-schema rule
   kills.
 - **protobuf / gRPC** — a transport change disguised as a codegen choice. Browsers cannot speak gRPC
-  without a gRPC-web proxy, and it replaces the REST-over-JSON proxy the design commits to
-  (FOUNDATIONS §5: a transport chosen against the access pattern).
+  without a gRPC-web proxy, and it replaces the REST-over-JSON proxy the design commits to — a
+  transport chosen against the access pattern, which polls and needs no live channel
+  (SRS043 / SRS039).
 - **Smithy** — can emit OpenAPI, but carries a JVM toolchain and trait/projection machinery far
   beyond a five-route proxy.
 - **`ogen` (Go)** — best-in-class 3.1 with generated request/response validation; kept as the

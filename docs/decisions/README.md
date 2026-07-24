@@ -9,6 +9,10 @@ the highest below, and add it to the table.
 it is later superseded: mark the old one `superseded by NNNN` and write a new one. Each entry carries
 a **Decided** date — when the choice was *taken*, not when the work merged.
 
+Immutability protects the argument, not the pointers. Where a cited document is retired or its
+content moves, an ADR's citations may be retargeted to wherever the claim now lives; its reasoning,
+decision, and rejected alternatives stay as written.
+
 | # | Decided | Decision |
 |---|---|---|
 | [0001](0001-backend-language-go.md) | 2026-07-21 | Backend in Go; the frontend/backend boundary contract is generated from one schema |
