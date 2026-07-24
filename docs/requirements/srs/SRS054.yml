@@ -10,9 +10,9 @@ rationale: |
   Reproducibility and supply-chain integrity; Dependabot keeps the digest
   fresh (a #40 / dependency-automation concern).
 ref: ''
-reviewed: 7JvbnHSO5mFW2hU-il9ddh8a8_aDIecbY0ew6NwBYXg=
+reviewed: iK4kHnOlj-BiDIb1ZaaxerLHfZhqT_B88CxQFtBJdm4=
 status: accepted
 text: |
   The image's base shall be referenced by @sha256: content digest, not a
   floating tag.
-verification-method: inspection
+verification-method: test

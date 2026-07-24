@@ -1,7 +1,7 @@
 active: false
 derived: false
 header: |
-  Pending: multi-arch host demonstration
+  Pending: multi-arch build and smoke test
 level: 1.11
 links:
 - SRS051: null
@@ -10,5 +10,5 @@ rationale: ''
 ref: ''
 status: proposed
 text: |
-  Pending: demonstration that the published image runs on a Docker-capable amd64 host and on an arm64 host. Lands with the container image build (#54); activated then.
-verification-method: demonstration
+  Pending: a CI matrix that builds and smoke-tests the published image on amd64 and arm64. The CI wiring lives under .github/ (not Doorstop-referenceable, ADR 0002) and is cited here; any non-dot-dir smoke harness it invokes is the references target. Lands with the container image build (#54); activated then.
+verification-method: test

@@ -10,10 +10,10 @@ rationale: |
   Self-healing without masking a deliberate stop; this concerns crash and
   reboot recovery, not configuration or secret reloads (SRS012, SRS025).
 ref: ''
-reviewed: 7VOiR6br09Nfz6FvoYf5fGLg_xOZR16m3JF_uqUn-p0=
+reviewed: BeIz2FiFl61IDb4DL6glaDoWINmRJjKpk9LGMnqNv6o=
 status: accepted
 text: |
   The deployment shall run the container under restart policy unless-stopped,
   so that it recovers automatically from a crash or host reboot yet remains
   stopped when deliberately stopped by the operator.
-verification-method: inspection
+verification-method: test

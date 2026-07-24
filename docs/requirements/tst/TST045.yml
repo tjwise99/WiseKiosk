@@ -1,7 +1,7 @@
 active: false
 derived: false
 header: |
-  Pending: base-image digest-pin inspection
+  Pending: base-image digest-pin lint
 level: 1.5
 links:
 - SRS054: null
@@ -10,5 +10,5 @@ rationale: ''
 ref: ''
 status: proposed
 text: |
-  Pending: inspection of the Dockerfile asserting every base and stage image is pinned to a @sha256: digest, not a floating tag. Lands with the container image build (#54); activated and given a references entry then.
-verification-method: inspection
+  Pending: a scripts/-hosted lint asserting every base and stage image in the Dockerfile is pinned to a @sha256: digest, not a floating tag, and failing CI otherwise. References the lint script (a non-dot-dir path, Doorstop-referenceable) when it lands with the container image build (#54); activated then.
+verification-method: test

@@ -9,10 +9,10 @@ normative: true
 rationale: |
   Turns SYS010's endurance target into a soak obligation.
 ref: ''
-reviewed: a8qM5u05h_aGDDeJoytGV-2XtAiQC5eBE862x_RXQBo=
+reviewed: 8CqYfkmqG5LvwDWCDNLxIj3Ng79xH9pzfbbEYAxhM1M=
 status: accepted
 text: |
   WiseKiosk shall sustain at least thirty days of continuous unattended
-  operation on the reference platform with no unbounded resource growth and
-  no visible degradation.
+  operation on the reference platform without operator intervention or
+  visible degradation.
 verification-method: demonstration

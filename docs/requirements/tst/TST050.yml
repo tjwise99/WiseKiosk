@@ -10,5 +10,5 @@ rationale: ''
 ref: ''
 status: proposed
 text: |
-  Pending: soak demonstration of at least 30 days continuous unattended operation on the reference platform with no unbounded resource growth or visible degradation. Lands with the container image build and a reference-platform deployment (#54); activated then.
+  Pending: soak demonstration of at least 30 days continuous unattended operation on the reference platform without operator intervention or visible degradation. Lands with the container image build and a reference-platform deployment (#54); activated then.
 verification-method: demonstration
