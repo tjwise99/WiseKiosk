@@ -1,0 +1,14 @@
+active: false
+derived: false
+header: |
+  Pending: multi-arch host demonstration
+level: 1.11
+links:
+- SRS051: null
+normative: true
+rationale: ''
+ref: ''
+status: proposed
+text: |
+  Pending: demonstration that the published image runs on a Docker-capable amd64 host and on an arm64 host. Lands with the container image build (#54); activated then.
+verification-method: demonstration

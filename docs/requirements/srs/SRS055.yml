@@ -4,7 +4,7 @@ header: |
   Build context excludes development and secret material
 level: 1.55
 links:
-- SYS026: null
+- SYS026: _m8BJ8JAZMsCQBBQgn23Qw8YXeKj21ZfVt168hmOO3k=
 normative: true
 rationale: |
   Keeps development and secret material out of image layers; reinforces

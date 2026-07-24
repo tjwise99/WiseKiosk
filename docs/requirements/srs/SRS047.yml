@@ -4,7 +4,7 @@ header: |
   Drop-in image upgrade
 level: 1.47
 links:
-- SYS006: null
+- SYS006: Sw94fSoC2fO1zVrk3kpMAX9zHX1gIPU0ZA8yJ1DuGBE=
 normative: true
 rationale: |
   Makes SYS006's no-code-literacy upgrade concrete and demonstrable.

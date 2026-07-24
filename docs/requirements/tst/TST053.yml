@@ -1,0 +1,14 @@
+active: false
+derived: false
+header: |
+  Pending: per-deployment independence inspection
+level: 1.13
+links:
+- SRS045: null
+normative: true
+rationale: ''
+ref: ''
+status: proposed
+text: |
+  Pending: inspection that the image bakes in no deployment-specific configuration, secret, or identity, so an instance is determined solely by its mounted configuration and secrets and shares no state with another. Lands with the container image build (#54); activated then.
+verification-method: inspection

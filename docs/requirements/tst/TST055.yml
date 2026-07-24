@@ -1,0 +1,14 @@
+active: false
+derived: false
+header: |
+  Pending: host-provisioning-absent inspection
+level: 1.15
+links:
+- SRS052: null
+normative: true
+rationale: ''
+ref: ''
+status: proposed
+text: |
+  Pending: inspection that the delivered artifacts ship no host operating system, browser, or autostart provisioning, keeping the kiosk host platform outside the delivered system. Lands with the container image build and deployment recipe (#54); activated then.
+verification-method: inspection

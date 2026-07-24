@@ -4,7 +4,7 @@ header: |
   Thirty-day soak without unbounded growth
 level: '1.50'
 links:
-- SYS010: null
+- SYS010: ifmtvht3nYnBVmX2DECHOt7Hl-jnYsDrhDi7H4DDcZQ=
 normative: true
 rationale: |
   Turns SYS010's endurance target into a soak obligation.

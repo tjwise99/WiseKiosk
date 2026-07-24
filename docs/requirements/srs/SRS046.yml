@@ -4,7 +4,7 @@ header: |
   Configuration supplied by bind mount
 level: 1.46
 links:
-- SYS007: null
+- SYS007: XQ-nwWSE_19RZzvbJvX5FgezARrcLDgoTrz5ztQupKc=
 normative: true
 rationale: |
   Fixes the configuration supply vector at the container boundary; the

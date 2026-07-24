@@ -4,7 +4,7 @@ header: |
   Kiosk host outside the delivered boundary
 level: 1.52
 links:
-- SYS009: null
+- SYS009: MiEgDtY0PS1aFpw6ZcA5eI9spWet1JGL0grkJBWiOAY=
 normative: true
 rationale: |
   Records the boundary as a non-goal (FOUNDATIONS §5) so it is not silently

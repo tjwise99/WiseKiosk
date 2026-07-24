@@ -1,0 +1,14 @@
+active: false
+derived: false
+header: |
+  Pending: Pi Zero-class host demonstration
+level: 1.16
+links:
+- SRS056: null
+normative: true
+rationale: ''
+ref: ''
+status: proposed
+text: |
+  Pending: demonstration that the frontend renders and drives the display on a Raspberry Pi Zero-class browser host; shares evidence with the soak demonstration. Lands with the frontend skeleton (#10); activated then.
+verification-method: demonstration

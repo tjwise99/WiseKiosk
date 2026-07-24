@@ -4,7 +4,7 @@ header: |
   Digest-pinned base image
 level: 1.54
 links:
-- SYS026: null
+- SYS026: _m8BJ8JAZMsCQBBQgn23Qw8YXeKj21ZfVt168hmOO3k=
 normative: true
 rationale: |
   Reproducibility and supply-chain integrity; Dependabot keeps the digest

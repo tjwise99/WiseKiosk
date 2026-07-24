@@ -1,0 +1,14 @@
+active: false
+derived: false
+header: |
+  Pending: bind-mounted config demonstration
+level: 1.9
+links:
+- SRS046: null
+normative: true
+rationale: ''
+ref: ''
+status: proposed
+text: |
+  Pending: demonstration that the running container reads its configuration from a bind-mounted path and that no configuration is baked into the image. Lands with the container image build (#54); activated then.
+verification-method: demonstration

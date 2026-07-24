@@ -1,0 +1,14 @@
+active: false
+derived: false
+header: |
+  Pending: restart-policy inspection
+level: 1.8
+links:
+- SRS048: null
+normative: true
+rationale: ''
+ref: ''
+status: proposed
+text: |
+  Pending: inspection of the deployment recipe (compose or run manifest) asserting restart policy unless-stopped. Depends on a committed deployment recipe, not only the image. Lands with the container image build (#54); activated then.
+verification-method: inspection

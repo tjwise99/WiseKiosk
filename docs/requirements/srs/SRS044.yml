@@ -4,7 +4,7 @@ header: |
   One generic published image
 level: 1.44
 links:
-- SYS007: null
+- SYS007: XQ-nwWSE_19RZzvbJvX5FgezARrcLDgoTrz5ztQupKc=
 normative: true
 rationale: |
   Keeps the one-image model falsifiable: any deployment-specific content baked
