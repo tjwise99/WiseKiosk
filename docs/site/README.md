@@ -60,6 +60,16 @@ just check-site      # the CI gate: just site-build, part of `just verify`
 transform, then `sphinx-build -W -b html -c docs/site docs docs/site/_build/html`. `-W` turns any
 Sphinx warning — a broken cross-reference, an orphaned page — into a build failure.
 
+## Adding a document to the nav
+
+Because `-W` fails on an orphaned page, **a new doc file must be reachable from a toctree in
+[`index.md`](index.md)**, or `check-site` fails. The `Project` toctree globs `../*`, which matches
+only the **direct children** of `docs/` — a doc in a **new subdirectory** (as `docs/contracts/` was
+in the #38 round) is not caught and needs its own toctree entry, mirroring the per-area blocks
+already there (`Decisions`, `Architecture model`, `Requirements & traceability`). ADR pages are the
+one exception: they nest automatically via the `conf.py` `source-read` hook (see below), so a new
+ADR needs no nav edit.
+
 ## The Doorstop -> sphinx-needs transform
 
 [`doorstop_to_needs.py`](doorstop_to_needs.py) reads the YAML items under
