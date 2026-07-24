@@ -1,0 +1,16 @@
+active: false
+derived: false
+header: |
+  Pending: comment citation resolver
+level: 1.24
+links:
+- SRS095: null
+normative: true
+rationale: ''
+ref: ''
+status: proposed
+text: |
+  Pending: the resolver of TST086 extended to comment corpora, failing on a requirement ID or ADR number
+  cited in a comment that names no existing item or decision. One resolver serves both corpora. Activated
+  with a references entry when the gate lands (#59).
+verification-method: test

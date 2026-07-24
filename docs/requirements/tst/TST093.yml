@@ -1,0 +1,16 @@
+active: false
+derived: false
+header: |
+  Pending: misplaced-rationale backstop review
+level: 1.18
+links:
+- SRS089: null
+normative: true
+rationale: ''
+ref: ''
+status: proposed
+text: |
+  Pending: a design-review checklist item confirming that a comment which satisfied every mechanical
+  comment check is not nonetheless misplaced rationale. Activated with a references entry when the
+  design-review checklist is formalized.
+verification-method: inspection

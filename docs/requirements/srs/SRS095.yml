@@ -1,0 +1,24 @@
+active: true
+derived: false
+header: |
+  A requirement or decision cited in a comment resolves
+level: 1.95
+links:
+- SYS043: kcIFBI_e2x7kEmU51iZ60SAGMklrSIODgfL-kcLXBDQ=
+normative: true
+rationale: |
+  SRS088 makes citation the only legal way for a comment to reach rationale, which is worth nothing if
+  the citation points at an item that was renumbered or retired — the comment then misleads more
+  confidently than the restatement it replaced. SRS082 already requires this of tracked documentation and
+  its rationale reserves its scanner as the artifact for this obligation; the corpora and extraction
+  differ, so the obligations are separate items, but the resolver is deliberately shared. A third
+  consumer of the same resolver is specified outside the tree (#25); SRS082's constraint against a second
+  tool is meant to reach all three.
+ref: ''
+reviewed: srVUF6nzdTrrJ3HMQMn9Lwn3_QFg4ET43sINMpLb_LU=
+status: accepted
+text: |
+  Every bare-text citation of a requirement ID or ADR number appearing in a comment shall resolve to an
+  existing item or decision. The check shall be performed by the same resolver that checks such citations
+  in tracked documentation, and a second resolver shall not be introduced.
+verification-method: test

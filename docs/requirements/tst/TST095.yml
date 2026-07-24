@@ -1,0 +1,16 @@
+active: false
+derived: false
+header: |
+  Pending: one-line cap on comments outside a documentation facility
+level: '1.20'
+links:
+- SRS091: null
+normative: true
+rationale: ''
+ref: ''
+status: proposed
+text: |
+  Pending: a check failing a multi-line comment that is not part of its language's documentation facility,
+  and passing an arbitrarily long doc comment in that facility. Activated with a references entry when the
+  gate lands (#59).
+verification-method: test

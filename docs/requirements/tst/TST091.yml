@@ -1,0 +1,17 @@
+active: false
+derived: false
+header: |
+  Pending: mechanism-only comment review
+level: 1.16
+links:
+- SRS087: null
+normative: true
+rationale: ''
+ref: ''
+status: proposed
+text: |
+  Pending: a design-review checklist item confirming that each comment a change adds or modifies states
+  mechanism, and that any reason, history, or evaluative judgment was authored instead in one of the
+  documentation homes SRS087 names. Activated with a references entry when the design-review checklist
+  is formalized.
+verification-method: inspection

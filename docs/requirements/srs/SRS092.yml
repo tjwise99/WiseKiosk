@@ -1,0 +1,28 @@
+active: true
+derived: false
+header: |
+  The volume of comment prose a change adds is bounded
+level: 1.92
+links:
+- SYS044: 8Fx5gwSLUyY7OJ_m9iXYtU-Tp4Ck2htdVqR4hpa_9Cg=
+normative: true
+rationale: |
+  SRS091 constrains the steady state, which is the wrong altitude for the failure mode that motivated
+  this domain: a single change dumping explanation into source. A per-comment cap is satisfied by many
+  short comments, so the delta is measured directly. Evading it requires spreading prose across many
+  changes, which is both a high bar and visible in review. The bound is configured rather than written
+  into the check because the right value is a judgment that will move (SYS016); unlike the rejected
+  consecutive-line threshold it is not a proxy for anything — it measures exactly the quantity of concern.
+  Measured against the merge base rather than per commit: a per-commit bound is defeated by splitting the
+  same prose across commits, and under squash-merge the commit boundary does not survive anyway. Whether
+  a change may carry a recorded override of the bound is an open decision deferred to #59: the obligation
+  as written admits none, and a bound whose only lever is its global value ratchets toward inertness —
+  the override's shape is a design decision and is not invented here.
+ref: ''
+reviewed: uI1YglIELJSiRh3G4uCFumyLlmjNmWHObkZ7V8Y-BfA=
+status: accepted
+text: |
+  The number of comment lines outside a documentation facility that a change adds, measured against the
+  base it is proposed for merge into, shall be bounded, and a change exceeding that bound shall fail the
+  repository's checks. The bound shall be a configured value rather than a literal in the checking code.
+verification-method: test

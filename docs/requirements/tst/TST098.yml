@@ -1,0 +1,17 @@
+active: false
+derived: false
+header: |
+  Pending: deferred-work marker form check
+level: 1.23
+links:
+- SRS094: null
+normative: true
+rationale: ''
+ref: ''
+status: proposed
+text: |
+  Pending: a check rejecting a bare deferred-work marker and accepting one naming a tracked issue, run
+  without network access. Buildable today, and green today by conformance rather than by absence: the
+  repository's one deferred-work marker in a comment, in the architecture model, already carries its
+  issue number. Activated with a references entry when the gate lands (#59).
+verification-method: test

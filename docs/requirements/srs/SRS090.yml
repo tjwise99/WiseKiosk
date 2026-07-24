@@ -1,0 +1,32 @@
+active: true
+derived: false
+header: |
+  A structure-aware classifier partitions comments, and every language present is covered
+level: '1.90'
+links:
+- SYS044: 8Fx5gwSLUyY7OJ_m9iXYtU-Tp4Ck2htdVqR4hpa_9Cg=
+normative: true
+rationale: |
+  The enabler every other check in this domain depends on: a rule about comments outside a documentation
+  facility cannot be applied until something decides which comments those are. Text matching over raw
+  lines cannot — it mistakes a string literal for a comment and a doc comment for narrative, and its
+  false positives are what teach authors to disable a gate. Each language already exposes the answer
+  structurally, so the classifier reads that rather than guessing. The coverage clause is what keeps the
+  obligation honest as the repository grows: scoped to the languages actually present, it is verifiable
+  today, and the day a file in an uncovered language lands the check fails and the arm gets written
+  against real source rather than an imagined one — no arm is built ahead of a consumer (SYS041).
+  Resolution is per file rather than per extension because two of the languages with a documentation
+  facility reach this repository only through files that have no extension: `just` through `justfile`,
+  and shell through the hooks under `.githooks/`. An extension-keyed registry has no key for them, so it
+  would report complete coverage while never classifying them — the silently-skipped-language failure
+  this clause exists to prevent.
+ref: ''
+reviewed: MnOv9fNC55DvgVJQXnmiDUL6nR1pEh7QRPPUjMLqY_M=
+status: accepted
+text: |
+  The repository's comment checks shall determine whether a comment belongs to its language's
+  documentation facility from that language's own parse of the file, and not from text matching over raw
+  lines. Every tracked file shall resolve to a language — by extension, by filename, or by interpreter
+  directive — and every language so resolved shall have either a classifier arm or a recorded exclusion;
+  a tracked file that resolves to no language, or to a language with neither, shall fail the check.
+verification-method: test
