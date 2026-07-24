@@ -54,11 +54,11 @@ renderable browser-free.
 
 ## Consequences
 
-- **First `package.json` in the repo.** This activates the dormant npm supply-chain gates noted in the
-  [hardening backlog](../ARCHITECTURE.md#security--hardening-backlog). This ADR wires the Dependabot
-  `npm` ecosystem now (pointed at `/docs/architecture`, so the manifest and its ecosystem entry sit
-  in the directory of the feature they serve — SYS035 / SRS072); the **`npm audit`
-  CI gate is deliberately left unbuilt** as a now-unblocked backlog item, to keep this change tight.
+- **First `package.json` in the repo.** This activates the dormant npm supply-chain gates (SRS060,
+  SRS061). This ADR wires the Dependabot `npm` ecosystem now (pointed at `/docs/architecture`, so
+  the manifest and its ecosystem entry sit in the directory of the feature they serve — SYS035 /
+  SRS072); the **`npm audit` CI gate is deliberately left unbuilt** as a now-unblocked backlog item,
+  to keep this change tight.
 - **Rendering is fully automated in CI** — because diagrams are codegen, not a browser export,
   `arch-export` runs on every push with no chromium. Image (PNG/SVG) export, which *does* need a
   headless browser, is intentionally kept out of the gate.
