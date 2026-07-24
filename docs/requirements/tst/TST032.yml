@@ -1,0 +1,17 @@
+active: false
+derived: false
+header: |
+  Pending: no-frontend-runtime-validation inspection
+level: 1.32
+links:
+- SRS032: null
+normative: true
+rationale: ''
+ref: ''
+status: proposed
+text: |
+  Pending: inspection that the frontend ships no runtime re-validation of proxied
+  payloads — cross-boundary agreement rests on the schema and the drift gate, not
+  on a bundled validator. Lands with the frontend skeleton and codegen mechanism
+  (#7); form decided then.
+verification-method: inspection

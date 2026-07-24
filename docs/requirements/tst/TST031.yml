@@ -1,0 +1,17 @@
+active: false
+derived: false
+header: |
+  Pending: generated-type consumption inspection
+level: 1.31
+links:
+- SRS031: null
+normative: true
+rationale: ''
+ref: ''
+status: proposed
+text: |
+  Pending: inspection (import-graph or lint) that the backend handlers, the module
+  components, and the SYS005 error-render path all consume the generated boundary
+  types, with no hand-declared payload, parameter, or error body on either side.
+  Lands with the codegen mechanism (#7); form decided then.
+verification-method: inspection

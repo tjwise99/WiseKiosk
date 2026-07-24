@@ -1,0 +1,25 @@
+active: true
+derived: false
+header: |
+  Frontend does not runtime-re-validate proxied payloads
+level: 1.32
+links:
+- SYS023: Atk7HXMyRvSN_SCxSwc2M0538nq16WUIr4lz3AUFY-U=
+normative: true
+rationale: |
+  Compile-time types are erased at runtime, but the failure a runtime validator
+  would catch — bytes not matching the contract — is foreclosed here: the backend
+  serializes generated structs, the SPA and backend ship in one image and deploy
+  together (no version skew), server-side shaping is unit-tested, and SYS005's
+  error state backstops an unrenderable payload. A validator would add bundle
+  weight and per-render cost on a Raspberry-Pi-Zero-class browser against a case
+  that does not exist (FOUNDATIONS §5). Revisit only if the two sides ever become
+  independently deployable.
+ref: ''
+reviewed: s3bzFCpmAynUMq1SVWon-JEqODAJ_Dlz2cvIXmxGkOc=
+status: accepted
+text: |
+  The frontend shall not re-validate proxied payloads at runtime; cross-boundary
+  agreement shall rest on the single schema and the drift gate (SRS030), not on a
+  second validator generated into or shipped with the frontend bundle.
+verification-method: inspection
