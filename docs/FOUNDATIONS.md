@@ -266,7 +266,7 @@ To close before or during early implementation. Recorded so they are decided rat
 | # | Question | Status / notes |
 |---|---|---|
 | 1 | Backend language | **Closed: Go** ([ADR 0001](decisions/0001-backend-language-go.md)) |
-| 2 | **Boundary-contract mechanism** | Constrained by the Go decision to schema→codegen. The exact tool (OpenAPI generator or equivalent) is open. **Must exist before the second module** |
+| 2 | **Boundary-contract mechanism** | **Closed: OpenAPI schema → generated Go + TS types** ([ADR 0008](decisions/0008-boundary-contract-openapi-codegen.md)); 3.0.3 now, 3.1 later. **Must be built before the second module** (#7, after #5) |
 | 3 | Cache TTLs and rate-limit thresholds | Choose once, hardcode, document the reasoning |
 | 4 | Config schema format | Drives boot validation, the validator, the generator, and a future editor. Pick for tooling ecosystem, not elegance |
 | 5 | Module set | **Closed: all five** (clock, compliments, OpenMeteo, AviationWeather, DisneyWaitTimes) |
@@ -283,7 +283,8 @@ To close before or during early implementation. Recorded so they are decided rat
    exist.
 4. **Set up invariant gates immediately** — lint, container scanning, static analysis, secret-free
    CI, line endings, image signing. These outlive every rewrite and are the mechanised reviewer.
-5. **Establish the boundary-contract codegen mechanism** (open question 2) before the second module
-   exists.
+5. **Establish the boundary-contract codegen mechanism** — chosen in
+   [ADR 0008](decisions/0008-boundary-contract-openapi-codegen.md); build it (#7, after #5) before
+   the second module exists.
 6. **Then build**, in slices sized by what can actually be reviewed — not by milestone. A slice that
    cannot be read has not been reviewed, and it will carry defects past every later pass.
