@@ -71,6 +71,11 @@ html_theme = "furo"
 html_static_path = ["_static"]
 html_css_files = ["needs-furo.css"]
 
+# root_doc lives in the silo, so the built landing page is site/index.html and
+# the Pages root would otherwise 404; _root/ ships a stub that redirects / to
+# site/.
+html_extra_path = ["_root"]
+
 
 def _nest_adrs_under_readme(app, docname, source):
     """Append a hidden glob toctree to decisions/README at read time, nesting
