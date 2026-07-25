@@ -6,14 +6,22 @@ level: 1.1
 links: []
 normative: false
 rationale: |
-  Defines the product. A smart mirror is a display behind one-way glass showing
-  a fixed set of information modules; every render, module, and configuration
-  requirement decomposes from this need.
+  Defines the product. A smart mirror is a display behind one-way glass showing a fixed set of
+  information modules; every render, module, and configuration requirement decomposes from this
+  need.
+
+  Non-normative, and therefore carrying no verification method. Every falsifiable claim it once made
+  is owned elsewhere - the full-screen render by SRS041 under SYS008 and SYS013, unattended
+  operation by SYS010, the configuration-driven module set through SYS014 - so stating them here
+  would be a third home for facts that already have one, which SYS037 forbids. What remains is
+  orientation, and the product definition's canonical home is the repository README. Stated in the
+  indicative rather than as a shall, because a non-normative item obliges nothing and a shall would
+  read as an obligation nothing verifies. Reversible: if it is ever made normative, SRS041
+  dual-links here and the method follows its children.
 ref: ''
-reviewed: w0nEHj7uFvR21PakAUavhqy_Uyv-ohVHGAo7rjyd9Ss=
+reviewed: gL9P5A__yYljZSxxu6x9UOLvGbvcGdG713C54258KrM=
 status: accepted
 text: |
-  WiseKiosk shall render a fixed, configuration-driven set of display modules
-  as a single full-screen browser page, operating unattended on a kiosk
-  display.
+  WiseKiosk renders a fixed, configuration-driven set of display modules as a single full-screen
+  browser page, operating unattended on a kiosk display.
 verification-method: ''

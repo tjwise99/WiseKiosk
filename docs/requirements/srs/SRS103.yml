@@ -2,7 +2,7 @@ active: true
 derived: false
 header: |
   No item claims a method its own children do not support
-level: 1.96
+level: 1.103
 links:
 - SYS031: s63YR87B6PRvzJFPzhERTcmaFxvrNVT0AYrzu3pLqZU=
 normative: true

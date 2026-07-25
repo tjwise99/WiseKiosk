@@ -2,7 +2,7 @@ active: false
 derived: false
 header: |
   Every gate job is a required check, and every required check names a real job
-level: 1.96
+level: '1.97'
 links:
 - SYS031: null
 normative: true

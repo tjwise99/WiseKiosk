@@ -2,25 +2,28 @@ active: false
 derived: false
 header: |
   Every offered configuration key is exercised at a non-default value
-level: 1.96
+level: '1.101'
 links:
 - SYS016: null
 normative: true
 rationale: |
   SYS016's obligation had no child expressing it. SRS011 states that the backend has no
-  configuration concept, which is a property of a component holding no keys - it satisfies the need
+  configuration concept, which is a property of a component holding no keys - it satisfied the need
   vacuously while the demand that every offered key actually works went unverified, and the gate
-  stayed green over the gap. The check ranges over the schema rather than a hand-written key list,
-  because the schema is the finite machine-readable statement of what is offered: a key added there
-  is covered the moment it exists, where a list would drift silently. A key no test ever varies is
-  an unproven claim of tunability, which is the same closure argument ADR 0005 makes for source
-  coverage, pointed at configuration.
+  stayed green over the gap. Stated as an observable difference rather than as "renders without
+  error", because a dead knob - a key the schema offers and the code ignores - renders the page
+  perfectly. Absence of error is what a key wired to nothing produces, so it cannot be the
+  criterion. The last sentence carries SYS016's second clause: a value that cannot be changed
+  observably is a constant, and offering it is the defect. The check ranges over the schema rather
+  than a hand-written key list, because the schema is the finite machine-readable statement of what
+  is offered: a key added there is covered the moment it exists, where a list would drift silently.
 ref: ''
 reviewed: null
 status: proposed
 text: |
-  For every key the configuration schema offers, the behavioural suite shall render the page from a
-  fixture configuration setting that key to a schema-valid value other than its default, and shall
-  assert the page renders without error. A key the suite never varies shall fail the check.
+  Every key the configuration schema offers shall produce an observable difference in the rendered
+  page between its default value and at least one other schema-valid value, and the page shall
+  render without error at every schema-valid value the key admits. A key whose value cannot be
+  observed to change the page is a constant and shall not be offered.
 verification-justification: ''
 verification-method: test

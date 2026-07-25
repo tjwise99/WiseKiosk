@@ -14,7 +14,7 @@ How the pieces of WiseKiosk actually fit together — the living structural desc
 One published container image serving a full-screen, config-driven smart-mirror display. A Go backend
 proxies a handful of public APIs and serves the built frontend; a Svelte SPA renders modules into
 regions of the page. See the [README](../README.md) for the product definition, and SYS007, SYS008,
-SYS020 and SYS025 with their SRS children in the [requirements tree](requirements/README.md) for the
+SYS022 and SYS025 with their SRS children in the [requirements tree](requirements/README.md) for the
 intended architecture until this section describes the built one.
 
 The diagrams below are **generated from the validated [LikeC4 model](architecture/README.md)**, not

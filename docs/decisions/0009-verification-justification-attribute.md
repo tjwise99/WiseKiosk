@@ -3,6 +3,13 @@
 **Status:** accepted
 **Decided:** 2026-07-24 (closing review pass of the requirements rewrite #18)
 
+> **Note, 2026-07-25.** The counts below describe the tree as it stood when this decision was taken,
+> partway through #18's closing pass. That pass then promoted most of those items: at merge the tree
+> holds 255 items, 41 of them non-`test` — 16%, not half. The decision stands and the attribute
+> exists for those 41; only the figures motivating it are of their moment. The Consequences section's
+> docs-site column is likewise not yet rendered — `docs/site/doorstop_to_needs.py` emits no
+> verification fields, and doing so needs a `needs_extra_options` declaration; tracked on #68.
+
 ## Context
 
 [ADR 0005](0005-traceability-gating.md) gave every item a `verification-method` and routed the gates

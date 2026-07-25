@@ -5,6 +5,7 @@ header: |
 level: 1.11
 links:
 - SYS014: 8jKqJAZs2ttEU3TkDo0buS1o8azVuVylXN4-XHCzW74=
+- SYS016: jk6SY2KjeFQZZNn5RHIKF2kLP3oVcN84BHvNECmt9Jk=
 normative: true
 rationale: |
   ADR 0007: the backend has no code path that knows the display configuration
@@ -12,7 +13,7 @@ rationale: |
   answer to non-tunable keys; secret delivery via the environment is not
   configuration and is specified in the secrets domain (#35).
 ref: ''
-reviewed: IZwqQpBhLK8qfXtGU0_UcMX6zCpyTp5lssUmJOZZhg0=
+reviewed: QKv3gaCLYlaJMkKaMkd9h0zJdMzkoSHsdsMazK0y3V4=
 status: accepted
 text: |
   The backend shall have no configuration concept: no configuration file of

@@ -1,7 +1,7 @@
 active: false
 derived: false
 header: |
-  Pending: Dependabot ecosystem configuration inspection
+  Pending: Dependabot declares a grouped entry per application ecosystem
 level: '1.50'
 links:
 - SRS061: null

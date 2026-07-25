@@ -2,7 +2,7 @@ active: false
 derived: false
 header: |
   Each module declares its boundary payload as a composed fragment
-level: 1.96
+level: '1.100'
 links:
 - SYS023: null
 normative: true

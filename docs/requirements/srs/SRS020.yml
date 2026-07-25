@@ -4,7 +4,7 @@ header: |
   Stateless GET /api/<source> returns the shaped payload
 level: '1.20'
 links:
-- SYS022: 2KYQBUxL0nUSLnTIyJxE9rWv8AkCpl5oJmNn98re-ck=
+- SYS022: 98EhHMXZO0ojY4_HwICEbkUyF1KxBu2kbnOgriALLJ8=
 normative: true
 rationale: |
   The payload's shape is defined once by the boundary contract (#37) and

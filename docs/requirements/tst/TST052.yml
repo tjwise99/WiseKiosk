@@ -1,7 +1,7 @@
 active: false
 derived: false
 header: |
-  Pending: single-image packaging inspection
+  Pending: one generic published image, carrying no deployment specifics
 level: 1.12
 links:
 - SRS044: null

@@ -2,7 +2,7 @@ active: false
 derived: false
 header: |
   The generated frontend boundary artifact is type-only
-level: 1.96
+level: '1.99'
 links:
 - SYS023: null
 normative: true

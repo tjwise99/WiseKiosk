@@ -1,7 +1,7 @@
 active: false
 derived: false
 header: |
-  Pending: all-sources-proxied inspection
+  Pending: every external source has a proxy route
 level: 1.21
 links:
 - SRS021: null

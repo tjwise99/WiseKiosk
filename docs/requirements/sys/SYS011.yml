@@ -6,17 +6,19 @@ level: 1.11
 links: []
 normative: true
 rationale: |
-  Records the security model as designed so a future security pass does not
-  "fix" the absence of authentication: deployments sit on a single trusted
-  LAN, and security comes from network boundaries, not the application.
-  Build-scope prohibitions (no plugin machinery, no legacy-framework
-  compatibility) are deliberately not stated here — they are constraint
+  Records the security model as designed so a future security pass does not "fix" the absence of
+  authentication: deployments sit on a single trusted LAN, and security comes from network
+  boundaries, not the application. The LAN premise is recorded here rather than as an obligation.
+  Which network a deployment is placed on is a fact about where it is installed; no check run inside
+  the repository can falsify it, and stated as a shall it would read as enforced while nothing
+  enforced it - the treatment SYS007's fork prohibition received. What the system can be held to is
+  the absence above, which SRS096 verifies. Build-scope prohibitions (no plugin machinery, no
+  legacy-framework compatibility) are deliberately not stated here - they are constraint
   requirements in the process domain, one home per rule.
 ref: ''
-reviewed: FhikGdAJAgsGS7eXMC7WNNq8i7X42SlHMFzO-LQWFrA=
+reviewed: XskOgUv8ykrekT1pbpwbyvSVkzWzXfIhfF-GPoBYfeY=
 status: accepted
 text: |
-  The system's security model shall be network-boundary trust: a deployment
-  serves exactly one trusted LAN, with no user accounts, no sessions, and no
-  application-level authentication or access control.
+  The system shall establish no user accounts, no sessions, and no application-level authentication
+  or access control.
 verification-method: test

@@ -82,6 +82,12 @@ Where a parent legitimately holds a residual obligation no child carries — a c
 comparing the children's bounds against something outside the system — it may sit below its
 children, and the `verification-justification` says why.
 
+**A non-normative item (`normative: false`) obliges nothing**, so it carries an empty
+`verification-method` and no justification, and needs no children. It states orientation or scope
+whose falsifiable content is owned by other items, and is written in the indicative — a `shall` in a
+non-normative item reads as an obligation nothing verifies. This is the one legal empty method;
+every normative item has one.
+
 ## The V&V model: Doorstop proves linkage, the test suite proves correctness
 
 This is the load-bearing distinction. **Doorstop does not run anything.** It proves that the graph is

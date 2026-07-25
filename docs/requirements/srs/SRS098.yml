@@ -2,7 +2,7 @@ active: false
 derived: false
 header: |
   Third-party findings are dispositioned in an expiring exception register, one at a time
-level: 1.96
+level: '1.98'
 links:
 - SYS028: null
 normative: true

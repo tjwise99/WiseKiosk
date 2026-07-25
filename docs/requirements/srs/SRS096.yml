@@ -2,7 +2,7 @@ active: false
 derived: false
 header: |
   The backend establishes no client identity and gates no route on one
-level: 1.96
+level: '1.96'
 links:
 - SYS011: null
 normative: true

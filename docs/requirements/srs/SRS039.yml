@@ -11,12 +11,11 @@ rationale: |
   exercise a transport is an anti-pattern: the data modules refresh every ten to
   fifteen minutes, nothing needs a live channel, and a server tick for the clock
   would be machinery bought against a case that does not exist. The parent is
-  SYS025, not SYS020: SYS020 governs modules that draw on an external data
-  source, and its own rationale explicitly excludes the clock because it has no
-  upstream — so the honest home for a client-side-render fact is the
-  static-SPA/client-render axiom, not the live-data one.
+  SYS025: the clock is a local module, drawing on no external data source, so
+  the honest home for a client-side-render fact is the static-SPA axiom rather
+  than the data plane.
 ref: ''
-reviewed: Tj3lWsNDcxd_BACvfIdin5Op6-hzODsSapArApiyzOU=
+reviewed: AuGz_BzSJzzh-bEATO6LLMhD4Zvi8NkAuazbdzk1AVc=
 status: accepted
 text: |
   The clock module shall render and advance entirely client-side from the

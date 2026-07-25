@@ -1,7 +1,7 @@
 active: false
 derived: false
 header: |
-  Pending: generated-type consumption inspection
+  Pending: both sides consume the generated boundary types
 level: 1.31
 links:
 - SRS031: null
