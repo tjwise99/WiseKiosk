@@ -1,4 +1,4 @@
-active: true
+active: false
 derived: false
 header: |
   Pending: no coverage-threshold construct in any gate
@@ -8,14 +8,13 @@ links:
 normative: true
 rationale: ''
 ref: ''
-references:
-- path: justfile
-  type: file
 reviewed: yzSH7ZQAYA_U7fAEiGSE3d95xMlOasNW1qpFSGka-9w=
-status: accepted
+status: proposed
 text: |
   Pending: test scanning justfile recipes and CI workflow steps for coverage-threshold constructs -
   fail_under, coverage threshold flags, a codecov target, or a numeric comparison against a coverage
   figure - and failing on any occurrence. An enumerated floor, not proof of the general prohibition.
+  Supersedes a discharged inspection of the justfile, which found no such construct present; that
+  reading is not carried forward as evidence, so the obligation is unverified until the check lands.
   Owned by #68.
 verification-method: test

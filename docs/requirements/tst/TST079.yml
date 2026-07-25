@@ -1,4 +1,4 @@
-active: true
+active: false
 derived: false
 header: |
   Pending: the canonical-document table is complete and resolves
@@ -8,15 +8,14 @@ links:
 normative: true
 rationale: ''
 ref: ''
-references:
-- path: docs/README.md
-  type: file
 reviewed: U_f340QbNxsMzOpKtmnqEp-5heyGI5xzlJQbZe3avEI=
-status: accepted
+status: proposed
 text: |
   Pending: test parsing the documentation-index table and asserting its row set equals a committed
   canonical-document list in both directions - a canonical document with no row, and a row naming a
   non-canonical path, both fail - that every named path resolves to a tracked file, and that no
   Guarantees or Excludes cell is empty. Whether a stated guarantee is accurate stays a reading
-  judgement (SRS075's residue); that the table names them is what this item claims. Owned by #68.
+  judgement (SRS075's residue); that the table names them is what this item claims. Supersedes a
+  discharged inspection of docs/README.md, which predates the rows added for CONTRIBUTING, SECURITY
+  and CLAUDE and would not have covered them. Owned by #68.
 verification-method: test

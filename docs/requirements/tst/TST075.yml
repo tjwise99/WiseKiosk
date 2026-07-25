@@ -1,4 +1,4 @@
-active: true
+active: false
 derived: false
 header: |
   Pending: review triggers are documented and wired
@@ -8,14 +8,13 @@ links:
 normative: true
 rationale: ''
 ref: ''
-references:
-- path: docs/TESTING.md
-  type: file
 reviewed: z3IfhMAk0I2qeaf2OulHPeUniHdZd8q8AZuzn7Mx0nE=
-status: accepted
+status: proposed
 text: |
   Pending: test asserting TESTING.md contains each enumerated review-trigger phrase and that the
   module-add procedure carries a resolving link to the test-architecture review section. An
   enumerated floor: a correct paraphrase that does not match the stated form fails, which is why the
-  requirement pins the form rather than leaving the check to guess it. Owned by #68.
+  requirement pins the form rather than leaving the check to guess it. Supersedes a discharged
+  inspection of TESTING.md's Review cadence section; that reading is not carried forward as
+  evidence, so the obligation is unverified until the check lands. Owned by #68.
 verification-method: test
