@@ -11,8 +11,9 @@ ref: ''
 status: proposed
 text: |
   Pending: a reader confirms that a comment satisfying every mechanical comment check is not
-  nonetheless misplaced rationale. No artifact records the judgement; the obligation is stated so an
-  implementer consulting the tree knows the mechanical checks are a floor, not proof.
+  nonetheless misplaced rationale, and that the comment checks are not described as deciding it.
+  Activated against the review prompt that names the obligation, as TST073 and TST080 are activated
+  against the artifacts they inspect.
 verification-justification: |
   This item exists as the residue the mechanical comment checks cannot decide; were it mechanically
   decidable it would be a clause of the gate rather than a backstop.

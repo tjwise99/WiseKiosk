@@ -12,12 +12,13 @@ rationale: |
   module-adding form (no plugin system, registry, or discovery); this is the complementary
   system-wide review obligation.
 ref: ''
-reviewed: u_ns35xpEsNCa93OKLzTvdB7dRCYLUrRiOU_EQaPBDk=
+reviewed: KayirVAa7d-ogh67SbRp-CxXyCdfh_hias1a73dPyCg=
 status: accepted
 text: |
   The system shall contain no interface or extension point that has a single implementation and a
-  single consumer, unless it is recorded in a committed justified-exception list carried with the
-  check's configuration. An unlisted single-implementation, single-consumer construct shall fail.
+  single consumer, unless it is recorded in a committed justified-exception list held beside the
+  check's configuration, each entry naming the construct and why the second consumer is expected. An
+  unlisted single-implementation, single-consumer construct shall fail.
 verification-justification: |
   The recorded exception is where the judgement lives, and it is the part no check makes: whether a
   construct is an abstraction at all, and whether a prospective second consumer is real rather than

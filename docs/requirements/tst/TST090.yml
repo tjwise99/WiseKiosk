@@ -14,5 +14,6 @@ text: |
   consuming call sites that accept it as a parameter, field, or result; failing where the count is
   one and the implementation count is one, unless the construct appears in the committed
   justified-exception list. Frontend equivalent over exported types used as component prop
-  contracts. Fails closed: an unlisted construct fails rather than passing unrecognised.
+  contracts. Fails closed: an unlisted construct fails rather than passing unrecognised. Lands with
+  the first backend and frontend code (#9, #10) - it has nothing to walk until then.
 verification-method: test

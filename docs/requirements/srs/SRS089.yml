@@ -1,28 +1,33 @@
 active: true
 derived: false
 header: |
-  A comment satisfying every mechanical check is still not rationale
+  The comment checks are not represented as deciding rationale
 level: 1.89
 links:
 - SYS042: YDAwAPN51Nfobw-av2PetsWI-qOMOCTzADa1gN6-CE8=
 - SYS043: 7gkWE5g8059ar9OCanNihl6dRAP1WEUP2YwRXtEwGZM=
 normative: true
 rationale: |
-  The honest ceiling. Every mechanical check in this domain decides form and position; none decides
-  whether a sentence is rationale. A one-line comment carrying no banned phrasing and citing nothing
-  can still be an ADR's content sitting in code, and it passes every gate. Naming that residue keeps
-  the gate set from being read as proof of something it does not decide (SYS031). Follows the shape
-  of SRS086. Dual-parented, and checked by hand as the requirements README asks: the item asserts
-  one obligation, not a span, and that obligation is supported by each parent independently - SYS042
-  because misplaced rationale is precisely what the reader is looking for, and SYS043 because its
-  closing clause reserves the undecidable residue for review rather than assuming it away.
+  SYS043's closing clause - properties of a comment that are not mechanically decidable shall be
+  carried as named review obligations rather than assumed - has no other child. SRS093, SRS094 and
+  SRS095 are all mechanical, so this item is where that clause lives. What it uniquely carries was
+  never "no rationale in comments"; SRS087 has always owned that. It is that the gate set does not
+  decide it, and that the residue is assigned to a reader rather than assumed away. Stating the
+  prohibition again would have made this a restatement of SRS087 and left SYS043's clause homeless.
+  The same move is already accepted in SRS093, whose second clause constrains how its check may be
+  represented. Dual-parented, and checked by hand as the requirements README asks: each parent
+  supports the whole obligation independently - SYS042 because misplaced rationale is what the
+  reader is looking for, and SYS043 because its closing clause reserves the undecidable residue for
+  review rather than assuming it away.
 ref: ''
-reviewed: -MfYEbJ5qIgleEY_98nFwH0NUXtFTjnHQeFux_vLo4c=
+reviewed: O2vKL6NwDp9MAy0zV00kBkPFm84Edf9rM6rMtQ7hHYk=
 status: accepted
 text: |
-  No comment shall carry rationale, including where it satisfies every mechanical comment check.
+  The repository's comment checks shall not be represented as deciding whether a comment carries
+  rationale; that determination shall be carried as a named review obligation.
 verification-justification: |
-  This item is the residue the mechanical comment checks cannot reach: a one-line comment carrying
-  no enumerated phrasing and citing no identifier can still be an ADR's content sitting in code, and
-  it passes every gate. A check able to decide it would make the item redundant.
+  Whether a check's own documentation over-claims - whether the comment gates are described as
+  deciding rationale - is a reading of that prose against what the checks actually decide. No parser
+  compares a claim about a check to the check's behaviour, and the residue this item assigns to a
+  reader is by definition the part no check reaches.
 verification-method: inspection
