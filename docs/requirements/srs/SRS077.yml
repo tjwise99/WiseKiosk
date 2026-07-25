@@ -11,9 +11,9 @@ rationale: |
   reality with no broken link and no stale generated file to catch it. Named as a requirement so it is
   a stated review obligation, not assumed practice — it stays outside CI by nature, not by omission.
 ref: ''
-reviewed: gHHizX-bdth-Un2XeEwI39xB0Co-mJ7rsHyneB6GEN8=
+reviewed: 1eV21L2l_zRhVxxy7LP0CDJHcq82HnvfYXDr1zf-t3k=
 status: accepted
 text: |
   When a change touches code or configuration that a canonical document describes, the change shall
-  update the describing document or state explicitly that no update is needed.
+  update the describing document or declare in the change that no update is needed.
 verification-method: inspection

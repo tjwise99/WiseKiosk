@@ -15,11 +15,11 @@ rationale: |
   only to third-party projects' own documentation (e.g. upstream tool docs),
   never to material WiseKiosk requires.
 ref: ''
-reviewed: o3eU6fzYR8y08IYrZ2Az9EjVr2hQ6nERiNbAfhoudtw=
+reviewed: MYsq3edz-TscNyNpVWVyh6pSCDjlSSCIlfL-FO8SMNg=
 status: accepted
 text: |
   Everything required to build, verify, and operate WiseKiosk shall live
   inside this repository. External references may point only at third-party
   projects' own documentation, never at material required to build, verify,
   or operate WiseKiosk.
-verification-method: analysis
+verification-method: demonstration

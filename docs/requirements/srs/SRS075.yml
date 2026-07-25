@@ -13,9 +13,9 @@ rationale: |
   contracts), so it belongs at a
   repo-wide docs index rather than nested inside the Doorstop-specific `docs/requirements/README.md`.
 ref: ''
-reviewed: LGPm-wvWKXlNgpv0zEYy9fsst-Kxn9dWsdsE1jCP5N8=
+reviewed: WyD8mnCycrkwh_5K61Ad3WI87ufL8_K5K4DzGkVbEcU=
 status: accepted
 text: |
   The repository shall maintain an explicit table naming each canonical document, what it guarantees,
   and what it explicitly excludes, so the single-home rule has a referenceable definition.
-verification-method: inspection
+verification-method: test

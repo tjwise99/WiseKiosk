@@ -12,9 +12,10 @@ rationale: |
   TST `model-to-code-link-review` — verification-method: inspection — PENDING (active: false) —
   header `Pending: model-to-code link review`; activated when first-party source exists.
 ref: ''
-reviewed: 0ZojBTI-DRNREQOFIc71Ma5p1fCpY7CbdeyK3x1LMeQ=
+reviewed: kkqxLooRK4WgKZRKUfO-8d20dt7qGTWDc327umcqzfk=
 status: accepted
 text: |
-  As an architecture element gains a real implementation, its LikeC4 `link` shall be updated to the
-  corresponding source, verified in review.
+  Every `link` in the LikeC4 architecture model shall resolve to a tracked path (asserted with the
+  model validation, SRS078). As an architecture element gains a real implementation, its `link`
+  shall be updated to the corresponding source.
 verification-method: inspection

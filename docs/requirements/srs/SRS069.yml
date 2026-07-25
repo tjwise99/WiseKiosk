@@ -13,10 +13,11 @@ rationale: |
   (the `verify` recipe enumerating the repo-spanning checks). Confirms the repo-spanning checks are
   invoked at repo level, none nested in a package suite.
 ref: ''
-reviewed: yLrPFy-1peWYPG5zhz94ZWNbBvjnAzwFIYsdK0Vkn5g=
+reviewed: ta0-w4yErVCpPfE-F4HJDYfUswi18uBS7UNS2k8Ziwo=
 status: accepted
 text: |
   The repository-level verification target (`just verify`, mirrored in CI) shall own every
   repo-spanning check; no repo-spanning check shall be hosted inside a single package's own test
-  target.
+  target. The set of repo-spanning checks shall be recorded in one place, and every recorded check
+  shall appear in the verification target (asserted with SRS067's parity check).
 verification-method: inspection

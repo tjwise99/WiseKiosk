@@ -1,20 +1,22 @@
 active: true
 derived: false
 header: |
-  The canonical-doc taxonomy table names every document, its guarantee, and its exclusion
+  Pending: the canonical-document table is complete and resolves
 level: 1.8
 links:
-- SRS075: jBm6oYb1CN1hlzRjwm58MGKBnwpa8pO5q2OMQTUGGvI=
+- SRS075: fNeVfuUiQik9TDj6vcpo3wJouZYBXNe3NUa3UCYgCxQ=
 normative: true
 rationale: ''
 ref: ''
 references:
 - path: docs/README.md
   type: file
-reviewed: jZaMWoGGb-DOOOQ6sFct9FDgh1_SXY3xd9AfZetjIGs=
+reviewed: U_f340QbNxsMzOpKtmnqEp-5heyGI5xzlJQbZe3avEI=
 status: accepted
 text: |
-  Verified by inspecting `docs/README.md`: a table names each canonical document (the repository
-  README, FOUNDATIONS, ARCHITECTURE, TESTING, the ADR index, the requirements tree, the docs site,
-  contracts), what it guarantees, and what it explicitly excludes.
-verification-method: inspection
+  Pending: test parsing the documentation-index table and asserting its row set equals a committed
+  canonical-document list in both directions - a canonical document with no row, and a row naming a
+  non-canonical path, both fail - that every named path resolves to a tracked file, and that no
+  Guarantees or Excludes cell is empty. Whether a stated guarantee is accurate stays a reading
+  judgement (SRS075's residue); that the table names them is what this item claims. Owned by #68.
+verification-method: test

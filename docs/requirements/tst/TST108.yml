@@ -1,0 +1,19 @@
+active: false
+derived: false
+header: |
+  Pending: every external link host is on the recorded allowlist
+level: 1.15
+links:
+- SRS102: null
+normative: true
+rationale: ''
+ref: ''
+reviewed: null
+status: proposed
+text: |
+  Pending: test extracting every absolute http and https link from tracked documentation and
+  asserting each host appears in the committed upstream-documentation allowlist, and that every
+  allowlist entry names the tool or service it serves. Extends the existing link checker rather than
+  adding a second tool. Owned by #68.
+verification-justification: ''
+verification-method: test

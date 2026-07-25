@@ -4,7 +4,7 @@ header: |
   Repo-spanning checks are invoked at repo level, none nested in a package suite
 level: 1.5
 links:
-- SRS069: rNN0tV88xJZymsYjzUb-df5USPtT-RC8T-ENmZbUptA=
+- SRS069: OwakbaR22C6MwfoQ5qmwSLqhrWKRag1HPTgvH-MgXx4=
 normative: true
 rationale: ''
 ref: ''

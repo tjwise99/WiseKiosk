@@ -11,10 +11,10 @@ rationale: |
   "rationale lives in docs, not code" its destination. The citation-resolves half rides the
   references-resolve gate; the "stopped restating" half is review.
 ref: ''
-reviewed: 0YOQmME3IpqAXbNV8vYkh0c_2Dy2uCR6KaMAZ5rlrAw=
+reviewed: nJAqBF4pXqezSaS8_Ruega7lRV9XU_c75mA-xOtMWN4=
 status: accepted
 text: |
-  When a prose obligation in FOUNDATIONS.md or TESTING.md is formalized as a requirement, the same
-  change shall edit the prose to cite the new requirement ID and shall stop stating the obligation as
-  independent normative text.
+  When a prose obligation in a canonical document is formalized as a requirement, the same change
+  shall edit the prose to cite the new requirement ID and shall stop stating the obligation as
+  independent normative text. That the cited ID resolves is asserted by SRS082.
 verification-method: inspection
