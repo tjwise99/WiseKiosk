@@ -1,7 +1,7 @@
 active: false
 derived: false
 header: |
-  Pending: no-framework-change inspection
+  Pending: no shared framework source names or imports a module
 level: 1.36
 links:
 - SRS036: null
@@ -10,8 +10,10 @@ rationale: ''
 ref: ''
 status: proposed
 text: |
-  Pending: inspection that adding a module touches only module-scoped files plus
-  the single registration list, and that no shared framework source names a
-  specific module except that list. Lands with the repo layout (#5) and the first
-  module; form (repo script vs review checklist) decided then.
-verification-method: inspection
+  Pending: test taking the module-name set from the static registration list and asserting no shared
+  framework source names any of them outside the registration file; and asserting no shared
+  framework package imports a module package, in either the Go import graph or the frontend module
+  graph. Runs on every commit rather than only on a module-adding change: a diff-scoped form cannot
+  reliably classify which changes are module-adds and passes vacuously on the rest while shared code
+  accretes module knowledge. Lands with the first module (#12).
+verification-method: test

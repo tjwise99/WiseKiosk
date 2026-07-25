@@ -18,7 +18,7 @@ rationale: |
   receipt of that configuration as props is the frontend lane's render concern,
   not this requirement's.
 ref: ''
-reviewed: b5akMlzL9rY-UK_F0RsrnLbCA9BLqGSn8LSb-7eMpME=
+reviewed: irnyITrC8R0MP8zlYgwTc9q6nEBh_MIoJFP_y3y9SGY=
 status: accepted
 text: |
   Each module shall declare the configuration it accepts as a fragment composed
@@ -27,4 +27,4 @@ text: |
   enforced by the single validation implementation (SRS014) both at apply time
   and by the standalone validator. A module's configuration fragment is part of
   the configuration schema and shall not cross the frontend/backend boundary.
-verification-method: inspection
+verification-method: test

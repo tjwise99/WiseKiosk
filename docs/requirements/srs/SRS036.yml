@@ -15,7 +15,7 @@ rationale: |
   form of that invariant; the verification form (repo script vs review
   checklist) is deferred to the repo layout (#5).
 ref: ''
-reviewed: 8Iz8FuzhMmTOvgCDQToH5TshJxmBl31MnJyxl6y0HtA=
+reviewed: PAP8Pe5Csx7cXZDJJ4uE0WX4SkGs1xPYVz1ttSIUEr4=
 status: accepted
 text: |
   The parts a module comprises shall be confined to module-scoped locations.
@@ -24,4 +24,4 @@ text: |
   the single static registration list (SRS034), and shall require no edit to any
   shared framework file. No shared framework source shall name a specific module
   except that one registration list.
-verification-method: inspection
+verification-method: test

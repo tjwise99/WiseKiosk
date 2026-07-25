@@ -1,7 +1,7 @@
 active: false
 derived: false
 header: |
-  Pending: config-fragment single-schema composition inspection
+  Pending: config fragments compose, and are declared once
 level: 1.35
 links:
 - SRS035: null
@@ -10,8 +10,10 @@ rationale: ''
 ref: ''
 status: proposed
 text: |
-  Pending: inspection that each module's configuration fragment composes into the
-  one configuration schema, is enforced by the single validation implementation,
-  is not declared a second time, and does not cross the boundary. Lands with the
-  configuration schema and the first module; form decided then.
-verification-method: inspection
+  Pending: test recomposing the configuration schema from the module fragments and asserting the
+  committed schema is unchanged; asserting a bijection between module directories and fragments,
+  with no registered module lacking a fragment and no orphan fragment; asserting each fragment file
+  is the unique definition site of its property names; and asserting no fragment property is
+  reachable by reference from the boundary schema. Lands with the first module and the config schema
+  (#8).
+verification-method: test

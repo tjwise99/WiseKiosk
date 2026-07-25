@@ -1,7 +1,7 @@
 active: false
 derived: false
 header: |
-  Pending: per-module test-completeness check
+  Pending: every module supplies both required test kinds
 level: 1.37
 links:
 - SRS037: null
@@ -10,9 +10,9 @@ rationale: ''
 ref: ''
 status: proposed
 text: |
-  Pending: repo-level check that enumerates the modules and asserts each supplies
-  a shaping-library unit test and a component render test wired into CI. Lands
-  with the first module; form decided then. This is the completeness meta-check;
-  what a module's render test itself asserts is verified by the frontend lane's
-  behavioural render test.
-verification-method: inspection
+  Pending: test enumerating modules from the static registration list and asserting each has a unit
+  test beside its shaping library and a render test beside its component, both reachable by their
+  runner's discovery glob. Correct location is sufficient proof CI reaches them, since SRS068
+  forbids any skip, build tag, or exclusion that would silence a committed test. What those tests
+  assert is SRS033's and SRS040's obligation, not this one. Lands with the first module (#12).
+verification-method: test

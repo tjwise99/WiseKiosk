@@ -16,10 +16,10 @@ rationale: |
   renders supplied props without fetching) is the frontend lane's separate
   behavioural verification, not re-derived here.
 ref: ''
-reviewed: _7iLSPg1FUfEd0z3UammnfN-EeT5TGMUm4UKb-T3CCo=
+reviewed: 8yAGw2sGb4Ejw56FRnUy6lwIByJ3EAl7lKOs791r9LY=
 status: accepted
 text: |
   Each module shall supply, as part of its contract, unit tests for its shaping
   library and a render test for its component, both wired into CI. A module
   missing either is an incomplete module, not a passing one.
-verification-method: inspection
+verification-method: test
