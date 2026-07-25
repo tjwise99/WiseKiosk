@@ -34,7 +34,7 @@ install-hooks:
 [doc('Requirements tree validates: refs resolve, no suspect/unreviewed/orphan items, methods consistent')]
 check-reqs:
     docs/requirements/.venv/bin/doorstop --error-all
-    python3 scripts/check-method-consistency.py
+    docs/requirements/.venv/bin/python scripts/check-method-consistency.py
 
 [group('checks')]
 [doc('Every `just verify` check also runs in CI, and vice versa')]

@@ -62,7 +62,7 @@ jobs:
         run: docs/requirements/.venv/bin/doorstop --error-all
 
       - name: Verification methods are consistent parent to child
-        run: python3 scripts/check-method-consistency.py
+        run: docs/requirements/.venv/bin/python scripts/check-method-consistency.py
 
   docs-site:
     # Builds the docs site with -W: a broken cross-reference or orphaned page

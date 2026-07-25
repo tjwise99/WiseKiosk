@@ -10,35 +10,31 @@ parent holds a residual obligation no child carries — so it is permitted only 
 verification-justification, which is the argument for why the residue exists.
 """
 
-import re
 import sys
 from pathlib import Path
+
+import yaml
 
 RANK = {"test": 4, "analysis": 3, "inspection": 2, "demonstration": 1}
 TREE = Path(__file__).resolve().parent.parent / "docs" / "requirements"
 
-METHOD = re.compile(r"^verification-method: (.*)$", re.M)
-JUSTIFIED = re.compile(r"^verification-justification: \|$", re.M)
-LINKS = re.compile(r"^links:\n((?:- .*\n)+)", re.M)
-PARENT = re.compile(r"- (\w+):")
-
 
 def load():
+    """Parse every item. YAML, not regex: a link may be a plain string or a
+    single-key mapping, and a justification a block or a plain scalar — forms a
+    pattern would drop silently, taking the item's children or its argument with
+    them."""
     method, children, justified = {}, {}, set()
     for silo in ("sys", "srs", "tst"):
         for path in sorted((TREE / silo).glob("*.yml")):
-            text = path.read_text()
+            item = yaml.safe_load(path.read_text()) or {}
             uid = path.stem
-            found = METHOD.search(text)
-            method[uid] = found.group(1).strip().strip("'") if found else ""
-            if JUSTIFIED.search(text):
+            method[uid] = str(item.get("verification-method") or "").strip()
+            if str(item.get("verification-justification") or "").strip():
                 justified.add(uid)
-            block = LINKS.search(text)
-            if block:
-                for line in block.group(1).splitlines():
-                    hit = PARENT.match(line.strip())
-                    if hit:
-                        children.setdefault(hit.group(1), []).append(uid)
+            for link in item.get("links") or []:
+                parent = next(iter(link)) if isinstance(link, dict) else link
+                children.setdefault(str(parent), []).append(uid)
     return method, children, justified
 
 
