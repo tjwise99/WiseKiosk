@@ -8,15 +8,15 @@ links:
 normative: true
 rationale: |
   `just verify` and the CI workflow are today two hand-maintained lists held in agreement only by
-  comments in the workflow ("byte-identical to `just check-arch`") — the comment-enforced
-  cross-boundary invariant SYS023 forbids, failing silently on divergence. This makes the
-  agreement a checked property instead of a trusted one.
+  comments in the workflow ("byte-identical to `just check-arch`") — an invariant held by a comment
+  pointing at its twin, failing silently on divergence. This makes the agreement a checked property
+  instead of a trusted one.
 
   TST `verify-ci-parity` — verification-method: test — ACTIVE — references the new
   `scripts/check-verify-ci-parity.mjs` script (see Build task B1). Asserts the parity holds against
   the live justfile and workflow, and fails on an induced divergence.
 ref: ''
-reviewed: RfsDIGdob9jOXIqd99BRqN41qzLrUk_fGM-jKtPyEeQ=
+reviewed: jn7lDhmgoZY8ZUDfmzpCc9VXftpew7NapdvSZOXx190=
 status: accepted
 text: |
   Every check invoked by `just verify` shall also run in the CI checks workflow; a check present in

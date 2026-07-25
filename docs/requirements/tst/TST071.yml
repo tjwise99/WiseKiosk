@@ -4,7 +4,7 @@ header: |
   check-verify-ci-parity asserts every `just verify` check runs in CI
 level: 1.4
 links:
-- SRS067: BeANqmnFeu4NBuZ75-JNcQyXbN9UZRX7YabemLsHCaw=
+- SRS067: NDnE53JY2adakT4vsVTkBieVLzMGmUKgyzNqR1XStd4=
 normative: true
 rationale: ''
 ref: ''
