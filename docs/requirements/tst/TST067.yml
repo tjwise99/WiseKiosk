@@ -10,9 +10,8 @@ rationale: ''
 ref: ''
 status: proposed
 text: |
-  Pending: demonstration asserting the build-provenance attestation validates for the published
-  image digest and binds it to its build workflow, and fails for a mismatched digest (expected:
-  cosign verify-attestation or gh attestation verify; SLSA provenance). Fails if the attestation is
-  absent or does not verify. Lands when the image is published; activated with a references entry to
-  the verify script then. Owned by #67.
-verification-method: demonstration
+  Pending: test asserting the build-provenance attestation validates for the published digest and
+  binds it to its build workflow, and exits non-zero for a mismatched digest (expected: cosign
+  verify-attestation or gh attestation verify). Runs in a separate job with minimal permissions,
+  pulling by digest. Owned by #67.
+verification-method: test

@@ -10,10 +10,10 @@ rationale: |
   The operator-independence property: instances are isolated by construction,
   not coordinated.
 ref: ''
-reviewed: HuXC3q0DQP0LOiVfXIGiTi34cL9GDMRU0yzGeVkxT_4=
+reviewed: ymUkG2r4tfCLw4lqClXu8Q5pHhGGw6QWDKhpuu8edyw=
 status: accepted
 text: |
   Each running WiseKiosk instance shall be determined solely by its externally
   supplied configuration and secrets, shall share no runtime state with any
   other instance, and shall serve exactly one configuration.
-verification-method: inspection
+verification-method: test

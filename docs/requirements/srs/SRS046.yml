@@ -11,9 +11,9 @@ rationale: |
   fidelity of that configuration in transit is SRS009's concern, not this
   one.
 ref: ''
-reviewed: 5khM8wQ4mI7uRPfPVJ089shGjlnfgJSoPynWciYIQ-0=
+reviewed: iJCi5rJ5I5HRKSUw4L0Pl1jjxHfsBw-OPQUhINE-hTY=
 status: accepted
 text: |
   The display configuration shall be supplied to the running container by a
   bind mount from the deploy host; the image shall embed no configuration.
-verification-method: demonstration
+verification-method: test

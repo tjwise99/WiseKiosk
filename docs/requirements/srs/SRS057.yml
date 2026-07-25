@@ -11,7 +11,7 @@ rationale: |
   early — from a bounded instrumented run rather than a full-length soak —
   and continuously, rather than only at a pre-release demonstration.
 ref: ''
-reviewed: 0FNA3BHmiqscDfz-noCTFkarnFR6ANXr8C9ko_gFKtg=
+reviewed: 2wb9s-nco_6qigztkDc4q1f9JksIXYQ6SS1VQU2z8oA=
 status: accepted
 text: |
   WiseKiosk shall exhibit no unbounded growth in memory or other finite
@@ -20,4 +20,4 @@ text: |
   shall assert that goroutine count and open file descriptors each return to
   within 10 percent of their post-warmup baseline. Heap occupancy shall be
   recorded as a diagnostic and shall not gate.
-verification-method: analysis
+verification-method: test

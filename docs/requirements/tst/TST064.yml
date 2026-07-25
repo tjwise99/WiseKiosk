@@ -10,9 +10,8 @@ rationale: ''
 ref: ''
 status: proposed
 text: |
-  Pending: inspection of .github/dependabot.yml asserting a gomod ecosystem entry and an npm
-  ecosystem entry, each grouped and each targeting the directory its manifest lives in (per
-  FOUNDATIONS §2). Inspection only - it proves the configuration shape, not that update proposals
-  are produced. Fails if either ecosystem is absent or ungrouped. Lands when go.mod and package.json
-  exist; activated with a references entry then. Owned by #67.
-verification-method: inspection
+  Pending: test parsing .github/dependabot.yml, asserting a gomod entry and an npm entry, each
+  carrying a non-empty groups key. The entries are derived from the manifests discovered in the tree
+  rather than a hardcoded pair, so the assertion cannot pass while an application ecosystem is
+  absent. Directory placement is SRS072's obligation, not restated here. Owned by #67.
+verification-method: test

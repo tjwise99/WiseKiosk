@@ -11,10 +11,10 @@ rationale: |
   gate satisfiable rather than perpetually red; per-directory targeting follows
   the dev-tooling silo (FOUNDATIONS §2).
 ref: ''
-reviewed: OpQoouHrG65XsXFxJR-U3wUf4jcYCo22Z6XRf6LdzxM=
+reviewed: iNajYBYpSgdErSoWEdBKkGCpRu59oyGFU4A2NHsW8vI=
 status: accepted
 text: |
   The repository shall be configured to raise automated dependency-update
   proposals for the Go-module and npm ecosystems, each grouped, and each pointed
   at the directory in which its manifest lives.
-verification-method: inspection
+verification-method: test

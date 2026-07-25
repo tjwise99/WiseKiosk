@@ -10,5 +10,9 @@ rationale: ''
 ref: ''
 status: proposed
 text: |
-  Pending: demonstration that the running container reads its configuration from a bind-mounted path and that no configuration is baked into the image. Lands with the container image build (#54); activated then.
-verification-method: demonstration
+  Pending: test running the published image with a fixture configuration bind-mounted at the
+  configuration path, asserting the served configuration reflects the fixture byte-for-byte; running
+  the same image with no mount, asserting it fails loudly rather than serving a baked default; and
+  exporting the image filesystem, asserting nothing exists at the configuration path. Lands with the
+  container image build (#54); activated then.
+verification-method: test

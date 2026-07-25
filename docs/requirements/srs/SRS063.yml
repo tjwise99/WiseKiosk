@@ -11,11 +11,11 @@ rationale: |
   was not substituted; keyless signing satisfies the no-keys-in-CI decision
   (FOUNDATIONS §2).
 ref: ''
-reviewed: bhxMTJmHNbXbbS-r4OJc_mN3bJCQ16qi9wR7mJM04JU=
+reviewed: MCNbZhlzKEBsAjPzSwoUjowRbQAUpqLyWo-Bb3uQbkA=
 status: accepted
 text: |
   Each published container image shall carry a cryptographically verifiable
   signature and a build-provenance attestation that a consumer can verify
   against the image digest, produced without any signing secret stored in
   continuous integration.
-verification-method: demonstration
+verification-method: test

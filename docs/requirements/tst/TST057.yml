@@ -10,5 +10,8 @@ rationale: ''
 ref: ''
 status: proposed
 text: |
-  Pending: analysis of an instrumented bounded run of the backend asserting memory and other finite resources show no unbounded growth trend. Lands with the backend skeleton (#9); activated and given a references entry then.
-verification-method: analysis
+  Pending: test exercising the backend under sustained synthetic load for 60 minutes, sampling every
+  30 seconds, asserting goroutine count and open file descriptors each return to within 10 percent
+  of their post-warmup baseline. Heap occupancy is recorded as a diagnostic and does not gate. Lands
+  with the backend skeleton (#9); activated and given a references entry then.
+verification-method: test

@@ -10,10 +10,10 @@ rationale: |
   Makes the fleet's dependency inventory auditable after a disclosure without
   rebuilding the image.
 ref: ''
-reviewed: 0JPMJMbrs2ruul8LLYS33UD86CZ2Hh_2L7i5Vfx_2to=
+reviewed: hYNV4A_O1GU_f6KsszJe-vY_UpFtouwS1xeHfwBmL6E=
 status: accepted
 text: |
   Each published release shall have a software bill of materials generated from
   the built image and attached to the release, so a consumer can retrieve it and
   enumerate the image's components.
-verification-method: demonstration
+verification-method: test

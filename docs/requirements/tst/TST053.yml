@@ -10,5 +10,8 @@ rationale: ''
 ref: ''
 status: proposed
 text: |
-  Pending: inspection that the image bakes in no deployment-specific configuration, secret, or identity, so an instance is determined solely by its mounted configuration and secrets and shares no state with another. Lands with the container image build (#54); activated then.
-verification-method: inspection
+  Pending: test starting two containers from the same digest with two different bind-mounted
+  configurations on two ports, asserting each serves only its own configuration and neither reflects
+  the other; asserting the image declares no shared writable volume; stopping one and asserting the
+  other stays healthy. Lands with the container image build (#54); activated then.
+verification-method: test

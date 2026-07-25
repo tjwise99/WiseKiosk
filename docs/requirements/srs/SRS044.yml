@@ -10,10 +10,10 @@ rationale: |
   Keeps the one-image model falsifiable: any deployment-specific content baked
   into the image is a defect.
 ref: ''
-reviewed: WSSHHJn1nDKLWInemTgevHPnxeng40Szkk3Hu7Zxr3Y=
+reviewed: V7ZFLzI7qY5UXtLBwFAnLlK3oGFw6SHNYfTFhIXPqqQ=
 status: accepted
 text: |
   WiseKiosk shall be published as a single container image that carries no
   deployment-specific configuration or secret material; no per-deployment
   fork, branch, or rebuild shall produce a variant image.
-verification-method: inspection
+verification-method: test

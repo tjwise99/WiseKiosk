@@ -10,5 +10,9 @@ rationale: ''
 ref: ''
 status: proposed
 text: |
-  Pending: demonstration that replacing the running image with a newer published digest, retaining the same mounted configuration and secrets, upgrades a deployment with no diff review, code edit, or rebuild. Lands with the container image build (#54); activated then.
-verification-method: demonstration
+  Pending: test running published digest A with a mounted configuration and secret directory,
+  asserting healthy and serving that configuration; stopping and removing it; running digest B with
+  byte-identical mount arguments and asserting healthy, the same configuration served, and the
+  reported version changed; asserting the script invoked no builder. Lands with the container image
+  build (#54); activated then.
+verification-method: test

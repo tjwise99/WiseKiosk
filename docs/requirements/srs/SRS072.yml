@@ -16,11 +16,11 @@ rationale: |
   targets a non-root dir holding the matching manifest. Buildable now (~15 lines) but authored ahead
   of its script; activated with a `references` entry when the check lands.
 ref: ''
-reviewed: ZORIsp2rtcJ8sTPVzI18uRYaQxJcUa1YpRIbC_ssiIE=
+reviewed: Ekd_4C1p3Hzzc3XtDSH0bKJllv6FNVnQBty8GEYL7Zk=
 status: accepted
 text: |
   No language dependency manifest, lockfile, or virtual environment (package.json,
   package-lock.json, requirements*.txt, pyproject.toml, go.mod, and the like, or a `.venv/`) shall
   exist at the repository root; every Dependabot `updates[].directory` other than the github-actions
   ecosystem shall resolve to a non-root feature directory that contains the corresponding manifest.
-verification-method: inspection
+verification-method: test

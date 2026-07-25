@@ -9,10 +9,10 @@ normative: true
 rationale: |
   Makes SYS006's no-code-literacy upgrade concrete and demonstrable.
 ref: ''
-reviewed: NtZzmYoT9GN2JyVrJeoT775iNhX3-xfnnhcLKSxYJIY=
+reviewed: 23aZXXMY86HXok1NYU2UVtvuyNmdxXoJVcVbaHjrNDs=
 status: accepted
 text: |
   Upgrading a deployment shall consist of replacing its running image with a
   newer published digest while retaining the same mounted configuration and
   secrets, requiring no diff review, code edit, or per-deployment build.
-verification-method: demonstration
+verification-method: test

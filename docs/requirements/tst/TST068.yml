@@ -10,8 +10,8 @@ rationale: ''
 ref: ''
 status: proposed
 text: |
-  Pending: demonstration asserting a software bill of materials generated from the published image
-  is attached to the release and is retrievable, and that a release without it fails the check
-  (expected: syft, SPDX or CycloneDX). Fails if the SBOM is absent or does not reflect the image
-  contents. Lands when the image is published; activated with a references entry then. Owned by #67.
-verification-method: demonstration
+  Pending: test asserting the release SBOM for the published digest is retrievable and non-empty,
+  validates against its SPDX or CycloneDX schema, and enumerates the Go main module and the base
+  distribution; regenerating from the same digest and asserting the package sets match; asserting a
+  release without the asset fails. Owned by #67.
+verification-method: test
