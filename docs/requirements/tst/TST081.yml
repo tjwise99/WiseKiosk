@@ -10,6 +10,8 @@ rationale: ''
 ref: ''
 status: proposed
 text: |
-  Pending: a design-review checklist item confirming a change to described code/config updated the
-  describing doc or declared it unaffected. Activated when the review checklist is formalized.
+  Pending: a reader confirms a change to described code or configuration updated the describing
+  document or declared it unaffected. The co-change half is mechanical and unbuilt - a registry
+  mapping each canonical document to the path globs it describes, asserted over the merge-base diff
+  - and is tracked rather than assumed.
 verification-method: inspection

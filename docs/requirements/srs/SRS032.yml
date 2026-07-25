@@ -4,7 +4,7 @@ header: |
   Frontend hand-writes no runtime validator for proxied payloads
 level: 1.32
 links:
-- SYS041: flc7zNad92_-mjob2BjfvqsrRtrNxKUOmHwGtjuLWuk=
+- SYS041: 2-PcKHfNsG4gOx2LI9gxuaJP-rzE_Jlr1ymFFAX4k8Q=
 normative: true
 rationale: |
   Compile-time types are erased at runtime, but the failure a runtime validator

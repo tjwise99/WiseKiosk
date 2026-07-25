@@ -1,18 +1,24 @@
 active: true
 derived: false
 header: |
-  Kiosk host outside the delivered boundary
+  The delivered artifact set is exactly the published four
 level: 1.52
 links:
 - SYS009: MiEgDtY0PS1aFpw6ZcA5eI9spWet1JGL0grkJBWiOAY=
 normative: true
 rationale: |
-  Records the boundary as a non-goal so it is not silently
-  expected.
+  Restated as a positive allowlist. As a prohibition on shipping a host OS it was an unbounded
+  negative - every mechanisation would have been a denylist of forms already thought of, passing the
+  first time an unlisted one appeared, which is the control this project rejects on principle. The
+  allowlist inverts it: the release asset set is finite and observable, so an artifact nobody
+  declared fails rather than passing unrecognised. The scope boundary SYS009 draws is preserved and
+  becomes a gate.
 ref: ''
-reviewed: 7aHkvDyTO2vkedtnD1om9pGdAG3KznJqhyo0Wu8EpV4=
+reviewed: qbB-Z1qElu-yTUiD-egM1wjcpCup-_xjUjRInD3g73o=
 status: accepted
 text: |
-  WiseKiosk shall ship no host operating system, browser, or autostart
-  provisioning; the kiosk host platform lies outside the delivered system.
-verification-method: inspection
+  The artifacts WiseKiosk delivers shall be exactly the published container image, its software bill
+  of materials, its signature and provenance attestation, and the deployment recipe. No host
+  operating system, browser, or autostart provisioning shall be delivered; the kiosk host platform
+  lies outside the delivered system.
+verification-method: test

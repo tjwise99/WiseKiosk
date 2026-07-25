@@ -10,7 +10,7 @@ rationale: ''
 ref: ''
 status: proposed
 text: |
-  Pending: a design-review checklist item confirming that, as an architecture element gains a real
-  implementation, its LikeC4 `link` is updated to the corresponding source. Activated when first-party
-  source exists.
+  Pending: a reader confirms that, as an architecture element gains a real implementation, its
+  LikeC4 link is updated to the corresponding source. That a link present in the model resolves to a
+  tracked path is asserted by SRS078's model validation, not here.
 verification-method: inspection

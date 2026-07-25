@@ -10,8 +10,8 @@ rationale: ''
 ref: ''
 status: proposed
 text: |
-  Pending: a design-review checklist item confirming that each comment a change adds or modifies states
-  mechanism, and that any reason, history, or evaluative judgment was authored instead in one of the
-  documentation homes SRS087 names. Activated with a references entry when the design-review checklist
-  is formalized.
+  Pending: a reader confirms each comment a change adds or modifies states mechanism, and that any
+  reason, history, or evaluative judgment was authored instead in a documentation home. The
+  classifier verified by TST094 decides which comments belong to a documentation facility, not what
+  they assert.
 verification-method: inspection

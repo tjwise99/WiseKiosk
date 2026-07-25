@@ -12,10 +12,10 @@ rationale: |
   that a given review happened — no recorded-review mechanism exists and this domain does not invent
   one (that would be a control that does not function where deployed).
 ref: ''
-reviewed: m2nIyqiCE0MWINmxTWZ8AiEdAme5p__xUbBqiSO6e7M=
+reviewed: Xq-0zn2Smm_kVuUHDW8BB3iz91nNynKOXzyKb2hwG08=
 status: accepted
 text: |
   The test architecture shall be reviewed whenever a display module is added and whenever the boundary
   transport changes; these triggers shall be documented and wired to the change procedure so the
   review is prompted rather than left to arise on its own.
-verification-method: inspection
+verification-method: test

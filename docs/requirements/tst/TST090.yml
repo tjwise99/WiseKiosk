@@ -1,7 +1,7 @@
 active: false
 derived: false
 header: |
-  Pending: speculative-abstraction review
+  Pending: single-implementation constructs are listed or fail
 level: 1.15
 links:
 - SRS086: null
@@ -10,7 +10,9 @@ rationale: ''
 ref: ''
 status: proposed
 text: |
-  Pending: a design-review checklist item confirming a change introduces no abstraction with a single
-  implementation and no second consumer. Activated with a references entry when the design-review
-  checklist is formalized.
-verification-method: inspection
+  Pending: test walking first-party packages and, for each declared interface, counting distinct
+  consuming call sites that accept it as a parameter, field, or result; failing where the count is
+  one and the implementation count is one, unless the construct appears in the committed
+  justified-exception list. Frontend equivalent over exported types used as component prop
+  contracts. Fails closed: an unlisted construct fails rather than passing unrecognised.
+verification-method: test

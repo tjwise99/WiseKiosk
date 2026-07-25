@@ -1,10 +1,10 @@
 active: true
 derived: false
 header: |
-  Design review confirms no single-implementation abstraction lacking a second consumer
+  No interface or extension point has a single implementation and no second consumer
 level: 1.86
 links:
-- SYS041: flc7zNad92_-mjob2BjfvqsrRtrNxKUOmHwGtjuLWuk=
+- SYS041: 2-PcKHfNsG4gOx2LI9gxuaJP-rzE_Jlr1ymFFAX4k8Q=
 normative: true
 rationale: |
   Locates "abstraction without a second consumer" at its actual verification event —
@@ -12,10 +12,10 @@ rationale: |
   module-adding form (no plugin system, registry, or discovery); this is the complementary
   system-wide review obligation.
 ref: ''
-reviewed: QvriRGJT9ikQff5EoQ7Mvbgh1isYYXyjZqquZqaFbgQ=
+reviewed: PM6f_en-PM6mr8tBgsLNuj3UusOwY_MGg0A6tLOiCFU=
 status: accepted
 text: |
-  The design-review record for each change shall confirm that the change introduces no abstraction or
-  extension point that has a single implementation and no second consumer, so generality is not added
-  ahead of a demonstrated second use.
+  The system shall contain no interface or extension point that has a single implementation and a
+  single consumer, unless it is recorded in a committed justified-exception list carried with the
+  check's configuration. An unlisted single-implementation, single-consumer construct shall fail.
 verification-method: inspection

@@ -14,10 +14,12 @@ rationale: |
   and, once it exists, the coverage-closure gate config. Confirms no gate asserts a coverage % quality
   bar. (While no coverage gate yet exists, the inspection confirms the absence.)
 ref: ''
-reviewed: pCJ3BMgnokZvE9fsG-yX-u82WktazwW6IMGz_Tpvjog=
+reviewed: ntmdelXfeuO_wHoLC13M7kSx6tEzNtfUCAFGpy3XKrk=
 status: accepted
 text: |
-  No gate in `just verify` or CI shall assert a coverage percentage as a pass/fail quality threshold;
-  the coverage gate, where present, shall fail only on uncovered source that is neither exempted nor
-  justified (ADR 0005 gate 3), not on a target number.
+  No gate in `just verify` or CI shall assert a coverage percentage as a pass/fail quality
+  threshold. No gate configuration shall carry a coverage-threshold construct - a minimum-percentage
+  setting, a threshold flag, or a target figure compared against a coverage number. The coverage
+  gate, where present, shall fail only on uncovered source that is neither exempted nor justified
+  (ADR 0005 gate 3), not on a target number.
 verification-method: inspection

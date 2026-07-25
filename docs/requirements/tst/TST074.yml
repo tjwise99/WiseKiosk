@@ -1,21 +1,21 @@
 active: true
 derived: false
 header: |
-  No gate in `just verify` or CI asserts a coverage percentage as a quality bar
+  Pending: no coverage-threshold construct in any gate
 level: 1.6
 links:
-- SRS070: Le0aomXbyQbjtg9DaWm1AblLfW0ZBWrJ3rYCZFBYnDY=
+- SRS070: 85cQs4z2EKgy0XmBW1G5S7wWnK4OqHKS82cAJnfUn5U=
 normative: true
 rationale: ''
 ref: ''
 references:
 - path: justfile
   type: file
-reviewed: 37jYEyhUuHCSG4hhL6AYzG-WtsbvmCtWKBuKg7aKzYQ=
+reviewed: yzSH7ZQAYA_U7fAEiGSE3d95xMlOasNW1qpFSGka-9w=
 status: accepted
 text: |
-  Verified by inspecting `justfile` (and, once it exists, the coverage-closure gate config): no gate
-  fails a merge on a coverage percentage treated as a quality threshold. Today no coverage gate exists
-  at all, so the inspection confirms the absence; when a coverage-closure gate lands (ADR 0005 gate 3)
-  this item is re-inspected against it.
-verification-method: inspection
+  Pending: test scanning justfile recipes and CI workflow steps for coverage-threshold constructs -
+  fail_under, coverage threshold flags, a codecov target, or a numeric comparison against a coverage
+  figure - and failing on any occurrence. An enumerated floor, not proof of the general prohibition.
+  Owned by #68.
+verification-method: test

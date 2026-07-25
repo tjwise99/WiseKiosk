@@ -1,7 +1,7 @@
 active: false
 derived: false
 header: |
-  Pending: host-provisioning-absent inspection
+  Pending: release assets equal the declared set
 level: 1.15
 links:
 - SRS052: null
@@ -10,5 +10,7 @@ rationale: ''
 ref: ''
 status: proposed
 text: |
-  Pending: inspection that the delivered artifacts ship no host operating system, browser, or autostart provisioning, keeping the kiosk host platform outside the delivered system. Lands with the container image build and deployment recipe (#54); activated then.
-verification-method: inspection
+  Pending: test asserting the set of assets published for a release equals exactly the image
+  reference, the SBOM, the signature and provenance attestation, and the deployment recipe. An
+  undeclared asset fails. Owned by #67.
+verification-method: test

@@ -1,7 +1,7 @@
 active: true
 derived: false
 header: |
-  Design review confirms a mechanically-clean comment is not misplaced rationale
+  A comment satisfying every mechanical check is still not rationale
 level: 1.89
 links:
 - SYS042: bQL35yuoWm4zY8ZXEPbWe1V2b6OISFBPty8mu69zyAs=
@@ -18,9 +18,8 @@ rationale: |
   looking for, and SYS043 because its closing clause reserves the undecidable residue for review rather
   than assuming it away.
 ref: ''
-reviewed: H4Sqowt_dFfvXqXGxBuSGgf_Lv1CTY3Z1W-JZ5BVuRE=
+reviewed: 95XOHGWYOzP_7_xJwaPMn5n0REMioqvil4GpIqkWXbI=
 status: accepted
 text: |
-  The design-review record for each change shall confirm that each comment the change adds or modifies,
-  having satisfied the repository's mechanical comment checks, is nonetheless not misplaced rationale.
+  No comment shall carry rationale, including where it satisfies every mechanical comment check.
 verification-method: inspection

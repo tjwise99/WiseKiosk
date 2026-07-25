@@ -14,10 +14,9 @@ rationale: |
   client-side) — so this is the one uncaptured case. Decided by judgment at review; inspection is the
   honest method (no test artifact).
 ref: ''
-reviewed: flc7zNad92_-mjob2BjfvqsrRtrNxKUOmHwGtjuLWuk=
+reviewed: 2-PcKHfNsG4gOx2LI9gxuaJP-rzE_Jlr1ymFFAX4k8Q=
 status: accepted
 text: |
-  The system shall not contain an abstraction or extension point that has a single implementation and
-  no second consumer. At design review the system shall be inspected to confirm that generality is
-  not introduced ahead of a demonstrated second use.
+  The system shall not contain an abstraction or extension point that has a single implementation
+  and no second consumer, so generality is not introduced ahead of a demonstrated second use.
 verification-method: inspection
