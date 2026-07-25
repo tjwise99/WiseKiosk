@@ -1,7 +1,7 @@
 active: true
 derived: false
 header: |
-  Secrets are confined to the backend, by construction
+  Secrets never reach a client in output, by construction
 level: 1.17
 links: []
 normative: true
@@ -12,12 +12,11 @@ rationale: |
   design with no secret-carrying path toward a client has nothing to
   forget.
 ref: ''
-reviewed: X-_LkUxibUnQ62vebwuFwC3sK95PhxhHBtd8FMrG_0M=
+reviewed: 3n5ok3Mr0OkpTS8DCbZH6N2Ka6dqboelL7rBgXWsxEg=
 status: accepted
 text: |
-  No secret shall ever reach a client: not through configuration delivery,
-  not in any API response body or header, and not in any error or log
-  output a client can observe. This confinement shall hold by construction
-  — the system shall have no code path that carries a secret toward a
-  client — never by a stripping or redaction step applied before delivery.
+  No secret shall reach a client in any API response body or header, or in any error or log output a
+  client can observe. This confinement shall hold by construction - the system shall have no code
+  path that carries a secret toward a client - never by a stripping or redaction step applied before
+  delivery. Configuration delivery is SYS045's obligation.
 verification-method: test

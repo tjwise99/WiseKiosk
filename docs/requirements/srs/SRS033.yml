@@ -14,12 +14,13 @@ rationale: |
   these functions produce is the value the single boundary schema defines
   (SRS029) and the module component renders from the generated type (SRS031).
 ref: ''
-reviewed: pg5QqyC_bKblpWzENCiCJ6XNOrFO5H-4E-T43cuDbY0=
+reviewed: s_2gR8SkU9X4k9IsTmgc0SmJ8aBnGAq7sWdgarDx200=
 status: accepted
 text: |
-  Each module's construction of its upstream request URL and its parsing and
-  reshaping of the upstream response into the frontend payload shall be
-  implemented as a library of pure functions that perform no I/O and can be
-  exercised in isolation against a known upstream response without network
-  access.
-verification-method: inspection
+  Each module's construction of its upstream request URL, and its parsing and reshaping of the
+  upstream response into the frontend payload, shall be implemented as libraries of pure functions
+  that perform no I/O and can be exercised in isolation against a known upstream response without
+  network access. The two shall be separate: no response-shaping function shall accept a secret or a
+  constructed upstream URL as a parameter, so that no function producing a client-facing payload
+  holds a secret to leak (SYS017).
+verification-method: test
