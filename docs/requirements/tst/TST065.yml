@@ -11,8 +11,8 @@ ref: ''
 status: proposed
 text: |
   Pending: check that builds an image from a materialised fixture manifest carrying a seeded
-  high-severity finding (ADR 0010), runs the same image-scan invocation the production job runs,
-  and asserts a non-zero exit; asserts the clean image exits zero (expected: trivy or grype at or
-  above the configured threshold). Lands when the image builds in CI; activated with a references
-  entry to the fixture and the meta-gate then.
+  high-severity finding (ADR 0010), runs the same image-scan invocation the production job runs, and
+  asserts a non-zero exit; asserts the clean image exits zero (expected: trivy or grype at or above
+  the configured threshold). Lands when the image builds in CI; activated with a references entry to
+  the fixture and the meta-gate then. Owned by #67.
 verification-method: test

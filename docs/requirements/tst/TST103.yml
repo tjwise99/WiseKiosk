@@ -20,6 +20,6 @@ text: |
   Pending: check that reads the default branch's ruleset, extracts its required status checks, and
   asserts set equality against the gate jobs the checks workflow defines — failing on a gate job
   absent from the required set, and on a required entry naming no defined job. Runs with the
-  workflow's own token; no admin scope. Lands with the required-checks manifest.
+  workflow's own token; no admin scope. Lands with the required-checks manifest. Owned by #67.
 verification-justification: ''
 verification-method: test

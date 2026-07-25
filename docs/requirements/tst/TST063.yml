@@ -10,5 +10,8 @@ rationale: ''
 ref: ''
 status: proposed
 text: |
-  Pending: check asserting a pinned npm dependency with a known advisory at or above the gate's severity threshold fails the dependency-vulnerability job (expected: npm audit). Fails if a vulnerable pin at or above the threshold passes. Lands with package.json; activated with a references entry to the fixture then.
+  Pending: check asserting a pinned npm dependency with a known advisory at or above the gate's
+  severity threshold fails the dependency-vulnerability job (expected: npm audit). Fails if a
+  vulnerable pin at or above the threshold passes. Lands with package.json; activated with a
+  references entry to the fixture then. Owned by #67.
 verification-method: test

@@ -10,9 +10,9 @@ rationale: ''
 ref: ''
 status: proposed
 text: |
-  Pending: check that materialises the seeded vulnerable Svelte/TypeScript fixture into a
-  temporary tree (ADR 0010), runs the same code-scanning analysis the production job runs, and
-  asserts the expected finding is reported (expected: CodeQL javascript-typescript). Fails if the
-  analysis is absent, skips the frontend tree, or lets the seeded finding pass. Lands with the
-  first frontend code; activated with a references entry to the fixture and the meta-gate then.
+  Pending: check that materialises the seeded vulnerable Svelte/TypeScript fixture into a temporary
+  tree (ADR 0010), runs the same code-scanning analysis the production job runs, and asserts the
+  expected finding is reported (expected: CodeQL javascript-typescript). Fails if the analysis is
+  absent, skips the frontend tree, or lets the seeded finding pass. Lands with the first frontend
+  code; activated with a references entry to the fixture and the meta-gate then. Owned by #67.
 verification-method: test

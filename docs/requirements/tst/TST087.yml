@@ -10,7 +10,7 @@ rationale: ''
 ref: ''
 status: proposed
 text: |
-  Pending: a small script (check-links.mjs shape) asserting the decisions/ directory and README table
-  agree — every ADR file has a row, no gap or duplicate in numbering, every row resolves to a real
-  file. Activated with a references entry when the script lands.
+  Pending: a small script (check-links.mjs shape) asserting the decisions/ directory and README
+  table agree — every ADR file has a row, no gap or duplicate in numbering, every row resolves to a
+  real file. Activated with a references entry when the script lands. Owned by #68.
 verification-method: test

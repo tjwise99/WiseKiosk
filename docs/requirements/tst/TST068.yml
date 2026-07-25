@@ -10,5 +10,8 @@ rationale: ''
 ref: ''
 status: proposed
 text: |
-  Pending: demonstration asserting a software bill of materials generated from the published image is attached to the release and is retrievable, and that a release without it fails the check (expected: syft, SPDX or CycloneDX). Fails if the SBOM is absent or does not reflect the image contents. Lands when the image is published; activated with a references entry then.
+  Pending: demonstration asserting a software bill of materials generated from the published image
+  is attached to the release and is retrievable, and that a release without it fails the check
+  (expected: syft, SPDX or CycloneDX). Fails if the SBOM is absent or does not reflect the image
+  contents. Lands when the image is published; activated with a references entry then. Owned by #67.
 verification-method: demonstration

@@ -13,5 +13,5 @@ text: |
   Pending: a depth-1 scan of the repo root finds no language manifest/lockfile/venv except
   repo-level config; each Dependabot `updates[]` entry except github-actions targets a non-root
   directory holding the matching manifest. Buildable now (~15 lines) but authored ahead of its
-  script; activated with a `references` entry when the check lands.
+  script; activated with a `references` entry when the check lands. Owned by #68.
 verification-method: inspection

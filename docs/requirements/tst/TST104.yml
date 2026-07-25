@@ -20,6 +20,6 @@ text: |
   within 90 days; that no entry is past its review date; that every finding suppressed in the
   dependency or image scan output has a matching current entry; that no entry matches a finding in
   first-party source; and that no entry exists for an advisory no scan reports. Lands with the
-  dependency and image scan jobs.
+  dependency and image scan jobs. Owned by #67.
 verification-justification: ''
 verification-method: test

@@ -10,5 +10,9 @@ rationale: ''
 ref: ''
 status: proposed
 text: |
-  Pending: integration test asserting the frontend-serving response carries X-Content-Type-Options: nosniff, a frame denial via frame-ancestors 'none', Referrer-Policy: no-referrer, and a Permissions-Policy disabling unused features, each present and no weaker than stated. Fails if any required header is absent or weakened. Lands with the backend that serves the frontend; activated with a references entry to the integration test then.
+  Pending: integration test asserting the frontend-serving response carries X-Content-Type-Options:
+  nosniff, a frame denial via frame-ancestors 'none', Referrer-Policy: no-referrer, and a
+  Permissions-Policy disabling unused features, each present and no weaker than stated. Fails if any
+  required header is absent or weakened. Lands with the backend that serves the frontend; activated
+  with a references entry to the integration test then. Owned by #67.
 verification-method: test

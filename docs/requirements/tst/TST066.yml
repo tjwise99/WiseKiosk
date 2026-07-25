@@ -10,5 +10,9 @@ rationale: ''
 ref: ''
 status: proposed
 text: |
-  Pending: demonstration asserting the published image's signature verifies against the expected keyless identity and OIDC issuer, and that an unsigned or wrong-identity image fails verification (expected: cosign keyless verify with GitHub OIDC). Fails if the signature is absent or does not verify. Lands when the image is published; activated with a references entry to the verify script then.
+  Pending: demonstration asserting the published image's signature verifies against the expected
+  keyless identity and OIDC issuer, and that an unsigned or wrong-identity image fails verification
+  (expected: cosign keyless verify with GitHub OIDC). Fails if the signature is absent or does not
+  verify. Lands when the image is published; activated with a references entry to the verify script
+  then. Owned by #67.
 verification-method: demonstration

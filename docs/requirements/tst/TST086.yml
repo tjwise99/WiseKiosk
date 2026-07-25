@@ -10,7 +10,7 @@ rationale: ''
 ref: ''
 status: proposed
 text: |
-  Pending: a scanner extending scripts/check-links.mjs enumerates valid IDs from the Doorstop tree and
-  ADR index and fails on any bare-text citation to an absent ID. One scanner, stdlib-only, same job
-  step as check-links. Activated with a references entry when the scanner lands.
+  Pending: a scanner extending scripts/check-links.mjs enumerates valid IDs from the Doorstop tree
+  and ADR index and fails on any bare-text citation to an absent ID. One scanner, stdlib-only, same
+  job step as check-links. Activated with a references entry when the scanner lands. Owned by #68.
 verification-method: test
