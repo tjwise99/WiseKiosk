@@ -10,5 +10,9 @@ rationale: ''
 ref: ''
 status: proposed
 text: |
-  Pending: check asserting a seeded eslint or svelte-check violation fails the frontend lint job (non-zero), a required check (expected: eslint plus svelte-check). Fails if either is missing, advisory-only, or non-blocking. Lands with the first frontend code; activated with a references entry to the seeded fixture then.
+  Pending: check that materialises a seeded eslint or svelte-check violation into a temporary
+  tree (ADR 0010), runs the same linter invocations the production job runs, and asserts a
+  non-zero exit from each (expected: eslint plus svelte-check). Fails if either is missing or
+  exits zero on the seeded violation. Lands with the first frontend code; activated with a
+  references entry to the fixture and the meta-gate then.
 verification-method: test

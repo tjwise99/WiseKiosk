@@ -10,5 +10,10 @@ rationale: ''
 ref: ''
 status: proposed
 text: |
-  Pending: check asserting a pinned, known-vulnerable Go module with a reachable call in a fixture makes the dependency-vulnerability job fail, and that bumping past the advisory clears it (expected: govulncheck; the fixture must call the vulnerable symbol, since the gate considers reachability). Fails if a reachable vulnerable pin passes. Lands with go.mod; activated with a references entry to the fixture then.
+  Pending: check that materialises a fixture pinning a known-vulnerable Go module and calling
+  the vulnerable symbol into a temporary tree (ADR 0010), runs the same dependency-vulnerability
+  invocation the production job runs, and asserts a non-zero exit; asserts the same fixture
+  bumped past the advisory exits zero (expected: govulncheck; the call is required because the
+  gate considers reachability). Lands with go.mod; activated with a references entry to the
+  fixture and the meta-gate then.
 verification-method: test

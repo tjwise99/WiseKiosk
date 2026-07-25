@@ -10,12 +10,12 @@ rationale: |
   Turns "a dependency should be updated" into "merge is blocked". The
   reachability allowance keeps the Go gate actionable rather than noisy.
 ref: ''
-reviewed: bBN_RJTBeZfiYXUdJygOkHRFbdGjZLzJYzIkJJmMLTM=
+reviewed: rIcY4wRWezDPCu5G1rm18Ubfii_vHfI1aHlnTAfL4PI=
 status: accepted
 text: |
-  Continuous integration shall fail a pull request as a required check when any
-  resolved Go-module or npm dependency has a known vulnerability at or above the
-  configured severity threshold. For the Go toolchain the gate may consider
-  reachability - a vulnerability in code that is present but never called need
-  not fail the gate.
+  Continuous integration shall fail a pull request when any resolved Go-module
+  or npm dependency has a known vulnerability at or above the configured
+  severity threshold. For the Go toolchain the gate may consider reachability -
+  a vulnerability in code that is present but never called need not fail the
+  gate.
 verification-method: test

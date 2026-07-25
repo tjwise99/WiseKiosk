@@ -1,0 +1,25 @@
+active: false
+derived: false
+header: |
+  Pending: required-check set equals the checks workflow's gate jobs
+level: 1.15
+links:
+- SRS097: null
+normative: true
+rationale: |
+  Set equality rather than containment, so the check fails in both directions: a gate job that never
+  became required, and a required name left behind after a job was renamed or removed. Containment in
+  either direction alone would pass one of those.
+
+  The expected names live in a committed file rather than inside the script, so the script asserts a
+  reviewed list rather than restating one. That file sits outside a dot-directory and is therefore a
+  usable Doorstop `references` target, which the workflow it checks is not (ADR 0002).
+ref: ''
+status: proposed
+text: |
+  Pending: check that reads the default branch's ruleset, extracts its required status checks, and
+  asserts set equality against the gate jobs the checks workflow defines — failing on a gate job
+  absent from the required set, and on a required entry naming no defined job. Runs with the
+  workflow's own token; no admin scope. Lands with the required-checks manifest.
+verification-justification: ''
+verification-method: test

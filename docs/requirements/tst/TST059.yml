@@ -10,5 +10,9 @@ rationale: ''
 ref: ''
 status: proposed
 text: |
-  Pending: check asserting a seeded, deliberately vulnerable Svelte/TypeScript pattern causes the code-scanning workflow to report a failing required status on the pull request (expected: CodeQL javascript-typescript analysis). Fails if the workflow is absent, skips the frontend tree, or lets the seeded finding pass. Lands with the first frontend code; activated with a references entry to the seeded fixture then.
+  Pending: check that materialises the seeded vulnerable Svelte/TypeScript fixture into a
+  temporary tree (ADR 0010), runs the same code-scanning analysis the production job runs, and
+  asserts the expected finding is reported (expected: CodeQL javascript-typescript). Fails if the
+  analysis is absent, skips the frontend tree, or lets the seeded finding pass. Lands with the
+  first frontend code; activated with a references entry to the fixture and the meta-gate then.
 verification-method: test

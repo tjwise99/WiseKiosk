@@ -10,5 +10,9 @@ rationale: ''
 ref: ''
 status: proposed
 text: |
-  Pending: check asserting a seeded golangci-lint violation in a fixture package fails the Go lint job (non-zero) and that the job is a required check (expected: golangci-lint). Fails if the linter is missing, advisory-only, or non-blocking. Lands with the first backend code; activated with a references entry to the seeded fixture then.
+  Pending: check that materialises a seeded golangci-lint violation into a temporary tree
+  (ADR 0010), runs the same linter invocation the production job runs, and asserts a non-zero
+  exit (expected: golangci-lint). Fails if the linter is missing or exits zero on the seeded
+  violation. Lands with the first backend code; activated with a references entry to the fixture
+  and the meta-gate then.
 verification-method: test

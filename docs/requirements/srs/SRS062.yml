@@ -10,10 +10,10 @@ rationale: |
   Gates the whole image - operating-system and base-layer packages included -
   which the source-level dependency gate never inspects.
 ref: ''
-reviewed: geyMlKPOiiPZtS2-ifxWcjB77a3eU0zVHllnIKm2_FI=
+reviewed: aild87hwzEvsw9WYT59QLDCxsdY4gesnmTvZFCVFCQ4=
 status: accepted
 text: |
   Continuous integration shall scan the built container image for known
-  vulnerabilities and shall fail the build as a required gate when a finding at
-  or above the configured severity threshold is present.
+  vulnerabilities and shall fail the build when a finding at or above the
+  configured severity threshold is present.
 verification-method: test

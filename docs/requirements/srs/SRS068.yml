@@ -4,7 +4,7 @@ header: |
   Test runners are invoked over whole-tree discovery, with no silent exclusion
 level: 1.68
 links:
-- SYS031: d-AVJQjdaz13MMBcZhMMsqJdbHyFDpIFfKxEzdjJdVc=
+- SYS031: 6mR07drzMO3DxbeYI711Spu-nnzNOZJ9-5ZDQFC_GYU=
 normative: true
 rationale: |
   Structural wiring makes "wired into CI" the default for a new test rather than a step an author can
