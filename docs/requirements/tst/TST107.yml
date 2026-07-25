@@ -1,0 +1,22 @@
+active: false
+derived: false
+header: |
+  Pending: every schema key is varied by a fixture and renders
+level: 1.15
+links:
+- SRS101: null
+normative: true
+rationale: |
+  Enumerating from the schema rather than from the fixtures is what makes the check closed: driven
+  from the fixtures it would only confirm that whatever is tested passes, which is what it already
+  knows.
+ref: ''
+reviewed: null
+status: proposed
+text: |
+  Pending: test enumerating the composed configuration schema's keys and asserting each is set to a
+  non-default schema-valid value by at least one fixture configuration in the behavioural suite, and
+  that the page renders without error under each. Fails on a key no fixture varies. Lands with the
+  config schema (#8) and the frontend skeleton (#10).
+verification-justification: ''
+verification-method: test
