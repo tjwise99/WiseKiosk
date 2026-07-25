@@ -52,20 +52,31 @@ is **derived by tooling from evidence, never stored** (ADR 0005).
 
 ### Choosing a verification method
 
+Methods are ordered by **mechanical decidability** — how much of the verification a machine settles,
+unattended, on every commit:
+
+> `test` > `analysis` > `inspection` > `demonstration`
+
+This is deliberately **not** the classical V&V rigor ordering, which ranks evidential strength and
+places demonstration above inspection. Ranked that way, "move to the stronger method" would push an
+item out of continuous integration and onto physical hardware or a wall clock — the opposite of what
+this tree is for. `demonstration` sits last because it is the one method that can never gate a
+merge, not because a thirty-day soak proves less than reading a file.
+
 Two rules, in order:
 
-1. **An item sits at the strongest method it honestly supports** — `test` over
-   `demonstration`/`analysis` over `inspection`. Strength is what the obligation *can* bear, not what
-   has been built yet: an unwritten check is a backlog entry, not a reason to claim `inspection`.
+1. **An item sits at the most decidable method it honestly supports.** Decidability is what the
+   obligation *can* bear, not what has been built yet: an unwritten check is a backlog entry, not a
+   reason to claim `inspection`.
 2. **A mixed-method item is a defect, not a classification case.** Where an item's text welds a
    mechanically-decidable clause to a residual judgement, split it so each clause sits at its own
    honest method. Averaging the item down hides the decidable half; leaving it at `test` hides the
    judgement half, which is worse — it reads as a machine guarantee nobody has.
 
-It follows that **a parent's method equals the weakest method among its children**: the parent's
-obligation is the conjunction of theirs, so it can be no stronger than the weakest, and claiming
-less than that understates what the tree already proves. A parent weaker than every child is
-under-classification; a parent stronger than its weakest child is a false signal. Both are defects.
+It follows that **a parent's method equals the least decidable method among its children**: the
+parent's obligation is the conjunction of theirs, so it can be no more decidable than the least, and
+claiming less than that understates what the tree already proves. A parent below every child is
+under-classification; a parent above its least-decidable child is a false signal. Both are defects.
 
 Where a parent legitimately holds a residual obligation no child carries — a conclusion drawn by
 comparing the children's bounds against something outside the system — it may sit below its
