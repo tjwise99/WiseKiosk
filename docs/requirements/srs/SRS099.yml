@@ -1,0 +1,24 @@
+active: false
+derived: false
+header: |
+  The generated frontend boundary artifact is type-only
+level: 1.96
+links:
+- SYS023: null
+normative: true
+rationale: |
+  Carved out of SRS032, whose remaining obligation - that nobody hand-writes a validator - is a
+  human read. This half is not: what a generator emits is an artifact, and whether that artifact
+  survives into the bundle is a build-output assertion. It is also the half most likely to regress
+  silently. Switching codegen options or generators is a one-line change that can start emitting
+  runtime validators, and the bundle grows without anything failing. ADR 0008 already fixed frontend
+  generation as types-only; this is the obligation that keeps it that way.
+ref: ''
+reviewed: null
+status: proposed
+text: |
+  The generated TypeScript boundary artifact the frontend consumes shall be type-only, contributing
+  zero runtime bytes to the shipped bundle. No validator, decoder, or schema object shall be
+  generated into it.
+verification-justification: ''
+verification-method: test

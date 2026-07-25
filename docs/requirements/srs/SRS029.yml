@@ -4,7 +4,7 @@ header: |
   One schema, package-neutral, all boundary value classes
 level: 1.29
 links:
-- SYS023: vqoPBOFlW4NRIpov_HBa66bXY8P8VLnuvFp2lNyicUk=
+- SYS023: 4PXds02kB8g6UDUf9POyDwBRTUlY9WdOm2tpBfxtAlQ=
 normative: true
 rationale: |
   "Every payload shape and every parameter name" (TESTING.md Boundary tier)
@@ -12,7 +12,7 @@ rationale: |
   the value classes keeps them from being the uncovered value the tier warns
   about. The schema's repository location is allocated by #5 and not fixed here.
 ref: ''
-reviewed: CmASlD84V-o8te7RExcppR_qRXQzwWj0s65s0GGMvls=
+reviewed: spdJZ_UyoJzG1ibeIDjZ_ELaZvN5UAof8CajIwlL9N0=
 status: accepted
 text: |
   The boundary contract shall be defined by exactly one schema artifact, owned by
@@ -21,4 +21,4 @@ text: |
   payloads, the structured upstream-failure body (SRS001), the client-error
   rejection body (SRS026), and every response status code the frontend
   discriminates on to choose an error state.
-verification-method: inspection
+verification-method: test

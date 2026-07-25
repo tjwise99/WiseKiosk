@@ -1,7 +1,7 @@
 active: false
 derived: false
 header: |
-  Pending: boundary-schema single-definition inspection
+  Pending: boundary schema is single, package-neutral, and complete
 level: 1.29
 links:
 - SRS029: null
@@ -10,9 +10,11 @@ rationale: ''
 ref: ''
 status: proposed
 text: |
-  Pending: inspection that exactly one boundary schema artifact exists, owned by
-  neither package, and that it defines every boundary value class — request
-  parameters, success payloads, the SRS001 upstream-failure body, the SRS026
-  rejection body, and the discriminated response status codes. Lands with the
-  codegen mechanism (#7); form (repo check or review checklist) decided then.
-verification-method: inspection
+  Pending: test parsing the boundary schema and asserting exactly one schema artifact is tracked and
+  its path lies under neither package root; that the set of schema path items equals the set of
+  entries in the static route registration list, in both directions; that every path item declares
+  its success status, the SRS001 upstream-failure status, and 400, 404, 405 and 429, each
+  referencing a named component rather than an inline body; that the upstream-failure body and the
+  SRS026 rejection body both exist as named components and are distinct schemas; and that every path
+  and query parameter is declared with a type. Lands with the codegen mechanism (#7).
+verification-method: test

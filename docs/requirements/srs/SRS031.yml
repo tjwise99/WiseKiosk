@@ -4,7 +4,7 @@ header: |
   Both sides consume the generated types
 level: 1.31
 links:
-- SYS023: vqoPBOFlW4NRIpov_HBa66bXY8P8VLnuvFp2lNyicUk=
+- SYS023: 4PXds02kB8g6UDUf9POyDwBRTUlY9WdOm2tpBfxtAlQ=
 normative: true
 rationale: |
   A drift check proves the generated files are current but not that anyone uses
@@ -13,7 +13,7 @@ rationale: |
   compile and render cleanly. Consumption, including the error-render path, is
   therefore an inspection obligation the currency gate cannot discharge.
 ref: ''
-reviewed: 70cVctfC6zVe-Ws-pdPKEIh9NEbnZfumtRXSUcZpMqs=
+reviewed: B-wbe7HrUsFqbHvWD-43kMywoOKcHkRl9yZBJmDciY4=
 status: accepted
 text: |
   The generated types shall be the types used on both sides: the backend route
@@ -23,4 +23,4 @@ text: |
   generated upstream-failure and rejection body types. No boundary payload,
   parameter, or error body shall be served or rendered through a hand-declared
   type on either side.
-verification-method: inspection
+verification-method: test

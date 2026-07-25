@@ -4,7 +4,7 @@ header: |
   Both sides generated and drift-gated
 level: '1.30'
 links:
-- SYS023: vqoPBOFlW4NRIpov_HBa66bXY8P8VLnuvFp2lNyicUk=
+- SYS023: 4PXds02kB8g6UDUf9POyDwBRTUlY9WdOm2tpBfxtAlQ=
 normative: true
 rationale: |
   A generated artifact that can drift silently reintroduces the two-definition

@@ -13,7 +13,7 @@ rationale: |
   deliberately: a single definition that can silently stale is not single. This
   is the sibling axiom to SYS014, which the configuration schema follows.
 ref: ''
-reviewed: vqoPBOFlW4NRIpov_HBa66bXY8P8VLnuvFp2lNyicUk=
+reviewed: 4PXds02kB8g6UDUf9POyDwBRTUlY9WdOm2tpBfxtAlQ=
 status: accepted
 text: |
   Every value that crosses the frontend/backend boundary — request parameter
@@ -24,4 +24,4 @@ text: |
   generated. No boundary value shall be declared a second time on either side,
   and agreement between the two sides shall be enforced mechanically rather than
   by review or convention.
-verification-method: inspection
+verification-method: test

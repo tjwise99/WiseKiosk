@@ -1,10 +1,10 @@
 active: true
 derived: false
 header: |
-  Frontend does not runtime-re-validate proxied payloads
+  Frontend hand-writes no runtime validator for proxied payloads
 level: 1.32
 links:
-- SYS023: vqoPBOFlW4NRIpov_HBa66bXY8P8VLnuvFp2lNyicUk=
+- SYS041: flc7zNad92_-mjob2BjfvqsrRtrNxKUOmHwGtjuLWuk=
 normative: true
 rationale: |
   Compile-time types are erased at runtime, but the failure a runtime validator
@@ -15,11 +15,16 @@ rationale: |
   weight and per-render cost on a Raspberry-Pi-Zero-class browser against a case
   that does not exist. Revisit only if the two sides ever become
   independently deployable.
+
+  Parented to SYS041 rather than SYS023. The obligation is not that the two sides agree - SRS029,
+  SRS030, SRS031 and SRS099 carry that - but that a second validator is not built against a case
+  that does not exist, which is SYS041's subject exactly. Held under SYS023 it also kept that need
+  at inspection, because a judgement clause belonging to a different parent was setting its method.
 ref: ''
-reviewed: igmPWO6ZXfcMVSGuzFYLRYcYjnt8bzT97Tf3PgpBAG8=
+reviewed: oZaRRmCeXuEmqoWj5JFxnv4Cf8Z4q3zn6MQN61GFDEo=
 status: accepted
 text: |
-  The frontend shall not re-validate proxied payloads at runtime; cross-boundary
-  agreement shall rest on the single schema and the drift gate (SRS030), not on a
-  second validator generated into or shipped with the frontend bundle.
+  The frontend shall not re-validate proxied payloads at runtime: no validator shall be written by
+  hand on the render path. Cross-boundary agreement shall rest on the single schema and the drift
+  gate (SRS030). That the generated artifact itself contributes no validator is SRS099's obligation.
 verification-method: inspection
