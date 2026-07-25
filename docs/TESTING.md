@@ -30,6 +30,11 @@ holds an upstream credential and no CI job runs a check that needs one, so a che
 upstream runs locally, on a developer machine. There is no scheduled credentialed run.
 → SYS019 / SRS019.
 
+It lives in a **nested module**, outside the parent module's test discovery. That placement is what
+lets both obligations hold at once: whole-tree discovery reaches every committed test (SRS068), and
+a credentialed check never runs in CI (SRS019). A build tag or a skip would satisfy the second by
+breaking the first, which is why the boundary is the module and not a list of exclusions.
+
 The Contract tier is the one tier whose *content* no requirement states; SRS019 governs only where it
 runs, and defines the tier by reference to this document. What it must prove therefore lives here and
 nowhere else.

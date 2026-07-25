@@ -13,10 +13,13 @@ rationale: |
   .github/workflows/, which Doorstop cannot reference (ADR 0002), so the
   verifying inspection cites it here rather than in a references entry.
 ref: ''
-reviewed: Y0aWhILLbARkJLoFbEdFMBqBV0nMLz5kgNPqYQwDmno=
+reviewed: 4xGJypfqrrjpVBRd6-5Dwa-SOPlbO3GuGH3YbSVAsts=
 status: accepted
 text: |
   No CI workflow shall store or reference an API key or other upstream
-  credential, and no CI job shall run a check that requires one.
-  Contract-tier checks (TESTING.md) shall be wired to run outside CI.
+  credential, and no CI job shall run a check that requires one. Contract-tier
+  checks (TESTING.md) shall be wired to run outside CI, in a nested module
+  outside the parent module's test discovery, so that their absence from CI is
+  a language boundary rather than a skip, build tag, ignore entry, or
+  hand-maintained exclusion (SRS068).
 verification-method: inspection
