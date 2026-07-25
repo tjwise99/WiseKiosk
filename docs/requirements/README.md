@@ -50,6 +50,27 @@ fingerprint (editing them re-flags review); `status` is not, because a state tra
 content change. Verified/implemented
 is **derived by tooling from evidence, never stored** (ADR 0005).
 
+### Choosing a verification method
+
+Two rules, in order:
+
+1. **An item sits at the strongest method it honestly supports** — `test` over
+   `demonstration`/`analysis` over `inspection`. Strength is what the obligation *can* bear, not what
+   has been built yet: an unwritten check is a backlog entry, not a reason to claim `inspection`.
+2. **A mixed-method item is a defect, not a classification case.** Where an item's text welds a
+   mechanically-decidable clause to a residual judgement, split it so each clause sits at its own
+   honest method. Averaging the item down hides the decidable half; leaving it at `test` hides the
+   judgement half, which is worse — it reads as a machine guarantee nobody has.
+
+It follows that **a parent's method equals the weakest method among its children**: the parent's
+obligation is the conjunction of theirs, so it can be no stronger than the weakest, and claiming
+less than that understates what the tree already proves. A parent weaker than every child is
+under-classification; a parent stronger than its weakest child is a false signal. Both are defects.
+
+Where a parent legitimately holds a residual obligation no child carries — a conclusion drawn by
+comparing the children's bounds against something outside the system — it may sit below its
+children, and the `verification-justification` says why.
+
 ## The V&V model: Doorstop proves linkage, the test suite proves correctness
 
 This is the load-bearing distinction. **Doorstop does not run anything.** It proves that the graph is
