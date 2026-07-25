@@ -4,7 +4,7 @@ header: |
   Bounded resource use
 level: 1.57
 links:
-- SYS010: ifmtvht3nYnBVmX2DECHOt7Hl-jnYsDrhDi7H4DDcZQ=
+- SYS010: -lM4Zd0Mp-BmCD-5CBDzeUDXhkqGJOwrtD_CXkvI9v4=
 normative: true
 rationale: |
   Decomposes SYS010's unbounded-growth concern into an obligation provable

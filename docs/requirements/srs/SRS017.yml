@@ -13,11 +13,17 @@ rationale: |
   the schema leaves nothing to strip; a denylist applied at delivery
   would fail open.
 ref: ''
-reviewed: wI_zFAw0C8umRU4MyV42ovZxycKkxcz-pzhsnDHwnQ4=
+reviewed: EjB6Qka3lUddZeWTPoyvx7uU0Nr_tajCvrqISUlmK6o=
 status: accepted
 text: |
   The configuration schema shall offer no key whose value is a secret —
   no API key, token, credential, or password. Configuration delivery
   shall therefore carry no secret to remove: the delivered configuration
   shall be secret-free by construction, not by a redaction step.
+verification-justification: |
+  Deciding that a configuration key's value is a secret is a semantic judgement about what the key
+  means, not a property of the schema's structure. The only mechanical form is a name-pattern match
+  over key names - the denylist that fails open on the first key nobody anticipated, which this
+  requirement exists to avoid. The schema's key set is small and enumerated, so a reader decides it
+  exhaustively.
 verification-method: inspection

@@ -10,9 +10,14 @@ rationale: |
   property verifiable: unbounded-growth analysis at design time, and a soak
   demonstration on the reference platform before release.
 ref: ''
-reviewed: ifmtvht3nYnBVmX2DECHOt7Hl-jnYsDrhDi7H4DDcZQ=
+reviewed: -lM4Zd0Mp-BmCD-5CBDzeUDXhkqGJOwrtD_CXkvI9v4=
 status: accepted
 text: |
   The system shall operate continuously and unattended for at least 30 days
   without visible degradation and without operator intervention.
+verification-justification: |
+  Thirty days of continuous wall-clock operation cannot be compressed into a CI run, and the failure
+  modes it exists to catch - slow leaks, log and cache growth, clock drift, credential expiry - are
+  only observable across real elapsed time. SRS057 carries the portion a bounded instrumented run
+  proves and gates every commit; this is the endurance evidence itself.
 verification-method: demonstration

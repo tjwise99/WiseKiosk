@@ -14,9 +14,13 @@ rationale: |
   client-side) — so this is the one uncaptured case. Decided by judgment at review; inspection is the
   honest method (no test artifact).
 ref: ''
-reviewed: 2-PcKHfNsG4gOx2LI9gxuaJP-rzE_Jlr1ymFFAX4k8Q=
+reviewed: 0JV2qdT9ZGdmekYq1jQOdrMbNwjx731QZB_YfMG9sSs=
 status: accepted
 text: |
   The system shall not contain an abstraction or extension point that has a single implementation
   and no second consumer, so generality is not introduced ahead of a demonstrated second use.
+verification-justification: |
+  Whether a construct is an abstraction, and whether a second consumer is genuine rather than
+  nominal, is a judgement about intent and about cases that do not yet exist; the space of shapes
+  counting as generality is unbounded. The decidable slice is asserted by SRS086.
 verification-method: inspection

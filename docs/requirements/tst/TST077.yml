@@ -13,4 +13,7 @@ text: |
   Pending: a review-time inspection that each build manifest's dependencies are justified as work the
   standard library cannot reasonably do, and that any native-toolchain dependency carries a recorded
   ADR exception. Activated when a first-party build manifest exists.
+verification-justification: |
+  Whether a dependency does work the standard library cannot reasonably do is a review judgement
+  with no decidable criterion; the native-toolchain half is asserted separately.
 verification-method: inspection

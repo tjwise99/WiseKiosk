@@ -5,7 +5,7 @@ header: |
 level: 1.4
 links:
 - SYS002: 74Sho44EjcFPpisC_doWPFSZUqY7qJ8D0_GnRd1_qCE=
-- SYS012: MYsq3edz-TscNyNpVWVyh6pSCDjlSSCIlfL-FO8SMNg=
+- SYS012: WFdEY5OSOe2P-_04DXiWuB6YVuRoh0MB4-Rh3svt4CQ=
 normative: true
 rationale: |
   The executable form of "nothing required is missing": if a fresh clone in a
@@ -13,9 +13,14 @@ rationale: |
   documentation, the docs are sufficient. Performed per release; the
   procedure and its recorded runs live in-repo.
 ref: ''
-reviewed: sKWGnutvJqXhwxaODeVGu16V-YBpyj4VsvOwsTtXg4k=
+reviewed: urzsB1K-EREpfo0c2XmH36wSiOecI9WdwwBJISoc4GA=
 status: accepted
 text: |
   Following only documentation inside the repository, a fresh clone in a
   clean environment shall be able to build, verify, and deploy WiseKiosk.
+verification-justification: |
+  Sufficiency is a property of the documentation corpus as a whole against an open set of things a
+  newcomer might need; no script enumerates what is absent. The failure of concern is a step
+  everyone already knows, which becomes visible only when someone without that knowledge follows the
+  prose in a clean environment.
 verification-method: demonstration

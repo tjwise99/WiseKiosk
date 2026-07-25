@@ -4,7 +4,7 @@ header: |
   The backend builds as a static binary with the native toolchain disabled
 level: 1.74
 links:
-- SYS036: GVSUTkMgBTt2cA4J-MFAboLa8nCBn6h57amUY8f6wCk=
+- SYS036: NmQro7g4qXrnOFKP2AqDJGyLYw1wZKY0FZ00mwUbLKw=
 normative: true
 rationale: |
   A falsifiable form of the native-toolchain-free rule for the Go backend. Verified against no

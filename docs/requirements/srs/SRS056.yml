@@ -4,15 +4,19 @@ header: |
   Frontend runs on a Pi Zero-class browser host
 level: 1.56
 links:
-- SYS009: MiEgDtY0PS1aFpw6ZcA5eI9spWet1JGL0grkJBWiOAY=
+- SYS009: WMZs5hUVGSzb-oB2-KSoniaadXlk4H25FQAeLs2rDFo=
 normative: true
 rationale: |
   Decomposes SYS009's reference-hardware clause; demonstrated on reference
   hardware, sharing evidence with the SRS050 soak.
 ref: ''
-reviewed: cfBLqV9pRKIdTG-dphfcHo-SH-mQ2rW-d8mEwNnCUaY=
+reviewed: sKd-IjmXelTi0kl9ypPGg7zzfGwlbZIN0EStsmRR3qA=
 status: accepted
 text: |
   The frontend shall operate on a Raspberry Pi Zero-class browser host
   driving the display.
+verification-justification: |
+  The claim is about a specific browser build on specific silicon driving a real display, and no CI
+  runner reproduces that stack. A CPU- and memory-throttled headless browser models the budget but
+  is not the platform, so it can falsify the requirement and never confirm it.
 verification-method: demonstration

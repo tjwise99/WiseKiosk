@@ -4,7 +4,7 @@ header: |
   A maintained table names each canonical document, its guarantee, and its exclusion
 level: 1.75
 links:
-- SYS037: YBd-Vw7RN37YKfqQFzxBdH_we306Fr2alSZjJp40xi4=
+- SYS037: jTz6kWwMmquGP9rLeR33XnaW94z7fXcWndcRGd1ktkA=
 normative: true
 rationale: |
   Makes the taxonomy a standing artifact rather than an implicit convention. Placed at

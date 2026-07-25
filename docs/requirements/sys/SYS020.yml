@@ -20,4 +20,7 @@ status: accepted
 text: |
   Retired. Each display module that draws on an external data source shall obtain that data from the
   module's upstream public data source.
+verification-justification: |
+  Retired in #18's closing pass as tautological; see its rationale. Retained at demonstration only
+  to record the method it carried when active.
 verification-method: demonstration

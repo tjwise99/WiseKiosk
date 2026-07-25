@@ -13,4 +13,8 @@ text: |
   Pending: a reader confirms that, as an architecture element gains a real implementation, its
   LikeC4 link is updated to the corresponding source. That a link present in the model resolves to a
   tracked path is asserted by SRS078's model validation, not here.
+verification-justification: |
+  Whether an architecture element has gained an implementation worth linking, and whether the link
+  points at the right source, is a judgement about the state of the code; that a link resolves is
+  asserted by SRS078.
 verification-method: inspection

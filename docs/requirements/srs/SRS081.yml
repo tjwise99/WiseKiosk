@@ -4,7 +4,7 @@ header: |
   Each architecture element's link to real code is checked in review
 level: 1.81
 links:
-- SYS037: YBd-Vw7RN37YKfqQFzxBdH_we306Fr2alSZjJp40xi4=
+- SYS037: jTz6kWwMmquGP9rLeR33XnaW94z7fXcWndcRGd1ktkA=
 normative: true
 rationale: |
   Cites ADR 0003 ("Model-vs-real-code drift is not auto-verified... carried by review").
@@ -18,10 +18,15 @@ rationale: |
   TST `model-to-code-link-review` — verification-method: inspection — PENDING (active: false) —
   header `Pending: model-to-code link review`; activated when first-party source exists.
 ref: ''
-reviewed: x8AXT_neZgd2BH2TxuiJBi_vfafXHnl-gvPYr4G5xdI=
+reviewed: 4NStcg-EMYWBf5F66f-sV6vnRrmEQq6jMEJN1LyfVSw=
 status: accepted
 text: |
   Every `link` in the LikeC4 architecture model shall resolve to a tracked path (asserted with the
   model validation, SRS078). As an architecture element gains a real implementation, its `link`
   shall be updated to the corresponding source.
+verification-justification: |
+  Whether a link points at the code that actually implements an element is a semantic correspondence
+  between a model node and a source tree, and whether an element has gained an implementation real
+  enough to link is a judgement about the state of the code. ADR 0003 records that the staleness
+  gate cannot prove the model matches the code. That a link resolves is asserted by SRS078.
 verification-method: inspection

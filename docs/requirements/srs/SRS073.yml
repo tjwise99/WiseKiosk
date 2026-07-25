@@ -4,7 +4,7 @@ header: |
   Each third-party dependency justified at review; native-toolchain exceptions recorded in an ADR
 level: 1.73
 links:
-- SYS036: GVSUTkMgBTt2cA4J-MFAboLa8nCBn6h57amUY8f6wCk=
+- SYS036: NmQro7g4qXrnOFKP2AqDJGyLYw1wZKY0FZ00mwUbLKw=
 normative: true
 rationale: |
   Puts the admission decision where judgment lives — review — and gives the native-toolchain exception
@@ -15,11 +15,15 @@ rationale: |
   manifest's dependencies are justified and any native-toolchain dependency carries an ADR exception.
   Activated when a first-party build manifest exists.
 ref: ''
-reviewed: sg294oc8Hykm8tVItS-SBXOwVczDpksCKkO8DLCbBYo=
+reviewed: ca0uJg8V0EQzX-Gzs8V2Dbvc02L-jXHZWZViTNauuC0=
 status: accepted
 text: |
   Every third-party dependency in a build manifest shall be justifiable at review as work the
   standard library cannot reasonably do. Any dependency requiring a native build toolchain shall
   carry a recorded ADR justification that resolves, and a dependency requiring one without such a
   reference shall fail.
+verification-justification: |
+  Whether a dependency does work the standard library "cannot reasonably do" is a judgement about
+  alternatives not taken; no check enumerates the standard library's reachable equivalents. The
+  native-toolchain clause is decidable and is asserted, so only the alternatives judgement remains.
 verification-method: inspection

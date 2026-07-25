@@ -4,16 +4,21 @@ header: |
   A change to described code or config updates the describing doc or declares it unaffected
 level: 1.77
 links:
-- SYS037: YBd-Vw7RN37YKfqQFzxBdH_we306Fr2alSZjJp40xi4=
+- SYS037: jTz6kWwMmquGP9rLeR33XnaW94z7fXcWndcRGd1ktkA=
 normative: true
 rationale: |
   The case no reference-resolution or regenerate-diff check reaches: a doc's claim stops matching
   reality with no broken link and no stale generated file to catch it. Named as a requirement so it is
   a stated review obligation, not assumed practice — it stays outside CI by nature, not by omission.
 ref: ''
-reviewed: 1eV21L2l_zRhVxxy7LP0CDJHcq82HnvfYXDr1zf-t3k=
+reviewed: t6GHWw95vHekZwn_RYm5Ks3VcPr1KqHW7POF9laYxSU=
 status: accepted
 text: |
   When a change touches code or configuration that a canonical document describes, the change shall
   update the describing document or declare in the change that no update is needed.
+verification-justification: |
+  A check can prove the describing document was touched or an exemption declared; it cannot prove
+  the resulting prose is now true of the code it describes, which is a judgement about meaning. The
+  mechanical half - a registry mapping each canonical document to the paths it describes, asserted
+  over the merge-base diff - is not yet built, and is tracked rather than assumed.
 verification-method: inspection

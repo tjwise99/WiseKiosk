@@ -17,7 +17,7 @@ rationale: |
   because the residue is carried as a named review obligation rather than assumed away; it is stated
   plainly so no reader mistakes the floor for proof (SYS031).
 ref: ''
-reviewed: P9v7l8v6R9pw1-Mj2vlklKvDNf8jFL3uHluMimLBrN8=
+reviewed: 7gkWE5g8059ar9OCanNihl6dRAP1WEUP2YwRXtEwGZM=
 status: accepted
 text: |
   A comment in a first-party authored artifact shall not fall out of date undetected. Every deferred-work
@@ -25,4 +25,8 @@ text: |
   the enumerated phrasings that assert a superseded repository state shall fail the repository's checks.
   Properties of a comment that are not mechanically decidable shall be carried as named review
   obligations rather than assumed.
+verification-justification: |
+  The gated set is a floor by construction - enumerated phrasings catch the phrasings enumerated and
+  nothing else - and the residual clause is a reading judgement carried by SRS089. Stated plainly so
+  no reader mistakes the floor for proof.
 verification-method: inspection

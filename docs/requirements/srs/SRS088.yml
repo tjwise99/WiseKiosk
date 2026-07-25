@@ -4,7 +4,7 @@ header: |
   A comment references rationale by citation, never by restatement
 level: 1.88
 links:
-- SYS042: bQL35yuoWm4zY8ZXEPbWe1V2b6OISFBPty8mu69zyAs=
+- SYS042: YDAwAPN51Nfobw-av2PetsWI-qOMOCTzADa1gN6-CE8=
 normative: true
 rationale: |
   Without a stated boundary, "cite the home" degrades into copying a sentence and appending an ID, which
@@ -13,10 +13,15 @@ rationale: |
   all. A bare document-section citation fails on a second count: a section anchor is not an identifier the
   citation resolver can check, so the ID form is what the obligation asks for.
 ref: ''
-reviewed: 0993OmvoAzgi1xWga0PlQrLbaEH-z56kA05GfKF9sG4=
+reviewed: smoqWBiNo4_hrRzeB6CXE23eaWjxCM5CJgdSWPh4ju0=
 status: accepted
 text: |
   Where a comment reaches rationale, it shall do so by citing a requirement ID or ADR number and shall not
   restate the cited content. A comment is a restatement rather than a citation if any assertion still
   stands when the cited identifier is removed from it.
+verification-justification: |
+  The strip-the-identifier test is a semantic operation: it asks whether an assertion still stands
+  once its citation is removed, which requires understanding the assertion. SRS091's one-line cap
+  bounds the form a restatement can take and SRS095 proves the identifier resolves, but nothing
+  mechanical decides whether the surviving words assert anything alone.
 verification-method: inspection

@@ -16,4 +16,7 @@ text: |
   mechanism (#7). Its form must be structural — the render path consumes proxied
   payloads with no validation call on them — not a denylist of named validator
   libraries, which fails open the first time a contributor hand-rolls one.
+verification-justification: |
+  A hand-rolled type or null guard is indistinguishable from render logic to any static or runtime
+  check, and a denylist of validator libraries fails open the first time one is written by hand.
 verification-method: inspection

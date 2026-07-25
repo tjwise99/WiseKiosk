@@ -13,4 +13,7 @@ text: |
   Pending: a reader confirms that a comment satisfying every mechanical comment check is not
   nonetheless misplaced rationale. No artifact records the judgement; the obligation is stated so an
   implementer consulting the tree knows the mechanical checks are a floor, not proof.
+verification-justification: |
+  This item exists as the residue the mechanical comment checks cannot decide; were it mechanically
+  decidable it would be a clause of the gate rather than a backstop.
 verification-method: inspection

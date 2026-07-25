@@ -15,11 +15,16 @@ rationale: |
   only to third-party projects' own documentation (e.g. upstream tool docs),
   never to material WiseKiosk requires.
 ref: ''
-reviewed: MYsq3edz-TscNyNpVWVyh6pSCDjlSSCIlfL-FO8SMNg=
+reviewed: WFdEY5OSOe2P-_04DXiWuB6YVuRoh0MB4-Rh3svt4CQ=
 status: accepted
 text: |
   Everything required to build, verify, and operate WiseKiosk shall live
   inside this repository. External references may point only at third-party
   projects' own documentation, never at material required to build, verify,
   or operate WiseKiosk.
+verification-justification: |
+  Sufficiency is a property of the corpus against an open set of needs: no check enumerates what is
+  missing. Established by a person completing a bring-up from in-repo documentation alone (SRS004).
+  The decidable halves are held by children - relative links resolve (SRS003), external links point
+  only at recorded upstream documentation (SRS102).
 verification-method: demonstration

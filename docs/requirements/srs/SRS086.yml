@@ -4,7 +4,7 @@ header: |
   No interface or extension point has a single implementation and no second consumer
 level: 1.86
 links:
-- SYS041: 2-PcKHfNsG4gOx2LI9gxuaJP-rzE_Jlr1ymFFAX4k8Q=
+- SYS041: 0JV2qdT9ZGdmekYq1jQOdrMbNwjx731QZB_YfMG9sSs=
 normative: true
 rationale: |
   Locates "abstraction without a second consumer" at its actual verification event —
@@ -12,10 +12,15 @@ rationale: |
   module-adding form (no plugin system, registry, or discovery); this is the complementary
   system-wide review obligation.
 ref: ''
-reviewed: PM6f_en-PM6mr8tBgsLNuj3UusOwY_MGg0A6tLOiCFU=
+reviewed: u_ns35xpEsNCa93OKLzTvdB7dRCYLUrRiOU_EQaPBDk=
 status: accepted
 text: |
   The system shall contain no interface or extension point that has a single implementation and a
   single consumer, unless it is recorded in a committed justified-exception list carried with the
   check's configuration. An unlisted single-implementation, single-consumer construct shall fail.
+verification-justification: |
+  The recorded exception is where the judgement lives, and it is the part no check makes: whether a
+  construct is an abstraction at all, and whether a prospective second consumer is real rather than
+  nominal, depends on intent and on cases that do not yet exist. The decidable slice - a
+  single-implementor, single-consumer interface not on the exception list - is asserted.
 verification-method: inspection

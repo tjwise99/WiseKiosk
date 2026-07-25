@@ -4,7 +4,7 @@ header: |
   Docker-capable amd64/arm64 backend host
 level: 1.51
 links:
-- SYS009: MiEgDtY0PS1aFpw6ZcA5eI9spWet1JGL0grkJBWiOAY=
+- SYS009: WMZs5hUVGSzb-oB2-KSoniaadXlk4H25FQAeLs2rDFo=
 normative: true
 rationale: |
   Pins the container host platform.

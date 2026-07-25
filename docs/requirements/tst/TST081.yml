@@ -14,4 +14,7 @@ text: |
   document or declared it unaffected. The co-change half is mechanical and unbuilt - a registry
   mapping each canonical document to the path globs it describes, asserted over the merge-base diff
   - and is tracked rather than assumed.
+verification-justification: |
+  Whether a change to code was material enough to require a documentation update, or is genuinely
+  unaffected, is a judgement about meaning that no diff analysis decides.
 verification-method: inspection

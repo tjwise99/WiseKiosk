@@ -4,7 +4,7 @@ header: |
   Restart policy unless-stopped
 level: 1.48
 links:
-- SYS010: ifmtvht3nYnBVmX2DECHOt7Hl-jnYsDrhDi7H4DDcZQ=
+- SYS010: -lM4Zd0Mp-BmCD-5CBDzeUDXhkqGJOwrtD_CXkvI9v4=
 normative: true
 rationale: |
   Self-healing without masking a deliberate stop; this concerns crash and

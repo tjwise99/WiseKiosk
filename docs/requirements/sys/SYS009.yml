@@ -12,11 +12,16 @@ rationale: |
   kiosk host's OS, browser, and autostart configuration are the operator's
   platform, outside the system boundary.
 ref: ''
-reviewed: MiEgDtY0PS1aFpw6ZcA5eI9spWet1JGL0grkJBWiOAY=
+reviewed: WMZs5hUVGSzb-oB2-KSoniaadXlk4H25FQAeLs2rDFo=
 status: accepted
 text: |
   The frontend shall operate on a Raspberry Pi Zero-class browser host
   driving the display. The backend container shall run on a Docker-capable
   amd64 or arm64 host. The kiosk host's operating system, browser, and
   autostart configuration lie outside the system boundary.
+verification-justification: |
+  The claim is about behaviour on specific physical hardware - a Pi Zero-class CPU, its rendering
+  path, and a real display output - which no CI runner or emulator reproduces faithfully enough for
+  a pass to mean anything. A throttled headless browser can falsify the requirement and can never
+  confirm it.
 verification-method: demonstration

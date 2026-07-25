@@ -15,11 +15,15 @@ rationale: |
   native-toolchain clause is the verifiable half. Recording the exception venue as an ADR follows from
   it being a settled-decision reversal.
 ref: ''
-reviewed: GVSUTkMgBTt2cA4J-MFAboLa8nCBn6h57amUY8f6wCk=
+reviewed: NmQro7g4qXrnOFKP2AqDJGyLYw1wZKY0FZ00mwUbLKw=
 status: accepted
 text: |
   The system shall be built on the smallest viable third-party dependency footprint. The standard
   library and a direct HTTP call shall be preferred over introducing a package, and no dependency
   requiring a native build toolchain shall be admitted unless no standard-library or pure-language
   alternative can satisfy the requirement, in which case the exception shall be recorded in an ADR.
+verification-justification: |
+  Whether a package does work the standard library cannot reasonably do is a design judgement with
+  no decision procedure. The native-toolchain clause is mechanically gated by the CGO-disabled
+  static build (SRS074) and the frontend install-script scan (SRS073).
 verification-method: inspection

@@ -10,11 +10,15 @@ rationale: |
   because a test runner already existed") rather than by altitude is a defect in the suite's
   architecture. Raised to a need so placement is inspectable rather than trusted.
 ref: ''
-reviewed: 2vCHDtguqKH31fORfW9a3OibMfqkkIaGhul1u79akn4=
+reviewed: e7_TcXwubdvJHsczfdSt0tVdAYDZAPAp4KxBbxCYBx0=
 status: accepted
 text: |
   Every check that spans both packages or concerns the repository as a whole — link and line-ending
   hygiene, boundary agreement, lint, build, requirements-tree integrity, coverage closure, dead-test —
   shall be invoked from a repository-level verification target, not from inside a single package's
   test suite; a package-local check shall verify only that package's own logic.
+verification-justification: |
+  Deciding whether a check spans the repository or belongs to one package requires reading what it
+  asserts; only the recorded set is decidable, and the failure of concern is the check not yet
+  recorded. Conformance to that set is asserted by SRS069.
 verification-method: inspection

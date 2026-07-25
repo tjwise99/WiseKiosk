@@ -11,4 +11,7 @@ ref: ''
 status: proposed
 text: |
   Pending: demonstration that the frontend renders and drives the display on a Raspberry Pi Zero-class browser host; shares evidence with the soak demonstration. Lands with the frontend skeleton (#10); activated then.
+verification-justification: |
+  Rendering on a Pi Zero-class browser host requires that physical device; no CI runner reproduces
+  its CPU, memory, or browser build, so the observation is made on real hardware.
 verification-method: demonstration

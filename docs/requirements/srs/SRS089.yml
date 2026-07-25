@@ -4,8 +4,8 @@ header: |
   A comment satisfying every mechanical check is still not rationale
 level: 1.89
 links:
-- SYS042: bQL35yuoWm4zY8ZXEPbWe1V2b6OISFBPty8mu69zyAs=
-- SYS043: P9v7l8v6R9pw1-Mj2vlklKvDNf8jFL3uHluMimLBrN8=
+- SYS042: YDAwAPN51Nfobw-av2PetsWI-qOMOCTzADa1gN6-CE8=
+- SYS043: 7gkWE5g8059ar9OCanNihl6dRAP1WEUP2YwRXtEwGZM=
 normative: true
 rationale: |
   The honest ceiling. Every mechanical check in this domain decides form and position; none decides whether
@@ -18,8 +18,12 @@ rationale: |
   looking for, and SYS043 because its closing clause reserves the undecidable residue for review rather
   than assuming it away.
 ref: ''
-reviewed: 95XOHGWYOzP_7_xJwaPMn5n0REMioqvil4GpIqkWXbI=
+reviewed: qqhlty7oI348-wMgl6vPT-9bD6xPyLwzSzn18ZreURU=
 status: accepted
 text: |
   No comment shall carry rationale, including where it satisfies every mechanical comment check.
+verification-justification: |
+  This item is the residue the mechanical comment checks cannot reach: a one-line comment carrying
+  no enumerated phrasing and citing no identifier can still be an ADR's content sitting in code, and
+  it passes every gate. A check able to decide it would make the item redundant.
 verification-method: inspection

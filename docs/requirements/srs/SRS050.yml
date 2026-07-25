@@ -4,16 +4,20 @@ header: |
   Thirty-day soak without unbounded growth
 level: '1.50'
 links:
-- SYS010: ifmtvht3nYnBVmX2DECHOt7Hl-jnYsDrhDi7H4DDcZQ=
+- SYS010: -lM4Zd0Mp-BmCD-5CBDzeUDXhkqGJOwrtD_CXkvI9v4=
 normative: true
 rationale: |
   Turns SYS010's endurance target into a soak obligation.
 ref: ''
-reviewed: VDK68oIDyPbfQBURrKKVHZIq1zDP9xihIq14Hebchqs=
+reviewed: dK-f2oCcf_ahA5hKaLNwz2By56VajmAQA60AJ7w8TyI=
 status: accepted
 text: |
   WiseKiosk shall sustain at least thirty days of continuous unattended
   operation on the reference platform without operator intervention, and
   without degradation: no container restart, no unhandled process exit, and no
   module render stall exceeding that module's own refresh interval.
+verification-justification: |
+  The thirty-day window is the obligation, not an implementation of it: no bounded run establishes
+  that the system survives thirty days. The observation is scripted - restart count, process exits,
+  render stalls - so the human's role is starting the clock rather than judging the outcome.
 verification-method: demonstration

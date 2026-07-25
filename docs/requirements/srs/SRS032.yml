@@ -4,7 +4,7 @@ header: |
   Frontend hand-writes no runtime validator for proxied payloads
 level: 1.32
 links:
-- SYS041: 2-PcKHfNsG4gOx2LI9gxuaJP-rzE_Jlr1ymFFAX4k8Q=
+- SYS041: 0JV2qdT9ZGdmekYq1jQOdrMbNwjx731QZB_YfMG9sSs=
 normative: true
 rationale: |
   Compile-time types are erased at runtime, but the failure a runtime validator
@@ -21,10 +21,15 @@ rationale: |
   that does not exist, which is SYS041's subject exactly. Held under SYS023 it also kept that need
   at inspection, because a judgement clause belonging to a different parent was setting its method.
 ref: ''
-reviewed: oZaRRmCeXuEmqoWj5JFxnv4Cf8Z4q3zn6MQN61GFDEo=
+reviewed: mJRRoUUHXun3BJY_zHr0XR7d8CBF-Vgg8SxPr04X6z8=
 status: accepted
 text: |
   The frontend shall not re-validate proxied payloads at runtime: no validator shall be written by
   hand on the render path. Cross-boundary agreement shall rest on the single schema and the drift
   gate (SRS030). That the generated artifact itself contributes no validator is SRS099's obligation.
+verification-justification: |
+  Proving the absence of a hand-written validator is not mechanically decidable. A defensive type or
+  null guard is indistinguishable from render logic to any check, and a denylist of validator
+  libraries fails open the first time one is written by hand - the case of concern. The decidable
+  half is carved out as SRS099.
 verification-method: inspection

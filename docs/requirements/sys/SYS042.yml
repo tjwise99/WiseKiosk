@@ -21,7 +21,7 @@ rationale: |
   be duplicated from. Whether a given sentence is rationale
   or mechanism is a judgment no gate can make, so inspection is the honest method.
 ref: ''
-reviewed: bQL35yuoWm4zY8ZXEPbWe1V2b6OISFBPty8mu69zyAs=
+reviewed: YDAwAPN51Nfobw-av2PetsWI-qOMOCTzADa1gN6-CE8=
 status: accepted
 text: |
   Every statement of why WiseKiosk is built as it is — a reason, a history, a rejected alternative, or an
@@ -30,4 +30,8 @@ text: |
   product-level reasoning the requirements tree cannot express, the repository README. A first-party
   authored artifact shall carry mechanism only, and shall reach rationale by citation rather than by
   restating it.
+verification-justification: |
+  Whether a sentence in source states why WiseKiosk is built this way, or how this code works, is a
+  semantic judgement no parser makes. The mechanically decidable neighbours - comment staleness,
+  citation resolution, comment volume - are owned by SYS043 and SYS044.
 verification-method: inspection

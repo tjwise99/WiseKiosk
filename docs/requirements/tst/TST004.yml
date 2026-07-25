@@ -14,4 +14,7 @@ text: |
   in-repo docs only — build, verify, deploy) plus a record of each performed
   run. Lands when the system first becomes deployable; activated and given a
   references entry pointing at the procedure document then.
+verification-justification: |
+  The verification is a judgement about whether the prose is sufficient for someone without the
+  author's knowledge, which no exit status decides, and the bring-up needs a real host outside CI.
 verification-method: demonstration

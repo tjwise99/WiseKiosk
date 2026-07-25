@@ -13,4 +13,7 @@ text: |
   Pending: a reader applies the strip-the-identifier test to each comment citing a requirement ID or
   ADR number - if an assertion still stands once the identifier is removed, the comment restates
   rather than cites. That the identifier resolves is asserted by SRS095.
+verification-justification: |
+  The strip-the-identifier test asks whether an assertion still stands without its citation - a
+  judgement about meaning that no parse of the comment decides.
 verification-method: inspection

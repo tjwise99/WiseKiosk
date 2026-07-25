@@ -4,17 +4,23 @@ header: |
   Formalizing a prose obligation edits the prose to cite the new ID and stop restating it
 level: 1.76
 links:
-- SYS037: YBd-Vw7RN37YKfqQFzxBdH_we306Fr2alSZjJp40xi4=
+- SYS037: jTz6kWwMmquGP9rLeR33XnaW94z7fXcWndcRGd1ktkA=
 normative: true
 rationale: |
   Names this rewrite's load-bearing convention so it is applied by rule, not memory, each round; gives
   "rationale lives in docs, not code" its destination. The citation-resolves half rides the
   references-resolve gate; the "stopped restating" half is review.
 ref: ''
-reviewed: nJAqBF4pXqezSaS8_Ruega7lRV9XU_c75mA-xOtMWN4=
+reviewed: gL7ec4NJxeHhVdoKkgqxrSKlsOpk2tZyh2cb_t-OiR8=
 status: accepted
 text: |
   When a prose obligation in a canonical document is formalized as a requirement, the same change
   shall edit the prose to cite the new requirement ID and shall stop stating the obligation as
   independent normative text. That the cited ID resolves is asserted by SRS082.
+verification-justification: |
+  Whether prose has stopped stating an obligation as independent normative text, rather than
+  appending an ID to an unchanged sentence, is a reading of what the prose asserts. The decidable
+  half - that the cited identifier resolves - is SRS082's. The item constrains authorship and leaves
+  no artifact recording whether it was followed; it is kept because an implementer consults the tree
+  before acting.
 verification-method: inspection

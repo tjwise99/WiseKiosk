@@ -4,7 +4,7 @@ header: |
   The delivered artifact set is exactly the published four
 level: 1.52
 links:
-- SYS009: MiEgDtY0PS1aFpw6ZcA5eI9spWet1JGL0grkJBWiOAY=
+- SYS009: WMZs5hUVGSzb-oB2-KSoniaadXlk4H25FQAeLs2rDFo=
 normative: true
 rationale: |
   Restated as a positive allowlist. As a prohibition on shipping a host OS it was an unbounded

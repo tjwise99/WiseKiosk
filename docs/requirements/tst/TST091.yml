@@ -14,4 +14,8 @@ text: |
   reason, history, or evaluative judgment was authored instead in a documentation home. The
   classifier verified by TST094 decides which comments belong to a documentation facility, not what
   they assert.
+verification-justification: |
+  Distinguishing a statement of mechanism from a statement of reason or evaluative judgment is a
+  semantic reading of the comment's content; the classifier decides which comments belong to a
+  documentation facility, not what they assert.
 verification-method: inspection

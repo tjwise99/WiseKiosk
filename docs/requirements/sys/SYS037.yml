@@ -12,7 +12,7 @@ rationale: |
   taxonomy being bent. "No fact duplicated across two canonical docs" is not mechanically decidable in
   general — this is a stated review discipline, not a gate.
 ref: ''
-reviewed: YBd-Vw7RN37YKfqQFzxBdH_we306Fr2alSZjJp40xi4=
+reviewed: jTz6kWwMmquGP9rLeR33XnaW94z7fXcWndcRGd1ktkA=
 status: accepted
 text: |
   Every fact about WiseKiosk's product definition, settled decisions, architecture, test strategy, or
@@ -22,4 +22,9 @@ text: |
   alternative in an ADR; a testable obligation in the requirements tree; presentation in the docs
   site — and every other document shall cite or summarize that home, never restate the fact as
   independent content.
+verification-justification: |
+  Deciding whether two passages state the same fact requires semantic judgement over arbitrary
+  prose: no check distinguishes a legitimate summary-with-citation from an independent restatement.
+  The decidable half - that the taxonomy table names every canonical document and resolves - is
+  SRS075's.
 verification-method: inspection

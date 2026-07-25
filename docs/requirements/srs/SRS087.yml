@@ -4,7 +4,7 @@ header: |
   Comments carry mechanism; rationale is authored in a documentation home
 level: 1.87
 links:
-- SYS042: bQL35yuoWm4zY8ZXEPbWe1V2b6OISFBPty8mu69zyAs=
+- SYS042: YDAwAPN51Nfobw-av2PetsWI-qOMOCTzADa1gN6-CE8=
 normative: true
 rationale: |
   The operative half of SYS042, written so a reviewer can apply it to a single comment: mechanism stays,
@@ -13,11 +13,16 @@ rationale: |
   guarantees it. The live example this was written against is scripts/check-verify-ci-parity.mjs, whose
   header restates rationale already carried verbatim by SRS067's own rationale field.
 ref: ''
-reviewed: pQcMYluxEkVnd52uuwMjUhWPvz2Cz6hL2m-L0BR2axQ=
+reviewed: xWBt4ru67_sZ6Z-1kzoPNTjA7G3OIfoKzHcUuPuAED4=
 status: accepted
 text: |
   A comment in a first-party authored artifact shall state what the code or configuration does, or how it
   does it. A statement of reason, history, or evaluative judgment shall instead be authored in the
   repository README, FOUNDATIONS prose, TESTING prose, an ADR, or a requirement's rationale field, and the
   comment shall cite that home in place of the statement.
+verification-justification: |
+  Distinguishing a statement of mechanism from a statement of reason requires reading the comment
+  for meaning; no parse separates "the cache holds sixty seconds" from "the cache holds sixty
+  seconds because upstream rate-limits". A check that guessed would produce false positives on
+  correct comments, which is what teaches an author to disable a gate.
 verification-method: inspection
