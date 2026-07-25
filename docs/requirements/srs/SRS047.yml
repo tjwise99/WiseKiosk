@@ -4,12 +4,13 @@ header: |
   Drop-in image upgrade
 level: 1.47
 links:
+- SYS002: 74Sho44EjcFPpisC_doWPFSZUqY7qJ8D0_GnRd1_qCE=
 - SYS006: Sw94fSoC2fO1zVrk3kpMAX9zHX1gIPU0ZA8yJ1DuGBE=
 normative: true
 rationale: |
   Makes SYS006's no-code-literacy upgrade concrete and demonstrable.
 ref: ''
-reviewed: 23aZXXMY86HXok1NYU2UVtvuyNmdxXoJVcVbaHjrNDs=
+reviewed: YIvM4sp8hxyWBakHSmlwY-FxY_XKite1xNVPhkLvypA=
 status: accepted
 text: |
   Upgrading a deployment shall consist of replacing its running image with a

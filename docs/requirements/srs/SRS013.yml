@@ -4,6 +4,7 @@ header: |
   Page renders a legible error state for every configuration failure class
 level: 1.13
 links:
+- SYS002: 74Sho44EjcFPpisC_doWPFSZUqY7qJ8D0_GnRd1_qCE=
 - SYS003: aSQQyqh7BYee_G_L0dq4pvHc6YNknfsElUx7DwetxA0=
 normative: true
 rationale: |
@@ -14,7 +15,7 @@ rationale: |
   configuration applied" so a future live-apply path keeps the freedom to hold
   last-good on a bad reload.
 ref: ''
-reviewed: vu5dkEyOAEF93MseegHQAdGzFyTWH7l6X7encRskvZo=
+reviewed: RnidsQ6T26Kh74AENbBsPLqDI3J8M3sG0GhOqxG_O-k=
 status: accepted
 text: |
   When no valid configuration has been applied — the configuration file

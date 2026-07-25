@@ -6,14 +6,24 @@ level: 1.2
 links: []
 normative: true
 rationale: |
-  Deployments run at the author's house and at friends' and family's houses:
-  separate networks, separate configs, separate owners. The operator is
-  frequently not the author, and may be non-technical. This is the most
-  load-bearing premise in the product.
+  Deployments run at the author's house and at friends' and family's houses: separate networks,
+  separate configs, separate owners. The operator is frequently not the author, and may be
+  non-technical. This is the most load-bearing premise in the product.
+
+  Decomposed across the three properties it names rather than the one it originally carried:
+  deployability by SRS004, SRS046 and SRS047; operability by SRS008 and SRS012; diagnosability by
+  SRS013. Each of those items also serves a different parent, which is why the traceability was
+  missing - the obligations existed and nothing pointed them at the premise they exist to serve.
 ref: ''
-reviewed: v5uk4LOys3WeZHAHYahYSDTg7TYE1cpnhE2hy-nvD_w=
+reviewed: 74Sho44EjcFPpisC_doWPFSZUqY7qJ8D0_GnRd1_qCE=
 status: accepted
 text: |
   The system shall be deployable, operable, and diagnosable by a non-technical
   operator who is not the system's author.
-verification-method: analysis
+verification-justification: |
+  Whether a non-technical person who did not build the system can deploy, operate and diagnose it is
+  a claim about that person's experience, settled by observing one attempt it against the in-repo
+  documentation alone. No assertion over the system decides it: every mechanical enabler can pass
+  while the operator is still unable to proceed, which is the failure this premise exists to catch
+  and the one an author is least able to judge about their own work.
+verification-method: demonstration

@@ -4,6 +4,7 @@ header: |
   Fresh-environment bring-up from in-repo docs alone
 level: 1.4
 links:
+- SYS002: 74Sho44EjcFPpisC_doWPFSZUqY7qJ8D0_GnRd1_qCE=
 - SYS012: o3eU6fzYR8y08IYrZ2Az9EjVr2hQ6nERiNbAfhoudtw=
 normative: true
 rationale: |
@@ -12,7 +13,7 @@ rationale: |
   documentation, the docs are sufficient. Performed per release; the
   procedure and its recorded runs live in-repo.
 ref: ''
-reviewed: TLvfxUcpsRxFYICT6QadiL17dRZ7zy_-uvT_b0RDhKs=
+reviewed: sKWGnutvJqXhwxaODeVGu16V-YBpyj4VsvOwsTtXg4k=
 status: accepted
 text: |
   Following only documentation inside the repository, a fresh clone in a

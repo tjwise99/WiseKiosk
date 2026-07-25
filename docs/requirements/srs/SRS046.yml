@@ -4,6 +4,7 @@ header: |
   Configuration supplied by bind mount
 level: 1.46
 links:
+- SYS002: 74Sho44EjcFPpisC_doWPFSZUqY7qJ8D0_GnRd1_qCE=
 - SYS007: XQ-nwWSE_19RZzvbJvX5FgezARrcLDgoTrz5ztQupKc=
 normative: true
 rationale: |
@@ -11,7 +12,7 @@ rationale: |
   fidelity of that configuration in transit is SRS009's concern, not this
   one.
 ref: ''
-reviewed: iJCi5rJ5I5HRKSUw4L0Pl1jjxHfsBw-OPQUhINE-hTY=
+reviewed: E8sfboL5vIQ0hcnitJudyN6G7MkhdvX8v0pJNxfPymE=
 status: accepted
 text: |
   The display configuration shall be supplied to the running container by a

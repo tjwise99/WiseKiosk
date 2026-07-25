@@ -4,11 +4,12 @@ header: |
   Standalone validator: operator-language errors, non-zero exit
 level: 1.8
 links:
+- SYS002: 74Sho44EjcFPpisC_doWPFSZUqY7qJ8D0_GnRd1_qCE=
 - SYS004: 8RJKPJuyxrABEtVqJ3Ox7TsL7dvxBWe_ZIVSJ0sB44I=
 normative: true
 rationale: ''
 ref: ''
-reviewed: CcfkNIYq3vmj96PQcmhNiW0zDePuGUCrbGXOQfJ21cQ=
+reviewed: lN6cU8_WcW6rm_AcBDMAvneRp4JaV6elnA7WRRWKxiA=
 status: accepted
 text: |
   A standalone validator shall check a configuration file against the
