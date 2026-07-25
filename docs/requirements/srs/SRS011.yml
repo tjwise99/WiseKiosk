@@ -12,11 +12,11 @@ rationale: |
   answer to non-tunable keys; secret delivery via the environment is not
   configuration and is specified in the secrets domain (#35).
 ref: ''
-reviewed: cutMCaWpxfsmqcYht3MrChs9iXgtAL288aq6Q_zEGuE=
+reviewed: c683F2crw_G9SaEwchf59ywotaYjIlgzs1aT2Zy7s1o=
 status: accepted
 text: |
   The backend shall have no configuration concept: no configuration file of
   its own, no code path that reads or parses the display configuration, and no
   tunable keys. Operational constants such as bind address and port shall be
   fixed in code.
-verification-method: inspection
+verification-method: test

@@ -14,4 +14,4 @@ text: |
   set of registered GET /api/<source> routes, in both directions, so no source is exempted from the
   proxy and no route exists without a source; and that no frontend or backend code constructs an
   upstream URL outside a module's shaping library. Lands with the backend skeleton (#9).
-verification-method: inspection
+verification-method: test

@@ -1,7 +1,7 @@
 active: false
 derived: false
 header: |
-  Pending: workflow credential inspection
+  Pending: workflows reference no credential; Contract tier is module-isolated
 level: 1.19
 links:
 - SRS019: null
@@ -10,9 +10,10 @@ rationale: ''
 ref: ''
 status: proposed
 text: |
-  Pending: inspection that no workflow under .github/workflows/ stores or
-  references an API key or upstream credential, no CI job runs a
-  Contract-tier check, and Contract-tier checks are wired to run outside
-  CI; form (repo check or review checklist) decided in the security & CI
-  gates round (#40). Activated then.
-verification-method: inspection
+  Pending: test parsing every workflow under .github/workflows/ and asserting each secrets reference
+  resolves to an allowlisted non-credential name, an allowlist rather than a denylist so an
+  unanticipated credential fails closed; that no job invokes the Contract-tier target; and that the
+  Contract tier is a nested module unreachable from the parent module's test discovery and from just
+  verify. The checking script is this item's references target - ADR 0002 bars a Doorstop reference
+  into a dot-directory, not a check that reads one.
+verification-method: test

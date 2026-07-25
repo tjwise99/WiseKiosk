@@ -1,7 +1,7 @@
 active: false
 derived: false
 header: |
-  Pending: one-validation-implementation inspection
+  Pending: exactly one validation implementation, by import graph
 level: 1.14
 links:
 - SRS014: null
@@ -10,7 +10,8 @@ rationale: ''
 ref: ''
 status: proposed
 text: |
-  Pending: inspection check that page-load validation and the standalone desk
-  validator wrap the same validation library; form (repo check or review
-  checklist) decided when the validator lands.
-verification-method: inspection
+  Pending: test asserting exactly one source file imports the schema-validation engine, that both
+  the page-load validation path and the standalone desk validator resolve to that file in the import
+  graph, and that no other file imports the engine directly. A second implementation fails on the
+  commit that introduces it. Lands with the validator.
+verification-method: test

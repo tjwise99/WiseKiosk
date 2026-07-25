@@ -14,10 +14,10 @@ rationale: |
   connect-src content-security policy live in the modules/frontend and security
   domains (#38, #40).
 ref: ''
-reviewed: 6UvDvn9OnpOyLEh8ynxDYX8yvujUQI_ibd2UNd5IGIQ=
+reviewed: lk5ll6dl_UZ4KL02ufdkw33ax5_5EtfwFkzKG6PN2yg=
 status: accepted
 text: |
   Every external data source shall be fetched through a backend proxy route,
   including sources whose upstream APIs permit cross-origin requests. No
   external source shall be exempted from the proxy.
-verification-method: inspection
+verification-method: test
