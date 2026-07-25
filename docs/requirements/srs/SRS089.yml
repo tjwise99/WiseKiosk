@@ -8,17 +8,16 @@ links:
 - SYS043: 7gkWE5g8059ar9OCanNihl6dRAP1WEUP2YwRXtEwGZM=
 normative: true
 rationale: |
-  The honest ceiling. Every mechanical check in this domain decides form and position; none decides whether
-  a sentence is rationale. A one-line comment carrying no banned phrasing and citing nothing can still be
-  an ADR's content sitting in code, and it passes every gate. Naming that residue as a review obligation
-  keeps the gate set from being read as proof of something it does not decide (SYS031). Follows the shape
-  of SRS086, and activates on the same design-review checklist. Dual-parented, and checked by hand as the
-  requirements README asks: the item asserts one obligation, not a span, and that obligation is supported
-  by each parent independently — SYS042 because misplaced rationale is precisely what the reviewer is
-  looking for, and SYS043 because its closing clause reserves the undecidable residue for review rather
-  than assuming it away.
+  The honest ceiling. Every mechanical check in this domain decides form and position; none decides
+  whether a sentence is rationale. A one-line comment carrying no banned phrasing and citing nothing
+  can still be an ADR's content sitting in code, and it passes every gate. Naming that residue keeps
+  the gate set from being read as proof of something it does not decide (SYS031). Follows the shape
+  of SRS086. Dual-parented, and checked by hand as the requirements README asks: the item asserts
+  one obligation, not a span, and that obligation is supported by each parent independently - SYS042
+  because misplaced rationale is precisely what the reader is looking for, and SYS043 because its
+  closing clause reserves the undecidable residue for review rather than assuming it away.
 ref: ''
-reviewed: qqhlty7oI348-wMgl6vPT-9bD6xPyLwzSzn18ZreURU=
+reviewed: -MfYEbJ5qIgleEY_98nFwH0NUXtFTjnHQeFux_vLo4c=
 status: accepted
 text: |
   No comment shall carry rationale, including where it satisfies every mechanical comment check.

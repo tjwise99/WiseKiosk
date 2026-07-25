@@ -20,11 +20,15 @@ rationale: |
   because no key is offered. The per-module cadence is the front-of-house twin of
   the route's response-cache TTL (the software-architect's SRS034), and the two
   are chosen together so the poll does not out-run the cache.
-  Concrete interval values are deferred to open-question #6. Parented to SYS022
-  (obtaining live data over time); SYS022's single-origin constraint is already
-  carried by SRS042.
+  Concrete interval values are deferred to open-question #6.
+
+  Parented to SYS022, which absorbed this item when SYS020 was retired as
+  tautological. The fit is the data plane rather than the origin constraint:
+  SYS022 governs how the page obtains upstream data, and polling on a
+  module-owned cadence is that mechanism. SYS022's same-origin clause is carried
+  separately by SRS042.
 ref: ''
-reviewed: YMYMixcHdNliV8pIKoM3f-2RmZ3IFwu-pev8YC08TKI=
+reviewed: M_IWvcx9YObAu5lF4eQ4QRF_3OYZ_R_YJyKVjF4ee1s=
 status: accepted
 text: |
   The frontend shall refresh module data by polling and shall depend on no server-pushed channel for
