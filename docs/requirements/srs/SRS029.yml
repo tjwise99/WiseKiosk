@@ -12,13 +12,14 @@ rationale: |
   the value classes keeps them from being the uncovered value the tier warns
   about. The schema's repository location is allocated by #5 and not fixed here.
 ref: ''
-reviewed: spdJZ_UyoJzG1ibeIDjZ_ELaZvN5UAof8CajIwlL9N0=
+reviewed: Pq_EN55g38h5kajI_g6ToD7Zqa3-uRN851l-7yxHNoM=
 status: accepted
 text: |
-  The boundary contract shall be defined by exactly one schema artifact, owned by
-  neither the backend nor the frontend package. It shall define every value
-  crossing the boundary: request parameter names and types, success response
-  payloads, the structured upstream-failure body (SRS001), the client-error
-  rejection body (SRS026), and every response status code the frontend
-  discriminates on to choose an error state.
+  The boundary contract shall be defined by exactly one schema artifact, owned by neither the
+  backend nor the frontend package, from which both sides are generated. It shall define every value
+  crossing the boundary: request parameter names and types, success response payloads, the
+  structured upstream-failure body (SRS001), the client-error rejection body (SRS026), and every
+  response status code the frontend discriminates on to choose an error state. Module-specific
+  payloads shall reach it as module-owned fragments composed into it (SRS100); framework-wide values
+  shall be defined in the schema itself. No boundary value shall be defined in more than one place.
 verification-method: test

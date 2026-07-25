@@ -1,0 +1,27 @@
+active: false
+derived: false
+header: |
+  Each module declares its boundary payload as a composed fragment
+level: 1.96
+links:
+- SYS023: null
+normative: true
+rationale: |
+  Closes the contradiction the module contract recorded against #18: a module's component must
+  consume a generated payload type (SRS031), that type exists only if the module's payload reaches
+  the one boundary schema, and SRS036 confined a module's edits to locations that did not include
+  it. Every module was therefore unbuildable as specified, or the confinement invariant was.
+  Composition rather than a sixth permitted shared file, so both properties survive: the payload is
+  defined once (SRS029) and adding a module still touches nothing shared (SRS036). This is the
+  mechanism SRS035 already uses for the configuration schema, applied to the boundary schema rather
+  than a second mechanism invented for it.
+ref: ''
+reviewed: null
+status: proposed
+text: |
+  Each module shall declare the payload it returns across the boundary as a fragment composed into
+  the one boundary schema (SRS029), held in that module's own directory. The payload shape shall not
+  be declared a second time anywhere, and the composed schema shall be the sole input to boundary
+  code generation (SRS030).
+verification-justification: ''
+verification-method: test

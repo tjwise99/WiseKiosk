@@ -1,30 +1,29 @@
 active: true
 derived: false
 header: |
-  Modules are added by a fixed five-part contract, not a plugin system
+  Modules grow by contract, not by a plugin system
 level: 1.24
 links: []
 normative: true
 rationale: |
-  Growth to a sixth module must be a documented contract, not a plugin system,
-  and the contract fixes both the five parts and the invariant that adding a
-  module never means changing the framework. A plugin system with no plugins,
-  and abstraction without a second consumer (SYS041), are both forbidden, so
-  the contract is documentation an author follows, not runtime machinery to
-  maintain. This is the anchor need SRS033–037 decompose; it is distinct from
-  SYS007 (operator customisation through configuration), which governs the
-  operator configuring a deployment, not the author adding a module. The prose
-  home for the contract is the dedicated docs/contracts/module-contract.md
-  (owner decision, #38).
+  Growth to a sixth module must be a documented contract an author follows, not runtime machinery to
+  maintain. A plugin system with no plugins is abstraction ahead of a second consumer (SYS041), so
+  the contract is prose and the invariant is what this need holds.
+
+  The count and composition of the contract's parts are deliberately not stated here. They are a
+  consequence of the design rather than a need it must meet, and stating them at this tier froze a
+  number that was already wrong: the contract listed five parts while a module's payload had no way
+  to reach the boundary schema, so no module was buildable as specified. The parts live in
+  docs/contracts/module-contract.md and their confinement in SRS036, where changing them costs an
+  ordinary edit. What must not change is the invariant above.
+
+  Distinct from SYS007 (operator customisation through configuration), which governs an operator
+  configuring a deployment, not an author adding a module.
 ref: ''
-reviewed: h3-BB26CIO3s86rk1gJVjLpPnDr6NuByu5coK4iPu3o=
+reviewed: Hn5rIJlgWLcF4C2eS7P0aHqLN91cK86es9PFca9Afv4=
 status: accepted
 text: |
-  The system shall support adding a display module by following a documented
-  contract of exactly five parts — a shaping library, a route registration, a
-  component, a configuration-schema fragment, and tests — each added in a known
-  place. Adding a module shall not require any change to shared framework code,
-  and the system shall provide no runtime plugin mechanism: no dynamic module
-  loading, no module discovery, no module registry, and no third-party
-  extension API.
-verification-method: inspection
+  The system shall accommodate a new display module without any change to shared framework code, and
+  shall provide no runtime extension machinery: no dynamic module loading, no module discovery, no
+  runtime module registry, and no third-party extension API.
+verification-method: test

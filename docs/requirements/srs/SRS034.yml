@@ -4,7 +4,7 @@ header: |
   Route registration is a single static compile-time list entry; no registry or discovery
 level: 1.34
 links:
-- SYS024: h3-BB26CIO3s86rk1gJVjLpPnDr6NuByu5coK4iPu3o=
+- SYS024: Hn5rIJlgWLcF4C2eS7P0aHqLN91cK86es9PFca9Afv4=
 normative: true
 rationale: |
   Route registration is a static list resolved at compile time: not a registry,

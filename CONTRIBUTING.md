@@ -13,7 +13,7 @@ This project is **design-first**: nothing is implemented that has not been writt
 - A change with a real rejected alternative gets an [ADR](docs/decisions/README.md).
 - Anything observable the tree does not already state — an interface name, a payload shape, a config
   key, a failure behaviour, a threshold — is written down as a requirement before it is built.
-- A new module follows the five-part contract in
+- A new module follows the six-part contract in
   [`docs/contracts/module-contract.md`](docs/contracts/module-contract.md) (SYS024, SRS033–SRS037)
   and the test obligations in [`docs/TESTING.md`](docs/TESTING.md).
 - Do not build generality against a case that does not exist.

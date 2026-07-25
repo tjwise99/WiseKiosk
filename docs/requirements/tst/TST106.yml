@@ -1,0 +1,21 @@
+active: false
+derived: false
+header: |
+  Pending: boundary fragments compose, and are declared once
+level: 1.15
+links:
+- SRS100: null
+normative: true
+rationale: |
+  The regenerate-and-diff form is the one SRS030's drift gate already establishes, so composition is
+  proved by the mechanism the boundary contract already relies on rather than a second one.
+ref: ''
+reviewed: null
+status: proposed
+text: |
+  Pending: test recomposing the boundary schema from its module fragments and asserting the
+  committed schema is unchanged; asserting a bijection between registered modules and boundary
+  fragments; and asserting each payload shape has exactly one definition site across the composed
+  schema and its fragments. Lands with the codegen mechanism (#7).
+verification-justification: ''
+verification-method: test

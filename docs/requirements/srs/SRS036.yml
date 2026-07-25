@@ -4,7 +4,7 @@ header: |
   Adding a module changes no shared framework code
 level: 1.36
 links:
-- SYS024: h3-BB26CIO3s86rk1gJVjLpPnDr6NuByu5coK4iPu3o=
+- SYS024: Hn5rIJlgWLcF4C2eS7P0aHqLN91cK86es9PFca9Afv4=
 normative: true
 rationale: |
   The module contract — adding a module means adding five things in five known
@@ -15,13 +15,12 @@ rationale: |
   form of that invariant; the verification form (repo script vs review
   checklist) is deferred to the repo layout (#5).
 ref: ''
-reviewed: PAP8Pe5Csx7cXZDJJ4uE0WX4SkGs1xPYVz1ttSIUEr4=
+reviewed: erFWyECf2EopGO8PAa5SApnn2Vk_DTWKuH8r2Nw3kAQ=
 status: accepted
 text: |
-  The parts a module comprises shall be confined to module-scoped locations.
-  Adding or removing a module shall touch only that module's own files — its
-  shaping library, component, configuration-schema fragment, and tests — plus
-  the single static registration list (SRS034), and shall require no edit to any
-  shared framework file. No shared framework source shall name a specific module
-  except that one registration list.
+  The parts a module comprises shall be confined to module-scoped locations. Adding or removing a
+  module shall touch only that module's own files - its shaping library, component,
+  configuration-schema fragment, boundary-schema fragment, and tests - plus the single static
+  registration list (SRS034), and shall require no edit to any shared framework file. No shared
+  framework source shall name a specific module except that one registration list.
 verification-method: test

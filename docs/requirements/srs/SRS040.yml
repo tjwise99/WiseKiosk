@@ -4,7 +4,7 @@ header: |
   Module component renders from props; owns no cross-cutting policy
 level: '1.40'
 links:
-- SYS024: h3-BB26CIO3s86rk1gJVjLpPnDr6NuByu5coK4iPu3o=
+- SYS024: Hn5rIJlgWLcF4C2eS7P0aHqLN91cK86es9PFca9Afv4=
 normative: true
 rationale: |
   The module contract defines its Svelte-component part: it

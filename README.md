@@ -7,7 +7,7 @@ behind one-way glass. The layout is fixed (SYS008, SRS041) and there is nothing 
 it renders, it refreshes, and it runs unattended for at least 30 days (SYS010). Shipped as one
 container image; each deployment is
 independent, customised through configuration, never through a fork (SYS007). A sixth module is
-added by a documented five-part contract, never by a plugin system (SYS024).
+added by a documented six-part contract, never by a plugin system (SYS024).
 
 **The operator is frequently not the author.** Deployments run at the author's house and at friends'
 and family's houses — separate networks, separate configs, separate owners. This constraint outranks
@@ -47,6 +47,6 @@ as SRS019 does to `docs/TESTING.md` for what the Contract test tier must prove.
 - [`docs/TESTING.md`](docs/TESTING.md) — the test architecture, written as a specification before any
   tests exist.
 - [`docs/decisions/`](docs/decisions/README.md) — the decisions that carried a rejected alternative.
-- [`docs/contracts/module-contract.md`](docs/contracts/module-contract.md) — the five-part contract
+- [`docs/contracts/module-contract.md`](docs/contracts/module-contract.md) — the six-part contract
   for adding a display module (SYS024, SRS033–SRS037).
 - [`CONTRIBUTING.md`](CONTRIBUTING.md) — running the checks and getting a change merged.

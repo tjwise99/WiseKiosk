@@ -8,7 +8,7 @@ page is the author-facing procedure that satisfies them and states no obligation
 The concrete locations — which directory holds a module's files, and where the registration list
 lives — are fixed by the repository layout (#5). This page names the parts, not their paths.
 
-## The five parts
+## The six parts
 
 1. **A shaping library.** Builds the module's upstream request URL and parses and reshapes the
    upstream response into the frontend payload. Pure functions, no I/O, exercisable in isolation
@@ -25,15 +25,18 @@ lives — are fixed by the repository layout (#5). This page names the parts, no
    page and by the standalone desk validator, per
    [ADR 0007](../decisions/0007-config-validation-allocation.md) (SRS035, SRS014). The fragment
    does not cross the frontend/backend boundary.
-5. **Tests.** Unit tests for the shaping library and a render test for the component, both wired into
+5. **A boundary-schema fragment.** Declares the payload this module returns across the boundary,
+   composed into the one boundary schema (SRS100, SRS029). This is what makes the module's generated
+   payload type exist; it is the same composition mechanism as part 4, applied to the other schema.
+6. **Tests.** Unit tests for the shaping library and a render test for the component, both wired into
    CI (SRS037). Their tier placement and the standing obligations they discharge are in
    [`TESTING.md`](../TESTING.md).
 
 ## The confinement invariant
 
 Adding or removing a module touches that module's own files — shaping library, component,
-configuration-schema fragment, tests — plus the single registration entry of part 2, and no shared
-framework file. No shared framework source names a specific module except that one registration list
+configuration-schema fragment, boundary-schema fragment, tests — plus the single registration entry
+of part 2, and no shared framework file. No shared framework source names a specific module except that one registration list
 (SRS036).
 
 A module is also subject to the system-wide constraints: it introduces no abstraction or extension
@@ -53,12 +56,11 @@ an operator-tunable configuration key.
    validator (SRS035, SRS008).
 3. Add the registration entry: parameter validation and the route's cache TTL (SRS034, SRS023,
    SRS022).
-4. Write the component against the generated payload type, plus its render test (SRS031, SRS040,
-   SRS037). **No step above produces that type.** A module's payload has to reach the one boundary
-   schema, but SRS036 confines a module's edits to the five locations listed here and the schema is
-   not among them. Logged as a tree gap on #18; do not resolve it by hand-declaring the type, which
-   SRS031 forbids.
-5. Set the module's poll cadence against that route's TTL (SRS043).
-6. Confirm no shared framework file was edited beyond the registration entry (SRS036).
-7. Adding a module is a test-architecture review trigger — run it, per
+4. Add the boundary-schema fragment declaring the module's payload; the generated type the component
+   consumes comes from composing it into the one boundary schema (SRS100, SRS029, SRS030).
+5. Write the component against that generated payload type, plus its render test (SRS031, SRS040,
+   SRS037). Do not hand-declare the type — SRS031 forbids it.
+6. Set the module's poll cadence against that route's TTL (SRS043).
+7. Confirm no shared framework file was edited beyond the registration entry (SRS036).
+8. Adding a module is a test-architecture review trigger — run it, per
    [`TESTING.md` § Review cadence](../TESTING.md#review-cadence) (SYS034, SRS071).
