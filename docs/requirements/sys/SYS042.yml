@@ -11,17 +11,19 @@ rationale: |
   otherwise catch it. That copy is the failure: it reviews as ordinary code, drifts from the home it was
   taken from, and nothing resolves the disagreement. The boundary-specific instance — an invariant held
   by a comment pointing at its twin — is already forbidden and owned by SYS023; this is the general
-  need. Four homes, not three: the taxonomy in docs/README.md gives FOUNDATIONS prose, TESTING prose, an
-  ADR, and a requirement's rationale field, ARCHITECTURE being explicitly excluded from carrying decision
-  rationale. Mechanism comments are untouched — how a loop works is a fact about that code, not about
+  need. Five homes, not three: the taxonomy in docs/README.md gives the repository README, FOUNDATIONS
+  prose, TESTING prose, an ADR, and a requirement's rationale field, ARCHITECTURE being explicitly
+  excluded from carrying decision rationale. The README carries product-level reasoning the flat tree
+  cannot express — that one need outranks another. Mechanism comments are untouched — how a loop works is a fact about that code, not about
   WiseKiosk, and has no canonical document to be duplicated from. Whether a given sentence is rationale
   or mechanism is a judgment no gate can make, so inspection is the honest method.
 ref: ''
-reviewed: Xof7xtbjGBvB2q9bGzp0y-Hkn5q0qQV4aFaDulZF7Sg=
+reviewed: oieOfy14Y8vd31kx20L9kGkVIrafk9TXFBsdfXoSOFU=
 status: accepted
 text: |
   Every statement of why WiseKiosk is built as it is — a reason, a history, a rejected alternative, or an
   evaluative judgment — shall be authored in exactly one of the documentation homes the taxonomy provides:
-  FOUNDATIONS prose, TESTING prose, an ADR, or a requirement's rationale field. A first-party authored
-  artifact shall carry mechanism only, and shall reach rationale by citation rather than by restating it.
+  the repository README, FOUNDATIONS prose, TESTING prose, an ADR, or a requirement's rationale field. A
+  first-party authored artifact shall carry mechanism only, and shall reach rationale by citation rather
+  than by restating it.
 verification-method: inspection

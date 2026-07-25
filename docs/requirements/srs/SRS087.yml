@@ -4,20 +4,20 @@ header: |
   Comments carry mechanism; rationale is authored in one of the four documentation homes
 level: 1.87
 links:
-- SYS042: Xof7xtbjGBvB2q9bGzp0y-Hkn5q0qQV4aFaDulZF7Sg=
+- SYS042: oieOfy14Y8vd31kx20L9kGkVIrafk9TXFBsdfXoSOFU=
 normative: true
 rationale: |
   The operative half of SYS042, written so a reviewer can apply it to a single comment: mechanism stays,
-  rationale moves. Naming all four homes matters — a comment justifying a test-strategy choice belongs in
-  TESTING prose, and a three-home formulation would push it toward FOUNDATIONS or an ADR, neither of which
+  rationale moves. Naming every home matters — a comment justifying a test-strategy choice belongs in
+  TESTING prose, and a shorter formulation would push it toward FOUNDATIONS or an ADR, neither of which
   guarantees it. The live example this was written against is scripts/check-verify-ci-parity.mjs, whose
   header restates rationale already carried verbatim by SRS067's own rationale field.
 ref: ''
-reviewed: SCKPzwmTZy1_CXk3RZLowj2-JAPlkiOIXGMfJkv0PK4=
+reviewed: pQcMYluxEkVnd52uuwMjUhWPvz2Cz6hL2m-L0BR2axQ=
 status: accepted
 text: |
   A comment in a first-party authored artifact shall state what the code or configuration does, or how it
-  does it. A statement of reason, history, or evaluative judgment shall instead be authored in FOUNDATIONS
-  prose, TESTING prose, an ADR, or a requirement's rationale field, and the comment shall cite that home in
-  place of the statement.
+  does it. A statement of reason, history, or evaluative judgment shall instead be authored in the
+  repository README, FOUNDATIONS prose, TESTING prose, an ADR, or a requirement's rationale field, and the
+  comment shall cite that home in place of the statement.
 verification-method: inspection
