@@ -29,17 +29,24 @@ renumbered, so external references to it stay valid.
 
 ## Item attributes
 
-Beyond Doorstop's native fields, every item carries three stored attributes
+Beyond Doorstop's native fields, every item carries four stored attributes
 ([ADR 0005](../decisions/0005-traceability-gating.md)):
 
 | Attribute | Values | Meaning |
 |---|---|---|
 | `status` | `proposed` \| `accepted` | Human review state. `proposed` items live on `main` — the tree is the backlog — but implementing against one is building on unbaselined spec |
 | `verification-method` | `test` \| `inspection` \| `analysis` \| `demonstration` | How the requirement is verified; gates route on it |
+| `verification-justification` | free text | Why the method is not `test` — what specifically blocks a mechanically-decidable check. **Required when `verification-method` is not `test`**, empty otherwise |
 | `rationale` | free text | Why the requirement exists. **Required at the `SYS` tier**, optional below |
 
-`verification-method` and `rationale` are fenced by the review fingerprint (editing them re-flags
-review); `status` is not, because a state transition is not a content change. Verified/implemented
+`rationale` and `verification-justification` answer different questions: why the obligation exists,
+versus why it cannot be settled by a machine. An item at `inspection`, `analysis`, or `demonstration`
+is claiming a human must judge it; the justification is that claim's evidence, so a method can never
+be weakened without saying what blocks the stronger one.
+
+`verification-method`, `verification-justification`, and `rationale` are fenced by the review
+fingerprint (editing them re-flags review); `status` is not, because a state transition is not a
+content change. Verified/implemented
 is **derived by tooling from evidence, never stored** (ADR 0005).
 
 ## The V&V model: Doorstop proves linkage, the test suite proves correctness
