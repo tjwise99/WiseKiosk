@@ -7,7 +7,7 @@ generated, click-through view of the Doorstop requirements tree
 ([`../requirements/`](../requirements/README.md), [ADR
 0002](../decisions/0002-requirements-management-doorstop.md)).
 
-**Dev-only and siloed here** (FOUNDATIONS §2): its pinned requirements file and venv live in this
+**Dev-only and siloed here** (SYS035, SRS072): its pinned requirements file and venv live in this
 directory; nothing depends on it at app build or runtime. Doorstop is the canonical requirements
 source and gate — this silo only renders it.
 

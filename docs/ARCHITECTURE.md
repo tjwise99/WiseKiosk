@@ -120,5 +120,7 @@ The posture **already enforced** (branch protection: all six checks required —
 `secret-scan`, `process`, `requirements`, `architecture`, `docs-site` — strict, admins bound; secret
 scanning with push protection, SHA-pinned Actions, least-privilege `GITHUB_TOKEN`, no custom
 credentials in CI (SRS019), Dependabot for the Actions ecosystem) lives in `.github/` and the repo's
-branch-protection settings. Apart from SRS019, no requirement carries these controls; this paragraph
-is their record.
+branch-protection settings. Requirements carry most of it — the required-check obligations
+(SRS058, SRS060, SYS027), verify-CI parity (SRS067) and the credential-free rule (SRS019). Four are
+carried by nothing and this paragraph is their only record: secret scanning with push protection,
+SHA-pinned Actions, the least-privilege `GITHUB_TOKEN`, and Dependabot for the Actions ecosystem.

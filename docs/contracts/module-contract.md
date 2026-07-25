@@ -54,7 +54,10 @@ an operator-tunable configuration key.
 3. Add the registration entry: parameter validation and the route's cache TTL (SRS034, SRS023,
    SRS022).
 4. Write the component against the generated payload type, plus its render test (SRS031, SRS040,
-   SRS037).
+   SRS037). **No step above produces that type.** A module's payload has to reach the one boundary
+   schema, but SRS036 confines a module's edits to the five locations listed here and the schema is
+   not among them. Logged as a tree gap on #18; do not resolve it by hand-declaring the type, which
+   SRS031 forbids.
 5. Set the module's poll cadence against that route's TTL (SRS043).
 6. Confirm no shared framework file was edited beyond the registration entry (SRS036).
 7. Adding a module is a test-architecture review trigger — run it, per

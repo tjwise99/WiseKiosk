@@ -3,8 +3,9 @@
 A config-driven smart-mirror display. A full-screen browser page renders a fixed set of five
 modules — `clock`, `compliments`, `OpenMeteo` weather, `AviationWeather` (CheckWX METAR/TAF), and
 `DisneyWaitTimes` (themeparks.wiki) — from a handful of public APIs, running unattended on a display
-behind one-way glass. The layout is fixed and there is nothing to interact with: it renders, it
-refreshes, it runs for months (SYS010). Shipped as one container image; each deployment is
+behind one-way glass. The layout is fixed (SYS008, SRS041) and there is nothing to interact with:
+it renders, it refreshes, and it runs unattended for at least 30 days (SYS010). Shipped as one
+container image; each deployment is
 independent, customised through configuration, never through a fork (SYS007). A sixth module is
 added by a documented five-part contract, never by a plugin system (SYS024).
 
@@ -30,8 +31,9 @@ Nothing is inherited from any prior mirror framework, and there is no compatibil
 **The requirements tree is the specification.** Every obligation WiseKiosk is built against is a
 numbered item in [`docs/requirements/`](docs/requirements/README.md) — system needs (`SYS`)
 decomposed into testable "shall" statements (`SRS`), each traced to a verification item (`TST`), with
-CI failing on a broken chain. If a statement is normative, it has an ID. The documents below explain,
-orient, and cite; none of them carries an obligation of its own.
+CI failing on a broken chain. If a statement is normative, it has an ID. The documents below mostly
+explain, orient, and cite rather than oblige — the exception is where a requirement delegates to one,
+as SRS019 does to `docs/TESTING.md` for what the Contract test tier must prove.
 
 - [`docs/README.md`](docs/README.md) — the documentation index: which document guarantees which kind
   of fact, and what each one excludes. Read this before adding to any document.
