@@ -10,11 +10,14 @@ rationale: |
   Mechanises the security review the solo project has no second human to
   perform, across both languages it ships.
 ref: ''
-reviewed: pf3Hkx_m55biZVUJ3Nkykbm9RuYCrNRSA9kNT-u98No=
+reviewed: GNRQAgECbOGFrSnnQQlYX2hZQ8kbu9A0vQSsurhQpsc=
 status: accepted
 text: |
   Continuous integration shall statically scan the project's own Go and
   Svelte/TypeScript source for security-defect patterns on every pull request,
   and shall fail the pull request when a finding of CRITICAL severity is
-  present.
+  present. Every finding the scan produces, at any severity, shall be reported
+  to the repository's code-scanning dashboard and annotated on the pull
+  request; the gate threshold shall govern what fails, never what is
+  reported.
 verification-method: test
