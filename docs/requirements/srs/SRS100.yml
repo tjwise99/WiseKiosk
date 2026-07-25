@@ -19,9 +19,10 @@ ref: ''
 reviewed: null
 status: proposed
 text: |
-  Each module shall declare the payload it returns across the boundary as a fragment composed into
-  the one boundary schema (SRS029), held in that module's own directory. The payload shape shall not
-  be declared a second time anywhere, and the composed schema shall be the sole input to boundary
-  code generation (SRS030).
+  Each module whose payload crosses the frontend/backend boundary shall declare that payload as a
+  fragment composed into the one boundary schema (SRS029), held in that module's own directory. The
+  payload shape shall not be declared a second time anywhere, and the composed schema shall be the
+  sole input to boundary code generation (SRS030). A module that fetches no external source
+  contributes no fragment.
 verification-justification: ''
 verification-method: test

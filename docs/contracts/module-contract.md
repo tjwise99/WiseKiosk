@@ -8,6 +8,18 @@ page is the author-facing procedure that satisfies them and states no obligation
 The concrete locations — which directory holds a module's files, and where the registration list
 lives — are fixed by the repository layout (#5). This page names the parts, not their paths.
 
+## Two module shapes
+
+A module is **upstream-backed** or **local**. An upstream-backed module fetches an external data
+source and has all six parts below. A local module — the clock (SRS039) and compliments — renders
+from the browser or from its own configuration, fetches nothing, and has three: the component, the
+configuration-schema fragment, and tests. It has no shaping library, no route registration, and no
+boundary-schema fragment, because it has no upstream to shape, no route to register, and nothing
+crossing the boundary (SRS033, SRS034, SRS100).
+
+Parts 1, 2 and 5 below apply to upstream-backed modules only. Parts 3, 4 and 6 apply to every
+module.
+
 ## The six parts
 
 1. **A shaping library.** Builds the module's upstream request URL and parses and reshapes the
@@ -50,6 +62,9 @@ an operator-tunable configuration key.
 
 ## Adding a module
 
+Steps 1, 3, 4 and 6 apply to an upstream-backed module. A local module does steps 2, 5 and 7, and
+its component renders from configuration or the browser rather than from a payload prop.
+
 1. Write the shaping library as pure functions, with its unit tests against a captured upstream
    response (SRS033, SRS037).
 2. Add the configuration-schema fragment and check an example configuration with the standalone
@@ -58,8 +73,8 @@ an operator-tunable configuration key.
    SRS022).
 4. Add the boundary-schema fragment declaring the module's payload; the generated type the component
    consumes comes from composing it into the one boundary schema (SRS100, SRS029, SRS030).
-5. Write the component against that generated payload type, plus its render test (SRS031, SRS040,
-   SRS037). Do not hand-declare the type — SRS031 forbids it.
+5. Write the component, plus its render test (SRS040, SRS037). Where the module has a payload, write
+   it against the generated type — do not hand-declare it, SRS031 forbids it.
 6. Set the module's poll cadence against that route's TTL (SRS043).
 7. Confirm no shared framework file was edited beyond the registration entry (SRS036).
 8. Adding a module is a test-architecture review trigger — run it, per

@@ -10,7 +10,8 @@ rationale: ''
 ref: ''
 status: proposed
 text: |
-  Pending: inspection asserting every external source has a backend proxy route,
-  including CORS-permitting sources, with no source exempted; form (repo check or
-  review checklist) decided when the backend skeleton (#9) lands. Activated then.
+  Pending: test asserting the set of external sources declared by upstream-backed modules equals the
+  set of registered GET /api/<source> routes, in both directions, so no source is exempted from the
+  proxy and no route exists without a source; and that no frontend or backend code constructs an
+  upstream URL outside a module's shaping library. Lands with the backend skeleton (#9).
 verification-method: inspection
