@@ -10,13 +10,15 @@ rationale: |
   Closes MIME-confusion, clickjacking, referrer-leakage, and unused-capability
   abuse classes that the same-origin resource policy does not itself address.
 ref: ''
-reviewed: ZfcxbTJo6nvLzFtuVNjJZzZzY64hT_l8kq8Yo37W36A=
+reviewed: _--svR9N9t42QZKty5JBZ52hbogpNohh2DyOjCLanLw=
 status: accepted
 text: |
   When serving the display frontend, the backend shall accompany its responses
   with the standard browser-hardening headers: X-Content-Type-Options set to
   nosniff; a frame-embedding denial via frame-ancestors 'none'; a
   referrer-minimising Referrer-Policy of no-referrer; and a Permissions-Policy
-  that disables browser features the display does not use. Each header shall be
-  present and no weaker than stated.
+  disabling every browser feature the display does not use, namely camera,
+  microphone, geolocation, usb, serial, bluetooth, payment, and idle-detection,
+  each with an empty allowlist. Each header shall be present and no weaker than
+  stated.
 verification-method: test

@@ -16,10 +16,11 @@ rationale: |
   against is scripts/check-verify-ci-parity.mjs, whose header describes a convention the repository no
   longer follows.
 ref: ''
-reviewed: CKIPTNVw1aJlRqxPCZVLo-lGPH2cS57XnKHA6c0KpKc=
+reviewed: jzFbCmxYDCQ_CG3Hrks6cF9E4yJo1-nfwaVTIHIPWY0=
 status: accepted
 text: |
-  A comment containing one of the enumerated temporal-change phrasings shall fail the repository's comment
-  checks. The enumerated set shall be a configured value rather than a literal in the checking code, and
-  the check shall not be represented as proving the absence of superseded claims.
+  A comment containing any of the temporal-change phrasings `now`, `currently`, `no longer`,
+  `previously`, `used to`, `as of`, `recently`, `for now`, `at present`, or `going forward` shall fail
+  the repository's comment checks, and the check shall not be represented as proving the absence of
+  superseded claims.
 verification-method: test

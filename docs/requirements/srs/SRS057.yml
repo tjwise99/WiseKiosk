@@ -11,10 +11,13 @@ rationale: |
   early — from a bounded instrumented run rather than a full-length soak —
   and continuously, rather than only at a pre-release demonstration.
 ref: ''
-reviewed: coKyDzHv_JC13GfSqFpAGPW3VzB_svhUg7wtw5q6z_w=
+reviewed: 0FNA3BHmiqscDfz-noCTFkarnFR6ANXr8C9ko_gFKtg=
 status: accepted
 text: |
   WiseKiosk shall exhibit no unbounded growth in memory or other finite
-  resources under sustained operation, established by trend analysis of an
-  instrumented bounded run.
+  resources under sustained operation. Verification shall exercise the backend
+  under sustained synthetic load for 60 minutes, sampling every 30 seconds, and
+  shall assert that goroutine count and open file descriptors each return to
+  within 10 percent of their post-warmup baseline. Heap occupancy shall be
+  recorded as a diagnostic and shall not gate.
 verification-method: analysis

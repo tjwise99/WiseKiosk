@@ -19,10 +19,10 @@ rationale: |
   as written admits none, and a bound whose only lever is its global value ratchets toward inertness —
   the override's shape is a design decision and is not invented here.
 ref: ''
-reviewed: uI1YglIELJSiRh3G4uCFumyLlmjNmWHObkZ7V8Y-BfA=
+reviewed: wL_DF-Ol3nJIQCQWYrpNA-GzKI84KNfLe9E0htanEP0=
 status: accepted
 text: |
   The number of comment lines outside a documentation facility that a change adds, measured against the
-  base it is proposed for merge into, shall be bounded, and a change exceeding that bound shall fail the
-  repository's checks. The bound shall be a configured value rather than a literal in the checking code.
+  base it is proposed for merge into, shall not exceed ten, and a change exceeding that bound shall
+  fail the repository's checks.
 verification-method: test
