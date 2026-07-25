@@ -85,6 +85,6 @@ A LikeC4 **tag** is how an element carries the Doorstop `SRS` requirement id it 
 *is* the architecture → requirements link. The mechanism is wired but **no real ids are bound yet**:
 
 - The two containers carry a placeholder `#needs-srs` tag (declared in the model's `specification`).
-- **TODO (issue #18):** declare one tag per `SRS` id a container satisfies (e.g. `tag SRS042`) and
+- **TODO(#18):** declare one tag per `SRS` id a container satisfies (e.g. `tag SRS042`) and
   apply it (`#SRS042`) to that container, replacing `#needs-srs`. The element→source `link`s that
   complete the trace are checked at review (SRS081) once the code they point at exists.

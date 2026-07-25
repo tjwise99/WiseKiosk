@@ -16,10 +16,12 @@ rationale: |
   reachable by SRS095 in any case. The token set is configured for the same reason SRS093's phrasing set
   is: leaving it implicit would let a bare FIXME satisfy the requirement by never being counted.
 ref: ''
-reviewed: gvP54FQl-jxYNnZQCWwIOqpMraHNKwc1XZNc_fG0Zx4=
+reviewed: QWBhFHxgQFOuuGdG4zaoxDu88Y77LbuAPKWCuT2_jAY=
 status: accepted
 text: |
   A deferred-work marker in a first-party authored artifact shall name a tracked issue, in the form
-  `<token>(#nnn)`. The tokens counted as deferred-work markers shall be TODO, FIXME, XXX, HACK, and
-  TBD. The check shall verify the marker's form without requiring network access.
+  `<token>(#nnn)`. A marker is one of the tokens TODO, FIXME, XXX, HACK, or TBD immediately followed
+  by `(` or `:`; the same word in prose is not a marker. Every marker shall carry an issue reference -
+  no artifact and no marker is exempt. The check shall verify the marker's form without requiring
+  network access.
 verification-method: test
