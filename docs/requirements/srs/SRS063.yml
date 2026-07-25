@@ -4,7 +4,7 @@ header: |
   Signed image with verifiable build provenance
 level: 1.63
 links:
-- SYS029: evcBEbEYMAVaOFsRhUIS4u4Udn3UfVn1pm4tchwLBos=
+- SYS029: NDQsnsQwX3t9Xk-zGc2bvgSMJIDOzAsPS8KTEFGBUyU=
 normative: true
 rationale: |
   Lets a deployer prove the running image is the one the project published and

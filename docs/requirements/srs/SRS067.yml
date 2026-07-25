@@ -4,7 +4,7 @@ header: |
   Every `just verify` check runs in CI
 level: 1.67
 links:
-- SYS031: 6mR07drzMO3DxbeYI711Spu-nnzNOZJ9-5ZDQFC_GYU=
+- SYS031: 9KJrYtuSTYlX9LjNHOWZKxIk1gmWjpllSh1M5DX5itc=
 normative: true
 rationale: |
   `just verify` and the CI workflow are today two hand-maintained lists held in agreement only by

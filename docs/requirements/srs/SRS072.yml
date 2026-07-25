@@ -4,7 +4,7 @@ header: |
   No siloed-tool manifest at the repository root; Dependabot ecosystems point at feature dirs
 level: 1.72
 links:
-- SYS035: H-qv-tubKGqdIs_zFQYiLx1Qc59P-u9nl6MaCxKO4c8=
+- SYS035: eYlFUZ1pyeDOKB5nVzJFkPqCu74dq16GilUStHPyPVk=
 normative: true
 rationale: |
   Partially realised already by SRS061 (Dependabot ecosystems per FOUNDATIONS §2); this states the

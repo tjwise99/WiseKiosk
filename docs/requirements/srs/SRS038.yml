@@ -4,7 +4,7 @@ header: |
   Frontend builds to a static bundle with no SSR or router
 level: 1.38
 links:
-- SYS025: 0Rl-mTTDYV-uhd-e42p1ZTSnmooOBdPL9jMSkQtzorI=
+- SYS025: m8cBQg83AS0sNzhFKajueIP_82WvmQgkwrQiUQALXOM=
 normative: true
 rationale: |
   SYS025 states the constraint; this item makes it verifiable at the artifact. A

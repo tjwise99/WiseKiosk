@@ -4,7 +4,7 @@ header: |
   Frontend fetches module data same-origin only
 level: 1.42
 links:
-- SYS022: UxmZaGNutKPkxXAqgD0JJ79j_MVK8yfgwjayCZM1QqA=
+- SYS022: 2KYQBUxL0nUSLnTIyJxE9rWv8AkCpl5oJmNn98re-ck=
 normative: true
 rationale: |
   The frontend complement to SRS021: SRS021 requires the backend to proxy every

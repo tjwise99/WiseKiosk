@@ -13,11 +13,11 @@ rationale: |
   secrets manager makes key-bearing CI genuinely safe and something needs
   it.
 ref: ''
-reviewed: Q7m5vTXwUB3LSQgXTYNDuBlDeiAGcEQcOXgPn7pKpp0=
+reviewed: a45oiO4k8OmnfPuPYLHeogxoBHQ3_SRb3Q6n1jSdTkQ=
 status: accepted
 text: |
   CI shall hold no API keys or other upstream credentials. Any
   verification that requires a live credential shall run outside CI.
   Adding a credential-dependent check shall mean wiring it to run outside
   CI, never granting CI the credential.
-verification-method: inspection
+verification-method: test

@@ -4,7 +4,7 @@ header: |
   Every external source is proxied, including CORS-permitting ones
 level: 1.21
 links:
-- SYS022: UxmZaGNutKPkxXAqgD0JJ79j_MVK8yfgwjayCZM1QqA=
+- SYS022: 2KYQBUxL0nUSLnTIyJxE9rWv8AkCpl5oJmNn98re-ck=
 normative: true
 rationale: |
   Proxying even CORS-permitting sources is what makes the single-origin data

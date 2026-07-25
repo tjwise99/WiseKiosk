@@ -4,7 +4,7 @@ header: |
   Workflows hold no credentials; Contract tier excluded from CI
 level: 1.19
 links:
-- SYS019: Q7m5vTXwUB3LSQgXTYNDuBlDeiAGcEQcOXgPn7pKpp0=
+- SYS019: a45oiO4k8OmnfPuPYLHeogxoBHQ3_SRb3Q6n1jSdTkQ=
 normative: true
 rationale: |
   SYS019 decomposed to the repository surface that could violate it: the

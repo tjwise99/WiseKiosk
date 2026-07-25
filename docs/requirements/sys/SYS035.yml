@@ -12,11 +12,11 @@ rationale: |
   the manifest lives; the grouped-update and vulnerability-scan behaviour is the security domain's
   (SYS028/SRS060/SRS061).
 ref: ''
-reviewed: H-qv-tubKGqdIs_zFQYiLx1Qc59P-u9nl6MaCxKO4c8=
+reviewed: eYlFUZ1pyeDOKB5nVzJFkPqCu74dq16GilUStHPyPVk=
 status: accepted
 text: |
   Each development tool's dependency manifest, lockfile, and virtual environment shall live in the
   directory of the feature it serves, and its Dependabot ecosystem entry shall point at that
   directory; the repository root shall carry only genuinely repo-level configuration (the CI
   workflows and the repo-level task runner), not a tool's dependency manifest.
-verification-method: inspection
+verification-method: test

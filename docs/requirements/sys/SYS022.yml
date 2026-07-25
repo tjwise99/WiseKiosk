@@ -15,10 +15,10 @@ rationale: |
   sources. Enforcing the connect-src content-security policy on the page is the
   security domain's concern (#40), not this need.
 ref: ''
-reviewed: UxmZaGNutKPkxXAqgD0JJ79j_MVK8yfgwjayCZM1QqA=
+reviewed: 2KYQBUxL0nUSLnTIyJxE9rWv8AkCpl5oJmNn98re-ck=
 status: accepted
 text: |
   The display page shall obtain all external data from the backend's own
   origin. Every fetch of upstream data shall occur server-side; the browser
   shall make no direct request to an upstream data source.
-verification-method: inspection
+verification-method: test

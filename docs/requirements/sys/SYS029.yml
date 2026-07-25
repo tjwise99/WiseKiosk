@@ -16,7 +16,7 @@ rationale: |
   required because the settled decision that continuous integration holds no
   keys (FOUNDATIONS §2) forbids a stored signing secret.
 ref: ''
-reviewed: evcBEbEYMAVaOFsRhUIS4u4Udn3UfVn1pm4tchwLBos=
+reviewed: NDQsnsQwX3t9Xk-zGc2bvgSMJIDOzAsPS8KTEFGBUyU=
 status: accepted
 text: |
   The published container image shall be verifiably trustworthy to the operator
@@ -24,4 +24,4 @@ text: |
   cryptographically signed with verifiable build provenance, and accompanied by
   a software bill of materials - all produced without any signing secret held
   in continuous integration.
-verification-method: demonstration
+verification-method: test

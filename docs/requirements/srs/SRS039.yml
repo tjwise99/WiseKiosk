@@ -4,7 +4,7 @@ header: |
   Clock renders and advances client-side
 level: 1.39
 links:
-- SYS025: 0Rl-mTTDYV-uhd-e42p1ZTSnmooOBdPL9jMSkQtzorI=
+- SYS025: m8cBQg83AS0sNzhFKajueIP_82WvmQgkwrQiUQALXOM=
 normative: true
 rationale: |
   The clock renders client-side, and a backend-driven clock that exists only to

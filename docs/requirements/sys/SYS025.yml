@@ -18,10 +18,10 @@ rationale: |
   The premise that would reopen it is a genuine multi-page or SEO requirement,
   which FOUNDATIONS §2 states will not arise.
 ref: ''
-reviewed: 0Rl-mTTDYV-uhd-e42p1ZTSnmooOBdPL9jMSkQtzorI=
+reviewed: m8cBQg83AS0sNzhFKajueIP_82WvmQgkwrQiUQALXOM=
 status: accepted
 text: |
   WiseKiosk's frontend shall be a static single-page application that renders a
   single fixed full-screen surface, without server-side rendering, client-side
   routing, or a meta-framework.
-verification-method: inspection
+verification-method: test

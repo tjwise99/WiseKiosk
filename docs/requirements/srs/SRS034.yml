@@ -13,7 +13,7 @@ rationale: |
   not the route's runtime behaviour; the per-route cache TTL it carries is the
   one governed by SRS022.
 ref: ''
-reviewed: j9MyS-gp0XUrxInxEdxHgtEpco5xuSrp-THBcgrWcII=
+reviewed: nISsPH6pZ4RQkrgU4p7nlWEEBnKJQM9L0vZmrkzIIaQ=
 status: accepted
 text: |
   Each module that fetches an external data source shall be bound to its GET /api/<source> route by
@@ -23,4 +23,4 @@ text: |
   No such policy shall be held anywhere else. A module that fetches no external source shall have no
   entry. The backend shall implement no runtime module registry, no route discovery, and no dynamic
   route loading.
-verification-method: inspection
+verification-method: test

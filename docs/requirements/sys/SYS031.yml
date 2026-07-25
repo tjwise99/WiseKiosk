@@ -13,11 +13,11 @@ rationale: |
   repo-check tier is gated by the verify↔CI parity check this domain adds; the application-test tier
   (Go/Svelte test files reached by a runner) is pending until first-party source exists.
 ref: ''
-reviewed: 6mR07drzMO3DxbeYI711Spu-nnzNOZJ9-5ZDQFC_GYU=
+reviewed: 9KJrYtuSTYlX9LjNHOWZKxIk1gmWjpllSh1M5DX5itc=
 status: accepted
 text: |
   Every test and check present in the repository shall be executed by CI, and every check that gates
   merges shall be able to block one. A test or check that exists but that no CI target runs, or that
   runs but cannot fail a merge it is meant to gate, shall fail the verification gate rather than pass
   silently, so no test can be a false signal by never executing or by never blocking.
-verification-method: inspection
+verification-method: test
