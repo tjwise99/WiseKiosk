@@ -4,17 +4,17 @@ header: |
   The canonical-doc taxonomy table names every document, its guarantee, and its exclusion
 level: 1.8
 links:
-- SRS075: ZnGMGUBKRu6P18TnGPDKkOEd4ZLn9GMlqdWkC0XId18=
+- SRS075: jBm6oYb1CN1hlzRjwm58MGKBnwpa8pO5q2OMQTUGGvI=
 normative: true
 rationale: ''
 ref: ''
 references:
 - path: docs/README.md
   type: file
-reviewed: Rm8JNtK3M4iPQrKIqlAHGNYrtFAKagHcRYM9sR2mCBY=
+reviewed: jZaMWoGGb-DOOOQ6sFct9FDgh1_SXY3xd9AfZetjIGs=
 status: accepted
 text: |
-  Verified by inspecting `docs/README.md`: a table names each canonical document (FOUNDATIONS,
-  ARCHITECTURE, TESTING, the ADR index, the requirements tree, the docs site), what it guarantees, and
-  what it explicitly excludes.
+  Verified by inspecting `docs/README.md`: a table names each canonical document (the repository
+  README, FOUNDATIONS, ARCHITECTURE, TESTING, the ADR index, the requirements tree, the docs site,
+  contracts), what it guarantees, and what it explicitly excludes.
 verification-method: inspection
