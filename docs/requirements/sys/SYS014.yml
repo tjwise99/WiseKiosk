@@ -6,12 +6,11 @@ level: 1.14
 links: []
 normative: true
 rationale: |
-  The same single-definition rule the boundary contract follows (FOUNDATIONS
-  §8). A second declaration of the configuration shape drifts from the first,
+  The same single-definition rule the boundary contract follows. A second declaration of the configuration shape drifts from the first,
   and the divergence surfaces as a desk validator that accepts what the page
   rejects — a defect class eliminated by construction, not by review.
 ref: ''
-reviewed: -TQZS24GIMnd2tSwd5DHbkufzhlLs36z6XeYGabdiYA=
+reviewed: kTjk8XFN2g4F4f4a2xWzoe9UPEY89kEB0F5J6CkBluM=
 status: accepted
 text: |
   The configuration format shall be defined by exactly one machine-readable

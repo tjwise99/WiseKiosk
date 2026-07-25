@@ -9,12 +9,11 @@ rationale: |
   Go and the TypeScript frontend share no types (ADR 0001), so a value that must
   agree on both sides with no shared definition and nothing enforcing agreement
   fails silently and is untestable by construction — the single worst defect
-  class this design guards against (FOUNDATIONS §4). Enforcement is folded into
-  the need deliberately: a single definition that can silently stale is not
-  single. This is the sibling axiom to SYS014, which the configuration schema
-  follows.
+  class this design guards against. Enforcement is folded into the need
+  deliberately: a single definition that can silently stale is not single. This
+  is the sibling axiom to SYS014, which the configuration schema follows.
 ref: ''
-reviewed: Atk7HXMyRvSN_SCxSwc2M0538nq16WUIr4lz3AUFY-U=
+reviewed: vqoPBOFlW4NRIpov_HBa66bXY8P8VLnuvFp2lNyicUk=
 status: accepted
 text: |
   Every value that crosses the frontend/backend boundary — request parameter

@@ -30,10 +30,8 @@ specification {
   // a container that satisfies SRS042 would declare `tag SRS042` here and apply
   // `#SRS042` on the element. That tag IS the architecture -> requirements link.
   //
-  // TODO(#18): the current SRS items are PLACEHOLDER and will be wiped by the
-  // fresh requirements pass (issue #18). Do NOT bind today's throwaway SRS
-  // numbers. When #18 lands, declare one tag per real SRS id and apply it to the
-  // container(s) that satisfy it. `#needs-srs` below marks elements awaiting that.
+  // TODO(#18): declare one tag per SRS id a container satisfies and apply it,
+  // replacing `#needs-srs`, which marks elements awaiting that binding.
   tag needs-srs
 }
 
@@ -52,8 +50,8 @@ model {
       #needs-srs
       technology 'Go'
       description '''
-        Stateless REST proxy with a TTL response cache; validates the frontend's
-        config and serves the built SPA as static files.
+        Stateless REST proxy with a TTL response cache; serves the built SPA as
+        static files. Config-blind (SRS011).
       '''
       // link: backend/    (add once the Go code exists — wires the model to source)
     }

@@ -4,7 +4,7 @@ header: |
   A change to described code or config updates the describing doc or declares it unaffected
 level: 1.77
 links:
-- SYS037: OKZU1T6kdWe1EBxIQKK6msz9V98hi1dRkxXFFRtps0U=
+- SYS037: YBd-Vw7RN37YKfqQFzxBdH_we306Fr2alSZjJp40xi4=
 normative: true
 rationale: |
   The case no reference-resolution or regenerate-diff check reaches: a doc's claim stops matching

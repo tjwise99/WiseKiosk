@@ -4,7 +4,7 @@ header: |
   Client-facing contract for rejected requests
 level: 1.26
 links:
-- SYS021: iDFNl3INnR6LXeRlHUt0mPuuu4hVYgASAMic3R19skU=
+- SYS021: szam5gPHPMXdmfL7WtI-9KiX_Buai2NqsFGsqXwXkB8=
 normative: true
 rationale: |
   SRS023 and SRS024 reject invalid and over-limit requests but do not say what

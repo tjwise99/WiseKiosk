@@ -4,7 +4,7 @@ header: |
   Both sides consume the generated types
 level: 1.31
 links:
-- SYS023: Atk7HXMyRvSN_SCxSwc2M0538nq16WUIr4lz3AUFY-U=
+- SYS023: vqoPBOFlW4NRIpov_HBa66bXY8P8VLnuvFp2lNyicUk=
 normative: true
 rationale: |
   A drift check proves the generated files are current but not that anyone uses
@@ -13,12 +13,12 @@ rationale: |
   compile and render cleanly. Consumption, including the error-render path, is
   therefore an inspection obligation the currency gate cannot discharge.
 ref: ''
-reviewed: 5APOuLfLvtbjvwJnXKlzVcTU3s_rD1Ra6n-rvegbp1Q=
+reviewed: 70cVctfC6zVe-Ws-pdPKEIh9NEbnZfumtRXSUcZpMqs=
 status: accepted
 text: |
   The generated types shall be the types used on both sides: the backend route
   handlers shall use the generated request and response types; each module
-  component shall consume its generated success-payload type (FOUNDATIONS §6.3);
+  component shall consume its generated success-payload type;
   and the frontend's per-module error-render path (SYS005) shall consume the
   generated upstream-failure and rejection body types. No boundary payload,
   parameter, or error body shall be served or rendered through a hand-declared

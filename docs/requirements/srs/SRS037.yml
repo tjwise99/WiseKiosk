@@ -4,10 +4,10 @@ header: |
   Tests are the contract's fifth part; a module is incomplete without them
 level: 1.37
 links:
-- SYS024: wrmOV72U1ifi18wtYCbklpJIuchPXqAKHuWt_7L1JRo=
+- SYS024: h3-BB26CIO3s86rk1gJVjLpPnDr6NuByu5coK4iPu3o=
 normative: true
 rationale: |
-  FOUNDATIONS §6.5 ("the specific obligations in TESTING.md, not 'some tests'")
+  The contract ("the specific obligations in TESTING.md, not 'some tests'")
   and the TESTING.md standing obligation "Every module supplies unit tests for
   its shaping library and a render test for its component," lifted into the tree
   so per-module test presence is gated rather than trusted. This requirement
@@ -16,7 +16,7 @@ rationale: |
   renders supplied props without fetching) is the frontend lane's separate
   behavioural verification, not re-derived here.
 ref: ''
-reviewed: PiPkgrMC-Ys84OmytV3cQqpphwbQ9nUHz42aWI2ybDY=
+reviewed: _7iLSPg1FUfEd0z3UammnfN-EeT5TGMUm4UKb-T3CCo=
 status: accepted
 text: |
   Each module shall supply, as part of its contract, unit tests for its shaping

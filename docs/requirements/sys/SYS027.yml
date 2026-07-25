@@ -7,7 +7,7 @@ links: []
 normative: true
 rationale: |
   This is a solo project with no second human reviewer, so the automated gates
-  are the review function - FOUNDATIONS §5 rejects security by vigilance. The
+  are the review function - security resting on vigilance is not a control. The
   regression this need guards against is a defect in code the project itself
   authored reaching a deployed image: static security analysis catches
   injection and taint-class flaws, and blocking lint and type checks catch
@@ -16,7 +16,7 @@ rationale: |
   dependencies is a distinct need (SYS028) - different origin, remediation, and
   cadence; scanning the whole built image is SYS029.
 ref: ''
-reviewed: 3T38wo5b-NGHKqfq-ESd3d4trWsojs8Bvf50rXCCm-s=
+reviewed: FRnXIxh_X2oPBzF0B0hP0HQxNN0oy3zLgHTrz_wLDas=
 status: accepted
 text: |
   Source code the project authors shall not merge while it carries a detectable

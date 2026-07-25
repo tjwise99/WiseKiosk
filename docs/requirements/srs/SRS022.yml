@@ -4,19 +4,19 @@ header: |
   TTL response cache keyed on source and query string
 level: 1.22
 links:
-- SYS021: iDFNl3INnR6LXeRlHUt0mPuuu4hVYgASAMic3R19skU=
+- SYS021: szam5gPHPMXdmfL7WtI-9KiX_Buai2NqsFGsqXwXkB8=
 normative: true
 rationale: |
   The cache provides request dedupe and upstream politeness for a 10–15 minute
-  refresh cadence (FOUNDATIONS §3). Keying on (source, query) rather than the
+  refresh cadence. Keying on (source, query) rather than the
   query alone keeps sources from colliding on a shared parameter. The query
   string is used as delivered by the trusted frontend — no normalization and no
   concurrent-miss coalescing, which would be generality against a caller that
-  does not exist (§5). The TTL values and their reasoning are chosen in #6; this
+  does not exist. The TTL values and their reasoning are chosen in #6; this
   fixes the mechanism and that the TTL is a code constant, not a tunable key
   (consistent with SRS011).
 ref: ''
-reviewed: _UB_0Wk1u4N3DE5L4IRH-TdiRBP5OM53iNvFxTcxS5s=
+reviewed: SvRFR7V52YOwiyTusdXabx08j7XZmRnUb-Xb6n6TOB0=
 status: accepted
 text: |
   The backend shall cache upstream responses in a time-to-live cache keyed on

@@ -1,8 +1,9 @@
 # Contributing to WiseKiosk
 
-The human contributor entry point: how to run the checks and how a change gets merged. The **project
-facts** live in [`docs/`](docs/FOUNDATIONS.md) — start with
-[`docs/FOUNDATIONS.md`](docs/FOUNDATIONS.md), which is standalone and everything else hangs off it.
+The human contributor entry point: how to run the checks and how a change gets merged. For **what
+WiseKiosk is**, start at the [README](README.md); for **what it must do**, the specification is the
+requirements tree, [`docs/requirements/`](docs/requirements/README.md). The index at
+[`docs/README.md`](docs/README.md) names every document and the kind of fact each one guarantees.
 Working rules for an AI agent are layered on top in [`CLAUDE.md`](CLAUDE.md).
 
 ## Before you build anything
@@ -10,9 +11,12 @@ Working rules for an AI agent are layered on top in [`CLAUDE.md`](CLAUDE.md).
 This project is **design-first**: nothing is implemented that has not been written down first.
 
 - A change with a real rejected alternative gets an [ADR](docs/decisions/README.md).
-- A new module follows the five-part contract in [`docs/FOUNDATIONS.md`](docs/FOUNDATIONS.md) §6 and
-  the test obligations in [`docs/TESTING.md`](docs/TESTING.md).
-- Do not build anything on the "what must not be built" list (FOUNDATIONS §5).
+- Anything observable the tree does not already state — an interface name, a payload shape, a config
+  key, a failure behaviour, a threshold — is written down as a requirement before it is built.
+- A new module follows the five-part contract in
+  [`docs/contracts/module-contract.md`](docs/contracts/module-contract.md) (SYS024, SRS033–SRS037)
+  and the test obligations in [`docs/TESTING.md`](docs/TESTING.md).
+- Do not build generality against a case that does not exist.
 
 ## Running the checks
 

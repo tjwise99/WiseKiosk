@@ -7,8 +7,8 @@ links: []
 normative: true
 rationale: |
   A comment has no compiler and no test: it can contradict the code beside it for years and nothing
-  reports it. FOUNDATIONS §5 names the boundary-specific case, where a comment is the only thing holding
-  two sides in agreement (SYS023 owns it); the general case is duller and more common — a deferred task
+  reports it. SYS023 owns the boundary-specific case, where a comment is the only thing holding two
+  sides in agreement; the general case is duller and more common — a deferred task
   nobody tracked, a reference to an item that was renumbered, a sentence describing a repository state
   that has since changed. Each is mechanically decidable, which is what separates this need from SYS042:
   form and resolution can be gated, whereas whether a sentence is rationale cannot. The gated set is a
@@ -20,7 +20,7 @@ rationale: |
   convention for a need of mixed method is the weaker one — SYS031, SYS036, and SYS040 all land
   inspection while carrying gated children, and only the wholly mechanical SYS039 claims test.
 ref: ''
-reviewed: kcIFBI_e2x7kEmU51iZ60SAGMklrSIODgfL-kcLXBDQ=
+reviewed: mUGmCRgMKlPo_nP-uh-E5L6FI87bqVgVOSv3oQhWiRQ=
 status: accepted
 text: |
   A comment in a first-party authored artifact shall not fall out of date undetected. Every deferred-work

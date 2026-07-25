@@ -4,16 +4,16 @@ header: |
   A comment references rationale by citation, never by restatement
 level: 1.88
 links:
-- SYS042: zSftWlqCKYGFrIztL6VLKF-27b-3tVZkzysxcdkfqj0=
+- SYS042: bQL35yuoWm4zY8ZXEPbWe1V2b6OISFBPty8mu69zyAs=
 normative: true
 rationale: |
   Without a stated boundary, "cite the home" degrades into copying a sentence and appending an ID, which
   reintroduces the duplicate SYS042 exists to prevent while looking compliant. The strip-the-identifier
   test gives reviewers one operation to apply and is the reason this is expressible as a requirement at
-  all. A bare "FOUNDATIONS §5" fails on a second count: a section anchor is not an identifier the
+  all. A bare document-section citation fails on a second count: a section anchor is not an identifier the
   citation resolver can check, so the ID form is what the obligation asks for.
 ref: ''
-reviewed: jniXxwAHFsFbomglOhCI6AR9zmgAUIb8e4Idr_-9B6U=
+reviewed: 0993OmvoAzgi1xWga0PlQrLbaEH-z56kA05GfKF9sG4=
 status: accepted
 text: |
   Where a comment reaches rationale, it shall do so by citing a requirement ID or ADR number and shall not

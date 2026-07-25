@@ -1,8 +1,8 @@
 # 0001 — Backend in Go, with a generated boundary contract
 
 **Status:** accepted
-**Decided:** 2026-07-21 (WiseKiosk bootstrap — the one open architectural decision from the
-foundations spec)
+**Decided:** 2026-07-21 (WiseKiosk bootstrap — the one open architectural decision outstanding at
+the time)
 
 ## Context
 
@@ -45,8 +45,9 @@ up-front cost, not a retrofit. Choosing Go without it is not on the table.
 - **Smallest deploy.** A static binary on `scratch`/distroless, near-zero third-party dependencies,
   `net/http` a direct fit. No backend runtime image, no lockfile or musl/glibc toolchain split.
 - **The boundary contract becomes a hard, up-front obligation.** A schema→codegen mechanism must be
-  chosen and stood up before the second module (this is open question 2 in the foundations spec), and
-  it becomes the Boundary tier of the test architecture — CI must verify the generated code is in sync.
+  chosen and stood up before the second module (resolved by
+  [ADR 0008](0008-boundary-contract-openapi-codegen.md)), and it becomes the Boundary tier of the
+  test architecture — CI must verify the generated code is in sync.
   Under Node this would have been nearly free; under Go it is paid work, done knowingly.
 - **Response shaping is more verbose** than TypeScript — explicit struct definitions per payload.
 - **Learning value is realised** — the stated goal — at the price above.

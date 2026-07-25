@@ -5,7 +5,7 @@ header: |
 level: 1.65
 links:
 - SYS022: UxmZaGNutKPkxXAqgD0JJ79j_MVK8yfgwjayCZM1QqA=
-- SYS030: YDGw098jQ7Q4hRdENhRzzX10Sf9EmroNymqq-SIqV18=
+- SYS030: a_TnT2iDMzkqB4Aj2ySH1fYaq1pyGupBv6iXo3mOnz0=
 normative: true
 rationale: |
   Converts the single-origin data plane (SYS022) from a code convention into a

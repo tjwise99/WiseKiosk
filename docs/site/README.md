@@ -2,12 +2,12 @@
 
 Renders this repository's documentation: the prose files under `docs/` unchanged (no frontmatter, no
 in-source directives — see [ADR 0004](../decisions/0004-docs-site-sphinx-needs.md)), the repo-root
-files (`README.md`, `CONTRIBUTING.md`, `SECURITY.md`, `CLAUDE.md`) via thin include shims, and a
+files (`README.md`, `CONTRIBUTING.md`, `SECURITY.md`) via thin include shims, and a
 generated, click-through view of the Doorstop requirements tree
 ([`../requirements/`](../requirements/README.md), [ADR
 0002](../decisions/0002-requirements-management-doorstop.md)).
 
-**Dev-only and siloed here** (FOUNDATIONS §2): its pinned requirements file and venv live in this
+**Dev-only and siloed here** (SYS035, SRS072): its pinned requirements file and venv live in this
 directory; nothing depends on it at app build or runtime. Doorstop is the canonical requirements
 source and gate — this silo only renders it.
 
@@ -20,7 +20,6 @@ docs/site/
   index.md               root toctree shim: an {include} of ../../README.md plus the site's toctrees
   contributing.md        {include} shim for ../../CONTRIBUTING.md
   security.md             {include} shim for ../../SECURITY.md
-  CLAUDE.md               {include} shim for ../../CLAUDE.md (case matches the link CONTRIBUTING.md uses)
   traceability.md         hand-authored needtable / matrix views
   doorstop_to_needs.py    thin, presentation-free transform: Doorstop YAML -> sphinx-needs MyST
   _static/needs-furo.css  maps sphinx-needs' colors onto furo's light/dark theme variables
@@ -31,11 +30,14 @@ docs/site/
   .venv/                  local venv, gitignored
 ```
 
-`index.md`, `contributing.md`, `security.md`, and `CLAUDE.md` are the only structural concession
-Sphinx demands (ADR 0004): each is a pure `{include}` of its repo-root counterpart, using MyST's
-`relative-docs` option to rewrite that file's root-relative links (e.g. `docs/FOUNDATIONS.md`) to
-resolve from inside the silo. The included file's own top heading becomes the page title — no
-hand-written prose duplicates it.
+`index.md`, `contributing.md`, and `security.md` are the only structural concession Sphinx demands
+(ADR 0004): each is a pure `{include}` of its repo-root counterpart, using MyST's `relative-docs`
+option to rewrite that file's root-relative links (e.g. `docs/ARCHITECTURE.md`) to resolve from
+inside the silo. The included file's own top heading becomes the page title — no hand-written prose
+duplicates it.
+
+The repo-root `CLAUDE.md` has no shim and is not part of the site: `CONTRIBUTING.md`'s link to it
+resolves in the repository, not in the built site.
 
 ## Building
 
@@ -108,7 +110,7 @@ No document in this repository references the deployed site's URL: the repo stay
 ## What this silo deliberately does not do
 
 - **No versioned docs, no PDF export, no custom theming beyond a stock theme** — each is abstraction
-  without a consumer (FOUNDATIONS §5).
+  without a second consumer (`SYS041`, `SRS086`).
 - **No `needflow` link graph.** sphinx-needs' `needflow` directive needs either PlantUML (a JVM
   dependency) or Graphviz, and Graphviz is not guaranteed to be present on every machine this silo is
   built on; see the note in [`traceability.md`](traceability.md).

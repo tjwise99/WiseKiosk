@@ -6,15 +6,15 @@ level: 1.41
 links: []
 normative: true
 rationale: |
-  FOUNDATIONS §5 — "abstraction without a second consumer," and "if something exists to support a
-  case that does not exist yet, it should not exist yet." SYS024 already forbids this in the
-  module-adding path (no plugin system); this generalizes it system-wide. The sibling §5 residuals are
-  already captured concretely — transport-before-access by SRS043 (frontend polls; no server-push),
-  and production-architecture-serving-a-test by SRS039 (the clock renders client-side) — so this is
-  the one uncaptured row. Decided by judgment at review; inspection is the honest method (no test
-  artifact).
+  Two forbidden patterns generalized: "abstraction without a second consumer," and "if something
+  exists to support a case that does not exist yet, it should not exist yet." SYS024 already forbids
+  this in the module-adding path (no plugin system); this generalizes it system-wide. The sibling
+  anti-patterns are already captured concretely — transport-before-access by SRS043 (frontend polls;
+  no server-push), and production-architecture-serving-a-test by SRS039 (the clock renders
+  client-side) — so this is the one uncaptured case. Decided by judgment at review; inspection is the
+  honest method (no test artifact).
 ref: ''
-reviewed: duSqbaOnifp47cK2RMEy7rr8THC8Cqb35hZ1M46ZSwI=
+reviewed: flc7zNad92_-mjob2BjfvqsrRtrNxKUOmHwGtjuLWuk=
 status: accepted
 text: |
   The system shall not contain an abstraction or extension point that has a single implementation and

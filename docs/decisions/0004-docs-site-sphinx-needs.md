@@ -6,9 +6,8 @@
 ## Context
 
 The only rendered view of this repo's documentation is Doorstop's `just reqs-publish` HTML —
-unusable for its central job: navigating the SYS→SRS→TST traceability chains. Everything else
-([`FOUNDATIONS.md`](../FOUNDATIONS.md), [`ARCHITECTURE.md`](../ARCHITECTURE.md),
-[`TESTING.md`](../TESTING.md), the ADRs, the [LikeC4 model](../architecture/README.md)) is read by
+unusable for its central job: navigating the SYS→SRS→TST traceability chains. Everything else — the
+prose design documents, the ADRs, and the [LikeC4 model](../architecture/README.md) — is read by
 browsing raw files on GitHub, which is a poor primary reading surface. Application code is coming;
 the docs deserve a real home: one static site generated from `docs/`, built in CI, deployed to
 GitHub Pages.
@@ -23,7 +22,7 @@ Constraints the discussion under issue #21 made hard:
 - **No frontmatter, anywhere, ever.** The repo's Markdown and YAML are read first-class by AI
   tooling and humans; sources stay byte-identical GFM. Anything a site needs beyond the sources
   lives in its own files elsewhere in the repo — never embedded metadata.
-- **Siloed toolchain** (FOUNDATIONS §2): own directory, exact-pinned, local venv — the
+- **Siloed toolchain** (SYS035 / SRS072): own directory, exact-pinned, local venv — the
   [`docs/requirements/`](../requirements/README.md) pattern.
 - The site is a *generated view*: the repo stays self-contained (SYS012) and loses nothing if
   Pages disappears; no document may reference the published site.
@@ -104,7 +103,7 @@ unchanged, Python silo, single toolchain) is still met.
   alone holds `write` scopes, kept separate so the verification pipeline's blast radius does not
   grow.
 - **Deliberately unbuilt:** versioned docs, PDF export, custom theming beyond a stock theme —
-  each is abstraction without a consumer today (FOUNDATIONS §5).
+  each would be an abstraction with no second consumer today (SYS041 / SRS086).
 - **Premise that would reopen this:** if sphinx-needs is abandoned, or if the requirements tree
   is ever retired, Sphinx loses its decisive advantage and the trade reverts to MkDocs Material
   on prose ergonomics.

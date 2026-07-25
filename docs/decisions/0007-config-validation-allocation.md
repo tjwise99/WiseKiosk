@@ -7,9 +7,9 @@ a backend-boot-gate draft after owner challenge)
 ## Context
 
 The configuration requirements round could not write testable fail-fast requirements without
-deciding where validation lives. FOUNDATIONS §3 read as contradictory — the frontend "owns"
-`config.json` while the backend "schema-validates at boot and serves it verbatim" — because "owns"
-conflates **whose concerns the keys describe** (module list, positions, display options — all
+deciding where validation lives. The original design sketch read as contradictory — the frontend
+"owns" `config.json` while the backend "schema-validates at boot and serves it verbatim" — because
+"owns" conflates **whose concerns the keys describe** (module list, positions, display options — all
 frontend) with **who delivers the bytes**. The mechanical constraint that survives every option:
 the page runs in a browser on the display host, so config bytes reach it only over HTTP, from the
 origin that already serves the SPA bundle. "Serving the config" means a file sits in the static
@@ -51,7 +51,7 @@ owner challenged it; it fell; the allocation below is what remains when it does.
   shell.
 - **Both sides validate.** Two engines over one schema drift, and the divergence surfaces as a
   validator that accepts what the page rejects — the defect class the single-definition rule
-  exists to kill (FOUNDATIONS §5: no second implementation without a second need).
+  exists to kill — a second implementation built without a second need (SYS041 / SRS086).
 - **Entrypoint check** (frontend-owned plus the same CLI run at container start). Catches a bad
   deploy while the operator is still at the terminal, but ships Node in the image and reintroduces
   hard-exit for the unattended case.
@@ -74,5 +74,5 @@ owner challenged it; it fell; the allocation below is what remains when it does.
 - A healthy healthcheck coexists with a display showing an error report. Accepted, not accidental:
   the mirror is the monitoring surface — nobody watches healthchecks at a family member's house. A
   future observability pass must not "fix" this by re-adding a config-aware healthcheck.
-- FOUNDATIONS §3's backend-validates sentence and §8's "boot validation" phrasing are superseded
-  here; both dissolve under #42.
+- The original backend-validates sentence and "boot validation" phrasing are superseded here; both
+  dissolve under #42.
