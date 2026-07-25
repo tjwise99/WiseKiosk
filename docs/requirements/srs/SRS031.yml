@@ -7,20 +7,21 @@ links:
 - SYS023: 4PXds02kB8g6UDUf9POyDwBRTUlY9WdOm2tpBfxtAlQ=
 normative: true
 rationale: |
-  A drift check proves the generated files are current but not that anyone uses
-  them — a handler or component can declare an identical struct or interface by
-  hand and the gate stays green, and structural typing makes the duplicate
-  compile and render cleanly. Consumption, including the error-render path, is
-  therefore an inspection obligation the currency gate cannot discharge.
+  The failure this forecloses is the hand-declared twin: a struct or interface that mirrors a
+  generated type closely enough to compile and render, and then drifts. Structural typing lets such
+  a twin compile cleanly, which is why the obligation is stated over declaration origin rather than
+  over shape - the compiler reports origin exactly even where it permits assignability. Scoped to
+  modules that have a boundary payload. A local module contributes no boundary fragment (SRS100) and
+  so has no generated payload type to consume; requiring one of every component would contradict
+  SRS039 the way SRS034 did before it was scoped.
 ref: ''
-reviewed: B-wbe7HrUsFqbHvWD-43kMywoOKcHkRl9yZBJmDciY4=
+reviewed: u1oankyMj0FNvExb0oLlh7K2-PO45QoYgBtaqXTEf8U=
 status: accepted
 text: |
-  The generated types shall be the types used on both sides: the backend route
-  handlers shall use the generated request and response types; each module
-  component shall consume its generated success-payload type;
-  and the frontend's per-module error-render path (SYS005) shall consume the
-  generated upstream-failure and rejection body types. No boundary payload,
-  parameter, or error body shall be served or rendered through a hand-declared
+  The generated types shall be the types used on both sides: the backend route handlers shall use
+  the generated request and response types; each module component whose module has a boundary
+  payload shall consume its generated success-payload type; and the frontend's per-module
+  error-render path (SYS005) shall consume the generated upstream-failure and rejection body types.
+  No boundary payload, parameter, or error body shall be served or rendered through a hand-declared
   type on either side.
 verification-method: test

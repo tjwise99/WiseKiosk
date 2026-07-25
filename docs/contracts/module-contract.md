@@ -26,8 +26,10 @@ module.
    upstream response into the frontend payload. Pure functions, no I/O, exercisable in isolation
    against a known upstream response without network access (SRS033).
 2. **A route registration.** Exactly one entry in the static, compile-time list, binding
-   `GET /api/<source>` to that library and carrying the route's parameter validation and cache TTL
-   (SRS034, SRS023, SRS022).
+   `GET /api/<source>` to that library and carrying every policy governing that route: parameter
+   validation, success cache TTL, negative cache TTL, rate limit, outbound timeout, and maximum
+   accepted upstream response size. No such policy is held anywhere else
+   (SRS034, SRS023, SRS022, SRS024, SRS027, SRS028).
 3. **A Svelte component.** Receives the module's configuration and its payload as props and renders
    them into the module's region; it fetches no data, parses no configuration, and validates no
    payload (SRS040). The payload type it consumes is generated from the boundary schema, never
@@ -62,15 +64,17 @@ an operator-tunable configuration key.
 
 ## Adding a module
 
-Steps 1, 3, 4 and 6 apply to an upstream-backed module. A local module does steps 2, 5 and 7, and
-its component renders from configuration or the browser rather than from a payload prop.
+Steps 1, 3, 4 and 6 apply to upstream-backed modules only. Steps 2, 5, 7 and 8 apply to every
+module — a local module's component renders from configuration or the browser rather than from a
+payload prop, but it still has a configuration fragment, a component, the confinement check, and the
+review trigger.
 
 1. Write the shaping library as pure functions, with its unit tests against a captured upstream
    response (SRS033, SRS037).
 2. Add the configuration-schema fragment and check an example configuration with the standalone
    validator (SRS035, SRS008).
-3. Add the registration entry: parameter validation and the route's cache TTL (SRS034, SRS023,
-   SRS022).
+3. Add the registration entry, carrying all six of that route's policies — parameter validation,
+   success TTL, negative TTL, rate limit, outbound timeout, maximum response size (SRS034).
 4. Add the boundary-schema fragment declaring the module's payload; the generated type the component
    consumes comes from composing it into the one boundary schema (SRS100, SRS029, SRS030).
 5. Write the component, plus its render test (SRS040, SRS037). Where the module has a payload, write

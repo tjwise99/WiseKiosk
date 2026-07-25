@@ -1,7 +1,7 @@
 active: true
 derived: false
 header: |
-  Tests are the contract's fifth part; a module is incomplete without them
+  Tests are part of the contract; a module is incomplete without them
 level: 1.37
 links:
 - SYS024: Hn5rIJlgWLcF4C2eS7P0aHqLN91cK86es9PFca9Afv4=

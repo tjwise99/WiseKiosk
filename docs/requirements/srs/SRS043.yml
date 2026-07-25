@@ -24,12 +24,12 @@ rationale: |
   (obtaining live data over time); SYS022's single-origin constraint is already
   carried by SRS042.
 ref: ''
-reviewed: JMw4QfbYy_2jB813mJDnoIlS8G7EmHdsibGjWxBVZ3E=
+reviewed: lFEKW-RvnE89PxWjrkpzLBdhc3nrhUTlNMZ2zFt2y0s=
 status: accepted
 text: |
-  The frontend shall refresh module data by polling and shall depend on no
-  server-pushed channel for data or refresh. Each module shall refresh on its own
-  module-declared cadence, independent of other modules; there shall be no single
-  global refresh interval. The refresh cadence shall be a module-owned constant set
-  by the module author, not an operator configuration key.
+  The frontend shall refresh module data by polling and shall depend on no server-pushed channel for
+  data or refresh. Each module that fetches data shall refresh on its own module-declared cadence,
+  independent of other modules; there shall be no single global refresh interval. The refresh
+  cadence shall be a module-owned constant set by the module author, not an operator configuration
+  key.
 verification-method: test

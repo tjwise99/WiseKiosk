@@ -4,27 +4,27 @@ about: Propose a sixth (or later) module
 labels: module
 ---
 
-A module is a **contract**, not a plugin — see
-[the module contract](../../docs/contracts/module-contract.md). Adding one means adding five things
-in five known places, and it must never require changing the framework. Confirm each is thought
-through:
+A module is a **contract**, not a plugin. The parts, the two module shapes, and the order to build
+them in are defined once, in
+[the module contract](../../docs/contracts/module-contract.md) — follow it there rather than a copy
+here. Adding a module must never require changing the framework (`SRS036`).
 
-**What it displays and from which upstream API**
+**What it displays, and from which upstream API — or none**
 
-<!-- The data source, its refresh cadence, and whether it needs a key. -->
+<!-- The data source, its refresh cadence, and whether it needs a key. A module that fetches nothing
+     — a clock, a local list — is a local module and has three of the six parts. -->
 
-**The five parts**
+**Shape**
 
-- [ ] **Shaping library** — pure functions turning the upstream response into the render payload
-      (`SRS033`).
-- [ ] **Route registration** — one `/api/<source>` entry, with parameter validation and cache TTL
-      (`SRS034`).
-- [ ] **Svelte component** — renders the payload (`SRS040`); its type is *generated from the boundary
-      schema* (`SRS031`).
-- [ ] **Config schema fragment** — what this module accepts, validated at apply time and by the
-      standalone validator (`SRS035`).
-- [ ] **Tests** — shaping-library unit tests, a component render test, and a malformed-input
-      rejection test (`SRS037`, TESTING.md).
+- [ ] Upstream-backed (six parts) — or —
+- [ ] Local, fetches nothing (component, configuration fragment, tests)
+
+**Before opening a PR**
+
+- [ ] Every part its shape requires is present, per the module contract.
+- [ ] No shared framework file was edited beyond the registration entry (`SRS036`).
+- [ ] The test-architecture review trigger was run — adding a module is one
+      (`SYS034`, [TESTING.md](../../docs/TESTING.md)).
 
 **Does it need anything new from the framework?** If yes, that is a finding to discuss first — the
 answer is usually no.

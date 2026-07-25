@@ -18,7 +18,7 @@ Each tier states what it **guarantees** and when it runs.
 | **Unit** | Shaping libraries transform known upstream responses into correct payloads. Pure, fast, no network | SRS033 | Every commit, in CI |
 | **Boundary** | The frontend and backend agree on every value that crosses: parameter names *and types*, success payloads, the structured upstream-failure body, the client-error rejection body, and every status code the frontend discriminates on | SYS023 / SRS029 | Every commit, in CI |
 | **Integration** | Routes serve; the TTL cache honours its TTL; parameter validation rejects bad input; config validation fails loudly on bad config | SRS020 / SRS022 / SRS023 / SRS005 | Every commit, in CI |
-| **Render** | Each module renders its payload; the page assembles with a known-good config | SRS040 / SRS041 | Every commit, in CI |
+| **Render** | Each module renders from its props; the page assembles with a known-good config | SRS040 / SRS041 | Every commit, in CI |
 | **Contract** | Upstream APIs still return what the shaping libraries expect | — (placement: SYS019 / SRS019) | Locally, outside CI — needs real keys, and CI holds none |
 
 The Boundary row enumerates the value classes deliberately: "payload shape and parameter name" reads
@@ -74,7 +74,7 @@ prose alone.
 - **Every value crossing the frontend/backend boundary is generated from one definition**
   → SYS023 / SRS029 / SRS030 / SRS031 / SRS032, and
   [above](#the-boundary-tier-is-generated-not-hand-written).
-- **Every module supplies unit tests for its shaping library and a render test for its component**
+- **Every module supplies a render test for its component, and — where it fetches an upstream — unit tests for its shaping library**
   → SRS037. A module missing either is an incomplete module, not a passing one.
 - **Every config schema rejects a realistic malformed input, in a test** → SRS005 (a failing config
   is never applied, in whole or in part) and SRS007 (an unknown key is rejected and named). The

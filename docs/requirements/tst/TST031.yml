@@ -11,9 +11,10 @@ ref: ''
 status: proposed
 text: |
   Pending: test asserting no struct type outside the generated package declares JSON tags for a
-  boundary payload, parameter, or error body; and, on the frontend, that each module component's
-  payload prop type, and the error-render path's failure and rejection prop types, resolve to
-  declarations under the generated boundary directory. Fails on a hand-declared twin, which compiles
-  and renders cleanly under structural typing - the compiler reports declaration origin even where
-  it permits assignability. Lands with the codegen mechanism (#7).
+  boundary payload, parameter, or error body; and, on the frontend, that for each module holding a
+  boundary fragment the component's payload prop type, and the error-render path's failure and
+  rejection prop types, resolve to declarations under the generated boundary directory. A module
+  with no fragment has no payload prop and is not expected to have one. Fails on a hand-declared
+  twin, which compiles and renders cleanly under structural typing. Lands with the codegen mechanism
+  (#7).
 verification-method: test
