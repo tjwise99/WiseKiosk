@@ -4,7 +4,7 @@ header: |
   Frontend polls; each module refreshes on its own module-owned cadence
 level: 1.43
 links:
-- SYS020: NfdW-FS-JHgzypQXWbo9MTkZZvjslZko1suFru3-bH4=
+- SYS022: 2KYQBUxL0nUSLnTIyJxE9rWv8AkCpl5oJmNn98re-ck=
 normative: true
 rationale: |
   The refresh is frontend-driven; a server-push channel for ten-to-fifteen-minute
@@ -24,7 +24,7 @@ rationale: |
   (obtaining live data over time); SYS022's single-origin constraint is already
   carried by SRS042.
 ref: ''
-reviewed: R7LavsntvpENOdA0MxuYkxBwRpGPM9FuRY93W_iuUmk=
+reviewed: JMw4QfbYy_2jB813mJDnoIlS8G7EmHdsibGjWxBVZ3E=
 status: accepted
 text: |
   The frontend shall refresh module data by polling and shall depend on no

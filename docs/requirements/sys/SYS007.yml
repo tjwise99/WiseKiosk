@@ -1,20 +1,24 @@
 active: true
 derived: false
 header: |
-  One image; customization through configuration only
+  One image serves every deployment, independently configured
 level: 1.7
 links: []
 normative: true
 rationale: |
-  One published image serving many independent deployments, each customised
-  by its own configuration, is the entire reason this repository exists.
-  Per-deployment forks or rebuilds would fragment it.
+  One published image serving many independent deployments, each customised by its own
+  configuration, is the entire reason this repository exists. Per-deployment forks or rebuilds would
+  fragment it.
+
+  The fork prohibition is recorded here rather than as an obligation. Whether someone clones this
+  repository and patches it for their own house is a fact about what exists outside it, which no
+  check run inside it can falsify; stated as a shall it read as enforced and was not. What is
+  enforceable is the positive form above - one image, configuration-only customisation, instance
+  independence - which SRS044, SRS045 and SRS046 verify.
 ref: ''
-reviewed: XQ-nwWSE_19RZzvbJvX5FgezARrcLDgoTrz5ztQupKc=
+reviewed: hz1yG9Kf4numR8kMSe-btITv-kgV4P6qWzkOWA-lNNw=
 status: accepted
 text: |
-  WiseKiosk shall be published as one container image. Per-deployment
-  customization shall occur through configuration only, never through a
-  per-deployment fork, branch, or rebuild. One deployed instance shall serve
-  exactly one configuration.
-verification-method: inspection
+  One published container image shall serve every deployment. Each deployment shall be customised
+  solely by its own configuration, and shall be independent of every other deployment.
+verification-method: test

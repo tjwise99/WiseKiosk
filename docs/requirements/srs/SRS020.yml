@@ -4,7 +4,7 @@ header: |
   Stateless GET /api/<source> returns the shaped payload
 level: '1.20'
 links:
-- SYS020: NfdW-FS-JHgzypQXWbo9MTkZZvjslZko1suFru3-bH4=
+- SYS022: 2KYQBUxL0nUSLnTIyJxE9rWv8AkCpl5oJmNn98re-ck=
 normative: true
 rationale: |
   The payload's shape is defined once by the boundary contract (#37) and
@@ -13,7 +13,7 @@ rationale: |
   definition. Statelessness is stated as an observable so it can be tested
   rather than asserted.
 ref: ''
-reviewed: xL2DoR2hHf0lMQFQYtYUy80Vzq1rheBfN8ALUbPlo7o=
+reviewed: DGWgLILvl3mW2EWPt6QXZi1UpEI8qESowVq3-ilCGkA=
 status: accepted
 text: |
   For each supported external source, the backend shall expose a stateless
