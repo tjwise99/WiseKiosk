@@ -23,3 +23,4 @@ decision, and rejected alternatives stay as written.
 | [0006](0006-process-gates.md) | 2026-07-22 | Process gates: branches named type_number-snake_name, typed by ticket template and linked to an open issue; Conventional-Commit PR titles |
 | [0007](0007-config-validation-allocation.md) | 2026-07-23 | Config validation is frontend-owned: one TS engine runs in the page and as the desk CLI; the backend is config-blind |
 | [0008](0008-boundary-contract-openapi-codegen.md) | 2026-07-23 | Boundary contract: one OpenAPI schema (3.0.3 now, 3.1 later), Go + TypeScript types generated from it, CI drift-gated; frontend types-only |
+| [0009](0009-verification-justification-attribute.md) | 2026-07-24 | Every non-`test` item stores a `verification-justification` naming what blocks a mechanical check; fingerprint-fenced |
