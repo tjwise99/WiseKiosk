@@ -12,11 +12,12 @@ rationale: |
   failure for the full success TTL would instead pin a transient blip for 10–15
   minutes. A short negative TTL is the middle course. The value is chosen in #6.
 ref: ''
-reviewed: CD8Ow7vCkfhC3tlXvrsRAq7h622ZnZ89s7hr28oNucw=
+reviewed: RGkcsIDe_jSDg2JuYeeYwLFMR5iCzlwdnlZ0B5-yUg8=
 status: accepted
 text: |
   The backend shall cache an upstream failure for a negative time-to-live
-  shorter than the source's success TTL, so that a sustained upstream outage
-  does not cause an upstream request on every incoming request, while still
-  letting the module recover promptly once the upstream returns.
+  carried by that route's registration entry (SRS034), shorter than that
+  route's success TTL, so that a sustained upstream outage does not cause an
+  upstream request on every incoming request. The next request after the
+  negative TTL elapses shall refetch from upstream.
 verification-method: test

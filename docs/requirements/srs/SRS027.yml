@@ -12,11 +12,14 @@ rationale: |
   a hung or oversized upstream could stall the handler or exhaust the single
   process. This item imposes the bounds that make those failure classes real.
 ref: ''
-reviewed: Ylvr1cIsdBuGdWyMU7eW9_HyS7532JplfcllQIMqpYg=
+reviewed: wldUb-D4P8zwdSl7se0oflUptoeWqr4XOPj-X9SENpg=
 status: accepted
 text: |
-  The backend shall impose an outbound timeout on each upstream request and a
-  maximum size on each upstream response it will accept. Exceeding either shall
-  be handled as an upstream failure (the timeout or malformed-response classes
-  of SRS001) and shall not wedge the request handler or exhaust process memory.
+  The backend shall impose on each upstream request the outbound timeout, and
+  on each upstream response the maximum accepted size, carried by that route's
+  registration entry (SRS034). Exceeding either shall be handled as an upstream
+  failure (the timeout or malformed-response classes of SRS001). On exceeding
+  the size bound the backend shall stop reading after at most the bound plus one
+  buffer, and the request handler shall remain able to serve subsequent
+  requests.
 verification-method: test

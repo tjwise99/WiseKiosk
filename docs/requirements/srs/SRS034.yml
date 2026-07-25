@@ -13,11 +13,14 @@ rationale: |
   not the route's runtime behaviour; the per-route cache TTL it carries is the
   one governed by SRS022.
 ref: ''
-reviewed: UaqQuiebwCMQhZEuUsfvaUsXVWc31ogGz5oJuPU8O1A=
+reviewed: wQSZSOI9FQlLy6mstLmCspC3Eej4u8o71TJdXMD9JmQ=
 status: accepted
 text: |
   Each module shall be bound to its GET /api/<source> route by exactly one
-  registration entry in a static list resolved at compile time, carrying that
-  route's parameter validation and cache TTL. The backend shall implement no
-  runtime module registry, no route discovery, and no dynamic route loading.
+  registration entry in a static list resolved at compile time. The entry shall
+  carry every policy governing that route: its parameter validation, its success
+  cache TTL, its negative cache TTL, its rate limit, its outbound timeout, and
+  its maximum accepted upstream response size. No such policy shall be held
+  anywhere else. The backend shall implement no runtime module registry, no
+  route discovery, and no dynamic route loading.
 verification-method: inspection

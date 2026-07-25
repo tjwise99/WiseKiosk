@@ -16,12 +16,14 @@ rationale: |
   fixes the mechanism and that the TTL is a code constant, not a tunable key
   (consistent with SRS011).
 ref: ''
-reviewed: SvRFR7V52YOwiyTusdXabx08j7XZmRnUb-Xb6n6TOB0=
+reviewed: _GnV7SsaCwlnAzLqc-gsZUkrk-FVqDfkhaV-X_31-Mo=
 status: accepted
 text: |
   The backend shall cache upstream responses in a time-to-live cache keyed on
   the pair (source, request query string). Within a key's TTL an identical
   request shall be served from the cache without issuing an upstream request;
   after the TTL expires, the next request for that key shall refetch from
-  upstream. Each source's TTL shall be a constant fixed in code.
+  upstream. Each source's TTL shall be the value carried by that route's
+  registration entry (SRS034) - a compile-time constant, never an
+  operator-tunable configuration key.
 verification-method: test

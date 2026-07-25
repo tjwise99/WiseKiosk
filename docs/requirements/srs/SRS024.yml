@@ -15,12 +15,13 @@ rationale: |
   hit issues no upstream request and so needs no limiting.
   Thresholds are chosen in #6.
 ref: ''
-reviewed: _HaEgMpTqPYL63XduDcWDshzPjAzyGMLND_uyCbyn9k=
+reviewed: QnsTMFBOt1xmS89F1XDf-x-hGZ2Yo39OqE-_7qbB9hc=
 status: accepted
 text: |
   Each proxy route shall enforce a rate limit that is global to the route, not
-  per client address. The limit shall gate the upstream path only: a request
-  served from the cache shall be neither counted against the limit nor rejected
-  by it. A request that exceeds its route's limit shall be rejected without
-  issuing an upstream request.
+  per client address, at the value carried by that route's registration entry
+  (SRS034). The limit shall gate the upstream path only: a request served from
+  the cache shall be neither counted against the limit nor rejected by it. A
+  request that exceeds its route's limit shall be rejected without issuing an
+  upstream request.
 verification-method: test
