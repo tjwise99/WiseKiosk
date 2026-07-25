@@ -4,7 +4,7 @@ header: |
   Short-lived negative caching of upstream failures
 level: 1.28
 links:
-- SYS021: szam5gPHPMXdmfL7WtI-9KiX_Buai2NqsFGsqXwXkB8=
+- SYS021: AKm_dHwE6HKZi7Hifk9N5RxoXvr0MXX7kBUcgRlsOsw=
 normative: true
 rationale: |
   Without negative caching, every client request during an outage retries

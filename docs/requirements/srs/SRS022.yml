@@ -4,7 +4,7 @@ header: |
   TTL response cache keyed on source and query string
 level: 1.22
 links:
-- SYS021: szam5gPHPMXdmfL7WtI-9KiX_Buai2NqsFGsqXwXkB8=
+- SYS021: AKm_dHwE6HKZi7Hifk9N5RxoXvr0MXX7kBUcgRlsOsw=
 normative: true
 rationale: |
   The cache provides request dedupe and upstream politeness for a 10–15 minute

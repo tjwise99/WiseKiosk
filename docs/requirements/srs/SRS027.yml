@@ -4,7 +4,7 @@ header: |
   Outbound upstream timeout and response-size bound
 level: 1.27
 links:
-- SYS021: szam5gPHPMXdmfL7WtI-9KiX_Buai2NqsFGsqXwXkB8=
+- SYS021: AKm_dHwE6HKZi7Hifk9N5RxoXvr0MXX7kBUcgRlsOsw=
 normative: true
 rationale: |
   SYS021 bounds the system's upstream use in volume, and SRS001 reports a
