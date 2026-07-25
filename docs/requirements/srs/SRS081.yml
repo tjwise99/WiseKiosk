@@ -4,15 +4,21 @@ header: |
   Each architecture element's link to real code is checked in review
 level: 1.81
 links:
-- SYS038: jzRACTZ93mPwIqQNfJ_4Be7yhIgkdEg3_Cb30ec3YtU=
+- SYS037: YBd-Vw7RN37YKfqQFzxBdH_we306Fr2alSZjJp40xi4=
 normative: true
 rationale: |
   Cites ADR 0003 ("Model-vs-real-code drift is not auto-verified... carried by review").
 
+  Parented to SYS037 rather than SYS038. SYS038 is scoped to generated artifacts being regenerated
+  and failing on drift; a link pointing at the wrong source is not generator drift, and holding it
+  there made a wholly mechanical need answer for a judgement no check makes. The architecture model
+  is the canonical home for the system's structure, so a link that no longer reaches its
+  implementation is that home describing something absent.
+
   TST `model-to-code-link-review` — verification-method: inspection — PENDING (active: false) —
   header `Pending: model-to-code link review`; activated when first-party source exists.
 ref: ''
-reviewed: kkqxLooRK4WgKZRKUfO-8d20dt7qGTWDc327umcqzfk=
+reviewed: x8AXT_neZgd2BH2TxuiJBi_vfafXHnl-gvPYr4G5xdI=
 status: accepted
 text: |
   Every `link` in the LikeC4 architecture model shall resolve to a tracked path (asserted with the
