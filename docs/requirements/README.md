@@ -134,15 +134,17 @@ docs/requirements/.venv/bin/pip install -r docs/requirements/requirements-dev.tx
 Then:
 
 ```sh
-just check-reqs      # docs/requirements/.venv/bin/doorstop --error-all  — the strict gate (fails on any issue)
+just check-reqs      # doorstop --error-all, then check-method-consistency.py — the strict gate
 just verify          # runs check-reqs alongside the other repo gates
 ```
 
-`just check-reqs` runs the **exact** command CI runs (see
+`just check-reqs` runs the **exact** commands CI runs (see
 [`../../.github/workflows/checks.yml`](../../.github/workflows/checks.yml), job `requirements`):
-`docs/requirements/.venv/bin/doorstop --error-all`. The `--error-all` flag promotes Doorstop's suspect / unreviewed /
-orphan / unresolved-reference warnings to errors, so the process exits non-zero and the gate actually
-blocks — plain `doorstop` only warns.
+`docs/requirements/.venv/bin/doorstop --error-all`, then `scripts/check-method-consistency.py`. The
+`--error-all` flag promotes Doorstop's suspect / unreviewed / orphan / unresolved-reference warnings
+to errors, so the process exits non-zero and the gate actually blocks — plain `doorstop` only warns.
+`check-verify-ci-parity` asserts the correspondence one command at a time, so a command added to the
+recipe and not to CI fails rather than passing unseen.
 
 The browsable, click-through traceability view of this tree (needtables, link graphs, matrices) is
 built by the documentation site silo, [`../site/README.md`](../site/README.md) (ADR 0004); this

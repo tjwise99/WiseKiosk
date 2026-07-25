@@ -20,16 +20,19 @@ const fail = (msg) => {
   process.exit(1);
 };
 
-// Each `just verify` check → a stable token proving the same work runs in CI
-// (the script path or command it runs).
+// Each `just verify` check → every token proving the same work runs in CI (the
+// script path or command each of the recipe's commands runs). A recipe running
+// more than one command lists one token per command: mapping a recipe to a single
+// token hides any command added to it afterwards, which is how a check reached
+// `just verify` without reaching CI.
 const CHECK_TOKENS = {
-  "check-links": "scripts/check-links.mjs",
-  "check-eol": "git grep -lIP '\\r$'",
-  "check-branch": "scripts/check-branch.sh",
-  "check-reqs": "doorstop --error-all",
-  "check-arch": "scripts/splice-arch-diagrams.mjs",
-  "check-site": "docs/site/doorstop_to_needs.py",
-  "check-verify-ci-parity": "scripts/check-verify-ci-parity.mjs",
+  "check-links": ["scripts/check-links.mjs"],
+  "check-eol": ["git grep -lIP '\\r$'"],
+  "check-branch": ["scripts/check-branch.sh"],
+  "check-reqs": ["doorstop --error-all", "scripts/check-method-consistency.py"],
+  "check-arch": ["scripts/splice-arch-diagrams.mjs"],
+  "check-site": ["docs/site/doorstop_to_needs.py"],
+  "check-verify-ci-parity": ["scripts/check-verify-ci-parity.mjs"],
 };
 
 // CI steps with no local equivalent — exempted by name, not mapped from `just verify`.
@@ -53,9 +56,11 @@ for (const check of Object.keys(CHECK_TOKENS)) {
   }
 }
 
-for (const [check, token] of Object.entries(CHECK_TOKENS)) {
-  if (!workflowText.includes(token)) {
-    fail(`'${check}' (token '${token}') is in \`just verify\` but not found in .github/workflows/checks.yml`);
+for (const [check, tokens] of Object.entries(CHECK_TOKENS)) {
+  for (const token of tokens) {
+    if (!workflowText.includes(token)) {
+      fail(`'${check}' (token '${token}') is in \`just verify\` but not found in .github/workflows/checks.yml`);
+    }
   }
 }
 
@@ -71,7 +76,7 @@ for (const chunk of stepChunks) {
   const stepName = nameMatch[1].trim();
   if (stepName.startsWith("Install ")) continue;
   const covered =
-    Object.values(CHECK_TOKENS).some((token) => chunk.includes(token)) ||
+    Object.values(CHECK_TOKENS).flat().some((token) => chunk.includes(token)) ||
     CI_ONLY_ALLOWLIST.some((token) => chunk.includes(token));
   if (!covered) {
     fail(
@@ -82,5 +87,5 @@ for (const chunk of stepChunks) {
 }
 
 console.log(
-  `verify ⊆ CI holds: ${verifyChecks.length} check(s) mapped, ${CI_ONLY_ALLOWLIST.length} CI-only exception(s) named.`,
+  `verify ⊆ CI holds: ${verifyChecks.length} recipe(s), ${Object.values(CHECK_TOKENS).flat().length} command(s) mapped, ${CI_ONLY_ALLOWLIST.length} CI-only exception(s) named.`,
 );
