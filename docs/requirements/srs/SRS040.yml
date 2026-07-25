@@ -1,31 +1,28 @@
 active: true
 derived: false
 header: |
-  Module component renders from props; owns no cross-cutting policy
+  Module components render from props and reach nothing else
 level: '1.40'
 links:
 - SYS024: Hn5rIJlgWLcF4C2eS7P0aHqLN91cK86es9PFca9Afv4=
 normative: true
 rationale: |
-  The module contract defines its Svelte-component part: it
-  renders the payload and receives its config as props. This item fixes the
-  component's role and boundaries — it renders what it is given and owns no
-  cross-cutting policy — the frontend expression of the principle that a component
-  turns a payload and config into pixels while data fetching, configuration
-  parsing, and payload validation live at known edges (the refresh path SRS043,
-  the config gate of ADR 0007, the boundary contract SRS031/SRS032), not smeared
-  through the component tree. It is distinct from SRS031, which fixes that the
-  component consumes the generated payload type rather than a hand-declared one;
-  this item is about the component's responsibilities, not its typing. The shape
-  of the config props is defined by the module's config schema fragment (config
-  domain), not here. Parented to the module-contract SYS024, of which the Svelte
-  component is contract part three.
+  Props are the whole interface. A component that reaches past them for data or configuration
+  reintroduces the coupling the module contract exists to prevent, and it does so invisibly - the
+  component still renders, and nothing fails until the shape it reached for moves. The payload prop
+  is conditional because a local module has none (SRS039, and the two module shapes in the module
+  contract); requiring one of every component contradicted the clock exactly as SRS034 did before it
+  was scoped. Payload validation is deliberately not stated here. It is SRS032's obligation under
+  SYS041, where it is honestly inspected: a defensive type or null guard is indistinguishable from
+  render logic to any check, so a copy of that clause in this item claimed a machine settles what a
+  reader has to. The word "solely" is dropped for the same reason - the prohibitions are what it
+  meant, and it added nothing a check could use.
 ref: ''
-reviewed: 4lng2Xeylj1V2l2YDyoWBnb1VLQioZGnCyw2c3Ll0Gg=
+reviewed: r2KXIhS3pPYS_ERoDYVoe09QKsmkEOu-Q-4WTuG-m4s=
 status: accepted
 text: |
-  Each display module shall be rendered by a Svelte component that receives its
-  configuration and its payload as props and is responsible solely for rendering
-  them into the module's region. The component shall perform no data fetching, no
-  configuration parsing, and no payload validation of its own.
+  Each display module shall be rendered by a Svelte component that receives its configuration as a
+  prop, and - where the module has one - its payload as a prop, and renders them into the module's
+  region. The component shall issue no data fetch and shall not read the configuration source
+  directly: every configuration value it uses shall arrive as a prop.
 verification-method: test

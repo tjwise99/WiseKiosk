@@ -1,7 +1,7 @@
 active: false
 derived: false
 header: |
-  Pending: component-renders-from-props render test
+  Pending: component renders from props alone
 level: '1.40'
 links:
 - SRS040: null
@@ -10,10 +10,8 @@ rationale: ''
 ref: ''
 status: proposed
 text: |
-  Pending: render test that each module component renders a supplied payload and
-  config props into its region and issues no data fetch, configuration parse, or
-  payload validation of its own. Covers what the render test checks; the
-  module-supplies-both-tests completeness obligation is the software-architect's
-  SRS037 meta-check — cross-referenced, not re-derived here. Lands with the
-  frontend skeleton (#10); activated and given a references entry then.
+  Pending: test rendering each module component with only its props supplied and the network globals
+  stubbed - fetch, XMLHttpRequest, WebSocket, EventSource - asserting zero calls to any of them,
+  that the rendered region reflects the supplied props, and that the component's module graph does
+  not reach the configuration source. Lands with the first module (#12).
 verification-method: test

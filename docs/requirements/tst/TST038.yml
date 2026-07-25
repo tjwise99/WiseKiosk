@@ -1,7 +1,7 @@
 active: false
 derived: false
 header: |
-  Pending: static-bundle / no-router inspection
+  Pending: build output is static, with a reviewed runtime dependency set
 level: 1.38
 links:
 - SRS038: null
@@ -10,8 +10,10 @@ rationale: ''
 ref: ''
 status: proposed
 text: |
-  Pending: inspection that the frontend build emits a single static bundle served
-  as static files, with no server-rendered markup and no routing library or
-  meta-framework runtime reaching the shipped bundle. Lands with the frontend
-  skeleton (#10); activated and given a references entry then.
-verification-method: inspection
+  Pending: test asserting the build emits exactly one HTML entry whose mount element is empty, that
+  no server-entry chunk is produced and the build configuration declares no SSR target or adapter,
+  and that the set of npm packages appearing in the emitted module graph is a subset of a committed
+  allowlist manifest. The allowlist is deliberate: a denylist of named routers and meta-frameworks
+  fails open the first time someone hand-rolls a hash router, and any new runtime dependency should
+  fail until it is reviewed. Lands with the frontend skeleton (#10).
+verification-method: test

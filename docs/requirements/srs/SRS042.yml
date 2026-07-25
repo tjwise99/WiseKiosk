@@ -17,10 +17,10 @@ rationale: |
   (#40), handed off there so a single owner holds the CSP requirement and the two
   do not double-declare.
 ref: ''
-reviewed: uoGqawXlhyYUfJJxEvbUpylbqi8y_yrcMT1OF4ipbNc=
+reviewed: RopZ1SyfQWNbVCHr2R0gmdBe0NxqcWSWsbDCTxT_WWI=
 status: accepted
 text: |
   The display page shall obtain all module data by fetching the backend's
   same-origin /api/<source> routes. It shall issue no direct cross-origin request
   to any upstream data source.
-verification-method: inspection
+verification-method: test

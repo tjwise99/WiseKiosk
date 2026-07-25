@@ -16,10 +16,10 @@ rationale: |
   realistic regression — a contributor reaching for a router or an SSR adapter —
   at CI rather than in review prose.
 ref: ''
-reviewed: _SZCjVWEH-_37ADDomAY7N8CAJFqXC0mP7BLaQ7c5Qw=
+reviewed: UCZmNdPOYJWu3cGv1jJqXX1o24_9iTnGjiCOImUNkFA=
 status: accepted
 text: |
   The frontend shall build to a static single-page bundle served as static files.
   The build shall emit no server-rendered markup, and the shipped bundle shall
   contain no routing library and no meta-framework runtime.
-verification-method: inspection
+verification-method: test

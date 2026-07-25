@@ -1,7 +1,7 @@
 active: false
 derived: false
 header: |
-  Pending: polling-cadence inspection
+  Pending: polling only, on independent module-owned cadences
 level: 1.43
 links:
 - SRS043: null
@@ -10,8 +10,11 @@ rationale: ''
 ref: ''
 status: proposed
 text: |
-  Pending: inspection that module data refresh is poll-based with no server-push
-  client, and that each module's refresh cadence is a module-owned constant rather
-  than an operator configuration key. Lands with the frontend skeleton (#10);
-  activated and given a references entry then.
-verification-method: inspection
+  Pending: test asserting WebSocket and EventSource appear nowhere in the shipped bundle and are
+  never constructed during a page render - they are the platform's only push primitives, so their
+  absence is decidable rather than a denylist; rendering the assembled page under fake timers and
+  advancing to one module's cadence to assert exactly one refetch for it and none for another, then
+  the reverse; and asserting the composed configuration schema declares no refresh, cadence, or
+  interval property, which is the strongest clause and a single assertion over one artifact. Lands
+  with the frontend skeleton (#10).
+verification-method: test

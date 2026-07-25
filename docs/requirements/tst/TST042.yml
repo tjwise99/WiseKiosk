@@ -1,7 +1,7 @@
 active: false
 derived: false
 header: |
-  Pending: same-origin-fetch inspection
+  Pending: page fetches same-origin only, statically and at runtime
 level: 1.42
 links:
 - SRS042: null
@@ -10,9 +10,10 @@ rationale: ''
 ref: ''
 status: proposed
 text: |
-  Pending: inspection/render check that the page issues no direct cross-origin
-  request and obtains all module data via the same-origin /api routes. CSP
-  connect-src 'self' enforcement is verified in the security domain (#40), not
-  here. Lands with the frontend skeleton (#10); activated and given a references
-  entry then.
-verification-method: inspection
+  Pending: test scanning the shipped bundle for absolute-URL literals and failing on any origin
+  other than the page's own, which catches paths no render exercises; and assembling the page under
+  a known-good configuration with request interception, asserting every request origin equals the
+  page origin and every module data request matches /api/<source>. SRS065's connect-src policy makes
+  a cross-origin fetch fail in the browser regardless, so the two together close the case rather
+  than sample it. Lands with the frontend skeleton (#10).
+verification-method: test
