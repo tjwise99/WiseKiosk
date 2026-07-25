@@ -16,12 +16,11 @@ rationale: |
   built image, including base-layer packages the application never imports, is
   SYS029.
 ref: ''
-reviewed: tMsclKoaX_K5Ky22TJz-N1RFnYVaIosKPkFaD4BfGPM=
+reviewed: EmesL75K_tqB4o4cku8TyLVL39wXPUKL4WqTwjIWRts=
 status: accepted
 text: |
-  The project shall not merge a change that introduces a dependency with a
-  known vulnerability, and shall keep its dependency set current through
-  automated update proposals. Continuous integration shall fail a pull request
-  when any resolved dependency has a known vulnerability at or above the
-  configured severity threshold.
+  The project shall not merge a change that introduces a dependency with a known vulnerability at
+  any severity, unless that finding carries a current, justified, expiring exception, and shall keep
+  its dependency set current through automated update proposals. Continuous integration shall fail a
+  pull request on any unexcepted such finding.
 verification-method: test

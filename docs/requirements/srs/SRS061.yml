@@ -4,7 +4,7 @@ header: |
   Automated grouped dependency updates
 level: 1.61
 links:
-- SYS028: tMsclKoaX_K5Ky22TJz-N1RFnYVaIosKPkFaD4BfGPM=
+- SYS028: EmesL75K_tqB4o4cku8TyLVL39wXPUKL4WqTwjIWRts=
 normative: true
 rationale: |
   Grouped updates keep a solo change-log legible and keep the vulnerability

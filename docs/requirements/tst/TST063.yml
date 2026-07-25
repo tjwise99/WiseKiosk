@@ -10,8 +10,10 @@ rationale: ''
 ref: ''
 status: proposed
 text: |
-  Pending: check asserting a pinned npm dependency with a known advisory at or above the gate's
-  severity threshold fails the dependency-vulnerability job (expected: npm audit). Fails if a
-  vulnerable pin at or above the threshold passes. Lands with package.json; activated with a
-  references entry to the fixture then. Owned by #67.
+  Pending: check that materialises a fixture pinning an npm dependency with a known advisory into a
+  temporary tree (ADR 0010), runs the same dependency-vulnerability invocation the production job
+  runs, and asserts a non-zero exit; asserts the same fixture bumped past the advisory exits zero,
+  and that an advisory carrying a current register entry (SRS098) does not fail. Lands with
+  package.json; activated with a references entry to the fixture and the meta-gate then. Owned by
+  #67.
 verification-method: test

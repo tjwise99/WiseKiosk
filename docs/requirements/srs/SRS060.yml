@@ -4,7 +4,7 @@ header: |
   Dependency vulnerability gate
 level: '1.60'
 links:
-- SYS028: tMsclKoaX_K5Ky22TJz-N1RFnYVaIosKPkFaD4BfGPM=
+- SYS028: EmesL75K_tqB4o4cku8TyLVL39wXPUKL4WqTwjIWRts=
 normative: true
 rationale: |
   Turns "a dependency should be updated" into "merge is blocked". The
