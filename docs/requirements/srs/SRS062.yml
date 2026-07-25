@@ -10,12 +10,12 @@ rationale: |
   Gates the whole image - operating-system and base-layer packages included -
   which the source-level dependency gate never inspects.
 ref: ''
-reviewed: YS1HIlcALRrHcRYhXpSGY0Frgf53QuQygVD2MLdj8rY=
+reviewed: It9IEuaieyFExff4Uw8973pWoKVzeRUL5_umaTEwkjk=
 status: accepted
 text: |
   Continuous integration shall scan the built container image for known
-  vulnerabilities and shall fail the build when a finding of CRITICAL severity
-  is present. Every finding the scan produces, at any severity, shall be
-  reported in the job's output; the gate threshold shall govern what fails,
-  never what is reported.
+  vulnerabilities and shall fail the build when any finding is present, at any
+  severity, unless that finding has a current entry in the
+  vulnerability-exception register (SRS098). Every finding shall be reported in
+  the job's output, at any severity and regardless of exception status.
 verification-method: test

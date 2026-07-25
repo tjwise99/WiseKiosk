@@ -1,0 +1,25 @@
+active: false
+derived: false
+header: |
+  Pending: register entries are complete, current, and matched to real findings
+level: 1.15
+links:
+- SRS098: null
+normative: true
+rationale: |
+  Both directions are asserted because either alone leaves a hole. Checking only that entries are
+  well-formed permits an entry for a finding no scan produces — an exception that outlives what it
+  excused. Checking only that suppressed findings have entries permits a stale entry to accumulate
+  silently. The expiry assertion is the one that fails on its own over time, with no change to the
+  repository, which is the point of it.
+ref: ''
+status: proposed
+text: |
+  Pending: check asserting that every vulnerability-exception register entry carries an advisory
+  identifier, a no-fix-available statement, a no-viable-alternative statement, and a review date
+  within 90 days; that no entry is past its review date; that every finding suppressed in the
+  dependency or image scan output has a matching current entry; that no entry matches a finding in
+  first-party source; and that no entry exists for an advisory no scan reports. Lands with the
+  dependency and image scan jobs.
+verification-justification: ''
+verification-method: test
