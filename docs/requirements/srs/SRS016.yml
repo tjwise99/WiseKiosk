@@ -5,7 +5,7 @@ header: |
 level: 1.16
 links:
 - SYS005: ZL5TKFyrHPDZmdc6CDmpAIXf-LWQrkNsQgQ4L5IlYhY=
-- SYS018: XbqkgZn-AXeUwSMDNSKdZOY8fp57KO6Xe2SeCuCGgVM=
+- SYS018: UYgb2CzlxUsfeCdSoRZMga2gkxSKrcx6c4NyhXvFUSM=
 normative: true
 rationale: |
   The backend is config-blind (ADR 0007) and cannot know which sources a

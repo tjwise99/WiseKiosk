@@ -18,7 +18,7 @@ rationale: |
   test runners (go.mod / Vitest config); activated with a `references` entry then. The requirements
   tier is already covered by `doorstop --error-all` — do not re-encode it here.
 ref: ''
-reviewed: VQTj06C4dw5NvYkTjaPJDM9rOdZlB_ZsX9yMPy0jXxA=
+reviewed: hinXA-FpDpOB475foj4PVs0Fe82kf4tckwlVRRV-gkM=
 status: accepted
 text: |
   Each language test runner shall be invoked in its whole-tree discovery form (e.g. `go test ./...`,
@@ -27,4 +27,4 @@ text: |
   CI by its location alone. A negative gate fixture committed as data and materialised into a
   temporary tree at run time is not an exclusion under this requirement: it is not a committed test
   file, so whole-tree discovery has nothing to silence.
-verification-method: inspection
+verification-method: test

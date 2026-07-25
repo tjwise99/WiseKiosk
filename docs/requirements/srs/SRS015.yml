@@ -4,7 +4,7 @@ header: |
   Secret resolution: file at <NAME>_FILE, trailing whitespace stripped
 level: 1.15
 links:
-- SYS018: XbqkgZn-AXeUwSMDNSKdZOY8fp57KO6Xe2SeCuCGgVM=
+- SYS018: UYgb2CzlxUsfeCdSoRZMga2gkxSKrcx6c4NyhXvFUSM=
 normative: true
 rationale: |
   One delivery path keeps delivery unambiguous — no shadowing between a

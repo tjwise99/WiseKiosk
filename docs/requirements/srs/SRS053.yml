@@ -4,7 +4,7 @@ header: |
   Non-root container user
 level: 1.53
 links:
-- SYS026: _m8BJ8JAZMsCQBBQgn23Qw8YXeKj21ZfVt168hmOO3k=
+- SYS026: 65XXvtGnMhqJq3DnN6iMGOokmxk-OxFv5Dkv4IHniug=
 normative: true
 rationale: |
   Container-hardening control made testable.

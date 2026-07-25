@@ -15,11 +15,11 @@ rationale: |
   as vigilance. Image supply-chain gating (scanning, signing, provenance) is the
   security domain's concern (#40), not this need.
 ref: ''
-reviewed: _m8BJ8JAZMsCQBBQgn23Qw8YXeKj21ZfVt168hmOO3k=
+reviewed: 65XXvtGnMhqJq3DnN6iMGOokmxk-OxFv5Dkv4IHniug=
 status: accepted
 text: |
   The published container image shall be built to a hardened, reproducible
   baseline: it shall run as a non-root user, reference its base image by content
   digest rather than a floating tag, and exclude development and secret material
   from its build context.
-verification-method: inspection
+verification-method: test

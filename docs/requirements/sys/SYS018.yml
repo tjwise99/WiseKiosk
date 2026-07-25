@@ -13,7 +13,7 @@ rationale: |
   the convention container platforms and secrets managers already speak,
   so provisioning can be upgraded without touching application code.
 ref: ''
-reviewed: XbqkgZn-AXeUwSMDNSKdZOY8fp57KO6Xe2SeCuCGgVM=
+reviewed: UYgb2CzlxUsfeCdSoRZMga2gkxSKrcx6c4NyhXvFUSM=
 status: accepted
 text: |
   Every secret shall be supplied to the backend by the deployment
@@ -21,4 +21,4 @@ text: |
   image, the repository, or the configuration. The delivery mechanism
   shall permit replacing how a secret is provisioned — a bind-mounted
   file today, a secrets manager later — with no application code change.
-verification-method: inspection
+verification-method: test

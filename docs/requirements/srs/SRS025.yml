@@ -4,7 +4,7 @@ header: |
   Secret re-read on each resolution; rotation without restart
 level: 1.25
 links:
-- SYS018: XbqkgZn-AXeUwSMDNSKdZOY8fp57KO6Xe2SeCuCGgVM=
+- SYS018: UYgb2CzlxUsfeCdSoRZMga2gkxSKrcx6c4NyhXvFUSM=
 normative: true
 rationale: |
   Re-reading per resolution honours SYS018's requirement that how a secret is
