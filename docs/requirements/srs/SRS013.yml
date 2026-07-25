@@ -6,6 +6,7 @@ level: 1.13
 links:
 - SYS002: 74Sho44EjcFPpisC_doWPFSZUqY7qJ8D0_GnRd1_qCE=
 - SYS003: aSQQyqh7BYee_G_L0dq4pvHc6YNknfsElUx7DwetxA0=
+- SYS006: a1oM-Tn5YXIGVOoIjwg9wUsxuRbCU77clRX0LcXwrZQ=
 normative: true
 rationale: |
   ADR 0007: the page shell runs validation itself and owns the presentation of
@@ -15,7 +16,7 @@ rationale: |
   configuration applied" so a future live-apply path keeps the freedom to hold
   last-good on a bad reload.
 ref: ''
-reviewed: RnidsQ6T26Kh74AENbBsPLqDI3J8M3sG0GhOqxG_O-k=
+reviewed: rPCebG_zzzS3ns7vK-cFNLbyBLuQKRK2-x8WcBYGtQw=
 status: accepted
 text: |
   When no valid configuration has been applied — the configuration file

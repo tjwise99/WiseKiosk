@@ -6,10 +6,11 @@ level: 1.8
 links:
 - SYS002: 74Sho44EjcFPpisC_doWPFSZUqY7qJ8D0_GnRd1_qCE=
 - SYS004: 8RJKPJuyxrABEtVqJ3Ox7TsL7dvxBWe_ZIVSJ0sB44I=
+- SYS006: a1oM-Tn5YXIGVOoIjwg9wUsxuRbCU77clRX0LcXwrZQ=
 normative: true
 rationale: ''
 ref: ''
-reviewed: lN6cU8_WcW6rm_AcBDMAvneRp4JaV6elnA7WRRWKxiA=
+reviewed: h1rfaO8w0zm16iIANo_p9SjPQpQLAYEUgga-KnXm4D8=
 status: accepted
 text: |
   A standalone validator shall check a configuration file against the

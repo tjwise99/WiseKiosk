@@ -9,10 +9,18 @@ rationale: |
   The operator upgrades by pulling a newer image. If an upgrade required
   reading a diff or editing code, every deployment would become
   author-maintained, defeating the deployment model.
+
+  Stated as what the operator must not need, not as a prohibition on configuration edits. Editing
+  configuration is the operator's job (SYS007), and an upgrade may legitimately require one - an
+  upstream dropping a data source invalidates the key naming it, with no fault in the release. What
+  must not happen is the operator having to reconstruct that from a changelog or a diff, so the
+  obligation is that the information comes from the system's own output.
 ref: ''
-reviewed: Sw94fSoC2fO1zVrk3kpMAX9zHX1gIPU0ZA8yJ1DuGBE=
+reviewed: a1oM-Tn5YXIGVOoIjwg9wUsxuRbCU77clRX0LcXwrZQ=
 status: accepted
 text: |
-  Upgrading a deployment to a newer released image shall not require the
-  operator to read a diff, edit code, or understand the stack.
-verification-method: analysis
+  Upgrading a deployment to a newer released image shall require no source edit and no local build.
+  Where the new image requires a configuration change, the operator shall learn what to change from
+  the system's own validation output (SRS008, SRS013), never from reading a diff, changelog, or
+  source.
+verification-method: test
