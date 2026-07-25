@@ -1,0 +1,27 @@
+active: true
+derived: false
+header: |
+  No item claims a method its own children do not support
+level: 1.96
+links:
+- SYS031: s63YR87B6PRvzJFPzhERTcmaFxvrNVT0AYrzu3pLqZU=
+normative: true
+rationale: |
+  The tree is too large for one reader to hold, so its own coherence has to be mechanical or it is
+  not checked at all. A parent claiming test while a child is inspection is a false signal about
+  verification - the defect SYS031 exists to forbid, occurring inside the specification rather than
+  in a check. The two directions are deliberately asymmetric. Overstating is never excusable: it
+  asserts a machine settles what a human decides. Understating is, where the parent holds a residue
+  no child carries, so it is permitted against a written justification - which is the argument, not
+  an escape hatch. This check caught two real violations on the change that introduced it, and one
+  the author had introduced earlier in the same pass.
+ref: ''
+reviewed: 9G8bZ8CMpX2GQ-XhmrGz52mszHc8N-x1LTjZCMcF6bc=
+status: accepted
+text: |
+  Every requirement's verification method shall equal the least decidable method among its children,
+  ordered test, analysis, inspection, demonstration. An item above its least-decidable child shall
+  fail. An item below every child shall fail unless it records a verification-justification for the
+  residual obligation no child carries.
+verification-justification: ''
+verification-method: test

@@ -1,0 +1,22 @@
+active: true
+derived: false
+header: |
+  Parent and child verification methods are consistent
+level: 1.15
+links:
+- SRS103: xWCP8yywt7QvA4qxYHgQmnboJN2TM1MbI-slfs12Nho=
+normative: true
+rationale: ''
+ref: ''
+references:
+- path: scripts/check-method-consistency.py
+  type: file
+reviewed: TP0Jh_Y9LgdmHOmRRROQ5ypPxQiTd_jYggR5M6e67D8=
+status: accepted
+text: |
+  Check asserting, for every parent item in the tree, that its verification method equals the least
+  decidable method among its children; failing on an item above its least-decidable child, and on an
+  item below every child that records no verification-justification. Runs in `just check-reqs`
+  alongside the Doorstop gate.
+verification-justification: ''
+verification-method: test
