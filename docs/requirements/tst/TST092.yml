@@ -4,10 +4,11 @@ header: |
   Pending: citation-not-restatement review
 level: 1.17
 links:
-- SRS088: null
+- SRS088: apskPD3hM4cwPscPdgBPUwCaIrG1zIfyCPRgRqgEoiY=
 normative: true
 rationale: ''
 ref: ''
+reviewed: ZBgLovf6jOLY9xFR0WOp145RR_wVRmg9YRWqWEdq1BA=
 status: proposed
 text: |
   Pending: a reader applies the strip-the-identifier test to each comment citing a requirement ID or

@@ -4,10 +4,11 @@ header: |
   Pending: npm dependency vulnerability gate test
 level: 1.49
 links:
-- SRS060: null
+- SRS060: Asb6SsWpsJiCB5Tnphg9AavaRZCwEDeY9qwYpm0Xh9Y=
 normative: true
 rationale: ''
 ref: ''
+reviewed: UmNVA_k-cYN9LPG5mCBQWgJgPLI4LhCOq4Vbpvd79eE=
 status: proposed
 text: |
   Pending: check that materialises a fixture pinning an npm dependency with a known advisory into a

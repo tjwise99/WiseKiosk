@@ -4,13 +4,13 @@ header: |
   Standard browser-hardening response headers
 level: 1.66
 links:
-- SYS030: a_TnT2iDMzkqB4Aj2ySH1fYaq1pyGupBv6iXo3mOnz0=
+- SYS006: KZtswOlxN1xD3PUvRX2djU9sCMFBskYb-6W5Iq6nOdo=
 normative: true
 rationale: |
   Closes MIME-confusion, clickjacking, referrer-leakage, and unused-capability
   abuse classes that the same-origin resource policy does not itself address.
 ref: ''
-reviewed: _--svR9N9t42QZKty5JBZ52hbogpNohh2DyOjCLanLw=
+reviewed: I53HUfQDyWlD14_VhLprXhILwbKR4p7eMw99RLtr9nQ=
 status: accepted
 text: |
   When serving the display frontend, the backend shall accompany its responses

@@ -4,7 +4,7 @@ header: |
   The backend builds as a static binary with the native toolchain disabled
 level: 1.74
 links:
-- SYS036: NmQro7g4qXrnOFKP2AqDJGyLYw1wZKY0FZ00mwUbLKw=
+- SYS005: QMiNuCcsfu4FMKLYCs22__VB2jC6pnxCzPMvVA4mFRQ=
 normative: true
 rationale: |
   A falsifiable form of the native-toolchain-free rule for the Go backend. Verified against no
@@ -16,7 +16,7 @@ rationale: |
   and produces a statically linked binary. Lands with the Go backend; activated with a `references`
   entry then.
 ref: ''
-reviewed: xiihOTm8lYmg47C_2s49YsbB5pud6bz3lH33U7PNkm4=
+reviewed: 1eW9H2yBPtcrx0JA09-Y64HgRsuQ1Xpk30xOcZa40J8=
 status: accepted
 text: |
   The backend shall build successfully as a statically linked binary with the native build toolchain

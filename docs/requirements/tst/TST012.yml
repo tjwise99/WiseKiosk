@@ -4,10 +4,11 @@ header: |
   Pending: page-load-applies-config test
 level: 1.12
 links:
-- SRS012: null
+- SRS012: 4qI3VKqXQ9MYdx30c3_vBavVciHmnUuRTDkzHuzBzwY=
 normative: true
 rationale: ''
 ref: ''
+reviewed: dwRpmOsbJO6NgyYTNHOXBg2pR3Zixf2Glw7phBYJAlk=
 status: proposed
 text: |
   Pending: integration test asserting a configuration edit takes effect on the

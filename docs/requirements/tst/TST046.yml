@@ -4,10 +4,11 @@ header: |
   Pending: healthcheck fixed-port test
 level: 1.6
 links:
-- SRS049: null
+- SRS049: 243iFGeNpjMDyZSvQo8InTPkPhocUh28cVTX8dmVmqw=
 normative: true
 rationale: ''
 ref: ''
+reviewed: MCm3gMPwgJmLHCzkEWpi-FTa1NYN4-PpNifNOnU2Nzg=
 status: proposed
 text: |
   Pending: integration test asserting the image declares a HEALTHCHECK on the constant service port, reports healthy while serving, and reports unhealthy when the app is broken though the process is still up. Lands with the container image build (#54); activated then.

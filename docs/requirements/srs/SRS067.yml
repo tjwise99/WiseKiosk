@@ -4,7 +4,7 @@ header: |
   Every `just verify` check runs in CI
 level: 1.67
 links:
-- SYS031: s63YR87B6PRvzJFPzhERTcmaFxvrNVT0AYrzu3pLqZU=
+- SYS010: tunYeRPYjw1wheyLpOCTyiWRFVEHtFbzAcMgHdU_J_I=
 normative: true
 rationale: |
   `just verify` and the CI workflow are today two hand-maintained lists held in agreement only by
@@ -16,7 +16,7 @@ rationale: |
   `scripts/check-verify-ci-parity.mjs` script (see Build task B1). Asserts the parity holds against
   the live justfile and workflow, and fails on an induced divergence.
 ref: ''
-reviewed: jn7lDhmgoZY8ZUDfmzpCc9VXftpew7NapdvSZOXx190=
+reviewed: wI8uXF8XTtJzhaJvyLVaAOiHCJNj0Rm8w4WhaOwieyA=
 status: accepted
 text: |
   Every check invoked by `just verify` shall also run in the CI checks workflow; a check present in

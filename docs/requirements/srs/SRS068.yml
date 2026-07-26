@@ -4,7 +4,7 @@ header: |
   Test runners are invoked over whole-tree discovery, with no silent exclusion
 level: 1.68
 links:
-- SYS031: s63YR87B6PRvzJFPzhERTcmaFxvrNVT0AYrzu3pLqZU=
+- SYS010: tunYeRPYjw1wheyLpOCTyiWRFVEHtFbzAcMgHdU_J_I=
 normative: true
 rationale: |
   Structural wiring makes "wired into CI" the default for a new test rather than a step an author can
@@ -18,7 +18,7 @@ rationale: |
   test runners (go.mod / Vitest config); activated with a `references` entry then. The requirements
   tier is already covered by `doorstop --error-all` — do not re-encode it here.
 ref: ''
-reviewed: hinXA-FpDpOB475foj4PVs0Fe82kf4tckwlVRRV-gkM=
+reviewed: pPdd8GjVxyd3Mpgg0idXMNEBMGo9gBJaq3YqoMkRhLE=
 status: accepted
 text: |
   Each language test runner shall be invoked in its whole-tree discovery form (e.g. `go test ./...`,

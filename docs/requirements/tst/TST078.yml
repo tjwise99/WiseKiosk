@@ -4,10 +4,11 @@ header: |
   Pending: CGO-disabled static build
 level: 1.9
 links:
-- SRS074: null
+- SRS074: NBCfXwWZAXNRLA7b2FRywDNSPjlDX5cx1sfDn7te8ho=
 normative: true
 rationale: ''
 ref: ''
+reviewed: Zxg1U5rlRIxYMovqr_LxmoPZlmgUXNydXjOnA2s7u5U=
 status: proposed
 text: |
   Pending: a CI build of the backend with cgo disabled completes and produces a statically linked

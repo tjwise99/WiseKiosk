@@ -4,10 +4,11 @@ header: |
   Pending: exactly one validation implementation, by import graph
 level: 1.14
 links:
-- SRS014: null
+- SRS014: XVSCz_Vlf7PASbL3oKafkyDWytTtTIHXVuopuZreNbs=
 normative: true
 rationale: ''
 ref: ''
+reviewed: wpJ2QnW6ru35sVWzpmtIp7v_-OvADa9c95JS5KQbHYw=
 status: proposed
 text: |
   Pending: test asserting exactly one source file imports the schema-validation engine, that both

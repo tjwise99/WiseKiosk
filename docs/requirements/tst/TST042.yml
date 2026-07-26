@@ -4,10 +4,11 @@ header: |
   Pending: page fetches same-origin only, statically and at runtime
 level: 1.42
 links:
-- SRS042: null
+- SRS042: trq36sdSTvKCv3o_umLWONeKaNqdqyLTjOy73U7nBEE=
 normative: true
 rationale: ''
 ref: ''
+reviewed: lYMQkcNn03gvDekmJ1CL1SnUyhyYp3RstTvsgLncEYg=
 status: proposed
 text: |
   Pending: test scanning the shipped bundle for absolute-URL literals and failing on any origin

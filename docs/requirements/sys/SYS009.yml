@@ -1,27 +1,25 @@
 active: true
 derived: false
 header: |
-  Reference platforms and system boundary
-level: 1.9
+  Modules grow by contract
+level: 9
 links: []
 normative: true
 rationale: |
-  Pins the known-working display hardware: a Raspberry Pi Zero already drives
-  a deployment's browser today. The container host is constrained separately
-  because Docker does not run on a Pi Zero. Owner decision 2026-07-22: the
-  kiosk host's OS, browser, and autostart configuration are the operator's
-  platform, outside the system boundary.
+  A sixth module must not mean editing the framework, or the cost of each addition grows with the
+  number already present and the blast radius of a mistake grows with it. The prohibitions this need
+  once carried — no dynamic loading, no discovery, no runtime registry, no third-party extension API —
+  were struck as generality against a case nobody proposed. Reopen if a push or real-time transport is
+  added: a module fed by a socket may require shared framework change, at which point this need either
+  blocks a legitimate feature or must be scoped to pull-based modules.
 ref: ''
-reviewed: WMZs5hUVGSzb-oB2-KSoniaadXlk4H25FQAeLs2rDFo=
+reviewed: tf7grKzQp6z4Xnv2kCe1PEvssAsF7YR-HmGXlUTFyyM=
 status: accepted
 text: |
-  The frontend shall operate on a Raspberry Pi Zero-class browser host
-  driving the display. The backend container shall run on a Docker-capable
-  amd64 or arm64 host. The kiosk host's operating system, browser, and
-  autostart configuration lie outside the system boundary.
+  A display module shall be addable and removable as a self-contained unit, without change to shared
+  framework code.
 verification-justification: |
-  The claim is about behaviour on specific physical hardware - a Pi Zero-class CPU, its rendering
-  path, and a real display output - which no CI runner or emulator reproduces faithfully enough for
-  a pass to mean anything. A throttled headless browser can falsify the requirement and can never
-  confirm it.
-verification-method: demonstration
+  Self-containment is decidable: adding or removing a module touches a bounded, named set of
+  module-scoped locations, and nothing else. What the checks do not settle is whether the contract is
+  pleasant to work with — only that it holds.
+verification-method: test

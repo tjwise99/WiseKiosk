@@ -4,7 +4,7 @@ header: |
   Frontend builds to a static bundle with no SSR or router
 level: 1.38
 links:
-- SYS025: m8cBQg83AS0sNzhFKajueIP_82WvmQgkwrQiUQALXOM=
+- SYS002: WKtMGUBh_Ew881SVgmcG0I3DbchZFVDHjXWT515-NGw=
 normative: true
 rationale: |
   SYS025 states the constraint; this item makes it verifiable at the artifact. A
@@ -16,7 +16,7 @@ rationale: |
   realistic regression — a contributor reaching for a router or an SSR adapter —
   at CI rather than in review prose.
 ref: ''
-reviewed: UCZmNdPOYJWu3cGv1jJqXX1o24_9iTnGjiCOImUNkFA=
+reviewed: O_ba76ukc9CPbyzJrTyykq8pPtEnOMyxjjCsunuPgcc=
 status: accepted
 text: |
   The frontend shall build to a static single-page bundle served as static files.

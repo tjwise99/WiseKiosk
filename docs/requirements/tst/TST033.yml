@@ -4,10 +4,11 @@ header: |
   Pending: shaping purity and secret-free signatures
 level: 1.33
 links:
-- SRS033: null
+- SRS033: C3HWrma15JlnwfhQczEqmKHhWHiQQAuJU38e442J-So=
 normative: true
 rationale: ''
 ref: ''
+reviewed: uX4W2y7BDGOJMykznsh6uHoVJ-C3MrJcVGrbMft8X_k=
 status: proposed
 text: |
   Pending: test asserting each module's shaping package resolves a transitive import set that is a

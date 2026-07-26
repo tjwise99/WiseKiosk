@@ -4,17 +4,17 @@ header: |
   Secret re-read on each resolution; rotation without restart
 level: 1.25
 links:
-- SYS018: UYgb2CzlxUsfeCdSoRZMga2gkxSKrcx6c4NyhXvFUSM=
+- SYS003: r0OHFjma5xOn8ZgSOGL1oBns-m0Q-TKD9LQHrUnwXSw=
 normative: true
 rationale: |
-  Re-reading per resolution honours SYS018's requirement that how a secret is
+  Re-reading per resolution honours SYS003's requirement that how a secret is
   provisioned be replaceable — including a secrets manager that rotates the file
   — with no application code change and, here, no restart. SRS016 already
   requires per-request resolution (not at boot); this item adds only the
   no-in-memory-cache property and its coupling to the response cache, and does
   not restate SRS016.
 ref: ''
-reviewed: Z96SrT3Lvno1Rovi5-xz5lpP9B4BVi83Z4K2blw8vAM=
+reviewed: 47v2O2mjOS6C-8E-SYf-seHRo4Dz8vnGDet1Uhz9AHA=
 status: accepted
 text: |
   The backend shall read a secret's <NAME>_FILE file on each resolution rather

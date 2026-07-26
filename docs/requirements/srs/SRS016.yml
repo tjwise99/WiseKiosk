@@ -4,17 +4,17 @@ header: |
   Unresolvable secret surfaces as that source's upstream failure
 level: 1.16
 links:
-- SYS005: ZL5TKFyrHPDZmdc6CDmpAIXf-LWQrkNsQgQ4L5IlYhY=
-- SYS018: UYgb2CzlxUsfeCdSoRZMga2gkxSKrcx6c4NyhXvFUSM=
+- SYS001: TQyfJejH81RI-POadHI3gN0eM_DDB8AFAnMwcKjCth4=
+- SYS003: r0OHFjma5xOn8ZgSOGL1oBns-m0Q-TKD9LQHrUnwXSw=
 normative: true
 rationale: |
   The backend is config-blind (ADR 0007) and cannot know which sources a
   deployment uses, so a boot-time secrets gate would brick deployments
   that use a subset of sources. A per-source failure at the kiosk names
-  what is missing and leaves the rest of the display running (SYS005) —
+  what is missing and leaves the rest of the display running (SYS001) —
   the debuggable outcome chosen on #35 over failing to boot.
 ref: ''
-reviewed: hNqEgS_2nCqcZNoNnMxF2kiZ5fGLzvAockExJk1t4pY=
+reviewed: QjrB6fAUxkWLJ_dJRel0zP4cgs-TUC26MDTRZm5qU9w=
 status: accepted
 text: |
   The backend shall resolve a secret when handling a request for the

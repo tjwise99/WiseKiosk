@@ -4,10 +4,11 @@ header: |
   Pending: Dependabot declares a grouped entry per application ecosystem
 level: '1.50'
 links:
-- SRS061: null
+- SRS061: HDxCypUW7BqlLpbn4j5ntkx8ScrioFjswhXik0sYUwY=
 normative: true
 rationale: ''
 ref: ''
+reviewed: 1sXCqtH768LkXhdYKN_61JcMwMtAfTlYIVbKyliyEcc=
 status: proposed
 text: |
   Pending: test parsing .github/dependabot.yml, asserting a gomod entry and an npm entry, each

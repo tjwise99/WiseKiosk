@@ -4,10 +4,11 @@ header: |
   Pending: bounded-resource-growth analysis
 level: 1.4
 links:
-- SRS057: null
+- SRS057: PEJKjnIgTY4U-TRe8EUXdI1yrTZ95xgEPnu3SCySW9E=
 normative: true
 rationale: ''
 ref: ''
+reviewed: O0UgqMjcUfFvbhQCU6s4xwAHvfEcubruwG0t-gdUZtE=
 status: proposed
 text: |
   Pending: test exercising the backend under sustained synthetic load for 60 minutes, sampling every

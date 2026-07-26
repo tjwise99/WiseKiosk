@@ -4,10 +4,11 @@ header: |
   Pending: build-context exclusion test
 level: 1.7
 links:
-- SRS055: null
+- SRS055: 9I84Aqr9NNS4WzOt_pk8YSuparHaE_Rf3PNhNfsVlgc=
 normative: true
 rationale: ''
 ref: ''
+reviewed: 5a-_3sz9mMXTyog9EtIhWvOFePHWvtnpXiOscF_K_bE=
 status: proposed
 text: |
   Pending: test asserting the Docker build context excludes .git, secret material, and node_modules (backed by .dockerignore). If a leading-dot filename is not Doorstop-referenceable, the references entry points at the context/image test that asserts absence, citing the .dockerignore path in this text. Lands with the container image build (#54); activated then.

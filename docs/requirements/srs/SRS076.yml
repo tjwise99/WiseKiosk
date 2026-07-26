@@ -4,14 +4,14 @@ header: |
   Formalizing a prose obligation edits the prose to cite the new ID and stop restating it
 level: 1.76
 links:
-- SYS037: jTz6kWwMmquGP9rLeR33XnaW94z7fXcWndcRGd1ktkA=
+- SYS011: GG37Ciys0N_S9xmzaKrup_W8ce0inLFB84S65X8sz_g=
 normative: true
 rationale: |
   Names this rewrite's load-bearing convention so it is applied by rule, not memory, each round; gives
   "rationale lives in docs, not code" its destination. The citation-resolves half rides the
   references-resolve gate; the "stopped restating" half is review.
 ref: ''
-reviewed: gL7ec4NJxeHhVdoKkgqxrSKlsOpk2tZyh2cb_t-OiR8=
+reviewed: n4YZuFZJYE1WdIquCXVF_ipH4lG87uYuMQARL2pbMSI=
 status: accepted
 text: |
   When a prose obligation in a canonical document is formalized as a requirement, the same change

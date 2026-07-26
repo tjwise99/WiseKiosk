@@ -4,10 +4,11 @@ header: |
   Pending: component renders from props alone
 level: '1.40'
 links:
-- SRS040: null
+- SRS040: JINGtmf6wnpou3wfvrSYiggyum3Ii914M4ttkgXor6c=
 normative: true
 rationale: ''
 ref: ''
+reviewed: e2G1oPfBpyn08eSQrfpZYUuSm2KSM4JlPjqt5ieqphU=
 status: proposed
 text: |
   Pending: test rendering each module component with only its props supplied and the network globals

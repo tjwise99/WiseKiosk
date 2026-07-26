@@ -4,7 +4,7 @@ header: |
   Route registration is a single static compile-time list entry; no registry or discovery
 level: 1.34
 links:
-- SYS024: Hn5rIJlgWLcF4C2eS7P0aHqLN91cK86es9PFca9Afv4=
+- SYS009: tf7grKzQp6z4Xnv2kCe1PEvssAsF7YR-HmGXlUTFyyM=
 normative: true
 rationale: |
   Route registration is a static list resolved at compile time: not a registry,
@@ -13,7 +13,7 @@ rationale: |
   not the route's runtime behaviour; the per-route cache TTL it carries is the
   one governed by SRS022.
 ref: ''
-reviewed: nISsPH6pZ4RQkrgU4p7nlWEEBnKJQM9L0vZmrkzIIaQ=
+reviewed: macbkSWd_mvdoaY7UPF6QGn_cVDyH90Qf2rs2IUo6Bk=
 status: accepted
 text: |
   Each module that fetches an external data source shall be bound to its GET /api/<source> route by

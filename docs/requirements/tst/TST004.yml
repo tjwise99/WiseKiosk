@@ -4,10 +4,11 @@ header: |
   Pending: bring-up demonstration procedure and record
 level: 1.4
 links:
-- SRS004: null
+- SRS004: kzukFzJebAI8N5Pb9DHXB02RHGYp-b8vzkEN2O4jpfc=
 normative: true
 rationale: ''
 ref: ''
+reviewed: XkCJ6rE2zFg-coY5acCCPmXh9sLcFSV00LABsui2egg=
 status: proposed
 text: |
   Pending: a written bring-up procedure (fresh clone, clean environment,
@@ -15,6 +16,6 @@ text: |
   run. Lands when the system first becomes deployable; activated and given a
   references entry pointing at the procedure document then.
 verification-justification: |
-  The verification is a judgement about whether the prose is sufficient for someone without the
-  author's knowledge, which no exit status decides, and the bring-up needs a real host outside CI.
-verification-method: demonstration
+  Clean-clone build, verify and stack-up in CI. Proves the documented path works for a machine, not
+  that it is followable by a person.
+verification-method: test

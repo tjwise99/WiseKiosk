@@ -4,10 +4,11 @@ header: |
   Pending: mechanism-only comment review
 level: 1.16
 links:
-- SRS087: null
+- SRS087: uxrskpwpFkSDUeyKk9-T1mMdVMlQau5nSchJ48HSwQg=
 normative: true
 rationale: ''
 ref: ''
+reviewed: fCaBNyvsflxXSo5SKTZ3ESjnt7bRuzWmfxZGuCw6eko=
 status: proposed
 text: |
   Pending: a reader confirms each comment a change adds or modifies states mechanism, and that any

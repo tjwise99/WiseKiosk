@@ -4,10 +4,11 @@ header: |
   Pending: configuration failure-class render test
 level: 1.13
 links:
-- SRS013: null
+- SRS013: 7b4S7Yea9lx1grBMoQt6W5-sMmpwM5eyumqE2xDTgnA=
 normative: true
 rationale: ''
 ref: ''
+reviewed: vDypMz268GHF3IsrACsRoUP5gWU4GiraUWuEvoOz3us=
 status: proposed
 text: |
   Pending: render test asserting the page shell loads and renders an operator-

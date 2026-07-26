@@ -1,19 +1,28 @@
 active: true
 derived: false
 header: |
-  Invalid configuration fails loudly and legibly
-level: 1.3
+  A deployment is parameterised from outside the image
+level: 3
 links: []
 normative: true
 rationale: |
-  On a headless kiosk with no keyboard, a silent failure is indistinguishable
-  from a hardware fault. The failure must be a product feature: visible,
-  plain-language, and actionable by a non-technical operator.
+  One image serves every deployment, so everything that makes a deployment particular must arrive from
+  outside it — otherwise a second deployment means a second build, and the fork the product exists to
+  avoid. A secret is a configuration by this reading: the same per-deployment customisation, arriving
+  by a different channel because it cannot be written down. "Honours" is the tunability obligation
+  without enumerating it — a key the format offers but does not act on is a lie the operator cannot
+  detect. Substitutability is recorded because provisioning changes (a bind-mounted file today, a
+  secrets manager later) must not reach application code.
 ref: ''
-reviewed: aSQQyqh7BYee_G_L0dq4pvHc6YNknfsElUx7DwetxA0=
+reviewed: r0OHFjma5xOn8ZgSOGL1oBns-m0Q-TKD9LQHrUnwXSw=
 status: accepted
 text: |
-  An invalid configuration shall produce a loud, legible failure that states
-  what is wrong and what to change. It shall never produce a blank screen or
-  silent partial degradation.
+  Everything that distinguishes one deployment from another shall come from outside the image: its
+  configuration, against a format the system declares and honours, and its secrets, from the deployment
+  environment and nowhere else. The delivery mechanism shall permit replacing how a secret is
+  provisioned with no application code change.
+verification-justification: |
+  Schema singularity, key behaviour and secret provenance are each asserted mechanically. The
+  configuration key allowlist decides key-set equality, not secret-ness: a secret-bearing key that is
+  listed would pass. What it buys is that no key enters the schema without appearing in a reviewed diff.
 verification-method: test

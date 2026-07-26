@@ -4,7 +4,7 @@ header: |
   Config schema fragment composes into the single configuration schema
 level: 1.35
 links:
-- SYS024: Hn5rIJlgWLcF4C2eS7P0aHqLN91cK86es9PFca9Afv4=
+- SYS009: tf7grKzQp6z4Xnv2kCe1PEvssAsF7YR-HmGXlUTFyyM=
 normative: true
 rationale: |
   The module contract gives the fragment concept, reconciled here with ADR 0007
@@ -18,11 +18,11 @@ rationale: |
   receipt of that configuration as props is the frontend lane's render concern,
   not this requirement's.
 ref: ''
-reviewed: irnyITrC8R0MP8zlYgwTc9q6nEBh_MIoJFP_y3y9SGY=
+reviewed: N9jQxssZdbtJZHSRsA7Px7pkjm6Co6T-BG12rIkt-pA=
 status: accepted
 text: |
   Each module shall declare the configuration it accepts as a fragment composed
-  into the one machine-readable configuration schema (SYS014); the module's
+  into the one machine-readable configuration schema (SYS003); the module's
   configuration shape shall not be declared a second time anywhere, and shall be
   enforced by the single validation implementation (SRS014) both at apply time
   and by the standalone validator. A module's configuration fragment is part of

@@ -11,6 +11,7 @@ rationale: |
   hand, so coverage is total by construction and a route added later cannot escape the sweep. A
   hand-listed sweep would pass while the next route leaked.
 ref: ''
+reviewed: eV1-XSbBOJTLcPTyUy_DpMlu39RTpiPRHcbMjHWoaAg=
 status: proposed
 text: |
   Pending: integration check that, for every entry in the static route registration list, exercises

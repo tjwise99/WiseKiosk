@@ -4,10 +4,11 @@ header: |
   Pending: deferred-work marker form check
 level: 1.23
 links:
-- SRS094: null
+- SRS059: QLAVtR_XXvkRtCHw1rC-liPQkYniCwY5OEGozmEoTOg=
 normative: true
 rationale: ''
 ref: ''
+reviewed: 9Skj0vv2-x8E_HUJxy0iwOnN6KGJTX5pjI4Oe0kKxyI=
 status: proposed
 text: |
   Pending: a check rejecting a bare deferred-work marker and accepting one naming a tracked issue, run

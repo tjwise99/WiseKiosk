@@ -4,10 +4,11 @@ header: |
   Pending: Go static security scan gate test
 level: 1.44
 links:
-- SRS058: null
+- SRS058: GDOsIZcQre91RoLLGopGthMHBZ1yblOFeGjOVIcZB-Q=
 normative: true
 rationale: ''
 ref: ''
+reviewed: 0itWCtj5HQZz4g0rgmCzcRecJl90zNLhExdz89yDJdI=
 status: proposed
 text: |
   Pending: check that materialises the seeded vulnerable Go fixture into a temporary tree (ADR

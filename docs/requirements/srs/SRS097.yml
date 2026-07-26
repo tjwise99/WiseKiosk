@@ -2,9 +2,9 @@ active: false
 derived: false
 header: |
   Every gate job is a required check, and every required check names a real job
-level: '1.97'
+level: 1.97
 links:
-- SYS031: null
+- SYS010: tunYeRPYjw1wheyLpOCTyiWRFVEHtFbzAcMgHdU_J_I=
 normative: true
 rationale: |
   A job that runs on every pull request but sits outside the required-status-check set reports its
@@ -20,8 +20,9 @@ rationale: |
 
   Verifiable at all only because branch protection is expressed as a ruleset: ruleset rules are
   readable with the workflow's own token, where classic branch protection required an admin-scoped
-  read that SYS019 keeps out of CI.
+  read that SYS003 keeps out of CI.
 ref: ''
+reviewed: GxO6ipFuPE-al4ir1sOkqVJz60uoIeckUUpnA0d6F7M=
 status: proposed
 text: |
   Every continuous-integration job that gates merges shall appear in the repository's

@@ -2,7 +2,7 @@
 
 A display module is added by following this contract by hand. There is no plugin mechanism to
 register with — no dynamic loading, no discovery, no runtime registry, no third-party extension API
-(SYS024). The obligations are normative in the [requirements tree](../requirements/README.md); this
+(SYS009). The obligations are normative in the [requirements tree](../requirements/README.md); this
 page is the author-facing procedure that satisfies them and states no obligation of its own.
 
 The concrete locations — which directory holds a module's files, and where the registration list
@@ -82,4 +82,4 @@ review trigger.
 6. Set the module's poll cadence against that route's TTL (SRS043).
 7. Confirm no shared framework file was edited beyond the registration entry (SRS036).
 8. Adding a module is a test-architecture review trigger — run it, per
-   [`TESTING.md` § Review cadence](../TESTING.md#review-cadence) (SYS034, SRS071).
+   [`TESTING.md` § Review cadence](../TESTING.md#review-cadence) (SYS010, SRS071).

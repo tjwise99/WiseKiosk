@@ -2,12 +2,13 @@ active: false
 derived: false
 header: |
   Pending: upstream-failure error payload test
-level: '1.1'
+level: 1.1
 links:
-- SRS001: null
+- SRS001: RmWG9bryZFlZjXr9DP8lF3jPsJ4vx0V8QYcS_mhV4KA=
 normative: true
 rationale: ''
 ref: ''
+reviewed: TDowpM0t_8HcYCGJlu3oTq_8LH4t3tbzRczDqHTkmLI=
 status: proposed
 text: |
   Pending: backend integration test asserting the structured error payload for

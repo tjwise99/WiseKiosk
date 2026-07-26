@@ -4,10 +4,11 @@ header: |
   Pending: unresolvable-secret failure-path test
 level: 1.16
 links:
-- SRS016: null
+- SRS016: _SouSBaiR5LtcQ-AeIw4Bpjws6QTAsGyfhvkgtf8vt8=
 normative: true
 rationale: ''
 ref: ''
+reviewed: yu0W7WXQEtxLwu2RAm29LJTSZKjrrJgQElS9LU_XHLM=
 status: proposed
 text: |
   Pending: proxy test asserting the backend boots with no secrets

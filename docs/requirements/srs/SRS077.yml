@@ -4,14 +4,14 @@ header: |
   A change to described code or config updates the describing doc or declares it unaffected
 level: 1.77
 links:
-- SYS037: jTz6kWwMmquGP9rLeR33XnaW94z7fXcWndcRGd1ktkA=
+- SYS011: GG37Ciys0N_S9xmzaKrup_W8ce0inLFB84S65X8sz_g=
 normative: true
 rationale: |
   The case no reference-resolution or regenerate-diff check reaches: a doc's claim stops matching
   reality with no broken link and no stale generated file to catch it. Named as a requirement so it is
   a stated review obligation, not assumed practice — it stays outside CI by nature, not by omission.
 ref: ''
-reviewed: t6GHWw95vHekZwn_RYm5Ks3VcPr1KqHW7POF9laYxSU=
+reviewed: UOkw1802u--LKoNePfBfIyLyPsxn28Isn3aoHFbnymg=
 status: accepted
 text: |
   When a change touches code or configuration that a canonical document describes, the change shall

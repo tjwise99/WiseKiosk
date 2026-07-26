@@ -4,10 +4,11 @@ header: |
   Pending: standalone validator CLI test
 level: 1.8
 links:
-- SRS008: null
+- SRS008: XgAm6TzTMw6l-34tapvJWLz64teTpvLo-XOdb9lMqHo=
 normative: true
 rationale: ''
 ref: ''
+reviewed: JFFOovnMaoj9wad9MaasskMVeA0T_2Gt-EUuh7kwJXE=
 status: proposed
 text: |
   Pending: CLI test asserting the validator accepts a known-good configuration

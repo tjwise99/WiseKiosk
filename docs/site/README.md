@@ -7,7 +7,7 @@ generated, click-through view of the Doorstop requirements tree
 ([`../requirements/`](../requirements/README.md), [ADR
 0002](../decisions/0002-requirements-management-doorstop.md)).
 
-**Dev-only and siloed here** (SYS035, SRS072): its pinned requirements file and venv live in this
+**Dev-only and siloed here** (SYS010, SRS072): its pinned requirements file and venv live in this
 directory; nothing depends on it at app build or runtime. Doorstop is the canonical requirements
 source and gate — this silo only renders it.
 
@@ -105,7 +105,7 @@ this site and deploys it to GitHub Pages on push to `main`. It runs the same bui
 `checks.yml` stays read-only (ADR 0004).
 
 No document in this repository references the deployed site's URL: the repo stays self-contained
-(`SYS012`) and loses nothing if Pages disappears.
+(`SYS011`) and loses nothing if Pages disappears.
 
 ## What this silo deliberately does not do
 

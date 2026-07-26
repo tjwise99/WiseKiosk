@@ -4,13 +4,13 @@ header: |
   The docs site builds warnings-as-errors with freshly regenerated needs pages
 level: '1.80'
 links:
-- SYS038: jzRACTZ93mPwIqQNfJ_4Be7yhIgkdEg3_Cb30ec3YtU=
+- SYS011: GG37Ciys0N_S9xmzaKrup_W8ce0inLFB84S65X8sz_g=
 normative: true
 rationale: |
   The verifying TST — verification-method: test — ACTIVE — references `justfile` (the `check-site` /
   `site-build` recipe).
 ref: ''
-reviewed: j4zCD_HD_qddVontI9mJ_tS8cymVcOvSBrSITH3XGrI=
+reviewed: C1dMoEYAn0M2hY_0lEvXocapyjmovfe7BYlL42CKxT4=
 status: accepted
 text: |
   The docs site shall build under Sphinx warnings-as-errors, with needs pages regenerated from the

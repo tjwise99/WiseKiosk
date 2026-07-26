@@ -4,16 +4,16 @@ header: |
   Comments carry mechanism; rationale is authored in a documentation home
 level: 1.87
 links:
-- SYS042: YDAwAPN51Nfobw-av2PetsWI-qOMOCTzADa1gN6-CE8=
+- SYS011: GG37Ciys0N_S9xmzaKrup_W8ce0inLFB84S65X8sz_g=
 normative: true
 rationale: |
-  The operative half of SYS042, written so a reviewer can apply it to a single comment: mechanism stays,
+  The operative half of SYS011, written so a reviewer can apply it to a single comment: mechanism stays,
   rationale moves. Naming every home matters — a comment justifying a test-strategy choice belongs in
   TESTING prose, and a shorter formulation would push it toward FOUNDATIONS or an ADR, neither of which
   guarantees it. The live example this was written against is scripts/check-verify-ci-parity.mjs, whose
   header restates rationale already carried verbatim by SRS067's own rationale field.
 ref: ''
-reviewed: xWBt4ru67_sZ6Z-1kzoPNTjA7G3OIfoKzHcUuPuAED4=
+reviewed: xwTFJww3FS3tMWjRJC74HBMxv36IsPaP5cbEgqaZZhM=
 status: accepted
 text: |
   A comment in a first-party authored artifact shall state what the code or configuration does, or how it

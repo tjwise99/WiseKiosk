@@ -4,13 +4,13 @@ header: |
   Container image vulnerability scan gate
 level: 1.62
 links:
-- SYS029: NDQsnsQwX3t9Xk-zGc2bvgSMJIDOzAsPS8KTEFGBUyU=
+- SYS010: tunYeRPYjw1wheyLpOCTyiWRFVEHtFbzAcMgHdU_J_I=
 normative: true
 rationale: |
   Gates the whole image - operating-system and base-layer packages included -
   which the source-level dependency gate never inspects.
 ref: ''
-reviewed: It9IEuaieyFExff4Uw8973pWoKVzeRUL5_umaTEwkjk=
+reviewed: yI6UTTHoR-bzfNK9tr0x3NUpADIUush1m6l8zXnW-9k=
 status: accepted
 text: |
   Continuous integration shall scan the built container image for known

@@ -4,14 +4,14 @@ header: |
   Bounded resource use
 level: 1.57
 links:
-- SYS010: -lM4Zd0Mp-BmCD-5CBDzeUDXhkqGJOwrtD_CXkvI9v4=
+- SYS004: FKi-jJSUDykMZmuZ6ynaFM__dVCb2Vz9rb-qgjEu9io=
 normative: true
 rationale: |
-  Decomposes SYS010's unbounded-growth concern into an obligation provable
+  Decomposes SYS004's unbounded-growth concern into an obligation provable
   early — from a bounded instrumented run rather than a full-length soak —
   and continuously, rather than only at a pre-release demonstration.
 ref: ''
-reviewed: 2wb9s-nco_6qigztkDc4q1f9JksIXYQ6SS1VQU2z8oA=
+reviewed: heA6cdM0L0L0ZqxBaOqqv3PCcjFJkNzxHoPLs6GMaZQ=
 status: accepted
 text: |
   WiseKiosk shall exhibit no unbounded growth in memory or other finite

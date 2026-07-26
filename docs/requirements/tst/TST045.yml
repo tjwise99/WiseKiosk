@@ -4,10 +4,11 @@ header: |
   Pending: base-image digest-pin lint
 level: 1.5
 links:
-- SRS054: null
+- SRS054: tZsgnzV54SekZGgw00IqvS9SNXo8813GXtNsKKd96HY=
 normative: true
 rationale: ''
 ref: ''
+reviewed: H5rcf6TixIAOktV0cE0A1NTuNRUWhHCzcB50B22kcTU=
 status: proposed
 text: |
   Pending: a scripts/-hosted lint asserting every base and stage image in the Dockerfile is pinned to a @sha256: digest, not a floating tag, and failing CI otherwise. References the lint script (a non-dot-dir path, Doorstop-referenceable) when it lands with the container image build (#54); activated then.

@@ -4,10 +4,11 @@ header: |
   Pending: content-drift review obligation
 level: '1.10'
 links:
-- SRS077: null
+- SRS077: hekmwA2yT__muq7aFsf8Rrlzo39yRV5WYMGolsDSC-Q=
 normative: true
 rationale: ''
 ref: ''
+reviewed: etNVM0PO22pbRwMEyay1w6hPOldhS1lzGrDYlZXIgdY=
 status: proposed
 text: |
   Pending: a reader confirms a change to described code or configuration updated the describing

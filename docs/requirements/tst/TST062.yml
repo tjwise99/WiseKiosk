@@ -4,10 +4,11 @@ header: |
   Pending: Go dependency vulnerability gate test
 level: 1.48
 links:
-- SRS060: null
+- SRS060: Asb6SsWpsJiCB5Tnphg9AavaRZCwEDeY9qwYpm0Xh9Y=
 normative: true
 rationale: ''
 ref: ''
+reviewed: J9jHGZZSxQvE2K4Lx6yaZWmwnHQQsvRKtnbgW-HmE8g=
 status: proposed
 text: |
   Pending: check that materialises a fixture pinning a known-vulnerable Go module and calling the

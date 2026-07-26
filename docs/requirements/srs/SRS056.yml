@@ -4,19 +4,19 @@ header: |
   Frontend runs on a Pi Zero-class browser host
 level: 1.56
 links:
-- SYS009: WMZs5hUVGSzb-oB2-KSoniaadXlk4H25FQAeLs2rDFo=
+- SYS005: QMiNuCcsfu4FMKLYCs22__VB2jC6pnxCzPMvVA4mFRQ=
 normative: true
 rationale: |
-  Decomposes SYS009's reference-hardware clause; demonstrated on reference
+  Decomposes SYS005's reference-hardware clause; demonstrated on reference
   hardware, sharing evidence with the SRS050 soak.
 ref: ''
-reviewed: sKd-IjmXelTi0kl9ypPGg7zzfGwlbZIN0EStsmRR3qA=
+reviewed: 0snbAQQRecb3qDfXVMq6dmB_6oHSWxAxlSlXTHhX89E=
 status: accepted
 text: |
   The frontend shall operate on a Raspberry Pi Zero-class browser host
   driving the display.
 verification-justification: |
-  The claim is about a specific browser build on specific silicon driving a real display, and no CI
-  runner reproduces that stack. A CPU- and memory-throttled headless browser models the budget but
-  is not the platform, so it can falsify the requirement and never confirm it.
-verification-method: demonstration
+  An emulated ARM boot renders the page and drives the display, and CPU-throttled render timing plus a
+  bundle ceiling bound performance. Emulation does not decide device timing — the emulator's clock is
+  not the device's — so the performance claim rests entirely on the proxies.
+verification-method: test

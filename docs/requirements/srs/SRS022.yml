@@ -4,7 +4,7 @@ header: |
   TTL response cache keyed on source and query string
 level: 1.22
 links:
-- SYS021: AKm_dHwE6HKZi7Hifk9N5RxoXvr0MXX7kBUcgRlsOsw=
+- SYS006: KZtswOlxN1xD3PUvRX2djU9sCMFBskYb-6W5Iq6nOdo=
 normative: true
 rationale: |
   The cache provides request dedupe and upstream politeness for a 10–15 minute
@@ -16,7 +16,7 @@ rationale: |
   fixes the mechanism and that the TTL is a code constant, not a tunable key
   (consistent with SRS011).
 ref: ''
-reviewed: _GnV7SsaCwlnAzLqc-gsZUkrk-FVqDfkhaV-X_31-Mo=
+reviewed: la1jJf3I91AqzykaiUbEcUPnWyQY1Ug317A2JHXprFo=
 status: accepted
 text: |
   The backend shall cache upstream responses in a time-to-live cache keyed on

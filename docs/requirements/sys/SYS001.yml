@@ -1,27 +1,24 @@
 active: true
 derived: false
 header: |
-  Config-driven smart-mirror display
-level: 1.1
+  Failure is legible and proportionate
+level: 1
 links: []
-normative: false
+normative: true
 rationale: |
-  Defines the product. A smart mirror is a display behind one-way glass showing a fixed set of
-  information modules; every render, module, and configuration requirement decomposes from this
-  need.
-
-  Non-normative, and therefore carrying no verification method. Every falsifiable claim it once made
-  is owned elsewhere - the full-screen render by SRS041 under SYS008 and SYS013, unattended
-  operation by SYS010, the configuration-driven module set through SYS014 - so stating them here
-  would be a third home for facts that already have one, which SYS037 forbids. What remains is
-  orientation, and the product definition's canonical home is the repository README. Stated in the
-  indicative rather than as a shall, because a non-normative item obliges nothing and a shall would
-  read as an obligation nothing verifies. Reversible: if it is ever made normative, SRS041
-  dual-links here and the method follows its children.
+  A failure nobody can see is indistinguishable from a system that is working, and an operator who is
+  not the author cannot diagnose what the display does not show. Proportionality is the second half:
+  an upstream source failing must not take the page down, while a configuration that cannot be read at
+  all legitimately may — the bound is what the failure requires, not a fixed blast radius. Stated as
+  containment it would have been satisfiable by defining "the part that failed" as everything.
 ref: ''
-reviewed: gL9P5A__yYljZSxxu6x9UOLvGbvcGdG713C54258KrM=
+reviewed: TQyfJejH81RI-POadHI3gN0eM_DDB8AFAnMwcKjCth4=
 status: accepted
 text: |
-  WiseKiosk renders a fixed, configuration-driven set of display modules as a single full-screen
-  browser page, operating unattended on a kiosk display.
-verification-method: ''
+  Every failure shall be legible on the display, and shall degrade no more of it than the failure
+  requires.
+verification-justification: |
+  Each child asserts a rendered state against an induced failure, so the parent is settled by its
+  children. What no check settles is whether the resulting text is intelligible to a person who did not
+  write it; the plain-language obligations in SRS005, SRS007 and SRS013 are read at review.
+verification-method: test

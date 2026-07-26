@@ -1,21 +1,25 @@
 active: true
 derived: false
 header: |
-  Kiosk full-screen rendering is the primary target
-level: 1.8
+  Neither grant privilege nor require it
+level: 8
 links: []
 normative: true
 rationale: |
-  The kiosk behind mirror glass is the product; every layout decision defers
-  to it. Testable with viewport-driven render tests (Playwright-class):
-  assert no overlapping module regions, no clipping, no scrollbars at the
-  kiosk viewport. The residual aesthetic judgment stays human, but the
-  structural properties are machine-checked.
+  Trust rests at the network boundary. Accounts, sessions and authentication are all machinery for
+  distinguishing privilege between callers, and a display on a household LAN has no caller to
+  distinguish — so the machinery would add attack surface and operator burden to solve a problem the
+  deployment does not have. Requiring none is the same want facing the host: a process holding no more
+  than it needs bounds what a compromise reaches. This is a recorded decision, not an oversight: the
+  absence of authentication must not be "fixed" by a later reader who mistakes it for one.
 ref: ''
-reviewed: yukJzgqQiw3ve8PqGKbF8DLMIeNAq5X4MEdYWUk3FGI=
+reviewed: 44Qw1BupFMvl480RGlShXn-jdzfHM3-Jfn9MpcUJYks=
 status: accepted
 text: |
-  The page shall render the configured module layout full-screen at the kiosk
-  display's viewport: every configured module visible in its region, with no
-  overlap, no clipping, and no scrollbars.
+  The system shall neither grant privilege nor require it.
+verification-justification: |
+  Absence is asserted directly — no credential material on the wire, no identity-based rejection, no
+  authentication middleware on the request path, and a container whose user is not root. What no check
+  settles is whether the network boundary is in fact trustworthy; that is a property of the household's
+  network, outside the system.
 verification-method: test

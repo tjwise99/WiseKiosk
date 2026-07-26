@@ -4,17 +4,17 @@ header: |
   Every external source is proxied, including CORS-permitting ones
 level: 1.21
 links:
-- SYS022: 98EhHMXZO0ojY4_HwICEbkUyF1KxBu2kbnOgriALLJ8=
+- SYS006: KZtswOlxN1xD3PUvRX2djU9sCMFBskYb-6W5Iq6nOdo=
 normative: true
 rationale: |
   Proxying even CORS-permitting sources is what makes the single-origin data
-  plane (SYS022) hold for every source rather than most. This item covers the
+  plane (SYS006) hold for every source rather than most. This item covers the
   backend's completeness — a proxy route for every source; the complementary
   frontend obligation (the page issues no direct cross-origin fetch) and the
   connect-src content-security policy live in the modules/frontend and security
   domains (#38, #40).
 ref: ''
-reviewed: lk5ll6dl_UZ4KL02ufdkw33ax5_5EtfwFkzKG6PN2yg=
+reviewed: kAdoQ9_fuGu5pKkxsEXYkZDlrUYoAJTfOu6go15bhTU=
 status: accepted
 text: |
   Every external data source shall be fetched through a backend proxy route,

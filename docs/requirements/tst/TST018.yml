@@ -4,10 +4,11 @@ header: |
   Pending: canary-secret leak test
 level: 1.18
 links:
-- SRS018: null
+- SRS018: igNRfsgCP7BC1uxrEopJdf3zKZNOGM2ndEAFJ6mgcQo=
 normative: true
 rationale: ''
 ref: ''
+reviewed: iTC6aRvev9vXgAw1L2z8VlWb7SAIJWeIzD8bxT4b5tU=
 status: proposed
 text: |
   Pending: canary test planting a known secret value through <NAME>_FILE

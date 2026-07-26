@@ -2,23 +2,23 @@ active: false
 derived: false
 header: |
   Every offered configuration key is exercised at a non-default value
-level: '1.101'
+level: 1.101
 links:
-- SYS016: null
+- SYS003: r0OHFjma5xOn8ZgSOGL1oBns-m0Q-TKD9LQHrUnwXSw=
 normative: true
 rationale: |
-  SYS016's obligation had no child expressing it. SRS011 states that the backend has no
+  SYS003's obligation had no child expressing it. SRS011 states that the backend has no
   configuration concept, which is a property of a component holding no keys - it satisfied the need
   vacuously while the demand that every offered key actually works went unverified, and the gate
   stayed green over the gap. Stated as an observable difference rather than as "renders without
   error", because a dead knob - a key the schema offers and the code ignores - renders the page
   perfectly. Absence of error is what a key wired to nothing produces, so it cannot be the
-  criterion. The last sentence carries SYS016's second clause: a value that cannot be changed
+  criterion. The last sentence carries SYS003's second clause: a value that cannot be changed
   observably is a constant, and offering it is the defect. The check ranges over the schema rather
   than a hand-written key list, because the schema is the finite machine-readable statement of what
   is offered: a key added there is covered the moment it exists, where a list would drift silently.
 ref: ''
-reviewed: null
+reviewed: HyqDj9jv-QjA5nQ8tU_97UHoxWive4xrRzFdF4FDVs4=
 status: proposed
 text: |
   Every key the configuration schema offers shall produce an observable difference in the rendered

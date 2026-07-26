@@ -10,7 +10,7 @@ rationale: |
   The regenerate-and-diff form is the one SRS030's drift gate already establishes, so composition is
   proved by the mechanism the boundary contract already relies on rather than a second one.
 ref: ''
-reviewed: null
+reviewed: Js_oKL0s7vqsLLIBj3VbWA5K4vykwq5ziR4OKzyAmho=
 status: proposed
 text: |
   Pending: test recomposing the boundary schema from its module fragments and asserting the

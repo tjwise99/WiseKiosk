@@ -4,7 +4,7 @@ header: |
   Configuration is validated before it is applied; never partially
 level: 1.5
 links:
-- SYS003: aSQQyqh7BYee_G_L0dq4pvHc6YNknfsElUx7DwetxA0=
+- SYS001: TQyfJejH81RI-POadHI3gN0eM_DDB8AFAnMwcKjCth4=
 normative: true
 rationale: |
   Partial recovery converts a configuration error into silent degradation —
@@ -12,7 +12,7 @@ rationale: |
   "apply", not "page load", so a future live-apply path validates the same way
   without a rewrite (ADR 0007); page load is today's only apply point.
 ref: ''
-reviewed: RI2okp3raRUe8OLkgtcZ4jAaL1GLd0IAY-lqDDysD9s=
+reviewed: 5y2suwnX5RK1N6-EoAAyWQGxcOgHB6qPW_GItdqvXCo=
 status: accepted
 text: |
   A configuration shall be validated against the configuration schema before

@@ -4,10 +4,11 @@ header: |
   Pending: rejected-request client-contract test
 level: 1.26
 links:
-- SRS026: null
+- SRS026: -PX7ha7LW3U8r-lKXCA56qm_H5uXD9NMg1D7iAUJmqU=
 normative: true
 rationale: ''
 ref: ''
+reviewed: uedqg18PXUDIlj074eweDYhNimhLPFBgySBMRyFhQkI=
 status: proposed
 text: |
   Pending: test asserting the backend returns 400 (invalid parameter), 404

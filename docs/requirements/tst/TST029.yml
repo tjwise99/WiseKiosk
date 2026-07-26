@@ -4,10 +4,11 @@ header: |
   Pending: boundary schema is single, package-neutral, and complete
 level: 1.29
 links:
-- SRS029: null
+- SRS029: lIZoONMzlp2X6LOz1NgqWPjfzOvsXYRegCSQGYG0tyg=
 normative: true
 rationale: ''
 ref: ''
+reviewed: ZGl6laZFfnHdWRZqF6mfYbOqyMPxcRsVaKUcEBULv4o=
 status: proposed
 text: |
   Pending: test parsing the boundary schema and asserting exactly one schema artifact is tracked and

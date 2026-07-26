@@ -1,24 +1,28 @@
 active: true
 derived: false
 header: |
-  One image serves every deployment, independently configured
-level: 1.7
+  Single-definition internal contract
+level: 7
 links: []
 normative: true
 rationale: |
-  One published image serving many independent deployments, each customised by its own
-  configuration, is the entire reason this repository exists. Per-deployment forks or rebuilds would
-  fragment it.
-
-  The fork prohibition is recorded here rather than as an obligation. Whether someone clones this
-  repository and patches it for their own house is a fact about what exists outside it, which no
-  check run inside it can falsify; stated as a shall it read as enforced and was not. What is
-  enforceable is the positive form above - one image, configuration-only customisation, instance
-  independence - which SRS044, SRS045 and SRS046 verify.
+  A shape declared twice drifts, and the drift is invisible until runtime: this is the single worst
+  defect class this design guards against (ADR 0001). The rule binds definitions, not uses — a component
+  whose prop is typed with a generated type is a consumer, not a second declaration. Scope is internal:
+  upstream API shapes are defined by whoever runs the API, and the configuration format is shared with
+  the operator and governed by SYS001. Secret confinement lands here because the contract is a closed
+  set: a secret can only cross if the definition declares one, which is a structural claim rather than
+  an unprovable negative about outputs.
 ref: ''
-reviewed: hz1yG9Kf4numR8kMSe-btITv-kgV4P6qWzkOWA-lNNw=
+reviewed: gygNneD3A0xV6q5KFtBovv0bgMlX3e9zgdO0nGPLfYI=
 status: accepted
 text: |
-  One published container image shall serve every deployment. Each deployment shall be customised
-  solely by its own configuration, and shall be independent of every other deployment.
+  Every shape shared between WiseKiosk's own components shall have exactly one machine-readable
+  definition, generated into every implementation that must agree on it, and shall carry no secret. This
+  shall hold by construction — no code path shall carry a secret toward a client — never by a stripping
+  or redaction step applied before delivery.
+verification-justification: |
+  Generation and agreement are decided by the drift gate: a committed artifact differing from a fresh
+  regeneration fails. What no check settles is whether the definition is the right shape — only that
+  both sides hold the same one.
 verification-method: test

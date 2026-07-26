@@ -4,13 +4,13 @@ header: |
   Software bill of materials per release
 level: 1.64
 links:
-- SYS029: NDQsnsQwX3t9Xk-zGc2bvgSMJIDOzAsPS8KTEFGBUyU=
+- SYS005: QMiNuCcsfu4FMKLYCs22__VB2jC6pnxCzPMvVA4mFRQ=
 normative: true
 rationale: |
   Makes the fleet's dependency inventory auditable after a disclosure without
   rebuilding the image.
 ref: ''
-reviewed: hYNV4A_O1GU_f6KsszJe-vY_UpFtouwS1xeHfwBmL6E=
+reviewed: __YSJ6adBJoNurOcwgwtrcTON0HUXszm21OD1ZphgY8=
 status: accepted
 text: |
   Each published release shall have a software bill of materials generated from

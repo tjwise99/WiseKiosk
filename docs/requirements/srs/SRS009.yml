@@ -4,7 +4,7 @@ header: |
   Configuration is delivered to the page unmodified
 level: 1.9
 links:
-- SYS014: 8jKqJAZs2ttEU3TkDo0buS1o8azVuVylXN4-XHCzW74=
+- SYS003: r0OHFjma5xOn8ZgSOGL1oBns-m0Q-TKD9LQHrUnwXSw=
 normative: true
 rationale: |
   The configuration is a static file the page fetches; no component parses or
@@ -12,7 +12,7 @@ rationale: |
   of the configuration — what the page validates and renders would no longer
   be what the operator authored or what the desk validator checked.
 ref: ''
-reviewed: RwW3MbqLLk7uTy-ITIKDXgjAQKhHsU2rZCp18-r0dVg=
+reviewed: qwVU8ie1r6Fej1DmdEOSNF_YUVCwC7gxA5HDk70IXjI=
 status: accepted
 text: |
   The configuration shall be delivered to the display page byte-for-byte as

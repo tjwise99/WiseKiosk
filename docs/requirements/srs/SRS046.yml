@@ -4,15 +4,15 @@ header: |
   Configuration supplied by bind mount
 level: 1.46
 links:
-- SYS002: 74Sho44EjcFPpisC_doWPFSZUqY7qJ8D0_GnRd1_qCE=
-- SYS007: hz1yG9Kf4numR8kMSe-btITv-kgV4P6qWzkOWA-lNNw=
+- SYS004: FKi-jJSUDykMZmuZ6ynaFM__dVCb2Vz9rb-qgjEu9io=
+- SYS005: QMiNuCcsfu4FMKLYCs22__VB2jC6pnxCzPMvVA4mFRQ=
 normative: true
 rationale: |
   Fixes the configuration supply vector at the container boundary; the
   fidelity of that configuration in transit is SRS009's concern, not this
   one.
 ref: ''
-reviewed: E8sfboL5vIQ0hcnitJudyN6G7MkhdvX8v0pJNxfPymE=
+reviewed: Z06BKhoXDz3wO1Mo3AuKmPxeqeQcdpesKhWS58GmwN8=
 status: accepted
 text: |
   The display configuration shall be supplied to the running container by a

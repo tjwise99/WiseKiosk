@@ -2,9 +2,9 @@ active: false
 derived: false
 header: |
   Third-party findings are dispositioned in an expiring exception register, one at a time
-level: '1.98'
+level: 1.98
 links:
-- SYS028: null
+- SYS010: tunYeRPYjw1wheyLpOCTyiWRFVEHtFbzAcMgHdU_J_I=
 normative: true
 rationale: |
   A severity threshold decides in advance that a whole class of finding is acceptable, sight unseen.
@@ -27,6 +27,7 @@ rationale: |
   This is one fact with one home, cited by the dependency and image gates rather than restated in
   each — the same reason SRS097 owns the required-check fact for six items.
 ref: ''
+reviewed: 8BVtw__kk_xHAeDgWAOrpRMSBJgjO4KSFfqPVBb6Tyw=
 status: proposed
 text: |
   The repository shall maintain a committed vulnerability-exception register. A third-party

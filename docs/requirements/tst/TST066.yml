@@ -4,10 +4,11 @@ header: |
   Pending: image signature verification
 level: 1.52
 links:
-- SRS063: null
+- SRS063: idmUD0zMKEPV0Gleu3uPhvhMfVmZMSrwnaczO1klIqc=
 normative: true
 rationale: ''
 ref: ''
+reviewed: IavErSzYn8f-PQVewk3vyid060ZyS7CiHxXQfaAFtpc=
 status: proposed
 text: |
   Pending: test running cosign keyless verify against the published digest with the expected

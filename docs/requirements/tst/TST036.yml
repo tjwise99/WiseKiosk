@@ -4,10 +4,11 @@ header: |
   Pending: no shared framework source names or imports a module
 level: 1.36
 links:
-- SRS036: null
+- SRS036: Q6c-x2PEgKqKToIOAsuNchTSHAVBPJ1g4c4mFoRcgxc=
 normative: true
 rationale: ''
 ref: ''
+reviewed: eSnpQJaMJxj-wENPya2NZNyzFvsQ5BPorNS2B8NYWFk=
 status: proposed
 text: |
   Pending: test taking the module-name set from the static registration list and asserting no shared

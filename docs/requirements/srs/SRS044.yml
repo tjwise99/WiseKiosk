@@ -4,13 +4,13 @@ header: |
   One generic published image
 level: 1.44
 links:
-- SYS007: hz1yG9Kf4numR8kMSe-btITv-kgV4P6qWzkOWA-lNNw=
+- SYS005: QMiNuCcsfu4FMKLYCs22__VB2jC6pnxCzPMvVA4mFRQ=
 normative: true
 rationale: |
   Keeps the one-image model falsifiable: any deployment-specific content baked
   into the image is a defect.
 ref: ''
-reviewed: V7ZFLzI7qY5UXtLBwFAnLlK3oGFw6SHNYfTFhIXPqqQ=
+reviewed: cE0Z8vbiCAzegrYNitWLgv4i74VnHA-GGIaAxUmTIks=
 status: accepted
 text: |
   WiseKiosk shall be published as a single container image that carries no

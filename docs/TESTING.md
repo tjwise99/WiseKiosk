@@ -16,10 +16,10 @@ Each tier states what it **guarantees** and when it runs.
 | Tier | Guarantees | Specified by | Runs |
 |---|---|---|---|
 | **Unit** | Shaping libraries transform known upstream responses into correct payloads. Pure, fast, no network | SRS033 | Every commit, in CI |
-| **Boundary** | The frontend and backend agree on every value that crosses: parameter names *and types*, success payloads, the structured upstream-failure body, the client-error rejection body, and every status code the frontend discriminates on | SYS023 / SRS029 | Every commit, in CI |
+| **Boundary** | The frontend and backend agree on every value that crosses: parameter names *and types*, success payloads, the structured upstream-failure body, the client-error rejection body, and every status code the frontend discriminates on | SYS007 / SRS029 | Every commit, in CI |
 | **Integration** | Routes serve; the TTL cache honours its TTL; parameter validation rejects bad input; config validation fails loudly on bad config | SRS020 / SRS022 / SRS023 / SRS005 | Every commit, in CI |
 | **Render** | Each module renders from its props; the page assembles with a known-good config | SRS040 / SRS041 | Every commit, in CI |
-| **Contract** | Upstream APIs still return what the shaping libraries expect | — (placement: SYS019 / SRS019) | Locally, outside CI — needs real keys, and CI holds none |
+| **Contract** | Upstream APIs still return what the shaping libraries expect | — (placement: SYS003 / SRS019) | Locally, outside CI — needs real keys, and CI holds none |
 
 The Boundary row enumerates the value classes deliberately: "payload shape and parameter name" reads
 narrower than SRS029, and an error body or a status code left out of the schema is exactly the value
@@ -28,7 +28,7 @@ that crosses unproven.
 The **Contract** tier runs outside CI **entirely** — not merely outside the PR gate. No CI workflow
 holds an upstream credential and no CI job runs a check that needs one, so a check needing a live
 upstream runs locally, on a developer machine. There is no scheduled credentialed run.
-→ SYS019 / SRS019.
+→ SYS003 / SRS019.
 
 It lives in a **nested module**, outside the parent module's test discovery. That placement is what
 lets both obligations hold at once: whole-tree discovery reaches every committed test (SRS068), and
@@ -53,7 +53,7 @@ sides generated from it**. The tier's job in CI is to prove the generation is re
   committed output differing from a fresh regeneration, and version-pinning of the generators so
   regeneration is deterministic — all specified by **SRS030**.
 - That the generated types are the ones actually *used* on both sides, including the per-module
-  error-render path, rather than shadowed by a hand-declared twin — **SRS031**, under **SYS023**.
+  error-render path, rather than shadowed by a hand-declared twin — **SRS031**, under **SYS007**.
 - That the frontend adds no second, runtime validator over proxied payloads, so agreement rests on
   the schema and the drift gate rather than a bundled re-check — **SRS032**.
 
@@ -72,7 +72,7 @@ governs it, so the obligation and its verification item stay traceable and CI-ch
 prose alone.
 
 - **Every value crossing the frontend/backend boundary is generated from one definition**
-  → SYS023 / SRS029 / SRS030 / SRS031 / SRS032, and
+  → SYS007 / SRS029 / SRS030 / SRS031 / SRS032, and
   [above](#the-boundary-tier-is-generated-not-hand-written).
 - **Every module supplies a render test for its component, and — where it fetches an upstream — unit tests for its shaping library**
   → SRS037. A module missing either is an incomplete module, not a passing one.
@@ -81,10 +81,10 @@ prose alone.
   operator is not the author, so validation failing correctly and legibly is a product feature, and
   it is tested as one.
 - **The standalone validator is exercised against known-good and known-bad configs** → SRS008, run
-  in CI under SYS031. The validator failing to reject a malformed config is a product bug, not a
+  in CI under SYS010. The validator failing to reject a malformed config is a product bug, not a
   testing gap.
-- **Repo-wide checks live at repo level** → SYS032 / SRS069.
-- **Every test and check in the repository is executed by CI** → SYS031, decomposed into SRS067
+- **Repo-wide checks live at repo level** → SYS010 / SRS069.
+- **Every test and check in the repository is executed by CI** → SYS010, decomposed into SRS067
   (every `just verify` check runs in CI and the reverse) and SRS068 (runners are invoked in their
   whole-tree discovery form — `go test ./...`, the frontend runner's default glob — with no
   hand-maintained file list and no skip or build tag silencing a committed test). A test no runner
@@ -103,7 +103,7 @@ may and may not assert is specified by SRS070: no gate fails a merge on a covera
 as a quality threshold, and the coverage gate, where one exists, fails only on uncovered source that
 is neither exempted nor justified — coverage as traceability closure, gate 3 of
 [ADR 0005](decisions/0005-traceability-gating.md), never as a chosen quality bar.
-→ SYS033 / SRS070.
+→ SYS010 / SRS070.
 
 ---
 
@@ -118,7 +118,7 @@ Put a check at the altitude it is true at:
 - **A module's shaping/rendering** → with that module.
 
 A check placed by convenience — "here, because a test runner already existed" — instead of by altitude
-is a defect in the suite's architecture, not a neutral choice. → SYS032 / SRS069.
+is a defect in the suite's architecture, not a neutral choice. → SYS010 / SRS069.
 
 ---
 
@@ -131,4 +131,4 @@ when the test proves nothing, so without a scheduled review the suite silently b
 architecture nobody revisits. Code gets that review by default; tests must be given it explicitly.
 The module-add trigger's other half is the [module contract](contracts/module-contract.md), which
 SRS071 requires to cross-link back to this review once that procedure is authored.
-→ SYS034 / SRS071.
+→ SYS010 / SRS071.

@@ -4,10 +4,11 @@ header: |
   Pending: release assets equal the declared set
 level: 1.15
 links:
-- SRS052: null
+- SRS052: 6VRgTrVHeFQVIokGT9gFUt_djObCko7Fq1KZMbBMyDw=
 normative: true
 rationale: ''
 ref: ''
+reviewed: wVa4ubRb_dCiUyA_SPVPm6IVu6KUAAKUtLChiiIbHt8=
 status: proposed
 text: |
   Pending: test asserting the set of assets published for a release equals exactly the image

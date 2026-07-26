@@ -4,17 +4,17 @@ header: |
   The delivered artifact set is exactly the published four
 level: 1.52
 links:
-- SYS009: WMZs5hUVGSzb-oB2-KSoniaadXlk4H25FQAeLs2rDFo=
+- SYS005: QMiNuCcsfu4FMKLYCs22__VB2jC6pnxCzPMvVA4mFRQ=
 normative: true
 rationale: |
   Restated as a positive allowlist. As a prohibition on shipping a host OS it was an unbounded
   negative - every mechanisation would have been a denylist of forms already thought of, passing the
   first time an unlisted one appeared, which is the control this project rejects on principle. The
   allowlist inverts it: the release asset set is finite and observable, so an artifact nobody
-  declared fails rather than passing unrecognised. The scope boundary SYS009 draws is preserved and
+  declared fails rather than passing unrecognised. The scope boundary SYS005 draws is preserved and
   becomes a gate.
 ref: ''
-reviewed: qbB-Z1qElu-yTUiD-egM1wjcpCup-_xjUjRInD3g73o=
+reviewed: bobuzP-XWdX1sR6jLLbLmKjn0jLCSYBAeCxaodo3TME=
 status: accepted
 text: |
   The artifacts WiseKiosk delivers shall be exactly the published container image, its software bill

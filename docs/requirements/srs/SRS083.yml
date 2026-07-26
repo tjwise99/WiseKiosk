@@ -4,7 +4,7 @@ header: |
   The ADR index and the decisions directory agree
 level: 1.83
 links:
-- SYS039: Nz5pPzvXlLQK82gQlLsMLeptQ4-bmPELdmTMUk897AE=
+- SYS011: GG37Ciys0N_S9xmzaKrup_W8ce0inLFB84S65X8sz_g=
 normative: true
 rationale: |
   TST `adr-index-completeness-check` — verification-method: test — PENDING (active: false) — header
@@ -12,7 +12,7 @@ rationale: |
   decisions/ directory and README table agree. Activated with a `references` entry when the script
   lands.
 ref: ''
-reviewed: caBIIBpZnT1ccadXku46sH87U775ymvOvdgXKJwwQfs=
+reviewed: rhs_1y2hR81uHBevjeTM8qnL9F0sLPjxtsbnEDSN2JQ=
 status: accepted
 text: |
   Every file under docs/decisions/ matching the ADR filename pattern shall appear as a row in

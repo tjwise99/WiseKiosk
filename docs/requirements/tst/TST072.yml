@@ -4,10 +4,11 @@ header: |
   Pending: repo-level dead-test detector
 level: 1.5
 links:
-- SRS068: null
+- SRS068: IbPCMSNFjauA_JZt2FQLtqO8-_7q3PlfQtV9N8eeiPs=
 normative: true
 rationale: ''
 ref: ''
+reviewed: Merge7j716c3VDkp_CzsinYoaJBIq-TGYU2JHmOwHsc=
 status: proposed
 text: |
   Pending: enumerates committed test files (Go `_test.go`; frontend `*.test.*`/`*.spec.*`) and

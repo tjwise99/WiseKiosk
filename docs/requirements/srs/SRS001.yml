@@ -4,11 +4,11 @@ header: |
   Backend returns structured errors for upstream failures
 level: 1.1
 links:
-- SYS005: ZL5TKFyrHPDZmdc6CDmpAIXf-LWQrkNsQgQ4L5IlYhY=
+- SYS001: TQyfJejH81RI-POadHI3gN0eM_DDB8AFAnMwcKjCth4=
 normative: true
 rationale: ''
 ref: ''
-reviewed: MqrSrlPrybMT7vpWwJOItdkv2qnQxybb7GQZffBoAVE=
+reviewed: sv-b0IiLNgses4CAlOHqcBIrAlFH8e035c7neevdjcc=
 status: accepted
 text: |
   On an upstream request failure (unreachable host, timeout, non-success

@@ -4,10 +4,11 @@ header: |
   Pending: invalid-config-not-applied test
 level: 1.5
 links:
-- SRS005: null
+- SRS005: ywncFz94qn2bWNPz1Ba95QVM5z66Tf37TifTV3aYUtc=
 normative: true
 rationale: ''
 ref: ''
+reviewed: 3DFYqLTsxAx--FNwFspVoRXn9etcEFgTDiiFbVTBUZU=
 status: proposed
 text: |
   Pending: render test asserting an invalid configuration is never applied —

@@ -4,10 +4,11 @@ header: |
   Pending: proxy endpoint & statelessness test
 level: '1.20'
 links:
-- SRS020: null
+- SRS020: viESuoJ7QupdJG4qkWqsgrZkADqyb8MTTJx3Gjd8nr0=
 normative: true
 rationale: ''
 ref: ''
+reviewed: FHxvVCq_DWdWjKWx95d68IBF5DvP2Mk1z_ywM0mtDRo=
 status: proposed
 text: |
   Pending: backend integration test asserting GET /api/<source> returns the

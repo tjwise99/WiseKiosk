@@ -13,6 +13,7 @@ rationale: |
   silently. The expiry assertion is the one that fails on its own over time, with no change to the
   repository, which is the point of it.
 ref: ''
+reviewed: 09hX71o1kVaxMRzv0GGmA8I8ovYyvLzcesnym6M8eJo=
 status: proposed
 text: |
   Pending: check asserting that every vulnerability-exception register entry carries an advisory

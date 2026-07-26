@@ -4,7 +4,7 @@ header: |
   Each module declares its boundary payload as a composed fragment
 level: '1.100'
 links:
-- SYS023: null
+- SYS007: gygNneD3A0xV6q5KFtBovv0bgMlX3e9zgdO0nGPLfYI=
 normative: true
 rationale: |
   Closes the contradiction the module contract recorded against #18: a module's component must
@@ -16,7 +16,7 @@ rationale: |
   mechanism SRS035 already uses for the configuration schema, applied to the boundary schema rather
   than a second mechanism invented for it.
 ref: ''
-reviewed: null
+reviewed: M45vfVj9Zr5uRsuVJ89bu9xoZI2_8_evcr-R1eyfpso=
 status: proposed
 text: |
   Each module whose payload crosses the frontend/backend boundary shall declare that payload as a

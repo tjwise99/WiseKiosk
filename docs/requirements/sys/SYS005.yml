@@ -1,21 +1,27 @@
 active: true
 derived: false
 header: |
-  Upstream failures degrade legibly, per module
-level: 1.5
+  The published artifact
+level: 5
 links: []
 normative: true
 rationale: |
-  The fail-loud ethos extends to runtime. An upstream outage must read as a
-  data problem in one module, not a broken mirror, and must not take down
-  unrelated modules. Owner decision 2026-07-22: legible per-module error state,
-  not stale-data display and not a blanked region.
+  An operator who pulls an image is trusting a stranger's build. Signature and provenance let them
+  establish what it is; recorded inputs let them rebuild it rather than take it on faith. The third
+  clause is what makes hardening traceable — a non-root user, a digest-pinned base, a build context
+  without development or secret material and a statically linked binary are all instances of carrying
+  nothing beyond what running requires. "The hardware WiseKiosk targets" is the tier's only statement
+  of platform scope; SRS051 and SRS056 name what is in that set.
 ref: ''
-reviewed: ZL5TKFyrHPDZmdc6CDmpAIXf-LWQrkNsQgQ4L5IlYhY=
+reviewed: QMiNuCcsfu4FMKLYCs22__VB2jC6pnxCzPMvVA4mFRQ=
 status: accepted
 text: |
-  When a module's upstream data source fails at runtime (unreachable, rejected
-  credentials, timeout, or malformed response), that module's display region
-  shall show a legible plain-language error state while all other modules
-  continue to operate normally.
+  One published image shall serve every deployment on the hardware WiseKiosk targets, and whoever pulls
+  it shall be able to establish what it is and rebuild it from its recorded inputs. It shall carry
+  nothing beyond what it needs to run.
+verification-justification: |
+  Image properties are inspectable mechanically: user, base digest, build context, signature,
+  attestation, SBOM. What the checks do not settle is whether the recorded inputs are complete enough
+  for an independent rebuild to produce an identical artifact — that is proven by performing one, which
+  no gate does today.
 verification-method: test

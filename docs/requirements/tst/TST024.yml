@@ -4,10 +4,11 @@ header: |
   Pending: per-route rate-limit test
 level: 1.24
 links:
-- SRS024: null
+- SRS024: ODe-bSR4qrckJ9tAuuu9NP0YRdYmRprOv6aU4a73gFk=
 normative: true
 rationale: ''
 ref: ''
+reviewed: FipUM462sFLAofEIrY976KqTeLMx26z_KVyaA1gZf90=
 status: proposed
 text: |
   Pending: test asserting a route's global rate limit rejects requests over the

@@ -4,10 +4,11 @@ header: |
   Pending: multi-arch build and smoke test
 level: 1.11
 links:
-- SRS051: null
+- SRS051: FApdziwPQo1lgbj-QU2spEhRybtzrWocTrMyuw-c6n0=
 normative: true
 rationale: ''
 ref: ''
+reviewed: 8l85fhTMmgM2Cd_NXXt4VlVD1lwq5V2Cjb4t4IAOaG0=
 status: proposed
 text: |
   Pending: a CI matrix that builds and smoke-tests the published image on amd64 and arm64. The CI wiring lives under .github/ (not Doorstop-referenceable, ADR 0002) and is cited here; any non-dot-dir smoke harness it invokes is the references target. Lands with the container image build (#54); activated then.

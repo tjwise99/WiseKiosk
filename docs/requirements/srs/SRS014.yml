@@ -4,14 +4,14 @@ header: |
   One validation implementation
 level: 1.14
 links:
-- SYS014: 8jKqJAZs2ttEU3TkDo0buS1o8azVuVylXN4-XHCzW74=
+- SYS003: r0OHFjma5xOn8ZgSOGL1oBns-m0Q-TKD9LQHrUnwXSw=
 normative: true
 rationale: |
   A second engine enforces the schema slightly differently, and the divergence
   surfaces as a desk validator that accepts what the page rejects — the defect
   class the single-definition rule exists to kill (ADR 0007).
 ref: ''
-reviewed: HH5zBfck5ArxONBop-cOS0OS9h4_xWkE92Fh3BbsTLU=
+reviewed: A13nHl91b_w1CUIG4FT-8Z-jsJotXi-3lS-G98dFA2c=
 status: accepted
 text: |
   Page-load validation and the standalone desk validator shall execute the

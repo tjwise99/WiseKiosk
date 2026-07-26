@@ -4,10 +4,11 @@ header: |
   Pending: container image vulnerability scan gate test
 level: 1.51
 links:
-- SRS062: null
+- SRS062: 7PX4IJXU6ODxmJWhvcxMbqT2b2M_sCkUfbfj-PcS14s=
 normative: true
 rationale: ''
 ref: ''
+reviewed: TrfCXuohgfGFYo14-J6iXabiIO5SlQXQmAMqgJvNHOk=
 status: proposed
 text: |
   Pending: check that builds an image from a materialised fixture manifest carrying a seeded known

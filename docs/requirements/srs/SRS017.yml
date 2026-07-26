@@ -4,16 +4,16 @@ header: |
   Configuration schema offers no secret-bearing key
 level: 1.17
 links:
-- SYS045: yTI_Hm83drjm1OpMWx7SoMpgtMA-PofJr_jtZSjqLBI=
+- SYS003: r0OHFjma5xOn8ZgSOGL1oBns-m0Q-TKD9LQHrUnwXSw=
 normative: true
 rationale: |
   The configuration is the one channel a client fetches wholesale, so the
-  confinement (SYS017) is structural only if the configuration cannot
+  confinement (SYS003) is structural only if the configuration cannot
   carry a secret in the first place. Excluding secret-bearing keys from
   the schema leaves nothing to strip; a denylist applied at delivery
   would fail open.
 ref: ''
-reviewed: EjB6Qka3lUddZeWTPoyvx7uU0Nr_tajCvrqISUlmK6o=
+reviewed: cZZfBPIwy3Ggf26h9ceUS_PhgL2CnyoA0LtVsbeiiJ0=
 status: accepted
 text: |
   The configuration schema shall offer no key whose value is a secret —
@@ -21,9 +21,7 @@ text: |
   shall therefore carry no secret to remove: the delivered configuration
   shall be secret-free by construction, not by a redaction step.
 verification-justification: |
-  Deciding that a configuration key's value is a secret is a semantic judgement about what the key
-  means, not a property of the schema's structure. The only mechanical form is a name-pattern match
-  over key names - the denylist that fails open on the first key nobody anticipated, which this
-  requirement exists to avoid. The schema's key set is small and enumerated, so a reader decides it
-  exhaustively.
-verification-method: inspection
+  The check decides that the configuration schema's key set equals a committed allowlist. It does
+  not decide secret-ness: a secret-bearing key that is listed would pass. What it buys is that no key
+  enters the schema without appearing in a reviewed diff.
+verification-method: test

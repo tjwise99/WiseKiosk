@@ -4,7 +4,7 @@ header: |
   Secret resolution: file at <NAME>_FILE, trailing whitespace stripped
 level: 1.15
 links:
-- SYS018: UYgb2CzlxUsfeCdSoRZMga2gkxSKrcx6c4NyhXvFUSM=
+- SYS003: r0OHFjma5xOn8ZgSOGL1oBns-m0Q-TKD9LQHrUnwXSw=
 normative: true
 rationale: |
   One delivery path keeps delivery unambiguous — no shadowing between a
@@ -16,7 +16,7 @@ rationale: |
   the value presents as rejected credentials while the file looks correct
   on inspection.
 ref: ''
-reviewed: Kv2FXxkUIE0Dwl_hDS9K2oDbV5JI6ZFAwOoKKcMnz-c=
+reviewed: IGOcRrTlnBdk6-csAW0MQC04vgltmYrE4ZpBdAD6VtA=
 status: accepted
 text: |
   The backend shall resolve a secret named NAME by reading the file at the

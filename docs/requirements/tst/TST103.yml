@@ -15,6 +15,7 @@ rationale: |
   reviewed list rather than restating one. That file sits outside a dot-directory and is therefore a
   usable Doorstop `references` target, which the workflow it checks is not (ADR 0002).
 ref: ''
+reviewed: AZPzFxVgkvefNjBWawWzzO47AppTYYDM3i5v_db9arw=
 status: proposed
 text: |
   Pending: check that reads the default branch's ruleset, extracts its required status checks, and

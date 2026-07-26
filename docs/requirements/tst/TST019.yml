@@ -4,10 +4,11 @@ header: |
   Pending: workflows reference no credential; Contract tier is module-isolated
 level: 1.19
 links:
-- SRS019: null
+- SRS019: DSH93B6sYedw0P5K5owU96W-GpV4Rlq3Nomktsyr4co=
 normative: true
 rationale: ''
 ref: ''
+reviewed: u1Tlu5q_sLaWBy8zgAHZmXaQhR-cZ6qevnM2wxXZD6E=
 status: proposed
 text: |
   Pending: test parsing every workflow under .github/workflows/ and asserting each secrets reference

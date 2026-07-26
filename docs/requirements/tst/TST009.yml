@@ -4,10 +4,11 @@ header: |
   Pending: unmodified config delivery test
 level: 1.9
 links:
-- SRS009: null
+- SRS009: mLFzjwAXdYkFek4rUmC4MOwFhqPhU5PGHk_hCVfocvM=
 normative: true
 rationale: ''
 ref: ''
+reviewed: ClJwTMZtnp1GKDs3fOoLRcUg-DPbT-SC9wV0XXVhIsQ=
 status: proposed
 text: |
   Pending: integration test asserting the configuration fetched from the

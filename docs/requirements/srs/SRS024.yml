@@ -4,18 +4,18 @@ header: |
   Per-route rate limiting on the upstream path
 level: 1.24
 links:
-- SYS021: AKm_dHwE6HKZi7Hifk9N5RxoXvr0MXX7kBUcgRlsOsw=
+- SYS006: KZtswOlxN1xD3PUvRX2djU9sCMFBskYb-6W5Iq6nOdo=
 normative: true
 rationale: |
   Rate limiting bounds request volume toward upstream regardless of client
-  behaviour (SYS021); a static-analysis finding is expected absent it. It is
+  behaviour (SYS006); a static-analysis finding is expected absent it. It is
   global per route because a per-client-address limit is inert behind container
   NAT, where every client presents the same masqueraded address (a control that
   does not function where deployed). It gates the upstream path because a cache
   hit issues no upstream request and so needs no limiting.
   Thresholds are chosen in #6.
 ref: ''
-reviewed: QnsTMFBOt1xmS89F1XDf-x-hGZ2Yo39OqE-_7qbB9hc=
+reviewed: 0Jhm1Y_hVxf45TBV15pqjB6gD6O2MIsyAABbOWrBE7Y=
 status: accepted
 text: |
   Each proxy route shall enforce a rate limit that is global to the route, not

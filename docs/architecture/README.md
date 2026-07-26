@@ -5,7 +5,7 @@ the diagrams in [`../ARCHITECTURE.md`](../ARCHITECTURE.md) — those are generat
 drawn by hand. Why LikeC4 and not D2/Mermaid/Structurizr/PlantUML: see
 [ADR 0003](../decisions/0003-architecture-as-code-likec4.md).
 
-This tooling is **dev-only and siloed here** (SYS035, SRS072): its `package.json`, lockfile, and
+This tooling is **dev-only and siloed here** (SYS010, SRS072): its `package.json`, lockfile, and
 `node_modules/` live in this directory; nothing depends on it at app build or runtime.
 
 ## Layout

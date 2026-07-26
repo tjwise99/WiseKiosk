@@ -4,10 +4,11 @@ header: |
   Pending: classifier fixtures and language-coverage registry
 level: 1.19
 links:
-- SRS090: null
+- SRS059: QLAVtR_XXvkRtCHw1rC-liPQkYniCwY5OEGozmEoTOg=
 normative: true
 rationale: ''
 ref: ''
+reviewed: YOmWLtIMmU2owNFqTosOJ5yLNbQz7qiFPkTbPJUFEiE=
 status: proposed
 text: |
   Pending: a fixture suite proving, per covered language, that a narrative comment is flagged and that the

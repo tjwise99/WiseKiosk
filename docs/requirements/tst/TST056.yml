@@ -4,14 +4,15 @@ header: |
   Pending: Pi Zero-class host demonstration
 level: 1.16
 links:
-- SRS056: null
+- SRS056: dpcqt1fMkrUY_MGNd9afAu1OaF_6qUXnigPS9Z181rg=
 normative: true
 rationale: ''
 ref: ''
+reviewed: EPuY_ir-CKkJPgNTgoim2P3KIhKt70gBAXrDxDFTRHo=
 status: proposed
 text: |
   Pending: demonstration that the frontend renders and drives the display on a Raspberry Pi Zero-class browser host; shares evidence with the soak demonstration. Lands with the frontend skeleton (#10); activated then.
 verification-justification: |
-  Rendering on a Pi Zero-class browser host requires that physical device; no CI runner reproduces
-  its CPU, memory, or browser build, so the observation is made on real hardware.
-verification-method: demonstration
+  Emulated ARM boot plus performance proxies. Establishes that the frontend renders on that
+  architecture; does not establish Pi Zero-class timing.
+verification-method: test

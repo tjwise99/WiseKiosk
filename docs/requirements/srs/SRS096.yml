@@ -2,16 +2,16 @@ active: false
 derived: false
 header: |
   The backend establishes no client identity and gates no route on one
-level: '1.96'
+level: 1.96
 links:
-- SYS011: null
+- SYS008: 44Qw1BupFMvl480RGlShXn-jdzfHM3-Jfn9MpcUJYks=
 normative: true
 rationale: |
-  Makes SYS011's security model falsifiable. The posture itself — a deployment serves exactly one
+  Makes SYS008's security model falsifiable. The posture itself — a deployment serves exactly one
   trusted LAN — is a fact about where the system is installed, which no check inside the repository
   can decide. What can be decided is the absence the model rests on, and that absence is precisely
   what stops being true quietly: a session added for convenience, an access check added by reflex
-  during a later security pass. SYS011's rationale exists to stop that "fix"; this requirement is
+  during a later security pass. SYS008's rationale exists to stop that "fix"; this requirement is
   what lets a gate stop it.
 
   SRS020 states statelessness as a transport property of the proxy route, and this requirement
@@ -20,6 +20,7 @@ rationale: |
   introducing an identity mechanism elsewhere, and the posture must outlive that. Stated here so the
   overlap does not read as an oversight.
 ref: ''
+reviewed: fi5j23NgcQ_9gX3XQUkGeIYHkNDyjNqJ1GHmHxE6vuw=
 status: proposed
 text: |
   The backend shall establish no client identity and shall gate no route on one. No response shall

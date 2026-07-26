@@ -74,7 +74,7 @@ review, as 0005's axiom tier already is.
 - **Fold it into `rationale` as a trailing convention.** Rejected: it conflates two questions in one
   field, so neither can be gated independently — a check asserting "every non-`test` item states its
   blocker" cannot tell a justification paragraph from the surrounding prose without parsing English.
-  It also breaks [SYS037](../requirements/README.md)'s one-fact-one-home rule that the corpus was
+  It also breaks [SYS011](../requirements/README.md)'s one-fact-one-home rule that the corpus was
   reconciled against under #42, inside the very tree that states it.
 - **State it in the `TST` item's `text`.** Rejected: the 115 non-`test` items span all three tiers,
   and the `SYS` tier — where `analysis` and `inspection` concentrate, and where there is no parent to

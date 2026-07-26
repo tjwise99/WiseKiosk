@@ -4,13 +4,13 @@ header: |
   Static security scanning of first-party source
 level: 1.58
 links:
-- SYS027: OR5YK6_ubV9wthjsiYiiD4waH0gfEh6fpmomx20Vk4Y=
+- SYS010: tunYeRPYjw1wheyLpOCTyiWRFVEHtFbzAcMgHdU_J_I=
 normative: true
 rationale: |
   Mechanises the security review the solo project has no second human to
   perform, across both languages it ships.
 ref: ''
-reviewed: 6dBULg_Sza6Gthc4dNbxkd-qN74woEeFUGAcMdH0FVs=
+reviewed: jZOGTKGSfs5i755qL_sI2xftHJlOCjORk4277JcEF8o=
 status: accepted
 text: |
   Continuous integration shall statically scan the project's own Go and

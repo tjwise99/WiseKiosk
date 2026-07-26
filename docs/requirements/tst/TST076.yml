@@ -4,10 +4,11 @@ header: |
   Pending: repo-root silo check
 level: 1.8
 links:
-- SRS072: null
+- SRS072: j3E6XpSeab-PVoMLnb-o77rNVy1riJKspYrWrJlwSY8=
 normative: true
 rationale: ''
 ref: ''
+reviewed: 15Ah6BHd5Xm8ByGyh_3-lZgFTbUsUO8ZFkZ-L97T6Q8=
 status: proposed
 text: |
   Pending: test asserting a depth-1 listing of the repository root contains no package.json,

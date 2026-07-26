@@ -8,7 +8,7 @@ links:
 normative: true
 rationale: ''
 ref: ''
-reviewed: U_f340QbNxsMzOpKtmnqEp-5heyGI5xzlJQbZe3avEI=
+reviewed: VuAl4AOqd5jxAAvn-NTB0EW0stpzy03R-NdjxB0-rho=
 status: proposed
 text: |
   Pending: test parsing the documentation-index table and asserting its row set equals a committed

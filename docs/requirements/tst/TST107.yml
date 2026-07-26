@@ -11,7 +11,7 @@ rationale: |
   from the fixtures it would only confirm that whatever is tested passes, which is what it already
   knows.
 ref: ''
-reviewed: null
+reviewed: TZ8N9sCgofFpDGpbQoyczgOVXNng_q-lVyJ5VodshGg=
 status: proposed
 text: |
   Pending: test enumerating the composed configuration schema's keys and asserting, for each, that

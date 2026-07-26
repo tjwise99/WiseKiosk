@@ -4,10 +4,11 @@ header: |
   Pending: model-to-code link review
 level: 1.13
 links:
-- SRS081: null
+- SRS081: a46QIJ67ayCqRZIKK0oiUuyOWAjohYN1yer4LSdLcZ4=
 normative: true
 rationale: ''
 ref: ''
+reviewed: oolT4x5_WD49-tv_WDU-ZGotv4xRSSEUCd6GnMZcFUI=
 status: proposed
 text: |
   Pending: a reader confirms that, as an architecture element gains a real implementation, its

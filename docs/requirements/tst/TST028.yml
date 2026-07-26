@@ -4,10 +4,11 @@ header: |
   Pending: negative-caching test
 level: 1.28
 links:
-- SRS028: null
+- SRS028: HbzwXfYcLFdaopR352FYG5sSOQWhZ4F9uy2jTTREwCU=
 normative: true
 rationale: ''
 ref: ''
+reviewed: 1eFIeDK_0cbY8QYQjkk--gn02sIfsXi_K896FGrZm2o=
 status: proposed
 text: |
   Pending: test asserting an upstream failure is cached for a negative TTL

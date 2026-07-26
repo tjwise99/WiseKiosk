@@ -4,10 +4,11 @@ header: |
   Pending: one generic published image, carrying no deployment specifics
 level: 1.12
 links:
-- SRS044: null
+- SRS044: dew0hX61P2HxO8GHidsJXqmXLk4pKdM53J2oMlxiAj8=
 normative: true
 rationale: ''
 ref: ''
+reviewed: pkjaFPKPUXEsEwOLWw7XmgDIJNvCzlPYHy_GDMOj4oE=
 status: proposed
 text: |
   Pending: test asserting the build publishes exactly one image reference per release with no

@@ -4,11 +4,11 @@ header: |
   Relative Markdown links resolve inside the repo
 level: 1.3
 links:
-- SYS012: WFdEY5OSOe2P-_04DXiWuB6YVuRoh0MB4-Rh3svt4CQ=
+- SYS011: GG37Ciys0N_S9xmzaKrup_W8ce0inLFB84S65X8sz_g=
 normative: true
 rationale: ''
 ref: ''
-reviewed: XQ7azUihO1wjDZgZoN3fcBgTUn8ppIcCRjrvItHL5Pg=
+reviewed: 3R-ANKE79tZ1DmepHD8Vdq8IlKboSr6Qx6TBuXd8atc=
 status: accepted
 text: |
   Every relative Markdown link in every tracked file shall resolve to a path

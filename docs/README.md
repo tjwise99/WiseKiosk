@@ -1,12 +1,12 @@
 # Documentation index
 
-Every fact about WiseKiosk has exactly one canonical home (SYS037): a document that guarantees it.
+Every fact about WiseKiosk has exactly one canonical home (SYS011): a document that guarantees it.
 Every other document may cite or summarize that fact, but never restates it as independent content
 (SRS075). This table is that referenceable definition.
 
 The scope is facts *about WiseKiosk*. How a particular piece of code works is a fact about that code,
 not about the product — it has no home in this table and belongs beside the code it explains.
-Rationale is the part that may not live in a source artifact; SYS042 and SRS087 state that obligation
+Rationale is the part that may not live in a source artifact; SYS011 and SRS087 state that obligation
 and the homes it routes to.
 
 | Document | Guarantees | Excludes |

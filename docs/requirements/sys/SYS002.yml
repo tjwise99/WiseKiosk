@@ -1,29 +1,23 @@
 active: true
 derived: false
 header: |
-  Operable by a non-author operator
-level: 1.2
+  The configured layout renders whole
+level: 2
 links: []
 normative: true
 rationale: |
-  Deployments run at the author's house and at friends' and family's houses: separate networks,
-  separate configs, separate owners. The operator is frequently not the author, and may be
-  non-technical. This is the most load-bearing premise in the product.
-
-  Decomposed across the three properties it names rather than the one it originally carried:
-  deployability by SRS004, SRS046 and SRS047; operability by SRS008 and SRS012; diagnosability by
-  SRS013. Each of those items also serves a different parent, which is why the traceability was
-  missing - the obligations existed and nothing pointed them at the premise they exist to serve.
+  The product is a display; a module that is present but clipped, overlapped or scrolled out of view
+  has failed silently. "Wholly visible" absorbs no-overlap, no-clipping and no-scrollbars as one
+  property rather than three observables — none of them is a separate want. "The display it was
+  configured for" carries the kiosk-primary, desktop-secondary distinction without fixing viewports in
+  the need; SRS041 owns those. Phone widths are deliberately not a requirement.
 ref: ''
-reviewed: 74Sho44EjcFPpisC_doWPFSZUqY7qJ8D0_GnRd1_qCE=
+reviewed: WKtMGUBh_Ew881SVgmcG0I3DbchZFVDHjXWT515-NGw=
 status: accepted
 text: |
-  The system shall be deployable, operable, and diagnosable by a non-technical
-  operator who is not the system's author.
+  Every configured module shall be wholly visible on the display it was configured for.
 verification-justification: |
-  Whether a non-technical person who did not build the system can deploy, operate and diagnose it is
-  a claim about that person's experience, settled by observing one attempt it against the in-repo
-  documentation alone. No assertion over the system decides it: every mechanical enabler can pass
-  while the operator is still unable to proceed, which is the failure this premise exists to catch
-  and the one an author is least able to judge about their own work.
-verification-method: demonstration
+  Geometry is decidable: a rendered layout is measured against the viewport it declares. What the check
+  does not settle is whether a legible layout is a good one — visual judgement is not verification, and
+  no gate claims it.
+verification-method: test

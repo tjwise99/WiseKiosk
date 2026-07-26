@@ -4,13 +4,13 @@ header: |
   Digest-pinned base image
 level: 1.54
 links:
-- SYS026: 65XXvtGnMhqJq3DnN6iMGOokmxk-OxFv5Dkv4IHniug=
+- SYS005: QMiNuCcsfu4FMKLYCs22__VB2jC6pnxCzPMvVA4mFRQ=
 normative: true
 rationale: |
   Reproducibility and supply-chain integrity; Dependabot keeps the digest
   fresh (a #40 / dependency-automation concern).
 ref: ''
-reviewed: iK4kHnOlj-BiDIb1ZaaxerLHfZhqT_B88CxQFtBJdm4=
+reviewed: 3EZi2hnzBYF4LF6516LlmjF3Kd786EHg74egcPBBOhw=
 status: accepted
 text: |
   The image's base shall be referenced by @sha256: content digest, not a

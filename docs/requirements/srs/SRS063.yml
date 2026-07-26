@@ -4,14 +4,14 @@ header: |
   Signed image with verifiable build provenance
 level: 1.63
 links:
-- SYS029: NDQsnsQwX3t9Xk-zGc2bvgSMJIDOzAsPS8KTEFGBUyU=
+- SYS005: QMiNuCcsfu4FMKLYCs22__VB2jC6pnxCzPMvVA4mFRQ=
 normative: true
 rationale: |
   Lets a deployer prove the running image is the one the project published and
   was not substituted; keyless signing satisfies the no-keys-in-CI decision
   (FOUNDATIONS §2).
 ref: ''
-reviewed: MCNbZhlzKEBsAjPzSwoUjowRbQAUpqLyWo-Bb3uQbkA=
+reviewed: -D3Y0RNSCyqoyFW22ss2yTz8VRzeFBVb0zk_svEp8HY=
 status: accepted
 text: |
   Each published container image shall carry a cryptographically verifiable

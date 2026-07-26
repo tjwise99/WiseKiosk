@@ -4,15 +4,14 @@ header: |
   Same-origin content-security policy
 level: 1.65
 links:
-- SYS022: 98EhHMXZO0ojY4_HwICEbkUyF1KxBu2kbnOgriALLJ8=
-- SYS030: a_TnT2iDMzkqB4Aj2ySH1fYaq1pyGupBv6iXo3mOnz0=
+- SYS006: KZtswOlxN1xD3PUvRX2djU9sCMFBskYb-6W5Iq6nOdo=
 normative: true
 rationale: |
-  Converts the single-origin data plane (SYS022) from a code convention into a
+  Converts the single-origin data plane (SYS006) from a code convention into a
   browser-enforced invariant a test can assert on the wire; this is the
-  connect-src enforcement SYS022 deferred to the security domain.
+  connect-src enforcement SYS006 deferred to the security domain.
 ref: ''
-reviewed: JFrgwz89S4v6vEURreH2vkap72jUgtdOJlkRdWh65-8=
+reviewed: jS8w2sWYbPh3tKiBWsVIYnUU208Ijg9aYr--P0SXaIU=
 status: accepted
 text: |
   When serving the display frontend, the backend shall accompany its responses

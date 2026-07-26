@@ -34,11 +34,11 @@ true. Where a decision carries a rejected alternative worth preserving, it gradu
 
 Dependency-footprint discipline generalises: **prefer the standard library and a direct HTTP call
 over a package**, and treat any dependency pulling a native build toolchain as disqualified unless
-nothing else will do. → SYS036 / SRS073 / SRS074.
+nothing else will do. → SYS010 / SRS073 / SRS074.
 
 **Dev tooling is siloed with the feature it serves, not dropped at the repo root.** A tool's
 dependency manifest, lockfile, and virtual environment live in that feature's directory, and its
 Dependabot ecosystem points there — so the requirements tool's `requirements-dev.txt` and venv sit
 under [`requirements/`](requirements/README.md), not `/`. This keeps each tool's footprint legible
 and removable as a unit, and stops the root filling with unrelated manifests as tooling accretes.
-→ SYS035 / SRS072.
+→ SYS010 / SRS072.

@@ -4,10 +4,11 @@ header: |
   Pending: parameter-validation rejection test
 level: 1.23
 links:
-- SRS023: null
+- SRS023: 57InqFCXx7Uil2dcm4ONRtP6hP9lkOKjrKnUqqTfPHA=
 normative: true
 rationale: ''
 ref: ''
+reviewed: 07bFxhIClSdNAtXXcZUrWengX9lFcsaegviuEiUqdJw=
 status: proposed
 text: |
   Pending: test asserting a request whose parameters do not match the source's

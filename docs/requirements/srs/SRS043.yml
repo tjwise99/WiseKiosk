@@ -4,7 +4,7 @@ header: |
   Frontend polls; each module refreshes on its own module-owned cadence
 level: 1.43
 links:
-- SYS022: 98EhHMXZO0ojY4_HwICEbkUyF1KxBu2kbnOgriALLJ8=
+- SYS006: KZtswOlxN1xD3PUvRX2djU9sCMFBskYb-6W5Iq6nOdo=
 normative: true
 rationale: |
   The refresh is frontend-driven; a server-push channel for ten-to-fifteen-minute
@@ -16,19 +16,19 @@ rationale: |
   operator configuration key: it is a source-determined value, and such a value
   is a constant, not a knob — exposing it would invite an
   operator to set a wrong value and provoke upstream rate-limiting (429s), so
-  SYS016 (every offered key is operator-tunable) is deliberately not engaged
+  SYS003 (every offered key is operator-tunable) is deliberately not engaged
   because no key is offered. The per-module cadence is the front-of-house twin of
   the route's response-cache TTL (the software-architect's SRS034), and the two
   are chosen together so the poll does not out-run the cache.
   Concrete interval values are deferred to open-question #6.
 
-  Parented to SYS022, which absorbed this item when SYS020 was retired as
+  Parented to SYS006, which absorbed this item when SYS020 was retired as
   tautological. The fit is the data plane rather than the origin constraint:
-  SYS022 governs how the page obtains upstream data, and polling on a
-  module-owned cadence is that mechanism. SYS022's same-origin clause is carried
+  SYS006 governs how the page obtains upstream data, and polling on a
+  module-owned cadence is that mechanism. SYS006's same-origin clause is carried
   separately by SRS042.
 ref: ''
-reviewed: M_IWvcx9YObAu5lF4eQ4QRF_3OYZ_R_YJyKVjF4ee1s=
+reviewed: ciJJrE-Ufu-xKnVM5E5HxE6EPJ-uRmK5VvpyR9s8UBY=
 status: accepted
 text: |
   The frontend shall refresh module data by polling and shall depend on no server-pushed channel for

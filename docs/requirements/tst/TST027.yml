@@ -4,10 +4,11 @@ header: |
   Pending: upstream timeout & size-bound test
 level: 1.27
 links:
-- SRS027: null
+- SRS027: 9xmof6bmaWVYzxXlBSG7mtkF7BQQc5s7Rq8GuvX6NKo=
 normative: true
 rationale: ''
 ref: ''
+reviewed: iHyPmaVgWvixERf6JsrFpJat4d5lRfv7y_s50FGffuI=
 status: proposed
 text: |
   Pending: test asserting an upstream that hangs past the outbound timeout, or

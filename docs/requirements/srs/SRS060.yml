@@ -4,13 +4,13 @@ header: |
   Dependency vulnerability gate
 level: '1.60'
 links:
-- SYS028: EmesL75K_tqB4o4cku8TyLVL39wXPUKL4WqTwjIWRts=
+- SYS010: tunYeRPYjw1wheyLpOCTyiWRFVEHtFbzAcMgHdU_J_I=
 normative: true
 rationale: |
   Turns "a dependency should be updated" into "merge is blocked". The
   reachability allowance keeps the Go gate actionable rather than noisy.
 ref: ''
-reviewed: EqFpbxKPPeKkq-ZjK3Ud3M9OMpGH9fKtPurJxxZGdGU=
+reviewed: WaKsKXSLwOAlJ4Mv4ORCgiSqIl1DlySOn2Zqf3a0bS0=
 status: accepted
 text: |
   Continuous integration shall fail a pull request when any resolved Go-module

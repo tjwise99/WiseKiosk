@@ -4,7 +4,7 @@ header: |
   One schema, package-neutral, all boundary value classes
 level: 1.29
 links:
-- SYS023: 4PXds02kB8g6UDUf9POyDwBRTUlY9WdOm2tpBfxtAlQ=
+- SYS007: gygNneD3A0xV6q5KFtBovv0bgMlX3e9zgdO0nGPLfYI=
 normative: true
 rationale: |
   "Every payload shape and every parameter name" (TESTING.md Boundary tier)
@@ -12,7 +12,7 @@ rationale: |
   the value classes keeps them from being the uncovered value the tier warns
   about. The schema's repository location is allocated by #5 and not fixed here.
 ref: ''
-reviewed: Pq_EN55g38h5kajI_g6ToD7Zqa3-uRN851l-7yxHNoM=
+reviewed: hqOb_GBcTMNLQLr2s4YZb2Ctw-U5R8Ah0Nwvtp2SkhY=
 status: accepted
 text: |
   The boundary contract shall be defined by exactly one schema artifact, owned by neither the

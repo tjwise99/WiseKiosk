@@ -4,7 +4,7 @@ header: |
   No siloed-tool manifest at the repository root; Dependabot ecosystems point at feature dirs
 level: 1.72
 links:
-- SYS035: eYlFUZ1pyeDOKB5nVzJFkPqCu74dq16GilUStHPyPVk=
+- SYS010: tunYeRPYjw1wheyLpOCTyiWRFVEHtFbzAcMgHdU_J_I=
 normative: true
 rationale: |
   Partially realised already by SRS061 (Dependabot ecosystems per FOUNDATIONS §2); this states the
@@ -16,7 +16,7 @@ rationale: |
   targets a non-root dir holding the matching manifest. Buildable now (~15 lines) but authored ahead
   of its script; activated with a `references` entry when the check lands.
 ref: ''
-reviewed: Ekd_4C1p3Hzzc3XtDSH0bKJllv6FNVnQBty8GEYL7Zk=
+reviewed: KEvaulgHpfY6feC5M2DCvowd1CGJWK2TgqYBdUmlNyU=
 status: accepted
 text: |
   No language dependency manifest, lockfile, or virtual environment (package.json,

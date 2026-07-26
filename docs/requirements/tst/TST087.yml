@@ -4,10 +4,11 @@ header: |
   Pending: ADR index completeness check
 level: 1.14
 links:
-- SRS083: null
+- SRS083: jAKYqcjrnewjOu0JPL3axIyd2Wx20lCrw_FBfelTZ-E=
 normative: true
 rationale: ''
 ref: ''
+reviewed: Re58jI6LkBshvJjhY8vl0SByi9LRx6lc6_7UORI5TVg=
 status: proposed
 text: |
   Pending: a small script (check-links.mjs shape) asserting the decisions/ directory and README

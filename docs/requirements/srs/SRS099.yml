@@ -2,9 +2,9 @@ active: false
 derived: false
 header: |
   The generated frontend boundary artifact is type-only
-level: '1.99'
+level: 1.99
 links:
-- SYS023: null
+- SYS007: gygNneD3A0xV6q5KFtBovv0bgMlX3e9zgdO0nGPLfYI=
 normative: true
 rationale: |
   Carved out of SRS032, whose remaining obligation - that nobody hand-writes a validator - is a
@@ -14,7 +14,7 @@ rationale: |
   runtime validators, and the bundle grows without anything failing. ADR 0008 already fixed frontend
   generation as types-only; this is the obligation that keeps it that way.
 ref: ''
-reviewed: null
+reviewed: HyPh0PRwkcn83TpzPdA782C6Tbr14bOmDSsABOeoYtc=
 status: proposed
 text: |
   The generated TypeScript boundary artifact the frontend consumes shall be type-only, contributing

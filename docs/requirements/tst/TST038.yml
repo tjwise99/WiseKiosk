@@ -4,10 +4,11 @@ header: |
   Pending: build output is static, with a reviewed runtime dependency set
 level: 1.38
 links:
-- SRS038: null
+- SRS038: i2Ecdjjwt7lDd0EMDxD35EBJXrGkNQaIHElGcw0PWls=
 normative: true
 rationale: ''
 ref: ''
+reviewed: vKAzscXtokd47TyVv2nTc_tRkUSJBisRJxoxZ8mmrTc=
 status: proposed
 text: |
   Pending: test asserting the build emits exactly one HTML entry whose mount element is empty, that

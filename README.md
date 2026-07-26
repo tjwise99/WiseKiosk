@@ -3,18 +3,18 @@
 A config-driven smart-mirror display. A full-screen browser page renders a fixed set of five
 modules — `clock`, `compliments`, `OpenMeteo` weather, `AviationWeather` (CheckWX METAR/TAF), and
 `DisneyWaitTimes` (themeparks.wiki) — from a handful of public APIs, running unattended on a display
-behind one-way glass. The layout is fixed (SYS008, SRS041) and there is nothing to interact with:
-it renders, it refreshes, and it runs unattended for at least 30 days (SYS010). Shipped as one
+behind one-way glass. The layout is fixed (SYS002, SRS041) and there is nothing to interact with:
+it renders, it refreshes, and it runs unattended for at least 30 days (SYS004). Shipped as one
 container image; each deployment is
-independent, customised through configuration, never through a fork (SYS007). A sixth module is
-added by a documented six-part contract, never by a plugin system (SYS024).
+independent, customised through configuration, never through a fork (SYS005). A sixth module is
+added by a documented six-part contract, never by a plugin system (SYS009).
 
 **The operator is frequently not the author.** Deployments run at the author's house and at friends'
 and family's houses — separate networks, separate configs, separate owners. This constraint outranks
 every other requirement here: it is why a bad configuration must fail loudly and legibly rather than
-as a blank screen (SYS003), why a configuration must be validatable before deployment rather than
+as a blank screen (SYS001), why a configuration must be validatable before deployment rather than
 only at boot (SYS004), and why an upgrade must never ask the operator to read a diff or edit code
-(SYS006). → SYS002.
+(SYS004). → SYS004.
 
 Nothing is inherited from any prior mirror framework, and there is no compatibility layer.
 
@@ -48,5 +48,5 @@ as SRS019 does to `docs/TESTING.md` for what the Contract test tier must prove.
   tests exist.
 - [`docs/decisions/`](docs/decisions/README.md) — the decisions that carried a rejected alternative.
 - [`docs/contracts/module-contract.md`](docs/contracts/module-contract.md) — the six-part contract
-  for adding a display module (SYS024, SRS033–SRS037).
+  for adding a display module (SYS009, SRS033–SRS037).
 - [`CONTRIBUTING.md`](CONTRIBUTING.md) — running the checks and getting a change merged.

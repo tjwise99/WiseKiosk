@@ -4,10 +4,11 @@ header: |
   Pending: comment citation resolver
 level: 1.24
 links:
-- SRS095: null
+- SRS082: CIOvdyucfuOag6468Hl0ZlJt_We3z59F73-DkNBRj-M=
 normative: true
 rationale: ''
 ref: ''
+reviewed: J69ctyQwl5RUYOP8QhRvCqnetbp6UXxjrhTKd_G1l2M=
 status: proposed
 text: |
   Pending: the resolver of TST086 extended to comment corpora, failing on a requirement ID or ADR number

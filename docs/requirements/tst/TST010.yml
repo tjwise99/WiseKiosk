@@ -4,10 +4,11 @@ header: |
   Pending: generator round-trip test
 level: '1.10'
 links:
-- SRS010: null
+- SRS010: xsBjc-P6sOGKyF9aAgfv4CBBIjVf_kTABgdmI9B7QBI=
 normative: true
 rationale: ''
 ref: ''
+reviewed: IvuhhJxOVzI5syBbpviQwsaagscU0PttBWQnI73uFu8=
 status: proposed
 text: |
   Pending: test asserting generator output passes the standalone validator

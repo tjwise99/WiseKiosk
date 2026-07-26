@@ -4,14 +4,14 @@ header: |
   Branch shape, issue linkage, and PR-title convention are gated
 level: 1.85
 links:
-- SYS040: KueZl5sZ4jqZTAkqTCGZ6EBUphcUdJuu0gO8qzSfwUU=
+- SYS010: tunYeRPYjw1wheyLpOCTyiWRFVEHtFbzAcMgHdU_J_I=
 normative: true
 rationale: |
   The verifying TST — verification-method: test — ACTIVE — references `scripts/check-branch.sh` (and
   `scripts/conventional-commit.regex` / `scripts/branch-shape.regex`). The PR-title check is CI-only
   by nature — reference the script/regex, not the workflow (ADR 0002).
 ref: ''
-reviewed: zbA3NRp3bGIalZyIF5-1zYiUYHi6dCw48wKDV1ZLWw0=
+reviewed: NBcTMS43L2O89wYY1hZlLek6R88RmUUbv1Tj4gGqYCc=
 status: accepted
 text: |
   A working branch shall be named `type_number-snake_name` and link to an open, type-labeled issue,

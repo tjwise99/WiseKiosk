@@ -4,13 +4,13 @@ header: |
   Blocking lint and type checks per package
 level: 1.59
 links:
-- SYS027: OR5YK6_ubV9wthjsiYiiD4waH0gfEh6fpmomx20Vk4Y=
+- SYS010: tunYeRPYjw1wheyLpOCTyiWRFVEHtFbzAcMgHdU_J_I=
 normative: true
 rationale: |
   Keeps the cheapest correctness gate from silently degrading to advisory-only;
   the frontend type check also guards the generated boundary contract.
 ref: ''
-reviewed: yUaeEmxY_rUQWMNFl3Y1Ic2M5TKEGP081UYMqH6xdy0=
+reviewed: I-eK2Evwv8wtDyjuZh-9rwA5cI7fykupO6QHzTbO7F4=
 status: accepted
 text: |
   Continuous integration shall run each source package's linters as blocking

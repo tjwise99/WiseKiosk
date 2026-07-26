@@ -4,10 +4,11 @@ header: |
   Pending: bind-mounted config demonstration
 level: 1.9
 links:
-- SRS046: null
+- SRS046: ZFjybp-BuDN8hPKT7g4s1h6vlMwtsAGCdo97Jmo59yc=
 normative: true
 rationale: ''
 ref: ''
+reviewed: aOj9h2IzJv6TFOFwoBCsM11SaoiqDsfdgoTWBDWM4KI=
 status: proposed
 text: |
   Pending: test running the published image with a fixture configuration bind-mounted at the

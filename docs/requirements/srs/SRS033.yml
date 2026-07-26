@@ -4,7 +4,7 @@ header: |
   Shaping library is pure functions with no I/O, unit-testable in isolation
 level: 1.33
 links:
-- SYS024: Hn5rIJlgWLcF4C2eS7P0aHqLN91cK86es9PFca9Afv4=
+- SYS009: tf7grKzQp6z4Xnv2kCe1PEvssAsF7YR-HmGXlUTFyyM=
 normative: true
 rationale: |
   The shaping library is pure functions with no I/O, unit-tested directly — the
@@ -14,7 +14,7 @@ rationale: |
   these functions produce is the value the single boundary schema defines
   (SRS029) and the module component renders from the generated type (SRS031).
 ref: ''
-reviewed: zBKcc2lNidE_a4JczJP6XiI663cIwmM7y_W0DSfcpGU=
+reviewed: gl9uB-90YYAfrdFjSPFO7z45gExARLv-GNEicmCcuWI=
 status: accepted
 text: |
   Each module that fetches an external data source shall implement its construction of the upstream
@@ -22,5 +22,5 @@ text: |
   libraries of pure functions that perform no I/O and can be exercised in isolation against a known
   upstream response without network access. The two shall be separate: no response-shaping function
   shall accept a secret or a constructed upstream URL as a parameter, so that no function producing
-  a client-facing payload holds a secret to leak (SYS017).
+  a client-facing payload holds a secret to leak (SYS003).
 verification-method: test

@@ -4,10 +4,11 @@ header: |
   Pending: viewport-driven layout render test
 level: 1.41
 links:
-- SRS041: null
+- SRS041: 6vCn7-7wdiTCB0aaMCxucLJch8jV9uUOMTb20DKWZqw=
 normative: true
 rationale: ''
 ref: ''
+reviewed: NXX4aQEFn0lzAtf7yC5Q_BmIq7iIZbVe9oV8gVBO7vQ=
 status: proposed
 text: |
   Pending: viewport-driven render test asserting the layout assembled from a

@@ -4,10 +4,11 @@ header: |
   Pending: polling only, on independent module-owned cadences
 level: 1.43
 links:
-- SRS043: null
+- SRS043: 6tbovh_7gEDo4ZB0gZXHDMv7oIdBr3VZga5pQ9HQlbU=
 normative: true
 rationale: ''
 ref: ''
+reviewed: SXshiEok3HtvuhRUNuGpnP8ZzCFtmPYQuzi2xEtuoGM=
 status: proposed
 text: |
   Pending: test asserting WebSocket and EventSource appear nowhere in the shipped bundle and are

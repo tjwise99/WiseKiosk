@@ -4,10 +4,11 @@ header: |
   Pending: Go lint blocking-gate test
 level: 1.46
 links:
-- SRS059: null
+- SRS059: QLAVtR_XXvkRtCHw1rC-liPQkYniCwY5OEGozmEoTOg=
 normative: true
 rationale: ''
 ref: ''
+reviewed: s3RMUqSS9py5FyUojOPt_fSTGv3Kmw4mJV848zdhro0=
 status: proposed
 text: |
   Pending: check that materialises a seeded golangci-lint violation into a temporary tree (ADR

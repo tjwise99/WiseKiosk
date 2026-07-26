@@ -4,14 +4,14 @@ header: |
   Automated grouped dependency updates
 level: 1.61
 links:
-- SYS028: EmesL75K_tqB4o4cku8TyLVL39wXPUKL4WqTwjIWRts=
+- SYS010: tunYeRPYjw1wheyLpOCTyiWRFVEHtFbzAcMgHdU_J_I=
 normative: true
 rationale: |
   Grouped updates keep a solo change-log legible and keep the vulnerability
   gate satisfiable rather than perpetually red; per-directory targeting follows
   the dev-tooling silo (FOUNDATIONS §2).
 ref: ''
-reviewed: iNajYBYpSgdErSoWEdBKkGCpRu59oyGFU4A2NHsW8vI=
+reviewed: rxncL7KBUOhmvMAsa1GoTst3mcsCok2a5WKKdEOumDc=
 status: accepted
 text: |
   The repository shall be configured to raise automated dependency-update

@@ -4,10 +4,11 @@ header: |
   Pending: every module supplies both required test kinds
 level: 1.37
 links:
-- SRS037: null
+- SRS037: JenMpquKgLr0TAruOeuZOg36FUOvive16UZGGTL9WDc=
 normative: true
 rationale: ''
 ref: ''
+reviewed: K7r8R8kcquIuWl2SDVgct3d8AjNLEwlHWlmHX7LpAtM=
 status: proposed
 text: |
   Pending: test enumerating modules and asserting each has a render test beside its component, and

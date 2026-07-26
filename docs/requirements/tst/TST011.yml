@@ -4,10 +4,11 @@ header: |
   Pending: backend links no config parser and reads no tunable key
 level: 1.11
 links:
-- SRS011: null
+- SRS011: XScgbu9kilR7_Tjyb0M8uRp_F8IEsa2dDq58uEfWlnM=
 normative: true
 rationale: ''
 ref: ''
+reviewed: lpynTcsem80790k47STon7pbrJ--I1wYQboc37vuuT0=
 status: proposed
 text: |
   Pending: test asserting the backend's transitive dependency set contains no configuration-schema

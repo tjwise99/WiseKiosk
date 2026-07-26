@@ -2,12 +2,13 @@ active: false
 derived: false
 header: |
   Pending: module error-state render test
-level: '1.2'
+level: 1.2
 links:
-- SRS002: null
+- SRS002: -qTrxbBsBV7egq258rkIq3i-DhPrXlYmPehHdXIt1Co=
 normative: true
 rationale: ''
 ref: ''
+reviewed: le5PxvgLaAktQ-tga48SzCmMKSbE1uFM7nziTTyRUAs=
 status: proposed
 text: |
   Pending: render test asserting a module renders its error state from an

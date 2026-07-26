@@ -4,10 +4,11 @@ header: |
   Pending: both sides consume the generated boundary types
 level: 1.31
 links:
-- SRS031: null
+- SRS031: i2D8WyrRTJUEOgUlDq7q2XGjTdNPphwJDY1dHP1QMMQ=
 normative: true
 rationale: ''
 ref: ''
+reviewed: NlTGzGoLHcBeYO3J1Cjt9NG4UO6ZfG8HRfUIy3MKu9o=
 status: proposed
 text: |
   Pending: test asserting no struct type outside the generated package declares JSON tags for a

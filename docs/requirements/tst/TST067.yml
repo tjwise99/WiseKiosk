@@ -4,10 +4,11 @@ header: |
   Pending: build-provenance attestation verification
 level: 1.53
 links:
-- SRS063: null
+- SRS063: idmUD0zMKEPV0Gleu3uPhvhMfVmZMSrwnaczO1klIqc=
 normative: true
 rationale: ''
 ref: ''
+reviewed: 0wnWR8c5icv1TjAC5jdggXmx2BGxb8Y2_Ji0SBFJCcg=
 status: proposed
 text: |
   Pending: test asserting the build-provenance attestation validates for the published digest and

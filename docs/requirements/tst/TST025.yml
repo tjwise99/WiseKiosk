@@ -4,10 +4,11 @@ header: |
   Pending: secret rotation-without-restart test
 level: 1.25
 links:
-- SRS025: null
+- SRS025: 248RU_BJXATVZx-G6IYQs6nxsvvrw7bgE9UsxI6frr4=
 normative: true
 rationale: ''
 ref: ''
+reviewed: ctZMGGsxhXyHF-OCUekqeQegRoXutdSJxYXMUfBMOQM=
 status: proposed
 text: |
   Pending: test asserting a secret value changed in the <NAME>_FILE file is
