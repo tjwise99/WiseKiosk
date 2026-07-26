@@ -13,9 +13,8 @@ This project is **design-first**: nothing is implemented that has not been writt
 - A change with a real rejected alternative gets an [ADR](docs/decisions/README.md).
 - Anything observable the tree does not already state — an interface name, a payload shape, a config
   key, a failure behaviour, a threshold — is written down as a requirement before it is built.
-- A new module follows the six-part contract in
-  [`docs/contracts/module-contract.md`](docs/contracts/module-contract.md) (SYS009, SRS033–SRS037)
-  and the test obligations in [`docs/TESTING.md`](docs/TESTING.md).
+- A new module follows [`docs/contracts/module-contract.md`](docs/contracts/module-contract.md),
+  which is the contract itself, and the test obligations in [`docs/TESTING.md`](docs/TESTING.md).
 - Do not build generality against a case that does not exist.
 
 ## Running the checks
@@ -66,5 +65,41 @@ Enforced by the `process` CI check ([ADR 0006](docs/decisions/0006-process-gates
 - Size a change by what can be **read in one sitting**. A slice that cannot be reviewed has not been
   reviewed, whatever its size.
 - Keep the diff scoped to intended files only.
-- Sweep the docs for any claim the change invalidated — there is no automated accuracy checker.
 - Verify via CI, not by trusting a local run.
+- Walk the review checklist below against the diff.
+
+## Review checklist
+
+Each question below is an obligation on the author that leaves no artifact, so no check decides it —
+the reviewer is the mechanism ([ADR 0011](docs/decisions/0011-requirement-or-convention.md)). The
+[pull-request template](.github/pull_request_template.md) points here; it does not repeat the
+questions.
+
+**Documentation**
+
+1. **Formalised prose.** Where the change turns a prose obligation into a requirement, does the prose
+   cite that requirement instead of stating the obligation as independent normative text?
+2. **Described code.** Where the change touches code or configuration that a canonical document
+   describes, does it update that document, or declare in the change that no update is needed? The
+   [documentation index](docs/README.md) says which document describes what.
+3. **Temporal phrasing.** Does the prose state the timeless fact rather than a change — no *now*, *no
+   longer*, *as of*? A sentence about what the repository used to do is stale as written.
+4. **Architecture links.** Where an architecture element gains an implementation, does its model
+   `link` point at the source that implements it?
+
+**Comments**
+
+5. **Mechanism, not reason.** Does each comment the change adds or edits state what the code or
+   configuration does, or how it does it? Reason, history and evaluative judgement are authored in a
+   documentation home and cited from the comment.
+6. **Citation, not restatement.** Where a comment reaches rationale, strip the cited identifier out
+   of it. If any assertion still stands on its own, the comment restates rather than cites.
+
+**Code**
+
+7. **Dependencies.** Does a new dependency do work the standard library cannot reasonably do — and
+   what does it pull in with it: a native toolchain, a transitive tree, a runtime?
+8. **Generality.** Does the change introduce an interface or extension point with a single
+   implementation and no second consumer?
+9. **Secrets.** Does any output path the change adds — a response body, a response header, a log
+   line — carry a secret's value rather than its name?
