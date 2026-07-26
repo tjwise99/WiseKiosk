@@ -37,13 +37,15 @@ Beyond Doorstop's native fields, every item carries four stored attributes
 |---|---|---|
 | `status` | `proposed` \| `accepted` | Human review state. `proposed` items live on `main` — the tree is the backlog — but implementing against one is building on unbaselined spec |
 | `verification-method` | `test` \| `inspection` \| `analysis` \| `demonstration` | How the requirement is verified; gates route on it |
-| `verification-justification` | free text | Why the method is not `test` — what specifically blocks a mechanically-decidable check. **Required when `verification-method` is not `test`**, empty otherwise |
+| `verification-justification` | free text | What the item's verification settles and what it does not. Below `test`, what specifically blocks a mechanically-decidable check; at `test`, what the check leaves unproven. **Required on every item** |
 | `rationale` | free text | Why the requirement exists. **Required at the `SYS` tier**, optional below |
 
 `rationale` and `verification-justification` answer different questions: why the obligation exists,
-versus why it cannot be settled by a machine. An item at `inspection`, `analysis`, or `demonstration`
-is claiming a human must judge it; the justification is that claim's evidence, so a method can never
-be weakened without saying what blocks the stronger one.
+versus what its verification does and does not settle. An item at `inspection`, `analysis`, or
+`demonstration` is claiming a human must judge it, and the justification is that claim's evidence, so
+a method can never be weakened without saying what blocks the stronger one. An item at `test` is
+claiming a machine settles it, and the justification bounds that claim — a green check that decides
+set equality against a recorded list has not decided that the list is right.
 
 `verification-method`, `verification-justification`, and `rationale` are fenced by the review
 fingerprint (editing them re-flags review); `status` is not, because a state transition is not a

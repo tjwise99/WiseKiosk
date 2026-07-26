@@ -1,7 +1,14 @@
-# 0009 — Record why a verification method is not `test`
+# 0009 — Record what a verification settles, and what it does not
 
 **Status:** accepted
 **Decided:** 2026-07-24 (closing review pass of the requirements rewrite #18)
+
+> **Scope clarified, 2026-07-25 (#69).** As first written the attribute was required only below
+> `test`, which read the decision more narrowly than it was intended. It is **required on every
+> item**. Below `test` it names what blocks a mechanical check; at `test` it names the limit of the
+> check — what a green result does not prove. The Context and Alternatives below argue the narrower
+> case because that is the case that prompted the decision; the argument holds unchanged for the
+> wider one.
 
 > **Note, 2026-07-25.** The counts below describe the tree as it stood when this decision was taken,
 > partway through #18's closing pass. That pass then promoted most of those items: at merge the tree
@@ -29,10 +36,17 @@ its blocker stated, or the pass cannot be checked and cannot be repeated.
 
 ## Decision
 
-A fourth stored attribute, `verification-justification`, free text. **Required when
-`verification-method` is not `test`**, empty otherwise: it names what specifically blocks a
-mechanically-decidable check — human judgment, live credentials, physical hardware, a wall-clock
-window, an unbounded search space, a property true only of the whole corpus.
+A fourth stored attribute, `verification-justification`, free text. **Required on every item**, it
+records what that item's verification settles and what it does not:
+
+- **Below `test`** — what specifically blocks a mechanically-decidable check: human judgment, live
+  credentials, physical hardware, a wall-clock window, an unbounded search space, a property true
+  only of the whole corpus.
+- **At `test`** — what the mechanical check leaves unproven. A check asserting a schema's key set
+  against a committed allowlist decides set equality, not that no key is secret-bearing; a check
+  asserting a render under emulation decides that the page renders on that architecture, not that it
+  renders fast enough on the device. Both pass while the obligation above them is unmet, and the
+  field is where that gap is stated.
 
 It is fenced by the review fingerprint alongside `verification-method` and `rationale`, so weakening
 a method cannot land without re-review.
@@ -76,9 +90,10 @@ review, as 0005's axiom tier already is.
 
 ## Consequences
 
-- **The asymmetry is deliberate: promotion is cheap, weakening must be argued in writing.** Moving an
-  item to `test` deletes a field. Moving it away from `test` requires composing a defensible sentence
-  and re-passing review.
+- **Neither direction is free.** Moving an item away from `test` requires naming the blocker; moving
+  it to `test` requires stating what the mechanical check leaves unproven. A method change always
+  rewrites the field and re-passes review, so a weakening cannot arrive as a silent deletion and a
+  promotion cannot arrive as an unexamined win.
 - **Adding the attribute cost no fingerprint churn.** Doorstop's `stamp()` hashes only attributes
   present in an item's own file and does not write defaults back retroactively, so the 236 existing
   items were untouched by the schema change; only items that gain a justification re-flag.
@@ -86,6 +101,6 @@ review, as 0005's axiom tier already is.
   half machine-checked and get 115 specific answers instead of a policy statement.
 - **The docs site gains a column** — the justification renders in needtables beside the method, so
   the weak half of the tree is browsable rather than discoverable only by grep.
-- **It adds an authoring obligation to every non-`test` item**, including pending ones. An item
-  written before its blocker is understood must either state the blocker or claim `test`; "unsure"
-  has no representation, which is intended.
+- **It adds an authoring obligation to every item**, including pending ones. An item written before
+  its blocker is understood must state the blocker; one claiming `test` must state what the check
+  leaves unproven. "Unsure" has no representation, which is intended.
