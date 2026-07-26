@@ -89,6 +89,23 @@ authored from a summary will silently carry the stale version.
 Each comment states: the decision, the owner's reasoning in their words where given, the resulting
 text, the children and their covering clauses, the count, and anything knowingly given up.
 
+**A rule the pass established is not a ruling — it goes in an ADR** ([0011](../../../docs/decisions/0011-requirement-or-convention.md)).
+The thread holds the trail; a decision record holds anything that will govern the next pass. The
+asymmetry that makes this necessary: a surviving item carries its reasoning in its own `rationale`
+forever, while a deleted one leaves nothing behind but a comment on a closed issue.
+
+**Before writing a tier, diff it against the thread.** For each distinctive phrase in the authored
+text, search the rulings:
+
+```sh
+gh issue view <n> --json comments --jq '.comments[].body' > /tmp/rulings.md
+grep -c "carry nothing beyond what it needs to run" /tmp/rulings.md   # 0 → unruled
+```
+
+Zero hits means the clause entered without a decision. It then reviews as ordinary content while
+encoding a choice nobody made — the defect the pass exists to catch, committed by the pass. This
+found a whole sentence of a locked `SYS` item that appeared in none of fifty-three rulings.
+
 ## Verification before proposing merge
 
 `just verify` green, confirmed in CI rather than locally. Independent review is mandatory when this
