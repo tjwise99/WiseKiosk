@@ -19,25 +19,46 @@ Each tier states what it **guarantees** and when it runs.
 | **Boundary** | The frontend and backend agree on every value that crosses: parameter names *and types*, success payloads, the structured upstream-failure body, the client-error rejection body, and every status code the frontend discriminates on | SYS007 / SRS029 | Every commit, in CI |
 | **Integration** | Routes serve; the TTL cache honours its TTL; parameter validation rejects bad input; config validation fails loudly on bad config | SRS020 / SRS022 / SRS023 / SRS005 | Every commit, in CI |
 | **Render** | Each module renders from its props; the page assembles with a known-good config | SRS040 / SRS041 | Every commit, in CI |
-| **Contract** | Upstream APIs still return what the shaping libraries expect | — (placement: SYS003 / SRS019) | Locally, outside CI — needs real keys, and CI holds none |
+| **Contract** | Upstream APIs still return what the shaping libraries expect | — | **Open — see below** |
 
 The Boundary row enumerates the value classes deliberately: "payload shape and parameter name" reads
 narrower than SRS029, and an error body or a status code left out of the schema is exactly the value
 that crosses unproven.
 
-The **Contract** tier runs outside CI **entirely** — not merely outside the PR gate. No CI workflow
-holds an upstream credential and no CI job runs a check that needs one, so a check needing a live
-upstream runs locally, on a developer machine. There is no scheduled credentialed run.
-→ SYS003 / SRS019.
+### Open: where the Contract tier runs, and how it reaches upstream
 
-It lives in a **nested module**, outside the parent module's test discovery. That placement is what
-lets both obligations hold at once: whole-tree discovery reaches every committed test (SRS068), and
-a credentialed check never runs in CI (SRS019). A build tag or a skip would satisfy the second by
-breaking the first, which is why the boundary is the module and not a list of exclusions.
+**This is the tier's designer's decision to make, and it is not made.** The requirement that used to
+settle it forbade any CI workflow from holding an upstream credential, which forced the tier out of
+CI and into a nested module outside the parent's test discovery. That requirement is withdrawn: it
+banned a normal practice, and the mechanism it forced is one [ADR
+0010](decisions/0010-runtime-materialised-gate-fixtures.md) independently found leaky — *"a nested
+module looked like the escape and is not one."*
 
-The Contract tier is the one tier whose *content* no requirement states; SRS019 governs only where it
-runs, and defines the tier by reference to this document. What it must prove therefore lives here and
-nowhere else.
+What the tier must prove is unchanged and stated only here: **an upstream API still returns what the
+shaping library expects.**
+
+**The real constraints, which are not about secret safety:**
+
+- **One source needs a credential.** OpenMeteo and themeparks.wiki are keyless; only CheckWX is not.
+  A design that solves the general case is solving a case of one.
+- **Usage cost.** A tier hitting live upstreams on every pull request burns quota against a rate
+  limit nobody is watching.
+- **Flakiness.** A check that fails when someone else's API has a bad afternoon trains an author to
+  ignore red, which is worse than not having the check.
+
+**Three shapes, none chosen:**
+
+1. **Recorded fixtures replayed in CI** — capture each upstream's response, assert the shaping
+   library against it. No credential anywhere, runs on every commit like every other tier. Cost: a
+   fixture is a snapshot, so it detects drift only when someone re-records.
+2. **An encrypted CI secret, scoped to one workflow** — the tier runs in CI against the live API.
+   Costs quota and inherits upstream availability.
+3. **A scheduled run outside the pull-request gate** — live, credentialed, and off the merge path, so
+   an upstream outage fails a nightly rather than a change.
+
+1 and 3 compose: fixtures gate every change, a scheduled live run detects the drift fixtures cannot.
+
+Whoever designs the test plans decides this and records it here.
 
 ---
 
