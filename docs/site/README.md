@@ -7,9 +7,9 @@ generated, click-through view of the Doorstop requirements tree
 ([`../requirements/`](../requirements/README.md), [ADR
 0002](../decisions/0002-requirements-management-doorstop.md)).
 
-**Dev-only and siloed here** (SYS010, SRS072): its pinned requirements file and venv live in this
-directory; nothing depends on it at app build or runtime. Doorstop is the canonical requirements
-source and gate — this silo only renders it.
+**Dev-only and siloed here** (per [`CI.md`](../CI.md)'s repository-shape gate): its pinned
+requirements file and venv live in this directory; nothing depends on it at app build or runtime.
+Doorstop is the canonical requirements source and gate — this silo only renders it.
 
 ## Layout
 
@@ -104,13 +104,14 @@ this site and deploys it to GitHub Pages on push to `main`. It runs the same bui
 `check-site` and holds `pages: write` + `id-token: write` via OIDC — no stored credentials.
 `checks.yml` stays read-only (ADR 0004).
 
-No document in this repository references the deployed site's URL: the repo stays self-contained
-(`SYS011`) and loses nothing if Pages disappears.
+No document in this repository references the deployed site's URL: the repo stays self-contained and
+loses nothing if Pages disappears.
 
 ## What this silo deliberately does not do
 
 - **No versioned docs, no PDF export, no custom theming beyond a stock theme** — each is abstraction
-  without a second consumer (`SYS041`, `SRS086`).
+  without a second consumer ([`CONTRIBUTING.md`](../../CONTRIBUTING.md)'s review checklist,
+  generality).
 - **No `needflow` link graph.** sphinx-needs' `needflow` directive needs either PlantUML (a JVM
   dependency) or Graphviz, and Graphviz is not guaranteed to be present on every machine this silo is
   built on; see the note in [`traceability.md`](traceability.md).

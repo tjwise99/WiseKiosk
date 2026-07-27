@@ -12,10 +12,9 @@ The controls that are structural, not vigilance-based:
 - **API keys resolve server-side only** and never reach the browser by construction — no code path
   carries a secret toward a client, and confinement is never a stripping step (SYS003).
 - **Secrets are delivered by the deployment environment**, never stored in the image, the
-  repository, or the configuration (SYS003, SRS015).
+  repository, or the configuration (SYS003).
 - **No secret transits through config delivery**, so there is no secret-stripping step to forget —
   the configuration schema offers no secret-bearing key (SRS017).
-- **CI holds no credentials**; verification needing a live key runs outside CI (SYS003, SRS019).
 - **The browser enforces the page's posture**: the page is confined to its own origin and to the
   browser features the display uses (SYS006, SRS065).
 

@@ -69,14 +69,17 @@ TTL-cached`" .-> PublicApis
 ## Backend
 
 _To be documented as it is built._ Language and boundary-contract decision:
-[ADR 0001](decisions/0001-backend-language-go.md). Normative shape: SRS001, SRS011, SRS015–SRS016,
-SRS018, SRS020–SRS028, SRS065–SRS066, SRS074.
+[ADR 0001](decisions/0001-backend-language-go.md); the backend's config-blindness is
+[ADR 0007](decisions/0007-config-validation-allocation.md)'s. Normative shape: SRS001, SRS016,
+SRS018, SRS020–SRS028, SRS065.
 
 ## Frontend
 
-_To be documented as it is built._ Svelte 5 + Vite static SPA
-([`FOUNDATIONS.md`](FOUNDATIONS.md) §2). Normative shape: SRS002, SRS005, SRS012–SRS014,
-SRS031–SRS032, SRS038–SRS043, SRS056; configuration validation is frontend-owned per
+_To be documented as it is built._ Svelte 5 + Vite, a static single-page bundle served as static
+files ([ADR 0001](decisions/0001-backend-language-go.md),
+[`FOUNDATIONS.md`](FOUNDATIONS.md) §2); each module's poll cadence is that module's own need, per
+[the module contract](contracts/module-contract.md). Normative shape: SRS002, SRS005,
+SRS012–SRS014, SRS031–SRS032, SRS056; configuration validation is frontend-owned per
 [ADR 0007](decisions/0007-config-validation-allocation.md).
 
 ## The boundary contract
@@ -95,13 +98,12 @@ documented here once it is built (#7, after the repo layout in #5)._
 
 ## Config and secrets
 
-_To be documented as it is built._ The backend is config-blind (SRS011); the configuration is a
-static file bind-mounted into the served tree (SRS046) and delivered to the page byte-for-byte
-(SRS009), validated by the frontend at apply time (SRS005) and by the standalone desk validator
-(SRS008) through one implementation (SRS014), per
-[ADR 0007](decisions/0007-config-validation-allocation.md). A secret reaches the backend only as the
-file named by `<NAME>_FILE` — never through configuration, and never through a bare `<NAME>`
-environment variable (SRS015, SRS017).
+_To be documented as it is built._ The backend is config-blind, per
+[ADR 0007](decisions/0007-config-validation-allocation.md), which also states byte-for-byte delivery
+to the page; the configuration is a static file bind-mounted into the served tree (SRS046), validated
+by the frontend at apply time (SRS005) and by the standalone desk validator (SRS008) through one
+implementation (SRS014). A secret reaches the backend only as the file named by `<NAME>_FILE` — never
+through configuration, and never through a bare `<NAME>` environment variable (SRS017).
 
 ## Deployment
 
@@ -110,17 +112,16 @@ healthcheck, `unless-stopped`. Normative shape: SRS044–SRS055, SRS057.
 
 ## Security & hardening
 
-Container-hardening and CI-gating obligations are carried by the
-[requirements tree](requirements/README.md): SYS005 (hardened, reproducible image), SYS010
-(first-party code gated before merge), SYS010 (dependency risk gated and tracked), SYS005
-(published-artifact supply-chain integrity) and SYS006 (runtime browser-security headers), each with
-SRS children and TST verification items.
+Product-facing obligations are carried by the [requirements tree](requirements/README.md): SYS005
+(hardened, reproducible image; published-artifact supply-chain integrity) and SYS006 (runtime
+browser-security headers), each with SRS children and TST verification items.
+Repository-facing gates — first-party and dependency scanning, image scanning, and verify-CI
+parity — are [`CI.md`](CI.md)'s; no requirement states them.
 
 The posture **already enforced** (branch protection: all six checks required — `docs-and-hygiene`,
 `secret-scan`, `process`, `requirements`, `architecture`, `docs-site` — strict, admins bound; secret
-scanning with push protection, SHA-pinned Actions, least-privilege `GITHUB_TOKEN`, no custom
-credentials in CI (SRS019), Dependabot for the Actions ecosystem) lives in `.github/` and the repo's
-branch-protection settings. Requirements carry most of it — the required-check obligations
-(SRS058, SRS060, SYS010), verify-CI parity (SRS067) and the credential-free rule (SRS019). Four are
-carried by nothing and this paragraph is their only record: secret scanning with push protection,
-SHA-pinned Actions, the least-privilege `GITHUB_TOKEN`, and Dependabot for the Actions ecosystem.
+scanning with push protection, SHA-pinned Actions, least-privilege `GITHUB_TOKEN`, Dependabot for the
+Actions ecosystem) lives in `.github/` and the repo's branch-protection settings. `CI.md` carries the
+first-party and dependency/image scanning gates and verify-CI parity. Four are carried by nothing and
+this paragraph is their only record: secret scanning with push protection, SHA-pinned Actions, the
+least-privilege `GITHUB_TOKEN`, and Dependabot for the Actions ecosystem.

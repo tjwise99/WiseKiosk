@@ -27,18 +27,18 @@ true. Where a decision carries a rejected alternative worth preserving, it gradu
 | Call upstream REST APIs directly; no heavyweight client packages | An upstream API becomes complex enough that a client library earns its dependency cost |
 | Secrets resolve server-side only; a key never reaches the browser **by construction** | Never. This is structural, not a policy |
 | Config is the single source of truth; **fail fast**, no defaults merge, no silent degradation | Never — and it is stronger here, since the operator may not be technical |
-| CI holds no API keys; key-dependent checks run locally | A secrets manager makes key-bearing CI genuinely safe *and* something needs it |
 | Frontend is Svelte 5 + Vite, a static SPA | A frontend requirement appears that Svelte serves badly |
 | **No SSR, no routing, no meta-framework** — follows from a display that renders a fixed module set and never navigates | The product grows a genuine multi-page or SEO requirement (it will not) |
 | **Backend is Go**, with a generated boundary contract — see [ADR 0001](decisions/0001-backend-language-go.md) | The boundary-contract codegen mechanism proves unsustainable, or the backend grows a requirement Go serves badly |
 
 Dependency-footprint discipline generalises: **prefer the standard library and a direct HTTP call
 over a package**, and treat any dependency pulling a native build toolchain as disqualified unless
-nothing else will do. → SYS010 / SRS073 / SRS074.
+nothing else will do. Held at review by
+[`CONTRIBUTING.md`](../CONTRIBUTING.md)'s checklist (dependencies).
 
 **Dev tooling is siloed with the feature it serves, not dropped at the repo root.** A tool's
 dependency manifest, lockfile, and virtual environment live in that feature's directory, and its
 Dependabot ecosystem points there — so the requirements tool's `requirements-dev.txt` and venv sit
 under [`requirements/`](requirements/README.md), not `/`. This keeps each tool's footprint legible
 and removable as a unit, and stops the root filling with unrelated manifests as tooling accretes.
-→ SYS010 / SRS072.
+Held at the repository-shape gate in [`CI.md`](CI.md).
