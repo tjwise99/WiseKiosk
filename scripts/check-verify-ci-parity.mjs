@@ -1,8 +1,8 @@
 #!/usr/bin/env node
-// Checks SRS067: every check `just verify` depends on must also run in
+// Every check `just verify` depends on must also run in
 // .github/workflows/checks.yml, and every named CI step must be either one of
 // those checks or an enumerated CI-only exception (secret scanning; the
-// PR-title Conventional-Commit check).
+// PR-title Conventional-Commit check). See docs/CI.md § Gate wiring.
 //
 // No dependencies: Node stdlib only, plain text scanning (no YAML parser) —
 // matches scripts/check-links.mjs's idiom.
@@ -22,9 +22,7 @@ const fail = (msg) => {
 
 // Each `just verify` check → every token proving the same work runs in CI (the
 // script path or command each of the recipe's commands runs). A recipe running
-// more than one command lists one token per command: mapping a recipe to a single
-// token hides any command added to it afterwards, which is how a check reached
-// `just verify` without reaching CI.
+// more than one command lists one token per command (docs/CI.md § Gate wiring).
 const CHECK_TOKENS = {
   "check-links": ["scripts/check-links.mjs"],
   "check-eol": ["git grep -lIP '\\r$'"],
