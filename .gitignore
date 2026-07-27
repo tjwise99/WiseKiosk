@@ -39,3 +39,6 @@ coverage/
 .DS_Store
 Thumbs.db
 *.swp
+
+# Agent worktrees
+.claude/worktrees/
