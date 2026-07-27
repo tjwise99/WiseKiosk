@@ -5,9 +5,9 @@ can fix is disposed of.
 
 **One requirement governs all of it** — *continuous integration shall run the repository's mechanical
 checks as blocking, and shall fail the change on any violation; no check shall be advisory-only.*
-Everything below is a check hanging from it, with a `TST` item in
-[`requirements/`](requirements/README.md) that names the file doing the work. Adding or retiring a
-gate is a check edit and an edit here, not a specification change
+Everything below is a check hanging from it, named here by the `TST` item in
+[`requirements/`](requirements/README.md) that carries it and names the file doing the work. Adding
+or retiring a gate is a check edit and an edit here, not a specification change
 ([ADR 0011](decisions/0011-requirement-or-convention.md)).
 
 ## The security gates
@@ -20,7 +20,7 @@ functions is unsafe.
 
 Static scanning of the project's own Go and Svelte/TypeScript source on every pull request, failing on
 **any finding at any severity**. Findings are reported to the repository's code-scanning dashboard and
-annotated on the pull request.
+annotated on the pull request. `TST058`, `TST059`.
 
 **A finding in first-party source has no exception path.** The register below exists to record that
 someone else shipped something broken, and that justification is not available for code this project
@@ -31,7 +31,7 @@ This mechanises the security review a solo project has no second human to perfor
 ### Resolved dependencies
 
 Failing a pull request when any resolved Go-module or npm dependency carries a known vulnerability, at
-any severity, unless the finding has a current register entry.
+any severity, unless the finding has a current register entry. `TST062`, `TST063`.
 
 **One allowance:** for the Go toolchain the gate may consider reachability — a vulnerability in code
 that is present but never called need not fail. This keeps the gate actionable rather than noisy.
@@ -43,11 +43,11 @@ or exception status. The gate decides the merge; the output stays complete.
 
 Scanning the built container image, failing on any finding at any severity unless the finding has a
 current register entry. This is what covers operating-system and base-layer packages, which the
-source-level gate never inspects.
+source-level gate never inspects. `TST065`.
 
 ## The exception register
 
-A committed register, one entry per finding. **No severity threshold.**
+A committed register, one entry per finding, asserted by `TST104`. **No severity threshold.**
 
 A threshold decides in advance that a whole class of finding is acceptable, sight unseen — the wrong
 shape for this project. A low-severity advisory with a published patch is a dependency shipping
@@ -75,12 +75,12 @@ These assert that the regime is real rather than declared. Each was a requiremen
 rebuild; each states a property of machinery already decided rather than a want, which is what makes
 it a check.
 
-| Check | Asserts |
-|---|---|
-| Verify/CI parity | Every check `just verify` depends on also runs in CI, and every named CI step is one of those checks or an enumerated CI-only exception |
-| Whole-tree discovery | Test runners are invoked over whole-tree discovery, with no silent exclusion |
-| Required checks | Every gate job is a required check, and every required check names a real job |
-| Method consistency | No requirements item claims a verification method its own children do not support |
+| Check | Asserts | |
+|---|---|---|
+| Verify/CI parity | Every check `just verify` depends on also runs in CI, and every named CI step is one of those checks or an enumerated CI-only exception | `TST071` |
+| Whole-tree discovery | Test runners are invoked over whole-tree discovery, with no silent exclusion | `TST037`, `TST072` |
+| Required checks | Every gate job is a required check, and every required check names a real job | `TST103` |
+| Method consistency | No requirements item claims a verification method its own children do not support | `TST109` |
 
 ## What this document does not hold
 
@@ -88,8 +88,9 @@ The **test architecture** — tiers, what each guarantees, when it runs — is
 [`TESTING.md`](TESTING.md). A tier is a way of organising tests; a gate is a condition on merging, and
 several gates run no tests at all.
 
-The **checks themselves** are `TST` items, each naming the file that implements it. This document
-explains them; it does not stand in for them.
+The **checks themselves** are the `TST` items cited above, each naming the file that implements it.
+This document explains why each gate takes the stance it does; the item is what the gate is failed
+against.
 
 **How a change gets made and reviewed** is [`../CONTRIBUTING.md`](../CONTRIBUTING.md). A gate is
 machinery; a review habit is a person.
