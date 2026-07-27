@@ -1,0 +1,14 @@
+active: true
+derived: false
+header: |
+  No secret material in the published image
+level: 1.104
+links:
+- SYS003
+normative: true
+rationale: ''
+ref: ''
+status: accepted
+text: |
+  The published image shall contain no secret material.
+verification-method: test

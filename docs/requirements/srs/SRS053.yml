@@ -4,7 +4,6 @@ header: |
   Non-root container user
 level: 1.53
 links:
-- SYS005: QMiNuCcsfu4FMKLYCs22__VB2jC6pnxCzPMvVA4mFRQ=
 - SYS008: 44Qw1BupFMvl480RGlShXn-jdzfHM3-Jfn9MpcUJYks=
 normative: true
 rationale: |

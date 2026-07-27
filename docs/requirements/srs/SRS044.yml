@@ -4,7 +4,7 @@ header: |
   One generic published image
 level: 1.44
 links:
-- SYS005: QMiNuCcsfu4FMKLYCs22__VB2jC6pnxCzPMvVA4mFRQ=
+- SYS003: x73sA6VMR9aDga-PqTW6L49gj-iwZdgTOg5xG8VhAwM=
 normative: true
 rationale: |
   Keeps the one-image model falsifiable: any deployment-specific content baked
@@ -13,7 +13,5 @@ ref: ''
 reviewed: cE0Z8vbiCAzegrYNitWLgv4i74VnHA-GGIaAxUmTIks=
 status: accepted
 text: |
-  WiseKiosk shall be published as a single container image that carries no
-  deployment-specific configuration or secret material; no per-deployment
-  fork, branch, or rebuild shall produce a variant image.
+  The published image shall contain no configuration file.
 verification-method: test
