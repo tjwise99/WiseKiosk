@@ -7,23 +7,12 @@ links:
 - SYS006: KZtswOlxN1xD3PUvRX2djU9sCMFBskYb-6W5Iq6nOdo=
 normative: true
 rationale: |
-  The cache provides request dedupe and upstream politeness for a 10–15 minute
-  refresh cadence. Keying on (source, query) rather than the
-  query alone keeps sources from colliding on a shared parameter. The query
-  string is used as delivered by the trusted frontend — no normalization and no
-  concurrent-miss coalescing, which would be generality against a caller that
-  does not exist. The TTL values and their reasoning are chosen in #6; this
-  fixes the mechanism and that the TTL is a code constant, not a tunable key
-  (consistent with SRS011).
+  A cache hit is neither counted against the limit nor rejected by it. A sustained outage must
+  not cause an upstream request on every incoming request.
 ref: ''
 reviewed: la1jJf3I91AqzykaiUbEcUPnWyQY1Ug317A2JHXprFo=
 status: accepted
 text: |
-  The backend shall cache upstream responses in a time-to-live cache keyed on
-  the pair (source, request query string). Within a key's TTL an identical
-  request shall be served from the cache without issuing an upstream request;
-  after the TTL expires, the next request for that key shall refetch from
-  upstream. Each source's TTL shall be the value carried by that route's
-  registration entry (SRS034) - a compile-time constant, never an
-  operator-tunable configuration key.
+  The backend's rate of upstream requests to a source shall be bounded by values fixed in code,
+  regardless of how many clients it serves or how often they ask.
 verification-method: test

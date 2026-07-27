@@ -5,6 +5,7 @@ header: |
 level: 1.5
 links:
 - SYS001: TQyfJejH81RI-POadHI3gN0eM_DDB8AFAnMwcKjCth4=
+- SYS003: x73sA6VMR9aDga-PqTW6L49gj-iwZdgTOg5xG8VhAwM=
 normative: true
 rationale: |
   Partial recovery converts a configuration error into silent degradation —
@@ -15,9 +16,6 @@ ref: ''
 reviewed: 5y2suwnX5RK1N6-EoAAyWQGxcOgHB6qPW_GItdqvXCo=
 status: accepted
 text: |
-  A configuration shall be validated against the configuration schema before
-  it is applied. A configuration that fails validation shall not be applied in
-  whole or in part: no defaults merged over invalid or missing values, no
-  failing portion dropped, no module subset rendered. At page load, the
-  frontend shall run this validation before rendering from the configuration.
+  A configuration error shall be reported where it applies — naming what is wrong and where — and
+  shall never be silently worked around.
 verification-method: test

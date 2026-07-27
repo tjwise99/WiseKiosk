@@ -4,7 +4,7 @@ header: |
   Outbound upstream timeout and response-size bound
 level: 1.27
 links:
-- SYS006: KZtswOlxN1xD3PUvRX2djU9sCMFBskYb-6W5Iq6nOdo=
+- SYS001: TQyfJejH81RI-POadHI3gN0eM_DDB8AFAnMwcKjCth4=
 normative: true
 rationale: |
   SYS006 bounds the system's upstream use in volume, and SRS001 reports a
@@ -15,11 +15,6 @@ ref: ''
 reviewed: MEQSQYwmPzg9hTyOumc7BWC2whRfAAeaZRFW5MijQRQ=
 status: accepted
 text: |
-  The backend shall impose on each upstream request the outbound timeout, and
-  on each upstream response the maximum accepted size, carried by that route's
-  registration entry (SRS034). Exceeding either shall be handled as an upstream
-  failure (the timeout or malformed-response classes of SRS001). On exceeding
-  the size bound the backend shall stop reading after at most the bound plus one
-  buffer, and the request handler shall remain able to serve subsequent
-  requests.
+  No single upstream request or response shall be able to stall the backend or exhaust its
+  memory.
 verification-method: test

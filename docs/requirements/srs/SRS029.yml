@@ -16,10 +16,8 @@ reviewed: hqOb_GBcTMNLQLr2s4YZb2Ctw-U5R8Ah0Nwvtp2SkhY=
 status: accepted
 text: |
   The boundary contract shall be defined by exactly one schema artifact, owned by neither the
-  backend nor the frontend package, from which both sides are generated. It shall define every value
-  crossing the boundary: request parameter names and types, success response payloads, the
-  structured upstream-failure body (SRS001), the client-error rejection body (SRS026), and every
-  response status code the frontend discriminates on to choose an error state. Module-specific
-  payloads shall reach it as module-owned fragments composed into it (SRS100); framework-wide values
-  shall be defined in the schema itself. No boundary value shall be defined in more than one place.
+  backend nor the frontend package, from which both sides are generated. It shall define every
+  value crossing the boundary. Module-specific payloads shall reach it as module-owned fragments
+  composed into it; framework-wide values shall be defined in the schema itself. No boundary
+  value shall be defined in more than one place.
 verification-method: test

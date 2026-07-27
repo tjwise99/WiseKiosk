@@ -11,7 +11,6 @@ ref: ''
 reviewed: sv-b0IiLNgses4CAlOHqcBIrAlFH8e035c7neevdjcc=
 status: accepted
 text: |
-  On an upstream request failure (unreachable host, timeout, non-success
-  status, or malformed payload), the backend shall return a structured error
-  response identifying the failing source and the failure class.
+  When a module's data request fails, that module shall render a plain-language error state in
+  its own region, and no other module shall be affected.
 verification-method: test

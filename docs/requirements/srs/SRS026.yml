@@ -17,10 +17,6 @@ ref: ''
 reviewed: nh_nk7dDqUsx68CR3qXxByNi8WHCU39rAEK2d4UDB4I=
 status: accepted
 text: |
-  A request the backend rejects before making any upstream call shall return a
-  client-error status distinct to its cause — 400 for an invalid parameter, 404
-  for an unknown source, 405 for a non-GET method, and 429 for exceeding a rate
-  limit — with a response body the frontend can render. This body shall be
-  distinct from the upstream-failure error shape of SRS001: a rejected request
-  is a client error, not an upstream outage.
+  A request the backend rejects before making any upstream call shall return a client-error
+  status distinct to its cause, with a response body the frontend can render.
 verification-method: test
