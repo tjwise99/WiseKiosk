@@ -4,7 +4,7 @@ header: |
   Docker-capable amd64/arm64 backend host
 level: 1.51
 links:
-- SYS005: QMiNuCcsfu4FMKLYCs22__VB2jC6pnxCzPMvVA4mFRQ=
+- SYS012: null
 normative: true
 rationale: |
   Pins the container host platform.
@@ -12,6 +12,5 @@ ref: ''
 reviewed: g4AwRFlIEACZxRM_LrpKEiHU0pqcU00tAwgZ7lkI2yI=
 status: accepted
 text: |
-  The backend container shall run on a Docker-capable amd64 or arm64 host,
-  and the image shall be published for both architectures.
+  The backend container shall run on a Docker-capable amd64 or arm64 host.
 verification-method: test

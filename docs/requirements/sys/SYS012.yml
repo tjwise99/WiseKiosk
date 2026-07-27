@@ -1,0 +1,25 @@
+active: true
+derived: false
+header: |
+  The declared minimum host
+level: 12
+links: []
+normative: true
+rationale: |
+  Created when SYS005 dissolved: its publishing obligations left the tree for docs/CI.md, but two
+  children were obligations on the running system and would have gone with it — the platform the
+  backend runs on, and the browser host driving the display. The hosts themselves lie outside the
+  system, which README.md states; what is inside is WiseKiosk's obligation to fit them. Framed as
+  "declares as its minimum" rather than a resource bound because the two children constrain different
+  things: one a platform, one a capability floor, and an amd64 host is not less capable than an arm64
+  one. The floor itself is README.md's deployment model, cited rather than restated here.
+ref: ''
+status: proposed
+text: |
+  WiseKiosk shall run on the hosts it declares as its minimum.
+verification-justification: |
+  Each child is discharged mechanically — a multi-arch build and smoke test, a demonstration on the
+  declared browser host, a bounded-growth observation. What none of them settles is whether the
+  declared minimum is the right one: that is a product decision recorded in README.md, and no check
+  decides whether a cheaper host should have been targeted.
+verification-method: test
