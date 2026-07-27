@@ -17,7 +17,5 @@ ref: ''
 reviewed: kAdoQ9_fuGu5pKkxsEXYkZDlrUYoAJTfOu6go15bhTU=
 status: accepted
 text: |
-  Every external data source shall be fetched through a backend proxy route,
-  including sources whose upstream APIs permit cross-origin requests. No
-  external source shall be exempted from the proxy.
+  The display page shall be unable to reach any network origin other than the backend's.
 verification-method: test
