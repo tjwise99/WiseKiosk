@@ -4,7 +4,7 @@ header: |
   No secret value in any backend output
 level: 1.18
 links:
-- SYS007: gygNneD3A0xV6q5KFtBovv0bgMlX3e9zgdO0nGPLfYI=
+- SYS003: x73sA6VMR9aDga-PqTW6L49gj-iwZdgTOg5xG8VhAwM=
 normative: true
 rationale: |
   The falsifiable edge of by-construction confinement (SYS003): a canary
