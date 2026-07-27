@@ -3,8 +3,7 @@ derived: false
 header: |
   Pending: drop-in upgrade demonstration
 level: 1.14
-links:
-- SRS047: 74vpAycbYlPFP_5W3DAcF0_QeSAYDjlKXYmVehY7RwM=
+links: []
 normative: true
 rationale: ''
 ref: ''

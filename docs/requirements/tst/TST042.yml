@@ -1,20 +1,19 @@
 active: false
 derived: false
 header: |
-  Pending: page fetches same-origin only, statically and at runtime
-level: 1.42
-links:
-- SRS042: trq36sdSTvKCv3o_umLWONeKaNqdqyLTjOy73U7nBEE=
+  Pending: no shared framework source names or imports a module
+level: 1.36
+links: []
 normative: true
 rationale: ''
 ref: ''
-reviewed: lYMQkcNn03gvDekmJ1CL1SnUyhyYp3RstTvsgLncEYg=
+reviewed: eSnpQJaMJxj-wENPya2NZNyzFvsQ5BPorNS2B8NYWFk=
 status: proposed
 text: |
-  Pending: test scanning the shipped bundle for absolute-URL literals and failing on any origin
-  other than the page's own, which catches paths no render exercises; and assembling the page under
-  a known-good configuration with request interception, asserting every request origin equals the
-  page origin and every module data request matches /api/<source>. SRS065's connect-src policy makes
-  a cross-origin fetch fail in the browser regardless, so the two together close the case rather
-  than sample it. Lands with the frontend skeleton (#10).
+  Pending: test taking the module-name set from the static registration list and asserting no shared
+  framework source names any of them outside the registration file; and asserting no shared
+  framework package imports a module package, in either the Go import graph or the frontend module
+  graph. Runs on every commit rather than only on a module-adding change: a diff-scoped form cannot
+  reliably classify which changes are module-adds and passes vacuously on the rest while shared code
+  accretes module knowledge. Lands with the first module (#12).
 verification-method: test

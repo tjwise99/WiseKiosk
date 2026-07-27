@@ -1,15 +1,17 @@
 active: false
 derived: false
 header: |
-  Pending: base-image digest-pin lint
-level: 1.5
-links:
-- SRS054: tZsgnzV54SekZGgw00IqvS9SNXo8813GXtNsKKd96HY=
+  Pending: component renders from props alone
+level: '1.40'
+links: []
 normative: true
 rationale: ''
 ref: ''
-reviewed: H5rcf6TixIAOktV0cE0A1NTuNRUWhHCzcB50B22kcTU=
+reviewed: e2G1oPfBpyn08eSQrfpZYUuSm2KSM4JlPjqt5ieqphU=
 status: proposed
 text: |
-  Pending: a scripts/-hosted lint asserting every base and stage image in the Dockerfile is pinned to a @sha256: digest, not a floating tag, and failing CI otherwise. References the lint script (a non-dot-dir path, Doorstop-referenceable) when it lands with the container image build (#54); activated then.
+  Pending: test rendering each module component with only its props supplied and the network globals
+  stubbed - fetch, XMLHttpRequest, WebSocket, EventSource - asserting zero calls to any of them,
+  that the rendered region reflects the supplied props, and that the component's module graph does
+  not reach the configuration source. Lands with the first module (#12).
 verification-method: test

@@ -1,25 +1,26 @@
 active: true
 derived: false
 header: |
-  How data is accessed
-level: 6
+  Single-definition internal contract
+level: 7
 links: []
 normative: true
 rationale: |
-  Two failures share one path. If the browser reaches upstream sources directly, credentials must live
-  where a client can see them and every deployment's traffic is attributable to the household running
-  it. If a caller can choose what the backend requests, the display becomes an open proxy — someone
-  else's traffic against WiseKiosk's key and rate limit. Stating the obligation positively (the set of
-  calls is fixed by configuration) rather than as a prohibition on relaying is what makes SRS023 and
-  SRS026 trace to it; three earlier wordings named the failure and none of them did.
+  A shape declared twice drifts, and the drift is invisible until runtime: this is the single worst
+  defect class this design guards against (ADR 0001). The rule binds definitions, not uses — a component
+  whose prop is typed with a generated type is a consumer, not a second declaration. Scope is internal:
+  upstream API shapes are defined by whoever runs the API, and the configuration format is shared with
+  the operator and governed by SYS001. Secret confinement lands here because the contract is a closed
+  set: a secret can only cross if the definition declares one, which is a structural claim rather than
+  an unprovable negative about outputs.
 ref: ''
-reviewed: KZtswOlxN1xD3PUvRX2djU9sCMFBskYb-6W5Iq6nOdo=
+reviewed: gygNneD3A0xV6q5KFtBovv0bgMlX3e9zgdO0nGPLfYI=
 status: accepted
 text: |
-  All upstream data shall reach the display only through the backend, which shall issue only the
-  upstream requests its configuration calls for, and shall bound how many it makes.
+  Every shape shared between WiseKiosk's own components shall have exactly one machine-readable
+  definition, generated into every implementation that must agree on it.
 verification-justification: |
-  Origin, request shape and volume are all asserted against the running backend. The Content-Security-
-  Policy enforces the same clause at the browser against a page compromised through rendered
-  third-party data — a case no server-side check reaches.
+  Generation and agreement are decided by the drift gate: a committed artifact differing from a fresh
+  regeneration fails. What no check settles is whether the definition is the right shape — only that
+  both sides hold the same one.
 verification-method: test

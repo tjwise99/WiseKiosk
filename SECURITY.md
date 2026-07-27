@@ -14,9 +14,9 @@ The controls that are structural, not vigilance-based:
 - **Secrets are delivered by the deployment environment**, never stored in the image, the
   repository, or the configuration (SYS003).
 - **No secret transits through config delivery**, so there is no secret-stripping step to forget —
-  the configuration schema offers no secret-bearing key (SRS017).
+  the configuration schema offers no secret-bearing key (SRS009).
 - **The browser enforces the page's posture**: the page is confined to its own origin and to the
-  browser features the display uses (SYS006, SRS065).
+  browser features the display uses (SYS005, SRS065).
 
 ## Reporting a vulnerability
 

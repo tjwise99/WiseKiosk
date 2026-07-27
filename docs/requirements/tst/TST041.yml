@@ -1,19 +1,19 @@
 active: false
 derived: false
 header: |
-  Pending: viewport-driven layout render test
-level: 1.41
-links:
-- SRS041: 6vCn7-7wdiTCB0aaMCxucLJch8jV9uUOMTb20DKWZqw=
+  Pending: config fragments compose, and are declared once
+level: 1.35
+links: []
 normative: true
 rationale: ''
 ref: ''
-reviewed: NXX4aQEFn0lzAtf7yC5Q_BmIq7iIZbVe9oV8gVBO7vQ=
+reviewed: lDiqFG3ZZKRX5y1VbCk9d4Y8ubW4vNXZnLQxywKbZ58=
 status: proposed
 text: |
-  Pending: viewport-driven render test asserting the layout assembled from a
-  known-good config exhibits no overlap, no clipping, and no scrollbars at the
-  kiosk viewport (1920×1080), and reflow with no overlap, no clipping, and no
-  horizontal scroll at the desktop viewports (1280×800 and 1440×900). Lands with
-  the frontend skeleton (#10); activated and given a references entry then.
+  Pending: test recomposing the configuration schema from the module fragments and asserting the
+  committed schema is unchanged; asserting a bijection between module directories and fragments,
+  with no registered module lacking a fragment and no orphan fragment; asserting each fragment file
+  is the unique definition site of its property names; and asserting no fragment property is
+  reachable by reference from the boundary schema. Lands with the first module and the config schema
+  (#8).
 verification-method: test

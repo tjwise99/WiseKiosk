@@ -3,8 +3,7 @@ derived: false
 header: |
   Pending: release assets equal the declared set
 level: 1.15
-links:
-- SRS052: 6VRgTrVHeFQVIokGT9gFUt_djObCko7Fq1KZMbBMyDw=
+links: []
 normative: true
 rationale: ''
 ref: ''

@@ -1,25 +1,25 @@
 active: true
 derived: false
 header: |
-  Neither grant privilege nor require it
-level: 8
+  The declared minimum host
+level: 12
 links: []
 normative: true
 rationale: |
-  Trust rests at the network boundary. Accounts, sessions and authentication are all machinery for
-  distinguishing privilege between callers, and a display on a household LAN has no caller to
-  distinguish — so the machinery would add attack surface and operator burden to solve a problem the
-  deployment does not have. Requiring none is the same want facing the host: a process holding no more
-  than it needs bounds what a compromise reaches. This is a recorded decision, not an oversight: the
-  absence of authentication must not be "fixed" by a later reader who mistakes it for one.
+  Created when SYS005 dissolved: its publishing obligations left the tree for docs/CI.md, but two
+  children were obligations on the running system and would have gone with it — the platform the
+  backend runs on, and the browser host driving the display. The hosts themselves lie outside the
+  system, which README.md states; what is inside is WiseKiosk's obligation to fit them. Framed as
+  "declares as its minimum" rather than a resource bound because the two children constrain different
+  things: one a platform, one a capability floor, and an amd64 host is not less capable than an arm64
+  one. The floor itself is README.md's deployment model, cited rather than restated here.
 ref: ''
-reviewed: 44Qw1BupFMvl480RGlShXn-jdzfHM3-Jfn9MpcUJYks=
-status: accepted
+status: proposed
 text: |
-  The system shall neither grant privilege nor require it.
+  WiseKiosk shall run on the hosts it declares as its minimum.
 verification-justification: |
-  Absence is asserted directly — no credential material on the wire, no identity-based rejection, no
-  authentication middleware on the request path, and a container whose user is not root. What no check
-  settles is whether the network boundary is in fact trustworthy; that is a property of the household's
-  network, outside the system.
+  Each child is discharged mechanically — a multi-arch build and smoke test, a demonstration on the
+  declared browser host, a bounded-growth observation. What none of them settles is whether the
+  declared minimum is the right one: that is a product decision recorded in README.md, and no check
+  decides whether a cheaper host should have been targeted.
 verification-method: test

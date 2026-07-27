@@ -1,21 +1,22 @@
 active: true
 derived: false
 header: |
-  Every external source is proxied, including CORS-permitting ones
-level: 1.21
+  Request parameters validated against known-good per-source patterns
+level: 1.23
 links:
-- SYS006: KZtswOlxN1xD3PUvRX2djU9sCMFBskYb-6W5Iq6nOdo=
+- SYS005: null
 normative: true
 rationale: |
-  Proxying even CORS-permitting sources is what makes the single-origin data
-  plane (SYS006) hold for every source rather than most. This item covers the
-  backend's completeness — a proxy route for every source; the complementary
-  frontend obligation (the page issues no direct cross-origin fetch) and the
-  connect-src content-security policy live in the modules/frontend and security
-  domains (#38, #40).
+  Validating against known-good patterns keeps malformed or unrecognized
+  requests from reaching upstream and bounds the proxy so it cannot be driven to
+  forward arbitrary requests (SYS006). The client-facing form of
+  a rejection is specified by SRS026.
 ref: ''
-reviewed: kAdoQ9_fuGu5pKkxsEXYkZDlrUYoAJTfOu6go15bhTU=
+reviewed: awmf7f4ZhwdHxftl-IEkRuL_b4V34RCYrJws9ufMyJo=
 status: accepted
 text: |
-  The display page shall be unable to reach any network origin other than the backend's.
+  The backend shall validate each request's parameters against known-good
+  patterns for the requested source — for example ICAO code format for aviation
+  weather and a known park-ID map for wait times — and shall reject a request
+  whose parameters do not conform without issuing any upstream request.
 verification-method: test

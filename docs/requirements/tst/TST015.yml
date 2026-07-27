@@ -1,18 +1,17 @@
 active: false
 derived: false
 header: |
-  Pending: secret-resolution unit tests
-level: 1.15
+  Pending: generator round-trip test
+level: '1.10'
 links:
-- SRS015: dks6pmwgX_8WFabDcxuvqokBKGAgo_P6rNbyD8AlNuE=
+- SRS016: null
 normative: true
 rationale: ''
 ref: ''
-reviewed: VS2o14Gs4x7-8HKJNcWZu-_wKGr11d1rGEedr8zd_H8=
+reviewed: IvuhhJxOVzI5syBbpviQwsaagscU0PttBWQnI73uFu8=
 status: proposed
 text: |
-  Pending: unit tests of secret resolution — value read from the file at
-  <NAME>_FILE; trailing whitespace stripped; a bare <NAME>
-  environment variable ignored. Lands with the backend skeleton (#9);
-  activated and given a references entry then.
+  Pending: test asserting generator output passes the standalone validator
+  with no manual edits. Lands with the generator; activated and given a
+  references entry then.
 verification-method: test

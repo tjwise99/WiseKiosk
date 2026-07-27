@@ -1,29 +1,18 @@
 active: true
 derived: false
 header: |
-  Stateless GET /api/<source> returns the shaped payload
-level: '1.20'
+  TTL response cache keyed on source and query string
+level: 1.22
 links:
-- SYS006: KZtswOlxN1xD3PUvRX2djU9sCMFBskYb-6W5Iq6nOdo=
-- SYS008: 44Qw1BupFMvl480RGlShXn-jdzfHM3-Jfn9MpcUJYks=
+- SYS005: null
 normative: true
 rationale: |
-  The payload's shape is defined once by the boundary contract (#37) and
-  generated on both sides; this requirement governs the transport — that the
-  route exists, is stateless, and returns that payload — not the shape's
-  definition. Statelessness is stated as an observable so it can be tested
-  rather than asserted.
+  A cache hit is neither counted against the limit nor rejected by it. A sustained outage must
+  not cause an upstream request on every incoming request.
 ref: ''
-reviewed: 4o_ioOPpavisJCfLAW7kjxoDZ3xARX6KH-RX4LpWWg8=
+reviewed: la1jJf3I91AqzykaiUbEcUPnWyQY1Ug317A2JHXprFo=
 status: accepted
 text: |
-  For each supported external source, the backend shall expose a stateless
-  endpoint GET /api/<source> that fetches the source's upstream data and returns
-  it as JSON shaped to the payload the frontend renders. The endpoint shall hold
-  no per-client or session state: it shall not distinguish between clients, and
-  the payload it returns for a request shall be determined solely by that
-  request, not by who sent it or by earlier requests. The shared response cache
-  (SRS022), keyed on the request itself, is not per-client state — it may
-  determine whether a request is served from cache, but not the payload a client
-  receives.
+  The backend's rate of upstream requests to a source shall be bounded by values fixed in code,
+  regardless of how many clients it serves or how often they ask.
 verification-method: test

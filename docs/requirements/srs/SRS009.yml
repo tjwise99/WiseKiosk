@@ -1,0 +1,27 @@
+active: true
+derived: false
+header: |
+  Configuration schema offers no secret-bearing key
+level: 1.17
+links:
+- SYS003: r0OHFjma5xOn8ZgSOGL1oBns-m0Q-TKD9LQHrUnwXSw=
+normative: true
+rationale: |
+  The configuration is the one channel a client fetches wholesale, so the
+  confinement (SYS003) is structural only if the configuration cannot
+  carry a secret in the first place. Excluding secret-bearing keys from
+  the schema leaves nothing to strip; a denylist applied at delivery
+  would fail open.
+ref: ''
+reviewed: cZZfBPIwy3Ggf26h9ceUS_PhgL2CnyoA0LtVsbeiiJ0=
+status: accepted
+text: |
+  The configuration schema shall offer no key whose value is a secret —
+  no API key, token, credential, or password. Configuration delivery
+  shall therefore carry no secret to remove: the delivered configuration
+  shall be secret-free by construction, not by a redaction step.
+verification-justification: |
+  The check decides that the configuration schema's key set equals a committed allowlist. It does
+  not decide secret-ness: a secret-bearing key that is listed would pass. What it buys is that no key
+  enters the schema without appearing in a reviewed diff.
+verification-method: test

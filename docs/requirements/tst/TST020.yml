@@ -1,20 +1,18 @@
 active: false
 derived: false
 header: |
-  Pending: proxy endpoint & statelessness test
-level: '1.20'
+  Pending: parameter-validation rejection test
+level: 1.23
 links:
-- SRS020: viESuoJ7QupdJG4qkWqsgrZkADqyb8MTTJx3Gjd8nr0=
+- SRS021: null
 normative: true
 rationale: ''
 ref: ''
-reviewed: FHxvVCq_DWdWjKWx95d68IBF5DvP2Mk1z_ywM0mtDRo=
+reviewed: 07bFxhIClSdNAtXXcZUrWengX9lFcsaegviuEiUqdJw=
 status: proposed
 text: |
-  Pending: backend integration test asserting GET /api/<source> returns the
-  boundary-contract-shaped payload for a supported source, and that the payload
-  for a request is determined solely by that request — no per-client or session
-  state — with cache-hit/miss behaviour (whether an upstream call occurs)
-  covered separately by TST022. Lands with the backend skeleton (#9); activated
+  Pending: test asserting a request whose parameters do not match the source's
+  known-good pattern (for example a malformed ICAO code or an unknown park ID) is
+  rejected with no upstream call. Lands with the backend skeleton (#9); activated
   and given a references entry then.
 verification-method: test

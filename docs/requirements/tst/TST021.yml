@@ -1,18 +1,19 @@
 active: false
 derived: false
 header: |
-  Pending: every external source has a proxy route
-level: 1.21
+  Pending: rejected-request client-contract test
+level: 1.26
 links:
-- SRS021: fpmp5yUj2h9Ena0Oc5dbhB7PL7lGLQNO1bzWDwxDjLk=
+- SRS022: null
 normative: true
 rationale: ''
 ref: ''
-reviewed: Imd2Ck_baSqzCcdx6X3_aW0CyXVTGG8nNvo413RvhIg=
+reviewed: uedqg18PXUDIlj074eweDYhNimhLPFBgySBMRyFhQkI=
 status: proposed
 text: |
-  Pending: test asserting the set of external sources declared by upstream-backed modules equals the
-  set of registered GET /api/<source> routes, in both directions, so no source is exempted from the
-  proxy and no route exists without a source; and that no frontend or backend code constructs an
-  upstream URL outside a module's shaping library. Lands with the backend skeleton (#9).
+  Pending: test asserting the backend returns 400 (invalid parameter), 404
+  (unknown source), 405 (non-GET method), and 429 (over rate limit) with a
+  renderable body distinct from the SRS001 upstream-failure shape, each without
+  an upstream call. Lands with the backend skeleton (#9); activated and given a
+  references entry then.
 verification-method: test

@@ -1,19 +1,18 @@
 active: false
 derived: false
 header: |
-  Pending: one generic published image, carrying no deployment specifics
-level: 1.12
-links:
-- SRS044: dew0hX61P2HxO8GHidsJXqmXLk4pKdM53J2oMlxiAj8=
+  Pending: bind-mounted config demonstration
+level: 1.9
+links: []
 normative: true
 rationale: ''
 ref: ''
-reviewed: pkjaFPKPUXEsEwOLWw7XmgDIJNvCzlPYHy_GDMOj4oE=
+reviewed: aOj9h2IzJv6TFOFwoBCsM11SaoiqDsfdgoTWBDWM4KI=
 status: proposed
 text: |
-  Pending: test asserting the build publishes exactly one image reference per release with no
-  per-deployment tag variant; exporting the image filesystem and asserting it carries the backend
-  binary and the frontend assets, contains no file at the configuration mount path, and no secret
-  material; asserting no deployment-specific value appears in the image environment. Lands with the
+  Pending: test running the published image with a fixture configuration bind-mounted at the
+  configuration path, asserting the served configuration reflects the fixture byte-for-byte; running
+  the same image with no mount, asserting it fails loudly rather than serving a baked default; and
+  exporting the image filesystem, asserting nothing exists at the configuration path. Lands with the
   container image build (#54); activated then.
 verification-method: test

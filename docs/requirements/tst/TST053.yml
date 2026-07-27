@@ -3,8 +3,7 @@ derived: false
 header: |
   Pending: two instances from one image share no state
 level: 1.13
-links:
-- SRS045: Prss5-dFEJReJI5dRFvFkgXIWHo2LG8LJP4i0ym_TcQ=
+links: []
 normative: true
 rationale: ''
 ref: ''

@@ -1,18 +1,21 @@
 active: false
 derived: false
 header: |
-  Pending: parameter-validation rejection test
-level: 1.23
+  Pending: both sides consume the generated boundary types
+level: 1.31
 links:
-- SRS023: 57InqFCXx7Uil2dcm4ONRtP6hP9lkOKjrKnUqqTfPHA=
+- SRS024: null
 normative: true
 rationale: ''
 ref: ''
-reviewed: 07bFxhIClSdNAtXXcZUrWengX9lFcsaegviuEiUqdJw=
+reviewed: NlTGzGoLHcBeYO3J1Cjt9NG4UO6ZfG8HRfUIy3MKu9o=
 status: proposed
 text: |
-  Pending: test asserting a request whose parameters do not match the source's
-  known-good pattern (for example a malformed ICAO code or an unknown park ID) is
-  rejected with no upstream call. Lands with the backend skeleton (#9); activated
-  and given a references entry then.
+  Pending: test asserting no struct type outside the generated package declares JSON tags for a
+  boundary payload, parameter, or error body; and, on the frontend, that for each module holding a
+  boundary fragment the component's payload prop type, and the error-render path's failure and
+  rejection prop types, resolve to declarations under the generated boundary directory. A module
+  with no fragment has no payload prop and is not expected to have one. Fails on a hand-declared
+  twin, which compiles and renders cleanly under structural typing. Lands with the codegen mechanism
+  (#7).
 verification-method: test

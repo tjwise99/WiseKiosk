@@ -1,15 +1,19 @@
 active: false
 derived: false
 header: |
-  Pending: container non-root uid test
-level: 1.4
-links:
-- SRS053: jNOL6HH0EShAURBrccxj5N9ZrRJhC6eJGPpVrxqE1tE=
+  Pending: build output is static, with a reviewed runtime dependency set
+level: 1.38
+links: []
 normative: true
 rationale: ''
 ref: ''
-reviewed: 2J-EKVjoXLMX6UBwzPNLcvbmNVfrN0eeoyowRJ96r4o=
+reviewed: vKAzscXtokd47TyVv2nTc_tRkUSJBisRJxoxZ8mmrTc=
 status: proposed
 text: |
-  Pending: image test asserting the running container's effective uid is non-root (not 0) and the Dockerfile declares an explicit non-root USER. Lands with the container image build (#54); activated and given a references entry then.
+  Pending: test asserting the build emits exactly one HTML entry whose mount element is empty, that
+  no server-entry chunk is produced and the build configuration declares no SSR target or adapter,
+  and that the set of npm packages appearing in the emitted module graph is a subset of a committed
+  allowlist manifest. The allowlist is deliberate: a denylist of named routers and meta-frameworks
+  fails open the first time someone hand-rolls a hash router, and any new runtime dependency should
+  fail until it is reviewed. Lands with the frontend skeleton (#10).
 verification-method: test

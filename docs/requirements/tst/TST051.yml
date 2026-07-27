@@ -1,15 +1,14 @@
 active: false
 derived: false
 header: |
-  Pending: multi-arch build and smoke test
-level: 1.11
-links:
-- SRS051: FApdziwPQo1lgbj-QU2spEhRybtzrWocTrMyuw-c6n0=
+  Pending: restart-policy test
+level: 1.8
+links: []
 normative: true
 rationale: ''
 ref: ''
-reviewed: 8l85fhTMmgM2Cd_NXXt4VlVD1lwq5V2Cjb4t4IAOaG0=
+reviewed: _3whfn3Kmvc4hDhZ5MbUkO3o3AUdssoDDYYEVHT2oWw=
 status: proposed
 text: |
-  Pending: a CI matrix that builds and smoke-tests the published image on amd64 and arm64. The CI wiring lives under .github/ (not Doorstop-referenceable, ADR 0002) and is cited here; any non-dot-dir smoke harness it invokes is the references target. Lands with the container image build (#54); activated then.
+  Pending: a scripted assertion that the committed deployment recipe (compose or run manifest) carries restart policy unless-stopped, failing CI otherwise. Lands with the container image build / deployment recipe (#54); activated then.
 verification-method: test

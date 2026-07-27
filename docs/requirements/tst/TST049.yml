@@ -1,19 +1,14 @@
 active: false
 derived: false
 header: |
-  Pending: bind-mounted config demonstration
-level: 1.9
-links:
-- SRS046: ZFjybp-BuDN8hPKT7g4s1h6vlMwtsAGCdo97Jmo59yc=
+  Pending: healthcheck fixed-port test
+level: 1.6
+links: []
 normative: true
 rationale: ''
 ref: ''
-reviewed: aOj9h2IzJv6TFOFwoBCsM11SaoiqDsfdgoTWBDWM4KI=
+reviewed: MCm3gMPwgJmLHCzkEWpi-FTa1NYN4-PpNifNOnU2Nzg=
 status: proposed
 text: |
-  Pending: test running the published image with a fixture configuration bind-mounted at the
-  configuration path, asserting the served configuration reflects the fixture byte-for-byte; running
-  the same image with no mount, asserting it fails loudly rather than serving a baked default; and
-  exporting the image filesystem, asserting nothing exists at the configuration path. Lands with the
-  container image build (#54); activated then.
+  Pending: integration test asserting the image declares a HEALTHCHECK on the constant service port, reports healthy while serving, and reports unhealthy when the app is broken though the process is still up. Lands with the container image build (#54); activated then.
 verification-method: test

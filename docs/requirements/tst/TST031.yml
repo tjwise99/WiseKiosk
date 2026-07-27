@@ -1,21 +1,16 @@
 active: false
 derived: false
 header: |
-  Pending: both sides consume the generated boundary types
-level: 1.31
-links:
-- SRS031: i2D8WyrRTJUEOgUlDq7q2XGjTdNPphwJDY1dHP1QMMQ=
+  Pending: unknown-key rejection test
+level: 1.7
+links: []
 normative: true
 rationale: ''
 ref: ''
-reviewed: NlTGzGoLHcBeYO3J1Cjt9NG4UO6ZfG8HRfUIy3MKu9o=
+reviewed: aj0PFJauJTkjRtQ-K-8mQ0wwbNQ1ODhtrTyMIw3WJOU=
 status: proposed
 text: |
-  Pending: test asserting no struct type outside the generated package declares JSON tags for a
-  boundary payload, parameter, or error body; and, on the frontend, that for each module holding a
-  boundary fragment the component's payload prop type, and the error-render path's failure and
-  rejection prop types, resolve to declarations under the generated boundary directory. A module
-  with no fragment has no payload prop and is not expected to have one. Fails on a hand-declared
-  twin, which compiles and renders cleanly under structural typing. Lands with the codegen mechanism
-  (#7).
+  Pending: validation test asserting a configuration containing a key not in
+  the schema is rejected, with the unrecognized key named in the error. Lands
+  with the config schema (#8); activated and given a references entry then.
 verification-method: test

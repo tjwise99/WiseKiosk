@@ -1,20 +1,16 @@
 active: false
 derived: false
 header: |
-  Pending: boundary codegen drift-gate test
-level: '1.30'
-links:
-- SRS030: IRe994ugXJxmmHHITiN2jjn9Bxtg0-Id5GTXwUPZNC4=
+  Pending: module error-state render test
+level: 1.2
+links: []
 normative: true
 rationale: ''
 ref: ''
-reviewed: I1ZEmbIPQSzwryrKzvhSBhjTr3j4UpC39kUshFSQdLA=
+reviewed: le5PxvgLaAktQ-tga48SzCmMKSbE1uFM7nziTTyRUAs=
 status: proposed
 text: |
-  Pending: test that injects a deliberate mismatch between the schema and the
-  committed generated code, asserts the CI drift check fails, then regenerates and
-  asserts the build passes. Lands with the codegen mechanism (#7). The check is
-  repo-level (it spans both packages); this item cites the workflow wiring in its
-  text because Doorstop references cannot reach a path under a dot-directory such
-  as .github/ (ADR 0002, ADR 0005).
+  Pending: render test asserting a module renders its error state from an
+  error payload while sibling modules render normally. Lands with the
+  frontend skeleton; activated and given a references entry then.
 verification-method: test

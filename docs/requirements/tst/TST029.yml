@@ -1,21 +1,18 @@
 active: false
 derived: false
 header: |
-  Pending: boundary schema is single, package-neutral, and complete
-level: 1.29
+  Pending: Pi Zero-class host demonstration
+level: 1.16
 links:
-- SRS029: lIZoONMzlp2X6LOz1NgqWPjfzOvsXYRegCSQGYG0tyg=
+- SRS028: null
 normative: true
 rationale: ''
 ref: ''
-reviewed: ZGl6laZFfnHdWRZqF6mfYbOqyMPxcRsVaKUcEBULv4o=
+reviewed: EPuY_ir-CKkJPgNTgoim2P3KIhKt70gBAXrDxDFTRHo=
 status: proposed
 text: |
-  Pending: test parsing the boundary schema and asserting exactly one schema artifact is tracked and
-  its path lies under neither package root; that the set of schema path items equals the set of
-  entries in the static route registration list, in both directions; that every path item declares
-  its success status, the SRS001 upstream-failure status, and 400, 404, 405 and 429, each
-  referencing a named component rather than an inline body; that the upstream-failure body and the
-  SRS026 rejection body both exist as named components and are distinct schemas; and that every path
-  and query parameter is declared with a type. Lands with the codegen mechanism (#7).
+  Pending: demonstration that the frontend renders and drives the display on a Raspberry Pi Zero-class browser host; shares evidence with the soak demonstration. Lands with the frontend skeleton (#10); activated then.
+verification-justification: |
+  Emulated ARM boot plus performance proxies. Establishes that the frontend renders on that
+  architecture; does not establish Pi Zero-class timing.
 verification-method: test

@@ -1,18 +1,18 @@
 active: false
 derived: false
 header: |
-  Pending: exactly one validation implementation, by import graph
-level: 1.14
+  Pending: standalone validator CLI test
+level: 1.8
 links:
-- SRS014: XVSCz_Vlf7PASbL3oKafkyDWytTtTIHXVuopuZreNbs=
+- SRS015: null
 normative: true
 rationale: ''
 ref: ''
-reviewed: wpJ2QnW6ru35sVWzpmtIp7v_-OvADa9c95JS5KQbHYw=
+reviewed: JFFOovnMaoj9wad9MaasskMVeA0T_2Gt-EUuh7kwJXE=
 status: proposed
 text: |
-  Pending: test asserting exactly one source file imports the schema-validation engine, that both
-  the page-load validation path and the standalone desk validator resolve to that file in the import
-  graph, and that no other file imports the engine directly. A second implementation fails on the
-  commit that introduces it. Lands with the validator.
+  Pending: CLI test asserting the validator accepts a known-good configuration
+  (exit zero) and rejects a known-bad one (exit non-zero, operator-language
+  errors) without starting the application. Lands with the validator;
+  activated and given a references entry then.
 verification-method: test

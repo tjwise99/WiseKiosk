@@ -1,20 +1,20 @@
 active: false
 derived: false
 header: |
-  Pending: workflows reference no credential; Contract tier is module-isolated
-level: 1.19
+  Pending: TTL cache-behaviour test (liveness canary)
+level: 1.22
 links:
-- SRS019: DSH93B6sYedw0P5K5owU96W-GpV4Rlq3Nomktsyr4co=
+- SRS020: null
 normative: true
 rationale: ''
 ref: ''
-reviewed: u1Tlu5q_sLaWBy8zgAHZmXaQhR-cZ6qevnM2wxXZD6E=
+reviewed: B2Adcs8wjbAb4i3H4yATvHPboJCN-DQXmJQ_mHG-FHs=
 status: proposed
 text: |
-  Pending: test parsing every workflow under .github/workflows/ and asserting each secrets reference
-  resolves to an allowlisted non-credential name, an allowlist rather than a denylist so an
-  unanticipated credential fails closed; that no job invokes the Contract-tier target; and that the
-  Contract tier is a nested module unreachable from the parent module's test discovery and from just
-  verify. The checking script is this item's references target - ADR 0002 bars a Doorstop reference
-  into a dot-directory, not a check that reads one.
+  Pending: integration test asserting the (source, query) TTL cache serves an
+  identical request from cache within the TTL without an upstream call and
+  refetches after expiry, using a fake upstream that counts calls. This
+  cache-behaviour test is the standing liveness canary for the REST transport.
+  Lands with the backend skeleton (#9); activated
+  and given a references entry then.
 verification-method: test

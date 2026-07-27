@@ -1,17 +1,23 @@
 active: true
 derived: false
 header: |
-  Generator output passes validation unedited
-level: '1.10'
+  No secret value in any backend output
+level: 1.18
 links:
-- SYS004: FKi-jJSUDykMZmuZ6ynaFM__dVCb2Vz9rb-qgjEu9io=
+- SYS003: x73sA6VMR9aDga-PqTW6L49gj-iwZdgTOg5xG8VhAwM=
 normative: true
-rationale: ''
+rationale: |
+  The falsifiable edge of by-construction confinement (SYS003): a canary
+  secret planted through the delivery path and asserted absent from every
+  response and log line turns the structural claim into a failing test.
+  Upstream request URLs and echoed upstream errors are the classic leak
+  paths this guards.
 ref: ''
-reviewed: 0Kg-a8BPRXiqBYo7bukJWGAXQ-K1fbeSImNVA-4O2_Y=
+reviewed: V74e2cUNk8G6rE40usvr70VIWcZ5ReswduU2I1mbJGI=
 status: accepted
 text: |
-  The configuration generator shall produce, from a template or from prompted
-  input, a configuration that the standalone validator accepts without manual
-  edits.
+  No secret value shall appear in any HTTP response body or header, nor
+  in any log output, produced by the backend. Where backend output must
+  refer to a secret — as in the failure treatment of SRS016 — it shall do
+  so by the secret's name, never its value.
 verification-method: test

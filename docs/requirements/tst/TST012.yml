@@ -1,17 +1,23 @@
 active: false
 derived: false
 header: |
-  Pending: page-load-applies-config test
-level: 1.12
+  Pending: every schema key is varied by a fixture and renders
+level: 1.15
 links:
-- SRS012: 4qI3VKqXQ9MYdx30c3_vBavVciHmnUuRTDkzHuzBzwY=
+- SRS012: null
 normative: true
-rationale: ''
+rationale: |
+  Enumerating from the schema rather than from the fixtures is what makes the check closed: driven
+  from the fixtures it would only confirm that whatever is tested passes, which is what it already
+  knows.
 ref: ''
-reviewed: dwRpmOsbJO6NgyYTNHOXBg2pR3Zixf2Glw7phBYJAlk=
+reviewed: TZ8N9sCgofFpDGpbQoyczgOVXNng_q-lVyJ5VodshGg=
 status: proposed
 text: |
-  Pending: integration test asserting a configuration edit takes effect on the
-  next display page load, with no rebuild or redeployment. Lands with the
-  frontend skeleton (#10); activated and given a references entry then.
+  Pending: test enumerating the composed configuration schema's keys and asserting, for each, that
+  the page rendered from a fixture setting it to a non-default schema-valid value differs observably
+  from the page rendered at its default, and that the page renders without error at each
+  schema-valid value the key admits. Fails on a key no fixture varies, and on a key whose variation
+  changes nothing. Lands with the config schema (#8) and the frontend skeleton (#10).
+verification-justification: ''
 verification-method: test

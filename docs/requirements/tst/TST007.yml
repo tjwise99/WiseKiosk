@@ -1,17 +1,17 @@
 active: false
 derived: false
 header: |
-  Pending: unknown-key rejection test
-level: 1.7
+  Pending: page-load-applies-config test
+level: 1.12
 links:
-- SRS007: DuIfnxSPWuE9bWv1hOu-AHam0STzwHbEdP3lX_KH0V0=
+- SRS007: null
 normative: true
 rationale: ''
 ref: ''
-reviewed: aj0PFJauJTkjRtQ-K-8mQ0wwbNQ1ODhtrTyMIw3WJOU=
+reviewed: dwRpmOsbJO6NgyYTNHOXBg2pR3Zixf2Glw7phBYJAlk=
 status: proposed
 text: |
-  Pending: validation test asserting a configuration containing a key not in
-  the schema is rejected, with the unrecognized key named in the error. Lands
-  with the config schema (#8); activated and given a references entry then.
+  Pending: integration test asserting a configuration edit takes effect on the
+  next display page load, with no rebuild or redeployment. Lands with the
+  frontend skeleton (#10); activated and given a references entry then.
 verification-method: test

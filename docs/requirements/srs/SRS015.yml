@@ -1,0 +1,19 @@
+active: true
+derived: false
+header: |
+  Standalone validator: operator-language errors, non-zero exit
+level: 1.8
+links:
+- SYS004: FKi-jJSUDykMZmuZ6ynaFM__dVCb2Vz9rb-qgjEu9io=
+normative: true
+rationale: ''
+ref: ''
+reviewed: CcfkNIYq3vmj96PQcmhNiW0zDePuGUCrbGXOQfJ21cQ=
+status: accepted
+text: |
+  A standalone validator shall check a configuration file against the
+  configuration schema without starting the application. It shall report every
+  validation error in operator language — what is wrong, where, and what to
+  change — exit non-zero for an invalid configuration, and exit zero for a
+  valid one.
+verification-method: test

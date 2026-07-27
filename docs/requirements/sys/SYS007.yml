@@ -1,26 +1,25 @@
 active: true
 derived: false
 header: |
-  Single-definition internal contract
-level: 7
+  Neither grant privilege nor require it
+level: 8
 links: []
 normative: true
 rationale: |
-  A shape declared twice drifts, and the drift is invisible until runtime: this is the single worst
-  defect class this design guards against (ADR 0001). The rule binds definitions, not uses — a component
-  whose prop is typed with a generated type is a consumer, not a second declaration. Scope is internal:
-  upstream API shapes are defined by whoever runs the API, and the configuration format is shared with
-  the operator and governed by SYS001. Secret confinement lands here because the contract is a closed
-  set: a secret can only cross if the definition declares one, which is a structural claim rather than
-  an unprovable negative about outputs.
+  Trust rests at the network boundary. Accounts, sessions and authentication are all machinery for
+  distinguishing privilege between callers, and a display on a household LAN has no caller to
+  distinguish — so the machinery would add attack surface and operator burden to solve a problem the
+  deployment does not have. Requiring none is the same want facing the host: a process holding no more
+  than it needs bounds what a compromise reaches. This is a recorded decision, not an oversight: the
+  absence of authentication must not be "fixed" by a later reader who mistakes it for one.
 ref: ''
-reviewed: gygNneD3A0xV6q5KFtBovv0bgMlX3e9zgdO0nGPLfYI=
+reviewed: 44Qw1BupFMvl480RGlShXn-jdzfHM3-Jfn9MpcUJYks=
 status: accepted
 text: |
-  Every shape shared between WiseKiosk's own components shall have exactly one machine-readable
-  definition, generated into every implementation that must agree on it.
+  The system shall neither grant privilege nor require it.
 verification-justification: |
-  Generation and agreement are decided by the drift gate: a committed artifact differing from a fresh
-  regeneration fails. What no check settles is whether the definition is the right shape — only that
-  both sides hold the same one.
+  Absence is asserted directly — no credential material on the wire, no identity-based rejection, no
+  authentication middleware on the request path, and a container whose user is not root. What no check
+  settles is whether the network boundary is in fact trustworthy; that is a property of the household's
+  network, outside the system.
 verification-method: test

@@ -1,23 +1,29 @@
 active: true
 derived: false
 header: |
-  No secret value in any backend output
-level: 1.18
+  Stateless GET /api/<source> returns the shaped payload
+level: '1.20'
 links:
-- SYS003: x73sA6VMR9aDga-PqTW6L49gj-iwZdgTOg5xG8VhAwM=
+- SYS005: null
+- SYS007: null
 normative: true
 rationale: |
-  The falsifiable edge of by-construction confinement (SYS003): a canary
-  secret planted through the delivery path and asserted absent from every
-  response and log line turns the structural claim into a failing test.
-  Upstream request URLs and echoed upstream errors are the classic leak
-  paths this guards.
+  The payload's shape is defined once by the boundary contract (#37) and
+  generated on both sides; this requirement governs the transport — that the
+  route exists, is stateless, and returns that payload — not the shape's
+  definition. Statelessness is stated as an observable so it can be tested
+  rather than asserted.
 ref: ''
-reviewed: V74e2cUNk8G6rE40usvr70VIWcZ5ReswduU2I1mbJGI=
+reviewed: 4o_ioOPpavisJCfLAW7kjxoDZ3xARX6KH-RX4LpWWg8=
 status: accepted
 text: |
-  No secret value shall appear in any HTTP response body or header, nor
-  in any log output, produced by the backend. Where backend output must
-  refer to a secret — as in the failure treatment of SRS016 — it shall do
-  so by the secret's name, never its value.
+  For each supported external source, the backend shall expose a stateless
+  endpoint GET /api/<source> that fetches the source's upstream data and returns
+  it as JSON shaped to the payload the frontend renders. The endpoint shall hold
+  no per-client or session state: it shall not distinguish between clients, and
+  the payload it returns for a request shall be determined solely by that
+  request, not by who sent it or by earlier requests. The shared response cache
+  (SRS022), keyed on the request itself, is not per-client state — it may
+  determine whether a request is served from cache, but not the payload a client
+  receives.
 verification-method: test

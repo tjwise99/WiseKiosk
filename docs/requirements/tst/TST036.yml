@@ -1,20 +1,17 @@
 active: false
 derived: false
 header: |
-  Pending: no shared framework source names or imports a module
-level: 1.36
-links:
-- SRS036: Q6c-x2PEgKqKToIOAsuNchTSHAVBPJ1g4c4mFoRcgxc=
+  Pending: secret rotation-without-restart test
+level: 1.25
+links: []
 normative: true
 rationale: ''
 ref: ''
-reviewed: eSnpQJaMJxj-wENPya2NZNyzFvsQ5BPorNS2B8NYWFk=
+reviewed: ctZMGGsxhXyHF-OCUekqeQegRoXutdSJxYXMUfBMOQM=
 status: proposed
 text: |
-  Pending: test taking the module-name set from the static registration list and asserting no shared
-  framework source names any of them outside the registration file; and asserting no shared
-  framework package imports a module package, in either the Go import graph or the frontend module
-  graph. Runs on every commit rather than only on a module-adding change: a diff-scoped form cannot
-  reliably classify which changes are module-adds and passes vacuously on the rest while shared code
-  accretes module knowledge. Lands with the first module (#12).
+  Pending: test asserting a secret value changed in the <NAME>_FILE file is
+  reflected on the next cache-missing request that resolves it, with no process
+  restart and no in-memory value cache. Lands with the backend skeleton (#9);
+  activated and given a references entry then.
 verification-method: test

@@ -1,0 +1,19 @@
+active: false
+derived: false
+header: |
+  Pending: configuration failure-class render test
+level: 1.13
+links:
+- SRS003: null
+normative: true
+rationale: ''
+ref: ''
+reviewed: vDypMz268GHF3IsrACsRoUP5gWU4GiraUWuEvoOz3us=
+status: proposed
+text: |
+  Pending: render test asserting the page shell loads and renders an operator-
+  language error state for each configuration failure class — absent,
+  unfetchable, unparseable, and schema-invalid, the last with the full
+  validation report (what is wrong, where, what to change). Lands with the
+  frontend skeleton (#10); activated and given a references entry then.
+verification-method: test

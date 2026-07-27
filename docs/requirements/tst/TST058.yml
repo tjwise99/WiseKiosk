@@ -3,8 +3,7 @@ derived: false
 header: |
   Pending: release SBOM presence and fidelity
 level: 1.54
-links:
-- SRS064: 1cU8qFJp_XApLwhNRnfSpk29IzVoiKE-Rvt_nisGODM=
+links: []
 normative: true
 rationale: ''
 ref: ''

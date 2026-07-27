@@ -1,18 +1,15 @@
 active: false
 derived: false
 header: |
-  Pending: per-route rate-limit test
-level: 1.24
+  Pending: container non-root uid test
+level: 1.4
 links:
-- SRS024: ODe-bSR4qrckJ9tAuuu9NP0YRdYmRprOv6aU4a73gFk=
+- SRS025: null
 normative: true
 rationale: ''
 ref: ''
-reviewed: FipUM462sFLAofEIrY976KqTeLMx26z_KVyaA1gZf90=
+reviewed: 2J-EKVjoXLMX6UBwzPNLcvbmNVfrN0eeoyowRJ96r4o=
 status: proposed
 text: |
-  Pending: test asserting a route's global rate limit rejects requests over the
-  threshold without an upstream call, while cache hits are neither counted
-  against the limit nor rejected. Lands with the backend skeleton (#9); activated
-  and given a references entry then.
+  Pending: image test asserting the running container's effective uid is non-root (not 0) and the Dockerfile declares an explicit non-root USER. Lands with the container image build (#54); activated and given a references entry then.
 verification-method: test

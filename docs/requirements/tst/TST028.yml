@@ -1,19 +1,15 @@
 active: false
 derived: false
 header: |
-  Pending: negative-caching test
-level: 1.28
+  Pending: multi-arch build and smoke test
+level: 1.11
 links:
-- SRS028: HbzwXfYcLFdaopR352FYG5sSOQWhZ4F9uy2jTTREwCU=
+- SRS027: null
 normative: true
 rationale: ''
 ref: ''
-reviewed: 1eFIeDK_0cbY8QYQjkk--gn02sIfsXi_K896FGrZm2o=
+reviewed: 8l85fhTMmgM2Cd_NXXt4VlVD1lwq5V2Cjb4t4IAOaG0=
 status: proposed
 text: |
-  Pending: test asserting an upstream failure is cached for a negative TTL
-  shorter than the source's success TTL — a second request within that window
-  issues no upstream call, and after it expires the next request retries
-  upstream. Lands with the backend skeleton (#9); activated and given a
-  references entry then.
+  Pending: a CI matrix that builds and smoke-tests the published image on amd64 and arm64. The CI wiring lives under .github/ (not Doorstop-referenceable, ADR 0002) and is cited here; any non-dot-dir smoke harness it invokes is the references target. Lands with the container image build (#54); activated then.
 verification-method: test

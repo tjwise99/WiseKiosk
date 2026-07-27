@@ -1,18 +1,22 @@
 active: false
 derived: false
 header: |
-  Pending: secret rotation-without-restart test
-level: 1.25
+  Pending: no credential material on the wire, over every registered route
+level: 1.15
 links:
-- SRS025: 248RU_BJXATVZx-G6IYQs6nxsvvrw7bgE9UsxI6frr4=
+- SRS026: null
 normative: true
-rationale: ''
+rationale: |
+  The route set is derived from the single static registration list (SRS034) rather than written by
+  hand, so coverage is total by construction and a route added later cannot escape the sweep. A
+  hand-listed sweep would pass while the next route leaked.
 ref: ''
-reviewed: ctZMGGsxhXyHF-OCUekqeQegRoXutdSJxYXMUfBMOQM=
+reviewed: eV1-XSbBOJTLcPTyUy_DpMlu39RTpiPRHcbMjHWoaAg=
 status: proposed
 text: |
-  Pending: test asserting a secret value changed in the <NAME>_FILE file is
-  reflected on the next cache-missing request that resolves it, with no process
-  restart and no in-memory value cache. Lands with the backend skeleton (#9);
-  activated and given a references entry then.
+  Pending: integration check that, for every entry in the static route registration list, exercises
+  the route's success path and each upstream-failure class and asserts no response carries a
+  `Set-Cookie` or `WWW-Authenticate` header. Runs once the backend skeleton (#9) and the route
+  registration list exist.
+verification-justification: ''
 verification-method: test

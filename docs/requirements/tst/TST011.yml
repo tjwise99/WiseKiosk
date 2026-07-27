@@ -1,0 +1,19 @@
+active: false
+derived: false
+header: |
+  Pending: one generic published image, carrying no deployment specifics
+level: 1.12
+links:
+- SRS011: null
+normative: true
+rationale: ''
+ref: ''
+reviewed: pkjaFPKPUXEsEwOLWw7XmgDIJNvCzlPYHy_GDMOj4oE=
+status: proposed
+text: |
+  Pending: test asserting the build publishes exactly one image reference per release with no
+  per-deployment tag variant; exporting the image filesystem and asserting it carries the backend
+  binary and the frontend assets, contains no file at the configuration mount path, and no secret
+  material; asserting no deployment-specific value appears in the image environment. Lands with the
+  container image build (#54); activated then.
+verification-method: test

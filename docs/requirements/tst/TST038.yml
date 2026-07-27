@@ -1,20 +1,19 @@
 active: false
 derived: false
 header: |
-  Pending: build output is static, with a reviewed runtime dependency set
-level: 1.38
-links:
-- SRS038: i2Ecdjjwt7lDd0EMDxD35EBJXrGkNQaIHElGcw0PWls=
+  Pending: boundary codegen drift-gate test
+level: '1.30'
+links: []
 normative: true
 rationale: ''
 ref: ''
-reviewed: vKAzscXtokd47TyVv2nTc_tRkUSJBisRJxoxZ8mmrTc=
+reviewed: I1ZEmbIPQSzwryrKzvhSBhjTr3j4UpC39kUshFSQdLA=
 status: proposed
 text: |
-  Pending: test asserting the build emits exactly one HTML entry whose mount element is empty, that
-  no server-entry chunk is produced and the build configuration declares no SSR target or adapter,
-  and that the set of npm packages appearing in the emitted module graph is a subset of a committed
-  allowlist manifest. The allowlist is deliberate: a denylist of named routers and meta-frameworks
-  fails open the first time someone hand-rolls a hash router, and any new runtime dependency should
-  fail until it is reviewed. Lands with the frontend skeleton (#10).
+  Pending: test that injects a deliberate mismatch between the schema and the
+  committed generated code, asserts the CI drift check fails, then regenerates and
+  asserts the build passes. Lands with the codegen mechanism (#7). The check is
+  repo-level (it spans both packages); this item cites the workflow wiring in its
+  text because Doorstop references cannot reach a path under a dot-directory such
+  as .github/ (ADR 0002, ADR 0005).
 verification-method: test

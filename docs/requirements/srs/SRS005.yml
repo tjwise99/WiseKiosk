@@ -1,21 +1,20 @@
 active: true
 derived: false
 header: |
-  Configuration is validated before it is applied; never partially
-level: 1.5
+  Outbound upstream timeout and response-size bound
+level: 1.27
 links:
 - SYS001: TQyfJejH81RI-POadHI3gN0eM_DDB8AFAnMwcKjCth4=
-- SYS003: x73sA6VMR9aDga-PqTW6L49gj-iwZdgTOg5xG8VhAwM=
 normative: true
 rationale: |
-  Partial recovery converts a configuration error into silent degradation —
-  the blank or wrong module the operator cannot diagnose. Phrased against
-  "apply", not "page load", so a future live-apply path validates the same way
-  without a rewrite (ADR 0007); page load is today's only apply point.
+  SYS006 bounds the system's upstream use in volume, and SRS001 reports a
+  timeout failure class — but nothing else imposes a timeout or a size limit, so
+  a hung or oversized upstream could stall the handler or exhaust the single
+  process. This item imposes the bounds that make those failure classes real.
 ref: ''
-reviewed: 5y2suwnX5RK1N6-EoAAyWQGxcOgHB6qPW_GItdqvXCo=
+reviewed: MEQSQYwmPzg9hTyOumc7BWC2whRfAAeaZRFW5MijQRQ=
 status: accepted
 text: |
-  A configuration error shall be reported where it applies — naming what is wrong and where — and
-  shall never be silently worked around.
+  No single upstream request or response shall be able to stall the backend or exhaust its
+  memory.
 verification-method: test

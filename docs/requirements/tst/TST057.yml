@@ -1,18 +1,17 @@
 active: false
 derived: false
 header: |
-  Pending: bounded-resource-growth analysis
-level: 1.4
-links:
-- SRS057: PEJKjnIgTY4U-TRe8EUXdI1yrTZ95xgEPnu3SCySW9E=
+  Pending: build-provenance attestation verification
+level: 1.53
+links: []
 normative: true
 rationale: ''
 ref: ''
-reviewed: O0UgqMjcUfFvbhQCU6s4xwAHvfEcubruwG0t-gdUZtE=
+reviewed: 0wnWR8c5icv1TjAC5jdggXmx2BGxb8Y2_Ji0SBFJCcg=
 status: proposed
 text: |
-  Pending: test exercising the backend under sustained synthetic load for 60 minutes, sampling every
-  30 seconds, asserting goroutine count and open file descriptors each return to within 10 percent
-  of their post-warmup baseline. Heap occupancy is recorded as a diagnostic and does not gate. Lands
-  with the backend skeleton (#9); activated and given a references entry then.
+  Pending: test asserting the build-provenance attestation validates for the published digest and
+  binds it to its build workflow, and exits non-zero for a mismatched digest (expected: cosign
+  verify-attestation or gh attestation verify). Runs in a separate job with minimal permissions,
+  pulling by digest. Owned by #67.
 verification-method: test

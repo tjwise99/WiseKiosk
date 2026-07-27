@@ -1,15 +1,14 @@
 active: false
 derived: false
 header: |
-  Pending: restart-policy test
-level: 1.8
-links:
-- SRS048: 8-1-B_ziSN3eTJP0-8Mgv7fsekqT3e-xeDH7I0XKcMs=
+  Pending: base-image digest-pin lint
+level: 1.5
+links: []
 normative: true
 rationale: ''
 ref: ''
-reviewed: _3whfn3Kmvc4hDhZ5MbUkO3o3AUdssoDDYYEVHT2oWw=
+reviewed: H5rcf6TixIAOktV0cE0A1NTuNRUWhHCzcB50B22kcTU=
 status: proposed
 text: |
-  Pending: a scripted assertion that the committed deployment recipe (compose or run manifest) carries restart policy unless-stopped, failing CI otherwise. Lands with the container image build / deployment recipe (#54); activated then.
+  Pending: a scripts/-hosted lint asserting every base and stage image in the Dockerfile is pinned to a @sha256: digest, not a floating tag, and failing CI otherwise. References the lint script (a non-dot-dir path, Doorstop-referenceable) when it lands with the container image build (#54); activated then.
 verification-method: test

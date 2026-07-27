@@ -4,7 +4,7 @@ header: |
   Frontend runs on a Pi Zero-class browser host
 level: 1.56
 links:
-- SYS012: null
+- SYS008: null
 normative: true
 rationale: |
   Decomposes SYS005's reference-hardware clause; demonstrated on reference

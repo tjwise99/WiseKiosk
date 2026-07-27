@@ -1,19 +1,18 @@
 active: false
 derived: false
 header: |
-  Pending: canary-secret leak test
-level: 1.18
+  Pending: every external source has a proxy route
+level: 1.21
 links:
-- SRS018: igNRfsgCP7BC1uxrEopJdf3zKZNOGM2ndEAFJ6mgcQo=
+- SRS019: null
 normative: true
 rationale: ''
 ref: ''
-reviewed: iTC6aRvev9vXgAw1L2z8VlWb7SAIJWeIzD8bxT4b5tU=
+reviewed: Imd2Ck_baSqzCcdx6X3_aW0CyXVTGG8nNvo413RvhIg=
 status: proposed
 text: |
-  Pending: canary test planting a known secret value through <NAME>_FILE
-  delivery, exercising every route including the SRS016 failure paths,
-  and asserting the canary value appears in no response body, header, or
-  log line. Lands with the backend skeleton (#9); activated and given a
-  references entry then.
+  Pending: test asserting the set of external sources declared by upstream-backed modules equals the
+  set of registered GET /api/<source> routes, in both directions, so no source is exempted from the
+  proxy and no route exists without a source; and that no frontend or backend code constructs an
+  upstream URL outside a module's shaping library. Lands with the backend skeleton (#9).
 verification-method: test

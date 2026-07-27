@@ -1,0 +1,19 @@
+active: false
+derived: false
+header: |
+  Pending: viewport-driven layout render test
+level: 1.41
+links:
+- SRS006: null
+normative: true
+rationale: ''
+ref: ''
+reviewed: NXX4aQEFn0lzAtf7yC5Q_BmIq7iIZbVe9oV8gVBO7vQ=
+status: proposed
+text: |
+  Pending: viewport-driven render test asserting the layout assembled from a
+  known-good config exhibits no overlap, no clipping, and no scrollbars at the
+  kiosk viewport (1920×1080), and reflow with no overlap, no clipping, and no
+  horizontal scroll at the desktop viewports (1280×800 and 1440×900). Lands with
+  the frontend skeleton (#10); activated and given a references entry then.
+verification-method: test

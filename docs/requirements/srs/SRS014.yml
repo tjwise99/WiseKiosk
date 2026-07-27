@@ -1,20 +1,24 @@
 active: true
 derived: false
 header: |
-  One validation implementation
-level: 1.14
+  Fresh-environment bring-up from in-repo docs alone
+level: 1.4
 links:
-- SYS003: r0OHFjma5xOn8ZgSOGL1oBns-m0Q-TKD9LQHrUnwXSw=
+- SYS004: FKi-jJSUDykMZmuZ6ynaFM__dVCb2Vz9rb-qgjEu9io=
 normative: true
 rationale: |
-  A second engine enforces the schema slightly differently, and the divergence
-  surfaces as a desk validator that accepts what the page rejects — the defect
-  class the single-definition rule exists to kill (ADR 0007).
+  The executable form of "nothing required is missing": if a fresh clone in a
+  clean environment can build, verify, and deploy by following only in-repo
+  documentation, the docs are sufficient. Performed per release; the
+  procedure and its recorded runs live in-repo.
 ref: ''
-reviewed: A13nHl91b_w1CUIG4FT-8Z-jsJotXi-3lS-G98dFA2c=
+reviewed: hvDaUE_ZD_VmrEIGg7Vf6khDp5QP8ND75M9ihb-Hy6U=
 status: accepted
 text: |
-  Page-load validation and the standalone desk validator shall execute the
-  same validation implementation; the configuration schema's rules shall not
-  be enforced by a second, parallel implementation.
+  Following only documentation inside the repository, a fresh clone in a
+  clean environment shall be able to build, verify, and deploy WiseKiosk.
+verification-justification: |
+  A CI job clones the repository clean, builds, runs the verification target and brings the stack up
+  using only in-repo documentation. It does not decide that a non-technical person succeeds — a machine
+  following documented steps is not evidence about a reader.
 verification-method: test

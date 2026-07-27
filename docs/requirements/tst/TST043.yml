@@ -1,21 +1,19 @@
 active: false
 derived: false
 header: |
-  Pending: polling only, on independent module-owned cadences
-level: 1.43
-links:
-- SRS043: 6tbovh_7gEDo4ZB0gZXHDMv7oIdBr3VZga5pQ9HQlbU=
+  Pending: every module supplies both required test kinds
+level: 1.37
+links: []
 normative: true
 rationale: ''
 ref: ''
-reviewed: SXshiEok3HtvuhRUNuGpnP8ZzCFtmPYQuzi2xEtuoGM=
+reviewed: K7r8R8kcquIuWl2SDVgct3d8AjNLEwlHWlmHX7LpAtM=
 status: proposed
 text: |
-  Pending: test asserting WebSocket and EventSource appear nowhere in the shipped bundle and are
-  never constructed during a page render - they are the platform's only push primitives, so their
-  absence is decidable rather than a denylist; rendering the assembled page under fake timers and
-  advancing to one module's cadence to assert exactly one refetch for it and none for another, then
-  the reverse; and asserting the composed configuration schema declares no refresh, cadence, or
-  interval property, which is the strongest clause and a single assertion over one artifact. Lands
-  with the frontend skeleton (#10).
+  Pending: test enumerating modules and asserting each has a render test beside its component, and
+  that each module registered against an external source additionally has a unit test beside its
+  shaping library. A module with no registration entry is a local module and is not expected to have
+  one. Correct location is sufficient proof CI reaches them, since SRS068 forbids any skip, build
+  tag, or exclusion that would silence a committed test. What those tests assert is SRS033's and
+  SRS040's obligation, not this one. Lands with the first module (#12).
 verification-method: test

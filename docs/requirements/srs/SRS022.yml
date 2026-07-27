@@ -1,18 +1,22 @@
 active: true
 derived: false
 header: |
-  TTL response cache keyed on source and query string
-level: 1.22
+  Client-facing contract for rejected requests
+level: 1.26
 links:
-- SYS006: KZtswOlxN1xD3PUvRX2djU9sCMFBskYb-6W5Iq6nOdo=
+- SYS005: null
 normative: true
 rationale: |
-  A cache hit is neither counted against the limit nor rejected by it. A sustained outage must
-  not cause an upstream request on every incoming request.
+  SRS023 and SRS024 reject invalid and over-limit requests but do not say what
+  the client receives; a module still needs something renderable, and it must be
+  able to tell an operator misconfiguration from a source outage. The concrete
+  body shape is defined by the boundary contract (#37); this item fixes the
+  status codes, the reject-before-upstream behaviour, and the separation from
+  the upstream-failure shape.
 ref: ''
-reviewed: la1jJf3I91AqzykaiUbEcUPnWyQY1Ug317A2JHXprFo=
+reviewed: nh_nk7dDqUsx68CR3qXxByNi8WHCU39rAEK2d4UDB4I=
 status: accepted
 text: |
-  The backend's rate of upstream requests to a source shall be bounded by values fixed in code,
-  regardless of how many clients it serves or how often they ask.
+  A request the backend rejects before making any upstream call shall return a client-error
+  status distinct to its cause, with a response body the frontend can render.
 verification-method: test

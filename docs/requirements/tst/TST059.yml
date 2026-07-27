@@ -3,8 +3,7 @@ derived: false
 header: |
   Pending: same-origin CSP header test
 level: 1.55
-links:
-- SRS065: Se17l_pfuGFEYDJ23054GBgFw0-ebEKPs4JuZHcsMfE=
+links: []
 normative: true
 rationale: ''
 ref: ''

@@ -1,19 +1,17 @@
 active: false
 derived: false
 header: |
-  Pending: shaping purity and secret-free signatures
-level: 1.33
-links:
-- SRS033: C3HWrma15JlnwfhQczEqmKHhWHiQQAuJU38e442J-So=
+  Pending: secret-resolution unit tests
+level: 1.15
+links: []
 normative: true
 rationale: ''
 ref: ''
-reviewed: uX4W2y7BDGOJMykznsh6uHoVJ-C3MrJcVGrbMft8X_k=
+reviewed: VS2o14Gs4x7-8HKJNcWZu-_wKGr11d1rGEedr8zd_H8=
 status: proposed
 text: |
-  Pending: test asserting each module's shaping package resolves a transitive import set that is a
-  subset of a declared pure-package allowlist, so I/O is absent by construction rather than by a
-  denylist of forbidden packages; asserting no exported shaping function's parameters include the
-  secret type or the URL-builder's output type; and running the shaping unit tests with a transport
-  that panics on use. Lands with the first module and the repo layout (#5).
+  Pending: unit tests of secret resolution — value read from the file at
+  <NAME>_FILE; trailing whitespace stripped; a bare <NAME>
+  environment variable ignored. Lands with the backend skeleton (#9);
+  activated and given a references entry then.
 verification-method: test

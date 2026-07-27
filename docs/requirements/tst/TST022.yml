@@ -1,20 +1,21 @@
 active: false
 derived: false
 header: |
-  Pending: TTL cache-behaviour test (liveness canary)
-level: 1.22
+  Pending: boundary schema is single, package-neutral, and complete
+level: 1.29
 links:
-- SRS022: iSbaW1VyVL2ggTGBmWsfCUG7M3yBpTPh62hKJJXUYu0=
+- SRS023: null
 normative: true
 rationale: ''
 ref: ''
-reviewed: B2Adcs8wjbAb4i3H4yATvHPboJCN-DQXmJQ_mHG-FHs=
+reviewed: ZGl6laZFfnHdWRZqF6mfYbOqyMPxcRsVaKUcEBULv4o=
 status: proposed
 text: |
-  Pending: integration test asserting the (source, query) TTL cache serves an
-  identical request from cache within the TTL without an upstream call and
-  refetches after expiry, using a fake upstream that counts calls. This
-  cache-behaviour test is the standing liveness canary for the REST transport.
-  Lands with the backend skeleton (#9); activated
-  and given a references entry then.
+  Pending: test parsing the boundary schema and asserting exactly one schema artifact is tracked and
+  its path lies under neither package root; that the set of schema path items equals the set of
+  entries in the static route registration list, in both directions; that every path item declares
+  its success status, the SRS001 upstream-failure status, and 400, 404, 405 and 429, each
+  referencing a named component rather than an inline body; that the upstream-failure body and the
+  SRS026 rejection body both exist as named components and are distinct schemas; and that every path
+  and query parameter is declared with a type. Lands with the codegen mechanism (#7).
 verification-method: test

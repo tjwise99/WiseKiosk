@@ -3,8 +3,7 @@ derived: false
 header: |
   Pending: browser-hardening headers test
 level: 1.56
-links:
-- SRS066: Wt-p7-0SiY4GnN62Qd1hgLJruzY92Uh87Ma7_mRGKVE=
+links: []
 normative: true
 rationale: ''
 ref: ''

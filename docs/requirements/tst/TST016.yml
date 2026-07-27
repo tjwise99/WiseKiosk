@@ -1,21 +1,18 @@
 active: false
 derived: false
 header: |
-  Pending: unresolvable-secret failure-path test
-level: 1.16
+  Pending: bounded-resource-growth analysis
+level: 1.4
 links:
-- SRS016: _SouSBaiR5LtcQ-AeIw4Bpjws6QTAsGyfhvkgtf8vt8=
+- SRS017: null
 normative: true
 rationale: ''
 ref: ''
-reviewed: yu0W7WXQEtxLwu2RAm29LJTSZKjrrJgQElS9LU_XHLM=
+reviewed: O0UgqMjcUfFvbhQCU6s4xwAHvfEcubruwG0t-gdUZtE=
 status: proposed
 text: |
-  Pending: proxy test asserting the backend boots with no secrets
-  delivered, and a request to a source whose secret is unresolvable
-  (<NAME>_FILE unset; file missing; file unreadable; file empty after
-  trailing-whitespace stripping) returns that source's legible
-  upstream-failure response naming the secret, while
-  other sources still serve. Lands with the backend skeleton (#9);
-  activated and given a references entry then.
+  Pending: test exercising the backend under sustained synthetic load for 60 minutes, sampling every
+  30 seconds, asserting goroutine count and open file descriptors each return to within 10 percent
+  of their post-warmup baseline. Heap occupancy is recorded as a diagnostic and does not gate. Lands
+  with the backend skeleton (#9); activated and given a references entry then.
 verification-method: test

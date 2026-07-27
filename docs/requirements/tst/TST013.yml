@@ -1,19 +1,21 @@
 active: false
 derived: false
 header: |
-  Pending: configuration failure-class render test
-level: 1.13
+  Pending: bring-up demonstration procedure and record
+level: 1.4
 links:
-- SRS013: 7b4S7Yea9lx1grBMoQt6W5-sMmpwM5eyumqE2xDTgnA=
+- SRS014: null
 normative: true
 rationale: ''
 ref: ''
-reviewed: vDypMz268GHF3IsrACsRoUP5gWU4GiraUWuEvoOz3us=
+reviewed: XkCJ6rE2zFg-coY5acCCPmXh9sLcFSV00LABsui2egg=
 status: proposed
 text: |
-  Pending: render test asserting the page shell loads and renders an operator-
-  language error state for each configuration failure class — absent,
-  unfetchable, unparseable, and schema-invalid, the last with the full
-  validation report (what is wrong, where, what to change). Lands with the
-  frontend skeleton (#10); activated and given a references entry then.
+  Pending: a written bring-up procedure (fresh clone, clean environment,
+  in-repo docs only — build, verify, deploy) plus a record of each performed
+  run. Lands when the system first becomes deployable; activated and given a
+  references entry pointing at the procedure document then.
+verification-justification: |
+  Clean-clone build, verify and stack-up in CI. Proves the documented path works for a machine, not
+  that it is followable by a person.
 verification-method: test

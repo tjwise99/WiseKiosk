@@ -16,13 +16,13 @@ Each tier states what it **guarantees** and when it runs.
 | Tier | Guarantees | Specified by | Runs |
 |---|---|---|---|
 | **Unit** | Shaping libraries transform known upstream responses into correct payloads. Pure, fast, no network | [module contract](contracts/module-contract.md), part 1 | Every commit, in CI |
-| **Boundary** | The frontend and backend agree on every value that crosses: parameter names *and types*, success payloads, the structured upstream-failure body, the client-error rejection body, and every status code the frontend discriminates on | SYS007 / SRS029 | Every commit, in CI |
-| **Integration** | Routes serve; the TTL cache honours its TTL; parameter validation rejects bad input; config validation fails loudly on bad config | SRS020 / SRS022 / SRS023 / SRS005 | Every commit, in CI |
-| **Render** | Each module renders from its props; the page assembles with a known-good config | [module contract](contracts/module-contract.md), part 3 / SRS041 | Every commit, in CI |
+| **Boundary** | The frontend and backend agree on every value that crosses: parameter names *and types*, success payloads, the structured upstream-failure body, the client-error rejection body, and every status code the frontend discriminates on | SYS006 / SRS023 | Every commit, in CI |
+| **Integration** | Routes serve; the TTL cache honours its TTL; parameter validation rejects bad input; config validation fails loudly on bad config | SRS018 / SRS020 / SRS021 / SRS002 | Every commit, in CI |
+| **Render** | Each module renders from its props; the page assembles with a known-good config | [module contract](contracts/module-contract.md), part 3 / SRS006 | Every commit, in CI |
 | **Contract** | Upstream APIs still return what the shaping libraries expect | — | **Open — see below** |
 
 The Boundary row enumerates the value classes deliberately: "payload shape and parameter name" reads
-narrower than SRS029, and an error body or a status code left out of the schema is exactly the value
+narrower than SRS023, and an error body or a status code left out of the schema is exactly the value
 that crosses unproven.
 
 ### Open: where the Contract tier runs, and how it reaches upstream
@@ -74,7 +74,7 @@ sides generated from it**. The tier's job in CI is to prove the generation is re
   committed output differing from a fresh regeneration, and version-pinning of the generators so
   regeneration is deterministic — all specified by **SRS030**.
 - That the generated types are the ones actually *used* on both sides, including the per-module
-  error-render path, rather than shadowed by a hand-declared twin — **SRS031**, under **SYS007**.
+  error-render path, rather than shadowed by a hand-declared twin — **SRS024**, under **SYS006**.
 - That the frontend adds no second, runtime validator over proxied payloads, so agreement rests on
   the schema and the drift gate rather than a bundled re-check — **SRS032**.
 
@@ -93,16 +93,16 @@ governs it, so the obligation and its verification item stay traceable and CI-ch
 prose alone.
 
 - **Every value crossing the frontend/backend boundary is generated from one definition**
-  → SYS007 / SRS029 / SRS030 / SRS031 / SRS032, and
+  → SYS006 / SRS023 / SRS030 / SRS024 / SRS032, and
   [above](#the-boundary-tier-is-generated-not-hand-written).
 - **Every module supplies a render test for its component, and — where it fetches an upstream — unit tests for its shaping library**
   → [the module contract](contracts/module-contract.md), part 6. A module missing either is an
   incomplete module, not a passing one.
-- **Every config schema rejects a realistic malformed input, in a test** → SRS005 (a failing config
+- **Every config schema rejects a realistic malformed input, in a test** → SRS002 (a failing config
   is never applied, in whole or in part) and SRS007 (an unknown key is rejected and named). The
   operator is not the author, so validation failing correctly and legibly is a product feature, and
   it is tested as one.
-- **The standalone validator is exercised against known-good and known-bad configs** → SRS008, run
+- **The standalone validator is exercised against known-good and known-bad configs** → SRS015, run
   in CI. The validator failing to reject a malformed config is a product bug, not a testing gap.
 - **Repo-wide checks live at repo level** — see [Where a check belongs](#where-a-check-belongs),
   below.

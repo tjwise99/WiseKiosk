@@ -1,15 +1,19 @@
 active: false
 derived: false
 header: |
-  Pending: healthcheck fixed-port test
-level: 1.6
-links:
-- SRS049: 243iFGeNpjMDyZSvQo8InTPkPhocUh28cVTX8dmVmqw=
+  Pending: page fetches same-origin only, statically and at runtime
+level: 1.42
+links: []
 normative: true
 rationale: ''
 ref: ''
-reviewed: MCm3gMPwgJmLHCzkEWpi-FTa1NYN4-PpNifNOnU2Nzg=
+reviewed: lYMQkcNn03gvDekmJ1CL1SnUyhyYp3RstTvsgLncEYg=
 status: proposed
 text: |
-  Pending: integration test asserting the image declares a HEALTHCHECK on the constant service port, reports healthy while serving, and reports unhealthy when the app is broken though the process is still up. Lands with the container image build (#54); activated then.
+  Pending: test scanning the shipped bundle for absolute-URL literals and failing on any origin
+  other than the page's own, which catches paths no render exercises; and assembling the page under
+  a known-good configuration with request interception, asserting every request origin equals the
+  page origin and every module data request matches /api/<source>. SRS065's connect-src policy makes
+  a cross-origin fetch fail in the browser regardless, so the two together close the case rather
+  than sample it. Lands with the frontend skeleton (#10).
 verification-method: test

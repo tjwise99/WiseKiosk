@@ -1,25 +1,29 @@
-active: true
+active: false
 derived: false
 header: |
-  A configuration change applies no later than the next page load
-level: 1.12
+  Every offered configuration key is exercised at a non-default value
+level: 1.101
 links:
 - SYS003: r0OHFjma5xOn8ZgSOGL1oBns-m0Q-TKD9LQHrUnwXSw=
 normative: true
 rationale: |
-  Owner decision 2026-07-23 (ADR 0007): page load is the guaranteed floor,
-  phrased as "no later than" so a future live-apply path (e.g. a remote
-  configuration editor) is not designed out. No container restart, rebuild, or
-  redeploy stands between an edit and the display. The freshness guarantee is
-  frontend-owned: the page fetches the configuration bypassing HTTP caches
-  (cache: 'no-store' or equivalent), because the conventional fix — a no-cache
-  header on the config path — is exactly the config-aware code path SRS011
-  forbids.
+  SYS003's obligation had no child expressing it. SRS011 states that the backend has no
+  configuration concept, which is a property of a component holding no keys - it satisfied the need
+  vacuously while the demand that every offered key actually works went unverified, and the gate
+  stayed green over the gap. Stated as an observable difference rather than as "renders without
+  error", because a dead knob - a key the schema offers and the code ignores - renders the page
+  perfectly. Absence of error is what a key wired to nothing produces, so it cannot be the
+  criterion. The last sentence carries SYS003's second clause: a value that cannot be changed
+  observably is a constant, and offering it is the defect. The check ranges over the schema rather
+  than a hand-written key list, because the schema is the finite machine-readable statement of what
+  is offered: a key added there is covered the moment it exists, where a list would drift silently.
 ref: ''
-reviewed: 4nqGv5rLxOIFkRwsSw9NBtIJXagPBbkDEVHISCnevWw=
-status: accepted
+reviewed: HyqDj9jv-QjA5nQ8tU_97UHoxWive4xrRzFdF4FDVs4=
+status: proposed
 text: |
-  A modified configuration shall take effect no later than the next load of
-  the display page; no rebuild or redeployment shall be required to apply a
-  configuration change.
+  Every key the configuration schema offers shall produce an observable difference in the rendered
+  page between its default value and at least one other schema-valid value, and the page shall
+  render without error at every schema-valid value the key admits. A key whose value cannot be
+  observed to change the page is a constant and shall not be offered.
+verification-justification: ''
 verification-method: test

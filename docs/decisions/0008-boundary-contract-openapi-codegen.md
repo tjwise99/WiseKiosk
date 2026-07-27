@@ -9,7 +9,7 @@ carried by #7). This ADR records the mechanism **decision**; the **build** is #7
 The Go backend and the TypeScript frontend share no types
 ([ADR 0001](0001-backend-language-go.md)), which makes the boundary contract non-negotiable:
 **one schema, both sides generated from it**, CI failing on stale generated code.
-Round #37 elicited the requirements for that property (SYS007; SRS029–032) deliberately
+Round #37 elicited the requirements for that property (SYS006; SRS023–032) deliberately
 **mechanism-agnostic** — a "shall" that names a tool churns when the tool changes. This ADR chooses
 the tool, which is the decision half of #7.
 
@@ -32,10 +32,10 @@ and #7's acceptance — schema file present, both generators wired, drift gate g
   this).
 - **The schema defines every value class that crosses the boundary**: request parameter names and
   types, success payloads, the structured upstream-failure body (SRS001), the client-error rejection
-  body (SRS026), and every response status code the frontend discriminates on (SRS029).
+  body (SRS022), and every response status code the frontend discriminates on (SRS023).
 - **Drift gate:** a repo-level CI check regenerates both sides and fails on any difference
   (`git diff --exit-status`); the generators are **version-pinned** so a toolchain bump cannot read
-  as schema drift (SRS030; verified by TST030). The gate is repo-level because it spans both
+  as schema drift (SRS030; verified by TST038). The gate is repo-level because it spans both
   packages.
 - **The frontend consumes the generated types only — no runtime re-validation of proxied payloads**
   (SRS032). The version-skew case a runtime validator defends against is foreclosed by single-image
@@ -83,6 +83,6 @@ and #7's acceptance — schema file present, both generators wired, drift gate g
   consumer).
 - **ARCHITECTURE.md's "boundary contract" section** (its "open question 2") is answered by this ADR;
   the fuller prose is written when the mechanism is built under #7/#5.
-- **Requirement text stays mechanism-agnostic** (SYS007, SRS029–032): this ADR is provenance, not
+- **Requirement text stays mechanism-agnostic** (SYS006, SRS023–032): this ADR is provenance, not
   cited inside the "shall" statements, so a later mechanism change touches the ADR and the generate
   step, not the tree.

@@ -1,20 +1,17 @@
 active: false
 derived: false
 header: |
-  Pending: config fragments compose, and are declared once
-level: 1.35
-links:
-- SRS035: RzZ2qh0kuomuCr4yn6KZNaFBQ-soow8-WNU_7o_1ba4=
+  Pending: per-route rate-limit test
+level: 1.24
+links: []
 normative: true
 rationale: ''
 ref: ''
-reviewed: lDiqFG3ZZKRX5y1VbCk9d4Y8ubW4vNXZnLQxywKbZ58=
+reviewed: FipUM462sFLAofEIrY976KqTeLMx26z_KVyaA1gZf90=
 status: proposed
 text: |
-  Pending: test recomposing the configuration schema from the module fragments and asserting the
-  committed schema is unchanged; asserting a bijection between module directories and fragments,
-  with no registered module lacking a fragment and no orphan fragment; asserting each fragment file
-  is the unique definition site of its property names; and asserting no fragment property is
-  reachable by reference from the boundary schema. Lands with the first module and the config schema
-  (#8).
+  Pending: test asserting a route's global rate limit rejects requests over the
+  threshold without an upstream call, while cache hits are neither counted
+  against the limit nor rejected. Lands with the backend skeleton (#9); activated
+  and given a references entry then.
 verification-method: test

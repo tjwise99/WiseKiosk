@@ -1,22 +1,23 @@
 active: true
 derived: false
 header: |
-  Request parameters validated against known-good per-source patterns
-level: 1.23
+  One schema, package-neutral, all boundary value classes
+level: 1.29
 links:
-- SYS006: KZtswOlxN1xD3PUvRX2djU9sCMFBskYb-6W5Iq6nOdo=
+- SYS006: null
 normative: true
 rationale: |
-  Validating against known-good patterns keeps malformed or unrecognized
-  requests from reaching upstream and bounds the proxy so it cannot be driven to
-  forward arbitrary requests (SYS006). The client-facing form of
-  a rejection is specified by SRS026.
+  "Every payload shape and every parameter name" (TESTING.md Boundary tier)
+  includes the error and status contracts the frontend renders from; enumerating
+  the value classes keeps them from being the uncovered value the tier warns
+  about. The schema's repository location is allocated by #5 and not fixed here.
 ref: ''
-reviewed: awmf7f4ZhwdHxftl-IEkRuL_b4V34RCYrJws9ufMyJo=
+reviewed: hqOb_GBcTMNLQLr2s4YZb2Ctw-U5R8Ah0Nwvtp2SkhY=
 status: accepted
 text: |
-  The backend shall validate each request's parameters against known-good
-  patterns for the requested source — for example ICAO code format for aviation
-  weather and a known park-ID map for wait times — and shall reject a request
-  whose parameters do not conform without issuing any upstream request.
+  The boundary contract shall be defined by exactly one schema artifact, owned by neither the
+  backend nor the frontend package, from which both sides are generated. It shall define every
+  value crossing the boundary. Module-specific payloads shall reach it as module-owned fragments
+  composed into it; framework-wide values shall be defined in the schema itself. No boundary
+  value shall be defined in more than one place.
 verification-method: test

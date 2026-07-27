@@ -3,8 +3,7 @@ derived: false
 header: |
   Pending: boundary fragments compose, and are declared once
 level: 1.15
-links:
-- SRS100: null
+links: []
 normative: true
 rationale: |
   The regenerate-and-diff form is the one SRS030's drift gate already establishes, so composition is
