@@ -26,3 +26,4 @@ decision, and rejected alternatives stay as written.
 | [0009](0009-verification-justification-attribute.md) | 2026-07-24 | Every item stores a `verification-justification` naming what its verification settles and what it does not; fingerprint-fenced |
 | [0010](0010-runtime-materialised-gate-fixtures.md) | 2026-07-24 | Negative gate fixtures are committed as data and materialised into a temp tree at run time; no vulnerable artifact is ever committed in resolvable form |
 | [0011](0011-requirement-or-convention.md) | 2026-07-26 | A requirement obliges the running software; a repository convention is a check if a machine decides it and a review-checklist question if not; rules the pass establishes are recorded as ADRs |
+| [0012](0012-module-requirements-in-tree.md) | 2026-07-26 | A module is a need: one `SYS` per module in the same tree, decomposed into what is specific to it; no generic module need, no separate Doorstop document |

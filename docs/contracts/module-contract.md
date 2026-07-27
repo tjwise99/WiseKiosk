@@ -69,6 +69,10 @@ an operator-tunable configuration key.
 
 ## Adding a module
 
+First, write the module's need and its decomposition in the requirements tree — one `SYS` for the
+user-facing want, `SRS` items for what is specific to this module
+([ADR 0012](../decisions/0012-module-requirements-in-tree.md)). The steps below build against it.
+
 Steps 1, 3, 4 and 6 apply to upstream-backed modules only. Steps 2, 5, 7 and 8 apply to every
 module — a local module's component renders from configuration or the browser rather than from a
 payload prop, but it still has a configuration fragment, a component, the dependency-direction check

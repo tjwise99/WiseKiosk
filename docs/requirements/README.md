@@ -15,9 +15,13 @@ A V-model tree — needs on the left, verification on the right:
 
 | Prefix | Document | Holds | Links up to |
 |---|---|---|---|
-| `SYS` | [`sys/`](sys) | Stakeholder / system-level needs (the validation anchor) | — (top) |
+| `SYS` | [`sys/`](sys) | Stakeholder / system-level needs (the validation anchor), framework and per-module alike | — (top) |
 | `SRS` | [`srs/`](srs) | Decomposed, testable "shall" statements | `SYS` |
 | `TST` | [`tst/`](tst) | One item per test/check; `references` point at the real verifying file | `SRS` |
+
+A module is a need: each carries one `SYS` item for its user-facing want, decomposed into `SRS` items
+stating only what is specific to that module. Obligations true of every module stay on the framework
+needs and are not restated ([ADR 0012](../decisions/0012-module-requirements-in-tree.md)).
 
 Each item is one YAML file named for its ID (`SYS001.yml`, `SRS001.yml`, `TST001.yml`). IDs are the
 prefix plus a zero-padded 3-digit number. **An ID is permanent** — once assigned it is never reused or
