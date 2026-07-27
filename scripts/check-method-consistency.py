@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-"""Every requirement sits at the least-decidable method among its children.
+"""Every item carries a verification-justification, and sits at the least-decidable method
+among its children.
 
 Decidability order, per docs/requirements/README.md: test > analysis > inspection > demonstration.
 A parent above its least-decidable child claims a machine settles what one of its own obligations
@@ -8,6 +9,10 @@ leaves to a human. A parent below every child understates what the tree already 
 The two directions are not symmetric. Overstating is never excusable. Understating is, where the
 parent holds a residual obligation no child carries — so it is permitted only with a written
 verification-justification, which is the argument for why the residue exists.
+
+That attribute is also required on its own, on every item, per ADR 0009: below `test`, what blocks a
+mechanical check; at `test`, what the check leaves unproven. Absence is the failure the method rule
+cannot see — an item with no justification satisfies the rule by having nothing to argue.
 """
 
 import sys
@@ -40,6 +45,7 @@ def load():
 
 def main():
     method, children, justified = load()
+    unjustified = sorted(set(method) - justified)
     failures = []
     for parent, kids in sorted(children.items()):
         rank = RANK.get(method.get(parent, ""))
@@ -58,8 +64,21 @@ def main():
             reason = "below every child with no verification-justification"
         failures.append(f"{parent} ({method[parent]}) is {reason}: {weakest}")
 
+    if unjustified:
+        print(f"{len(unjustified)} item(s) carry no verification-justification:", file=sys.stderr)
+        for prefix in ("SYS", "SRS", "TST"):
+            tier = [u for u in unjustified if u.startswith(prefix)]
+            if tier:
+                print(f"  {prefix} ({len(tier)}): {' '.join(tier)}", file=sys.stderr)
+        print(
+            "\nEvery item states what its verification settles and what it does not (ADR 0009):"
+            "\nbelow `test`, what blocks a mechanical check; at `test`, what the check leaves"
+            "\nunproven.",
+            file=sys.stderr,
+        )
+
     if failures:
-        print("Verification-method inconsistency:", file=sys.stderr)
+        print("\nVerification-method inconsistency:", file=sys.stderr)
         for line in failures:
             print(f"  {line}", file=sys.stderr)
         print(
@@ -69,9 +88,14 @@ def main():
             "\ncarries - record a verification-justification (docs/requirements/README.md).",
             file=sys.stderr,
         )
+
+    if unjustified or failures:
         return 1
 
-    print(f"Verification methods are consistent across {len(children)} parent items.")
+    print(
+        f"All {len(method)} items carry a verification-justification; methods are consistent "
+        f"across {len(children)} parent items."
+    )
     return 0
 
 

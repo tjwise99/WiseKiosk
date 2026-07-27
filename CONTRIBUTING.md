@@ -38,7 +38,8 @@ Current gates (they grow as code lands):
   with its type, and its default-base PR records the ticket linkage (plain sh + curl + jq, like
   the hooks — no toolchain).
 - `just check-reqs`  — the Doorstop requirements tree validates: refs resolve, no
-  suspect/unreviewed/orphan items.
+  suspect/unreviewed/orphan items; every item carries a `verification-justification`, and no item
+  claims a method its own children do not support.
 - `just check-arch`  — the LikeC4 architecture model validates and its generated artifacts are not
   stale.
 - `just check-site`  — the documentation site builds clean with warnings-as-errors.
