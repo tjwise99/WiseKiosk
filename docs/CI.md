@@ -16,11 +16,11 @@ Three, distinguished by what they can see. A source-level dependency scan never 
 operating-system packages in the base layer; an image scan never sees which of the project's own
 functions is unsafe.
 
-### First-party source
+### First-party source — `TST058`, `TST059`
 
 Static scanning of the project's own Go and Svelte/TypeScript source on every pull request, failing on
 **any finding at any severity**. Findings are reported to the repository's code-scanning dashboard and
-annotated on the pull request. `TST058`, `TST059`.
+annotated on the pull request.
 
 **A finding in first-party source has no exception path.** The register below exists to record that
 someone else shipped something broken, and that justification is not available for code this project
@@ -28,10 +28,10 @@ writes.
 
 This mechanises the security review a solo project has no second human to perform.
 
-### Resolved dependencies
+### Resolved dependencies — `TST062`, `TST063`
 
 Failing a pull request when any resolved Go-module or npm dependency carries a known vulnerability, at
-any severity, unless the finding has a current register entry. `TST062`, `TST063`.
+any severity, unless the finding has a current register entry.
 
 **One allowance:** for the Go toolchain the gate may consider reachability — a vulnerability in code
 that is present but never called need not fail. This keeps the gate actionable rather than noisy.
@@ -39,15 +39,15 @@ that is present but never called need not fail. This keeps the gate actionable r
 Every advisory the scan resolves is reported in the job's output regardless of severity, reachability,
 or exception status. The gate decides the merge; the output stays complete.
 
-### The built image
+### The built image — `TST065`
 
 Scanning the built container image, failing on any finding at any severity unless the finding has a
 current register entry. This is what covers operating-system and base-layer packages, which the
-source-level gate never inspects. `TST065`.
+source-level gate never inspects.
 
-## The exception register
+## The exception register — `TST104`
 
-A committed register, one entry per finding, asserted by `TST104`. **No severity threshold.**
+A committed register, one entry per finding. **No severity threshold.**
 
 A threshold decides in advance that a whole class of finding is acceptable, sight unseen — the wrong
 shape for this project. A low-severity advisory with a published patch is a dependency shipping
@@ -75,10 +75,15 @@ These assert that the regime is real rather than declared. Each was a requiremen
 rebuild; each states a property of machinery already decided rather than a want, which is what makes
 it a check.
 
+**Most of the gates above are not built yet.** Of the checks this document names, only verify/CI
+parity and method consistency run today; the rest are pending items, which is how the tree records
+scoped work ([ADR 0005](decisions/0005-traceability-gating.md)). This document states the stance each
+gate will take, not that it is running.
+
 | Check | Asserts | |
 |---|---|---|
 | Verify/CI parity | Every check `just verify` depends on also runs in CI, and every named CI step is one of those checks or an enumerated CI-only exception | `TST071` |
-| Whole-tree discovery | Test runners are invoked over whole-tree discovery, with no silent exclusion | `TST037`, `TST072` |
+| Whole-tree discovery | Test runners are invoked over whole-tree discovery, with no silent exclusion | `TST072` |
 | Required checks | Every gate job is a required check, and every required check names a real job | `TST103` |
 | Method consistency | No requirements item claims a verification method its own children do not support | `TST109` |
 
