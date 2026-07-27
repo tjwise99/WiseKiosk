@@ -15,10 +15,10 @@ Each tier states what it **guarantees** and when it runs.
 
 | Tier | Guarantees | Specified by | Runs |
 |---|---|---|---|
-| **Unit** | Shaping libraries transform known upstream responses into correct payloads. Pure, fast, no network | SRS033 | Every commit, in CI |
+| **Unit** | Shaping libraries transform known upstream responses into correct payloads. Pure, fast, no network | [module contract](contracts/module-contract.md), part 1 | Every commit, in CI |
 | **Boundary** | The frontend and backend agree on every value that crosses: parameter names *and types*, success payloads, the structured upstream-failure body, the client-error rejection body, and every status code the frontend discriminates on | SYS007 / SRS029 | Every commit, in CI |
 | **Integration** | Routes serve; the TTL cache honours its TTL; parameter validation rejects bad input; config validation fails loudly on bad config | SRS020 / SRS022 / SRS023 / SRS005 | Every commit, in CI |
-| **Render** | Each module renders from its props; the page assembles with a known-good config | SRS040 / SRS041 | Every commit, in CI |
+| **Render** | Each module renders from its props; the page assembles with a known-good config | [module contract](contracts/module-contract.md), part 3 / SRS041 | Every commit, in CI |
 | **Contract** | Upstream APIs still return what the shaping libraries expect | — | **Open — see below** |
 
 The Boundary row enumerates the value classes deliberately: "payload shape and parameter name" reads
@@ -96,19 +96,18 @@ prose alone.
   → SYS007 / SRS029 / SRS030 / SRS031 / SRS032, and
   [above](#the-boundary-tier-is-generated-not-hand-written).
 - **Every module supplies a render test for its component, and — where it fetches an upstream — unit tests for its shaping library**
-  → SRS037. A module missing either is an incomplete module, not a passing one.
+  → [the module contract](contracts/module-contract.md), part 6. A module missing either is an
+  incomplete module, not a passing one.
 - **Every config schema rejects a realistic malformed input, in a test** → SRS005 (a failing config
   is never applied, in whole or in part) and SRS007 (an unknown key is rejected and named). The
   operator is not the author, so validation failing correctly and legibly is a product feature, and
   it is tested as one.
 - **The standalone validator is exercised against known-good and known-bad configs** → SRS008, run
-  in CI under SYS010. The validator failing to reject a malformed config is a product bug, not a
-  testing gap.
-- **Repo-wide checks live at repo level** → SYS010 / SRS069.
-- **Every test and check in the repository is executed by CI** → SYS010, decomposed into SRS067
-  (every `just verify` check runs in CI and the reverse) and SRS068 (runners are invoked in their
-  whole-tree discovery form — `go test ./...`, the frontend runner's default glob — with no
-  hand-maintained file list and no skip or build tag silencing a committed test). A test no runner
+  in CI. The validator failing to reject a malformed config is a product bug, not a testing gap.
+- **Repo-wide checks live at repo level** — see [Where a check belongs](#where-a-check-belongs),
+  below.
+- **Every test and check in the repository is executed by CI** — the whole-tree discovery and
+  verify/CI parity gates are [`CI.md`](CI.md)'s (§ Gate wiring), not the tree's. A test no runner
   reaches is a false signal, so a new test is wired in by its location alone.
 
 ---
@@ -119,12 +118,11 @@ Coverage is **diagnostic, never evidence.** A line can be fully covered while th
 matters — that two things agree, that a control functions where deployed — is untested by
 construction. A high number buys confidence it has not earned.
 
-Report coverage. Read it to find untested areas. Gate on the standing obligations above. What a gate
-may and may not assert is specified by SRS070: no gate fails a merge on a coverage percentage treated
-as a quality threshold, and the coverage gate, where one exists, fails only on uncovered source that
-is neither exempted nor justified — coverage as traceability closure, gate 3 of
-[ADR 0005](decisions/0005-traceability-gating.md), never as a chosen quality bar.
-→ SYS010 / SRS070.
+Report coverage. Read it to find untested areas. Gate on the standing obligations above. No gate
+fails a merge on a coverage percentage treated as a quality threshold; the coverage gate, where one
+exists, fails only on uncovered source that is neither exempted nor justified — coverage as
+traceability closure, gate 3 of [ADR 0005](decisions/0005-traceability-gating.md), never as a chosen
+quality bar.
 
 ---
 
@@ -139,7 +137,7 @@ Put a check at the altitude it is true at:
 - **A module's shaping/rendering** → with that module.
 
 A check placed by convenience — "here, because a test runner already existed" — instead of by altitude
-is a defect in the suite's architecture, not a neutral choice. → SYS010 / SRS069.
+is a defect in the suite's architecture, not a neutral choice.
 
 ---
 
@@ -151,5 +149,5 @@ transport** (the OpenAPI schema / codegen mechanism, [ADR 0008](decisions/0008-b
 when the test proves nothing, so without a scheduled review the suite silently becomes permanent
 architecture nobody revisits. Code gets that review by default; tests must be given it explicitly.
 The module-add trigger's other half is the [module contract](contracts/module-contract.md), which
-SRS071 requires to cross-link back to this review once that procedure is authored.
-→ SYS010 / SRS071.
+carries a resolving link back to this section (see [Adding a module, step
+8](contracts/module-contract.md#adding-a-module)).

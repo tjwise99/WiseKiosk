@@ -7,7 +7,8 @@ behind one-way glass. The layout is fixed (SYS002, SRS041) and there is nothing 
 it renders, it refreshes, and it runs unattended between an operator's deliberate acts (SYS004).
 Shipped as one container image; each deployment is
 independent, customised through configuration, never through a fork (SYS005). A sixth module is
-added by a documented six-part contract (SYS009).
+added by the documented six-part contract in
+[`docs/contracts/module-contract.md`](docs/contracts/module-contract.md).
 
 **What WiseKiosk does not own.** The kiosk host lies outside the system: its operating system, its
 browser, and whatever starts that browser on boot. WiseKiosk delivers a container image and the
@@ -37,8 +38,7 @@ Nothing is inherited from any prior mirror framework, and there is no compatibil
 numbered item in [`docs/requirements/`](docs/requirements/README.md) — system needs (`SYS`)
 decomposed into testable "shall" statements (`SRS`), each traced to a verification item (`TST`), with
 CI failing on a broken chain. If a statement is normative, it has an ID. The documents below mostly
-explain, orient, and cite rather than oblige — the exception is where a requirement delegates to one,
-as SRS019 does to `docs/TESTING.md` for what the Contract test tier must prove.
+explain, orient, and cite rather than oblige.
 
 - [`docs/README.md`](docs/README.md) — the documentation index: which document guarantees which kind
   of fact, and what each one excludes. Read this before adding to any document.
@@ -53,5 +53,5 @@ as SRS019 does to `docs/TESTING.md` for what the Contract test tier must prove.
   tests exist.
 - [`docs/decisions/`](docs/decisions/README.md) — the decisions that carried a rejected alternative.
 - [`docs/contracts/module-contract.md`](docs/contracts/module-contract.md) — the six-part contract
-  for adding a display module (SYS009, SRS033–SRS037).
+  for adding a display module.
 - [`CONTRIBUTING.md`](CONTRIBUTING.md) — running the checks and getting a change merged.

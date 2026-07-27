@@ -52,15 +52,15 @@ and #7's acceptance — schema file present, both generators wired, drift gate g
 - **TypeSpec → OpenAPI** — a more ergonomic authoring DSL, but it adds a Node compile hop and a
   second generation stage in the drift gate, and makes the OpenAPI itself a generated artifact. An
   authoring abstraction whose only consumer is ~5 routes — generality ahead of a second use
-  (SYS041 / SRS086).
+  ([`CONTRIBUTING.md`](../../CONTRIBUTING.md)'s review checklist, generality).
 - **JSON Schema only** (json-schema-to-typescript / quicktype) — models payload bodies but not
   operations, parameters, or status codes, so the request-parameter and rejection-status contract
   would live in a second definition: the exact silent-divergence defect the single-schema rule
   kills.
 - **protobuf / gRPC** — a transport change disguised as a codegen choice. Browsers cannot speak gRPC
   without a gRPC-web proxy, and it replaces the REST-over-JSON proxy the design commits to — a
-  transport chosen against the access pattern, which polls and needs no live channel
-  (SRS043 / SRS039).
+  transport chosen against the access pattern, which polls and needs no live channel (the pull-based
+  shape [the module contract](../contracts/module-contract.md) is built against).
 - **Smithy** — can emit OpenAPI, but carries a JVM toolchain and trait/projection machinery far
   beyond a five-route proxy.
 - **`ogen` (Go)** — best-in-class 3.1 with generated request/response validation; kept as the

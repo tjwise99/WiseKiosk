@@ -51,7 +51,8 @@ owner challenged it; it fell; the allocation below is what remains when it does.
   shell.
 - **Both sides validate.** Two engines over one schema drift, and the divergence surfaces as a
   validator that accepts what the page rejects — the defect class the single-definition rule
-  exists to kill — a second implementation built without a second need (SYS041 / SRS086).
+  exists to kill — a second implementation built without a second need
+  ([`CONTRIBUTING.md`](../../CONTRIBUTING.md)'s review checklist, generality).
 - **Entrypoint check** (frontend-owned plus the same CLI run at container start). Catches a bad
   deploy while the operator is still at the terminal, but ships Node in the image and reintroduces
   hard-exit for the unattended case.
