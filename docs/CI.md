@@ -10,13 +10,11 @@ Everything below is a check hanging from it, named here by the `TST` item in
 or retiring a gate is a check edit and an edit here, not a specification change
 ([ADR 0011](decisions/0011-requirement-or-convention.md)).
 
-## The security gates
+The three security gates are distinguished by what they can see: a source-level dependency scan
+never inspects the operating-system packages in the base layer, and an image scan never sees which of
+the project's own functions is unsafe.
 
-Three, distinguished by what they can see. A source-level dependency scan never inspects the
-operating-system packages in the base layer; an image scan never sees which of the project's own
-functions is unsafe.
-
-### First-party source — `TST058`, `TST059`
+## First-party source — `TST058`, `TST059`
 
 Static scanning of the project's own Go and Svelte/TypeScript source on every pull request, failing on
 **any finding at any severity**. Findings are reported to the repository's code-scanning dashboard and
@@ -28,7 +26,7 @@ writes.
 
 This mechanises the security review a solo project has no second human to perform.
 
-### Resolved dependencies — `TST062`, `TST063`
+## Resolved dependencies — `TST062`, `TST063`
 
 Failing a pull request when any resolved Go-module or npm dependency carries a known vulnerability, at
 any severity, unless the finding has a current register entry.
@@ -39,7 +37,7 @@ that is present but never called need not fail. This keeps the gate actionable r
 Every advisory the scan resolves is reported in the job's output regardless of severity, reachability,
 or exception status. The gate decides the merge; the output stays complete.
 
-### The built image — `TST065`
+## The built image — `TST065`
 
 Scanning the built container image, failing on any finding at any severity unless the finding has a
 current register entry. This is what covers operating-system and base-layer packages, which the
