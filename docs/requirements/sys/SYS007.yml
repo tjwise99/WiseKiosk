@@ -18,9 +18,7 @@ reviewed: gygNneD3A0xV6q5KFtBovv0bgMlX3e9zgdO0nGPLfYI=
 status: accepted
 text: |
   Every shape shared between WiseKiosk's own components shall have exactly one machine-readable
-  definition, generated into every implementation that must agree on it, and shall carry no secret. This
-  shall hold by construction — no code path shall carry a secret toward a client — never by a stripping
-  or redaction step applied before delivery.
+  definition, generated into every implementation that must agree on it.
 verification-justification: |
   Generation and agreement are decided by the drift gate: a committed artifact differing from a fresh
   regeneration fails. What no check settles is whether the definition is the right shape — only that

@@ -17,10 +17,9 @@ ref: ''
 reviewed: r0OHFjma5xOn8ZgSOGL1oBns-m0Q-TKD9LQHrUnwXSw=
 status: accepted
 text: |
-  Everything that distinguishes one deployment from another shall come from outside the image: its
-  configuration, against a format the system declares and honours, and its secrets, from the deployment
-  environment and nowhere else. The delivery mechanism shall permit replacing how a secret is
-  provisioned with no application code change.
+  Everything that distinguishes one deployment from another shall come from outside the image:
+  its configuration, against a format the system declares and honours, and its secrets, which
+  shall come from the deployment environment and appear nowhere else.
 verification-justification: |
   Schema singularity, key behaviour and secret provenance are each asserted mechanically. The
   configuration key allowlist decides key-set equality, not secret-ness: a secret-bearing key that is
