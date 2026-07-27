@@ -16,6 +16,6 @@ ref: ''
 reviewed: 5y2suwnX5RK1N6-EoAAyWQGxcOgHB6qPW_GItdqvXCo=
 status: accepted
 text: |
-  A configuration error shall be reported where it applies — naming what is wrong and where — and
-  shall never be silently worked around.
+  A configuration error that can be isolated to a single module shall be reported at that module's
+  region, naming what is wrong and what to change, and shall never be silently worked around.
 verification-method: test

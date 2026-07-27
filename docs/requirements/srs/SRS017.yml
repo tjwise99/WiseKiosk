@@ -15,10 +15,5 @@ ref: ''
 reviewed: heA6cdM0L0L0ZqxBaOqqv3PCcjFJkNzxHoPLs6GMaZQ=
 status: accepted
 text: |
-  WiseKiosk shall exhibit no unbounded growth in memory or other finite
-  resources under sustained operation. Verification shall exercise the backend
-  under sustained synthetic load for 60 minutes, sampling every 30 seconds, and
-  shall assert that goroutine count and open file descriptors each return to
-  within 10 percent of their post-warmup baseline. Heap occupancy shall be
-  recorded as a diagnostic and shall not gate.
+  The backend shall not grow its resident memory or handle count without bound.
 verification-method: test

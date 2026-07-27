@@ -17,5 +17,6 @@ ref: ''
 reviewed: kAdoQ9_fuGu5pKkxsEXYkZDlrUYoAJTfOu6go15bhTU=
 status: accepted
 text: |
-  The display page shall be unable to reach any network origin other than the backend's.
+  The display page shall be unable to reach any network origin other than the backend's, or any
+  device feature the display does not use.
 verification-method: test

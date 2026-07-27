@@ -15,10 +15,6 @@ ref: ''
 reviewed: hvDaUE_ZD_VmrEIGg7Vf6khDp5QP8ND75M9ihb-Hy6U=
 status: accepted
 text: |
-  Following only documentation inside the repository, a fresh clone in a
-  clean environment shall be able to build, verify, and deploy WiseKiosk.
-verification-justification: |
-  A CI job clones the repository clean, builds, runs the verification target and brings the stack up
-  using only in-repo documentation. It does not decide that a non-technical person succeeds — a machine
-  following documented steps is not evidence about a reader.
+  A deployment shall reach a working state on a clean host from the published artifact and its
+  documented procedure alone.
 verification-method: test

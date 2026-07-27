@@ -1,0 +1,18 @@
+active: false
+derived: false
+header: |
+  Pending: backend-unreachable display state
+level: 63
+links:
+- SRS029: null
+normative: true
+rationale: ''
+ref: ''
+status: proposed
+text: |
+  Pending: check that induces a backend outage with the page already served, and asserts the display
+  renders one page-wide unreachable state rather than a per-module unavailable state in each region;
+  and that the state carries a remediation field, non-empty and not equal to the diagnosis it reports.
+  Lands with the liveness endpoint (#72).
+verification-justification: ''
+verification-method: test

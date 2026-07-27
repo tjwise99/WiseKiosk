@@ -18,11 +18,9 @@ ref: ''
 reviewed: jGfomvjnVhqnkF3dCM00Js-XAYAkZP276TtzJzBhf1A=
 status: accepted
 text: |
-  When no valid configuration has been applied — the configuration file
-  absent, unfetchable, unparseable, or failing schema validation — the display
-  page shall render a plain-language error state naming which failure
-  occurred. For schema-validation failures it shall render the validation
-  report in operator language: for each error, what is wrong, where, and what
-  to change. The page shell shall load and render this state without requiring
-  a valid configuration.
+  When no configuration can be applied - the file absent, unfetchable,
+  unparseable, or failing validation in a way that cannot be isolated to a
+  single module - the display shall render a plain-language error state naming
+  which failure occurred. The page shell shall load and render this state
+  without requiring a valid configuration.
 verification-method: test
