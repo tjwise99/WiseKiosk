@@ -4,7 +4,7 @@ header: |
   Pending: every external source has a proxy route
 level: 1.21
 links:
-- SRS019: null
+- SRS018: null
 normative: true
 rationale: ''
 ref: ''

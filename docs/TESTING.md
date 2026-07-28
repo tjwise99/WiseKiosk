@@ -100,8 +100,13 @@ checked against, rather than prose alone.
   → SYS006 / SRS023 / SRS024, and
   [above](#the-boundary-tier-is-generated-not-hand-written).
 - **Every module supplies a render test for its component, and — where it fetches an upstream — unit tests for its shaping library**
-  → [the module contract](contracts/module-contract.md), part 6. A module missing either is an
-  incomplete module, not a passing one.
+  Every module has a render test beside its component. A module registered against an external source
+  additionally has a unit test beside its shaping library; a module with no registration entry is a
+  local module and is not expected to have one. A module missing either is an incomplete module, not
+  a passing one. Correct location is sufficient proof CI reaches them, because
+  [`CI.md § Gate wiring`](CI.md#gate-wiring) fails any committed test file excluded by skip, build
+  tag, glob gap or wrong directory. The module contract lists tests as part 6 of what a module
+  supplies; what they must cover is stated here.
 - **Every config schema rejects a realistic malformed input, in a test** → SRS002 (a config error
   isolatable to one module is reported there and never silently worked around) and SRS008 (the
   schema's rules are enforced by one implementation, so an unknown key is rejected and named). The

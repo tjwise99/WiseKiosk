@@ -46,8 +46,8 @@ Parts 1, 2 and 5 apply to upstream-backed modules only. Parts 3, 4 and 6 apply t
    composed into the one boundary schema. This is what makes the module's generated payload type
    exist; it is the same composition mechanism as part 4, applied to the other schema.
 6. **Tests.** Unit tests for the shaping library and a render test for the component, both wired into
-   CI. Their tier placement and the standing obligations they discharge are in
-   [`TESTING.md`](../TESTING.md).
+   CI. What they must cover, where they sit, and the standing obligation they discharge are
+   [`TESTING.md`](../TESTING.md)'s — a per-module test obligation is stated there, not here.
 
 ## Dependency direction
 

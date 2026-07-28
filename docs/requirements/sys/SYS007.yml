@@ -13,13 +13,15 @@ rationale: |
   than it needs bounds what a compromise reaches. This is a recorded decision, not an oversight: the
   absence of authentication must not be "fixed" by a later reader who mistakes it for one.
 ref: ''
-reviewed: 44Qw1BupFMvl480RGlShXn-jdzfHM3-Jfn9MpcUJYks=
+reviewed: null
 status: accepted
 text: |
   The system shall neither grant privilege nor require it.
 verification-justification: |
   Absence is asserted directly — no credential material on the wire, no identity-based rejection, no
-  authentication middleware on the request path, and a container whose user is not root. What no check
-  settles is whether the network boundary is in fact trustworthy; that is a property of the household's
-  network, outside the system.
+  authentication middleware on the request path, a container whose user is not root, a page served
+  with the device capabilities it does not use denied, and served responses that declare their type
+  so that no content is inferred into script it was never granted. What no check settles is whether
+  the network boundary is in fact trustworthy; that is a property of the household's network, outside
+  the system.
 verification-method: test

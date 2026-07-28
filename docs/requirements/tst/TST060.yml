@@ -1,7 +1,7 @@
 active: false
 derived: false
 header: |
-  Pending: served responses are not sniffable
+  Pending: served responses declare a type and forbid inference
 level: 1.56
 links:
 - SRS031: null
@@ -11,9 +11,9 @@ ref: ''
 reviewed: null
 status: proposed
 text: |
-  Pending: integration test asserting the frontend-serving response and every proxy response carry
-  X-Content-Type-Options: nosniff, and that a proxied upstream response whose declared media type is
-  wrong is not executed as script by the browser. Fails if the header is absent or weakened on any
-  served route. Lands with the backend that serves the frontend; activated with a references entry to
-  the integration test then.
+  Pending: integration test asserting the frontend-serving response and every proxy response carry a
+  Content-Type header with a concrete media type, and carry X-Content-Type-Options: nosniff. Fails if
+  either is absent on any served route, if a Content-Type is empty or generic enough to leave the
+  type unstated, or if the nosniff value is weakened. Lands with the backend that serves the
+  frontend; activated with a references entry to the integration test then.
 verification-method: test

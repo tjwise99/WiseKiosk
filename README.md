@@ -6,7 +6,7 @@ modules — `clock`, `compliments`, `OpenMeteo` weather, `AviationWeather` (Chec
 behind one-way glass. The layout is fixed (SYS002, SRS006) and there is nothing to interact with:
 it renders and it refreshes.
 Shipped as one container image; each deployment is
-independent, customised through configuration, never through a fork (SYS005). A sixth module is
+independent, customised through configuration, never through a fork (SYS003). A sixth module is
 added by the documented six-part contract in
 [`docs/contracts/module-contract.md`](docs/contracts/module-contract.md).
 
