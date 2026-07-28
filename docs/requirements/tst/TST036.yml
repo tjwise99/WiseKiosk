@@ -3,7 +3,8 @@ derived: false
 header: |
   Pending: secret rotation-without-restart test
 level: 1.25
-links: []
+links:
+- SRS004: null
 normative: true
 rationale: ''
 ref: ''

@@ -3,7 +3,8 @@ derived: false
 header: |
   Pending: secret-resolution unit tests
 level: 1.15
-links: []
+links:
+- SRS004: null
 normative: true
 rationale: ''
 ref: ''
