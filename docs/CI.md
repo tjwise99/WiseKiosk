@@ -25,6 +25,9 @@ Not everything CI does is a gate. These produce material a person acts on.
 - **Complete scan output.** The vulnerability gates report every advisory they resolve — at any
   severity, regardless of reachability or exception status. The gate decides the merge; the output
   stays complete, so a suppressed finding is still visible.
+- **Release provenance material.** A published release carries a signature, an SBOM and a
+  build-provenance attestation alongside the image. CI produces them; whoever pulls the image uses
+  them to establish what it is and what went into it. What is asserted about them is below.
 
 ## First-party source scanning
 
@@ -97,6 +100,25 @@ finding has a current register entry.
 
 This is what covers operating-system and base-layer packages. The source-level dependency gate never
 inspects them.
+
+## Publishing and provenance
+
+What a release publishes and what CI asserts about it. Verification runs against the published digest
+in a separate job that pulls from the registry, reads only the registry and the public transparency
+log, and holds no credential. Unbuilt; owned by #67, with the asset set defined by #71.
+
+- **The release asset set is exactly** the image reference, the SBOM, the signature, the
+  build-provenance attestation, and the deployment recipe. An undeclared asset fails.
+- **Signature.** Keyless `cosign` verification against the published digest, with the expected
+  certificate identity and OIDC issuer, exits zero; against a deliberately wrong identity it exits
+  non-zero.
+- **Provenance.** The build-provenance attestation validates for the published digest and binds it to
+  the workflow that built it; a mismatched digest exits non-zero.
+- **SBOM.** The SBOM for the published digest is retrievable and non-empty, validates against its SPDX
+  or CycloneDX schema, and enumerates the Go main module and the base distribution. Regenerating from
+  the same digest yields a matching package set. A release missing the asset fails.
+- **Base images are pinned** to a `@sha256:` digest rather than a floating tag, for every base and
+  stage in the Dockerfile.
 
 ## The exception register
 

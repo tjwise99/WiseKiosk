@@ -29,7 +29,7 @@ homes, decided by whether a machine can settle it.
 | | Home |
 |---|---|
 | An obligation on the running software | The requirements tree |
-| A repository convention a machine decides | A **check**, described in [`CI.md`](../CI.md) and invoked by the workflow — outside the tree |
+| A repository convention a machine decides, or material CI itself produces | [`CI.md`](../CI.md) — a **check** the workflow invokes, or an output it publishes; outside the tree either way |
 | An obligation on an author that leaves no artifact | The **review checklist** ([`CONTRIBUTING.md`](../../CONTRIBUTING.md)) |
 
 What follows from the table is the operative part.
@@ -124,9 +124,11 @@ each check. The alternative — one requirement obliging mechanical checks to ru
 convention beneath it — would have been a hat over its own children, and a single point whose deletion
 took all of them at once.
 
-**The published-artifact boundary is left open.** Image digest pinning, signature, provenance, SBOM
-and restart policy are not running software, but they are the delivered product. This rule does not
-settle which side they fall on.
+**What CI produces is described where CI is described.** A release's signature, SBOM and
+build-provenance attestation are material the pipeline produces, not obligations on the software, so
+they sit in `CI.md` alongside the gates. The image properties the product does owe — no configuration
+baked in, no secret material, a non-root user — stay requirements: they constrain the artifact a
+deployment runs, not the pipeline that built it.
 
 **The checklist becomes load-bearing, and nothing gates it.** It carries obligations that were
 requirements. Its input — the documentation taxonomy table — is gated, deliberately, so a reviewer
