@@ -8,11 +8,12 @@ links:
 normative: true
 rationale: ''
 ref: ''
-reviewed: 07bFxhIClSdNAtXXcZUrWengX9lFcsaegviuEiUqdJw=
+reviewed: null
 status: proposed
 text: |
-  Pending: test asserting a request whose parameters do not match the source's
-  known-good pattern (for example a malformed ICAO code or an unknown park ID) is
-  rejected with no upstream call. Lands with the backend skeleton (#9); activated
+  Pending: test asserting, for every registered source, that a request whose
+  parameters do not match the pattern that source declares is rejected with no
+  upstream call — driven from the registered set so a source added later cannot
+  escape the sweep. Lands with the backend skeleton (#9); activated
   and given a references entry then.
 verification-method: test

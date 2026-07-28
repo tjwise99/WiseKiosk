@@ -11,9 +11,9 @@ rationale: |
   generated type closely enough to compile and render, and then drifts. Structural typing lets such
   a twin compile cleanly, which is why the obligation is stated over declaration origin rather than
   over shape - the compiler reports origin exactly even where it permits assignability. Scoped to
-  modules that have a boundary payload. A local module contributes no boundary fragment (SRS023) and
-  so has no generated payload type to consume; requiring one of every component would oblige a type
-  that cannot exist.
+  modules that have a boundary payload. A local module puts no value on the boundary and so has no
+  generated payload type to consume; requiring one of every component would oblige a type that
+  cannot exist.
 ref: ''
 reviewed: yTcLofxjx4gpGEZz28oqSM-e2BOHVgEOxprzpo01Yeg=
 status: accepted

@@ -1,18 +1,24 @@
 active: true
 derived: false
 header: |
-  TTL response cache keyed on source and query string
+  Upstream request rate is bounded, and the bound is not operator-tunable
 level: 1.22
 links:
 - SYS005: null
 normative: true
 rationale: |
-  A cache hit is neither counted against the limit nor rejected by it. A sustained outage must
-  not cause an upstream request on every incoming request.
+  The bound exists to keep WiseKiosk a well-behaved consumer of somebody else's API no matter how
+  many displays point at it. It is deliberately outside the configuration surface: a tunable limit
+  is a way for a deployment to become the thing the limit was protecting against, which SYS003's
+  parameterisation is not meant to offer. Where the numbers live and how the bound is achieved -
+  a TTL response cache keyed on the request, a token bucket, or both - is TST019's, so tuning one
+  does not touch the specification. Two consequences worth stating: a cache hit is neither counted
+  against the limit nor rejected by it, and a sustained upstream outage must not cause an upstream
+  request on every incoming request.
 ref: ''
-reviewed: la1jJf3I91AqzykaiUbEcUPnWyQY1Ug317A2JHXprFo=
+reviewed: null
 status: accepted
 text: |
-  The backend's rate of upstream requests to a source shall be bounded by values fixed in code,
-  regardless of how many clients it serves or how often they ask.
+  The backend's rate of upstream requests to a source shall be bounded regardless of how many
+  clients it serves or how often they ask, and the bound shall not be raisable by configuration.
 verification-method: test

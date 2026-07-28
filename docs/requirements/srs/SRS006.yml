@@ -15,20 +15,18 @@ rationale: |
   desktop window sizes the secondary use case must render sensibly at. Phone
   widths are deliberately not a requirement (SYS002; owner decision 2026-07-22) —
   if wanted later, support arrives as its own reviewed system need, not a clause
-  here. "No device detection or per-client layout profile" holds the line
-  that this costs relative units and a reflowing layout, not a
-  responsive-design programme. Verified by viewport-driven render tests
+  here. What is owed is a reflowing layout, not a responsive-design programme,
+  and the viewport figures are TST006's so tuning one does not touch the
+  specification. Verified by viewport-driven render tests
   (Playwright-class) asserting the structural properties at each size; the
   residual aesthetic judgement stays human.
 ref: ''
-reviewed: JT1qc2QUHHYURlHFvUcYwAuAeEs5tjMlMXsSw-fjhos=
+reviewed: null
 status: accepted
 text: |
   The display page shall assemble the modules named in the configuration, each
-  into its configured region of a single full-screen layout, using relative units.
-  At the kiosk viewport (1920×1080, 16:9 landscape) the assembled layout shall
-  exhibit no overlapping regions, no clipped content, and no scrollbars. At the
-  desktop viewports 1280×800 and 1440×900 the layout shall reflow so that regions
-  do not overlap and content is not clipped, and the page shall not scroll
-  horizontally. No device detection or per-client layout profile shall be used.
+  into its configured region of a single full-screen layout. The assembled layout
+  shall exhibit no overlapping regions and no clipped content at the kiosk
+  viewport, and shall reflow without overlap, clipping, or horizontal scrolling at
+  narrower ones.
 verification-method: test

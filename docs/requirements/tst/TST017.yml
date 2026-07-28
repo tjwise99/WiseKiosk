@@ -8,11 +8,12 @@ links:
 normative: true
 rationale: ''
 ref: ''
-reviewed: FHxvVCq_DWdWjKWx95d68IBF5DvP2Mk1z_ywM0mtDRo=
+reviewed: null
 status: proposed
 text: |
-  Pending: backend integration test asserting GET /api/<source> returns the
-  boundary-contract-shaped payload for a supported source, and that the payload
+  Pending: backend integration test driving every endpoint the boundary contract
+  declares for each supported source, asserting each returns its
+  contract-shaped payload and that every source is reachable; and that the payload
   for a request is determined solely by that request — no per-client or session
   state — with cache-hit/miss behaviour (whether an upstream call occurs)
   covered separately by TST019. Lands with the backend skeleton (#9); activated

@@ -12,12 +12,11 @@ rationale: |
   the value classes keeps them from being the uncovered value the tier warns
   about. The schema's repository location is allocated by #5 and not fixed here.
 ref: ''
-reviewed: hqOb_GBcTMNLQLr2s4YZb2Ctw-U5R8Ah0Nwvtp2SkhY=
+reviewed: null
 status: accepted
 text: |
   The boundary contract shall be defined by exactly one schema artifact, owned by neither the
   backend nor the frontend package, from which both sides are generated. It shall define every
-  value crossing the boundary. Module-specific payloads shall reach it as module-owned fragments
-  composed into it; framework-wide values shall be defined in the schema itself. No boundary
-  value shall be defined in more than one place.
+  value crossing the boundary, including those a module contributes. No boundary value shall be
+  defined in more than one place.
 verification-method: test

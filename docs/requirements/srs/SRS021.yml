@@ -10,13 +10,15 @@ rationale: |
   Validating against known-good patterns keeps malformed or unrecognized
   requests from reaching upstream and bounds the proxy so it cannot be driven to
   forward arbitrary requests (SYS005). The client-facing form of
-  a rejection is specified by SRS022.
+  a rejection is specified by SRS022. What a given source's pattern is — a code
+  format, an enumerated identifier set — is that module's own obligation under
+  ADR 0012, not this one's; naming examples here would put two modules'
+  requirements in a framework item.
 ref: ''
-reviewed: awmf7f4ZhwdHxftl-IEkRuL_b4V34RCYrJws9ufMyJo=
+reviewed: null
 status: accepted
 text: |
-  The backend shall validate each request's parameters against known-good
-  patterns for the requested source — for example ICAO code format for aviation
-  weather and a known park-ID map for wait times — and shall reject a request
-  whose parameters do not conform without issuing any upstream request.
+  The backend shall validate each request's parameters against the known-good
+  pattern its source declares, and shall reject a request whose parameters do not
+  conform without issuing any upstream request.
 verification-method: test
