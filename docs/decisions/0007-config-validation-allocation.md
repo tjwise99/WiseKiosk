@@ -29,8 +29,8 @@ owner challenged it; it fell; the allocation below is what remains when it does.
 - **One TypeScript validation engine, two build targets.** In the page, it runs at load and gates
   rendering: an invalid configuration is never applied, and the page shell — which requires no
   valid configuration to load — renders the full validation report in operator language instead.
-  The same source is packaged as the standalone desk CLI (SYS004), so page-load validation and the
-  desk validator cannot disagree.
+  The same source is packaged as the standalone desk CLI ([`../../tools/README.md`](../../tools/README.md)),
+  so page-load validation and the desk validator cannot disagree.
 - **The backend is config-blind.** No config file, no parse, no endpoint, no code path that knows
   the configuration exists. The healthcheck is process liveness only; config validity is signalled
   by the display itself and caught pre-deploy by the desk validator.

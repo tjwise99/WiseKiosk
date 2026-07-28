@@ -4,7 +4,7 @@ A config-driven smart-mirror display. A full-screen browser page renders a fixed
 modules — `clock`, `compliments`, `OpenMeteo` weather, `AviationWeather` (CheckWX METAR/TAF), and
 `DisneyWaitTimes` (themeparks.wiki) — from a handful of public APIs, running unattended on a display
 behind one-way glass. The layout is fixed (SYS002, SRS006) and there is nothing to interact with:
-it renders, it refreshes, and it runs unattended between an operator's deliberate acts (SYS004).
+it renders and it refreshes.
 Shipped as one container image; each deployment is
 independent, customised through configuration, never through a fork (SYS005). A sixth module is
 added by the documented six-part contract in
@@ -18,9 +18,8 @@ in the tree reaches it.
 **The operator is frequently not the author.** Deployments run at the author's house and at friends'
 and family's houses — separate networks, separate configs, separate owners. This constraint outranks
 every other requirement here: it is why a bad configuration must fail loudly and legibly rather than
-as a blank screen (SYS001), why a configuration must be validatable before deployment rather than
-only at boot (SYS004), and why an upgrade must never ask the operator to read a diff or edit code
-(SYS004).
+as a blank screen (SYS001), and why a configuration must be validatable before deployment rather than
+only at boot ([`tools/README.md`](tools/README.md)).
 
 Nothing is inherited from any prior mirror framework, and there is no compatibility layer.
 

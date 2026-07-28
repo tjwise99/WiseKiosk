@@ -102,8 +102,9 @@ prose alone.
   is never applied, in whole or in part) and SRS007 (an unknown key is rejected and named). The
   operator is not the author, so validation failing correctly and legibly is a product feature, and
   it is tested as one.
-- **The standalone validator is exercised against known-good and known-bad configs** → SRS015, run
-  in CI. The validator failing to reject a malformed config is a product bug, not a testing gap.
+- **The standalone validator is exercised against known-good and known-bad configs** →
+  [`../tools/README.md`](../tools/README.md), run in CI. The validator failing to reject a malformed
+  config is a tooling bug, not a testing gap.
 - **Repo-wide checks live at repo level** — see [Where a check belongs](#where-a-check-belongs),
   below.
 - **Every test and check in the repository is executed by CI** — the whole-tree discovery and

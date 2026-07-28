@@ -5,7 +5,6 @@ header: |
 level: 1.13
 links:
 - SYS001: TQyfJejH81RI-POadHI3gN0eM_DDB8AFAnMwcKjCth4=
-- SYS004: FKi-jJSUDykMZmuZ6ynaFM__dVCb2Vz9rb-qgjEu9io=
 normative: true
 rationale: |
   ADR 0007: the page shell runs validation itself and owns the presentation of

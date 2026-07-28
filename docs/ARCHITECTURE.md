@@ -101,8 +101,8 @@ documented here once it is built (#7, after the repo layout in #5)._
 _To be documented as it is built._ The backend is config-blind, per
 [ADR 0007](decisions/0007-config-validation-allocation.md), which also states byte-for-byte delivery
 to the page; the configuration is a static file bind-mounted into the served tree (SRS046), validated
-by the frontend at apply time (SRS002) and by the standalone desk validator (SRS015) through one
-implementation (SRS008). A secret reaches the backend only as the file named by `<NAME>_FILE` — never
+by the frontend at apply time (SRS002) and by the standalone desk validator
+([`../tools/README.md`](../tools/README.md)) through one implementation (SRS008). A secret reaches the backend only as the file named by `<NAME>_FILE` — never
 through configuration, and never through a bare `<NAME>` environment variable (SRS009).
 
 ## Deployment

@@ -4,13 +4,13 @@ header: |
   Bounded resource use
 level: 1.57
 links:
-- SYS004: FKi-jJSUDykMZmuZ6ynaFM__dVCb2Vz9rb-qgjEu9io=
 - SYS008: null
 normative: true
 rationale: |
-  Decomposes SYS004's unbounded-growth concern into an obligation provable
-  early — from a bounded instrumented run rather than a full-length soak —
-  and continuously, rather than only at a pre-release demonstration.
+  A declared minimum host has no headroom to absorb a leak, so unbounded
+  growth breaks the claim SYS008 makes. Stated so it is provable early —
+  from a bounded instrumented run rather than a full-length soak — and
+  continuously, rather than only at a pre-release demonstration.
 ref: ''
 reviewed: heA6cdM0L0L0ZqxBaOqqv3PCcjFJkNzxHoPLs6GMaZQ=
 status: accepted
