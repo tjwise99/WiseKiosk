@@ -10,6 +10,13 @@ and decisions with a rejected alternative in [`docs/decisions/`](docs/decisions/
 at [`docs/README.md`](docs/README.md) is authoritative on which holds what. This file holds only the
 rules layered on top.
 
+**Not every obligation is a requirement.** A requirement obliges WiseKiosk itself. A convention a
+machine decides about the repository, and material CI produces, belong to
+[`docs/CI.md`](docs/CI.md); what a program an operator runs must do belongs to
+[`tools/README.md`](tools/README.md); an obligation on an author that leaves no artifact belongs to
+[`CONTRIBUTING.md`](CONTRIBUTING.md)'s review checklist. Writing any of those into the tree is the
+mistake [ADR 0011](docs/decisions/0011-requirement-or-convention.md) exists to prevent.
+
 ## Non-negotiables
 
 - **Design before implementation.** Nothing is implemented that is not written down first. If the

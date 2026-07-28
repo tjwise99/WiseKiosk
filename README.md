@@ -53,4 +53,10 @@ explain, orient, and cite rather than oblige.
 - [`docs/decisions/`](docs/decisions/README.md) — the decisions that carried a rejected alternative.
 - [`docs/contracts/module-contract.md`](docs/contracts/module-contract.md) — the six-part contract
   for adding a display module.
+- [`docs/CI.md`](docs/CI.md) — every check on the repository: what CI provides, what blocks a merge,
+  and what each gate is allowed to let through. None of it is a requirement — it constrains the
+  repository, not the running system.
+- [`tools/README.md`](tools/README.md) — what ships alongside WiseKiosk to stand a deployment up:
+  the validator, the generator, bring-up and upgrade. Separate programs an operator runs, so their
+  obligations are here rather than in the tree.
 - [`CONTRIBUTING.md`](CONTRIBUTING.md) — running the checks and getting a change merged.

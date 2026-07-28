@@ -37,9 +37,12 @@ Current gates (they grow as code lands):
 - `just check-branch` — the branch is named `type_number-snake_name`, links an open issue labeled
   with its type, and its default-base PR records the ticket linkage (plain sh + curl + jq, like
   the hooks — no toolchain).
-- `just check-reqs`  — the Doorstop requirements tree validates: refs resolve, no
-  suspect/unreviewed/orphan items; every item carries a `verification-justification`, and no item
-  claims a method its own children do not support.
+- `just check-reqs`  — the Doorstop requirements tree validates: no item carries a review
+  fingerprint nobody wrote, refs resolve, no suspect/unreviewed/orphan items; every item carries a
+  `verification-justification`, and no item claims a method its own children do not support.
+  **If it reports unreviewed items or links, do not clear that by re-running it.** Validating the
+  tree makes Doorstop stamp a fingerprint into anything unstamped, which is why that check runs
+  first and stops it. Read the item against its parent and run `doorstop review <uid>`.
 - `just check-arch`  — the LikeC4 architecture model validates and its generated artifacts are not
   stale.
 - `just check-site`  — the documentation site builds clean with warnings-as-errors.
