@@ -37,10 +37,13 @@ and #7's acceptance — schema file present, both generators wired, drift gate g
   (`git diff --exit-status`); the generators are **version-pinned** so a toolchain bump cannot read
   as schema drift (SRS024; verified by TST038). The gate is repo-level because it spans both
   packages.
-- **The frontend consumes the generated types only — no runtime re-validation of proxied payloads**
-  (SRS032). The version-skew case a runtime validator defends against is foreclosed by single-image
-  co-deploy, and a bundled validator (schema→zod/ajv) would cost weight and per-render CPU on the Pi
-  against a case that does not exist.
+- **The frontend consumes the generated types only — no runtime re-validation of proxied payloads.**
+  The version-skew case a runtime validator defends against is foreclosed by single-image co-deploy,
+  and a bundled validator (schema→zod/ajv) would cost weight and per-render CPU on the Pi against a
+  case that does not exist. **Reopen if the two sides ever become independently deployable** — that
+  is the premise the foreclosure rests on, and nothing else here survives its loss. This was once a
+  requirement; it was deleted as a prohibition against a case that does not exist, and this ADR is
+  its home.
 - **Docsite:** `sphinxcontrib-openapi` renders the schema into the existing Sphinx site at build
   under warnings-as-errors — the same generated-not-authored, single-toolchain pattern as
   doorstop→needs and likec4→mermaid ([ADR 0004](0004-docs-site-sphinx-needs.md)).
@@ -67,7 +70,7 @@ and #7's acceptance — schema file present, both generators wired, drift gate g
   documented fallback if 3.1 plus server-side validation are later wanted, but heavier (its own
   router, a large generated surface) than a thin proxy needs today.
 - **Frontend runtime validation (schema→zod/ajv)** — rejected: bundle weight and per-render cost on
-  a Pi-Zero browser against a version-skew case foreclosed by single-image co-deploy (SRS032).
+  a Pi-Zero browser against a version-skew case foreclosed by single-image co-deploy.
 
 ## Consequences
 
@@ -83,6 +86,6 @@ and #7's acceptance — schema file present, both generators wired, drift gate g
   consumer).
 - **ARCHITECTURE.md's "boundary contract" section** (its "open question 2") is answered by this ADR;
   the fuller prose is written when the mechanism is built under #7/#5.
-- **Requirement text stays mechanism-agnostic** (SYS006, SRS023–032): this ADR is provenance, not
+- **Requirement text stays mechanism-agnostic** (SYS006, SRS023–SRS024): this ADR is provenance, not
   cited inside the "shall" statements, so a later mechanism change touches the ADR and the generate
   step, not the tree.
