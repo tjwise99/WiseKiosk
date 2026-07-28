@@ -1,22 +1,26 @@
 active: true
 derived: false
 header: |
-  Every external source is proxied, including CORS-permitting ones
+  The display page reaches no origin but the backend's
 level: 1.21
 links:
 - SYS005: null
 normative: true
 rationale: |
-  Proxying even CORS-permitting sources is what makes the single-origin data
-  plane (SYS005) hold for every source rather than most. This item covers the
-  backend's completeness — a proxy route for every source; the complementary
-  frontend obligation (the page issues no direct cross-origin fetch) and the
-  connect-src content-security policy live in the modules/frontend and security
-  domains (#38, #40).
+  Proxying even CORS-permitting sources is what makes the single-origin data plane hold for every
+  source rather than most. Two mechanisms carry it: the page issues no direct cross-origin fetch, and
+  a connect-src content-security policy enforces that on the wire rather than by convention.
+
+  Reopen premise. A frame denial and a referrer policy were considered here and dropped. Both defend
+  a browsing user against another origin - clickjacking needs an embedder and someone to click, and
+  referrer leakage needs the cross-origin request this item already forbids - and a wall-mounted
+  display has neither. Frame denial also forecloses an operator embedding the display in a dashboard
+  of their own, which nobody decided to give up. Revisit if the page is ever served beyond the LAN,
+  or to a browser a person also browses with. Nothing stops the middleware setting either header; what
+  is dropped is the obligation, not the option.
 ref: ''
-reviewed: kAdoQ9_fuGu5pKkxsEXYkZDlrUYoAJTfOu6go15bhTU=
+reviewed: null
 status: accepted
 text: |
-  The display page shall be unable to reach any network origin other than the backend's, or any
-  device feature the display does not use.
+  The display page shall be unable to reach any network origin other than the backend's.
 verification-method: test

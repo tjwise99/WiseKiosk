@@ -1,0 +1,19 @@
+active: false
+derived: false
+header: |
+  Pending: denied device capabilities
+level: 65
+links:
+- SRS030: null
+normative: true
+rationale: ''
+ref: ''
+reviewed: null
+status: proposed
+text: |
+  Pending: integration test asserting the frontend-serving response carries a Permissions-Policy
+  denying every device feature no configured module needs, and that the page still renders under the
+  served policy. Fails if the header is absent, if a denied feature is omitted from it, or if a
+  feature is granted that no module declared. Lands with the backend that serves the frontend;
+  activated with a references entry to the integration test then.
+verification-method: test

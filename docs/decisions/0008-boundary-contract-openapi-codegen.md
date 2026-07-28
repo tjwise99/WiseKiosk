@@ -35,7 +35,7 @@ and #7's acceptance — schema file present, both generators wired, drift gate g
   body (SRS022), and every response status code the frontend discriminates on (SRS023).
 - **Drift gate:** a repo-level CI check regenerates both sides and fails on any difference
   (`git diff --exit-status`); the generators are **version-pinned** so a toolchain bump cannot read
-  as schema drift (SRS030; verified by TST038). The gate is repo-level because it spans both
+  as schema drift (SRS024; verified by TST038). The gate is repo-level because it spans both
   packages.
 - **The frontend consumes the generated types only — no runtime re-validation of proxied payloads**
   (SRS032). The version-skew case a runtime validator defends against is foreclosed by single-image

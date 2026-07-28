@@ -107,14 +107,17 @@ through configuration, and never through a bare `<NAME>` environment variable (S
 
 ## Deployment
 
-_To be documented as it is built._ Container image, bind-mounted config, `_FILE` secrets, fixed-port
-healthcheck, `unless-stopped`. Normative shape: SRS011–SRS055, SRS017.
+_To be documented as it is built._ Container image, bind-mounted config, `_FILE` secrets. Normative
+shape: SRS011, SRS013, SRS017, SRS025. The health signal and the restart policy are properties of
+what ships rather than of the running system, and are in [`../tools/README.md`](../tools/README.md).
 
 ## Security & hardening
 
-Product-facing obligations are carried by the [requirements tree](requirements/README.md): SYS005
-(hardened, reproducible image; published-artifact supply-chain integrity) and SYS005 (runtime
-browser-security headers), each with SRS children and TST verification items.
+Product-facing obligations are carried by the [requirements tree](requirements/README.md): the image
+properties the product owes (SRS011, SRS013, SRS025) under SYS003 and SYS007, and the served
+response's browser hardening (SRS019, SRS030, SRS031) under SYS005 and SYS007, each with TST
+verification items. Published-artifact supply-chain integrity is not a requirement — it is material
+CI produces, described in [`CI.md`](CI.md).
 Repository-facing gates — first-party and dependency scanning, image scanning, and verify-CI
 parity — are [`CI.md`](CI.md)'s; no requirement states them.
 

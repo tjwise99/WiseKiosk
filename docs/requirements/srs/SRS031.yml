@@ -1,0 +1,28 @@
+active: true
+derived: false
+header: |
+  Served content is interpreted only as the type it declares
+level: 31
+links:
+- SYS005: null
+normative: true
+rationale: |
+  The backend proxies upstream data and serves it from its own origin, so bytes this project did not
+  author reach the browser under this project's origin. If a response arrives with an absent or wrong
+  media type the browser may sniff it, and a sniffed script is executed as though it had been served
+  deliberately. The connect-src policy does not stop this: a script the backend served is 'self'.
+
+  This is the one browser-hardening obligation whose threat survives a kiosk with no browsing user.
+  It needs no hostile page, no embedder and no interaction - only an upstream that mislabels a
+  response, which is not ours to control. That is what distinguishes it from the frame and referrer
+  policies dropped at SRS019, whose reopen premise records why they went.
+ref: ''
+status: proposed
+text: |
+  Content the backend serves shall be interpreted by the browser only as the media type the response
+  declares.
+verification-justification: |
+  Asserted on the wire against the served response. What the check does not settle is whether every
+  proxied response declares the correct type in the first place - this obligation stops a wrong type
+  being promoted to script, not a wrong type being sent.
+verification-method: test

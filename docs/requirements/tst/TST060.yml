@@ -1,18 +1,19 @@
 active: false
 derived: false
 header: |
-  Pending: browser-hardening headers test
+  Pending: served responses are not sniffable
 level: 1.56
-links: []
+links:
+- SRS031: null
 normative: true
 rationale: ''
 ref: ''
-reviewed: 683FaXvkIcZnQiCZb2byU5E-nSDF2OTRHbHDN-TJByw=
+reviewed: null
 status: proposed
 text: |
-  Pending: integration test asserting the frontend-serving response carries X-Content-Type-Options:
-  nosniff, a frame denial via frame-ancestors 'none', Referrer-Policy: no-referrer, and a
-  Permissions-Policy disabling unused features, each present and no weaker than stated. Fails if any
-  required header is absent or weakened. Lands with the backend that serves the frontend; activated
-  with a references entry to the integration test then. Owned by #67.
+  Pending: integration test asserting the frontend-serving response and every proxy response carry
+  X-Content-Type-Options: nosniff, and that a proxied upstream response whose declared media type is
+  wrong is not executed as script by the browser. Fails if the header is absent or weakened on any
+  served route. Lands with the backend that serves the frontend; activated with a references entry to
+  the integration test then.
 verification-method: test

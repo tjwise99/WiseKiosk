@@ -72,7 +72,7 @@ sides generated from it**. The tier's job in CI is to prove the generation is re
 - Generation from the one schema by the codegen mechanism
   ([ADR 0008](decisions/0008-boundary-contract-openapi-codegen.md)), the CI drift gate that fails on
   committed output differing from a fresh regeneration, and version-pinning of the generators so
-  regeneration is deterministic — all specified by **SRS030**.
+  regeneration is deterministic — **SRS023**, with the drift gate verified under **SRS024**.
 - That the generated types are the ones actually *used* on both sides, including the per-module
   error-render path, rather than shadowed by a hand-declared twin — **SRS024**, under **SYS006**.
 - That the frontend adds no second, runtime validator over proxied payloads, so agreement rests on
@@ -93,7 +93,7 @@ governs it, so the obligation and its verification item stay traceable and CI-ch
 prose alone.
 
 - **Every value crossing the frontend/backend boundary is generated from one definition**
-  → SYS006 / SRS023 / SRS030 / SRS024 / SRS032, and
+  → SYS006 / SRS023 / SRS024 / SRS032, and
   [above](#the-boundary-tier-is-generated-not-hand-written).
 - **Every module supplies a render test for its component, and — where it fetches an upstream — unit tests for its shaping library**
   → [the module contract](contracts/module-contract.md), part 6. A module missing either is an
