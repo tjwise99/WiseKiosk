@@ -50,6 +50,20 @@ deploy by following only in-repo documentation, the documentation is sufficient.
 container, and asserts the service serves. It fails if a documented step does not run, or if the
 sequence completes without a serving deployment. No human in the loop.
 
+## Establishing what you pulled
+
+Owned by #71, against the material #67 publishes.
+
+An operator who pulls an image is trusting a stranger's build. The documented procedure therefore
+includes a verification step, run before the image runs: the operator checks the digest against its
+signature and provenance using the material described in
+[`../docs/CI.md`](../docs/CI.md), and the commands to do so ship with the procedure rather than
+having to be reconstructed.
+
+*Asserted by* the bring-up check below, which executes the documented steps in order — a procedure
+whose verification step does not run, or does not fail on a digest that fails verification, fails the
+check. That CI verifies its own published output is a separate assertion, and it is in `CI.md`.
+
 ## Upgrade
 
 Owned by #71, against the images #54 publishes.
