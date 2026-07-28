@@ -75,6 +75,14 @@ it, and a need for a module nobody decided to ship has nothing authorising it.
 **The first needs that state product value.** A module need is the first item in the tree a
 non-technical reader can validate the product against, which is what the need tier is for.
 
+**Until one lands, nothing in the tree says the display shows anything.** The framework needs are
+satisfied by a build that fetches correctly, proxies correctly, fails legibly and renders empty
+regions — `SYS002`'s *"wholly visible"* is a layout property an empty region of the right size
+passes. That is scope rather than omission, and the shape is deliberate: what a module shows differs
+per module, so it is stated per module, while a module's *failure* state looks the same whatever
+module owns it and is therefore a framework universal (`SRS001`). Adding a framework requirement that
+modules display their data would be the generic hat rejected above.
+
 **The extensibility need stays dissolved.** *"A display module shall be addable and removable as a
 self-contained unit, without change to shared framework code"* was dissolved by this pass because its
 children were architecture. Module needs do not revive it: each states its own want rather than a
