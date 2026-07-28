@@ -146,15 +146,23 @@ docs/requirements/.venv/bin/pip install -r docs/requirements/requirements-dev.tx
 Then:
 
 ```sh
-just check-reqs      # doorstop --error-all, then check-method-consistency.py — the strict gate
+just check-reqs      # check-unreviewed.py, doorstop --error-all --no-reformat, check-method-consistency.py
 just verify          # runs check-reqs alongside the other repo gates
 ```
 
 `just check-reqs` runs the **exact** commands CI runs (see
 [`../../.github/workflows/checks.yml`](../../.github/workflows/checks.yml), job `requirements`):
-`docs/requirements/.venv/bin/doorstop --error-all`, then `scripts/check-method-consistency.py`. The
-`--error-all` flag promotes Doorstop's suspect / unreviewed / orphan / unresolved-reference warnings
-to errors, so the process exits non-zero and the gate actually blocks — plain `doorstop` only warns.
+`scripts/check-unreviewed.py`, then `docs/requirements/.venv/bin/doorstop --error-all --no-reformat`,
+then `scripts/check-method-consistency.py`. The `--error-all` flag promotes Doorstop's suspect /
+unreviewed / orphan / unresolved-reference warnings to errors, so the process exits non-zero and the
+gate actually blocks — plain `doorstop` only warns.
+
+**`check-unreviewed.py` runs first because Doorstop writes.** Validating the tree stamps a review
+fingerprint into any item that has none, and into any link carrying no stamp — whether or not a
+person looked, and `--no-reformat` does not prevent it. An item authored in one commit would
+otherwise be "reviewed" by whoever next ran the gate, which is the one thing the fingerprint exists
+to prove. Failing first stops Doorstop before it can stamp. Clear it with `doorstop review <uid>`,
+deliberately, never by re-running the gate.
 `check-verify-ci-parity` asserts the correspondence one command at a time, so a command added to the
 recipe and not to CI fails rather than passing unseen.
 

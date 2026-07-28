@@ -27,7 +27,11 @@ const CHECK_TOKENS = {
   "check-links": ["scripts/check-links.mjs"],
   "check-eol": ["git grep -lIP '\\r$'"],
   "check-branch": ["scripts/check-branch.sh"],
-  "check-reqs": ["doorstop --error-all", "scripts/check-method-consistency.py"],
+  "check-reqs": [
+    "scripts/check-unreviewed.py",
+    "doorstop --error-all --no-reformat",
+    "scripts/check-method-consistency.py",
+  ],
   "check-arch": ["scripts/splice-arch-diagrams.mjs"],
   "check-site": ["docs/site/doorstop_to_needs.py"],
   "check-verify-ci-parity": ["scripts/check-verify-ci-parity.mjs"],

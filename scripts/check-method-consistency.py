@@ -32,6 +32,8 @@ def load():
     method, children, justified = {}, {}, set()
     for silo in ("sys", "srs", "tst"):
         for path in sorted((TREE / silo).glob("*.yml")):
+            if path.stem.startswith("."):
+                continue  # pathlib globs dotfiles: the silo's own .doorstop.yml is not an item
             item = yaml.safe_load(path.read_text()) or {}
             uid = path.stem
             method[uid] = str(item.get("verification-method") or "").strip()

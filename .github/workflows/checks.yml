@@ -58,8 +58,11 @@ jobs:
           python -m venv docs/requirements/.venv
           docs/requirements/.venv/bin/pip install -r docs/requirements/requirements-dev.txt
 
+      - name: No item carries a review fingerprint nobody wrote
+        run: docs/requirements/.venv/bin/python scripts/check-unreviewed.py
+
       - name: Requirements tree validates (refs resolve, no suspect/unreviewed/orphan)
-        run: docs/requirements/.venv/bin/doorstop --error-all
+        run: docs/requirements/.venv/bin/doorstop --error-all --no-reformat
 
       - name: Verification methods are consistent parent to child
         run: docs/requirements/.venv/bin/python scripts/check-method-consistency.py
