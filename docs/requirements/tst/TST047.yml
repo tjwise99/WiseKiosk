@@ -1,20 +1,18 @@
 active: false
 derived: false
 header: |
-  Pending: polling only, on independent module-owned cadences
+  Pending: independent module-owned cadences, not configurable
 level: 1.43
-links: []
+links:
+- SRS020: null
 normative: true
 rationale: ''
 ref: ''
-reviewed: SXshiEok3HtvuhRUNuGpnP8ZzCFtmPYQuzi2xEtuoGM=
+reviewed: null
 status: proposed
 text: |
-  Pending: test asserting WebSocket and EventSource appear nowhere in the shipped bundle and are
-  never constructed during a page render - they are the platform's only push primitives, so their
-  absence is decidable rather than a denylist; rendering the assembled page under fake timers and
-  advancing to one module's cadence to assert exactly one refetch for it and none for another, then
-  the reverse; and asserting the composed configuration schema declares no refresh, cadence, or
-  interval property, which is the strongest clause and a single assertion over one artifact. Lands
-  with the frontend skeleton (#10).
+  Pending: test rendering the assembled page under fake timers and advancing to one module's cadence
+  to assert exactly one refetch for it and none for another, then the reverse; and asserting the
+  composed configuration schema declares no refresh, cadence, or interval property, which is the
+  strongest clause and a single assertion over one artifact. Lands with the frontend skeleton (#10).
 verification-method: test

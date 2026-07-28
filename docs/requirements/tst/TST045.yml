@@ -1,17 +1,18 @@
 active: false
 derived: false
 header: |
-  Pending: component renders from props alone
+  Pending: a module component issues no network request of its own
 level: '1.40'
-links: []
+links:
+- SRS019: null
 normative: true
 rationale: ''
 ref: ''
-reviewed: e2G1oPfBpyn08eSQrfpZYUuSm2KSM4JlPjqt5ieqphU=
+reviewed: null
 status: proposed
 text: |
   Pending: test rendering each module component with only its props supplied and the network globals
-  stubbed - fetch, XMLHttpRequest, WebSocket, EventSource - asserting zero calls to any of them,
-  that the rendered region reflects the supplied props, and that the component's module graph does
-  not reach the configuration source. Lands with the first module (#12).
+  stubbed - fetch, XMLHttpRequest, WebSocket, EventSource - asserting zero calls to any of them. The
+  rendered region is asserted to reflect the supplied props so that a component which renders nothing
+  cannot pass the zero-call assertion vacuously. Lands with the first module (#12).
 verification-method: test

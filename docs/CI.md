@@ -209,6 +209,12 @@ violate any of them, so they are checks here rather than obligations there.
   packages in the emitted module graph a subset of a committed allowlist manifest. The allowlist is
   deliberate: a denylist of named routers and meta-frameworks fails open the first time someone
   hand-rolls a hash router, and any new runtime dependency should fail until it is reviewed (#10).
+- **A module component's module graph does not reach the configuration source.** A component receives
+  what it needs as props; reaching the configuration itself would let it depend on keys nobody
+  declared for it (#12).
+- **No push primitive is shipped.** `WebSocket` and `EventSource` appear nowhere in the shipped
+  bundle and are never constructed during a page render. They are the platform's only push
+  primitives, so their absence is decidable rather than a denylist of transport names (#10).
 
 ## Gate wiring
 
