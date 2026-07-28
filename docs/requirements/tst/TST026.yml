@@ -16,6 +16,6 @@ status: proposed
 text: |
   Pending: check that the boundary schema declares no 401 or 403 response for any path item, and
   that the live route sweep produces neither status for any request. Request rejection remains
-  shape-based under SRS026. Runs once the boundary schema (#37) and the backend skeleton (#9) exist.
+  shape-based under SRS022. Runs once the boundary schema (#37) and the backend skeleton (#9) exist.
 verification-justification: ''
 verification-method: test

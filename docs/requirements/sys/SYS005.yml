@@ -10,8 +10,8 @@ rationale: |
   where a client can see them and every deployment's traffic is attributable to the household running
   it. If a caller can choose what the backend requests, the display becomes an open proxy — someone
   else's traffic against WiseKiosk's key and rate limit. Stating the obligation positively (the set of
-  calls is fixed by configuration) rather than as a prohibition on relaying is what makes SRS023 and
-  SRS026 trace to it; three earlier wordings named the failure and none of them did.
+  calls is fixed by configuration) rather than as a prohibition on relaying is what makes SRS021 and
+  SRS022 trace to it; three earlier wordings named the failure and none of them did.
 ref: ''
 reviewed: KZtswOlxN1xD3PUvRX2djU9sCMFBskYb-6W5Iq6nOdo=
 status: accepted

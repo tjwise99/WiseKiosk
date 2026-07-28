@@ -7,8 +7,9 @@ links:
 - SYS001: null
 normative: true
 rationale: |
-  Created by the SYS004 narrowing: the need gave up the claim that no operator is needed to keep a
-  deployment running, and this is the part of that want which is ours entirely. Without it the
+  Created when the operator-self-sufficiency need was narrowed and then dissolved: it gave up the
+  claim that no operator is needed to keep a deployment running, and this is the part of that want
+  which is ours entirely. Without it the
   operator sees each module reporting its own unavailability and nothing saying the service itself is
   down - five separate failures where there is one. The corrective action is named because a failure
   state that teaches the fix converts a repeating incident into a one-time one; it must be distinct

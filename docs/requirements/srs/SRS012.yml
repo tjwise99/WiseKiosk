@@ -7,8 +7,8 @@ links:
 - SYS003: r0OHFjma5xOn8ZgSOGL1oBns-m0Q-TKD9LQHrUnwXSw=
 normative: true
 rationale: |
-  SYS003's obligation had no child expressing it. SRS011 states that the backend has no
-  configuration concept, which is a property of a component holding no keys - it satisfied the need
+  SYS003's obligation had no child expressing it. The backend has no configuration concept
+  (ADR 0007), which is a property of a component holding no keys - it satisfied the need
   vacuously while the demand that every offered key actually works went unverified, and the gate
   stayed green over the gap. Stated as an observable difference rather than as "renders without
   error", because a dead knob - a key the schema offers and the code ignores - renders the page

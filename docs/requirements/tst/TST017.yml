@@ -15,6 +15,6 @@ text: |
   boundary-contract-shaped payload for a supported source, and that the payload
   for a request is determined solely by that request — no per-client or session
   state — with cache-hit/miss behaviour (whether an upstream call occurs)
-  covered separately by TST022. Lands with the backend skeleton (#9); activated
+  covered separately by TST019. Lands with the backend skeleton (#9); activated
   and given a references entry then.
 verification-method: test

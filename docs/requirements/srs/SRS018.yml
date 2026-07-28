@@ -23,7 +23,7 @@ text: |
   no per-client or session state: it shall not distinguish between clients, and
   the payload it returns for a request shall be determined solely by that
   request, not by who sent it or by earlier requests. The shared response cache
-  (SRS022), keyed on the request itself, is not per-client state — it may
+  (SRS020), keyed on the request itself, is not per-client state — it may
   determine whether a request is served from cache, but not the payload a client
   receives.
 verification-method: test

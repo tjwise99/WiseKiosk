@@ -13,7 +13,7 @@ rationale: |
   redeploy stands between an edit and the display. The freshness guarantee is
   frontend-owned: the page fetches the configuration bypassing HTTP caches
   (cache: 'no-store' or equivalent), because the conventional fix — a no-cache
-  header on the config path — is exactly the config-aware code path SRS011
+  header on the config path — is exactly the config-aware code path ADR 0007
   forbids.
 ref: ''
 reviewed: 4nqGv5rLxOIFkRwsSw9NBtIJXagPBbkDEVHISCnevWw=

@@ -12,7 +12,7 @@ reviewed: iTC6aRvev9vXgAw1L2z8VlWb7SAIJWeIzD8bxT4b5tU=
 status: proposed
 text: |
   Pending: canary test planting a known secret value through <NAME>_FILE
-  delivery, exercising every route including the SRS016 failure paths,
+  delivery, exercising every route including the SRS004 failure paths,
   and asserting the canary value appears in no response body, header, or
   log line. Lands with the backend skeleton (#9); activated and given a
   references entry then.

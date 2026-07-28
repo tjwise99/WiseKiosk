@@ -7,7 +7,7 @@ links:
 - SYS005: null
 normative: true
 rationale: |
-  SRS023 and SRS024 reject invalid and over-limit requests but do not say what
+  SRS021 and SRS020 reject invalid and over-limit requests but do not say what
   the client receives; a module still needs something renderable, and it must be
   able to tell an operator misconfiguration from a source outage. The concrete
   body shape is defined by the boundary contract (#37); this item fixes the

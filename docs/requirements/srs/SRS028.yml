@@ -7,8 +7,8 @@ links:
 - SYS008: null
 normative: true
 rationale: |
-  Decomposes SYS005's reference-hardware clause; demonstrated on reference
-  hardware, sharing evidence with the SRS050 soak.
+  Decomposes SYS008's minimum-host claim on the browser side; demonstrated on
+  reference hardware, sharing evidence with SRS017's bounded-growth observation.
 ref: ''
 reviewed: 0snbAQQRecb3qDfXVMq6dmB_6oHSWxAxlSlXTHhX89E=
 status: accepted

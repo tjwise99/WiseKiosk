@@ -6,7 +6,8 @@ level: 12
 links: []
 normative: true
 rationale: |
-  Created when SYS005 dissolved: its publishing obligations left the tree for docs/CI.md, but two
+  Created when the one-published-image need dissolved: its publishing obligations left the tree for
+  docs/CI.md, but two
   children were obligations on the running system and would have gone with it — the platform the
   backend runs on, and the browser host driving the display. The hosts themselves lie outside the
   system, which README.md states; what is inside is WiseKiosk's obligation to fit them. Framed as

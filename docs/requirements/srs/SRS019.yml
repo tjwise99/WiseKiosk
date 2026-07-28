@@ -8,7 +8,7 @@ links:
 normative: true
 rationale: |
   Proxying even CORS-permitting sources is what makes the single-origin data
-  plane (SYS006) hold for every source rather than most. This item covers the
+  plane (SYS005) hold for every source rather than most. This item covers the
   backend's completeness — a proxy route for every source; the complementary
   frontend obligation (the page issues no direct cross-origin fetch) and the
   connect-src content-security policy live in the modules/frontend and security

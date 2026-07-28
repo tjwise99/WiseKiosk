@@ -7,8 +7,8 @@ links:
 - SRS026: null
 normative: true
 rationale: |
-  The route set is derived from the single static registration list (SRS034) rather than written by
-  hand, so coverage is total by construction and a route added later cannot escape the sweep. A
+  The route set is derived from the single static registration list rather than written by hand, so
+  coverage is total by construction and a route added later cannot escape the sweep. A
   hand-listed sweep would pass while the next route leaked.
 ref: ''
 reviewed: eV1-XSbBOJTLcPTyUy_DpMlu39RTpiPRHcbMjHWoaAg=
