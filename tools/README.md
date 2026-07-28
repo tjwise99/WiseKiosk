@@ -63,6 +63,21 @@ procedure, rather than something they have to know to add.
 The obligation is on what ships, not on the running system. An operator who edits the recipe, or
 deploys without it, has made their own choice, and WiseKiosk has no way to override it.
 
+## The health signal
+
+Owned by #54, with the image build.
+
+The image declares a `HEALTHCHECK` against the constant service port: healthy while the backend is
+serving, unhealthy when it is not, including when the process is alive but wedged.
+
+*Asserted by* an integration test running the image and reading the reported status in both states.
+
+This exists for the checks above, which need a machine-readable *is it serving yet* rather than a
+scraped log line. It is not a monitoring feature and nothing acts on it: Docker and Compose restart a
+container whose process exits, not one reporting unhealthy, so an unhealthy kiosk stays unhealthy
+until somebody intervenes. What tells an operator the kiosk is broken is the kiosk — `SRS029` obliges
+the display to say so, on the screen in the room.
+
 ## Establishing what you pulled
 
 Owned by #71, against the material #67 publishes.
