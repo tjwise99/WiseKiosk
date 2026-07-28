@@ -102,8 +102,9 @@ checked against, rather than prose alone.
 - **Every module supplies a render test for its component, and — where it fetches an upstream — unit tests for its shaping library**
   → [the module contract](contracts/module-contract.md), part 6. A module missing either is an
   incomplete module, not a passing one.
-- **Every config schema rejects a realistic malformed input, in a test** → SRS002 (a failing config
-  is never applied, in whole or in part) and SRS007 (an unknown key is rejected and named). The
+- **Every config schema rejects a realistic malformed input, in a test** → SRS002 (a config error
+  isolatable to one module is reported there and never silently worked around) and SRS008 (the
+  schema's rules are enforced by one implementation, so an unknown key is rejected and named). The
   operator is not the author, so validation failing correctly and legibly is a product feature, and
   it is tested as one.
 - **The standalone validator is exercised against known-good and known-bad configs** →
