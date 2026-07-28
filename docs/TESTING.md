@@ -89,11 +89,12 @@ This tier exists specifically to make that impossible.
 
 ## Standing obligations
 
-Gate on these — they name what must be proven. Not on a coverage number. Every one is carried as an
-identified requirement in the [requirements tree](requirements/README.md), which is the
-specification; each is stated here in the short form a test author needs and cited to the item that
-governs it, so the obligation and its verification item stay traceable and CI-checked rather than
-prose alone.
+Gate on these — they name what must be proven. Not on a coverage number. Each is stated here in the
+short form a test author needs, and cited to whatever governs it: an item in the
+[requirements tree](requirements/README.md) where the obligation is on the running software, and the
+module contract or [`../tools/README.md`](../tools/README.md) where it is not
+([ADR 0011](decisions/0011-requirement-or-convention.md)). What every one has is a home that can be
+checked against, rather than prose alone.
 
 - **Every value crossing the frontend/backend boundary is generated from one definition**
   → SYS006 / SRS023 / SRS024, and
