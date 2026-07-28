@@ -50,6 +50,19 @@ deploy by following only in-repo documentation, the documentation is sufficient.
 container, and asserts the service serves. It fails if a documented step does not run, or if the
 sequence completes without a serving deployment. No human in the loop.
 
+## The deployment recipe
+
+Owned by #54, published with the image as part of the asset set #67 declares.
+
+The committed recipe — a compose file or run manifest — carries restart policy `unless-stopped`, so a
+deployment that comes back after a host reboot is what an operator gets by following the documented
+procedure, rather than something they have to know to add.
+
+*Asserted by* a scripted check over the committed recipe, failing if the policy is absent.
+
+The obligation is on what ships, not on the running system. An operator who edits the recipe, or
+deploys without it, has made their own choice, and WiseKiosk has no way to override it.
+
 ## Establishing what you pulled
 
 Owned by #71, against the material #67 publishes.

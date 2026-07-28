@@ -149,6 +149,9 @@ The documentation set is checked for the failures that make it untrustworthy: a 
 resolve, a citation to something that does not exist, an index that has drifted from what it indexes.
 
 - Every relative Markdown link in every tracked file resolves inside the repository.
+- Every absolute `http` or `https` link in tracked documentation names a host on the committed
+  upstream-documentation allowlist, and every allowlist entry names the tool or service it serves.
+  This extends the link checker above rather than adding a second tool (#68).
 - Every bare-text citation to a requirement ID or ADR number names an item or decision that exists.
 - The `decisions/` directory and its index table agree — every ADR has a row, no gap or duplicate in
   numbering, every row resolves to a real file.
