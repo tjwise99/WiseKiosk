@@ -163,8 +163,15 @@ person looked, and `--no-reformat` does not prevent it. An item authored in one 
 otherwise be "reviewed" by whoever next ran the gate, which is the one thing the fingerprint exists
 to prove. Failing first stops Doorstop before it can stamp. Clear it with `doorstop review <uid>`,
 deliberately, never by re-running the gate.
-`check-verify-ci-parity` asserts the correspondence one command at a time, so a command added to the
-recipe and not to CI fails rather than passing unseen.
+
+Between them the three commands assert that no item carries a review fingerprint nobody wrote; that
+every parent link resolves and no item is orphaned or left suspect; that every active `TST` item's
+`references` resolve to a real file; that every item carries a `verification-justification`; and that
+no item claims a verification method its own children do not support. Each is a property of the
+specification, which is why they are stated here rather than in
+[`../CI.md`](../CI.md) with the repository's checks — that document says they run and block, this one
+says what they mean. `check-verify-ci-parity` asserts the recipe-to-CI correspondence one command at
+a time, so a command added to the recipe and not to CI fails rather than passing unseen.
 
 The browsable, click-through traceability view of this tree (needtables, link graphs, matrices) is
 built by the documentation site silo, [`../site/README.md`](../site/README.md) (ADR 0004); this

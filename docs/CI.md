@@ -189,11 +189,10 @@ already decided, which is what makes it a check and not a want.
   and is deliberately not re-encoded here.
 - The default branch's required status checks equal the gate jobs the workflow defines — a gate job
   absent from the required set fails, and so does a required entry naming no defined job.
-- No requirements item claims a verification method its own children do not support.
-- No requirements item carries a review fingerprint nobody wrote. An item with no fingerprint, or a
-  parent link never reviewed against its parent, fails **before** the tree validator runs — the
-  validator stamps both on sight, so a gate that ran it first would record the review it was
-  supposed to be checking for.
+
+The requirements tree's own integrity checks run here too, but what they assert is a property of the
+specification rather than of the repository, so they are stated where the specification is:
+[`requirements/README.md`](requirements/README.md).
 
 ## What is not gated here
 
