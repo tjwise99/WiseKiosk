@@ -50,6 +50,18 @@ deploy by following only in-repo documentation, the documentation is sufficient.
 container, and asserts the service serves. It fails if a documented step does not run, or if the
 sequence completes without a serving deployment. No human in the loop.
 
+## Upgrade
+
+Owned by #71, against the images #54 publishes.
+
+Moving a deployment from one published digest to the next is a scripted act. The operator supplies
+the same mount arguments they already use; nothing asks them to read a diff, edit code, or rebuild.
+
+*Asserted by* a test that runs published digest A with a mounted configuration and secret directory
+and asserts it is healthy and serving that configuration; stops and removes it; runs digest B with
+byte-identical mount arguments and asserts it is healthy, serving the same configuration, and
+reporting a changed version — with no builder invoked at any point.
+
 ## What is not here
 
 **What the kiosk does.** Rendering, configuration handling at run time, upstream fetching and failure
