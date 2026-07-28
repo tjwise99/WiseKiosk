@@ -209,3 +209,13 @@ merge; only the tree can say the system is wrong.
 **Test architecture.** Which tier a test belongs to and what that tier guarantees is
 [`TESTING.md`](TESTING.md). A tier organises tests; a gate is a condition on merging, and several
 gates run no tests at all.
+
+**This document.** Every other canonical artifact has something that fails when it drifts: a
+requirement's text is hashed and editing it flags its children suspect, and generated diagrams are
+compared against a regeneration. This one has no fingerprint, no check comparing it against the
+workflow or the scripts it names, and no co-change obligation — the requirements carrying that were
+deleted, and a co-change registry was rejected above. So a gate removed from the workflow, with its
+section left standing here, reads as live to every reader and to
+[`../SECURITY.md`](../SECURITY.md), which publishes claims resting on it. The correspondence check
+that would close it is #77, and it is not buildable until enough of the gates described here exist to
+compare against.
