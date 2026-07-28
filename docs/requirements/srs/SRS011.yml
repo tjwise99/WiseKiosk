@@ -10,8 +10,9 @@ rationale: |
   Keeps the one-image model falsifiable: any deployment-specific content baked
   into the image is a defect.
 ref: ''
-reviewed: cE0Z8vbiCAzegrYNitWLgv4i74VnHA-GGIaAxUmTIks=
+reviewed: null
 status: accepted
 text: |
-  The published image shall contain no configuration file.
+  The published image shall carry no deployment-specific content: no configuration file, and no
+  deployment-specific value in its environment.
 verification-method: test
