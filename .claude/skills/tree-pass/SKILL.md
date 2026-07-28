@@ -35,6 +35,60 @@ for k, v in items.items():
 Run the tool from its own venv — it is siloed with the feature it serves:
 `docs/requirements/.venv/bin/python`, installed from `docs/requirements/requirements-dev.txt`.
 
+**`pathlib.Path.glob("*.yml")` matches dotfiles; `glob.glob` does not.** Each silo holds its own
+`.doorstop.yml`, so a script written with `pathlib` parses three config files as items and every
+count it prints is three too high. Skip stems beginning with `.` — two shipped checking scripts had
+this bug, and it is why a justification worklist was reported as 88 when it was 81.
+
+**`git checkout -- <path>` restores from the index, not `HEAD`.** After anything has staged a
+corrupted tree it appears to succeed while preserving the corruption. Use
+`git restore --source=HEAD --staged --worktree <path>`.
+
+## The gate writes to the tree
+
+**Validating the tree modifies it.** Doorstop stamps a review fingerprint into any item whose
+`reviewed` is absent or `null`, and into any link carrying no stamp — whether or not a person looked
+— and then `git add`s what it changed. `--no-reformat` stops the wholesale file rewriting but not
+this.
+
+So `reviewed: null` is **not a stable "unreviewed" state**. It survives exactly until the next gate
+run, and the run that clears it is the one that was supposed to be checking for it. This is the most
+likely explanation for bookkeeping drift that five review rounds found and none could source.
+
+`scripts/check-unreviewed.py` runs **first** in `check-reqs` and fails, so Doorstop never reaches the
+tree while anything is unstamped. Two rules follow:
+
+- **Never clear that failure by re-running the gate.** It is `doorstop review <uid>`, deliberately,
+  after reading the item against its parent.
+- **If you run bare `doorstop` by hand, check `git status` afterwards** and restore anything it
+  touched. Investigating a tree question costs a mutation you did not ask for.
+
+## Identifiers that changed
+
+A renumber rewrites `links:`. It does **not** touch identifiers written inside `text`, `rationale`
+or `verification-justification`, and those fail in two ways:
+
+- **Dangling** — names an item that no longer exists. A citation resolver finds these.
+- **Re-pointed** — resolves cleanly to *the wrong requirement*, because that number now belongs to
+  something else. **No checker can see this.** A `TST` item citing "the `SRS026` rejection body" read
+  perfectly while `SRS026` had become the no-client-identity item.
+
+Re-pointed references are only recoverable through a map, and the map is not in the renumber commit —
+git's rename detection catches a fraction. Derive it by matching item text across the commit:
+
+```python
+def tree(rev):   # uid -> normalised text, at that revision
+    ...          # git ls-tree + git show, yaml.safe_load each item
+old, new = tree('<renumber>^'), tree('<renumber>')
+```
+
+Every item should match exactly one. Save the result — `~/wisekiosk-69-artifacts/renumber-map.tsv`
+is the one for the 2026-07-27 renumber. **Any future renumber needs one built the same way, in the
+same commit.**
+
+Then judge each reference in context: a number written *before* the renumber means what it meant
+then, one written after means what it says now. The map cannot tell you which, so read the sentence.
+
 ## Invariants — re-run after every ruling, not at the end
 
 1. **No orphan.** Every `SRS` has a surviving `SYS` parent; every `TST` a surviving `SRS`.
@@ -72,10 +126,24 @@ pending item carries no authority — edits there are nearly free now and expens
 | Settled decision with a rejected alternative | `docs/decisions/` (ADR) |
 | As-built structure | `docs/ARCHITECTURE.md` — **facts only**, never rationale |
 | Test strategy | `docs/TESTING.md` |
+| A repository convention a machine decides, or material CI produces | `docs/CI.md` — **outside the tree** |
+| An obligation on a program an operator runs, not on the kiosk | `tools/README.md` |
+| An authoring rule no machine can decide | `CONTRIBUTING.md`'s review checklist |
 | A reason | the item's own `rationale` |
 | "Revisit if X" | a **reopen premise** in `rationale`, in `SYS019`'s form |
 | Uncommitted feature | a GitHub issue, with the reopen path written into it |
-| A lint rule or threshold | a `TST` item, or tool configuration |
+| A lint rule or threshold | tool configuration, described in `docs/CI.md` |
+
+The last three rows are [ADR 0011](../../../docs/decisions/0011-requirement-or-convention.md)'s
+routing. Two traps in applying it:
+
+- **A convention does not demote to the verification tier.** That tier is inside the tree, where a
+  `TST` item carries a status, a fingerprint and gate enforcement — so putting a lint rule there
+  keeps it a specification change, which is the thing demoting it was meant to avoid. It leaves the
+  tree entirely.
+- **A rule with no activation path is a dead letter.** Before routing anything to the review
+  checklist, name who is prompted to apply it and when. ADR 0011 deletes `inspection` items on
+  exactly this ground; an authoring rule parked where nobody walks it fails the same test.
 
 Every item must carry a `verification-justification` — below `test`, what blocks a mechanical check;
 at `test`, what the check leaves unproven ([ADR 0009](../../../docs/decisions/0009-verification-justification-attribute.md)).
