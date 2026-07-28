@@ -104,3 +104,10 @@ questions.
    implementation and no second consumer?
 9. **Secrets.** Does any output path the change adds — a response body, a response header, a log
    line — carry a secret's value rather than its name?
+
+**Requirements**
+
+10. **Module universals.** Where the change adds or edits a module's requirements, does any of them
+    state something already obliged of every module — failure rendering, secret delivery, caching,
+    request rejection? A module's requirements carry what is true of that module and nothing else
+    ([ADR 0012](docs/decisions/0012-module-requirements-in-tree.md)).
