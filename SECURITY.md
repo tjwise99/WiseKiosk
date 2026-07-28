@@ -5,7 +5,7 @@
 WiseKiosk runs on a **single trusted LAN**, one instance per deployment, with no user accounts,
 sessions, or authentication. There is no multi-tenancy and no untrusted client. Security comes from
 the network boundary, not from the application; one instance serves exactly one
-configuration and shares no runtime state with any other (SYS003, SRS011).
+configuration and shares no runtime state with any other (SYS003, SRS032).
 
 The controls that are structural, not vigilance-based:
 
