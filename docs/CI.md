@@ -175,6 +175,41 @@ changed, which the citation resolver above decides without anyone declaring anyt
   Dependabot entry that is not `github-actions` resolves to a non-root directory holding the matching
   manifest.
 
+## Module and framework structure
+
+These keep a module self-contained and the shared framework ignorant of it. They were verification
+items in the tree until the extensibility need above them dissolved — its children were architecture
+([ADR 0012](decisions/0012-module-requirements-in-tree.md)) — and nothing the running kiosk does can
+violate any of them, so they are checks here rather than obligations there.
+
+- **Shared framework code names no module.** No shared framework source names any module outside the
+  static registration file, and no shared framework package imports a module package, in either the Go
+  import graph or the frontend module graph. Runs on every commit rather than only on a module-adding
+  change: a diff-scoped form cannot reliably classify which changes are module-adds, and passes
+  vacuously on the rest while shared code accretes module knowledge (#12).
+- **Route registration has one call site.** Registration call sites appear in exactly one file, and
+  that file declares the registry as a package-level composite literal appearing in no append, index
+  assignment, or map insertion — a registry is exactly a list something writes to at run time, so its
+  absence is structural rather than a denylist of registry-shaped names. The plugin package is absent
+  from the backend's dependency set. One entry per upstream-backed module, each carrying a non-nil
+  validator and non-zero values for every policy the entry owns; constructing the router and comparing
+  its registered route set to the entry set closes the discovery case in both directions (#9).
+- **Shaping packages are pure by construction.** Each module's shaping package resolves a transitive
+  import set that is a subset of a declared pure-package allowlist, so I/O is absent by construction
+  rather than by a denylist of forbidden packages. No exported shaping function's parameters include
+  the secret type or the URL-builder's output type, and the shaping unit tests run against a transport
+  that panics on use (#5).
+- **The configuration schema recomposes from its fragments.** Recomposing from the module fragments
+  leaves the committed schema unchanged; module directories and fragments stand in bijection, with no
+  registered module lacking a fragment and no orphan fragment; each fragment file is the unique
+  definition site of its property names; and no fragment property is reachable by reference from the
+  boundary schema (#8).
+- **The frontend build emits a static bundle.** Exactly one HTML entry whose mount element is empty,
+  no server-entry chunk, no SSR target or adapter declared in the build configuration, and the npm
+  packages in the emitted module graph a subset of a committed allowlist manifest. The allowlist is
+  deliberate: a denylist of named routers and meta-frameworks fails open the first time someone
+  hand-rolls a hash router, and any new runtime dependency should fail until it is reviewed (#10).
+
 ## Gate wiring
 
 These assert that the regime is real rather than declared. Each states a property of machinery
