@@ -29,15 +29,23 @@ homes, decided by whether a machine can settle it.
 | | Home |
 |---|---|
 | An obligation on the running software | The requirements tree |
-| A repository convention a machine decides | The **verification tier**, as a check under the requirement obliging checks to run |
+| A repository convention a machine decides | A **check**, described in [`CI.md`](../CI.md) and invoked by the workflow — outside the tree |
 | An obligation on an author that leaves no artifact | The **review checklist** ([`CONTRIBUTING.md`](../../CONTRIBUTING.md)) |
 
-Three consequences follow, and they are the operative part.
+What follows from the table is the operative part.
 
 **A convention that demotes to a check loses nothing.** The check still runs and still blocks. What
 is given up is the specification *stating* that the convention exists, so adding or retiring one
 becomes a check edit rather than a specification change. That is the right amount of ceremony for a
 line-ending rule or a branch-name pattern.
+
+**The check therefore leaves the tree entirely** — not to the verification tier. That tier is inside
+the tree, where a `TST` item carries a status, a review fingerprint and `check-reqs` enforcement, so
+adding a lint would stay a specification change and the specification would still state that the
+convention existed, one tier down. Only a destination outside the tree delivers the check edit. The
+need that would otherwise carry them goes too: it obliged the repository rather than the software, and
+it would be a hat over its own thirteen children — the enumerates-its-own-children tell that
+[ADR 0012](0012-module-requirements-in-tree.md) names.
 
 **A judgement obligation moved to the checklist gains an activation path.** This is not a soft
 deletion. An `inspection` item nobody is prompted to perform is a dead letter — that absence is what
@@ -49,6 +57,27 @@ actual diff.
 duration, a sampling interval, a tolerance, or a build mode has swallowed its own verification, and a
 threshold then cannot be tuned without a specification change. Where an item's text begins
 *"Verification shall…"*, it is announcing this.
+
+**This narrows [ADR 0005](0005-traceability-gating.md).** Its traceability claim is over **the
+product**. *No work exists without a requirement authorizing it* is true of work on WiseKiosk; it is
+not true of the repository's own housekeeping, and arguably never was. Three consequences for 0005's
+four gates:
+
+- **Gate 4 is retired.** It required every tracked file in a non-code silo to be claimed by an
+  Inspection-method item. The tree carries no Inspection-method item and cannot acquire one under this
+  ADR, which routes every judgement obligation to the review checklist. A gate with no possible
+  subject is retired rather than left standing as an unimplemented intention. The same arithmetic
+  empties `analysis` and `demonstration` — every item in the tree is `test` — so 0005's
+  closure-through-referenced-artifacts rule stands with no current subject.
+- **Gates 2 and 3 are scoped to product source.** First-party scripts implementing repository checks
+  have no `TST` to attribute to, and giving them one would reintroduce the items this decision
+  removes. They are exercised by their own fixtures and described in `CI.md`. The closure chain —
+  source → test → `TST` → `SRS` → `SYS` — is unchanged inside the scope.
+- **What this gives up, stated rather than implied.** Doorstop validates `references`, so an active
+  `TST` naming a deleted script used to fail the tree gate independently of the workflow. Repository
+  checks no longer have that: deleting a check's script and its workflow step in one change is
+  invisible to every gate. The remedy, if one is wanted, is to make `CI.md` an input to
+  `scripts/check-verify-ci-parity.mjs`, not to put the items back.
 
 **A rule the pass establishes is recorded here, not in the ticket.** The thread holds the trail — one
 comment per ruling, at the moment it is taken. Anything that will govern the next pass is an ADR, or
@@ -79,8 +108,10 @@ inconsistency. The checklist is what makes the rule applicable in one direction.
 
 ## Consequences
 
-**The tree shrinks and the checks do not.** Thirteen `SRS` items demoted to checks; every one of
-their verification items survives, re-parented. One active check was lost — an inspection recording
+**The tree shrinks and the checks do not.** Thirteen `SRS` items demoted to checks; every check still
+runs and still blocks. Their verification items leave the tree with them rather than being re-parented,
+and `CI.md` becomes the record of what each check asserts. One active check was lost — an inspection
+recording
 that a single past pull request made its edits correctly, which could never run again and named four
 requirements since deleted.
 
@@ -88,16 +119,20 @@ requirements since deleted.
 and block*, which the CI need's first sentence already stated. Its unfalsifiable content was a
 working practice. The need tier went from eleven to ten.
 
-**One requirement becomes a large bucket.** The requirement obliging mechanical checks to run and
-block now has eighteen verification children. That is the honest shape — one obligation, many
-checks — and it is the single point everything repository-facing hangs from. If it is ever deleted or
-weakened, all of it goes at once.
+**Nothing repository-facing hangs from the tree.** It hangs from `CI.md` and the workflow that invokes
+each check. The alternative — one requirement obliging mechanical checks to run, carrying every
+convention beneath it — would have been a hat over its own children, and a single point whose deletion
+took all of them at once.
+
+**The published-artifact boundary is left open.** Image digest pinning, signature, provenance, SBOM
+and restart policy are not running software, but they are the delivered product. This rule does not
+settle which side they fall on.
 
 **The checklist becomes load-bearing, and nothing gates it.** It carries obligations that were
 requirements. Its input — the documentation taxonomy table — is gated, deliberately, so a reviewer
 asking *"is this fact stated in exactly one place?"* has something real to read from. The checklist
-itself is not a check and gates nothing, which is the point: the CI need says every check the
-repository carries runs and blocks, and a checklist is not a check.
+itself is not a check and gates nothing, which is the point: `CI.md` obliges every check the
+repository carries to run and block, and a checklist is not a check.
 
 **Reopen premise.** Revisit if the checklist stops being walked — if `/pr-ready` drops it, or reviews
 routinely skip it, the activation path this decision rests on is gone, and the obligations it holds

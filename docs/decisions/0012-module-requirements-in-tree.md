@@ -48,9 +48,12 @@ failure states compressed into one item is a list wearing a `shall`, which is th
 spent its length removing.
 
 **Modules outside the requirements tree entirely, specified by the module contract and per-module
-prose.** Rejected: module tests run in the same gate as framework tests, and an obligation the gate
-verifies but the tree never states is untraceable by construction — the condition
-[ADR 0005](0005-traceability-gating.md) exists to prevent.
+prose.** Rejected: a module's obligations are obligations on the running software — what it fetches,
+what it renders, how it fails — which is exactly what
+[ADR 0011](0011-requirement-or-convention.md) puts in the tree. Leaving them to prose would place
+product behaviour outside the traceability claim [ADR 0005](0005-traceability-gating.md) makes over
+the product. Repository conventions leave the tree under that same rule; module behaviour is not one
+of them.
 
 ## Consequences
 

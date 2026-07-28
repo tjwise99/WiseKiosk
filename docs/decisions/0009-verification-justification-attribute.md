@@ -62,12 +62,11 @@ Two distinctions the attribute depends on:
   appears without the obligation moving at all.
 - **It is not the reference channel.** 0005 closes analysis and demonstration items through a
   referenced artifact; that reference is the *evidence the weaker method produced*. The justification
-  is why that channel is in use at all. An item at `inspection` owes both, and gate 4's file-claim
-  mechanism is untouched.
+  is why that channel is in use at all. An item at `inspection` owes both.
 
-The gate asserting that every non-`test` item carries a non-empty justification is **explicitly left
-open**, to be built with ADR 0005's gates 2–4 under #25. Until it exists the obligation is held by
-review, as 0005's axiom tier already is.
+The gate asserting that every item carries a non-empty justification is
+`scripts/check-method-consistency.py`. The remaining gates it was to be built alongside — ADR 0005's
+gates 2 and 3 — are still open under #25.
 
 ## Alternatives considered
 

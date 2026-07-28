@@ -1,6 +1,8 @@
 # 0005 — Trace all work to the requirements tree with in-repo gates
 
-**Status:** accepted; stored-attribute set superseded by [0009](0009-verification-justification-attribute.md)
+**Status:** accepted; stored-attribute set superseded by
+[0009](0009-verification-justification-attribute.md); traceability scope narrowed and gate 4 retired
+by [0011](0011-requirement-or-convention.md)
 **Decided:** 2026-07-22 (traceability-gating design discussion; implementation ticket #25, under the
 requirements rewrite #18)
 
