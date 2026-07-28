@@ -148,31 +148,39 @@ routing. Two traps in applying it:
 Every item must carry a `verification-justification` — below `test`, what blocks a mechanical check;
 at `test`, what the check leaves unproven ([ADR 0009](../../../docs/decisions/0009-verification-justification-attribute.md)).
 
-## Recording
+## Recording — in the repository, never in a ticket
 
-**One issue comment per ruling, at the moment it is taken.** The issue thread is the authoritative
-record — scratchpad summaries go stale the moment a later ruling contradicts them, and a rebuild
-authored from a summary will silently carry the stale version.
+**Apply each ruling to the files as it is taken, and record why in the commit that carries it.** The
+record lives where the artifact lives. An earlier pass made an issue thread the authoritative record
+and it failed in every available way: nothing in the repo can check it, no gate fails when it rots,
+it cannot be read from a clone, and after a renumber its ~70 comments described a tree that no longer
+existed. It also contradicts `CLAUDE.md`'s standing rule that no reference point sits outside this
+repository.
 
-Each comment states: the decision, the owner's reasoning in their words where given, the resulting
-text, the children and their covering clauses, the count, and anything knowingly given up.
+| Decision about | Home |
+|---|---|
+| An item that survives | its own `rationale` — fenced by the review fingerprint, cannot drift from the item |
+| An item deleted, moved or merged away | **the commit message that removes it** |
+| A rule that governs the next pass | an [ADR](../../../docs/decisions/README.md) |
 
-**A rule the pass established is not a ruling — it goes in an ADR** ([0011](../../../docs/decisions/0011-requirement-or-convention.md)).
-The thread holds the trail; a decision record holds anything that will govern the next pass. The
-asymmetry that makes this necessary: a surviving item carries its reasoning in its own `rationale`
-forever, while a deleted one leaves nothing behind but a comment on a closed issue.
-
-**Before writing a tier, diff it against the thread.** For each distinctive phrase in the authored
-text, search the rulings:
+The middle row is the one that gets skipped, and it is the reason decisions leaked into a ticket in
+the first place: a surviving item carries its reasoning forever, **a deleted one leaves nothing**
+([ADR 0011](../../../docs/decisions/0011-requirement-or-convention.md)). So the commit that deletes
+an item states what went, why, what covers the obligation now, and anything knowingly given up. That
+is findable from the absence, which is the hard direction:
 
 ```sh
-gh issue view <n> --json comments --jq '.comments[].body' > /tmp/rulings.md
-grep -c "carry nothing beyond what it needs to run" /tmp/rulings.md   # 0 → unruled
+git log -S 'carry nothing beyond what it needs to run' -- docs/requirements/
 ```
 
-Zero hits means the clause entered without a decision. It then reviews as ordinary content while
-encoding a choice nobody made — the defect the pass exists to catch, committed by the pass. This
-found a whole sentence of a locked `SYS` item that appeared in none of fifty-three rulings.
+**Before writing a tier, check every clause against the record.** For each distinctive phrase in the
+authored text, search the commits that produced it. Nothing found means the clause entered without a
+decision — it then reviews as ordinary content while encoding a choice nobody made, which is the
+defect the pass exists to catch, committed by the pass. This found a whole sentence of a locked `SYS`
+item that appeared in none of fifty-three rulings.
+
+A ticket is still where scheduling lives — what is scoped, what is deferred, what a later ticket
+owns. It is not where a decision lives.
 
 ## Verification before proposing merge
 
