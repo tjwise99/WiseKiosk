@@ -1,7 +1,7 @@
 active: true
 derived: false
 header: |
-  Stateless GET /api/<source> returns the shaped payload
+  Every source reachable through the backend, statelessly
 level: '1.20'
 links:
 - SYS005: null

@@ -11,10 +11,10 @@ rationale: |
   surfaces as a desk validator that accepts what the page rejects — the defect
   class the single-definition rule exists to kill (ADR 0007).
 ref: ''
-reviewed: A13nHl91b_w1CUIG4FT-8Z-jsJotXi-3lS-G98dFA2c=
+reviewed: null
 status: accepted
 text: |
-  Page-load validation and the standalone desk validator shall execute the
-  same validation implementation; the configuration schema's rules shall not
-  be enforced by a second, parallel implementation.
+  The configuration schema's rules shall be enforced by exactly one
+  implementation, shared by the display page and by any tool that validates a
+  configuration without starting the application.
 verification-method: test

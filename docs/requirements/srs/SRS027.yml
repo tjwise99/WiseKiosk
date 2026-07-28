@@ -1,16 +1,20 @@
 active: true
 derived: false
 header: |
-  Docker-capable amd64/arm64 backend host
+  The backend runs on both supported architectures
 level: 1.51
 links:
 - SYS008: null
 normative: true
 rationale: |
-  Pins the container host platform.
+  Decomposes SYS008 on the backend side. The deployment model puts the backend
+  on whatever small host is to hand — a Pi, a mini PC, a spare desktop — so a
+  single-architecture build would make that choice for the operator. Stated as
+  an obligation on WiseKiosk rather than as a fact about the host, because a
+  host's capabilities are not ours to require; what is ours is running on both.
 ref: ''
-reviewed: g4AwRFlIEACZxRM_LrpKEiHU0pqcU00tAwgZ7lkI2yI=
+reviewed: null
 status: accepted
 text: |
-  The backend container shall run on a Docker-capable amd64 or arm64 host.
+  The backend shall run on both amd64 and arm64 hosts.
 verification-method: test
