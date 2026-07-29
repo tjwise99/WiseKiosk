@@ -1,7 +1,7 @@
 active: true
 derived: false
 header: |
-  How data is accessed
+  Upstream data reaches the display only through the backend
 level: 6
 links: []
 normative: true

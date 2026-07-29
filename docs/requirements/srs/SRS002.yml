@@ -1,7 +1,7 @@
 active: true
 derived: false
 header: |
-  Configuration is validated before it is applied; never partially
+  A module-scoped configuration error is reported at that module
 level: 1.5
 links:
 - SYS001: TQyfJejH81RI-POadHI3gN0eM_DDB8AFAnMwcKjCth4=
@@ -13,7 +13,7 @@ rationale: |
   "apply", not "page load", so a future live-apply path validates the same way
   without a rewrite (ADR 0007); page load is today's only apply point.
 ref: ''
-reviewed: 5y2suwnX5RK1N6-EoAAyWQGxcOgHB6qPW_GItdqvXCo=
+reviewed: null
 status: accepted
 text: |
   A configuration error that can be isolated to a single module shall be reported at that module's

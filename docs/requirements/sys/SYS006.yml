@@ -10,11 +10,9 @@ rationale: |
   defect class this design guards against (ADR 0001). The rule binds definitions, not uses — a component
   whose prop is typed with a generated type is a consumer, not a second declaration. Scope is internal:
   upstream API shapes are defined by whoever runs the API, and the configuration format is shared with
-  the operator and governed by SYS001. Secret confinement lands here because the contract is a closed
-  set: a secret can only cross if the definition declares one, which is a structural claim rather than
-  an unprovable negative about outputs.
+  the operator and governed by SYS003.
 ref: ''
-reviewed: gygNneD3A0xV6q5KFtBovv0bgMlX3e9zgdO0nGPLfYI=
+reviewed: null
 status: accepted
 text: |
   Every shape shared between WiseKiosk's own components shall have exactly one machine-readable

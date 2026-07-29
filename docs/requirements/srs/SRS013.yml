@@ -4,9 +4,12 @@ header: |
   No secret material in the published image
 level: 1.104
 links:
-- SYS003
+- SYS003: null
 normative: true
-rationale: ''
+rationale: |
+  Distinct from SRS011, which bars deployment-specific content. An image can carry no configuration
+  and still carry a key baked in at build time, or left in a layer an earlier stage deleted. This
+  states the secret half on its own so that neither is satisfied by proving the other.
 ref: ''
 status: accepted
 text: |

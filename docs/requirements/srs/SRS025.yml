@@ -7,9 +7,12 @@ links:
 - SYS007: null
 normative: true
 rationale: |
-  Container-hardening control made testable.
+  SYS007's least-privilege half made falsifiable on the artifact: a process holding no more than it
+  needs bounds what a compromise reaches, and root inside a container is the largest single grant
+  available to it. The image is where this is decidable - the running user is a property of what was
+  published, not of how an operator starts it.
 ref: ''
-reviewed: 7p1U9IW3VzgIPKB5Bf11M-zX9snlFr-RagEfS6okscg=
+reviewed: null
 status: accepted
 text: |
   The container image shall run as a non-root user.

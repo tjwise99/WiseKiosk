@@ -1,14 +1,20 @@
 active: true
 derived: false
 header: |
-  Backend returns structured errors for upstream failures
+  A failed module shows why, and only that module
 level: 1.1
 links:
 - SYS001: TQyfJejH81RI-POadHI3gN0eM_DDB8AFAnMwcKjCth4=
 normative: true
-rationale: ''
+rationale: |
+  The failure state is a framework universal while a success state is not: what a module displays
+  differs per module and is that module's own need, but a module whose upstream is unavailable looks
+  the same whichever module it is (ADR 0012). So this is stated once, here, and not per module.
+  Containment is the second half - four other regions going blank because one source is down is the
+  disproportionate degradation SYS001 forbids. The shape of the payload that carries the failure is
+  SRS023's, not this item's.
 ref: ''
-reviewed: sv-b0IiLNgses4CAlOHqcBIrAlFH8e035c7neevdjcc=
+reviewed: null
 status: accepted
 text: |
   When a module's data request fails, that module shall render a plain-language error state in

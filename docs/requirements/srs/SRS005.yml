@@ -1,7 +1,7 @@
 active: true
 derived: false
 header: |
-  Outbound upstream timeout and response-size bound
+  No single upstream exchange can stall or exhaust the backend
 level: 1.27
 links:
 - SYS001: TQyfJejH81RI-POadHI3gN0eM_DDB8AFAnMwcKjCth4=
@@ -12,7 +12,7 @@ rationale: |
   a hung or oversized upstream could stall the handler or exhaust the single
   process. This item imposes the bounds that make those failure classes real.
 ref: ''
-reviewed: MEQSQYwmPzg9hTyOumc7BWC2whRfAAeaZRFW5MijQRQ=
+reviewed: null
 status: accepted
 text: |
   No single upstream request or response shall be able to stall the backend or exhaust its

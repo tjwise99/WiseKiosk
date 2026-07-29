@@ -10,11 +10,13 @@ rationale: |
   SRS021 and SRS020 reject invalid and over-limit requests but do not say what
   the client receives; a module still needs something renderable, and it must be
   able to tell an operator misconfiguration from a source outage. The concrete
-  body shape is defined by the boundary contract (#37); this item fixes the
-  status codes, the reject-before-upstream behaviour, and the separation from
-  the upstream-failure shape.
+  body shape is defined by the boundary contract, which SRS023 owns and which
+  admits no second definition site. This item fixes that a rejection is
+  distinct to its cause, that it happens before any upstream call, and that it
+  is separable from an upstream failure. The particular status codes live in
+  TST021 and TST022, where they can change without a specification edit.
 ref: ''
-reviewed: nh_nk7dDqUsx68CR3qXxByNi8WHCU39rAEK2d4UDB4I=
+reviewed: null
 status: accepted
 text: |
   A request the backend rejects before making any upstream call shall return a client-error
