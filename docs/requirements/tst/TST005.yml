@@ -8,11 +8,13 @@ links:
 normative: true
 rationale: ''
 ref: ''
-reviewed: iHyPmaVgWvixERf6JsrFpJat4d5lRfv7y_s50FGffuI=
+reviewed: null
 status: proposed
 text: |
-  Pending: test asserting an upstream that hangs past the outbound timeout, or
-  returns a response over the size bound, is handled as an SRS001 upstream
-  failure without wedging the request handler or exhausting process memory. Lands
-  with the backend skeleton (#9); activated and given a references entry then.
+  Pending: test asserting an upstream that hangs past the outbound timeout, or returns a response over
+  the size bound, is handled as an SRS001 upstream failure without wedging the request handler or
+  exhausting process memory; and that a concurrent request to a healthy source completes normally while
+  one upstream is still hanging, so a single stalled exchange is shown not to stall the backend rather
+  than only not to crash it. Lands with the backend skeleton (#9); activated and given a references
+  entry then.
 verification-method: test

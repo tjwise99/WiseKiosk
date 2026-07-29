@@ -72,7 +72,7 @@ TTL-cached`" .-> PublicApis
 _To be documented as it is built._ Language and boundary-contract decision:
 [ADR 0001](decisions/0001-backend-language-go.md); the backend's config-blindness is
 [ADR 0007](decisions/0007-config-validation-allocation.md)'s. Normative shape: SRS001, SRS004,
-SRS010, SRS018–SRS028, SRS030–SRS031.
+SRS010, SRS018, SRS020, SRS021, SRS022, SRS024, SRS027, SRS031.
 
 ## Frontend
 
@@ -80,7 +80,7 @@ _To be documented as it is built._ Svelte 5 + Vite, a static single-page bundle 
 files ([ADR 0001](decisions/0001-backend-language-go.md),
 [`FOUNDATIONS.md`](FOUNDATIONS.md) §2); each module's poll cadence is that module's own need, per
 [the module contract](contracts/module-contract.md). Normative shape: SRS002, SRS006–SRS008,
-SRS012, SRS024, SRS028–SRS030; configuration validation is frontend-owned per
+SRS012, SRS019, SRS024, SRS028, SRS029, SRS030; configuration validation is frontend-owned per
 [ADR 0007](decisions/0007-config-validation-allocation.md).
 
 ## The boundary contract

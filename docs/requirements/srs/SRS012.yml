@@ -1,4 +1,4 @@
-active: false
+active: true
 derived: false
 header: |
   Every offered configuration key is exercised at a non-default value
@@ -18,7 +18,7 @@ rationale: |
   than a hand-written key list, because the schema is the finite machine-readable statement of what
   is offered: a key added there is covered the moment it exists, where a list would drift silently.
 ref: ''
-reviewed: HyqDj9jv-QjA5nQ8tU_97UHoxWive4xrRzFdF4FDVs4=
+reviewed: null
 status: proposed
 text: |
   Every key the configuration schema offers shall produce an observable difference in the rendered

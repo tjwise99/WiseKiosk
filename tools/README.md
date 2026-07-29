@@ -72,11 +72,19 @@ serving, unhealthy when it is not, including when the process is alive but wedge
 
 *Asserted by* an integration test running the image and reading the reported status in both states.
 
-This exists for the checks above, which need a machine-readable *is it serving yet* rather than a
-scraped log line. It is not a monitoring feature and nothing acts on it: Docker and Compose restart a
-container whose process exits, not one reporting unhealthy, so an unhealthy kiosk stays unhealthy
-until somebody intervenes. What tells an operator the kiosk is broken is the kiosk — `SRS029` obliges
-the display to say so, on the screen in the room.
+This is an oracle, not a monitoring feature, and three checks read it: § Bring-up, § Upgrade, and
+`TST053` in the requirements tree. Each needs a machine-readable *is it serving yet* rather than a
+scraped log line.
+
+Nothing acts on the status. Docker and Compose restart a container whose process exits, not one
+reporting unhealthy, so an unhealthy kiosk stays unhealthy until somebody intervenes. What tells an
+operator the kiosk is broken is the kiosk — `SRS029` obliges the display to say so, on the screen in
+the room.
+
+**Reopen premise.** This sits outside the requirements tree because nothing acts on it. If WiseKiosk
+is ever run under an orchestrator that restarts on health status, or external monitoring is pointed
+at it, the signal becomes a control rather than an oracle and the obligation belongs back in the
+tree.
 
 ## Establishing what you pulled
 

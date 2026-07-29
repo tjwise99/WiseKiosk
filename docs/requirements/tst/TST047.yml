@@ -1,18 +1,23 @@
 active: false
 derived: false
 header: |
-  Pending: independent module-owned cadences, not configurable
+  Pending: refresh cadence is not configurable
 level: 1.43
 links:
 - SRS020: null
 normative: true
-rationale: ''
+rationale: |
+  The fake-timer cadence assertion was struck: it measured the frontend's poll interval against a
+  backend rate bound SRS020's text declares irrelevant ("regardless of how many clients it serves or
+  how often they ask"). That a cadence is a constant in code rather than an operator-tunable key is
+  module-contract.md's, under Cadence and TTL are chosen together. What remains here is SRS020's own
+  clause that the bound is not raisable by configuration.
 ref: ''
 reviewed: null
 status: proposed
 text: |
-  Pending: test rendering the assembled page under fake timers and advancing to one module's cadence
-  to assert exactly one refetch for it and none for another, then the reverse; and asserting the
-  composed configuration schema declares no refresh, cadence, or interval property, which is the
-  strongest clause and a single assertion over one artifact. Lands with the frontend skeleton (#10).
+  Pending: test asserting the composed configuration schema declares no property that sets a refresh
+  cadence, by ranging over the policies a registration entry owns and asserting none of them is
+  reachable from a schema property - not by matching a keyword list, which fails open on a name nobody
+  anticipated. Lands with the frontend skeleton (#10).
 verification-method: test

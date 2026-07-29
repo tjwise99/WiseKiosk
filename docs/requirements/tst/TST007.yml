@@ -8,10 +8,11 @@ links:
 normative: true
 rationale: ''
 ref: ''
-reviewed: dwRpmOsbJO6NgyYTNHOXBg2pR3Zixf2Glw7phBYJAlk=
+reviewed: null
 status: proposed
 text: |
-  Pending: integration test asserting a configuration edit takes effect on the
-  next display page load, with no rebuild or redeployment. Lands with the
-  frontend skeleton (#10); activated and given a references entry then.
+  Pending: integration test asserting a configuration edit takes effect on the next display page load,
+  with no rebuild or redeployment - two loads in one browser context with the edit between them, so
+  that a page served the previous configuration from an HTTP cache fails. Lands with the frontend
+  skeleton (#10); activated and given a references entry then.
 verification-method: test

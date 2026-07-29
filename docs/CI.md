@@ -107,6 +107,10 @@ What a release publishes and what CI asserts about it. Verification runs against
 in a separate job that pulls from the registry, reads only the registry and the public transparency
 log, and holds no credential. Unbuilt; owned by #67, with the asset set defined by #71.
 
+**Nothing decides the no-credential property.** It is a proposal for a check, not an asserted
+guarantee: no gate compares the verification job's permissions against it, and SECURITY.md publishes
+a posture resting on this section. Until #77 fences this document, read it as intent.
+
 - **The release asset set is exactly** the image reference, the SBOM, the signature, the
   build-provenance attestation, and the deployment recipe. An undeclared asset fails.
 - **Signature.** Keyless `cosign` verification against the published digest, with the expected
@@ -119,6 +123,9 @@ log, and holds no credential. Unbuilt; owned by #67, with the asset set defined 
   the same digest yields a matching package set. A release missing the asset fails.
 - **Base images are pinned** to a `@sha256:` digest rather than a floating tag, for every base and
   stage in the Dockerfile.
+- **The code generators are pinned** to an exact version, so a toolchain bump cannot present as
+  schema drift and a regeneration is reproducible. Structurally the same rule as the line above, and
+  no requirement states it: nothing the running software does can violate a pin (#7).
 
 ## The exception register
 
@@ -173,6 +180,9 @@ changed, which the citation resolver above decides without anyone declaring anyt
 - No tracked text file has CRLF line endings.
 - The branch is named `type_number-snake_name`, links an open issue labelled with its type, and its
   default-base pull request records the ticket linkage.
+- The Docker build context excludes `.git` and `node_modules`, by `.dockerignore`. Neither is secret
+  material; both are build hygiene, and a smaller context is a faster and more predictable build.
+  That the image carries no secret is the tree's, under SRS013 (#54).
 - A depth-1 listing of the repository root holds no `package.json`, `go.mod`, `pyproject.toml`,
   `requirements*.txt` or `.venv/` — tooling is siloed with the feature it serves — and every
   Dependabot entry that is not `github-actions` resolves to a non-root directory holding the matching
@@ -193,8 +203,8 @@ violate any of them, so they are checks here rather than obligations there.
 - **Route registration has one call site.** Registration call sites appear in exactly one file, and
   that file declares the registry as a package-level composite literal appearing in no append, index
   assignment, or map insertion — a registry is exactly a list something writes to at run time, so its
-  absence is structural rather than a denylist of registry-shaped names. The plugin package is absent
-  from the backend's dependency set. One entry per upstream-backed module, each carrying a non-nil
+  absence is structural rather than a denylist of registry-shaped names. One entry per
+  upstream-backed module, each carrying a non-nil
   validator and non-zero values for every policy the entry owns; constructing the router and comparing
   its registered route set to the entry set closes the discovery case in both directions (#9).
 - **Shaping packages are pure by construction.** Each module's shaping package resolves a transitive
@@ -212,6 +222,15 @@ violate any of them, so they are checks here rather than obligations there.
   packages in the emitted module graph a subset of a committed allowlist manifest. The allowlist is
   deliberate: a denylist of named routers and meta-frameworks fails open the first time someone
   hand-rolls a hash router, and any new runtime dependency should fail until it is reviewed (#10).
+- **No backend code builds an upstream URL outside a module's shaping library.** The URL a module
+  fetches is that module's to construct; shared framework code constructing one is shared code
+  holding module knowledge (#9).
+- **Module directories and test files stand in bijection.** Every module has a render test beside its
+  component, and every module registered against an external source additionally has a unit test
+  beside its shaping library. A module with no registration entry is a local module and is not
+  expected to have one. What those tests must cover is
+  [`TESTING.md`](TESTING.md)'s; that they exist and sit where the runner reaches them is decided here
+  (#12).
 - **A module component's module graph does not reach the configuration source.** A component receives
   what it needs as props; reaching the configuration itself would let it depend on keys nobody
   declared for it (#12).

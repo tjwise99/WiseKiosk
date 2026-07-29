@@ -8,12 +8,12 @@ links:
 normative: true
 rationale: ''
 ref: ''
-reviewed: vDypMz268GHF3IsrACsRoUP5gWU4GiraUWuEvoOz3us=
+reviewed: null
 status: proposed
 text: |
-  Pending: render test asserting the page shell loads and renders an operator-
-  language error state for each configuration failure class — absent,
-  unfetchable, unparseable, and schema-invalid, the last with the full
-  validation report (what is wrong, where, what to change). Lands with the
-  frontend skeleton (#10); activated and given a references entry then.
+  Pending: render test asserting the page shell loads and renders an operator-language error state
+  naming which configuration failure occurred, for each failure class - absent, unfetchable,
+  unparseable, and schema-invalid. What the state must say beyond naming the failure is TST002's,
+  which asserts it on the branch where a correction exists to state. Lands with the frontend skeleton
+  (#10); activated and given a references entry then.
 verification-method: test

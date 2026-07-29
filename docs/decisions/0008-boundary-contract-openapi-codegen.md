@@ -9,7 +9,7 @@ carried by #7). This ADR records the mechanism **decision**; the **build** is #7
 The Go backend and the TypeScript frontend share no types
 ([ADR 0001](0001-backend-language-go.md)), which makes the boundary contract non-negotiable:
 **one schema, both sides generated from it**, CI failing on stale generated code.
-Round #37 elicited the requirements for that property (SYS006; SRS023–032) deliberately
+Round #37 elicited the requirements for that property (SYS006; SRS023–SRS024) deliberately
 **mechanism-agnostic** — a "shall" that names a tool churns when the tool changes. This ADR chooses
 the tool, which is the decision half of #7.
 

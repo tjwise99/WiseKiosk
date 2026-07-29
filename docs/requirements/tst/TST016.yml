@@ -8,11 +8,12 @@ links:
 normative: true
 rationale: ''
 ref: ''
-reviewed: O0UgqMjcUfFvbhQCU6s4xwAHvfEcubruwG0t-gdUZtE=
+reviewed: null
 status: proposed
 text: |
   Pending: bounded-growth observation over a run of at least sixty minutes, sampling resident memory
-  and handle count at thirty-second intervals, failing on a monotonic increase exceeding ten percent
-  or on any increase in the runtime's task count. Duration, interval and threshold are tunable here
-  rather than in the requirement.
+  and handle count at thirty-second intervals, failing on a monotonic increase in resident memory
+  exceeding ten percent, on a monotonic increase in handle count exceeding its own threshold, or on any
+  increase in the runtime's task count. Duration, interval and both thresholds are tunable here rather
+  than in the requirement.
 verification-method: test

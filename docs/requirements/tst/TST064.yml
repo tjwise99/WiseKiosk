@@ -6,13 +6,20 @@ level: 1.14
 links:
 - SRS013: null
 normative: true
-rationale: ''
+rationale: |
+  The earlier form asserted that "no secret material is present", a predicate with no oracle anywhere
+  in the corpus, and offered as its fallback a canary "delivered the supported way" - which is
+  <NAME>_FILE at run time, and a run-time value cannot be in a build layer, so that clause could not
+  fail on the image either. Both are replaced by artifacts the check owns: a committed pattern set, and
+  a canary planted where the image can actually carry it.
 ref: ''
 reviewed: null
 status: proposed
 text: |
-  Pending: test exporting the published image filesystem and every layer, and asserting no secret
-  material is present in any of them — not in a file, not in the image environment, and not in a
-  layer an earlier stage deleted. A planted canary value delivered the supported way must not appear.
-  Lands with the container image build (#54); activated then.
+  Pending: test exporting the published image filesystem and every layer, and asserting that no value
+  matching the committed secret-pattern set appears in any of them - not in a file, not in the image
+  environment, and not in a layer an earlier stage deleted. The pattern set is the check's own
+  committed artifact, so "secret material" resolves to an enumeration rather than a judgement. A
+  planted canary, written into the build context before the build, must be reported. Lands with the
+  container image build (#54); activated then.
 verification-method: test

@@ -8,11 +8,10 @@ links:
 normative: true
 rationale: ''
 ref: ''
-reviewed: Imd2Ck_baSqzCcdx6X3_aW0CyXVTGG8nNvo413RvhIg=
+reviewed: null
 status: proposed
 text: |
   Pending: test asserting the set of external sources declared by upstream-backed modules equals the
   set of registered GET /api/<source> routes, in both directions, so no source is exempted from the
-  proxy and no route exists without a source; and that no frontend or backend code constructs an
-  upstream URL outside a module's shaping library. Lands with the backend skeleton (#9).
+  proxy and no route exists without a source. Lands with the backend skeleton (#9).
 verification-method: test

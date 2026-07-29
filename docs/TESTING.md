@@ -72,7 +72,9 @@ sides generated from it**. The tier's job in CI is to prove the generation is re
 - Generation from the one schema by the codegen mechanism
   ([ADR 0008](decisions/0008-boundary-contract-openapi-codegen.md)), the CI drift gate that fails on
   committed output differing from a fresh regeneration, and version-pinning of the generators so
-  regeneration is deterministic — **SRS023**, with the drift gate verified under **SRS024**.
+  regeneration is deterministic. Generation from one schema is **SRS023** and the drift gate is
+  verified under **SRS024**; the version pin itself is no requirement's — it is a repository
+  convention, in [`CI.md § Publishing and provenance`](CI.md#publishing-and-provenance).
 - That the generated types are the ones actually *used* on both sides, including the per-module
   error-render path, rather than shadowed by a hand-declared twin — **SRS024**, under **SYS006**.
 - That the frontend adds no second, runtime validator over proxied payloads, so agreement rests on
@@ -99,14 +101,13 @@ checked against, rather than prose alone.
 - **Every value crossing the frontend/backend boundary is generated from one definition**
   → SYS006 / SRS023 / SRS024, and
   [above](#the-boundary-tier-is-generated-not-hand-written).
-- **Every module supplies a render test for its component, and — where it fetches an upstream — unit tests for its shaping library**
-  Every module has a render test beside its component. A module registered against an external source
-  additionally has a unit test beside its shaping library; a module with no registration entry is a
+- **Every module supplies a render test for its component, and — where it registers against an
+  external source — unit tests for its shaping library.** A module with no registration entry is a
   local module and is not expected to have one. A module missing either is an incomplete module, not
-  a passing one. Correct location is sufficient proof CI reaches them, because
-  [`CI.md § Gate wiring`](CI.md#gate-wiring) fails any committed test file excluded by skip, build
-  tag, glob gap or wrong directory. The module contract lists tests as part 6 of what a module
-  supplies; what they must cover is stated here.
+  a passing one. That the files exist and sit where the runner reaches them is gated by
+  [`CI.md § Module and framework structure`](CI.md#module-and-framework-structure); what they must
+  cover is stated here. The module contract lists tests as part 6 of what a module supplies and
+  defers to this section for what they prove.
 - **Every config schema rejects a realistic malformed input, in a test** → SRS002 (a config error
   isolatable to one module is reported there and never silently worked around) and SRS008 (the
   schema's rules are enforced by one implementation, so an unknown key is rejected and named). The
@@ -117,6 +118,12 @@ checked against, rather than prose alone.
   config is a tooling bug, not a testing gap.
 - **Repo-wide checks live at repo level** — see [Where a check belongs](#where-a-check-belongs),
   below.
+- **A verification item's fit against its parent is re-read when the item is activated.** Every `TST`
+  item is `active: false` until the code it checks exists, and Doorstop skips inactive items
+  entirely — so the suspect-link mechanism, which is what normally flags a check whose parent's text
+  moved beneath it, is inert across the whole tier. Activation is the one moment the fit is looked
+  at, and it is a human read: does this check still assert a clause its parent still states? Nothing
+  mechanical will ask.
 - **Every test and check in the repository is executed by CI** — the whole-tree discovery and
   verify/CI parity gates are [`CI.md`](CI.md)'s (§ Gate wiring), not the tree's. A test no runner
   reaches is a false signal, so a new test is wired in by its location alone.
