@@ -48,6 +48,9 @@ Current gates (they grow as code lands):
 - `just check-arch`  — the LikeC4 architecture model validates and its generated artifacts are not
   stale.
 - `just check-site`  — the documentation site builds clean with warnings-as-errors.
+- `just check-verify-ci-parity` — every command `just verify` runs also runs in CI, and every CI step
+  is one of those commands or a named CI-only exception. One token per command, so a command added
+  to a recipe and not to the workflow fails rather than passing unseen.
 
 ## Tickets, branches, and titles
 
