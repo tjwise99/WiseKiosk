@@ -19,46 +19,48 @@ Each tier states what it **guarantees** and when it runs.
 | **Boundary** | The frontend and backend agree on every value that crosses: parameter names *and types*, success payloads, the structured upstream-failure body, the client-error rejection body, and every status code the frontend discriminates on | SYS005 / SRS015 | Every commit, in CI |
 | **Integration** | Routes serve; the TTL cache honours its TTL; parameter validation rejects bad input; config validation fails loudly on bad config | SRS009 / SRS011 / SRS012 / SRS002 | Every commit, in CI |
 | **Render** | Each module renders from its props; the page assembles with a known-good config | [module contract](contracts/module-contract.md), part 3 / SRS017 | Every commit, in CI |
-| **Contract** | Upstream APIs still return what the shaping libraries expect | — | **Open — see below** |
+| **Contract** | Upstream APIs still return what the shaping libraries expect | this document | Fixtures every commit, in CI; a live run on a schedule, off the merge path |
 
 The Boundary row enumerates the value classes deliberately: "payload shape and parameter name" reads
 narrower than SRS015, and an error body or a status code left out of the schema is exactly the value
 that crosses unproven.
 
-### Open: where the Contract tier runs, and how it reaches upstream
+### Where the Contract tier runs, and how it reaches upstream
 
-**This is the tier's designer's decision to make, and it is not made.** The requirement that used to
-settle it forbade any CI workflow from holding an upstream credential, which forced the tier out of
-CI and into a nested module outside the parent's test discovery. That requirement is withdrawn: it
-banned a normal practice, and the mechanism it forced is one [ADR
-0010](decisions/0010-runtime-materialised-gate-fixtures.md) independently found leaky — *"a nested
-module looked like the escape and is not one."*
+**Decided 2026-07-28 by the owner: shapes 1 and 3, composed.** Recorded here because this is the tier
+designer's decision and this document is where tier strategy lives.
 
-What the tier must prove is unchanged and stated only here: **an upstream API still returns what the
-shaping library expects.**
+What the tier must prove is unchanged: **an upstream API still returns what the shaping library
+expects.**
 
-**The real constraints, which are not about secret safety:**
+- **Recorded fixtures, replayed in CI, on every commit.** Each upstream's response is captured and the
+  shaping library asserted against it. No credential anywhere, and it gates every change like every
+  other tier. Its limit is inherent: a fixture is a snapshot, so it detects drift only when someone
+  re-records.
+- **A scheduled live run, off the pull-request gate.** Credentialed, against the real APIs, on a
+  schedule. This is what catches the drift fixtures cannot — and because it is off the merge path, an
+  upstream having a bad afternoon fails a nightly rather than somebody's change.
 
-- **One source needs a credential.** OpenMeteo and themeparks.wiki are keyless; only CheckWX is not.
-  A design that solves the general case is solving a case of one.
-- **Usage cost.** A tier hitting live upstreams on every pull request burns quota against a rate
-  limit nobody is watching.
-- **Flakiness.** A check that fails when someone else's API has a bad afternoon trains an author to
-  ignore red, which is worse than not having the check.
+The two compose deliberately: fixtures decide merges, the scheduled run decides whether the fixtures
+still describe reality. Neither alone is sufficient — fixtures alone go stale silently, and a live
+run alone either blocks merges on somebody else's uptime or does not gate at all.
 
-**Three shapes, none chosen:**
+**Rejected: an encrypted CI secret scoped to one workflow, running live on every pull request.** It
+costs quota against a rate limit nobody watches, and it inherits upstream availability on the merge
+path, which trains an author to ignore red. Only one of the five sources needs a credential —
+OpenMeteo and themeparks.wiki are keyless, CheckWX is not — so this would have been a general
+solution to a case of one.
 
-1. **Recorded fixtures replayed in CI** — capture each upstream's response, assert the shaping
-   library against it. No credential anywhere, runs on every commit like every other tier. Cost: a
-   fixture is a snapshot, so it detects drift only when someone re-records.
-2. **An encrypted CI secret, scoped to one workflow** — the tier runs in CI against the live API.
-   Costs quota and inherits upstream availability.
-3. **A scheduled run outside the pull-request gate** — live, credentialed, and off the merge path, so
-   an upstream outage fails a nightly rather than a change.
+The requirement that used to settle this is withdrawn and stays withdrawn: it forbade any CI workflow
+from holding an upstream credential, which banned a normal practice and forced the tier into a nested
+module that [ADR 0010](decisions/0010-runtime-materialised-gate-fixtures.md) independently found
+leaky — *"a nested module looked like the escape and is not one."* The scheduled run holds a
+credential, deliberately.
 
-1 and 3 compose: fixtures gate every change, a scheduled live run detects the drift fixtures cannot.
-
-Whoever designs the test plans decides this and records it here.
+**Open, and not decided here:** whether the fixture-recording procedure and the schedule need a
+requirement in the tree, or belong wholly to this document. Nothing WiseKiosk does can violate "an
+upstream still returns what we expect" — the obligation is on somebody else's API — which points away
+from the tree, but the shaping library's expectation is ours.
 
 ---
 
