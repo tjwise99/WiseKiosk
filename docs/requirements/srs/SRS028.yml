@@ -4,7 +4,7 @@ header: |
   Served responses declare their type, and forbid the browser inferring one
 level: 31
 links:
-- SYS006: null
+- SYS006: v3qSjDNbCins9CcqouJY2Vp6K1NhBAlUsPS8az2R1Kc=
 normative: true
 rationale: |
   The backend proxies upstream data and serves it from its own origin, so bytes this project did not
@@ -22,6 +22,7 @@ rationale: |
   response, which is not ours to control. That is what distinguishes it from the frame and referrer
   policies dropped at SRS010, whose reopen premise records why they went.
 ref: ''
+reviewed: d99Vhzt_2vIjHVEvcZyv0VVfkcP2-jKnONNNEKXVIhg=
 status: proposed
 text: |
   The backend shall declare a media type on every response it serves, and shall instruct the browser

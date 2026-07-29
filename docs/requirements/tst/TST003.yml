@@ -4,11 +4,11 @@ header: |
   Pending: container non-root uid test
 level: 1.4
 links:
-- SRS020: null
+- SRS020: uAAZtBvOB4ed-YGS1-weSGJlrydL-5X5CzXpmI0y_Uc=
 normative: true
 rationale: ''
 ref: ''
-reviewed: null
+reviewed: D87uznzFLr2ILZWa-axhinr3vgMaLMOOxEJZUK8fDG8=
 status: proposed
 text: |
   Pending: image test asserting the running container's effective uid is non-root (not 0) and the Dockerfile declares an explicit non-root USER. Lands with the container image build (#54); activated and given a references entry then.

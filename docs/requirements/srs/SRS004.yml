@@ -4,7 +4,7 @@ header: |
   Page renders a legible error state for every configuration failure class
 level: 1.13
 links:
-- SYS001: TQyfJejH81RI-POadHI3gN0eM_DDB8AFAnMwcKjCth4=
+- SYS001: ycFTNF2ASjFxjP8A9d3lB7nTzAdgSvE_5Ee71wz7MPY=
 normative: true
 rationale: |
   ADR 0007: the page shell runs validation itself and owns the presentation of
@@ -14,7 +14,7 @@ rationale: |
   configuration applied" so a future live-apply path keeps the freedom to hold
   last-good on a bad reload.
 ref: ''
-reviewed: null
+reviewed: MzS_e_lItPN3kbgUY2zcDl7SXGrb1U2y1coHYxl2WAU=
 status: accepted
 text: |
   When no configuration can be applied - the file absent, unfetchable,

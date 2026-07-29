@@ -1,22 +1,24 @@
 active: false
 derived: false
 header: |
-  Pending: a module component issues no network request of its own
-level: '1.40'
+  Pending: page fetches same-origin only, statically and at runtime
+level: 1.42
 links:
-- SRS010: null
+- SRS010: EQlTMWNvPWAOKpO_jzE-cMaYXeAXyZJVmsYjbijYSAo=
 normative: true
 rationale: ''
 ref: ''
-reviewed: null
+reviewed: 76AJihFLnEhdW7LxMyG_iA9Uhqk8iclmEgRKfOrzwaU=
 status: proposed
 text: |
-  Pending: test rendering each module component with only its props supplied and the network globals
-  stubbed - fetch, XMLHttpRequest, WebSocket, EventSource - asserting zero calls to any of them. The
-  rendered region is asserted to reflect the supplied props so that a component which renders nothing
-  cannot pass the zero-call assertion vacuously. Lands with the first module (#12).
+  Pending: test scanning the shipped bundle for absolute-URL literals and failing on any origin
+  other than the page's own, which catches paths no render exercises; and assembling the page under
+  a known-good configuration with request interception, asserting every request origin equals the
+  page origin and every module data request matches /api/<source>. SRS010's connect-src policy makes
+  a cross-origin fetch fail in the browser regardless, so the two together close the case rather
+  than sample it. Lands with the frontend skeleton (#10).
 verification-justification: |
-  Settles that a component issues no network request of its own, with the props assertion preventing
-  a component that renders nothing from passing vacuously. Leaves unproven a request issued by a
-  shared data layer the component calls into.
+  Settles that no foreign-origin literal ships and that every intercepted request is same-origin.
+  Leaves unproven a URL assembled at run time from parts no literal scan sees; the content-security
+  policy is what closes that at the browser.
 verification-method: test

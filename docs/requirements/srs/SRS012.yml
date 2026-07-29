@@ -4,7 +4,7 @@ header: |
   Request parameters validated against known-good per-source patterns
 level: 1.23
 links:
-- SYS004: null
+- SYS004: -WgxkJ5puavx1z3dZ1VyFaAtygFCvlL2KSrBdQN-kdY=
 normative: true
 rationale: |
   Validating against known-good patterns keeps malformed or unrecognized
@@ -15,7 +15,7 @@ rationale: |
   ADR 0012, not this one's; naming examples here would put two modules'
   requirements in a framework item.
 ref: ''
-reviewed: null
+reviewed: fqw4dgMcHS9VWhg4yZwx_ASepRKUvboAJoVZ8Lqva1E=
 status: accepted
 text: |
   The backend shall validate each request's parameters against the known-good

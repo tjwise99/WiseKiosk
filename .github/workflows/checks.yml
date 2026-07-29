@@ -61,8 +61,11 @@ jobs:
       - name: No item carries a review fingerprint nobody wrote
         run: docs/requirements/.venv/bin/python scripts/check-unreviewed.py
 
+      - name: No inactive item's parent moved after the link was reviewed
+        run: docs/requirements/.venv/bin/python scripts/check-suspect-links.py
+
       - name: Requirements tree validates (refs resolve, no suspect/unreviewed/orphan)
-        run: docs/requirements/.venv/bin/doorstop --error-all --no-reformat
+        run: sh scripts/validate-tree.sh
 
       - name: Verification methods are consistent parent to child
         run: docs/requirements/.venv/bin/python scripts/check-method-consistency.py

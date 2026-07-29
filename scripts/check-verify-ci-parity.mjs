@@ -29,7 +29,8 @@ const CHECK_TOKENS = {
   "check-branch": ["scripts/check-branch.sh"],
   "check-reqs": [
     "scripts/check-unreviewed.py",
-    "doorstop --error-all --no-reformat",
+    "scripts/check-suspect-links.py",
+    "scripts/validate-tree.sh",
     "scripts/check-method-consistency.py",
   ],
   "check-arch": ["scripts/splice-arch-diagrams.mjs"],

@@ -1,22 +1,22 @@
 active: false
 derived: false
 header: |
-  Pending: per-route rate-limit test
-level: 1.24
+  Pending: secret rotation-without-restart test
+level: 1.25
 links:
-- SRS011: null
+- SRS006: ZeplVyYLSsrROM7ALJxI9czolHES2p2NT_Xu10C_gvE=
 normative: true
 rationale: ''
 ref: ''
-reviewed: null
+reviewed: nISns1--nsofI2LpQZqa5YFY4d1UBxicZChXZKmM1Ww=
 status: proposed
 text: |
-  Pending: test asserting a route's global rate limit rejects requests over the
-  threshold without an upstream call, while cache hits are neither counted
-  against the limit nor rejected. Lands with the backend skeleton (#9); activated
-  and given a references entry then.
+  Pending: test asserting a secret value changed in the <NAME>_FILE file is
+  reflected on the next cache-missing request that resolves it, with no process
+  restart and no in-memory value cache. Lands with the backend skeleton (#9);
+  activated and given a references entry then.
 verification-justification: |
-  Settles that the limit rejects over threshold without an upstream call and that cache hits are
-  neither counted nor rejected. Leaves unproven the threshold's value against a source's published
-  limit.
+  Settles that a changed file is picked up on the next cache-missing request with no restart. Leaves
+  unproven the window between the write and that request, during which the old value is still in
+  use.
 verification-method: test

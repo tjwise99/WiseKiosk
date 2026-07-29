@@ -1,29 +1,22 @@
 active: false
 derived: false
 header: |
-  Pending: denied device capabilities
-level: 65
+  Pending: handle count does not grow without bound
+level: 1.4
 links:
-- SRS027: null
+- SRS022: Qxr5bhFduqh2GyEHReQthP4M01CMLv3GRX5FUfDIiCs=
 normative: true
 rationale: |
-  Stated as an allowlist of granted features rather than a list of denied ones. A denied list fails
-  open the first time a browser ships a capability nobody anticipated, which is the failure mode this
-  repository rejects denylist controls for everywhere else it makes the choice. An allowlist that is
-  empty until a module asks fails closed by default.
+  A descriptor leak and a memory leak are separate failures with separate thresholds: a process can
+  hold its memory flat while exhausting the host's descriptors. Sampled in the run TST004 describes.
 ref: ''
-reviewed: null
+reviewed: c0ForGIn-YDm5sRo4fq5kP6Bhe2F-Yd1dcG-wkCeJaE=
 status: proposed
 text: |
-  Pending: integration test asserting the frontend-serving response carries a Permissions-Policy, and
-  that the set of features the served policy grants equals a committed granted-feature allowlist -
-  empty until a module declares it needs one - with every other feature the policy names denied; and
-  that the page still renders under the served policy. Fails if the header is absent, if a granted
-  feature is not on the allowlist, or if an allowlist entry does not name the module that needs it.
-  Lands with the backend that serves the frontend; activated with a references entry to the integration
-  test then.
+  Pending: over the run TST004 describes, failing on a monotonic increase in the backend's handle
+  count exceeding its own threshold. The threshold is tunable here rather than in the requirement.
 verification-justification: |
-  Settles that the page grants no capability outside the committed allowlist and still renders. Leaves
-  unproven whether an allowlist entry is justified - no artifact lets a module declare the capabilities
-  it needs, so the entry names its module by hand and that naming rests on review.
+  Settles that the handle count does not grow monotonically past its threshold across the sampled run.
+  Leaves unproven the timescale the obligation is about, and carries no threshold value yet: until the
+  backend exists there is no idle handle count to set one against, so activating this item sets it.
 verification-method: test

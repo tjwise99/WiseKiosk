@@ -1,23 +1,32 @@
 active: false
 derived: false
 header: |
-  Pending: served responses declare a type and forbid inference
-level: 1.56
+  Pending: denied device capabilities
+level: 65
 links:
-- SRS028: null
+- SRS027: 0J_nMvyhbWzNWWoKKYIX3qX6nLFB29T60WfSm4O2FNY=
 normative: true
-rationale: ''
+rationale: |
+  Stated as an allowlist of granted features rather than a list of denied ones. The served header
+  enumerates the features it denies either way - Permissions-Policy carries no wildcard, so a
+  capability no version of this header names is governed by the browser's default whichever form is
+  chosen. The form is therefore chosen for what the check asserts, not for what the header serves:
+  against an allowlist every granted feature is a diff someone justified and an entry naming no
+  module fails, while against a list of denied ones a feature granted later is asserted about by
+  nothing. The list is empty until a module asks.
 ref: ''
-reviewed: null
+reviewed: qy7-INzD-J5yEl7ymxgZKFn4zVyqxk3VciqXxt90MMk=
 status: proposed
 text: |
-  Pending: integration test asserting the frontend-serving response and every proxy response carry a
-  Content-Type header with a concrete media type, and carry X-Content-Type-Options: nosniff. Fails if
-  either is absent on any served route, if a Content-Type is empty or generic enough to leave the
-  type unstated, or if the nosniff value is weakened. Lands with the backend that serves the
-  frontend; activated with a references entry to the integration test then.
+  Pending: integration test asserting the frontend-serving response carries a Permissions-Policy, and
+  that the set of features the served policy grants equals a committed granted-feature allowlist -
+  empty until a module declares it needs one - with every other feature the policy names denied; and
+  that the page still renders under the served policy. Fails if the header is absent, if a granted
+  feature is not on the allowlist, or if an allowlist entry does not name the module that needs it.
+  Lands with the backend that serves the frontend; activated with a references entry to the integration
+  test then.
 verification-justification: |
-  Settles that a concrete media type and the no-inference header are present on every served route.
-  Leaves unproven that a declared type is correct for the bytes beneath it - an upstream
-  mislabelling its own payload is outside what this reaches.
+  Settles that the page grants no capability outside the committed allowlist and still renders. Leaves
+  unproven whether an allowlist entry is justified - no artifact lets a module declare the capabilities
+  it needs, so the entry names its module by hand and that naming rests on review.
 verification-method: test

@@ -44,8 +44,6 @@ explain, orient, and cite rather than oblige.
 - [`docs/requirements/`](docs/requirements/README.md) — the specification, and how the tree is gated
   ([ADR 0002](docs/decisions/0002-requirements-management-doorstop.md),
   [ADR 0005](docs/decisions/0005-traceability-gating.md)).
-- [`docs/FOUNDATIONS.md`](docs/FOUNDATIONS.md) — the settled decisions, each with the premise that
-  would reopen it. Settled means settled: do not relitigate one without its premise moving.
 - [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) — the living description of the system as built
   (a skeleton until code lands).
 - [`docs/TESTING.md`](docs/TESTING.md) — the test architecture, written as a specification before any

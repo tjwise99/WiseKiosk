@@ -16,8 +16,9 @@
 >
 > **The evidence is the 2026-07-28 audit.** Three reviewers, filing blind against opposed briefs,
 > produced two of their strongest convergent findings by reading justifications: `SRS027`'s admission
-> that no check settles *"whether the denied set is the right set"* is what exposed a check asserting
-> over a set no artifact defines, and `SRS028`'s *"not a wrong type being sent"* scoped all three
+> that no check settles *"whether an entry on that allowlist is justified"* is what exposed a check
+> asserting over a set no artifact defines, and `SRS028`'s *"whether a declared type is the correct
+> one for the bytes beneath it"* scoped all three
 > readings of a requirement that obliged the browser rather than the product. Fourteen items carried
 > the attribute at the time. Both findings came from that fourteen.
 

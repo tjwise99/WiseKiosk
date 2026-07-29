@@ -33,7 +33,8 @@ requirements it serves, not at the repo root; it is dev tooling only, no applica
   project of this size needs, for capability it will not use soon.
 - **OpenFastTrace** — a mature trace tool, but JVM-based. Rejected: it drags a Java toolchain into a
   Go + Svelte repo whose minimal, native-toolchain-free dependency footprint
-  ([`FOUNDATIONS.md`](../FOUNDATIONS.md) §2) actively resists exactly that. Doorstop's Python is a
+  ([`CONTRIBUTING.md`](../../CONTRIBUTING.md), review checklist item 7) actively resists exactly
+  that. Doorstop's Python is a
   lighter, more idiomatic addition.
 - **A homegrown Markdown register + validator script** — a table of IDs plus a `check-reqs.mjs` in
   the existing `scripts/` style. Rejected: it would work, but it teaches no established methodology
@@ -56,7 +57,8 @@ requirements it serves, not at the repo root; it is dev tooling only, no applica
   a dot-prefixed component, so a `type: file` reference to `.github/workflows/checks.yml` (or anything
   under `.github/`, `.venv/`, etc.) does not resolve. Where a requirement is verified by CI wiring
   that lives only under `.github/`, the resolvable artifact (e.g. `scripts/check-links.mjs`) is the
-  machine-checked `references` entry and the CI wiring is cited in the item's prose. `TST011`
-  documents this pattern.
+  machine-checked `references` entry and the CI wiring is cited in the item's prose. Items using the
+  pattern cite this decision; naming an exemplar here would invert that and go stale when the
+  exemplar moves, which is what happened to the item this sentence once named.
 - **Reviewing is a manual discipline.** `doorstop review` re-blesses a child after its parent moved;
   blindly scripting it away would defeat the re-validation the tool exists to provide.

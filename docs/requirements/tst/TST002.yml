@@ -4,11 +4,11 @@ header: |
   Pending: module error-state render test
 level: 1.2
 links:
-- SRS001: null
+- SRS001: 1LUtBJNAHv59nqTCQybJYNhgPMn5p2Gc8yguX-SAxPE=
 normative: true
 rationale: ''
 ref: ''
-reviewed: null
+reviewed: kracwYpv_5V5qWuKgn0SCtVbwXU_iFPrlOiyUgIE_uk=
 status: proposed
 text: |
   Pending: render test asserting a module renders its error state from an

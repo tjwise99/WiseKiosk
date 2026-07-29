@@ -4,11 +4,11 @@ header: |
   Pending: upstream-failure error payload test
 level: 1.1
 links:
-- SRS001: RmWG9bryZFlZjXr9DP8lF3jPsJ4vx0V8QYcS_mhV4KA=
+- SRS001: 1LUtBJNAHv59nqTCQybJYNhgPMn5p2Gc8yguX-SAxPE=
 normative: true
 rationale: ''
 ref: ''
-reviewed: null
+reviewed: 3UGHpPAoowAqAS19VIMwHLrH8fDdlPKAridsPcodyXs=
 status: proposed
 text: |
   Pending: backend integration test asserting the structured error payload for

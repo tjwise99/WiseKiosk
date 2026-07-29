@@ -1,22 +1,18 @@
 active: false
 derived: false
 header: |
-  Pending: bind-mounted config demonstration
-level: 1.9
+  Pending: multi-arch build and smoke test
+level: 1.11
 links:
-- SRS018: null
+- SRS019: 589WbSrwKJZ3YzUvxhFJmGvCEi3qPZVTBNNn4yvAaFg=
 normative: true
 rationale: ''
 ref: ''
-reviewed: null
+reviewed: E72oHBzc1-OMBnaNN28923y_I58bxfsPPf4kDTKCdhE=
 status: proposed
 text: |
-  Pending: test running the published image with a fixture configuration bind-mounted at the
-  configuration path, asserting the served configuration reflects the fixture byte-for-byte; running
-  the same image with no mount, asserting it fails loudly rather than serving a baked default; and
-  exporting the image filesystem, asserting nothing exists at the configuration path. Lands with the
-  container image build (#54); activated then.
+  Pending: a CI matrix that builds and smoke-tests the published image on amd64 and arm64. The CI wiring lives under .github/ (not Doorstop-referenceable, ADR 0002) and is cited here; any non-dot-dir smoke harness it invokes is the references target. Lands with the container image build (#54); activated then.
 verification-justification: |
-  Settles byte-fidelity of the mounted configuration, loud failure with no mount, and absence of a
-  baked default. Leaves unproven behaviour when the mount exists but is unreadable.
+  Settles that the image builds and smoke-tests on both architectures. Leaves unproven behaviour
+  under load on either - the matrix establishes that it runs, not that it runs well.
 verification-method: test

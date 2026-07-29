@@ -4,7 +4,7 @@ header: |
   The backend runs on both supported architectures
 level: 1.51
 links:
-- SYS007: null
+- SYS007: kkDY1a_aHA-VwY6_1pn2eSxlpXeku555DPqQXUC4jlI=
 normative: true
 rationale: |
   Decomposes SYS007 on the backend side. The deployment model puts the backend
@@ -13,7 +13,7 @@ rationale: |
   an obligation on WiseKiosk rather than as a fact about the host, because a
   host's capabilities are not ours to require; what is ours is running on both.
 ref: ''
-reviewed: null
+reviewed: fwhY9qErmoPwfDU4tblQ5B9MC-cVDcXS2ScSdCk5vMk=
 status: accepted
 text: |
   The backend shall run on both amd64 and arm64 hosts.

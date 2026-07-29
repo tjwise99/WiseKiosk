@@ -159,7 +159,9 @@ resolve, a citation to something that does not exist, an index that has drifted 
 - Every absolute `http` or `https` link in tracked documentation names a host on the committed
   upstream-documentation allowlist, and every allowlist entry names the tool or service it serves.
   This extends the link checker above rather than adding a second tool (#68).
-- Every bare-text citation to a requirement ID or ADR number names an item or decision that exists.
+- Every bare-text citation to a requirement ID or ADR number names an item or decision that exists
+  (#68). Not built: the link checker resolves link syntax only, so a bare `SRS003` or `ADR 0002` in
+  prose is unchecked, and a citation that resolves to the wrong item is beyond it either way.
 - The `decisions/` directory and its index table agree — every ADR has a row, no gap or duplicate in
   numbering, every row resolves to a real file.
 - The documentation index's row set equals the committed canonical-document list in both directions;
@@ -211,7 +213,7 @@ violate any of them, so they are checks here rather than obligations there.
   import set that is a subset of a declared pure-package allowlist, so I/O is absent by construction
   rather than by a denylist of forbidden packages. No exported shaping function's parameters include
   the secret type or the URL-builder's output type, and the shaping unit tests run against a transport
-  that panics on use (#5).
+  that panics on use (#12).
 - **The configuration schema recomposes from its fragments.** Recomposing from the module fragments
   leaves the committed schema unchanged; module directories and fragments stand in bijection, with no
   registered module lacking a fragment and no orphan fragment; each fragment file is the unique
@@ -234,6 +236,33 @@ violate any of them, so they are checks here rather than obligations there.
 - **A module component's module graph does not reach the configuration source.** A component receives
   what it needs as props; reaching the configuration itself would let it depend on keys nobody
   declared for it (#12).
+
+## Upstream contract checks
+
+Two jobs, deliberately unequal. What they must prove, and why the pair is composed rather than either
+alone, is [`TESTING.md § Where the Contract tier runs`](TESTING.md#where-the-contract-tier-runs-and-how-it-reaches-upstream);
+what runs where, and what each is allowed to let through, is here.
+
+- **Recorded upstream fixtures are replayed on every commit, and block a merge.** Each shaping library
+  is asserted against a captured response. No credential is present in this job, and no network call
+  is made. What it cannot catch is an upstream that changed after the fixture was recorded — a
+  fixture is a snapshot, and it stays green against a reality that has moved.
+- **A scheduled job runs the same shaping libraries against the live upstreams, off the pull-request
+  path.** It is the only thing that detects the drift above. It fails a scheduled run, never
+  somebody's change: upstream availability is not a merge condition, and a gate that goes red because
+  a third party is having a bad afternoon is a gate authors learn to ignore.
+- **That scheduled job holds one upstream credential, and it is the only job that does.** Of the
+  three upstream sources — the clock and compliments modules are local and fetch nothing — only
+  CheckWX requires one; OpenMeteo and themeparks.wiki are keyless. The credential is scoped to that
+  workflow
+  and reaches no other job, and no fixture, log or failure output carries its value —
+  [`../SECURITY.md`](../SECURITY.md) rests on that, and SRS008 obliges the running system to the same
+  rule.
+
+**Why a credential is allowed here at all.** A withdrawn requirement once forbade any CI workflow
+from holding an upstream credential. It banned a normal practice, and forced the tier into a nested
+module that [ADR 0010](decisions/0010-runtime-materialised-gate-fixtures.md) independently found
+leaky. Holding it in a scheduled job, off the merge path, is the narrower answer.
 
 ## Gate wiring
 

@@ -4,7 +4,7 @@ header: |
   Non-root container user
 level: 1.53
 links:
-- SYS006: null
+- SYS006: v3qSjDNbCins9CcqouJY2Vp6K1NhBAlUsPS8az2R1Kc=
 normative: true
 rationale: |
   SYS006's least-privilege half made falsifiable on the artifact: a process holding no more than it
@@ -12,7 +12,7 @@ rationale: |
   available to it. The image is where this is decidable - the running user is a property of what was
   published, not of how an operator starts it.
 ref: ''
-reviewed: null
+reviewed: B0L2mTRMFsl_I9qwx9HQ1KdbNuGh2Wfb6SS1ABHeTng=
 status: accepted
 text: |
   The container image shall run as a non-root user.

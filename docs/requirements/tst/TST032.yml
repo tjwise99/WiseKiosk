@@ -1,24 +1,22 @@
 active: false
 derived: false
 header: |
-  Pending: upstream timeout & size-bound test
-level: 1.27
+  Pending: negative-caching test
+level: 1.28
 links:
-- SRS014: null
+- SRS011: l5_qQTSMHpS4-2CuLN0iicJGutP9QmlIkZaU9QFCyPY=
 normative: true
 rationale: ''
 ref: ''
-reviewed: null
+reviewed: oz9avpqHaNp3bMJdo6yvQaeCRSN6AUaN9OMVR6BnU_4=
 status: proposed
 text: |
-  Pending: test asserting an upstream that hangs past the outbound timeout, or returns a response over
-  the size bound, is handled as an SRS001 upstream failure without wedging the request handler or
-  exhausting process memory; and that a concurrent request to a healthy source completes normally while
-  one upstream is still hanging, so a single stalled exchange is shown not to stall the backend rather
-  than only not to crash it. Lands with the backend skeleton (#9); activated and given a references
-  entry then.
+  Pending: test asserting an upstream failure is cached for a negative TTL
+  shorter than the source's success TTL — a second request within that window
+  issues no upstream call, and after it expires the next request retries
+  upstream. Lands with the backend skeleton (#9); activated and given a
+  references entry then.
 verification-justification: |
-  Settles that a hung or oversized exchange neither wedges the handler nor exhausts memory, and that
-  a concurrent request still completes. Leaves unproven that the timeout and size values are right
-  for a real upstream.
+  Settles that a failure is cached for a shorter window than a success and that the retry follows
+  expiry. Leaves unproven the negative TTL's value against how long real upstreams stay down.
 verification-method: test

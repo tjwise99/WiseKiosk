@@ -14,7 +14,7 @@ rationale: |
   detect. Substitutability is recorded because provisioning changes (a bind-mounted file today, a
   secrets manager later) must not reach application code.
 ref: ''
-reviewed: r0OHFjma5xOn8ZgSOGL1oBns-m0Q-TKD9LQHrUnwXSw=
+reviewed: x73sA6VMR9aDga-PqTW6L49gj-iwZdgTOg5xG8VhAwM=
 status: accepted
 text: |
   Everything that distinguishes one deployment from another shall come from outside the image:

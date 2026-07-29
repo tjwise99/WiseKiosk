@@ -4,14 +4,14 @@ header: |
   One validation implementation
 level: 1.14
 links:
-- SYS003: r0OHFjma5xOn8ZgSOGL1oBns-m0Q-TKD9LQHrUnwXSw=
+- SYS003: x73sA6VMR9aDga-PqTW6L49gj-iwZdgTOg5xG8VhAwM=
 normative: true
 rationale: |
   A second engine enforces the schema slightly differently, and the divergence
   surfaces as a desk validator that accepts what the page rejects — the defect
   class the single-definition rule exists to kill (ADR 0007).
 ref: ''
-reviewed: null
+reviewed: nfFTpMuXNH-Czat7s8W4WFvZZ94r1UuE1GSy9cS9Va4=
 status: accepted
 text: |
   The configuration schema's rules shall be enforced by exactly one

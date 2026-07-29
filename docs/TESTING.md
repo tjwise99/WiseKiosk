@@ -47,9 +47,9 @@ run alone either blocks merges on somebody else's uptime or does not gate at all
 
 **Rejected: an encrypted CI secret scoped to one workflow, running live on every pull request.** It
 costs quota against a rate limit nobody watches, and it inherits upstream availability on the merge
-path, which trains an author to ignore red. Only one of the five sources needs a credential —
-OpenMeteo and themeparks.wiki are keyless, CheckWX is not — so this would have been a general
-solution to a case of one.
+path, which trains an author to ignore red. Only one of the three upstream sources needs a
+credential — OpenMeteo and themeparks.wiki are keyless, CheckWX is not, and the clock and compliments
+modules are local and fetch nothing — so this would have been a general solution to a case of one.
 
 The requirement that used to settle this is withdrawn and stays withdrawn: it forbade any CI workflow
 from holding an upstream credential, which banned a normal practice and forced the tier into a nested
@@ -57,10 +57,14 @@ module that [ADR 0010](decisions/0010-runtime-materialised-gate-fixtures.md) ind
 leaky — *"a nested module looked like the escape and is not one."* The scheduled run holds a
 credential, deliberately.
 
-**Open, and not decided here:** whether the fixture-recording procedure and the schedule need a
-requirement in the tree, or belong wholly to this document. Nothing WiseKiosk does can violate "an
-upstream still returns what we expect" — the obligation is on somebody else's API — which points away
-from the tree, but the shaping library's expectation is ours.
+**Decided 2026-07-28 by the owner: no requirement.** Nothing WiseKiosk does can violate "an upstream
+still returns what we expect" — that obligation is on somebody else's API. The half that *is* ours,
+what the product does when an upstream returns something the shaping library did not expect, is
+already **SRS001**, and `TST001` names malformed payload as one of its failure classes. A tree item
+here would restate it. What is left is machinery: recording a fixture is a procedure an author
+follows, and a scheduled credentialed job is a repository-facing check, so both sit in
+[`CI.md § Upstream contract checks`](CI.md#upstream-contract-checks) ([ADR
+0011](decisions/0011-requirement-or-convention.md)).
 
 ---
 
@@ -122,10 +126,13 @@ checked against, rather than prose alone.
   below.
 - **A verification item's fit against its parent is re-read when the item is activated.** Every `TST`
   item is `active: false` until the code it checks exists, and Doorstop skips inactive items
-  entirely — so the suspect-link mechanism, which is what normally flags a check whose parent's text
-  moved beneath it, is inert across the whole tier. Activation is the one moment the fit is looked
-  at, and it is a human read: does this check still assert a clause its parent still states? Nothing
-  mechanical will ask.
+  entirely — so its suspect-link mechanism, which is what normally flags a check whose parent moved
+  beneath it, is inert across the whole tier. `check-suspect-links.py` restores that one signal
+  ([`requirements/README.md § Running the gate`](requirements/README.md#running-the-gate)), so a
+  parent rewritten under a
+  pending check fails a gate in the commit that rewrites it rather than waiting for activation. What
+  it cannot decide is the question activation exists to ask, and that stays a human read: does this
+  check still assert a clause its parent still states?
 - **Every test and check in the repository is executed by CI** — the whole-tree discovery and
   verify/CI parity gates are [`CI.md`](CI.md)'s (§ Gate wiring), not the tree's. A test no runner
   reaches is a false signal, so a new test is wired in by its location alone.

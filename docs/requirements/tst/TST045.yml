@@ -1,31 +1,23 @@
 active: false
 derived: false
 header: |
-  Pending: two clients, one request, one answer
-level: 66
+  Pending: task count does not grow without bound
+level: 1.4
 links:
-- SRS009: null
+- SRS022: Qxr5bhFduqh2GyEHReQthP4M01CMLv3GRX5FUfDIiCs=
 normative: true
 rationale: |
-  SRS023's three checks establish that no identity machinery exists - no Set-Cookie or
-  WWW-Authenticate, no 401 or 403, no session or access-control middleware on the chain. None of them
-  asserts that two different callers issuing the same request receive the same payload. A backend
-  reading a caller address from a forwarded header and varying its response sets no cookie, returns
-  neither status, and registers no middleware, so it satisfies all three while breaking the clause
-  this item verifies.
+  A goroutine leak shows in neither resident memory nor handle count until it is far advanced, so
+  neither sibling item catches it. Sampled in the run TST004 describes.
 ref: ''
-reviewed: null
+reviewed: JY487bTMnzQzThKfjhYRPisWBbRqqZTRseJVX5YNdoo=
 status: proposed
 text: |
-  Pending: integration test issuing the same request to a source endpoint from two clients that differ
-  in every way the transport exposes - source address, forwarded-for header, user agent, and
-  connection - and asserting the response bodies are byte-identical and the response headers differ in
-  no value derived from the caller. Repeated after an intervening request from one of the two, so that
-  a response varying with request history fails as well. Lands with the backend skeleton (#9);
-  activated and given a references entry then.
+  Pending: over the run TST004 describes, failing on any increase in the runtime's task count between
+  the first and last sample.
 verification-justification: |
-  What the check settles is that the transport-level facts a backend could discriminate on do not
-  change the answer. What it does not settle is discrimination on a fact the test does not vary - a
-  backend keying on something the harness holds constant would pass, so this is evidence against
-  per-client behaviour rather than proof of its absence.
+  Settles that the task count does not end the sampled run above where it started. Leaves unproven the
+  timescale the obligation is about. Its predicate is absolute where its siblings carry thresholds: a
+  steady-state kiosk should return to its starting task count, and whether that survives contact with
+  a real backend is a question activation asks, not this item.
 verification-method: test

@@ -4,7 +4,7 @@ header: |
   The display page holds no device capability it does not use
 level: 30
 links:
-- SYS006: null
+- SYS006: v3qSjDNbCins9CcqouJY2Vp6K1NhBAlUsPS8az2R1Kc=
 normative: true
 rationale: |
   Split from the reachability item, whose text had carried this as a trailing clause. The two
@@ -20,6 +20,7 @@ rationale: |
   A module renders third-party data. A page that cannot reach camera, microphone, geolocation, USB,
   serial or Bluetooth cannot be made to, whatever that data turns out to contain.
 ref: ''
+reviewed: HAKFycp4P5_kB3zgj71u9NTA8n39-6mV3js4uU-ILWQ=
 status: proposed
 text: |
   The display page shall be unable to use any device feature it does not need.

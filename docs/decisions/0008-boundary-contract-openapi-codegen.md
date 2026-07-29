@@ -38,7 +38,7 @@ and #7's acceptance — schema file present, both generators wired, drift gate g
   second definition site.
 - **Drift gate:** a repo-level CI check regenerates both sides and fails on any difference
   (`git diff --exit-status`); the generators are **version-pinned** so a toolchain bump cannot read
-  as schema drift (SRS016; verified by TST035). The gate is repo-level because it spans both
+  as schema drift (SRS016; verified by TST034). The gate is repo-level because it spans both
   packages.
 - **The frontend consumes the generated types only — no runtime re-validation of proxied payloads.**
   The version-skew case a runtime validator defends against is foreclosed by single-image co-deploy,

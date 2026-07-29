@@ -4,7 +4,7 @@ header: |
   Every offered configuration key is exercised at a non-default value
 level: 1.101
 links:
-- SYS003: r0OHFjma5xOn8ZgSOGL1oBns-m0Q-TKD9LQHrUnwXSw=
+- SYS003: x73sA6VMR9aDga-PqTW6L49gj-iwZdgTOg5xG8VhAwM=
 normative: true
 rationale: |
   SYS003's obligation had no child expressing it. The backend has no configuration concept
@@ -18,7 +18,7 @@ rationale: |
   than a hand-written key list, because the schema is the finite machine-readable statement of what
   is offered: a key added there is covered the moment it exists, where a list would drift silently.
 ref: ''
-reviewed: null
+reviewed: eTQTLIQ-F9xKktkv72gGmPCcFAKbymdx0KP6DtDdZ7M=
 status: proposed
 text: |
   Every key the configuration schema offers shall produce an observable difference in the rendered

@@ -38,7 +38,9 @@ Current gates (they grow as code lands):
   with its type, and its default-base PR records the ticket linkage (plain sh + curl + jq, like
   the hooks — no toolchain).
 - `just check-reqs`  — the Doorstop requirements tree validates: no item carries a review
-  fingerprint nobody wrote, refs resolve, no suspect/unreviewed/orphan items; every item carries a
+  fingerprint nobody wrote, refs resolve, no suspect/unreviewed/orphan items — inactive ones
+  included, which Doorstop itself skips; one exception is tolerated while every `TST` item is still
+  pending, and it fails once it is no longer needed (#78); every item carries a
   `verification-justification`, and no item claims a method its own children do not support.
   **If it reports unreviewed items or links, do not clear that by re-running it.** Validating the
   tree makes Doorstop stamp a fingerprint into anything unstamped, which is why that check runs
@@ -46,6 +48,9 @@ Current gates (they grow as code lands):
 - `just check-arch`  — the LikeC4 architecture model validates and its generated artifacts are not
   stale.
 - `just check-site`  — the documentation site builds clean with warnings-as-errors.
+- `just check-verify-ci-parity` — every command `just verify` runs also runs in CI, and every CI step
+  is one of those commands or a named CI-only exception. One token per command, so a command added
+  to a recipe and not to the workflow fails rather than passing unseen.
 
 ## Tickets, branches, and titles
 

@@ -1,23 +1,23 @@
 active: false
 derived: false
 header: |
-  Pending: TTL cache-behaviour test (liveness canary)
-level: 1.22
+  Pending: parameter-validation rejection test
+level: 1.23
 links:
-- SRS011: null
+- SRS012: yYSpjVLqcxvPn-MN_6egj64r8SOOemZWZU4Z_r42I7s=
 normative: true
 rationale: ''
 ref: ''
-reviewed: null
+reviewed: 0Y8w5qr1CnPUKu0iiu0Do2ZXrcQIcOBEyPdYHrFmKDI=
 status: proposed
 text: |
-  Pending: integration test asserting the (source, query) TTL cache serves an
-  identical request from cache within the TTL without an upstream call and
-  refetches after expiry, using a fake upstream that counts calls. This
-  cache-behaviour test is the standing liveness canary for the REST transport.
-  Lands with the backend skeleton (#9); activated
+  Pending: test asserting, for every registered source, that a request whose
+  parameters do not match the pattern that source declares is rejected with no
+  upstream call — driven from the registered set so a source added later cannot
+  escape the sweep. Lands with the backend skeleton (#9); activated
   and given a references entry then.
 verification-justification: |
-  Settles that an identical request within the TTL issues no upstream call and refetches after
-  expiry. Leaves unproven the TTL's value against a source's actual update cadence.
+  Settles that a non-conforming request is rejected with no upstream call, for every registered
+  source. Leaves unproven that a source's declared pattern matches what that source accepts - a
+  wrong pattern rejects valid requests just as decidably.
 verification-method: test

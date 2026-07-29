@@ -4,7 +4,7 @@ header: |
   Configuration schema offers no secret-bearing key
 level: 1.17
 links:
-- SYS003: r0OHFjma5xOn8ZgSOGL1oBns-m0Q-TKD9LQHrUnwXSw=
+- SYS003: x73sA6VMR9aDga-PqTW6L49gj-iwZdgTOg5xG8VhAwM=
 normative: true
 rationale: |
   The configuration is the one channel a client fetches wholesale, so the
@@ -13,7 +13,7 @@ rationale: |
   the schema leaves nothing to strip; a denylist applied at delivery
   would fail open.
 ref: ''
-reviewed: null
+reviewed: 4Cb4ErPw-g7mKPAiYuTfYleZoj7u5xAvE0YONps9vG0=
 status: accepted
 text: |
   The configuration schema shall offer no key whose value is a secret —

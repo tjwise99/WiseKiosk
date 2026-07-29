@@ -13,7 +13,7 @@ rationale: |
   calls is fixed by configuration) rather than as a prohibition on relaying is what makes SRS012 and
   SRS013 trace to it; three earlier wordings named the failure and none of them did.
 ref: ''
-reviewed: null
+reviewed: -WgxkJ5puavx1z3dZ1VyFaAtygFCvlL2KSrBdQN-kdY=
 status: accepted
 text: |
   All upstream data shall reach the display only through the backend, which shall issue only the

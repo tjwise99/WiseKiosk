@@ -48,7 +48,8 @@ generality).
   workspace or a Java toolchain; the self-hosted DSL story is heavier and less siloable than a
   pure-JS npm dependency.
 - **PlantUML** — mature C4 support, but requires a Java runtime — a native build toolchain, which
-  the project's dependency-footprint discipline ([`FOUNDATIONS.md`](../FOUNDATIONS.md) §2) admits
+  the project's dependency-footprint discipline
+  ([`CONTRIBUTING.md`](../../CONTRIBUTING.md), review checklist item 7) admits
   only when nothing else will do — and validates syntax, not model integrity.
 
 LikeC4 was the only option that is a *validated model*, pure-JS (siloable, no native toolchain), and

@@ -1,22 +1,21 @@
 active: false
 derived: false
 header: |
-  Pending: page-load-applies-config test
+  Pending: the published image carries no deployment specifics
 level: 1.12
 links:
-- SRS003: null
+- SRS018: jAdiVAOaHeEAP9caGAN9vBMpjclpje_k3TmKnf5abBw=
 normative: true
 rationale: ''
 ref: ''
-reviewed: null
+reviewed: 5HECm7k4aMi0QzoBG9ELPapoyVHgx_x38KJXUuAwfa0=
 status: proposed
 text: |
-  Pending: integration test asserting a configuration edit takes effect on the next display page load,
-  with no rebuild or redeployment - two loads in one browser context with the edit between them, so
-  that a page served the previous configuration from an HTTP cache fails. Lands with the frontend
-  skeleton (#10); activated and given a references entry then.
+  Pending: test exporting the published image filesystem and asserting nothing exists at the
+  configuration mount path, and that no deployment-specific value appears in the image environment.
+  Lands with the container image build (#54); activated then.
 verification-justification: |
-  Settles that an edit applies on the next load in one browser context, so an HTTP-cached page
-  fails. Leaves unproven how often a deployed kiosk reloads - the requirement bounds the mechanism,
-  not the field schedule.
+  Settles that nothing sits at the configuration path and no deployment-specific value is in the
+  image environment. Leaves unproven a deployment-varying value the schema does not declare, since
+  the check ranges over what the schema knows.
 verification-method: test

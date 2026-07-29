@@ -1,24 +1,25 @@
 active: false
 derived: false
 header: |
-  Pending: boundary codegen drift-gate test
-level: '1.30'
+  Pending: both sides consume the generated boundary types
+level: 1.31
 links:
-- SRS016: null
+- SRS016: hVQCRJ-6Bfgxlzn8FkpR-gonQWctL67--tefiCtcID8=
 normative: true
 rationale: ''
 ref: ''
-reviewed: null
+reviewed: 8F8y2qnAvW4bpZ7uE_gUx67SnQre9wp-OR_OwHvJJp0=
 status: proposed
 text: |
-  Pending: test that injects a deliberate mismatch between the schema and the
-  committed generated code, asserts the CI drift check fails, then regenerates and
-  asserts the build passes. Lands with the codegen mechanism (#7). The check is
-  repo-level (it spans both packages); this item cites the workflow wiring in its
-  text because Doorstop references cannot reach a path under a dot-directory such
-  as .github/ (ADR 0002, ADR 0005).
+  Pending: test asserting that for every route in the static registration list the handler's request
+  and response types resolve to declarations under the generated package; and, on the frontend, that
+  for each module holding a boundary fragment the component's payload prop type, and the error-render
+  path's failure and rejection prop types, resolve to declarations under the generated boundary
+  directory. A module with no fragment has no payload prop and is not expected to have one. Both halves
+  are positive: they name where a type must come from rather than where it must not, so a hand-declared
+  twin fails by not resolving rather than by matching a pattern. Lands with the codegen mechanism (#7).
 verification-justification: |
-  Settles that a seeded schema/code mismatch fails the drift check and that regeneration clears it.
-  Leaves unproven drift the generators do not express - a schema change producing byte-identical
-  output passes.
+  Settles that handler and component types resolve to declarations under the generated package.
+  Leaves unproven a boundary value that crosses without appearing in a handler signature or a
+  component prop.
 verification-method: test

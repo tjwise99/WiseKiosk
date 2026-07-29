@@ -1,21 +1,22 @@
 active: false
 derived: false
 header: |
-  Pending: the published image carries no deployment specifics
-level: 1.12
+  Pending: configuration failure-class render test
+level: 1.13
 links:
-- SRS018: null
+- SRS004: ruKB5Szs333ImjKW4f6l65IaHmbkTH7M4xKKGeTINl4=
 normative: true
 rationale: ''
 ref: ''
-reviewed: null
+reviewed: fdjom5tGhPrLuO00WUUyvAJdxHvM8mvKeHXL5Z2LmB4=
 status: proposed
 text: |
-  Pending: test exporting the published image filesystem and asserting nothing exists at the
-  configuration mount path, and that no deployment-specific value appears in the image environment.
-  Lands with the container image build (#54); activated then.
+  Pending: render test asserting the page shell loads and renders an operator-language error state
+  naming which configuration failure occurred, for each failure class - absent, unfetchable,
+  unparseable, and schema-invalid. What the state must say beyond naming the failure is TST005's,
+  which asserts it on the branch where a correction exists to state. Lands with the frontend skeleton
+  (#10); activated and given a references entry then.
 verification-justification: |
-  Settles that nothing sits at the configuration path and no deployment-specific value is in the
-  image environment. Leaves unproven a deployment-varying value the schema does not declare, since
-  the check ranges over what the schema knows.
+  Settles that each named failure class renders a state that identifies it, without a valid
+  configuration. Leaves unproven that the four classes are exhaustive.
 verification-method: test

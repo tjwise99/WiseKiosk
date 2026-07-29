@@ -1,25 +1,23 @@
 active: false
 derived: false
 header: |
-  Pending: Pi Zero-class host demonstration
+  Pending: no identity-based rejection, in the contract or on the wire
 level: 1.16
 links:
-- SRS021: null
+- SRS023: RkybxYpXWXU4lnHw3cOZEkY3_9dxMGfAQCQ4do6wXjM=
 normative: true
 rationale: |
-  SRS021's justification rested on both proxies before either was specified anywhere. They are stated
-  here because they are mechanically decidable and CI-runnable, unlike the demonstration on real
-  hardware, which is not.
+  Asserted against the boundary schema as well as the running service because the schema is where a
+  401 or 403 would first be declared: catching it there fails the build before any handler exists,
+  and the live half proves the service produces no status the contract never declared.
 ref: ''
-reviewed: null
+reviewed: EEPSrm_GTWA-72N49Ft_URHRcU42pwEyy9-mJF0z0RA=
 status: proposed
 text: |
-  Pending: demonstration that the frontend renders and drives the display on a Raspberry Pi Zero-class
-  browser host; shares evidence with the soak demonstration. Two of its claims are asserted
-  mechanically rather than demonstrated: render timing under CPU throttling against a stated budget,
-  and the emitted bundle size against a committed ceiling. Lands with the frontend skeleton (#10);
-  activated then.
+  Pending: check that the boundary schema declares no 401 or 403 response for any path item, and
+  that the live route sweep produces neither status for any request. Request rejection remains
+  shape-based under SRS013. Runs once the boundary schema (#37) and the backend skeleton (#9) exist.
 verification-justification: |
-  Emulated ARM boot plus performance proxies. Establishes that the frontend renders on that
-  architecture; does not establish Pi Zero-class timing.
+  Settles that neither status appears in the schema or in a live sweep. Leaves unproven a rejection
+  that gates on identity while returning a different status.
 verification-method: test
