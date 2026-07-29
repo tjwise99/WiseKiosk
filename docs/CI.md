@@ -159,7 +159,9 @@ resolve, a citation to something that does not exist, an index that has drifted 
 - Every absolute `http` or `https` link in tracked documentation names a host on the committed
   upstream-documentation allowlist, and every allowlist entry names the tool or service it serves.
   This extends the link checker above rather than adding a second tool (#68).
-- Every bare-text citation to a requirement ID or ADR number names an item or decision that exists.
+- Every bare-text citation to a requirement ID or ADR number names an item or decision that exists
+  (#68). Not built: the link checker resolves link syntax only, so a bare `SRS003` or `ADR 0002` in
+  prose is unchecked, and a citation that resolves to the wrong item is beyond it either way.
 - The `decisions/` directory and its index table agree — every ADR has a row, no gap or duplicate in
   numbering, every row resolves to a real file.
 - The documentation index's row set equals the committed canonical-document list in both directions;

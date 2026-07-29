@@ -57,7 +57,8 @@ requirements it serves, not at the repo root; it is dev tooling only, no applica
   a dot-prefixed component, so a `type: file` reference to `.github/workflows/checks.yml` (or anything
   under `.github/`, `.venv/`, etc.) does not resolve. Where a requirement is verified by CI wiring
   that lives only under `.github/`, the resolvable artifact (e.g. `scripts/check-links.mjs`) is the
-  machine-checked `references` entry and the CI wiring is cited in the item's prose. `TST011`
-  documents this pattern.
+  machine-checked `references` entry and the CI wiring is cited in the item's prose. Items using the
+  pattern cite this decision; naming an exemplar here would invert that and go stale when the
+  exemplar moves, which is what happened to the item this sentence once named.
 - **Reviewing is a manual discipline.** `doorstop review` re-blesses a child after its parent moved;
   blindly scripting it away would defeat the re-validation the tool exists to provide.
