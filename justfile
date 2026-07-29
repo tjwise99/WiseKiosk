@@ -35,7 +35,7 @@ install-hooks:
 check-reqs:
     docs/requirements/.venv/bin/python scripts/check-unreviewed.py
     docs/requirements/.venv/bin/python scripts/check-suspect-links.py
-    docs/requirements/.venv/bin/doorstop --error-all --no-reformat
+    sh scripts/validate-tree.sh
     docs/requirements/.venv/bin/python scripts/check-method-consistency.py
 
 [group('checks')]

@@ -114,10 +114,14 @@ verifying file; the corresponding `just` gate proves that check *passes*. Both a
 
 Where a requirement's verifying test does not exist yet (no application code has landed), its `TST`
 item is committed **`active: false`** with a note describing the test to come. Inactive items are
-excluded from reference/review checking, so the tree still validates clean; each is activated and
-given a real `references` entry as its test lands. Inactive `TST` items surface as an informational
-`no item with UID: TST00x` line during validation — that is Doorstop noting a stubbed verification,
-not a failure (the run still exits 0).
+excluded from reference/review checking; each is activated and given a real `references` entry as its
+test lands. A `SRS` parent whose child is pending surfaces an informational `no item with UID: TST00x`
+line during validation — Doorstop noting a stubbed verification, not a failure.
+
+**A tier in which every item is pending is a different case, and it does not validate clean.**
+Doorstop treats a document with no *active* item as having no items at all, and stops checking it
+there. That is the tier the `TST` document is in until the first test lands, and it is why the gate
+runs Doorstop behind [`validate-tree.sh`](#running-the-gate) rather than directly.
 
 ### Pending decomposition
 
@@ -148,17 +152,26 @@ docs/requirements/.venv/bin/pip install -r docs/requirements/requirements-dev.tx
 Then:
 
 ```sh
-just check-reqs      # check-unreviewed.py, check-suspect-links.py, doorstop --error-all --no-reformat, check-method-consistency.py
+just check-reqs      # check-unreviewed.py, check-suspect-links.py, validate-tree.sh, check-method-consistency.py
 just verify          # runs check-reqs alongside the other repo gates
 ```
 
 `just check-reqs` runs the **exact** commands CI runs (see
 [`../../.github/workflows/checks.yml`](../../.github/workflows/checks.yml), job `requirements`):
 `scripts/check-unreviewed.py`, then `scripts/check-suspect-links.py`, then
-`docs/requirements/.venv/bin/doorstop --error-all --no-reformat`, then
-`scripts/check-method-consistency.py`. The `--error-all` flag promotes Doorstop's suspect /
-unreviewed / orphan / unresolved-reference warnings to errors, so the process exits non-zero and the
-gate actually blocks — plain `doorstop` only warns.
+`scripts/validate-tree.sh`, then `scripts/check-method-consistency.py`. The `--error-all` flag
+`validate-tree.sh` passes to Doorstop promotes its suspect / unreviewed / orphan /
+unresolved-reference warnings to errors, so the process exits non-zero and the gate actually
+blocks — plain `doorstop` only warns.
+
+**Why Doorstop runs behind a wrapper: one exception, and it expires by itself.** Doorstop's
+`Document.items` is active-only, so a document whose items are *all* pending yields `no items` and
+returns **before every other check on that document**. Every `TST` item is pending until the code it
+checks exists, so under `--error-all` the whole verification tier is at once fatal and unvalidated.
+`validate-tree.sh` tolerates that one error and nothing else. It also fails when the error stops
+appearing — an active `TST` item means the exception is dead, and a dead exception that passes
+quietly is how a suppression becomes permanent ([`../CI.md § The exception
+register`](../CI.md#the-exception-register) refuses the same shape). Retiring it is #78.
 
 **`check-unreviewed.py` runs first because Doorstop writes.** Validating the tree stamps a review
 fingerprint into any item that has none, and into any link carrying no stamp — whether or not a

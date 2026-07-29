@@ -30,7 +30,7 @@ const CHECK_TOKENS = {
   "check-reqs": [
     "scripts/check-unreviewed.py",
     "scripts/check-suspect-links.py",
-    "doorstop --error-all --no-reformat",
+    "scripts/validate-tree.sh",
     "scripts/check-method-consistency.py",
   ],
   "check-arch": ["scripts/splice-arch-diagrams.mjs"],
