@@ -1,25 +1,20 @@
 active: false
 derived: false
 header: |
-  Pending: viewport-driven layout render test
-level: 1.41
+  Pending: unknown-key rejection test
+level: 1.7
 links:
-- SRS006: null
+- SRS005: null
 normative: true
 rationale: ''
 ref: ''
 reviewed: null
 status: proposed
 text: |
-  Pending: viewport-driven render test asserting a bijection between the modules the fixture
-  configuration names and the regions present in the DOM, each rendered into the region the
-  configuration assigns it, with the module set read from the parsed fixture rather than a hand-written
-  list; and asserting the assembled layout exhibits no overlap, no clipping, and no scrollbars at the
-  kiosk viewport (1920x1080), and reflows with no overlap, no clipping, and no horizontal scroll at the
-  desktop viewports (1280x800 and 1440x900). Lands with the frontend skeleton (#10); activated and
-  given a references entry then.
+  Pending: validation test asserting a configuration containing a key not in
+  the schema is rejected, with the unrecognized key named in the error. Lands
+  with the config schema (#8); activated and given a references entry then.
 verification-justification: |
-  Settles that every configured module is present, in its assigned region, with no overlap or
-  clipping at three viewports. Leaves unproven legibility across a room, which is the property a
-  kiosk actually needs and which no geometric assertion reaches.
+  Settles that an unrecognised key is rejected and named. Leaves unproven that the name is the one
+  the operator recognises when the key is nested.
 verification-method: test

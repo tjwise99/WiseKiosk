@@ -1,31 +1,24 @@
 active: true
 derived: false
 header: |
-  The display page reaches no origin but the backend's
-level: 1.21
+  The backend runs on both supported architectures
+level: 1.51
 links:
-- SYS005: null
+- SYS007: null
 normative: true
 rationale: |
-  Proxying even CORS-permitting sources is what makes the single-origin data plane hold for every
-  source rather than most. Two mechanisms carry it: the page issues no direct cross-origin fetch, and
-  a connect-src content-security policy enforces that on the wire rather than by convention.
-
-  Reopen premise. A frame denial and a referrer policy were considered here and dropped. Both defend
-  a browsing user against another origin - clickjacking needs an embedder and someone to click, and
-  referrer leakage needs the cross-origin request this item already forbids - and a wall-mounted
-  display has neither. Frame denial also forecloses an operator embedding the display in a dashboard
-  of their own, which nobody decided to give up. Revisit if the page is ever served beyond the LAN,
-  or to a browser a person also browses with. Nothing stops the middleware setting either header; what
-  is dropped is the obligation, not the option.
+  Decomposes SYS007 on the backend side. The deployment model puts the backend
+  on whatever small host is to hand — a Pi, a mini PC, a spare desktop — so a
+  single-architecture build would make that choice for the operator. Stated as
+  an obligation on WiseKiosk rather than as a fact about the host, because a
+  host's capabilities are not ours to require; what is ours is running on both.
 ref: ''
 reviewed: null
 status: accepted
 text: |
-  The display page shall be unable to reach any network origin other than the backend's.
+  The backend shall run on both amd64 and arm64 hosts.
 verification-justification: |
-  Asserted statically against the shipped bundle and dynamically with request interception, with the
-  content-security policy enforcing the same clause at the browser. What no check settles is a
-  request issued by code that reached the page some other way - the assertion covers what this
-  project ships.
+  Asserted by building for both architectures and running the smoke test on each. What no check
+  settles is behaviour under load on either - it establishes that the binary runs, not that it runs
+  well.
 verification-method: test

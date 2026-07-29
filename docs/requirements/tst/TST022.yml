@@ -1,25 +1,24 @@
 active: false
 derived: false
 header: |
-  Pending: boundary schema is single, package-neutral, and complete
-level: 1.29
+  Pending: the registered middleware chain is exactly the declared one
+level: 1.17
 links:
 - SRS023: null
 normative: true
-rationale: ''
+rationale: |
+  An equality against the declared chain, not a search for session or authentication packages: a
+  denylist of known middleware passes the first time one is hand-rolled, and this repository rejects
+  denylist controls on principle. Equality fails closed — any middleware nobody declared, whatever
+  it is called, breaks the assertion.
 ref: ''
 reviewed: null
 status: proposed
 text: |
-  Pending: test parsing the boundary schema and asserting exactly one schema artifact is tracked and
-  its path lies under neither package root; that the set of schema path items equals the set of
-  entries in the static route registration list, in both directions; that every path item declares
-  its success status, the SRS001 upstream-failure status, and 400, 404, 405 and 429, each
-  referencing a named component rather than an inline body; that the upstream-failure body and the
-  SRS022 rejection body both exist as named components and are distinct schemas; and that every path
-  and query parameter is declared with a type. Lands with the codegen mechanism (#7).
+  Pending: check that the middleware chain registered on the constructed router equals the declared
+  chain exactly, so no session, authentication, or access-control middleware can be introduced on
+  the request path without the declaration changing. Runs once the backend skeleton (#9) exists.
 verification-justification: |
-  Settles that one schema artifact exists, outside both package roots, and that its path items match
-  the declared endpoint set. Leaves unproven that the schema describes the payloads the backend
-  actually sends; that is the drift gate's, under SRS024.
+  Settles that the registered middleware chain equals the declared one. Leaves unproven identity
+  established inside a handler rather than in middleware.
 verification-method: test

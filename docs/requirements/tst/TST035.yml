@@ -1,22 +1,24 @@
 active: false
 derived: false
 header: |
-  Pending: per-route rate-limit test
-level: 1.24
+  Pending: boundary codegen drift-gate test
+level: '1.30'
 links:
-- SRS020: null
+- SRS016: null
 normative: true
 rationale: ''
 ref: ''
 reviewed: null
 status: proposed
 text: |
-  Pending: test asserting a route's global rate limit rejects requests over the
-  threshold without an upstream call, while cache hits are neither counted
-  against the limit nor rejected. Lands with the backend skeleton (#9); activated
-  and given a references entry then.
+  Pending: test that injects a deliberate mismatch between the schema and the
+  committed generated code, asserts the CI drift check fails, then regenerates and
+  asserts the build passes. Lands with the codegen mechanism (#7). The check is
+  repo-level (it spans both packages); this item cites the workflow wiring in its
+  text because Doorstop references cannot reach a path under a dot-directory such
+  as .github/ (ADR 0002, ADR 0005).
 verification-justification: |
-  Settles that the limit rejects over threshold without an upstream call and that cache hits are
-  neither counted nor rejected. Leaves unproven the threshold's value against a source's published
-  limit.
+  Settles that a seeded schema/code mismatch fails the drift check and that regeneration clears it.
+  Leaves unproven drift the generators do not express - a schema change producing byte-identical
+  output passes.
 verification-method: test

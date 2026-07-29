@@ -1,27 +1,31 @@
 active: true
 derived: false
 header: |
-  No secret value in any backend output
-level: 1.18
+  The display page reaches no origin but the backend's
+level: 1.21
 links:
-- SYS003: x73sA6VMR9aDga-PqTW6L49gj-iwZdgTOg5xG8VhAwM=
+- SYS004: null
 normative: true
 rationale: |
-  The falsifiable edge of by-construction confinement (SYS003): a canary
-  secret planted through the delivery path and asserted absent from every
-  response and log line turns the structural claim into a failing test.
-  Upstream request URLs and echoed upstream errors are the classic leak
-  paths this guards.
+  Proxying even CORS-permitting sources is what makes the single-origin data plane hold for every
+  source rather than most. Two mechanisms carry it: the page issues no direct cross-origin fetch, and
+  a connect-src content-security policy enforces that on the wire rather than by convention.
+
+  Reopen premise. A frame denial and a referrer policy were considered here and dropped. Both defend
+  a browsing user against another origin - clickjacking needs an embedder and someone to click, and
+  referrer leakage needs the cross-origin request this item already forbids - and a wall-mounted
+  display has neither. Frame denial also forecloses an operator embedding the display in a dashboard
+  of their own, which nobody decided to give up. Revisit if the page is ever served beyond the LAN,
+  or to a browser a person also browses with. Nothing stops the middleware setting either header; what
+  is dropped is the obligation, not the option.
 ref: ''
 reviewed: null
 status: accepted
 text: |
-  No secret value shall appear in any HTTP response body or header, nor
-  in any log output, produced by the backend. Where backend output must
-  refer to a secret — as in the failure treatment of SRS004 — it shall do
-  so by the secret's name, never its value.
+  The display page shall be unable to reach any network origin other than the backend's.
 verification-justification: |
-  Asserted by planting a canary secret and sweeping response bodies, headers and log output for its
-  value. What no check settles is the case where a secret is transformed before it is emitted - a
-  hash or a prefix of a key would not match the canary and would still be a leak.
+  Asserted statically against the shipped bundle and dynamically with request interception, with the
+  content-security policy enforcing the same clause at the browser. What no check settles is a
+  request issued by code that reached the page some other way - the assertion covers what this
+  project ships.
 verification-method: test

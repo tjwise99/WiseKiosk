@@ -1,29 +1,20 @@
 active: false
 derived: false
 header: |
-  Pending: a module-scoped configuration error lands at that module
-level: 1.5
+  Pending: module error-state render test
+level: 1.2
 links:
-- SRS002: null
+- SRS001: null
 normative: true
-rationale: |
-  Both fixtures run the one validation entry point, because the branch this asserts is a property of
-  that path rather than of two separately reachable behaviours. Splitting them across two checks would
-  let each pass against a different code path and leave the branch itself untested - which is what the
-  SRS002/SRS003 pair did before.
+rationale: ''
 ref: ''
 reviewed: null
 status: proposed
 text: |
-  Pending: render test driving two fixtures through the same validation path and asserting opposite
-  outcomes. A configuration whose only error is inside one module's fragment: the page renders, that
-  module's region carries the error state, it names what is wrong and what to change, and no sibling
-  region is affected. A configuration whose top level is malformed: no module renders and the page
-  carries the page-wide state instead. The two fixtures differ only in where the error sits, so the
-  isolable/non-isolable branch is decided rather than assumed. Lands with the frontend skeleton (#10);
-  activated and given a references entry then.
+  Pending: render test asserting a module renders its error state from an
+  error payload while sibling modules render normally. Lands with the
+  frontend skeleton; activated and given a references entry then.
 verification-justification: |
-  Settles the isolable/non-isolable branch, because both fixtures run one validation path and differ
-  only in where the error sits. Leaves unproven that the correction named is good advice; that one
-  is named is decidable, that it helps is not.
+  Settles that a module renders its error state while siblings render normally. Leaves unproven the
+  wording, which SYS001 routes to review.
 verification-method: test

@@ -1,25 +1,22 @@
 active: false
 derived: false
 header: |
-  Pending: Pi Zero-class host demonstration
-level: 1.16
+  Pending: per-route rate-limit test
+level: 1.24
 links:
-- SRS028: null
+- SRS011: null
 normative: true
-rationale: |
-  SRS028's justification rested on both proxies before either was specified anywhere. They are stated
-  here because they are mechanically decidable and CI-runnable, unlike the demonstration on real
-  hardware, which is not.
+rationale: ''
 ref: ''
 reviewed: null
 status: proposed
 text: |
-  Pending: demonstration that the frontend renders and drives the display on a Raspberry Pi Zero-class
-  browser host; shares evidence with the soak demonstration. Two of its claims are asserted
-  mechanically rather than demonstrated: render timing under CPU throttling against a stated budget,
-  and the emitted bundle size against a committed ceiling. Lands with the frontend skeleton (#10);
-  activated then.
+  Pending: test asserting a route's global rate limit rejects requests over the
+  threshold without an upstream call, while cache hits are neither counted
+  against the limit nor rejected. Lands with the backend skeleton (#9); activated
+  and given a references entry then.
 verification-justification: |
-  Emulated ARM boot plus performance proxies. Establishes that the frontend renders on that
-  architecture; does not establish Pi Zero-class timing.
+  Settles that the limit rejects over threshold without an upstream call and that cache hits are
+  neither counted nor rejected. Leaves unproven the threshold's value against a source's published
+  limit.
 verification-method: test

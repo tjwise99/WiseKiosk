@@ -1,27 +1,35 @@
 active: true
 derived: false
 header: |
-  Configuration schema offers no secret-bearing key
-level: 1.17
+  Every source reachable through the backend, statelessly
+level: '1.20'
 links:
-- SYS003: r0OHFjma5xOn8ZgSOGL1oBns-m0Q-TKD9LQHrUnwXSw=
+- SYS004: null
+- SYS006: null
 normative: true
 rationale: |
-  The configuration is the one channel a client fetches wholesale, so the
-  confinement (SYS003) is structural only if the configuration cannot
-  carry a secret in the first place. Excluding secret-bearing keys from
-  the schema leaves nothing to strip; a denylist applied at delivery
-  would fail open.
+  The payload's shape is defined once by the boundary contract (#37) and
+  generated on both sides; this requirement governs the transport — that every
+  source is reachable and that reaching it is stateless — not the shape's
+  definition, nor how many endpoints a source needs, nor what they are called.
+  Fixing a route template here would declare the interface a second time, which
+  is the defect ADR 0008 exists to prevent, and would forbid a module that needs
+  two calls for no reason anyone stated. Statelessness is stated as an observable
+  so it can be tested rather than asserted. The shared response cache (SRS011),
+  keyed on the request itself, is not per-client state: it may determine whether a
+  request is served from cache, but not the payload a client receives.
 ref: ''
-reviewed: cZZfBPIwy3Ggf26h9ceUS_PhgL2CnyoA0LtVsbeiiJ0=
+reviewed: null
 status: accepted
 text: |
-  The configuration schema shall offer no key whose value is a secret —
-  no API key, token, credential, or password. Configuration delivery
-  shall therefore carry no secret to remove: the delivered configuration
-  shall be secret-free by construction, not by a redaction step.
+  Every supported external source shall be reachable through the backend, by the
+  endpoints the boundary contract defines for it. Those endpoints shall hold no
+  per-client or session state: they shall not distinguish between clients, and the
+  payload returned for a request shall be determined solely by that request, not
+  by who sent it or by earlier requests.
 verification-justification: |
-  The check decides that the configuration schema's key set equals a committed allowlist. It does
-  not decide secret-ness: a secret-bearing key that is listed would pass. What it buys is that no key
-  enters the schema without appearing in a reviewed diff.
+  Asserted from three directions - every declared source has a route and every route has a source,
+  the same request from two differing clients returns identical bytes, and a repeat after an
+  intervening request is unchanged. What no check settles is discrimination on a fact the harness
+  holds constant.
 verification-method: test

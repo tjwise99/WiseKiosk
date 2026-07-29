@@ -1,27 +1,18 @@
 active: false
 derived: false
 header: |
-  Pending: exactly one validation implementation, by import graph
-level: 1.14
+  Pending: multi-arch build and smoke test
+level: 1.11
 links:
-- SRS008: null
+- SRS019: null
 normative: true
-rationale: |
-  One engine imported by both call sites still enforces two rule sets if the callers pass different
-  options, or a differently configured instance. The import-graph assertion cannot see that, so it
-  proves a shared dependency rather than a shared verdict.
+rationale: ''
 ref: ''
 reviewed: null
 status: proposed
 text: |
-  Pending: test running a fixture corpus - valid, unknown key, wrong type, missing required, and an
-  error inside a module fragment - through both the page's validation entry point and the standalone
-  desk validator, asserting identical verdicts and identical reported error sets for every fixture; and
-  asserting exactly one source file imports the schema-validation engine, that both paths resolve to
-  that file in the import graph, and that no other file imports the engine directly. The import graph
-  is a cheap structural guard; agreement is what the requirement obliges. Lands with the validator.
+  Pending: a CI matrix that builds and smoke-tests the published image on amd64 and arm64. The CI wiring lives under .github/ (not Doorstop-referenceable, ADR 0002) and is cited here; any non-dot-dir smoke harness it invokes is the references target. Lands with the container image build (#54); activated then.
 verification-justification: |
-  Settles that both validation entry points return identical verdicts and error sets across the
-  corpus. Leaves unproven agreement outside it; five fixtures agreeing is evidence of one
-  implementation rather than proof.
+  Settles that the image builds and smoke-tests on both architectures. Leaves unproven behaviour
+  under load on either - the matrix establishes that it runs, not that it runs well.
 verification-method: test

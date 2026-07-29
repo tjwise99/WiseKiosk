@@ -1,29 +1,27 @@
 active: true
 derived: false
 header: |
-  A configuration change applies no later than the next page load
-level: 1.12
+  Configuration schema offers no secret-bearing key
+level: 1.17
 links:
 - SYS003: r0OHFjma5xOn8ZgSOGL1oBns-m0Q-TKD9LQHrUnwXSw=
 normative: true
 rationale: |
-  Owner decision 2026-07-23 (ADR 0007): page load is the guaranteed floor,
-  phrased as "no later than" so a future live-apply path (e.g. a remote
-  configuration editor) is not designed out. No container restart, rebuild, or
-  redeploy stands between an edit and the display. The freshness guarantee is
-  frontend-owned: the page fetches the configuration bypassing HTTP caches
-  (cache: 'no-store' or equivalent), because the conventional fix — a no-cache
-  header on the config path — is exactly the config-aware code path ADR 0007
-  forbids.
+  The configuration is the one channel a client fetches wholesale, so the
+  confinement (SYS003) is structural only if the configuration cannot
+  carry a secret in the first place. Excluding secret-bearing keys from
+  the schema leaves nothing to strip; a denylist applied at delivery
+  would fail open.
 ref: ''
 reviewed: null
 status: accepted
 text: |
-  A modified configuration shall take effect no later than the next load of
-  the display page; no rebuild or redeployment shall be required to apply a
-  configuration change.
+  The configuration schema shall offer no key whose value is a secret —
+  no API key, token, credential, or password. Configuration delivery
+  shall therefore carry no secret to remove: the delivered configuration
+  shall be secret-free by construction, not by a redaction step.
 verification-justification: |
-  Asserted by two page loads in one browser context with a configuration edit between them. What the
-  check does not settle is the upper bound on staleness in the field: it proves the next load
-  applies the change, not that any particular deployment reloads on any particular schedule.
+  The check decides that the configuration schema's key set equals a committed allowlist. It does
+  not decide secret-ness: a secret-bearing key that is listed would pass. What it buys is that no key
+  enters the schema without appearing in a reviewed diff.
 verification-method: test

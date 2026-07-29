@@ -1,30 +1,34 @@
 active: true
 derived: false
 header: |
-  The display says when the backend is gone
-level: 29
+  One instance, one configuration, nothing shared with another
+level: 32
 links:
-- SYS001: null
+- SYS003: null
 normative: true
 rationale: |
-  Created when the operator-self-sufficiency need was narrowed and then dissolved: it gave up the
-  claim that no operator is needed to keep a deployment running, and this is the part of that want
-  which is ours entirely. Without it the
-  operator sees each module reporting its own unavailability and nothing saying the service itself is
-  down - five separate failures where there is one. The corrective action is named because a failure
-  state that teaches the fix converts a repeating incident into a one-time one; it must be distinct
-  content rather than a rephrasing of the diagnosis, or an item could satisfy the clause by saying the
-  same thing twice. Cadence, what the page displays, and whether one endpoint serves both the page and
-  an orchestrator are mechanism, and are #72's.
+  SECURITY.md publishes this as a threat-model premise - "one instance serves exactly one
+  configuration and shares no runtime state with any other" - and until now nothing in the tree
+  obliged it. The check that establishes it existed, parented to the image item, verifying a property
+  no requirement stated.
+
+  It is the runtime consequence of SYS003 rather than a restatement of it. SYS003 and SRS018 say
+  difference enters from outside the image; this says two instances given different inputs stay
+  different, and that neither can reach the other's state. An image carrying no deployment-specific
+  content still permits a shared writable volume, and two containers sharing one would satisfy SRS018
+  while breaking the claim SECURITY.md makes.
+
+  The household case is the concrete one: a second kiosk in another room, same image, different
+  configuration, and no way for one to disturb the other.
 ref: ''
 status: proposed
 text: |
-  When the backend is unreachable, the display shall say so rather than showing each module as
-  separately unavailable, and shall name the corrective action available to the operator, distinct
-  from the failure it reports.
+  A running instance shall be determined solely by the configuration and secrets supplied to it,
+  shall serve exactly one configuration, and shall share no runtime state with any other instance.
 verification-justification: |
-  Both halves are asserted against an induced backend outage: that one page-wide state replaces the
-  per-module states, and that the state carries a remediation distinct from its diagnosis. What the
-  check does not settle is whether the remediation is the right advice - that a restart policy is what
-  an operator should add is a recommendation #71 makes, not a property this gate decides.
+  Asserted by running two instances of one image side by side with different configurations and
+  showing that neither reflects the other, that the image declares no shared writable storage, and
+  that stopping one leaves the other serving. What the check does not settle is whether an operator
+  can defeat it from outside - two deployments deliberately pointed at one bind mount share that
+  mount, and no property of the image prevents it.
 verification-method: test

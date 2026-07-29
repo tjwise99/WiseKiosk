@@ -1,28 +1,24 @@
 active: true
 derived: false
 header: |
-  Client-facing contract for rejected requests
-level: 1.26
+  Bounded resource use
+level: 1.57
 links:
-- SYS005: null
+- SYS007: null
 normative: true
 rationale: |
-  SRS021 and SRS020 reject invalid and over-limit requests but do not say what
-  the client receives; a module still needs something renderable, and it must be
-  able to tell an operator misconfiguration from a source outage. The concrete
-  body shape is defined by the boundary contract, which SRS023 owns and which
-  admits no second definition site. This item fixes that a rejection is
-  distinct to its cause, that it happens before any upstream call, and that it
-  is separable from an upstream failure. The particular status codes live in
-  TST021 and TST022, where they can change without a specification edit.
+  A declared minimum host has no headroom to absorb a leak, so unbounded
+  growth breaks the claim SYS007 makes. Stated so it is provable early —
+  from a bounded instrumented run rather than a full-length soak — and
+  continuously, rather than only at a pre-release demonstration.
 ref: ''
 reviewed: null
 status: accepted
 text: |
-  A request the backend rejects before making any upstream call shall return a client-error
-  status distinct to its cause, with a response body the frontend can render.
+  The backend shall not grow its resident memory or handle count without bound.
 verification-justification: |
-  Asserted by driving each rejection cause and requiring a distinct client-error status with a body
-  the frontend renders. What no check settles is whether a person reading the rendered rejection can
-  act on it.
+  Asserted by sampling resident memory, handle count and task count across a run and failing on
+  monotonic growth past a threshold. What no check settles is the timescale this obligation is
+  really about: an hour of sampling is read as evidence about months of running, and a leak slower
+  than the window is invisible to it.
 verification-method: test

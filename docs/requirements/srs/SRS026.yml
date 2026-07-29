@@ -1,33 +1,30 @@
 active: true
 derived: false
 header: |
-  The backend establishes no client identity and gates no route on one
-level: 1.96
+  The display says when the backend is gone
+level: 29
 links:
-- SYS007: null
+- SYS001: null
 normative: true
 rationale: |
-  Makes SYS007's security model falsifiable. The posture itself — a deployment serves exactly one
-  trusted LAN — is a fact about where the system is installed, which no check inside the repository
-  can decide. What can be decided is the absence the model rests on, and that absence is precisely
-  what stops being true quietly: a session added for convenience, an access check added by reflex
-  during a later security pass. SYS007's rationale exists to stop that "fix"; this requirement is
-  what lets a gate stop it. The observable forms — no session or authentication material in a
-  response, no 401 or 403, no identity middleware on the request path — are TST025, TST026 and
-  TST027's, one apiece. Listing them here would be the requirement enumerating its own children.
-
-  SRS018 states statelessness as a transport property of the proxy route, and this requirement
-  restates the observable half as a security posture. The duplication is deliberate: SRS018's
-  obligation would be satisfied by a route contract rewrite that kept per-request determinism while
-  introducing an identity mechanism elsewhere, and the posture must outlive that. Stated here so the
-  overlap does not read as an oversight.
+  Created when the operator-self-sufficiency need was narrowed and then dissolved: it gave up the
+  claim that no operator is needed to keep a deployment running, and this is the part of that want
+  which is ours entirely. Without it the
+  operator sees each module reporting its own unavailability and nothing saying the service itself is
+  down - five separate failures where there is one. The corrective action is named because a failure
+  state that teaches the fix converts a repeating incident into a one-time one; it must be distinct
+  content rather than a rephrasing of the diagnosis, or an item could satisfy the clause by saying the
+  same thing twice. Cadence, what the page displays, and whether one endpoint serves both the page and
+  an orchestrator are mechanism, and are #72's.
 ref: ''
-reviewed: null
 status: proposed
 text: |
-  The backend shall establish no client identity and shall gate no route on one.
+  When the backend is unreachable, the display shall say so rather than showing each module as
+  separately unavailable, and shall name the corrective action available to the operator, distinct
+  from the failure it reports.
 verification-justification: |
-  Asserted by sweeping every route for identity headers and statuses, comparing the registered
-  middleware chain against the declared one, and requiring two differing clients to receive
-  identical payloads. What no check settles is identity established outside the request path.
+  Both halves are asserted against an induced backend outage: that one page-wide state replaces the
+  per-module states, and that the state carries a remediation distinct from its diagnosis. What the
+  check does not settle is whether the remediation is the right advice - that a restart policy is what
+  an operator should add is a recommendation #71 makes, not a property this gate decides.
 verification-method: test

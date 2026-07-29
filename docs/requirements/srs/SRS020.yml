@@ -1,28 +1,23 @@
 active: true
 derived: false
 header: |
-  Upstream request rate is bounded, and the bound is not operator-tunable
-level: 1.22
+  Non-root container user
+level: 1.53
 links:
-- SYS005: null
+- SYS006: null
 normative: true
 rationale: |
-  The bound exists to keep WiseKiosk a well-behaved consumer of somebody else's API no matter how
-  many displays point at it. It is deliberately outside the configuration surface: a tunable limit
-  is a way for a deployment to become the thing the limit was protecting against, which SYS003's
-  parameterisation is not meant to offer. Where the numbers live and how the bound is achieved -
-  a TTL response cache keyed on the request, a token bucket, or both - is TST019's, so tuning one
-  does not touch the specification. Two consequences worth stating: a cache hit is neither counted
-  against the limit nor rejected by it, and a sustained upstream outage must not cause an upstream
-  request on every incoming request.
+  SYS006's least-privilege half made falsifiable on the artifact: a process holding no more than it
+  needs bounds what a compromise reaches, and root inside a container is the largest single grant
+  available to it. The image is where this is decidable - the running user is a property of what was
+  published, not of how an operator starts it.
 ref: ''
 reviewed: null
 status: accepted
 text: |
-  The backend's rate of upstream requests to a source shall be bounded regardless of how many
-  clients it serves or how often they ask, and the bound shall not be raisable by configuration.
+  The container image shall run as a non-root user.
 verification-justification: |
-  Asserted by driving a route past its threshold and observing that no upstream call follows, and by
-  asserting the composed schema exposes no property that sets a cadence. What no check settles is
-  the bound's value against a real source's published limit.
+  Asserted by inspecting the published image's declared user. What no check settles is what an
+  operator does at run time: a deployment can override the user, and no property of the image
+  prevents it.
 verification-method: test

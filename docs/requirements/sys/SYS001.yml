@@ -20,7 +20,7 @@ text: |
 verification-justification: |
   Each child asserts a rendered state against an induced failure, so the parent is settled by its
   children. What no check settles is whether the resulting text is intelligible to a person who did not
-  write it; the plain-language obligations in SRS001, SRS002, SRS003 and SRS029 are read at review.
+  write it; the plain-language obligations in SRS001, SRS002, SRS004 and SRS026 are read at review.
   This sentence is the corpus's only record that legibility is a human review obligation, so the
   items it names must be the ones that carry a plain-language clause.
 verification-method: test

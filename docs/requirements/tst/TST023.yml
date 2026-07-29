@@ -1,25 +1,20 @@
 active: false
 derived: false
 header: |
-  Pending: both sides consume the generated boundary types
-level: 1.31
+  Pending: schema secret-key inspection
+level: 1.17
 links:
-- SRS024: null
+- SRS007: null
 normative: true
 rationale: ''
 ref: ''
 reviewed: null
 status: proposed
 text: |
-  Pending: test asserting that for every route in the static registration list the handler's request
-  and response types resolve to declarations under the generated package; and, on the frontend, that
-  for each module holding a boundary fragment the component's payload prop type, and the error-render
-  path's failure and rejection prop types, resolve to declarations under the generated boundary
-  directory. A module with no fragment has no payload prop and is not expected to have one. Both halves
-  are positive: they name where a type must come from rather than where it must not, so a hand-declared
-  twin fails by not resolving rather than by matching a pattern. Lands with the codegen mechanism (#7).
+  Pending: inspection of the configuration schema asserting it offers no
+  secret-bearing key; form (repo check or review checklist) decided when
+  the schema lands (#8). Activated then.
 verification-justification: |
-  Settles that handler and component types resolve to declarations under the generated package.
-  Leaves unproven a boundary value that crosses without appearing in a handler signature or a
-  component prop.
+  Asserts key-set equality against the committed allowlist. Does not decide whether a listed key is
+  secret-bearing.
 verification-method: test

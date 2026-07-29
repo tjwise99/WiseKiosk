@@ -1,18 +1,23 @@
 active: false
 derived: false
 header: |
-  Pending: container non-root uid test
-level: 1.4
+  Pending: canary-secret leak test
+level: 1.18
 links:
-- SRS025: null
+- SRS008: null
 normative: true
 rationale: ''
 ref: ''
 reviewed: null
 status: proposed
 text: |
-  Pending: image test asserting the running container's effective uid is non-root (not 0) and the Dockerfile declares an explicit non-root USER. Lands with the container image build (#54); activated and given a references entry then.
+  Pending: canary test planting a known secret value through <NAME>_FILE
+  delivery, exercising every route including the SRS006 failure paths,
+  and asserting the canary value appears in no response body, header, or
+  log line. Lands with the backend skeleton (#9); activated and given a
+  references entry then.
 verification-justification: |
-  Settles that the image declares a non-root user and runs as one. Leaves unproven what an operator
-  does at run time, since a deployment can override the user and no image property prevents it.
+  Settles that a planted canary appears in no body, header or log across every route including the
+  failure paths. Leaves unproven a secret emitted after transformation - a hash or a prefix would
+  not match the canary and would still be a leak.
 verification-method: test

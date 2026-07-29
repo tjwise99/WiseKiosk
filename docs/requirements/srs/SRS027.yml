@@ -1,24 +1,32 @@
 active: true
 derived: false
 header: |
-  The backend runs on both supported architectures
-level: 1.51
+  The display page holds no device capability it does not use
+level: 30
 links:
-- SYS008: null
+- SYS006: null
 normative: true
 rationale: |
-  Decomposes SYS008 on the backend side. The deployment model puts the backend
-  on whatever small host is to hand — a Pi, a mini PC, a spare desktop — so a
-  single-architecture build would make that choice for the operator. Stated as
-  an obligation on WiseKiosk rather than as a fact about the host, because a
-  host's capabilities are not ours to require; what is ours is running on both.
+  Split from the reachability item, whose text had carried this as a trailing clause. The two
+  decompose from different needs: reaching no foreign origin is the single-origin data plane
+  (SYS004), while holding no capability beyond what is needed is SYS006's second half - a process
+  holding no more than it needs bounds what a compromise reaches. Under one parent the capability
+  clause traced to no clause of its own need, which item-level link checking cannot see.
+
+  The clause was originally rescued from a dropped browser-headers item and appended here rather than
+  given its own text, to avoid re-creating an item a merge had just absorbed. That reason does not
+  reach the parentage question, which was never put.
+
+  A module renders third-party data. A page that cannot reach camera, microphone, geolocation, USB,
+  serial or Bluetooth cannot be made to, whatever that data turns out to contain.
 ref: ''
-reviewed: null
-status: accepted
+status: proposed
 text: |
-  The backend shall run on both amd64 and arm64 hosts.
+  The display page shall be unable to use any device feature it does not need.
 verification-justification: |
-  Asserted by building for both architectures and running the smoke test on each. What no check
-  settles is behaviour under load on either - it establishes that the binary runs, not that it runs
-  well.
+  Asserted on the wire against a committed allowlist of granted features: the served policy grants
+  nothing outside it, and the page still renders under the policy. Leaves unproven whether an entry on
+  that allowlist is justified. Deciding which features a module legitimately needs would require
+  modules to declare their capabilities, and no artifact in this repository provides for that; until
+  one does, entries are added by hand and rest on review.
 verification-method: test

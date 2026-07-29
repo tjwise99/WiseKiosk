@@ -1,33 +1,29 @@
 active: true
 derived: false
 header: |
-  Every offered configuration key is exercised at a non-default value
-level: 1.101
+  Request parameters validated against known-good per-source patterns
+level: 1.23
 links:
-- SYS003: r0OHFjma5xOn8ZgSOGL1oBns-m0Q-TKD9LQHrUnwXSw=
+- SYS004: null
 normative: true
 rationale: |
-  SYS003's obligation had no child expressing it. The backend has no configuration concept
-  (ADR 0007), which is a property of a component holding no keys - it satisfied the need
-  vacuously while the demand that every offered key actually works went unverified, and the gate
-  stayed green over the gap. Stated as an observable difference rather than as "renders without
-  error", because a dead knob - a key the schema offers and the code ignores - renders the page
-  perfectly. Absence of error is what a key wired to nothing produces, so it cannot be the
-  criterion. The last sentence carries SYS003's second clause: a value that cannot be changed
-  observably is a constant, and offering it is the defect. The check ranges over the schema rather
-  than a hand-written key list, because the schema is the finite machine-readable statement of what
-  is offered: a key added there is covered the moment it exists, where a list would drift silently.
+  Validating against known-good patterns keeps malformed or unrecognized
+  requests from reaching upstream and bounds the proxy so it cannot be driven to
+  forward arbitrary requests (SYS004). The client-facing form of
+  a rejection is specified by SRS013. What a given source's pattern is — a code
+  format, an enumerated identifier set — is that module's own obligation under
+  ADR 0012, not this one's; naming examples here would put two modules'
+  requirements in a framework item.
 ref: ''
 reviewed: null
-status: proposed
+status: accepted
 text: |
-  Every key the configuration schema offers shall produce an observable difference in the rendered
-  page between its default value and at least one other schema-valid value, and the page shall
-  render without error at every schema-valid value the key admits. A key whose value cannot be
-  observed to change the page is a constant and shall not be offered.
+  The backend shall validate each request's parameters against the known-good
+  pattern its source declares, and shall reject a request whose parameters do not
+  conform without issuing any upstream request.
 verification-justification: |
-  Asserted per key by rendering at its default and at one other schema-valid value and requiring the
-  page to differ, plus a render at every admitted value. What no check settles is whether the
-  observable difference is the intended one - that the page changed is decidable, that it changed
-  correctly is the module's own concern.
+  Asserted by submitting non-conforming parameters and requiring rejection with no upstream call
+  issued. What no check settles is whether a source's declared pattern actually matches what that
+  source accepts - the pattern is authored per source and a wrong one rejects valid requests just as
+  decidably.
 verification-method: test

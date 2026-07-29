@@ -1,24 +1,25 @@
 active: false
 derived: false
 header: |
-  Pending: no credential material on the wire, over every registered route
-level: 1.15
+  Pending: proxy endpoint & statelessness test
+level: '1.20'
 links:
-- SRS026: null
+- SRS009: null
 normative: true
-rationale: |
-  The route set is derived from the single static registration list rather than written by hand, so
-  coverage is total by construction and a route added later cannot escape the sweep. A
-  hand-listed sweep would pass while the next route leaked.
+rationale: ''
 ref: ''
 reviewed: null
 status: proposed
 text: |
-  Pending: integration check that, for every entry in the static route registration list, exercises
-  the route's success path and each upstream-failure class and asserts no response carries a
-  `Set-Cookie` or `WWW-Authenticate` header. Runs once the backend skeleton (#9) and the route
-  registration list exist.
+  Pending: backend integration test driving every endpoint the boundary contract
+  declares for each supported source, asserting each returns its
+  contract-shaped payload and that every source is reachable; and that the payload
+  for a request is determined solely by that request — no per-client or session
+  state — with cache-hit/miss behaviour (whether an upstream call occurs)
+  covered separately by TST027. Lands with the backend skeleton (#9); activated
+  and given a references entry then.
 verification-justification: |
-  Settles that no route emits an identity header on any success or failure path. Leaves unproven
-  identity carried in a response body rather than a header.
+  Settles that every declared endpoint returns a contract-shaped payload and every source is
+  reachable. Leaves unproven behaviour when an upstream returns a shape the contract does not
+  describe.
 verification-method: test

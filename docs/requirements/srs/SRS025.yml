@@ -1,23 +1,22 @@
 active: true
 derived: false
 header: |
-  Non-root container user
-level: 1.53
+  No secret material in the published image
+level: 1.104
 links:
-- SYS007: null
+- SYS003: null
 normative: true
 rationale: |
-  SYS007's least-privilege half made falsifiable on the artifact: a process holding no more than it
-  needs bounds what a compromise reaches, and root inside a container is the largest single grant
-  available to it. The image is where this is decidable - the running user is a property of what was
-  published, not of how an operator starts it.
+  Distinct from SRS018, which bars deployment-specific content. An image can carry no configuration
+  and still carry a key baked in at build time, or left in a layer an earlier stage deleted. This
+  states the secret half on its own so that neither is satisfied by proving the other.
 ref: ''
-reviewed: null
 status: accepted
 text: |
-  The container image shall run as a non-root user.
+  The published image shall contain no secret material.
 verification-justification: |
-  Asserted by inspecting the published image's declared user. What no check settles is what an
-  operator does at run time: a deployment can override the user, and no property of the image
-  prevents it.
+  Asserted by exporting the image filesystem and every layer and matching against a committed
+  secret-pattern set, with a planted canary required to be reported. What no check settles is a
+  secret the pattern set does not describe; the predicate is an enumeration this project maintains,
+  not a general decision procedure.
 verification-method: test

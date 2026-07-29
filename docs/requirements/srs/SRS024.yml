@@ -1,27 +1,33 @@
 active: true
 derived: false
 header: |
-  Both sides consume the generated types
-level: 1.31
+  Every offered configuration key is exercised at a non-default value
+level: 1.101
 links:
-- SYS006: null
+- SYS003: r0OHFjma5xOn8ZgSOGL1oBns-m0Q-TKD9LQHrUnwXSw=
 normative: true
 rationale: |
-  The failure this forecloses is the hand-declared twin: a struct or interface that mirrors a
-  generated type closely enough to compile and render, and then drifts. Structural typing lets such
-  a twin compile cleanly, which is why the obligation is stated over declaration origin rather than
-  over shape - the compiler reports origin exactly even where it permits assignability. Scoped to
-  modules that have a boundary payload. A local module puts no value on the boundary and so has no
-  generated payload type to consume; requiring one of every component would oblige a type that
-  cannot exist.
+  SYS003's obligation had no child expressing it. The backend has no configuration concept
+  (ADR 0007), which is a property of a component holding no keys - it satisfied the need
+  vacuously while the demand that every offered key actually works went unverified, and the gate
+  stayed green over the gap. Stated as an observable difference rather than as "renders without
+  error", because a dead knob - a key the schema offers and the code ignores - renders the page
+  perfectly. Absence of error is what a key wired to nothing produces, so it cannot be the
+  criterion. The last sentence carries SYS003's second clause: a value that cannot be changed
+  observably is a constant, and offering it is the defect. The check ranges over the schema rather
+  than a hand-written key list, because the schema is the finite machine-readable statement of what
+  is offered: a key added there is covered the moment it exists, where a list would drift silently.
 ref: ''
 reviewed: null
-status: accepted
+status: proposed
 text: |
-  Every value crossing the boundary shall be used on both sides through a type generated from the
-  schema, never one declared by hand.
+  Every key the configuration schema offers shall produce an observable difference in the rendered
+  page between its default value and at least one other schema-valid value, and the page shall
+  render without error at every schema-valid value the key admits. A key whose value cannot be
+  observed to change the page is a constant and shall not be offered.
 verification-justification: |
-  Asserted by requiring every handler's request and response types, and every module component's
-  payload and error props, to resolve to declarations under the generated package. What no check
-  settles is a value that crosses the boundary without appearing in either position.
+  Asserted per key by rendering at its default and at one other schema-valid value and requiring the
+  page to differ, plus a render at every admitted value. What no check settles is whether the
+  observable difference is the intended one - that the page changed is decidable, that it changed
+  correctly is the module's own concern.
 verification-method: test

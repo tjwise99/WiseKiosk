@@ -1,22 +1,18 @@
 active: false
 derived: false
 header: |
-  Pending: configuration failure-class render test
-level: 1.13
+  Pending: container non-root uid test
+level: 1.4
 links:
-- SRS003: null
+- SRS020: null
 normative: true
 rationale: ''
 ref: ''
 reviewed: null
 status: proposed
 text: |
-  Pending: render test asserting the page shell loads and renders an operator-language error state
-  naming which configuration failure occurred, for each failure class - absent, unfetchable,
-  unparseable, and schema-invalid. What the state must say beyond naming the failure is TST002's,
-  which asserts it on the branch where a correction exists to state. Lands with the frontend skeleton
-  (#10); activated and given a references entry then.
+  Pending: image test asserting the running container's effective uid is non-root (not 0) and the Dockerfile declares an explicit non-root USER. Lands with the container image build (#54); activated and given a references entry then.
 verification-justification: |
-  Settles that each named failure class renders a state that identifies it, without a valid
-  configuration. Leaves unproven that the four classes are exhaustive.
+  Settles that the image declares a non-root user and runs as one. Leaves unproven what an operator
+  does at run time, since a deployment can override the user and no image property prevents it.
 verification-method: test

@@ -1,0 +1,27 @@
+active: true
+derived: false
+header: |
+  One schema, package-neutral, all boundary value classes
+level: 1.29
+links:
+- SYS005: null
+normative: true
+rationale: |
+  "Every payload shape and every parameter name" (TESTING.md Boundary tier)
+  includes the error and status contracts the frontend renders from; enumerating
+  the value classes keeps them from being the uncovered value the tier warns
+  about. The schema's repository location is allocated by #5 and not fixed here.
+ref: ''
+reviewed: null
+status: accepted
+text: |
+  The boundary contract shall be defined by exactly one schema artifact, owned by neither the
+  backend nor the frontend package, from which both sides are generated. It shall define every
+  value crossing the boundary, including those a module contributes. No boundary value shall be
+  defined in more than one place.
+verification-justification: |
+  Asserted by regenerating both sides from the schema and failing on any difference, and by
+  requiring each boundary value to have one definition site across the schema and its fragments.
+  What no check settles is whether the definition is the right shape - only that there is exactly
+  one of it.
+verification-method: test

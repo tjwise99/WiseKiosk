@@ -1,22 +1,25 @@
 active: false
 derived: false
 header: |
-  Pending: secret rotation-without-restart test
-level: 1.25
+  Pending: both sides consume the generated boundary types
+level: 1.31
 links:
-- SRS004: null
+- SRS016: null
 normative: true
 rationale: ''
 ref: ''
 reviewed: null
 status: proposed
 text: |
-  Pending: test asserting a secret value changed in the <NAME>_FILE file is
-  reflected on the next cache-missing request that resolves it, with no process
-  restart and no in-memory value cache. Lands with the backend skeleton (#9);
-  activated and given a references entry then.
+  Pending: test asserting that for every route in the static registration list the handler's request
+  and response types resolve to declarations under the generated package; and, on the frontend, that
+  for each module holding a boundary fragment the component's payload prop type, and the error-render
+  path's failure and rejection prop types, resolve to declarations under the generated boundary
+  directory. A module with no fragment has no payload prop and is not expected to have one. Both halves
+  are positive: they name where a type must come from rather than where it must not, so a hand-declared
+  twin fails by not resolving rather than by matching a pattern. Lands with the codegen mechanism (#7).
 verification-justification: |
-  Settles that a changed file is picked up on the next cache-missing request with no restart. Leaves
-  unproven the window between the write and that request, during which the old value is still in
-  use.
+  Settles that handler and component types resolve to declarations under the generated package.
+  Leaves unproven a boundary value that crosses without appearing in a handler signature or a
+  component prop.
 verification-method: test

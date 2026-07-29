@@ -4,7 +4,7 @@ header: |
   Pending: backend-unreachable display state
 level: 63
 links:
-- SRS029: null
+- SRS026: null
 normative: true
 rationale: ''
 ref: ''

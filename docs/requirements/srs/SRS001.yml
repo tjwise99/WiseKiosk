@@ -12,7 +12,7 @@ rationale: |
   the same whichever module it is (ADR 0012). So this is stated once, here, and not per module.
   Containment is the second half - four other regions going blank because one source is down is the
   disproportionate degradation SYS001 forbids. The shape of the payload that carries the failure is
-  SRS023's, not this item's.
+  SRS015's, not this item's.
 ref: ''
 reviewed: null
 status: accepted

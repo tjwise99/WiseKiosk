@@ -1,23 +1,25 @@
 active: false
 derived: false
 header: |
-  Pending: parameter-validation rejection test
-level: 1.23
+  Pending: Pi Zero-class host demonstration
+level: 1.16
 links:
 - SRS021: null
 normative: true
-rationale: ''
+rationale: |
+  SRS021's justification rested on both proxies before either was specified anywhere. They are stated
+  here because they are mechanically decidable and CI-runnable, unlike the demonstration on real
+  hardware, which is not.
 ref: ''
 reviewed: null
 status: proposed
 text: |
-  Pending: test asserting, for every registered source, that a request whose
-  parameters do not match the pattern that source declares is rejected with no
-  upstream call — driven from the registered set so a source added later cannot
-  escape the sweep. Lands with the backend skeleton (#9); activated
-  and given a references entry then.
+  Pending: demonstration that the frontend renders and drives the display on a Raspberry Pi Zero-class
+  browser host; shares evidence with the soak demonstration. Two of its claims are asserted
+  mechanically rather than demonstrated: render timing under CPU throttling against a stated budget,
+  and the emitted bundle size against a committed ceiling. Lands with the frontend skeleton (#10);
+  activated then.
 verification-justification: |
-  Settles that a non-conforming request is rejected with no upstream call, for every registered
-  source. Leaves unproven that a source's declared pattern matches what that source accepts - a
-  wrong pattern rejects valid requests just as decidably.
+  Emulated ARM boot plus performance proxies. Establishes that the frontend renders on that
+  architecture; does not establish Pi Zero-class timing.
 verification-method: test

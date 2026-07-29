@@ -1,20 +1,22 @@
 active: false
 derived: false
 header: |
-  Pending: unknown-key rejection test
-level: 1.7
+  Pending: rejected-request client-contract test
+level: 1.26
 links:
-- SRS008: null
+- SRS013: null
 normative: true
 rationale: ''
 ref: ''
 reviewed: null
 status: proposed
 text: |
-  Pending: validation test asserting a configuration containing a key not in
-  the schema is rejected, with the unrecognized key named in the error. Lands
-  with the config schema (#8); activated and given a references entry then.
+  Pending: test asserting the backend returns 400 (invalid parameter), 404
+  (unknown source), 405 (non-GET method), and 429 (over rate limit) with a
+  renderable body distinct from the SRS001 upstream-failure shape, each without
+  an upstream call. Lands with the backend skeleton (#9); activated and given a
+  references entry then.
 verification-justification: |
-  Settles that an unrecognised key is rejected and named. Leaves unproven that the name is the one
-  the operator recognises when the key is nested.
+  Settles that each rejection cause produces its own status with a renderable body, before any
+  upstream call. Leaves unproven that a person reading the rendered rejection can act on it.
 verification-method: test

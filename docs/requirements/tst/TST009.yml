@@ -1,20 +1,22 @@
 active: false
 derived: false
 header: |
-  Pending: schema secret-key inspection
-level: 1.17
+  Pending: page-load-applies-config test
+level: 1.12
 links:
-- SRS009: null
+- SRS003: null
 normative: true
 rationale: ''
 ref: ''
-reviewed: ghbvbNymzGkaimXzuQ28KwKVfE277qS52YCl50xGZF0=
+reviewed: null
 status: proposed
 text: |
-  Pending: inspection of the configuration schema asserting it offers no
-  secret-bearing key; form (repo check or review checklist) decided when
-  the schema lands (#8). Activated then.
+  Pending: integration test asserting a configuration edit takes effect on the next display page load,
+  with no rebuild or redeployment - two loads in one browser context with the edit between them, so
+  that a page served the previous configuration from an HTTP cache fails. Lands with the frontend
+  skeleton (#10); activated and given a references entry then.
 verification-justification: |
-  Asserts key-set equality against the committed allowlist. Does not decide whether a listed key is
-  secret-bearing.
+  Settles that an edit applies on the next load in one browser context, so an HTTP-cached page
+  fails. Leaves unproven how often a deployed kiosk reloads - the requirement bounds the mechanism,
+  not the field schedule.
 verification-method: test

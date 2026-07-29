@@ -3,7 +3,7 @@
 A config-driven smart-mirror display. A full-screen browser page renders a fixed set of five
 modules — `clock`, `compliments`, `OpenMeteo` weather, `AviationWeather` (CheckWX METAR/TAF), and
 `DisneyWaitTimes` (themeparks.wiki) — from a handful of public APIs, running unattended on a display
-behind one-way glass. The layout is fixed (SYS002, SRS006) and there is nothing to interact with:
+behind one-way glass. The layout is fixed (SYS002, SRS017) and there is nothing to interact with:
 it renders and it refreshes.
 Shipped as one container image; each deployment is
 independent, customised through configuration, never through a fork (SYS003). A sixth module is

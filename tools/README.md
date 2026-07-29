@@ -25,7 +25,7 @@ with a non-zero exit and operator-language errors, neither starting the applicat
 
 **One obligation here does stay in the tree.** The validator and the page's own validation must run
 the same implementation, so a configuration cannot pass one and fail the other. That constrains
-WiseKiosk, not the tool, and it is stated by `SRS008` under
+WiseKiosk, not the tool, and it is stated by `SRS005` under
 [ADR 0007](../docs/decisions/0007-config-validation-allocation.md).
 
 ## The configuration generator
@@ -73,12 +73,12 @@ serving, unhealthy when it is not, including when the process is alive but wedge
 *Asserted by* an integration test running the image and reading the reported status in both states.
 
 This is an oracle, not a monitoring feature, and three checks read it: § Bring-up, § Upgrade, and
-`TST053` in the requirements tree. Each needs a machine-readable *is it serving yet* rather than a
+`TST012` in the requirements tree. Each needs a machine-readable *is it serving yet* rather than a
 scraped log line.
 
 Nothing acts on the status. Docker and Compose restart a container whose process exits, not one
 reporting unhealthy, so an unhealthy kiosk stays unhealthy until somebody intervenes. What tells an
-operator the kiosk is broken is the kiosk — `SRS029` obliges the display to say so, on the screen in
+operator the kiosk is broken is the kiosk — `SRS026` obliges the display to say so, on the screen in
 the room.
 
 **Reopen premise.** This sits outside the requirements tree because nothing acts on it. If WiseKiosk

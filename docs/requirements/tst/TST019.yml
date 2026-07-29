@@ -1,23 +1,25 @@
 active: false
 derived: false
 header: |
-  Pending: TTL cache-behaviour test (liveness canary)
-level: 1.22
+  Pending: unresolvable-secret failure-path test
+level: 1.16
 links:
-- SRS020: null
+- SRS006: null
 normative: true
 rationale: ''
 ref: ''
 reviewed: null
 status: proposed
 text: |
-  Pending: integration test asserting the (source, query) TTL cache serves an
-  identical request from cache within the TTL without an upstream call and
-  refetches after expiry, using a fake upstream that counts calls. This
-  cache-behaviour test is the standing liveness canary for the REST transport.
-  Lands with the backend skeleton (#9); activated
-  and given a references entry then.
+  Pending: proxy test asserting the backend boots with no secrets
+  delivered, and a request to a source whose secret is unresolvable
+  (<NAME>_FILE unset; file missing; file unreadable; file empty after
+  trailing-whitespace stripping) returns that source's legible
+  upstream-failure response naming the secret, while
+  other sources still serve. Lands with the backend skeleton (#9);
+  activated and given a references entry then.
 verification-justification: |
-  Settles that an identical request within the TTL issues no upstream call and refetches after
-  expiry. Leaves unproven the TTL's value against a source's actual update cadence.
+  Settles boot independence and the per-source failure treatment across the four unresolvable cases
+  the file interface makes reachable. Leaves unproven any fifth case, and whether an operator
+  reading the named secret can find it.
 verification-method: test

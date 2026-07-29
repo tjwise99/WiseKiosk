@@ -1,23 +1,28 @@
 active: true
 derived: false
 header: |
-  One generic published image
-level: 1.44
+  Upstream request rate is bounded, and the bound is not operator-tunable
+level: 1.22
 links:
-- SYS003: x73sA6VMR9aDga-PqTW6L49gj-iwZdgTOg5xG8VhAwM=
+- SYS004: null
 normative: true
 rationale: |
-  Keeps the one-image model falsifiable: any deployment-specific content baked
-  into the image is a defect.
+  The bound exists to keep WiseKiosk a well-behaved consumer of somebody else's API no matter how
+  many displays point at it. It is deliberately outside the configuration surface: a tunable limit
+  is a way for a deployment to become the thing the limit was protecting against, which SYS003's
+  parameterisation is not meant to offer. Where the numbers live and how the bound is achieved -
+  a TTL response cache keyed on the request, a token bucket, or both - is TST027's, so tuning one
+  does not touch the specification. Two consequences worth stating: a cache hit is neither counted
+  against the limit nor rejected by it, and a sustained upstream outage must not cause an upstream
+  request on every incoming request.
 ref: ''
 reviewed: null
 status: accepted
 text: |
-  The published image shall carry no deployment-specific content: no configuration file, and no
-  deployment-specific value in its environment.
+  The backend's rate of upstream requests to a source shall be bounded regardless of how many
+  clients it serves or how often they ask, and the bound shall not be raisable by configuration.
 verification-justification: |
-  Asserted by exporting the published image and finding no configuration file and no deployment-
-  specific environment value. What the check does not settle is whether a value is deployment-
-  specific: the check ranges over what the schema declares, so a deployment-varying value the schema
-  does not know about would pass.
+  Asserted by driving a route past its threshold and observing that no upstream call follows, and by
+  asserting the composed schema exposes no property that sets a cadence. What no check settles is
+  the bound's value against a real source's published limit.
 verification-method: test

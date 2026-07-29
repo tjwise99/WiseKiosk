@@ -9,7 +9,7 @@ carried by #7). This ADR records the mechanism **decision**; the **build** is #7
 The Go backend and the TypeScript frontend share no types
 ([ADR 0001](0001-backend-language-go.md)), which makes the boundary contract non-negotiable:
 **one schema, both sides generated from it**, CI failing on stale generated code.
-Round #37 elicited the requirements for that property (SYS006; SRS023–SRS024) deliberately
+Round #37 elicited the requirements for that property (SYS005; SRS015–SRS016) deliberately
 **mechanism-agnostic** — a "shall" that names a tool churns when the tool changes. This ADR chooses
 the tool, which is the decision half of #7.
 
@@ -30,15 +30,15 @@ and #7's acceptance — schema file present, both generators wired, drift gate g
   **TypeScript types via `openapi-typescript`** — build-time type emission, erased at compile,
   **zero runtime weight in the browser bundle** (the Raspberry-Pi-Zero-class constraint decides
   this).
-- **The schema defines every value class that crosses the boundary** (SRS023): request parameter
+- **The schema defines every value class that crosses the boundary** (SRS015): request parameter
   names and types, success payloads, the structured body for the upstream failure SRS001 obliges a
-  module to render, the client-error rejection body SRS022 requires the frontend to be able to
-  render, and every response status code the frontend discriminates on. SRS001 and SRS022 oblige the
-  behaviour; the shapes that carry it are defined here and nowhere else, because SRS023 admits no
+  module to render, the client-error rejection body SRS013 requires the frontend to be able to
+  render, and every response status code the frontend discriminates on. SRS001 and SRS013 oblige the
+  behaviour; the shapes that carry it are defined here and nowhere else, because SRS015 admits no
   second definition site.
 - **Drift gate:** a repo-level CI check regenerates both sides and fails on any difference
   (`git diff --exit-status`); the generators are **version-pinned** so a toolchain bump cannot read
-  as schema drift (SRS024; verified by TST038). The gate is repo-level because it spans both
+  as schema drift (SRS016; verified by TST035). The gate is repo-level because it spans both
   packages.
 - **The frontend consumes the generated types only — no runtime re-validation of proxied payloads.**
   The version-skew case a runtime validator defends against is foreclosed by single-image co-deploy,
@@ -89,6 +89,6 @@ and #7's acceptance — schema file present, both generators wired, drift gate g
   consumer).
 - **ARCHITECTURE.md's "boundary contract" section** (its "open question 2") is answered by this ADR;
   the fuller prose is written when the mechanism is built under #7/#5.
-- **Requirement text stays mechanism-agnostic** (SYS006, SRS023–SRS024): this ADR is provenance, not
+- **Requirement text stays mechanism-agnostic** (SYS005, SRS015–SRS016): this ADR is provenance, not
   cited inside the "shall" statements, so a later mechanism change touches the ADR and the generate
   step, not the tree.

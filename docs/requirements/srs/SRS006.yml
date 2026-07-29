@@ -1,37 +1,34 @@
 active: true
 derived: false
 header: |
-  Full-screen assembly at kiosk; reflow, not overlap, at narrower widths
-level: 1.41
+  Unresolvable secret surfaces as that source's upstream failure
+level: 1.16
 links:
-- SYS002: WKtMGUBh_Ew881SVgmcG0I3DbchZFVDHjXWT515-NGw=
+- SYS001: TQyfJejH81RI-POadHI3gN0eM_DDB8AFAnMwcKjCth4=
+- SYS003: r0OHFjma5xOn8ZgSOGL1oBns-m0Q-TKD9LQHrUnwXSw=
 normative: true
 rationale: |
-  Decomposes SYS002 (kiosk full-screen, the primary target) and SYS002 (desktop,
-  the supported secondary) into the concrete viewport-driven render obligations
-  their rationales anticipate. The deployed display is a 16:9 television, so
-  1920×1080 landscape is the canonical kiosk test viewport; relative units carry
-  the same layout to 4K without a second viewport. 1280×800 and 1440×900 are the
-  desktop window sizes the secondary use case must render sensibly at. Phone
-  widths are deliberately not a requirement (SYS002; owner decision 2026-07-22) —
-  if wanted later, support arrives as its own reviewed system need, not a clause
-  here. What is owed is a reflowing layout, not a responsive-design programme,
-  and the viewport figures are TST006's so tuning one does not touch the
-  specification. Verified by viewport-driven render tests
-  (Playwright-class) asserting the structural properties at each size; the
-  residual aesthetic judgement stays human.
+  The backend is config-blind (ADR 0007) and cannot know which sources a
+  deployment uses, so a boot-time secrets gate would brick deployments
+  that use a subset of sources. A per-source failure at the kiosk names
+  what is missing and leaves the rest of the display running (SYS001) —
+  the debuggable outcome chosen on #35 over failing to boot.
 ref: ''
 reviewed: null
 status: accepted
 text: |
-  The display page shall assemble the modules named in the configuration, each
-  into its configured region of a single full-screen layout. The assembled layout
-  shall exhibit no overlapping regions and no clipped content at the kiosk
-  viewport, and shall reflow without overlap, clipping, or horizontal scrolling at
-  narrower ones.
+  The backend shall resolve a secret when handling a request for the
+  source that needs it, not at boot; the backend shall boot successfully
+  regardless of which secrets are deliverable. When a source's secret is
+  unresolvable — <NAME>_FILE unset, or the file missing, unreadable, or
+  empty after trailing-whitespace stripping — requests to that source's
+  route shall fail with the same legible
+  per-source failure treatment as any other upstream failure, identifying
+  the unresolvable secret by name, while all other sources remain
+  unaffected.
 verification-justification: |
-  Asserted by rendering a fixture configuration at three viewports and reading the resulting
-  geometry and region set. What no check settles is whether the layout is legible to a person across
-  a room - overlap and clipping are decidable, readability at distance is the property the kiosk
-  actually needs and no assertion reaches it.
+  Asserted at both ends - a boot with no secret deliverable succeeds, and a request to a source
+  whose secret is unresolvable fails in the per-source form while its siblings serve. What no check
+  settles is whether every unresolvable case is enumerated; the four named here are the ones the
+  file interface makes reachable.
 verification-method: test

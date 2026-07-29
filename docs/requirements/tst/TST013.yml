@@ -4,7 +4,7 @@ header: |
   Pending: the published image carries no secret material
 level: 1.14
 links:
-- SRS013: null
+- SRS025: null
 normative: true
 rationale: |
   The earlier form asserted that "no secret material is present", a predicate with no oracle anywhere

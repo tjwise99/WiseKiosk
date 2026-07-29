@@ -1,0 +1,27 @@
+active: false
+derived: false
+header: |
+  Pending: exactly one validation implementation, by import graph
+level: 1.14
+links:
+- SRS005: null
+normative: true
+rationale: |
+  One engine imported by both call sites still enforces two rule sets if the callers pass different
+  options, or a differently configured instance. The import-graph assertion cannot see that, so it
+  proves a shared dependency rather than a shared verdict.
+ref: ''
+reviewed: null
+status: proposed
+text: |
+  Pending: test running a fixture corpus - valid, unknown key, wrong type, missing required, and an
+  error inside a module fragment - through both the page's validation entry point and the standalone
+  desk validator, asserting identical verdicts and identical reported error sets for every fixture; and
+  asserting exactly one source file imports the schema-validation engine, that both paths resolve to
+  that file in the import graph, and that no other file imports the engine directly. The import graph
+  is a cheap structural guard; agreement is what the requirement obliges. Lands with the validator.
+verification-justification: |
+  Settles that both validation entry points return identical verdicts and error sets across the
+  corpus. Leaves unproven agreement outside it; five fixtures agreeing is evidence of one
+  implementation rather than proof.
+verification-method: test

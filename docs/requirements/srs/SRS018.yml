@@ -1,35 +1,23 @@
 active: true
 derived: false
 header: |
-  Every source reachable through the backend, statelessly
-level: '1.20'
+  One generic published image
+level: 1.44
 links:
-- SYS005: null
-- SYS007: null
+- SYS003: x73sA6VMR9aDga-PqTW6L49gj-iwZdgTOg5xG8VhAwM=
 normative: true
 rationale: |
-  The payload's shape is defined once by the boundary contract (#37) and
-  generated on both sides; this requirement governs the transport — that every
-  source is reachable and that reaching it is stateless — not the shape's
-  definition, nor how many endpoints a source needs, nor what they are called.
-  Fixing a route template here would declare the interface a second time, which
-  is the defect ADR 0008 exists to prevent, and would forbid a module that needs
-  two calls for no reason anyone stated. Statelessness is stated as an observable
-  so it can be tested rather than asserted. The shared response cache (SRS020),
-  keyed on the request itself, is not per-client state: it may determine whether a
-  request is served from cache, but not the payload a client receives.
+  Keeps the one-image model falsifiable: any deployment-specific content baked
+  into the image is a defect.
 ref: ''
 reviewed: null
 status: accepted
 text: |
-  Every supported external source shall be reachable through the backend, by the
-  endpoints the boundary contract defines for it. Those endpoints shall hold no
-  per-client or session state: they shall not distinguish between clients, and the
-  payload returned for a request shall be determined solely by that request, not
-  by who sent it or by earlier requests.
+  The published image shall carry no deployment-specific content: no configuration file, and no
+  deployment-specific value in its environment.
 verification-justification: |
-  Asserted from three directions - every declared source has a route and every route has a source,
-  the same request from two differing clients returns identical bytes, and a repeat after an
-  intervening request is unchanged. What no check settles is discrimination on a fact the harness
-  holds constant.
+  Asserted by exporting the published image and finding no configuration file and no deployment-
+  specific environment value. What the check does not settle is whether a value is deployment-
+  specific: the check ranges over what the schema declares, so a deployment-varying value the schema
+  does not know about would pass.
 verification-method: test

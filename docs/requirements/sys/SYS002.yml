@@ -10,7 +10,7 @@ rationale: |
   has failed silently. "Wholly visible" absorbs no-overlap, no-clipping and no-scrollbars as one
   property rather than three observables — none of them is a separate want. "The display it was
   configured for" carries the kiosk-primary, desktop-secondary distinction without fixing viewports in
-  the need; SRS006 owns those. Phone widths are deliberately not a requirement.
+  the need; SRS017 owns those. Phone widths are deliberately not a requirement.
 ref: ''
 reviewed: WKtMGUBh_Ew881SVgmcG0I3DbchZFVDHjXWT515-NGw=
 status: accepted

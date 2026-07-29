@@ -182,7 +182,7 @@ changed, which the citation resolver above decides without anyone declaring anyt
   default-base pull request records the ticket linkage.
 - The Docker build context excludes `.git` and `node_modules`, by `.dockerignore`. Neither is secret
   material; both are build hygiene, and a smaller context is a faster and more predictable build.
-  That the image carries no secret is the tree's, under SRS013 (#54).
+  That the image carries no secret is the tree's, under SRS025 (#54).
 - A depth-1 listing of the repository root holds no `package.json`, `go.mod`, `pyproject.toml`,
   `requirements*.txt` or `.venv/` — tooling is siloed with the feature it serves — and every
   Dependabot entry that is not `github-actions` resolves to a non-root directory holding the matching

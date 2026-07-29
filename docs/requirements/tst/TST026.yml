@@ -1,23 +1,20 @@
 active: false
 derived: false
 header: |
-  Pending: no identity-based rejection, in the contract or on the wire
-level: 1.16
+  Pending: every external source has a proxy route
+level: 1.21
 links:
-- SRS026: null
+- SRS009: null
 normative: true
-rationale: |
-  Asserted against the boundary schema as well as the running service because the schema is where a
-  401 or 403 would first be declared: catching it there fails the build before any handler exists,
-  and the live half proves the service produces no status the contract never declared.
+rationale: ''
 ref: ''
 reviewed: null
 status: proposed
 text: |
-  Pending: check that the boundary schema declares no 401 or 403 response for any path item, and
-  that the live route sweep produces neither status for any request. Request rejection remains
-  shape-based under SRS022. Runs once the boundary schema (#37) and the backend skeleton (#9) exist.
+  Pending: test asserting the set of external sources declared by upstream-backed modules equals the
+  set of registered GET /api/<source> routes, in both directions, so no source is exempted from the
+  proxy and no route exists without a source. Lands with the backend skeleton (#9).
 verification-justification: |
-  Settles that neither status appears in the schema or in a live sweep. Leaves unproven a rejection
-  that gates on identity while returning a different status.
+  Settles the source-to-route bijection in both directions. Leaves unproven that a registered route
+  reaches the source it names - the sets match by name, and a misrouted entry matches too.
 verification-method: test

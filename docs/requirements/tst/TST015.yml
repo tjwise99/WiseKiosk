@@ -4,10 +4,10 @@ header: |
   Pending: boundary fragments compose, and are declared once
 level: 1.15
 links:
-- SRS023: null
+- SRS015: null
 normative: true
 rationale: |
-  The regenerate-and-diff form is the one SRS024's drift gate already establishes, so composition is
+  The regenerate-and-diff form is the one SRS016's drift gate already establishes, so composition is
   proved by the mechanism the boundary contract already relies on rather than a second one.
 ref: ''
 reviewed: null

@@ -1,22 +1,31 @@
 active: false
 derived: false
 header: |
-  Pending: a module component issues no network request of its own
-level: '1.40'
+  Pending: two clients, one request, one answer
+level: 66
 links:
-- SRS019: null
+- SRS009: null
 normative: true
-rationale: ''
+rationale: |
+  SRS023's three checks establish that no identity machinery exists - no Set-Cookie or
+  WWW-Authenticate, no 401 or 403, no session or access-control middleware on the chain. None of them
+  asserts that two different callers issuing the same request receive the same payload. A backend
+  reading a caller address from a forwarded header and varying its response sets no cookie, returns
+  neither status, and registers no middleware, so it satisfies all three while breaking the clause
+  this item verifies.
 ref: ''
 reviewed: null
 status: proposed
 text: |
-  Pending: test rendering each module component with only its props supplied and the network globals
-  stubbed - fetch, XMLHttpRequest, WebSocket, EventSource - asserting zero calls to any of them. The
-  rendered region is asserted to reflect the supplied props so that a component which renders nothing
-  cannot pass the zero-call assertion vacuously. Lands with the first module (#12).
+  Pending: integration test issuing the same request to a source endpoint from two clients that differ
+  in every way the transport exposes - source address, forwarded-for header, user agent, and
+  connection - and asserting the response bodies are byte-identical and the response headers differ in
+  no value derived from the caller. Repeated after an intervening request from one of the two, so that
+  a response varying with request history fails as well. Lands with the backend skeleton (#9);
+  activated and given a references entry then.
 verification-justification: |
-  Settles that a component issues no network request of its own, with the props assertion preventing
-  a component that renders nothing from passing vacuously. Leaves unproven a request issued by a
-  shared data layer the component calls into.
+  What the check settles is that the transport-level facts a backend could discriminate on do not
+  change the answer. What it does not settle is discrimination on a fact the test does not vary - a
+  backend keying on something the harness holds constant would pass, so this is evidence against
+  per-client behaviour rather than proof of its absence.
 verification-method: test

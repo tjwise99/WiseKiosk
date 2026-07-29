@@ -1,22 +1,22 @@
 active: false
 derived: false
 header: |
-  Pending: page-load-applies-config test
-level: 1.12
+  Pending: bind-mounted config demonstration
+level: 1.9
 links:
-- SRS007: null
+- SRS018: null
 normative: true
 rationale: ''
 ref: ''
 reviewed: null
 status: proposed
 text: |
-  Pending: integration test asserting a configuration edit takes effect on the next display page load,
-  with no rebuild or redeployment - two loads in one browser context with the edit between them, so
-  that a page served the previous configuration from an HTTP cache fails. Lands with the frontend
-  skeleton (#10); activated and given a references entry then.
+  Pending: test running the published image with a fixture configuration bind-mounted at the
+  configuration path, asserting the served configuration reflects the fixture byte-for-byte; running
+  the same image with no mount, asserting it fails loudly rather than serving a baked default; and
+  exporting the image filesystem, asserting nothing exists at the configuration path. Lands with the
+  container image build (#54); activated then.
 verification-justification: |
-  Settles that an edit applies on the next load in one browser context, so an HTTP-cached page
-  fails. Leaves unproven how often a deployed kiosk reloads - the requirement bounds the mechanism,
-  not the field schedule.
+  Settles byte-fidelity of the mounted configuration, loud failure with no mount, and absence of a
+  baked default. Leaves unproven behaviour when the mount exists but is unreadable.
 verification-method: test

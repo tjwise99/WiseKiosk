@@ -1,24 +1,23 @@
 active: false
 derived: false
 header: |
-  Pending: the registered middleware chain is exactly the declared one
-level: 1.17
+  Pending: TTL cache-behaviour test (liveness canary)
+level: 1.22
 links:
-- SRS026: null
+- SRS011: null
 normative: true
-rationale: |
-  An equality against the declared chain, not a search for session or authentication packages: a
-  denylist of known middleware passes the first time one is hand-rolled, and this repository rejects
-  denylist controls on principle. Equality fails closed — any middleware nobody declared, whatever
-  it is called, breaks the assertion.
+rationale: ''
 ref: ''
 reviewed: null
 status: proposed
 text: |
-  Pending: check that the middleware chain registered on the constructed router equals the declared
-  chain exactly, so no session, authentication, or access-control middleware can be introduced on
-  the request path without the declaration changing. Runs once the backend skeleton (#9) exists.
+  Pending: integration test asserting the (source, query) TTL cache serves an
+  identical request from cache within the TTL without an upstream call and
+  refetches after expiry, using a fake upstream that counts calls. This
+  cache-behaviour test is the standing liveness canary for the REST transport.
+  Lands with the backend skeleton (#9); activated
+  and given a references entry then.
 verification-justification: |
-  Settles that the registered middleware chain equals the declared one. Leaves unproven identity
-  established inside a handler rather than in middleware.
+  Settles that an identical request within the TTL issues no upstream call and refetches after
+  expiry. Leaves unproven the TTL's value against a source's actual update cadence.
 verification-method: test

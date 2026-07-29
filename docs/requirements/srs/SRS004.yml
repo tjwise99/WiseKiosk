@@ -1,34 +1,29 @@
 active: true
 derived: false
 header: |
-  Unresolvable secret surfaces as that source's upstream failure
-level: 1.16
+  Page renders a legible error state for every configuration failure class
+level: 1.13
 links:
 - SYS001: TQyfJejH81RI-POadHI3gN0eM_DDB8AFAnMwcKjCth4=
-- SYS003: r0OHFjma5xOn8ZgSOGL1oBns-m0Q-TKD9LQHrUnwXSw=
 normative: true
 rationale: |
-  The backend is config-blind (ADR 0007) and cannot know which sources a
-  deployment uses, so a boot-time secrets gate would brick deployments
-  that use a subset of sources. A per-source failure at the kiosk names
-  what is missing and leaves the rest of the display running (SYS001) —
-  the debuggable outcome chosen on #35 over failing to boot.
+  ADR 0007: the page shell runs validation itself and owns the presentation of
+  its result. Failure classes are enumerated because SYS001's never-a-blank-
+  screen intent covers more than schema errors — an absent, unfetchable, or
+  unparseable file must be as legible as an invalid one. Scoped to "no valid
+  configuration applied" so a future live-apply path keeps the freedom to hold
+  last-good on a bad reload.
 ref: ''
 reviewed: null
 status: accepted
 text: |
-  The backend shall resolve a secret when handling a request for the
-  source that needs it, not at boot; the backend shall boot successfully
-  regardless of which secrets are deliverable. When a source's secret is
-  unresolvable — <NAME>_FILE unset, or the file missing, unreadable, or
-  empty after trailing-whitespace stripping — requests to that source's
-  route shall fail with the same legible
-  per-source failure treatment as any other upstream failure, identifying
-  the unresolvable secret by name, while all other sources remain
-  unaffected.
+  When no configuration can be applied - the file absent, unfetchable,
+  unparseable, or failing validation in a way that cannot be isolated to a
+  single module - the display shall render a plain-language error state naming
+  which failure occurred. The page shell shall load and render this state
+  without requiring a valid configuration.
 verification-justification: |
-  Asserted at both ends - a boot with no secret deliverable succeeds, and a request to a source
-  whose secret is unresolvable fails in the per-source form while its siblings serve. What no check
-  settles is whether every unresolvable case is enumerated; the four named here are the ones the
-  file interface makes reachable.
+  Asserted by inducing each failure class and reading the rendered shell. What the check does not
+  settle is that the four classes are exhaustive: a configuration failing in a way none of them
+  names would render some state, and no check decides whether that state is the right one.
 verification-method: test

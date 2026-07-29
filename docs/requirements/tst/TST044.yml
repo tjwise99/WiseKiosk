@@ -4,7 +4,7 @@ header: |
   Pending: denied device capabilities
 level: 65
 links:
-- SRS030: null
+- SRS027: null
 normative: true
 rationale: |
   Stated as an allowlist of granted features rather than a list of denied ones. A denied list fails

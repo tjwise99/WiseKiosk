@@ -4,7 +4,7 @@ header: |
   Pending: page fetches same-origin only, statically and at runtime
 level: 1.42
 links:
-- SRS019: null
+- SRS010: null
 normative: true
 rationale: ''
 ref: ''
@@ -14,7 +14,7 @@ text: |
   Pending: test scanning the shipped bundle for absolute-URL literals and failing on any origin
   other than the page's own, which catches paths no render exercises; and assembling the page under
   a known-good configuration with request interception, asserting every request origin equals the
-  page origin and every module data request matches /api/<source>. SRS019's connect-src policy makes
+  page origin and every module data request matches /api/<source>. SRS010's connect-src policy makes
   a cross-origin fetch fail in the browser regardless, so the two together close the case rather
   than sample it. Lands with the frontend skeleton (#10).
 verification-justification: |

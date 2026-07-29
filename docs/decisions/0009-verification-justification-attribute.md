@@ -15,9 +15,9 @@
 > original reading still applies if an item ever sits there again.
 >
 > **The evidence is the 2026-07-28 audit.** Three reviewers, filing blind against opposed briefs,
-> produced two of their strongest convergent findings by reading justifications: `SRS030`'s admission
+> produced two of their strongest convergent findings by reading justifications: `SRS027`'s admission
 > that no check settles *"whether the denied set is the right set"* is what exposed a check asserting
-> over a set no artifact defines, and `SRS031`'s *"not a wrong type being sent"* scoped all three
+> over a set no artifact defines, and `SRS028`'s *"not a wrong type being sent"* scoped all three
 > readings of a requirement that obliged the browser rather than the product. Fourteen items carried
 > the attribute at the time. Both findings came from that fourteen.
 

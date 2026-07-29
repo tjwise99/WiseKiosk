@@ -59,17 +59,17 @@ owner challenged it; it fell; the allocation below is what remains when it does.
 
 ## Consequences
 
-- Page-load and desk validation are one implementation (SRS008); the engine ships in the bundle —
+- Page-load and desk validation are one implementation (SRS005); the engine ships in the bundle —
   acceptable for a small schema, even on a Pi-Zero-class browser — and as a packaged CLI, a
   distribution question the generator has in every variant.
 - The validation report never crosses the frontend/backend boundary: one less payload in the
   contract, and the boundary-contract domain (#37) is untouched by configuration.
 - The apply floor improves: edit the file, reload the page — no container restart, rebuild, or
-  redeploy (SRS007).
+  redeploy (SRS003).
 - A future remote config editor composes naturally: same schema, same engine.
 - The page shell acquires a hard obligation to load and render diagnostics without a valid
-  configuration (TST003).
-- The freshness floor (SRS007) is frontend-owned: the page must fetch the configuration bypassing
+  configuration (TST011).
+- The freshness floor (SRS003) is frontend-owned: the page must fetch the configuration bypassing
   HTTP caches (`cache: 'no-store'` or equivalent), because the conventional server-side fix — a
   no-cache header on the config path — is a config-aware code path this decision forbids.
 - A healthy healthcheck coexists with a display showing an error report. Accepted, not accidental:

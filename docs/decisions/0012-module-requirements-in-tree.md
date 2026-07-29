@@ -29,7 +29,7 @@ the same prefixes and the same gate.
 **Framework universals are not restated per module.** Secret delivery, caching, request rejection and
 failure rendering are already obliged for every module by framework items. A module need decomposes
 into what is true of that module and nothing else. The decomposition list above is bounded by this:
-an earlier draft named *parameters* and *failure states*, which are `SRS021` and `SRS001` — a module
+an earlier draft named *parameters* and *failure states*, which are `SRS012` and `SRS001` — a module
 author following it literally would have written both twice.
 
 No gate can decide this. Doorstop cannot see that a module need restates `SYS001`, so the rule is

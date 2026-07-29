@@ -5,7 +5,7 @@
 WiseKiosk runs on a **single trusted LAN**, one instance per deployment, with no user accounts,
 sessions, or authentication. There is no multi-tenancy and no untrusted client. Security comes from
 the network boundary, not from the application; one instance serves exactly one
-configuration and shares no runtime state with any other (SYS003, SRS032).
+configuration and shares no runtime state with any other (SYS003, SRS029).
 
 The controls that are structural, not vigilance-based:
 
@@ -14,9 +14,9 @@ The controls that are structural, not vigilance-based:
 - **Secrets are delivered by the deployment environment**, never stored in the image, the
   repository, or the configuration (SYS003).
 - **No secret transits through config delivery**, so there is no secret-stripping step to forget —
-  the configuration schema offers no secret-bearing key (SRS009).
+  the configuration schema offers no secret-bearing key (SRS007).
 - **The browser enforces the page's posture**: the page is confined to its own origin and to the
-  browser features the display uses (SRS019, SRS030).
+  browser features the display uses (SRS010, SRS027).
 
 ## Reporting a vulnerability
 

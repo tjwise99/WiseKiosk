@@ -1,25 +1,23 @@
 active: false
 derived: false
 header: |
-  Pending: unresolvable-secret failure-path test
-level: 1.16
+  Pending: bounded-resource-growth analysis
+level: 1.4
 links:
-- SRS004: null
+- SRS022: null
 normative: true
 rationale: ''
 ref: ''
 reviewed: null
 status: proposed
 text: |
-  Pending: proxy test asserting the backend boots with no secrets
-  delivered, and a request to a source whose secret is unresolvable
-  (<NAME>_FILE unset; file missing; file unreadable; file empty after
-  trailing-whitespace stripping) returns that source's legible
-  upstream-failure response naming the secret, while
-  other sources still serve. Lands with the backend skeleton (#9);
-  activated and given a references entry then.
+  Pending: bounded-growth observation over a run of at least sixty minutes, sampling resident memory
+  and handle count at thirty-second intervals, failing on a monotonic increase in resident memory
+  exceeding ten percent, on a monotonic increase in handle count exceeding its own threshold, or on any
+  increase in the runtime's task count. Duration, interval and both thresholds are tunable here rather
+  than in the requirement.
 verification-justification: |
-  Settles boot independence and the per-source failure treatment across the four unresolvable cases
-  the file interface makes reachable. Leaves unproven any fifth case, and whether an operator
-  reading the named secret can find it.
+  Settles that memory, handles and tasks do not grow monotonically past their thresholds across the
+  sampled run. Leaves unproven the timescale the obligation is about: an hour is read as evidence
+  about months, and a leak slower than the window is invisible.
 verification-method: test

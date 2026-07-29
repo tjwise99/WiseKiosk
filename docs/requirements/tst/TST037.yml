@@ -1,22 +1,22 @@
 active: false
 derived: false
 header: |
-  Pending: negative-caching test
-level: 1.28
+  Pending: a module component issues no network request of its own
+level: '1.40'
 links:
-- SRS020: null
+- SRS010: null
 normative: true
 rationale: ''
 ref: ''
 reviewed: null
 status: proposed
 text: |
-  Pending: test asserting an upstream failure is cached for a negative TTL
-  shorter than the source's success TTL — a second request within that window
-  issues no upstream call, and after it expires the next request retries
-  upstream. Lands with the backend skeleton (#9); activated and given a
-  references entry then.
+  Pending: test rendering each module component with only its props supplied and the network globals
+  stubbed - fetch, XMLHttpRequest, WebSocket, EventSource - asserting zero calls to any of them. The
+  rendered region is asserted to reflect the supplied props so that a component which renders nothing
+  cannot pass the zero-call assertion vacuously. Lands with the first module (#12).
 verification-justification: |
-  Settles that a failure is cached for a shorter window than a success and that the retry follows
-  expiry. Leaves unproven the negative TTL's value against how long real upstreams stay down.
+  Settles that a component issues no network request of its own, with the props assertion preventing
+  a component that renders nothing from passing vacuously. Leaves unproven a request issued by a
+  shared data layer the component calls into.
 verification-method: test

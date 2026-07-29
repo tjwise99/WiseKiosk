@@ -4,13 +4,13 @@ header: |
   Pending: refresh cadence is not configurable
 level: 1.43
 links:
-- SRS020: null
+- SRS011: null
 normative: true
 rationale: |
   The fake-timer cadence assertion was struck: it measured the frontend's poll interval against a
-  backend rate bound SRS020's text declares irrelevant ("regardless of how many clients it serves or
+  backend rate bound SRS011's text declares irrelevant ("regardless of how many clients it serves or
   how often they ask"). That a cadence is a constant in code rather than an operator-tunable key is
-  module-contract.md's, under Cadence and TTL are chosen together. What remains here is SRS020's own
+  module-contract.md's, under Cadence and TTL are chosen together. What remains here is SRS011's own
   clause that the bound is not raisable by configuration.
 ref: ''
 reviewed: null

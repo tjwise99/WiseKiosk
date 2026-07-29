@@ -1,22 +1,34 @@
 active: true
 derived: false
 header: |
-  Frontend runs on a Pi Zero-class browser host
-level: 1.56
+  Served responses declare their type, and forbid the browser inferring one
+level: 31
 links:
-- SYS008: null
+- SYS006: null
 normative: true
 rationale: |
-  Decomposes SYS008's minimum-host claim on the browser side; demonstrated on
-  reference hardware, sharing evidence with SRS017's bounded-growth observation.
+  The backend proxies upstream data and serves it from its own origin, so bytes this project did not
+  author reach the browser under this project's origin. If a response arrives with an absent or wrong
+  media type the browser may infer one, and content inferred to be script is executed as though it
+  had been served deliberately. The connect-src policy does not stop this: a script the backend
+  served is 'self'. That is privilege the response was never granted, which is SYS006's subject.
+
+  Both halves are obligations on WiseKiosk. An earlier form of this item said served content "shall
+  be interpreted by the browser only as the media type the response declares", which obliged the
+  browser rather than the product and could not be failed against anything this project ships.
+
+  This is the one browser-hardening obligation whose threat survives a kiosk with no browsing user.
+  It needs no hostile page, no embedder and no interaction - only an upstream that mislabels a
+  response, which is not ours to control. That is what distinguishes it from the frame and referrer
+  policies dropped at SRS010, whose reopen premise records why they went.
 ref: ''
-reviewed: 0snbAQQRecb3qDfXVMq6dmB_6oHSWxAxlSlXTHhX89E=
-status: accepted
+status: proposed
 text: |
-  The frontend shall operate on a Raspberry Pi Zero-class browser host
-  driving the display.
+  The backend shall declare a media type on every response it serves, and shall instruct the browser
+  not to infer one.
 verification-justification: |
-  An emulated ARM boot renders the page and drives the display, and CPU-throttled render timing plus a
-  bundle ceiling bound performance. Emulation does not decide device timing — the emulator's clock is
-  not the device's — so the performance claim rests entirely on the proxies.
+  Both halves are asserted on the wire against served responses: that a media type is declared, and
+  that the response forbids inference. What the check does not settle is whether a declared type is
+  the correct one for the bytes beneath it - an upstream that mislabels its own payload is outside
+  what this obligation reaches.
 verification-method: test
