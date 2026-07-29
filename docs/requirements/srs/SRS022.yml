@@ -1,7 +1,7 @@
 active: true
 derived: false
 header: |
-  Bounded resource use
+  A bounded running footprint
 level: 1.57
 links:
 - SYS007: null
@@ -11,14 +11,21 @@ rationale: |
   growth breaks the claim SYS007 makes. Stated so it is provable early —
   from a bounded instrumented run rather than a full-length soak — and
   continuously, rather than only at a pre-release demonstration.
+
+  It names no resource. Which ones are sampled, and at what thresholds, is
+  the verification's business: a leak class discovered later is then a change
+  to a check rather than to this obligation, and an enumeration here would
+  otherwise be read as the complete list of what may not leak.
 ref: ''
 reviewed: null
 status: accepted
 text: |
-  The backend shall not grow its resident memory or handle count without bound.
+  The backend's running footprint shall stay bounded: no resource it holds shall grow without bound
+  across a continuous run.
 verification-justification: |
   Asserted by sampling resident memory, handle count and task count across a run and failing on
-  monotonic growth past a threshold. What no check settles is the timescale this obligation is
-  really about: an hour of sampling is read as evidence about months of running, and a leak slower
-  than the window is invisible to it.
+  monotonic growth past a threshold. Because the obligation names no resource, what the check
+  settles is narrower than what is stated: a resource nothing samples can grow unbounded and pass.
+  Nor does any check settle the timescale this obligation is really about — an hour of sampling is
+  read as evidence about months of running, and a leak slower than the window is invisible to it.
 verification-method: test

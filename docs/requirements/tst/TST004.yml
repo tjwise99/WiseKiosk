@@ -18,6 +18,7 @@ text: |
   than in the requirement.
 verification-justification: |
   Settles that memory, handles and tasks do not grow monotonically past their thresholds across the
-  sampled run. Leaves unproven the timescale the obligation is about: an hour is read as evidence
-  about months, and a leak slower than the window is invisible.
+  sampled run. Leaves unproven that those three are every resource the parent obliges - it names
+  none, so a leak in a resource this does not sample passes - and the timescale the obligation is
+  about: an hour is read as evidence about months, and a leak slower than the window is invisible.
 verification-method: test
