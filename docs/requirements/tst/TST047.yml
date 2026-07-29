@@ -20,4 +20,8 @@ text: |
   cadence, by ranging over the policies a registration entry owns and asserting none of them is
   reachable from a schema property - not by matching a keyword list, which fails open on a name nobody
   anticipated. Lands with the frontend skeleton (#10).
+verification-justification: |
+  Settles that no schema property reaches a cadence policy, by ranging over the registration entry's
+  own policies rather than a keyword list. Leaves unproven a cadence made configurable by a
+  mechanism outside the schema.
 verification-method: test

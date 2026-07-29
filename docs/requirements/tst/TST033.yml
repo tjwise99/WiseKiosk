@@ -8,11 +8,14 @@ links:
 normative: true
 rationale: ''
 ref: ''
-reviewed: VS2o14Gs4x7-8HKJNcWZu-_wKGr11d1rGEedr8zd_H8=
+reviewed: null
 status: proposed
 text: |
   Pending: unit tests of secret resolution — value read from the file at
   <NAME>_FILE; trailing whitespace stripped; a bare <NAME>
   environment variable ignored. Lands with the backend skeleton (#9);
   activated and given a references entry then.
+verification-justification: |
+  Settles the three resolution rules at unit level. Leaves unproven their behaviour under concurrent
+  resolution of the same secret.
 verification-method: test

@@ -16,4 +16,8 @@ text: |
   either is absent on any served route, if a Content-Type is empty or generic enough to leave the
   type unstated, or if the nosniff value is weakened. Lands with the backend that serves the
   frontend; activated with a references entry to the integration test then.
+verification-justification: |
+  Settles that a concrete media type and the no-inference header are present on every served route.
+  Leaves unproven that a declared type is correct for the bytes beneath it - an upstream
+  mislabelling its own payload is outside what this reaches.
 verification-method: test

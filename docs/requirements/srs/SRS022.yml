@@ -21,4 +21,8 @@ status: accepted
 text: |
   A request the backend rejects before making any upstream call shall return a client-error
   status distinct to its cause, with a response body the frontend can render.
+verification-justification: |
+  Asserted by driving each rejection cause and requiring a distinct client-error status with a body
+  the frontend renders. What no check settles is whether a person reading the rendered rejection can
+  act on it.
 verification-method: test

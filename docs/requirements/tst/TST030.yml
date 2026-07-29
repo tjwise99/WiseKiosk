@@ -8,10 +8,13 @@ links:
 normative: true
 rationale: ''
 ref: ''
-reviewed: le5PxvgLaAktQ-tga48SzCmMKSbE1uFM7nziTTyRUAs=
+reviewed: null
 status: proposed
 text: |
   Pending: render test asserting a module renders its error state from an
   error payload while sibling modules render normally. Lands with the
   frontend skeleton; activated and given a references entry then.
+verification-justification: |
+  Settles that a module renders its error state while siblings render normally. Leaves unproven the
+  wording, which SYS001 routes to review.
 verification-method: test

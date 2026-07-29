@@ -27,4 +27,9 @@ text: |
   per-client or session state: they shall not distinguish between clients, and the
   payload returned for a request shall be determined solely by that request, not
   by who sent it or by earlier requests.
+verification-justification: |
+  Asserted from three directions - every declared source has a route and every route has a source,
+  the same request from two differing clients returns identical bytes, and a repeat after an
+  intervening request is unchanged. What no check settles is discrimination on a fact the harness
+  holds constant.
 verification-method: test

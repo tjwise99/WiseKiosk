@@ -18,4 +18,8 @@ text: |
   kiosk viewport (1920x1080), and reflows with no overlap, no clipping, and no horizontal scroll at the
   desktop viewports (1280x800 and 1440x900). Lands with the frontend skeleton (#10); activated and
   given a references entry then.
+verification-justification: |
+  Settles that every configured module is present, in its assigned region, with no overlap or
+  clipping at three viewports. Leaves unproven legibility across a room, which is the property a
+  kiosk actually needs and which no geometric assertion reaches.
 verification-method: test

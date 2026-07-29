@@ -19,4 +19,8 @@ status: accepted
 text: |
   When a module's data request fails, that module shall render a plain-language error state in
   its own region, and no other module shall be affected.
+verification-justification: |
+  Asserted against an induced upstream failure: the failing region carries an error state and its
+  siblings still render. What no check settles is whether the wording is intelligible to somebody
+  who did not write it - SYS001 routes that to review.
 verification-method: test

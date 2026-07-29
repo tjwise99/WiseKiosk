@@ -25,5 +25,9 @@ text: |
   page between its default value and at least one other schema-valid value, and the page shall
   render without error at every schema-valid value the key admits. A key whose value cannot be
   observed to change the page is a constant and shall not be offered.
-verification-justification: ''
+verification-justification: |
+  Asserted per key by rendering at its default and at one other schema-valid value and requiring the
+  page to differ, plus a render at every admitted value. What no check settles is whether the
+  observable difference is the intended one - that the page changed is decidable, that it changed
+  correctly is the module's own concern.
 verification-method: test

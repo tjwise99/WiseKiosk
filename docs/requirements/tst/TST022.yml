@@ -8,7 +8,7 @@ links:
 normative: true
 rationale: ''
 ref: ''
-reviewed: ZGl6laZFfnHdWRZqF6mfYbOqyMPxcRsVaKUcEBULv4o=
+reviewed: null
 status: proposed
 text: |
   Pending: test parsing the boundary schema and asserting exactly one schema artifact is tracked and
@@ -18,4 +18,8 @@ text: |
   referencing a named component rather than an inline body; that the upstream-failure body and the
   SRS022 rejection body both exist as named components and are distinct schemas; and that every path
   and query parameter is declared with a type. Lands with the codegen mechanism (#7).
+verification-justification: |
+  Settles that one schema artifact exists, outside both package roots, and that its path items match
+  the declared endpoint set. Leaves unproven that the schema describes the payloads the backend
+  actually sends; that is the drift gate's, under SRS024.
 verification-method: test

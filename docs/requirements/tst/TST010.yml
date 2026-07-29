@@ -8,7 +8,7 @@ links:
 normative: true
 rationale: ''
 ref: ''
-reviewed: iTC6aRvev9vXgAw1L2z8VlWb7SAIJWeIzD8bxT4b5tU=
+reviewed: null
 status: proposed
 text: |
   Pending: canary test planting a known secret value through <NAME>_FILE
@@ -16,4 +16,8 @@ text: |
   and asserting the canary value appears in no response body, header, or
   log line. Lands with the backend skeleton (#9); activated and given a
   references entry then.
+verification-justification: |
+  Settles that a planted canary appears in no body, header or log across every route including the
+  failure paths. Leaves unproven a secret emitted after transformation - a hash or a prefix would
+  not match the canary and would still be a leak.
 verification-method: test

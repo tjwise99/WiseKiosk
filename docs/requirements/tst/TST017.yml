@@ -18,4 +18,8 @@ text: |
   state — with cache-hit/miss behaviour (whether an upstream call occurs)
   covered separately by TST019. Lands with the backend skeleton (#9); activated
   and given a references entry then.
+verification-justification: |
+  Settles that every declared endpoint returns a contract-shaped payload and every source is
+  reachable. Leaves unproven behaviour when an upstream returns a shape the contract does not
+  describe.
 verification-method: test

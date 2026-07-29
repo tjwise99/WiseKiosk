@@ -14,4 +14,8 @@ text: |
   Pending: test exporting the published image filesystem and asserting nothing exists at the
   configuration mount path, and that no deployment-specific value appears in the image environment.
   Lands with the container image build (#54); activated then.
+verification-justification: |
+  Settles that nothing sits at the configuration path and no deployment-specific value is in the
+  image environment. Leaves unproven a deployment-varying value the schema does not declare, since
+  the check ranges over what the schema knows.
 verification-method: test

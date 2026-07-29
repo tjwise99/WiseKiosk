@@ -16,10 +16,14 @@ rationale: |
   header on the config path — is exactly the config-aware code path ADR 0007
   forbids.
 ref: ''
-reviewed: 4nqGv5rLxOIFkRwsSw9NBtIJXagPBbkDEVHISCnevWw=
+reviewed: null
 status: accepted
 text: |
   A modified configuration shall take effect no later than the next load of
   the display page; no rebuild or redeployment shall be required to apply a
   configuration change.
+verification-justification: |
+  Asserted by two page loads in one browser context with a configuration edit between them. What the
+  check does not settle is the upper bound on staleness in the field: it proves the next load
+  applies the change, not that any particular deployment reloads on any particular schedule.
 verification-method: test

@@ -17,4 +17,9 @@ status: accepted
 text: |
   No single upstream request or response shall be able to stall the backend or exhaust its
   memory.
+verification-justification: |
+  Asserted by a hung upstream and an oversized response against a live handler, with a concurrent
+  request completing throughout. What the check does not settle is the bound's value - that a
+  timeout and a size limit exist is decidable, whether they are set correctly for a real upstream is
+  a judgement made when the source is added.
 verification-method: test

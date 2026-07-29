@@ -6,14 +6,24 @@ level: 65
 links:
 - SRS030: null
 normative: true
-rationale: ''
+rationale: |
+  Stated as an allowlist of granted features rather than a list of denied ones. A denied list fails
+  open the first time a browser ships a capability nobody anticipated, which is the failure mode this
+  repository rejects denylist controls for everywhere else it makes the choice. An allowlist that is
+  empty until a module asks fails closed by default.
 ref: ''
 reviewed: null
 status: proposed
 text: |
-  Pending: integration test asserting the frontend-serving response carries a Permissions-Policy, that
-  the policy denies every feature named in the committed denied-feature list, and that the page still
-  renders under the served policy. Fails if the header is absent, if a listed feature is not denied,
-  or if a denial is weakened. Lands with the backend that serves the frontend; activated with a
-  references entry to the integration test then.
+  Pending: integration test asserting the frontend-serving response carries a Permissions-Policy, and
+  that the set of features the served policy grants equals a committed granted-feature allowlist -
+  empty until a module declares it needs one - with every other feature the policy names denied; and
+  that the page still renders under the served policy. Fails if the header is absent, if a granted
+  feature is not on the allowlist, or if an allowlist entry does not name the module that needs it.
+  Lands with the backend that serves the frontend; activated with a references entry to the integration
+  test then.
+verification-justification: |
+  Settles that the page grants no capability outside the committed allowlist and still renders. Leaves
+  unproven whether an allowlist entry is justified - no artifact lets a module declare the capabilities
+  it needs, so the entry names its module by hand and that naming rests on review.
 verification-method: test

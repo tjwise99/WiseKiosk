@@ -14,4 +14,9 @@ ref: ''
 status: accepted
 text: |
   The published image shall contain no secret material.
+verification-justification: |
+  Asserted by exporting the image filesystem and every layer and matching against a committed
+  secret-pattern set, with a planted canary required to be reported. What no check settles is a
+  secret the pattern set does not describe; the predicate is an enumeration this project maintains,
+  not a general decision procedure.
 verification-method: test

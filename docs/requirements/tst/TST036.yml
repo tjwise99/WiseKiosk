@@ -8,11 +8,15 @@ links:
 normative: true
 rationale: ''
 ref: ''
-reviewed: ctZMGGsxhXyHF-OCUekqeQegRoXutdSJxYXMUfBMOQM=
+reviewed: null
 status: proposed
 text: |
   Pending: test asserting a secret value changed in the <NAME>_FILE file is
   reflected on the next cache-missing request that resolves it, with no process
   restart and no in-memory value cache. Lands with the backend skeleton (#9);
   activated and given a references entry then.
+verification-justification: |
+  Settles that a changed file is picked up on the next cache-missing request with no restart. Leaves
+  unproven the window between the write and that request, during which the old value is still in
+  use.
 verification-method: test

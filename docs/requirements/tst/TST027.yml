@@ -12,11 +12,13 @@ rationale: |
   denylist controls on principle. Equality fails closed — any middleware nobody declared, whatever
   it is called, breaks the assertion.
 ref: ''
-reviewed: E-5hy4lUW8v94tPQe2XWsE9fx0ChccLZHvgUQjVAiY8=
+reviewed: null
 status: proposed
 text: |
   Pending: check that the middleware chain registered on the constructed router equals the declared
   chain exactly, so no session, authentication, or access-control middleware can be introduced on
   the request path without the declaration changing. Runs once the backend skeleton (#9) exists.
-verification-justification: ''
+verification-justification: |
+  Settles that the registered middleware chain equals the declared one. Leaves unproven identity
+  established inside a handler rather than in middleware.
 verification-method: test

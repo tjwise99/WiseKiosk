@@ -16,4 +16,8 @@ text: |
   exceeding ten percent, on a monotonic increase in handle count exceeding its own threshold, or on any
   increase in the runtime's task count. Duration, interval and both thresholds are tunable here rather
   than in the requirement.
+verification-justification: |
+  Settles that memory, handles and tasks do not grow monotonically past their thresholds across the
+  sampled run. Leaves unproven the timescale the obligation is about: an hour is read as evidence
+  about months, and a leak slower than the window is invisible.
 verification-method: test

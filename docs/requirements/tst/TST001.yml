@@ -8,11 +8,15 @@ links:
 normative: true
 rationale: ''
 ref: ''
-reviewed: TDowpM0t_8HcYCGJlu3oTq_8LH4t3tbzRczDqHTkmLI=
+reviewed: null
 status: proposed
 text: |
   Pending: backend integration test asserting the structured error payload for
   each failure class (unreachable, timeout, non-success status, malformed
   payload). Lands with the proxy skeleton; activated and given a references
   entry then.
+verification-justification: |
+  Settles that each failure class produces a payload of the declared shape. Leaves unproven that the
+  four classes cover what real upstreams do - a source failing in a fifth way produces some payload
+  and nothing here decides which.
 verification-method: test

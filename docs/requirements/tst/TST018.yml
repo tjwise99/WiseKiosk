@@ -14,4 +14,7 @@ text: |
   Pending: test asserting the set of external sources declared by upstream-backed modules equals the
   set of registered GET /api/<source> routes, in both directions, so no source is exempted from the
   proxy and no route exists without a source. Lands with the backend skeleton (#9).
+verification-justification: |
+  Settles the source-to-route bijection in both directions. Leaves unproven that a registered route
+  reaches the source it names - the sets match by name, and a misrouted entry matches too.
 verification-method: test

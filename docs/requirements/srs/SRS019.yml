@@ -23,4 +23,9 @@ reviewed: null
 status: accepted
 text: |
   The display page shall be unable to reach any network origin other than the backend's.
+verification-justification: |
+  Asserted statically against the shipped bundle and dynamically with request interception, with the
+  content-security policy enforcing the same clause at the browser. What no check settles is a
+  request issued by code that reached the page some other way - the assertion covers what this
+  project ships.
 verification-method: test

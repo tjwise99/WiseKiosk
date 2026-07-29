@@ -11,12 +11,14 @@ rationale: |
   coverage is total by construction and a route added later cannot escape the sweep. A
   hand-listed sweep would pass while the next route leaked.
 ref: ''
-reviewed: eV1-XSbBOJTLcPTyUy_DpMlu39RTpiPRHcbMjHWoaAg=
+reviewed: null
 status: proposed
 text: |
   Pending: integration check that, for every entry in the static route registration list, exercises
   the route's success path and each upstream-failure class and asserts no response carries a
   `Set-Cookie` or `WWW-Authenticate` header. Runs once the backend skeleton (#9) and the route
   registration list exist.
-verification-justification: ''
+verification-justification: |
+  Settles that no route emits an identity header on any success or failure path. Leaves unproven
+  identity carried in a response body rather than a header.
 verification-method: test

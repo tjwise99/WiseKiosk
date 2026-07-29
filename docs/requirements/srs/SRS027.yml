@@ -17,4 +17,8 @@ reviewed: null
 status: accepted
 text: |
   The backend shall run on both amd64 and arm64 hosts.
+verification-justification: |
+  Asserted by building for both architectures and running the smoke test on each. What no check
+  settles is behaviour under load on either - it establishes that the binary runs, not that it runs
+  well.
 verification-method: test

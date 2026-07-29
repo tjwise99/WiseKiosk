@@ -22,4 +22,8 @@ text: |
   committed artifact, so "secret material" resolves to an enumeration rather than a judgement. A
   planted canary, written into the build context before the build, must be reported. Lands with the
   container image build (#54); activated then.
+verification-justification: |
+  Settles that no value matching the committed pattern set appears in any layer, and that a planted
+  canary is reported. Leaves unproven a secret the pattern set does not describe; the predicate is
+  an enumeration this project maintains, not a decision procedure.
 verification-method: test

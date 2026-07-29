@@ -16,4 +16,8 @@ reviewed: null
 status: accepted
 text: |
   The container image shall run as a non-root user.
+verification-justification: |
+  Asserted by inspecting the published image's declared user. What no check settles is what an
+  operator does at run time: a deployment can override the user, and no property of the image
+  prevents it.
 verification-method: test

@@ -14,7 +14,7 @@ rationale: |
   configuration applied" so a future live-apply path keeps the freedom to hold
   last-good on a bad reload.
 ref: ''
-reviewed: jGfomvjnVhqnkF3dCM00Js-XAYAkZP276TtzJzBhf1A=
+reviewed: null
 status: accepted
 text: |
   When no configuration can be applied - the file absent, unfetchable,
@@ -22,4 +22,8 @@ text: |
   single module - the display shall render a plain-language error state naming
   which failure occurred. The page shell shall load and render this state
   without requiring a valid configuration.
+verification-justification: |
+  Asserted by inducing each failure class and reading the rendered shell. What the check does not
+  settle is that the four classes are exhaustive: a configuration failing in a way none of them
+  names would render some state, and no check decides whether that state is the right one.
 verification-method: test

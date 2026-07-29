@@ -8,8 +8,11 @@ links:
 normative: true
 rationale: ''
 ref: ''
-reviewed: 2J-EKVjoXLMX6UBwzPNLcvbmNVfrN0eeoyowRJ96r4o=
+reviewed: null
 status: proposed
 text: |
   Pending: image test asserting the running container's effective uid is non-root (not 0) and the Dockerfile declares an explicit non-root USER. Lands with the container image build (#54); activated and given a references entry then.
+verification-justification: |
+  Settles that the image declares a non-root user and runs as one. Leaves unproven what an operator
+  does at run time, since a deployment can override the user and no image property prevents it.
 verification-method: test

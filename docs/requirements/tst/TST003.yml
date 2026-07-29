@@ -16,4 +16,7 @@ text: |
   unparseable, and schema-invalid. What the state must say beyond naming the failure is TST002's,
   which asserts it on the branch where a correction exists to state. Lands with the frontend skeleton
   (#10); activated and given a references entry then.
+verification-justification: |
+  Settles that each named failure class renders a state that identifies it, without a valid
+  configuration. Leaves unproven that the four classes are exhaustive.
 verification-method: test

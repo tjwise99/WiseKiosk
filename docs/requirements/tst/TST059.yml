@@ -8,7 +8,7 @@ links:
 normative: true
 rationale: ''
 ref: ''
-reviewed: q7NEbwqzcKbquOGLPUAq6x2-gyoNXsWPnY-nZ0DMcpY=
+reviewed: null
 status: proposed
 text: |
   Pending: integration test requesting the backend's frontend-serving route and asserting the
@@ -17,4 +17,7 @@ text: |
   header is absent, if connect-src admits any host, wildcard, scheme-source, or 'unsafe-' form, or
   if the served policy breaks rendering. Lands with the backend that serves the frontend; activated
   with a references entry to the integration test then. Owned by #67.
+verification-justification: |
+  Settles that the served policy restricts connect-src and default-src to 'self' and that the page
+  renders under it. Leaves unproven whether the browser in the field enforces the policy as served.
 verification-method: test

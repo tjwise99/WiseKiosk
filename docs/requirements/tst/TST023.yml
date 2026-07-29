@@ -18,4 +18,8 @@ text: |
   directory. A module with no fragment has no payload prop and is not expected to have one. Both halves
   are positive: they name where a type must come from rather than where it must not, so a hand-declared
   twin fails by not resolving rather than by matching a pattern. Lands with the codegen mechanism (#7).
+verification-justification: |
+  Settles that handler and component types resolve to declarations under the generated package.
+  Leaves unproven a boundary value that crosses without appearing in a handler signature or a
+  component prop.
 verification-method: test

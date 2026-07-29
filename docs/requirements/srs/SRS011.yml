@@ -15,4 +15,9 @@ status: accepted
 text: |
   The published image shall carry no deployment-specific content: no configuration file, and no
   deployment-specific value in its environment.
+verification-justification: |
+  Asserted by exporting the published image and finding no configuration file and no deployment-
+  specific environment value. What the check does not settle is whether a value is deployment-
+  specific: the check ranges over what the schema declares, so a deployment-varying value the schema
+  does not know about would pass.
 verification-method: test

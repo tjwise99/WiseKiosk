@@ -8,7 +8,7 @@ links:
 normative: true
 rationale: ''
 ref: ''
-reviewed: 1eFIeDK_0cbY8QYQjkk--gn02sIfsXi_K896FGrZm2o=
+reviewed: null
 status: proposed
 text: |
   Pending: test asserting an upstream failure is cached for a negative TTL
@@ -16,4 +16,7 @@ text: |
   issues no upstream call, and after it expires the next request retries
   upstream. Lands with the backend skeleton (#9); activated and given a
   references entry then.
+verification-justification: |
+  Settles that a failure is cached for a shorter window than a success and that the retry follows
+  expiry. Leaves unproven the negative TTL's value against how long real upstreams stay down.
 verification-method: test

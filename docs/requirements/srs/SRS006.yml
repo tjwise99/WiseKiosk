@@ -29,4 +29,9 @@ text: |
   shall exhibit no overlapping regions and no clipped content at the kiosk
   viewport, and shall reflow without overlap, clipping, or horizontal scrolling at
   narrower ones.
+verification-justification: |
+  Asserted by rendering a fixture configuration at three viewports and reading the resulting
+  geometry and region set. What no check settles is whether the layout is legible to a person across
+  a room - overlap and clipping are decidable, readability at distance is the property the kiosk
+  actually needs and no assertion reaches it.
 verification-method: test

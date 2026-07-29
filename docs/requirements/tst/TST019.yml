@@ -8,7 +8,7 @@ links:
 normative: true
 rationale: ''
 ref: ''
-reviewed: B2Adcs8wjbAb4i3H4yATvHPboJCN-DQXmJQ_mHG-FHs=
+reviewed: null
 status: proposed
 text: |
   Pending: integration test asserting the (source, query) TTL cache serves an
@@ -17,4 +17,7 @@ text: |
   cache-behaviour test is the standing liveness canary for the REST transport.
   Lands with the backend skeleton (#9); activated
   and given a references entry then.
+verification-justification: |
+  Settles that an identical request within the TTL issues no upstream call and refetches after
+  expiry. Leaves unproven the TTL's value against a source's actual update cadence.
 verification-method: test

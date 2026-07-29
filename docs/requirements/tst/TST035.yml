@@ -8,11 +8,15 @@ links:
 normative: true
 rationale: ''
 ref: ''
-reviewed: FipUM462sFLAofEIrY976KqTeLMx26z_KVyaA1gZf90=
+reviewed: null
 status: proposed
 text: |
   Pending: test asserting a route's global rate limit rejects requests over the
   threshold without an upstream call, while cache hits are neither counted
   against the limit nor rejected. Lands with the backend skeleton (#9); activated
   and given a references entry then.
+verification-justification: |
+  Settles that the limit rejects over threshold without an upstream call and that cache hits are
+  neither counted nor rejected. Leaves unproven the threshold's value against a source's published
+  limit.
 verification-method: test

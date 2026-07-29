@@ -21,4 +21,9 @@ text: |
   The backend shall validate each request's parameters against the known-good
   pattern its source declares, and shall reject a request whose parameters do not
   conform without issuing any upstream request.
+verification-justification: |
+  Asserted by submitting non-conforming parameters and requiring rejection with no upstream call
+  issued. What no check settles is whether a source's declared pattern actually matches what that
+  source accepts - the pattern is authored per source and a wrong one rejects valid requests just as
+  decidably.
 verification-method: test

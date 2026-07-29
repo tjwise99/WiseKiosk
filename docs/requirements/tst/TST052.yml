@@ -8,7 +8,7 @@ links:
 normative: true
 rationale: ''
 ref: ''
-reviewed: aOj9h2IzJv6TFOFwoBCsM11SaoiqDsfdgoTWBDWM4KI=
+reviewed: null
 status: proposed
 text: |
   Pending: test running the published image with a fixture configuration bind-mounted at the
@@ -16,4 +16,7 @@ text: |
   the same image with no mount, asserting it fails loudly rather than serving a baked default; and
   exporting the image filesystem, asserting nothing exists at the configuration path. Lands with the
   container image build (#54); activated then.
+verification-justification: |
+  Settles byte-fidelity of the mounted configuration, loud failure with no mount, and absence of a
+  baked default. Leaves unproven behaviour when the mount exists but is unreadable.
 verification-method: test

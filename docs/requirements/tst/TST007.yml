@@ -15,4 +15,8 @@ text: |
   with no rebuild or redeployment - two loads in one browser context with the edit between them, so
   that a page served the previous configuration from an HTTP cache fails. Lands with the frontend
   skeleton (#10); activated and given a references entry then.
+verification-justification: |
+  Settles that an edit applies on the next load in one browser context, so an HTTP-cached page
+  fails. Leaves unproven how often a deployed kiosk reloads - the requirement bounds the mechanism,
+  not the field schedule.
 verification-method: test

@@ -14,7 +14,7 @@ rationale: |
   what is missing and leaves the rest of the display running (SYS001) —
   the debuggable outcome chosen on #35 over failing to boot.
 ref: ''
-reviewed: QjrB6fAUxkWLJ_dJRel0zP4cgs-TUC26MDTRZm5qU9w=
+reviewed: null
 status: accepted
 text: |
   The backend shall resolve a secret when handling a request for the
@@ -26,4 +26,9 @@ text: |
   per-source failure treatment as any other upstream failure, identifying
   the unresolvable secret by name, while all other sources remain
   unaffected.
+verification-justification: |
+  Asserted at both ends - a boot with no secret deliverable succeeds, and a request to a source
+  whose secret is unresolvable fails in the per-source form while its siblings serve. What no check
+  settles is whether every unresolvable case is enumerated; the four named here are the ones the
+  file interface makes reachable.
 verification-method: test

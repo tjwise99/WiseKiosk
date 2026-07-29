@@ -15,9 +15,13 @@ rationale: |
   generated payload type to consume; requiring one of every component would oblige a type that
   cannot exist.
 ref: ''
-reviewed: yTcLofxjx4gpGEZz28oqSM-e2BOHVgEOxprzpo01Yeg=
+reviewed: null
 status: accepted
 text: |
   Every value crossing the boundary shall be used on both sides through a type generated from the
   schema, never one declared by hand.
+verification-justification: |
+  Asserted by requiring every handler's request and response types, and every module component's
+  payload and error props, to resolve to declarations under the generated package. What no check
+  settles is a value that crosses the boundary without appearing in either position.
 verification-method: test

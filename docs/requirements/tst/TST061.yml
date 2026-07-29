@@ -10,12 +10,15 @@ rationale: |
   The regenerate-and-diff form is the one SRS024's drift gate already establishes, so composition is
   proved by the mechanism the boundary contract already relies on rather than a second one.
 ref: ''
-reviewed: Js_oKL0s7vqsLLIBj3VbWA5K4vykwq5ziR4OKzyAmho=
+reviewed: null
 status: proposed
 text: |
   Pending: test recomposing the boundary schema from its module fragments and asserting the
   committed schema is unchanged; asserting a bijection between registered modules and boundary
   fragments; and asserting each payload shape has exactly one definition site across the composed
   schema and its fragments. Lands with the codegen mechanism (#7).
-verification-justification: ''
+verification-justification: |
+  Settles that the boundary schema recomposes unchanged, that modules and fragments stand in
+  bijection, and that each shape has one definition site. Leaves unproven that a fragment describes
+  the payload its module actually returns.
 verification-method: test

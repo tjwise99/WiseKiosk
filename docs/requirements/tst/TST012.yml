@@ -11,7 +11,7 @@ rationale: |
   from the fixtures it would only confirm that whatever is tested passes, which is what it already
   knows.
 ref: ''
-reviewed: TZ8N9sCgofFpDGpbQoyczgOVXNng_q-lVyJ5VodshGg=
+reviewed: null
 status: proposed
 text: |
   Pending: test enumerating the composed configuration schema's keys and asserting, for each, that
@@ -19,5 +19,8 @@ text: |
   from the page rendered at its default, and that the page renders without error at each
   schema-valid value the key admits. Fails on a key no fixture varies, and on a key whose variation
   changes nothing. Lands with the config schema (#8) and the frontend skeleton (#10).
-verification-justification: ''
+verification-justification: |
+  Settles per key that a non-default value changes the page and that every admitted value renders.
+  Leaves unproven that the change is the intended one - observability is decidable, correctness is
+  the module's own.
 verification-method: test

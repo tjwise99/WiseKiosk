@@ -3,12 +3,23 @@
 **Status:** accepted
 **Decided:** 2026-07-24 (closing review pass of the requirements rewrite #18)
 
-> **Scope clarified, 2026-07-25 (#69).** As first written the attribute was required only below
-> `test`, which read the decision more narrowly than it was intended. It is **required on every
-> item**. Below `test` it names what blocks a mechanical check; at `test` it names the limit of the
-> check — what a green result does not prove. The Context and Alternatives below argue the narrower
-> case because that is the case that prompted the decision; the argument holds unchanged for the
-> wider one.
+> **Scope widened, 2026-07-25 (#69); grounds restated, 2026-07-28 (#69).** As first written the
+> attribute was required only below `test`, and the Context below argues that narrower case. **The
+> tree no longer has it.** The #69 rebuild left every item at `test`, so the residue this decision
+> was taken to describe — items resting on human judgement with no record of why — is empty, and the
+> original grounds no longer reach anything.
+>
+> The attribute is nonetheless **required on every item**, on grounds the original did not state: at
+> `test` it records **the limit of the check — what a green result does not prove.** That is not the
+> same claim as the original, and it is the one that now carries the decision. Below `test` the
+> original reading still applies if an item ever sits there again.
+>
+> **The evidence is the 2026-07-28 audit.** Three reviewers, filing blind against opposed briefs,
+> produced two of their strongest convergent findings by reading justifications: `SRS030`'s admission
+> that no check settles *"whether the denied set is the right set"* is what exposed a check asserting
+> over a set no artifact defines, and `SRS031`'s *"not a wrong type being sent"* scoped all three
+> readings of a requirement that obliged the browser rather than the product. Fourteen items carried
+> the attribute at the time. Both findings came from that fourteen.
 
 > **Note, 2026-07-25.** The counts below describe the tree as it stood when this decision was taken,
 > partway through #18's closing pass. That pass then promoted most of those items: at merge the tree

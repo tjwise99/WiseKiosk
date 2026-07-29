@@ -8,7 +8,7 @@ links:
 normative: true
 rationale: ''
 ref: ''
-reviewed: lYMQkcNn03gvDekmJ1CL1SnUyhyYp3RstTvsgLncEYg=
+reviewed: null
 status: proposed
 text: |
   Pending: test scanning the shipped bundle for absolute-URL literals and failing on any origin
@@ -17,4 +17,8 @@ text: |
   page origin and every module data request matches /api/<source>. SRS019's connect-src policy makes
   a cross-origin fetch fail in the browser regardless, so the two together close the case rather
   than sample it. Lands with the frontend skeleton (#10).
+verification-justification: |
+  Settles that no foreign-origin literal ships and that every intercepted request is same-origin.
+  Leaves unproven a URL assembled at run time from parts no literal scan sees; the content-security
+  policy is what closes that at the browser.
 verification-method: test

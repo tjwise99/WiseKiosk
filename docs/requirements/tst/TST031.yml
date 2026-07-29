@@ -8,10 +8,13 @@ links:
 normative: true
 rationale: ''
 ref: ''
-reviewed: aj0PFJauJTkjRtQ-K-8mQ0wwbNQ1ODhtrTyMIw3WJOU=
+reviewed: null
 status: proposed
 text: |
   Pending: validation test asserting a configuration containing a key not in
   the schema is rejected, with the unrecognized key named in the error. Lands
   with the config schema (#8); activated and given a references entry then.
+verification-justification: |
+  Settles that an unrecognised key is rejected and named. Leaves unproven that the name is the one
+  the operator recognises when the key is nested.
 verification-method: test

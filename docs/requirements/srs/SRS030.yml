@@ -24,9 +24,9 @@ status: proposed
 text: |
   The display page shall be unable to use any device feature it does not need.
 verification-justification: |
-  Asserted on the wire against a committed denied-feature list: the served response denies every
-  feature on it, and the page still renders under the served policy. What the check does not settle
-  is whether that list is the right list. Deciding which features a module legitimately needs would
-  require modules to declare their capabilities, and no artifact in this repository provides for
-  that; until one does, the list is maintained by hand and its completeness rests on review.
+  Asserted on the wire against a committed allowlist of granted features: the served policy grants
+  nothing outside it, and the page still renders under the policy. Leaves unproven whether an entry on
+  that allowlist is justified. Deciding which features a module legitimately needs would require
+  modules to declare their capabilities, and no artifact in this repository provides for that; until
+  one does, entries are added by hand and rest on review.
 verification-method: test

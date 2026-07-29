@@ -18,4 +18,8 @@ status: accepted
 text: |
   A configuration error that can be isolated to a single module shall be reported at that module's
   region, naming what is wrong and what to change, and shall never be silently worked around.
+verification-justification: |
+  Asserted by driving a fixture whose only error sits inside one module's fragment and reading the
+  rendered page. What the check does not settle is whether the correction it names is the right
+  correction - that the text says what to change is decidable, that the advice is good is not.
 verification-method: test

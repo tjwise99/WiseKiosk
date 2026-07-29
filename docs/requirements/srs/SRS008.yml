@@ -17,4 +17,9 @@ text: |
   The configuration schema's rules shall be enforced by exactly one
   implementation, shared by the display page and by any tool that validates a
   configuration without starting the application.
+verification-justification: |
+  Asserted by running one fixture corpus through both validation entry points and comparing verdicts
+  and error sets. What the check does not settle is agreement on inputs outside the corpus;
+  identical verdicts on five fixtures is evidence of a shared implementation rather than proof of
+  one.
 verification-method: test

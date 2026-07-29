@@ -20,4 +20,8 @@ text: |
   asserting exactly one source file imports the schema-validation engine, that both paths resolve to
   that file in the import graph, and that no other file imports the engine directly. The import graph
   is a cheap structural guard; agreement is what the requirement obliges. Lands with the validator.
+verification-justification: |
+  Settles that both validation entry points return identical verdicts and error sets across the
+  corpus. Leaves unproven agreement outside it; five fixtures agreeing is evidence of one
+  implementation rather than proof.
 verification-method: test

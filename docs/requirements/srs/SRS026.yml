@@ -26,5 +26,8 @@ reviewed: null
 status: proposed
 text: |
   The backend shall establish no client identity and shall gate no route on one.
-verification-justification: ''
+verification-justification: |
+  Asserted by sweeping every route for identity headers and statuses, comparing the registered
+  middleware chain against the declared one, and requiring two differing clients to receive
+  identical payloads. What no check settles is identity established outside the request path.
 verification-method: test
