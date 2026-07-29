@@ -30,9 +30,12 @@ and #7's acceptance — schema file present, both generators wired, drift gate g
   **TypeScript types via `openapi-typescript`** — build-time type emission, erased at compile,
   **zero runtime weight in the browser bundle** (the Raspberry-Pi-Zero-class constraint decides
   this).
-- **The schema defines every value class that crosses the boundary**: request parameter names and
-  types, success payloads, the structured upstream-failure body (SRS001), the client-error rejection
-  body (SRS022), and every response status code the frontend discriminates on (SRS023).
+- **The schema defines every value class that crosses the boundary** (SRS023): request parameter
+  names and types, success payloads, the structured body for the upstream failure SRS001 obliges a
+  module to render, the client-error rejection body SRS022 requires the frontend to be able to
+  render, and every response status code the frontend discriminates on. SRS001 and SRS022 oblige the
+  behaviour; the shapes that carry it are defined here and nowhere else, because SRS023 admits no
+  second definition site.
 - **Drift gate:** a repo-level CI check regenerates both sides and fails on any difference
   (`git diff --exit-status`); the generators are **version-pinned** so a toolchain bump cannot read
   as schema drift (SRS024; verified by TST038). The gate is repo-level because it spans both
