@@ -8,15 +8,15 @@ links:
 normative: true
 rationale: ''
 ref: ''
-reviewed: Ssn24GhTqT7M4269UVDxRYngpCQsTsX5UbOCpIAKahI=
+reviewed: 3Qzn5RRiIzYnWyMNQX60lsEhy1FlU6Pi6RGmuJ6L9q8=
 status: proposed
 text: |
   Pending: test running the published image with a fixture configuration bind-mounted at the
-  configuration path, asserting the served configuration reflects the fixture byte-for-byte; running
-  the same image with no mount, asserting it fails loudly rather than serving a baked default; and
-  exporting the image filesystem, asserting nothing exists at the configuration path. Lands with the
+  configuration path, asserting the served configuration reflects the fixture byte-for-byte; and
+  running the same image with no mount, asserting it fails loudly rather than serving a baked
+  default. That nothing sits at the configuration path in the image is TST010's. Lands with the
   container image build (#54); activated then.
 verification-justification: |
-  Settles byte-fidelity of the mounted configuration, loud failure with no mount, and absence of a
-  baked default. Leaves unproven behaviour when the mount exists but is unreadable.
+  Settles byte-fidelity of the mounted configuration, and loud failure rather than a baked default
+  when no mount is supplied. Leaves unproven behaviour when the mount exists but is unreadable.
 verification-method: test
