@@ -4,12 +4,12 @@ header: |
   Full-screen assembly at kiosk; reflow, not overlap, at narrower widths
 level: 1.41
 links:
-- SYS002: WKtMGUBh_Ew881SVgmcG0I3DbchZFVDHjXWT515-NGw=
+- SYS002: 4hoIe3sFXRA1b7fqjxvI-vWBDVBWimxgK9cW4PZZ8KQ=
 normative: true
 rationale: |
-  Decomposes SYS002 (kiosk full-screen, the primary target) and SYS002 (desktop,
-  the supported secondary) into the concrete viewport-driven render obligations
-  their rationales anticipate. The deployed display is a 16:9 television, so
+  Decomposes SYS002's kiosk-primary, desktop-secondary distinction into the
+  concrete viewport-driven render obligations its rationale anticipates, which
+  fixes no viewports itself. The deployed display is a 16:9 television, so
   1920×1080 landscape is the canonical kiosk test viewport; relative units carry
   the same layout to 4K without a second viewport. 1280×800 and 1440×900 are the
   desktop window sizes the secondary use case must render sensibly at. Phone
@@ -21,7 +21,7 @@ rationale: |
   (Playwright-class) asserting the structural properties at each size; the
   residual aesthetic judgement stays human.
 ref: ''
-reviewed: null
+reviewed: DtE3Q7qOTnHVnvQ5OoBIH_v1uwKSDPA8Lrr8ylcqDho=
 status: accepted
 text: |
   The display page shall assemble the modules named in the configuration, each
