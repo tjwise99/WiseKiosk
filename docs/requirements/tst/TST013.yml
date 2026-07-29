@@ -1,29 +1,27 @@
 active: false
 derived: false
 header: |
-  Pending: the published image carries no secret material
+  Pending: exactly one validation implementation, by import graph
 level: 1.14
 links:
-- SRS025: AiVIDF9ZNzEVwww201a-xFGL2lUrsQtPxUc0CRcCbNg=
+- SRS005: 4gGWUsl6Hf9TMN2e99Qavt2mohD1majt3LDKeG2RzZg=
 normative: true
 rationale: |
-  The earlier form asserted that "no secret material is present", a predicate with no oracle anywhere
-  in the corpus, and offered as its fallback a canary "delivered the supported way" - which is
-  <NAME>_FILE at run time, and a run-time value cannot be in a build layer, so that clause could not
-  fail on the image either. Both are replaced by artifacts the check owns: a committed pattern set, and
-  a canary planted where the image can actually carry it.
+  One engine imported by both call sites still enforces two rule sets if the callers pass different
+  options, or a differently configured instance. The import-graph assertion cannot see that, so it
+  proves a shared dependency rather than a shared verdict.
 ref: ''
-reviewed: Te5W5eDt1oyVB3UwldMwoqSiX0I9BqZrdD--HVxOuTo=
+reviewed: -kas5bkxaDVVl4iTQVsw1kI_37P4zrNNSxp_w36N78M=
 status: proposed
 text: |
-  Pending: test exporting the published image filesystem and every layer, and asserting that no value
-  matching the committed secret-pattern set appears in any of them - not in a file, not in the image
-  environment, and not in a layer an earlier stage deleted. The pattern set is the check's own
-  committed artifact, so "secret material" resolves to an enumeration rather than a judgement. A
-  planted canary, written into the build context before the build, must be reported. Lands with the
-  container image build (#54); activated then.
+  Pending: test running a fixture corpus - valid, unknown key, wrong type, missing required, and an
+  error inside a module fragment - through both the page's validation entry point and the standalone
+  desk validator, asserting identical verdicts and identical reported error sets for every fixture; and
+  asserting exactly one source file imports the schema-validation engine, that both paths resolve to
+  that file in the import graph, and that no other file imports the engine directly. The import graph
+  is a cheap structural guard; agreement is what the requirement obliges. Lands with the validator.
 verification-justification: |
-  Settles that no value matching the committed pattern set appears in any layer, and that a planted
-  canary is reported. Leaves unproven a secret the pattern set does not describe; the predicate is
-  an enumeration this project maintains, not a decision procedure.
+  Settles that both validation entry points return identical verdicts and error sets across the
+  corpus. Leaves unproven agreement outside it; five fixtures agreeing is evidence of one
+  implementation rather than proof.
 verification-method: test

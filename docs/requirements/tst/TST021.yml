@@ -1,23 +1,24 @@
 active: false
 derived: false
 header: |
-  Pending: no identity-based rejection, in the contract or on the wire
-level: 1.16
+  Pending: the registered middleware chain is exactly the declared one
+level: 1.17
 links:
-- SRS023: UoKQBk6nKyr9Krjf4SDNA1-zNaVIr_Z30lVJhorRhHs=
+- SRS023: RkybxYpXWXU4lnHw3cOZEkY3_9dxMGfAQCQ4do6wXjM=
 normative: true
 rationale: |
-  Asserted against the boundary schema as well as the running service because the schema is where a
-  401 or 403 would first be declared: catching it there fails the build before any handler exists,
-  and the live half proves the service produces no status the contract never declared.
+  An equality against the declared chain, not a search for session or authentication packages: a
+  denylist of known middleware passes the first time one is hand-rolled, and this repository rejects
+  denylist controls on principle. Equality fails closed — any middleware nobody declared, whatever
+  it is called, breaks the assertion.
 ref: ''
-reviewed: v09-hsynslVd7IA6NSxnlsIEishJgbppInBMs49kvAo=
+reviewed: 9yssln6Z2gkSm-iUoY3dnky82o_JgcY2_PmnE6JoWXo=
 status: proposed
 text: |
-  Pending: check that the boundary schema declares no 401 or 403 response for any path item, and
-  that the live route sweep produces neither status for any request. Request rejection remains
-  shape-based under SRS013. Runs once the boundary schema (#37) and the backend skeleton (#9) exist.
+  Pending: check that the middleware chain registered on the constructed router equals the declared
+  chain exactly, so no session, authentication, or access-control middleware can be introduced on
+  the request path without the declaration changing. Runs once the backend skeleton (#9) exists.
 verification-justification: |
-  Settles that neither status appears in the schema or in a live sweep. Leaves unproven a rejection
-  that gates on identity while returning a different status.
+  Settles that the registered middleware chain equals the declared one. Leaves unproven identity
+  established inside a handler rather than in middleware.
 verification-method: test

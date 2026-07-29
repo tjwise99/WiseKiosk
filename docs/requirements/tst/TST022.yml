@@ -1,24 +1,20 @@
 active: false
 derived: false
 header: |
-  Pending: the registered middleware chain is exactly the declared one
+  Pending: schema secret-key inspection
 level: 1.17
 links:
-- SRS023: UoKQBk6nKyr9Krjf4SDNA1-zNaVIr_Z30lVJhorRhHs=
+- SRS007: 4T55vG-p3dGlHY8_Pe4b7v2TWjJ8InvKZT13jBTXAPs=
 normative: true
-rationale: |
-  An equality against the declared chain, not a search for session or authentication packages: a
-  denylist of known middleware passes the first time one is hand-rolled, and this repository rejects
-  denylist controls on principle. Equality fails closed — any middleware nobody declared, whatever
-  it is called, breaks the assertion.
+rationale: ''
 ref: ''
-reviewed: Q4lCgU045oh2f23UeEbfyQneOuwiptqqoz-uzdwizDs=
+reviewed: jWaGF_JoShR7R4SSFK9J1AaK4rkURtjW9vgBpF08r3A=
 status: proposed
 text: |
-  Pending: check that the middleware chain registered on the constructed router equals the declared
-  chain exactly, so no session, authentication, or access-control middleware can be introduced on
-  the request path without the declaration changing. Runs once the backend skeleton (#9) exists.
+  Pending: inspection of the configuration schema asserting it offers no
+  secret-bearing key; form (repo check or review checklist) decided when
+  the schema lands (#8). Activated then.
 verification-justification: |
-  Settles that the registered middleware chain equals the declared one. Leaves unproven identity
-  established inside a handler rather than in middleware.
+  Asserts key-set equality against the committed allowlist. Does not decide whether a listed key is
+  secret-bearing.
 verification-method: test

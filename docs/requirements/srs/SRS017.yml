@@ -16,12 +16,12 @@ rationale: |
   widths are deliberately not a requirement (SYS002; owner decision 2026-07-22) —
   if wanted later, support arrives as its own reviewed system need, not a clause
   here. What is owed is a reflowing layout, not a responsive-design programme,
-  and the viewport figures are TST038's so tuning one does not touch the
+  and the viewport figures are TST036's so tuning one does not touch the
   specification. Verified by viewport-driven render tests
   (Playwright-class) asserting the structural properties at each size; the
   residual aesthetic judgement stays human.
 ref: ''
-reviewed: DtE3Q7qOTnHVnvQ5OoBIH_v1uwKSDPA8Lrr8ylcqDho=
+reviewed: no5JLFnYFcTu6b8ylIpeyYOIbBm67CvpfXxzWl4wLuA=
 status: accepted
 text: |
   The display page shall assemble the modules named in the configuration, each

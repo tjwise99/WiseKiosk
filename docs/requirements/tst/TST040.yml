@@ -1,27 +1,23 @@
 active: false
 derived: false
 header: |
-  Pending: refresh cadence is not configurable
-level: 1.43
+  Pending: served responses declare a type and forbid inference
+level: 1.56
 links:
-- SRS011: FXsuJOG4O38HRucPCYF_UaWFAvlfi7_0T8DolNEhWPg=
+- SRS028: Z7Ew9iS07io5WQUQGQhIUzSgVESAsblWEJUS1OAzj4Y=
 normative: true
-rationale: |
-  The fake-timer cadence assertion was struck: it measured the frontend's poll interval against a
-  backend rate bound SRS011's text declares irrelevant ("regardless of how many clients it serves or
-  how often they ask"). That a cadence is a constant in code rather than an operator-tunable key is
-  module-contract.md's, under Cadence and TTL are chosen together. What remains here is SRS011's own
-  clause that the bound is not raisable by configuration.
+rationale: ''
 ref: ''
-reviewed: ihnpHiILnBezzziflL02pxlbJh13d9Ytu37MAh7qVQo=
+reviewed: TPHmgib0hwC5u_R5GY9l8nzDlhbXM5o4IFocHaBWfBM=
 status: proposed
 text: |
-  Pending: test asserting the composed configuration schema declares no property that sets a refresh
-  cadence, by ranging over the policies a registration entry owns and asserting none of them is
-  reachable from a schema property - not by matching a keyword list, which fails open on a name nobody
-  anticipated. Lands with the frontend skeleton (#10).
+  Pending: integration test asserting the frontend-serving response and every proxy response carry a
+  Content-Type header with a concrete media type, and carry X-Content-Type-Options: nosniff. Fails if
+  either is absent on any served route, if a Content-Type is empty or generic enough to leave the
+  type unstated, or if the nosniff value is weakened. Lands with the backend that serves the
+  frontend; activated with a references entry to the integration test then.
 verification-justification: |
-  Settles that no schema property reaches a cadence policy, by ranging over the registration entry's
-  own policies rather than a keyword list. Leaves unproven a cadence made configurable by a
-  mechanism outside the schema.
+  Settles that a concrete media type and the no-inference header are present on every served route.
+  Leaves unproven that a declared type is correct for the bytes beneath it - an upstream
+  mislabelling its own payload is outside what this reaches.
 verification-method: test

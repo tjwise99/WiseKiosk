@@ -1,23 +1,29 @@
 active: false
 derived: false
 header: |
-  Pending: two instances from one image share no state
-level: 1.13
+  Pending: the published image carries no secret material
+level: 1.14
 links:
-- SRS029: BAfAOpaFZURWxbt-K87B018KPIBz78zMp-OimSjVZfM=
+- SRS025: AiVIDF9ZNzEVwww201a-xFGL2lUrsQtPxUc0CRcCbNg=
 normative: true
-rationale: ''
+rationale: |
+  The earlier form asserted that "no secret material is present", a predicate with no oracle anywhere
+  in the corpus, and offered as its fallback a canary "delivered the supported way" - which is
+  <NAME>_FILE at run time, and a run-time value cannot be in a build layer, so that clause could not
+  fail on the image either. Both are replaced by artifacts the check owns: a committed pattern set, and
+  a canary planted where the image can actually carry it.
 ref: ''
-reviewed: m-YxbRyL27P5hWxfHYxNCx4UMG8b88fRGIHuljMimp4=
+reviewed: K5e8AaPrkkjKTv-QtiVXL408H0qfKzQBBVXYSWyXeN8=
 status: proposed
 text: |
-  Pending: test starting two containers from the same digest with two different bind-mounted
-  configurations on two ports, asserting each serves only its own configuration and neither reflects
-  the other; asserting the image declares no shared writable volume; stopping one and asserting the
-  other stays healthy. Lands with the container image build (#54); activated then.
+  Pending: test exporting the published image filesystem and every layer, and asserting that no value
+  matching the committed secret-pattern set appears in any of them - not in a file, not in the image
+  environment, and not in a layer an earlier stage deleted. The pattern set is the check's own
+  committed artifact, so "secret material" resolves to an enumeration rather than a judgement. A
+  planted canary, written into the build context before the build, must be reported. Lands with the
+  container image build (#54); activated then.
 verification-justification: |
-  Settles that two instances of one image serve only their own configuration, declare no shared
-  writable storage, and survive each other stopping. Leaves unproven what an operator can defeat
-  from outside - two deployments pointed at one bind mount share it, and no image property prevents
-  that.
+  Settles that no value matching the committed pattern set appears in any layer, and that a planted
+  canary is reported. Leaves unproven a secret the pattern set does not describe; the predicate is
+  an enumeration this project maintains, not a decision procedure.
 verification-method: test

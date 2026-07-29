@@ -1,0 +1,24 @@
+active: false
+derived: false
+header: |
+  Pending: page fetches same-origin only, statically and at runtime
+level: 1.42
+links:
+- SRS010: EQlTMWNvPWAOKpO_jzE-cMaYXeAXyZJVmsYjbijYSAo=
+normative: true
+rationale: ''
+ref: ''
+reviewed: 76AJihFLnEhdW7LxMyG_iA9Uhqk8iclmEgRKfOrzwaU=
+status: proposed
+text: |
+  Pending: test scanning the shipped bundle for absolute-URL literals and failing on any origin
+  other than the page's own, which catches paths no render exercises; and assembling the page under
+  a known-good configuration with request interception, asserting every request origin equals the
+  page origin and every module data request matches /api/<source>. SRS010's connect-src policy makes
+  a cross-origin fetch fail in the browser regardless, so the two together close the case rather
+  than sample it. Lands with the frontend skeleton (#10).
+verification-justification: |
+  Settles that no foreign-origin literal ships and that every intercepted request is same-origin.
+  Leaves unproven a URL assembled at run time from parts no literal scan sees; the content-security
+  policy is what closes that at the browser.
+verification-method: test

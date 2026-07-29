@@ -1,25 +1,27 @@
 active: false
 derived: false
 header: |
-  Pending: viewport-driven layout render test
-level: 1.41
+  Pending: refresh cadence is not configurable
+level: 1.43
 links:
-- SRS017: IiHdIx5XLiCEZ-21eli-hNZBi2Dmc0eg173dwcdGe0o=
+- SRS011: l5_qQTSMHpS4-2CuLN0iicJGutP9QmlIkZaU9QFCyPY=
 normative: true
-rationale: ''
+rationale: |
+  The fake-timer cadence assertion was struck: it measured the frontend's poll interval against a
+  backend rate bound SRS011's text declares irrelevant ("regardless of how many clients it serves or
+  how often they ask"). That a cadence is a constant in code rather than an operator-tunable key is
+  module-contract.md's, under Cadence and TTL are chosen together. What remains here is SRS011's own
+  clause that the bound is not raisable by configuration.
 ref: ''
-reviewed: DvbYoSF141oDsY7I-1Cxvt4EUqBWeZKvdffDp01SiQE=
+reviewed: 56ON2BtvrDV1tRxzpS67dZshbd5JWZ59B9lkA5cRceA=
 status: proposed
 text: |
-  Pending: viewport-driven render test asserting a bijection between the modules the fixture
-  configuration names and the regions present in the DOM, each rendered into the region the
-  configuration assigns it, with the module set read from the parsed fixture rather than a hand-written
-  list; and asserting the assembled layout exhibits no overlap, no clipping, and no scrollbars at the
-  kiosk viewport (1920x1080), and reflows with no overlap, no clipping, and no horizontal scroll at the
-  desktop viewports (1280x800 and 1440x900). Lands with the frontend skeleton (#10); activated and
-  given a references entry then.
+  Pending: test asserting the composed configuration schema declares no property that sets a refresh
+  cadence, by ranging over the policies a registration entry owns and asserting none of them is
+  reachable from a schema property - not by matching a keyword list, which fails open on a name nobody
+  anticipated. Lands with the frontend skeleton (#10).
 verification-justification: |
-  Settles that every configured module is present, in its assigned region, with no overlap or
-  clipping at three viewports. Leaves unproven legibility across a room, which is the property a
-  kiosk actually needs and which no geometric assertion reaches.
+  Settles that no schema property reaches a cadence policy, by ranging over the registration entry's
+  own policies rather than a keyword list. Leaves unproven a cadence made configurable by a
+  mechanism outside the schema.
 verification-method: test

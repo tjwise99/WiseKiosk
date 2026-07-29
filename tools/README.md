@@ -73,7 +73,7 @@ serving, unhealthy when it is not, including when the process is alive but wedge
 *Asserted by* an integration test running the image and reading the reported status in both states.
 
 This is an oracle, not a monitoring feature, and three checks read it: § Bring-up, § Upgrade, and
-`TST012` in the requirements tree. Each needs a machine-readable *is it serving yet* rather than a
+`TST011` in the requirements tree. Each needs a machine-readable *is it serving yet* rather than a
 scraped log line.
 
 Nothing acts on the status. Docker and Compose restart a container whose process exits, not one

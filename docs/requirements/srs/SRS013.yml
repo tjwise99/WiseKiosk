@@ -14,9 +14,9 @@ rationale: |
   admits no second definition site. This item fixes that a rejection is
   distinct to its cause, that it happens before any upstream call, and that it
   is separable from an upstream failure. The particular status codes live in
-  TST031 and TST034, where they can change without a specification edit.
+  TST030 and TST033, where they can change without a specification edit.
 ref: ''
-reviewed: ZTiAP31WTVBuv91AhJrpvuskdww22kGHG5ThDqNGHxI=
+reviewed: cBOqNz0tGc328ZvLD_hC2U6Hs2_QwaAyZA--Mf5EQO4=
 status: accepted
 text: |
   A request the backend rejects before making any upstream call shall return a client-error

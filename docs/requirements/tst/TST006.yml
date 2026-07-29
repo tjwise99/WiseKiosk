@@ -1,0 +1,22 @@
+active: false
+derived: false
+header: |
+  Pending: bind-mounted config demonstration
+level: 1.9
+links:
+- SRS018: jAdiVAOaHeEAP9caGAN9vBMpjclpje_k3TmKnf5abBw=
+normative: true
+rationale: ''
+ref: ''
+reviewed: r7Il_MhNWIHIv3l8THMlrTuma0nnsz_qbwFTyh9SRXo=
+status: proposed
+text: |
+  Pending: test running the published image with a fixture configuration bind-mounted at the
+  configuration path, asserting the served configuration reflects the fixture byte-for-byte; and
+  running the same image with no mount, asserting it fails loudly rather than serving a baked
+  default. That nothing sits at the configuration path in the image is TST009's. Lands with the
+  container image build (#54); activated then.
+verification-justification: |
+  Settles byte-fidelity of the mounted configuration, and loud failure rather than a baked default
+  when no mount is supplied. Leaves unproven behaviour when the mount exists but is unreadable.
+verification-method: test

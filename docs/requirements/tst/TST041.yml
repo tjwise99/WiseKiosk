@@ -1,23 +1,22 @@
 active: false
 derived: false
 header: |
-  Pending: same-origin CSP header test
-level: 1.55
+  Pending: backend-unreachable display state
+level: 63
 links:
-- SRS010: EQlTMWNvPWAOKpO_jzE-cMaYXeAXyZJVmsYjbijYSAo=
+- SRS026: zivxU0HYyxFMwYJKGpeBNNpbeXTDKC7J41KC9sM68kM=
 normative: true
 rationale: ''
 ref: ''
-reviewed: RMccre4vdClulfbQVsVgdxAkrlv35id9JAjqkriYfzU=
+reviewed: egzmUQxGqVQvLLYJZ7NDhJt82Xj8YPf9CBnQK3T-PPU=
 status: proposed
 text: |
-  Pending: integration test requesting the backend's frontend-serving route and asserting the
-  response carries a Content-Security-Policy whose connect-src is exactly 'self' and whose
-  default-src is 'self', and asserting the page still renders under the served policy. Fails if the
-  header is absent, if connect-src admits any host, wildcard, scheme-source, or 'unsafe-' form, or
-  if the served policy breaks rendering. Lands with the backend that serves the frontend; activated
-  with a references entry to the integration test then. Owned by #67.
+  Pending: check that induces a backend outage with the page already served, and asserts the display
+  renders one page-wide unreachable state rather than a per-module unavailable state in each region;
+  and that the state carries a remediation field, non-empty and not equal to the diagnosis it reports.
+  Lands with the liveness endpoint (#72).
 verification-justification: |
-  Settles that the served policy restricts connect-src and default-src to 'self' and that the page
-  renders under it. Leaves unproven whether the browser in the field enforces the policy as served.
+  Settles that one page-wide state replaces the per-module states and that it carries a remediation
+  distinct from its diagnosis. Leaves unproven whether the remediation is the right advice - #71
+  recommends it, no gate decides it.
 verification-method: test

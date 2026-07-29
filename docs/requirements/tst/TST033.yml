@@ -1,22 +1,25 @@
 active: false
 derived: false
 header: |
-  Pending: negative-caching test
-level: 1.28
+  Pending: boundary schema is single and complete
+level: 1.29
 links:
-- SRS011: FXsuJOG4O38HRucPCYF_UaWFAvlfi7_0T8DolNEhWPg=
+- SRS015: RmDpYXVdRTwPyGgrFFSNKzUb9phXmgvGdGXZCc6Z2Ro=
 normative: true
 rationale: ''
 ref: ''
-reviewed: jYAI8dh1de4WwF_8VFh9Gd7i2u8jzoQCOGTGwVozakg=
+reviewed: 28-tev0fCN9-V90Eu5fI9rFzxAJ1OKiZ8uqKlpy2db4=
 status: proposed
 text: |
-  Pending: test asserting an upstream failure is cached for a negative TTL
-  shorter than the source's success TTL — a second request within that window
-  issues no upstream call, and after it expires the next request retries
-  upstream. Lands with the backend skeleton (#9); activated and given a
-  references entry then.
+  Pending: test parsing the boundary schema and asserting exactly one schema artifact is tracked;
+  that the set of schema path items equals the set of
+  entries in the static route registration list, in both directions; that every path item declares
+  its success status, the SRS001 upstream-failure status, and 400, 404, 405 and 429, each
+  referencing a named component rather than an inline body; that the upstream-failure body and the
+  SRS013 rejection body both exist as named components and are distinct schemas; and that every path
+  and query parameter is declared with a type. Lands with the codegen mechanism (#7).
 verification-justification: |
-  Settles that a failure is cached for a shorter window than a success and that the retry follows
-  expiry. Leaves unproven the negative TTL's value against how long real upstreams stay down.
+  Settles that one schema artifact exists and that its path items match the declared endpoint set.
+  Leaves unproven that the schema describes the payloads the backend actually sends - that is the
+  drift gate's, under SRS016 - and says nothing about where the artifact sits, which #5 allocates.
 verification-method: test

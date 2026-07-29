@@ -11,12 +11,12 @@ rationale: |
   many displays point at it. It is deliberately outside the configuration surface: a tunable limit
   is a way for a deployment to become the thing the limit was protecting against, which SYS003's
   parameterisation is not meant to offer. Where the numbers live and how the bound is achieved -
-  a TTL response cache keyed on the request, a token bucket, or both - is TST027's, so tuning one
+  a TTL response cache keyed on the request, a token bucket, or both - is TST026's, so tuning one
   does not touch the specification. Two consequences worth stating: a cache hit is neither counted
   against the limit nor rejected by it, and a sustained upstream outage must not cause an upstream
   request on every incoming request.
 ref: ''
-reviewed: jmg2D1eXPp6vDieRTJ0UjcL0GEbBP9QTaW467ZtEFuQ=
+reviewed: 5hy7UN1ohUJ3L1rc-Q3FRfZeUTsAUZZQz_jV2fELntY=
 status: accepted
 text: |
   The backend's rate of upstream requests to a source shall be bounded regardless of how many

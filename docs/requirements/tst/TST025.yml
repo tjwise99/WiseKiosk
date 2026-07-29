@@ -1,25 +1,20 @@
 active: false
 derived: false
 header: |
-  Pending: proxy endpoint & statelessness test
-level: '1.20'
+  Pending: every external source has a proxy route
+level: 1.21
 links:
 - SRS009: 3Je4gbXE0f_ybWKil2N9ttPdXutP1iu-6HBpspZvTKw=
 normative: true
 rationale: ''
 ref: ''
-reviewed: LDZYTBpf8XCrvmQYPQPrrzoFSIfm_tgOVV9VlBylbTU=
+reviewed: pL5FqURaQVdlt9PeGC2099qSqbTf2vjHXI1-gJhp9jw=
 status: proposed
 text: |
-  Pending: backend integration test driving every endpoint the boundary contract
-  declares for each supported source, asserting each returns its
-  contract-shaped payload and that every source is reachable; and that the payload
-  for a request is determined solely by that request — no per-client or session
-  state — with cache-hit/miss behaviour (whether an upstream call occurs)
-  covered separately by TST027. Lands with the backend skeleton (#9); activated
-  and given a references entry then.
+  Pending: test asserting the set of external sources declared by upstream-backed modules equals the
+  set of registered GET /api/<source> routes, in both directions, so no source is exempted from the
+  proxy and no route exists without a source. Lands with the backend skeleton (#9).
 verification-justification: |
-  Settles that every declared endpoint returns a contract-shaped payload and every source is
-  reachable. Leaves unproven behaviour when an upstream returns a shape the contract does not
-  describe.
+  Settles the source-to-route bijection in both directions. Leaves unproven that a registered route
+  reaches the source it names - the sets match by name, and a misrouted entry matches too.
 verification-method: test

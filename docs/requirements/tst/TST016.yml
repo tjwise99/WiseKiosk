@@ -1,21 +1,24 @@
 active: false
 derived: false
 header: |
-  Pending: secret-resolution unit tests
+  Pending: no credential material on the wire, over every registered route
 level: 1.15
 links:
-- SRS006: ZeplVyYLSsrROM7ALJxI9czolHES2p2NT_Xu10C_gvE=
+- SRS023: RkybxYpXWXU4lnHw3cOZEkY3_9dxMGfAQCQ4do6wXjM=
 normative: true
-rationale: ''
+rationale: |
+  The route set is derived from the single static registration list rather than written by hand, so
+  coverage is total by construction and a route added later cannot escape the sweep. A
+  hand-listed sweep would pass while the next route leaked.
 ref: ''
-reviewed: MZKIRj2QjjZ8bh11lvA6nYMRUMZ9wCbiXrK5f4eiFlc=
+reviewed: StkAdVwUZgBET7jIm8rkOqb4BpKSy29Jralm8ICOugo=
 status: proposed
 text: |
-  Pending: unit tests of secret resolution — value read from the file at
-  <NAME>_FILE; trailing whitespace stripped; a bare <NAME>
-  environment variable ignored. Lands with the backend skeleton (#9);
-  activated and given a references entry then.
+  Pending: integration check that, for every entry in the static route registration list, exercises
+  the route's success path and each upstream-failure class and asserts no response carries a
+  `Set-Cookie` or `WWW-Authenticate` header. Runs once the backend skeleton (#9) and the route
+  registration list exist.
 verification-justification: |
-  Settles the three resolution rules at unit level. Leaves unproven their behaviour under concurrent
-  resolution of the same secret.
+  Settles that no route emits an identity header on any success or failure path. Leaves unproven
+  identity carried in a response body rather than a header.
 verification-method: test

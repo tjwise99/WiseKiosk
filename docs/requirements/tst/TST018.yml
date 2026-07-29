@@ -1,26 +1,25 @@
 active: false
 derived: false
 header: |
-  Pending: every schema key is varied by a fixture and renders
-level: 1.15
+  Pending: unresolvable-secret failure-path test
+level: 1.16
 links:
-- SRS024: jGhiM9f68DTp6BTj1dnCORLxzudyszpJuwYfTOyUzCg=
+- SRS006: ZeplVyYLSsrROM7ALJxI9czolHES2p2NT_Xu10C_gvE=
 normative: true
-rationale: |
-  Enumerating from the schema rather than from the fixtures is what makes the check closed: driven
-  from the fixtures it would only confirm that whatever is tested passes, which is what it already
-  knows.
+rationale: ''
 ref: ''
-reviewed: OQ6pAQrFN-g-kRXYzcDhMgiFmL9FNUwBWVqeRI2GIZo=
+reviewed: E9XJLbzzQbYIq7mIIT74Pq8b04jlgcilorPiHavVRac=
 status: proposed
 text: |
-  Pending: test enumerating the composed configuration schema's keys and asserting, for each, that
-  the page rendered from a fixture setting it to a non-default schema-valid value differs observably
-  from the page rendered at its default, and that the page renders without error at each
-  schema-valid value the key admits. Fails on a key no fixture varies, and on a key whose variation
-  changes nothing. Lands with the config schema (#8) and the frontend skeleton (#10).
+  Pending: proxy test asserting the backend boots with no secrets
+  delivered, and a request to a source whose secret is unresolvable
+  (<NAME>_FILE unset; file missing; file unreadable; file empty after
+  trailing-whitespace stripping) returns that source's legible
+  upstream-failure response naming the secret, while
+  other sources still serve. Lands with the backend skeleton (#9);
+  activated and given a references entry then.
 verification-justification: |
-  Settles per key that a non-default value changes the page and that every admitted value renders.
-  Leaves unproven that the change is the intended one - observability is decidable, correctness is
-  the module's own.
+  Settles boot independence and the per-source failure treatment across the four unresolvable cases
+  the file interface makes reachable. Leaves unproven any fifth case, and whether an operator
+  reading the named secret can find it.
 verification-method: test

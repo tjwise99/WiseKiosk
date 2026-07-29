@@ -1,24 +1,21 @@
 active: false
 derived: false
 header: |
-  Pending: boundary fragments compose, and are declared once
+  Pending: secret-resolution unit tests
 level: 1.15
 links:
-- SRS015: RmDpYXVdRTwPyGgrFFSNKzUb9phXmgvGdGXZCc6Z2Ro=
+- SRS006: ZeplVyYLSsrROM7ALJxI9czolHES2p2NT_Xu10C_gvE=
 normative: true
-rationale: |
-  The regenerate-and-diff form is the one SRS016's drift gate already establishes, so composition is
-  proved by the mechanism the boundary contract already relies on rather than a second one.
+rationale: ''
 ref: ''
-reviewed: zO-Ahpk_Ln-On-aOFU1b3fr3gRGc5x2A041N4Ny9kqA=
+reviewed: rmt1ypjh31EELb9RcJiTMC8e8-5ADmGca64-uE1khpM=
 status: proposed
 text: |
-  Pending: test recomposing the boundary schema from its module fragments and asserting the
-  committed schema is unchanged; asserting a bijection between registered modules and boundary
-  fragments; and asserting each payload shape has exactly one definition site across the composed
-  schema and its fragments. Lands with the codegen mechanism (#7).
+  Pending: unit tests of secret resolution — value read from the file at
+  <NAME>_FILE; trailing whitespace stripped; a bare <NAME>
+  environment variable ignored. Lands with the backend skeleton (#9);
+  activated and given a references entry then.
 verification-justification: |
-  Settles that the boundary schema recomposes unchanged, that modules and fragments stand in
-  bijection, and that each shape has one definition site. Leaves unproven that a fragment describes
-  the payload its module actually returns.
+  Settles the three resolution rules at unit level. Leaves unproven their behaviour under concurrent
+  resolution of the same secret.
 verification-method: test

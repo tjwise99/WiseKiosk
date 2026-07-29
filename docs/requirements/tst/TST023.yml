@@ -1,20 +1,23 @@
 active: false
 derived: false
 header: |
-  Pending: schema secret-key inspection
-level: 1.17
+  Pending: canary-secret leak test
+level: 1.18
 links:
-- SRS007: 4T55vG-p3dGlHY8_Pe4b7v2TWjJ8InvKZT13jBTXAPs=
+- SRS008: k-aEMbkoLsicBh834kkR0BMkL7fArPi3JSNjsmZ368U=
 normative: true
 rationale: ''
 ref: ''
-reviewed: l9QAdmdQzlZmpnXhiWa_xzNUC0byI1zM-sKITybgWG8=
+reviewed: qERT0wusL975iVOe8ROyaVdsckexOMgIE6dfrWviijY=
 status: proposed
 text: |
-  Pending: inspection of the configuration schema asserting it offers no
-  secret-bearing key; form (repo check or review checklist) decided when
-  the schema lands (#8). Activated then.
+  Pending: canary test planting a known secret value through <NAME>_FILE
+  delivery, exercising every route including the SRS006 failure paths,
+  and asserting the canary value appears in no response body, header, or
+  log line. Lands with the backend skeleton (#9); activated and given a
+  references entry then.
 verification-justification: |
-  Asserts key-set equality against the committed allowlist. Does not decide whether a listed key is
-  secret-bearing.
+  Settles that a planted canary appears in no body, header or log across every route including the
+  failure paths. Leaves unproven a secret emitted after transformation - a hash or a prefix would
+  not match the canary and would still be a leak.
 verification-method: test

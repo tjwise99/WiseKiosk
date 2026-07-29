@@ -1,22 +1,24 @@
 active: false
 derived: false
 header: |
-  Pending: rejected-request client-contract test
-level: 1.26
+  Pending: upstream timeout & size-bound test
+level: 1.27
 links:
-- SRS013: ZpNF0yPJ5OR2kcdqsviw6xiC9SB3Itl0cffSP8tdHdA=
+- SRS014: _MjM2ZTz452fe7yB-xulYz58NE5P72QyyavNlCIOM64=
 normative: true
 rationale: ''
 ref: ''
-reviewed: VKynnnJevITK2gyLL6PSAJAEezmzZFCQaNdm1mYEP5o=
+reviewed: Kh-87aToPVQXO4m2_XXM8LbLQfzbmAyu4JoadBF4c6M=
 status: proposed
 text: |
-  Pending: test asserting the backend returns 400 (invalid parameter), 404
-  (unknown source), 405 (non-GET method), and 429 (over rate limit) with a
-  renderable body distinct from the SRS001 upstream-failure shape, each without
-  an upstream call. Lands with the backend skeleton (#9); activated and given a
-  references entry then.
+  Pending: test asserting an upstream that hangs past the outbound timeout, or returns a response over
+  the size bound, is handled as an SRS001 upstream failure without wedging the request handler or
+  exhausting process memory; and that a concurrent request to a healthy source completes normally while
+  one upstream is still hanging, so a single stalled exchange is shown not to stall the backend rather
+  than only not to crash it. Lands with the backend skeleton (#9); activated and given a references
+  entry then.
 verification-justification: |
-  Settles that each rejection cause produces its own status with a renderable body, before any
-  upstream call. Leaves unproven that a person reading the rendered rejection can act on it.
+  Settles that a hung or oversized exchange neither wedges the handler nor exhausts memory, and that
+  a concurrent request still completes. Leaves unproven that the timeout and size values are right
+  for a real upstream.
 verification-method: test

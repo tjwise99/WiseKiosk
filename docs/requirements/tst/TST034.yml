@@ -1,25 +1,24 @@
 active: false
 derived: false
 header: |
-  Pending: boundary schema is single and complete
-level: 1.29
+  Pending: boundary codegen drift-gate test
+level: '1.30'
 links:
-- SRS015: RmDpYXVdRTwPyGgrFFSNKzUb9phXmgvGdGXZCc6Z2Ro=
+- SRS016: hVQCRJ-6Bfgxlzn8FkpR-gonQWctL67--tefiCtcID8=
 normative: true
 rationale: ''
 ref: ''
-reviewed: Q7Cc4Xx4ChGo4rPlocDYe0TcZlKxz845f6aIXykkDLE=
+reviewed: yPwWsUrfMaciVPNn1JCOLQvlMiDZslThzrb30_3ZFsg=
 status: proposed
 text: |
-  Pending: test parsing the boundary schema and asserting exactly one schema artifact is tracked;
-  that the set of schema path items equals the set of
-  entries in the static route registration list, in both directions; that every path item declares
-  its success status, the SRS001 upstream-failure status, and 400, 404, 405 and 429, each
-  referencing a named component rather than an inline body; that the upstream-failure body and the
-  SRS013 rejection body both exist as named components and are distinct schemas; and that every path
-  and query parameter is declared with a type. Lands with the codegen mechanism (#7).
+  Pending: test that injects a deliberate mismatch between the schema and the
+  committed generated code, asserts the CI drift check fails, then regenerates and
+  asserts the build passes. Lands with the codegen mechanism (#7). The check is
+  repo-level (it spans both packages); this item cites the workflow wiring in its
+  text because Doorstop references cannot reach a path under a dot-directory such
+  as .github/ (ADR 0002, ADR 0005).
 verification-justification: |
-  Settles that one schema artifact exists and that its path items match the declared endpoint set.
-  Leaves unproven that the schema describes the payloads the backend actually sends - that is the
-  drift gate's, under SRS016 - and says nothing about where the artifact sits, which #5 allocates.
+  Settles that a seeded schema/code mismatch fails the drift check and that regeneration clears it.
+  Leaves unproven drift the generators do not express - a schema change producing byte-identical
+  output passes.
 verification-method: test

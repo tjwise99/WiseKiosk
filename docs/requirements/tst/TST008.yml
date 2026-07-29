@@ -1,18 +1,22 @@
 active: false
 derived: false
 header: |
-  Pending: multi-arch build and smoke test
-level: 1.11
+  Pending: page-load-applies-config test
+level: 1.12
 links:
-- SRS019: 589WbSrwKJZ3YzUvxhFJmGvCEi3qPZVTBNNn4yvAaFg=
+- SRS003: IAyrBaeBRnD3ItGYyPTOjzpeocpua76c-pVe5gRlvnk=
 normative: true
 rationale: ''
 ref: ''
-reviewed: qatwFXiExnSbFoYu8HBzHBRZKfl0j4kx-qeCqBgQOlw=
+reviewed: I4tM7a9qJE0BlPpuOPmV4w2FxumP6oHJzun4gGbZOyI=
 status: proposed
 text: |
-  Pending: a CI matrix that builds and smoke-tests the published image on amd64 and arm64. The CI wiring lives under .github/ (not Doorstop-referenceable, ADR 0002) and is cited here; any non-dot-dir smoke harness it invokes is the references target. Lands with the container image build (#54); activated then.
+  Pending: integration test asserting a configuration edit takes effect on the next display page load,
+  with no rebuild or redeployment - two loads in one browser context with the edit between them, so
+  that a page served the previous configuration from an HTTP cache fails. Lands with the frontend
+  skeleton (#10); activated and given a references entry then.
 verification-justification: |
-  Settles that the image builds and smoke-tests on both architectures. Leaves unproven behaviour
-  under load on either - the matrix establishes that it runs, not that it runs well.
+  Settles that an edit applies on the next load in one browser context, so an HTTP-cached page
+  fails. Leaves unproven how often a deployed kiosk reloads - the requirement bounds the mechanism,
+  not the field schedule.
 verification-method: test
