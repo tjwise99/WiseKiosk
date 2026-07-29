@@ -77,8 +77,8 @@ SRS008, SRS009, SRS011, SRS012, SRS013, SRS016, SRS019, SRS028.
 ## Frontend
 
 _To be documented as it is built._ Svelte 5 + Vite, a static single-page bundle served as static
-files ([ADR 0001](decisions/0001-backend-language-go.md),
-[`FOUNDATIONS.md`](FOUNDATIONS.md) §2); each module's poll cadence is that module's own need, per
+files ([ADR 0001](decisions/0001-backend-language-go.md); the frontend stack's own decision record is
+#60); each module's poll cadence is that module's own need, per
 [the module contract](contracts/module-contract.md). Normative shape: SRS002, SRS017–SRS005,
 SRS024, SRS010, SRS016, SRS021, SRS026, SRS027; configuration validation is frontend-owned per
 [ADR 0007](decisions/0007-config-validation-allocation.md).
