@@ -29,6 +29,7 @@ const CHECK_TOKENS = {
   "check-branch": ["scripts/check-branch.sh"],
   "check-reqs": [
     "scripts/check-unreviewed.py",
+    "scripts/check-suspect-links.py",
     "doorstop --error-all --no-reformat",
     "scripts/check-method-consistency.py",
   ],

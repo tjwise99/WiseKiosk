@@ -38,7 +38,8 @@ Current gates (they grow as code lands):
   with its type, and its default-base PR records the ticket linkage (plain sh + curl + jq, like
   the hooks — no toolchain).
 - `just check-reqs`  — the Doorstop requirements tree validates: no item carries a review
-  fingerprint nobody wrote, refs resolve, no suspect/unreviewed/orphan items; every item carries a
+  fingerprint nobody wrote, refs resolve, no suspect/unreviewed/orphan items — inactive ones
+  included, which Doorstop itself skips; every item carries a
   `verification-justification`, and no item claims a method its own children do not support.
   **If it reports unreviewed items or links, do not clear that by re-running it.** Validating the
   tree makes Doorstop stamp a fingerprint into anything unstamped, which is why that check runs

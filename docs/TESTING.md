@@ -122,10 +122,13 @@ checked against, rather than prose alone.
   below.
 - **A verification item's fit against its parent is re-read when the item is activated.** Every `TST`
   item is `active: false` until the code it checks exists, and Doorstop skips inactive items
-  entirely — so the suspect-link mechanism, which is what normally flags a check whose parent's text
-  moved beneath it, is inert across the whole tier. Activation is the one moment the fit is looked
-  at, and it is a human read: does this check still assert a clause its parent still states? Nothing
-  mechanical will ask.
+  entirely — so its suspect-link mechanism, which is what normally flags a check whose parent moved
+  beneath it, is inert across the whole tier. `check-suspect-links.py` restores that one signal
+  ([`requirements/README.md § Running the gate`](requirements/README.md#running-the-gate)), so a
+  parent rewritten under a
+  pending check fails a gate in the commit that rewrites it rather than waiting for activation. What
+  it cannot decide is the question activation exists to ask, and that stays a human read: does this
+  check still assert a clause its parent still states?
 - **Every test and check in the repository is executed by CI** — the whole-tree discovery and
   verify/CI parity gates are [`CI.md`](CI.md)'s (§ Gate wiring), not the tree's. A test no runner
   reaches is a false signal, so a new test is wired in by its location alone.

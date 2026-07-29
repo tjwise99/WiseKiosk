@@ -129,9 +129,11 @@ retirement (ADR 0005); an item carrying a pending note is awaiting decomposition
 artifact, not retired.
 
 **Activation is a review act.** Doorstop skips inactive items entirely, so a `reviewed` stamp on a
-pending item carries no authority and edits to pending items are invisible to the gate. The fence
-lands at activation: the change that activates an item re-reads it in full and stamps its review
-(`doorstop review <UID>`) then — never before, never scripted.
+pending item carries no authority and edits to a pending item's own text are invisible to the gate.
+One half of that is now mechanical: `check-suspect-links.py` fails when a pending item's *parent*
+moves after the link was reviewed, which is the drift Doorstop cannot see. The rest still lands at
+activation — the change that activates an item re-reads it in full and stamps its review
+(`doorstop review <UID>`) then, never before, never scripted.
 
 ## Running the gate
 
@@ -146,14 +148,15 @@ docs/requirements/.venv/bin/pip install -r docs/requirements/requirements-dev.tx
 Then:
 
 ```sh
-just check-reqs      # check-unreviewed.py, doorstop --error-all --no-reformat, check-method-consistency.py
+just check-reqs      # check-unreviewed.py, check-suspect-links.py, doorstop --error-all --no-reformat, check-method-consistency.py
 just verify          # runs check-reqs alongside the other repo gates
 ```
 
 `just check-reqs` runs the **exact** commands CI runs (see
 [`../../.github/workflows/checks.yml`](../../.github/workflows/checks.yml), job `requirements`):
-`scripts/check-unreviewed.py`, then `docs/requirements/.venv/bin/doorstop --error-all --no-reformat`,
-then `scripts/check-method-consistency.py`. The `--error-all` flag promotes Doorstop's suspect /
+`scripts/check-unreviewed.py`, then `scripts/check-suspect-links.py`, then
+`docs/requirements/.venv/bin/doorstop --error-all --no-reformat`, then
+`scripts/check-method-consistency.py`. The `--error-all` flag promotes Doorstop's suspect /
 unreviewed / orphan / unresolved-reference warnings to errors, so the process exits non-zero and the
 gate actually blocks — plain `doorstop` only warns.
 
@@ -164,10 +167,11 @@ otherwise be "reviewed" by whoever next ran the gate, which is the one thing the
 to prove. Failing first stops Doorstop before it can stamp. Clear it with `doorstop review <uid>`,
 deliberately, never by re-running the gate.
 
-Between them the three commands assert that no item carries a review fingerprint nobody wrote; that
-every parent link resolves and no item is orphaned or left suspect; that every active `TST` item's
-`references` resolve to a real file; that every item carries a `verification-justification`; and that
-no item claims a verification method its own children do not support. Each is a property of the
+Between them the four commands assert that no item carries a review fingerprint nobody wrote; that
+every parent link resolves and no item is orphaned or left suspect, **inactive items included**;
+that every active `TST` item's `references` resolve to a real file; that every item carries a
+`verification-justification`; and that no item claims a verification method its own children do not
+support. Each is a property of the
 specification, which is why they are stated here rather than in
 [`../CI.md`](../CI.md) with the repository's checks — that document says they run and block, this one
 says what they mean. `check-verify-ci-parity` asserts the recipe-to-CI correspondence one command at
