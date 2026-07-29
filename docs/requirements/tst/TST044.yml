@@ -7,10 +7,13 @@ links:
 - SRS027: null
 normative: true
 rationale: |
-  Stated as an allowlist of granted features rather than a list of denied ones. A denied list fails
-  open the first time a browser ships a capability nobody anticipated, which is the failure mode this
-  repository rejects denylist controls for everywhere else it makes the choice. An allowlist that is
-  empty until a module asks fails closed by default.
+  Stated as an allowlist of granted features rather than a list of denied ones. The served header
+  enumerates the features it denies either way - Permissions-Policy carries no wildcard, so a
+  capability no version of this header names is governed by the browser's default whichever form is
+  chosen. The form is therefore chosen for what the check asserts, not for what the header serves:
+  against an allowlist every granted feature is a diff someone justified and an entry naming no
+  module fails, while against a list of denied ones a feature granted later is asserted about by
+  nothing. The list is empty until a module asks.
 ref: ''
 reviewed: null
 status: proposed
