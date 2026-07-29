@@ -251,8 +251,10 @@ what runs where, and what each is allowed to let through, is here.
   path.** It is the only thing that detects the drift above. It fails a scheduled run, never
   somebody's change: upstream availability is not a merge condition, and a gate that goes red because
   a third party is having a bad afternoon is a gate authors learn to ignore.
-- **That scheduled job holds one upstream credential, and it is the only job that does.** Of the five
-  sources, only CheckWX requires one; the rest are keyless. The credential is scoped to that workflow
+- **That scheduled job holds one upstream credential, and it is the only job that does.** Of the
+  three upstream sources — the clock and compliments modules are local and fetch nothing — only
+  CheckWX requires one; OpenMeteo and themeparks.wiki are keyless. The credential is scoped to that
+  workflow
   and reaches no other job, and no fixture, log or failure output carries its value —
   [`../SECURITY.md`](../SECURITY.md) rests on that, and SRS008 obliges the running system to the same
   rule.

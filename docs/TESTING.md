@@ -47,9 +47,9 @@ run alone either blocks merges on somebody else's uptime or does not gate at all
 
 **Rejected: an encrypted CI secret scoped to one workflow, running live on every pull request.** It
 costs quota against a rate limit nobody watches, and it inherits upstream availability on the merge
-path, which trains an author to ignore red. Only one of the five sources needs a credential —
-OpenMeteo and themeparks.wiki are keyless, CheckWX is not — so this would have been a general
-solution to a case of one.
+path, which trains an author to ignore red. Only one of the three upstream sources needs a
+credential — OpenMeteo and themeparks.wiki are keyless, CheckWX is not, and the clock and compliments
+modules are local and fetch nothing — so this would have been a general solution to a case of one.
 
 The requirement that used to settle this is withdrawn and stays withdrawn: it forbade any CI workflow
 from holding an upstream credential, which banned a normal practice and forced the tier into a nested
