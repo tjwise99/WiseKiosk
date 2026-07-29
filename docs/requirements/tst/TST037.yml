@@ -4,11 +4,11 @@ header: |
   Pending: a module component issues no network request of its own
 level: '1.40'
 links:
-- SRS010: null
+- SRS010: EQlTMWNvPWAOKpO_jzE-cMaYXeAXyZJVmsYjbijYSAo=
 normative: true
 rationale: ''
 ref: ''
-reviewed: null
+reviewed: zmnP53iIvdKzImhtGGyijwLKGUCBq610TiDbkwPRyRc=
 status: proposed
 text: |
   Pending: test rendering each module component with only its props supplied and the network globals

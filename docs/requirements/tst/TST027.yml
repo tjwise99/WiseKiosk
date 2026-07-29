@@ -4,11 +4,11 @@ header: |
   Pending: TTL cache-behaviour test (liveness canary)
 level: 1.22
 links:
-- SRS011: null
+- SRS011: FXsuJOG4O38HRucPCYF_UaWFAvlfi7_0T8DolNEhWPg=
 normative: true
 rationale: ''
 ref: ''
-reviewed: null
+reviewed: gZIts2kfC8BfugwfM3-oMVhQNoubI7YBgll8hKu3VoM=
 status: proposed
 text: |
   Pending: integration test asserting the (source, query) TTL cache serves an

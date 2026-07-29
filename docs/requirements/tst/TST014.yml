@@ -4,14 +4,14 @@ header: |
   Pending: exactly one validation implementation, by import graph
 level: 1.14
 links:
-- SRS005: null
+- SRS005: 4gGWUsl6Hf9TMN2e99Qavt2mohD1majt3LDKeG2RzZg=
 normative: true
 rationale: |
   One engine imported by both call sites still enforces two rule sets if the callers pass different
   options, or a differently configured instance. The import-graph assertion cannot see that, so it
   proves a shared dependency rather than a shared verdict.
 ref: ''
-reviewed: null
+reviewed: uHENMFJ37cCkYp5gyd5OGCZ-J8Z417vNI-ePzDElQm4=
 status: proposed
 text: |
   Pending: test running a fixture corpus - valid, unknown key, wrong type, missing required, and an

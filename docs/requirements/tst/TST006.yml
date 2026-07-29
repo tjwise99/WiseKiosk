@@ -4,11 +4,11 @@ header: |
   Pending: unknown-key rejection test
 level: 1.7
 links:
-- SRS005: null
+- SRS005: 4gGWUsl6Hf9TMN2e99Qavt2mohD1majt3LDKeG2RzZg=
 normative: true
 rationale: ''
 ref: ''
-reviewed: null
+reviewed: qFGVd6jvichKYAqNWRTov2FGiPCdu5HxT-_nJ9UL2_4=
 status: proposed
 text: |
   Pending: validation test asserting a configuration containing a key not in

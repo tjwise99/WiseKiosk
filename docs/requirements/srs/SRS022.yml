@@ -4,7 +4,7 @@ header: |
   A bounded running footprint
 level: 1.57
 links:
-- SYS007: null
+- SYS007: kkDY1a_aHA-VwY6_1pn2eSxlpXeku555DPqQXUC4jlI=
 normative: true
 rationale: |
   A declared minimum host has no headroom to absorb a leak, so unbounded
@@ -17,7 +17,7 @@ rationale: |
   to a check rather than to this obligation, and an enumeration here would
   otherwise be read as the complete list of what may not leak.
 ref: ''
-reviewed: null
+reviewed: _SLlhp39DbuIwG7ls7U6MHU_gaAoPPXI9LsqW8RDxrk=
 status: accepted
 text: |
   The backend's running footprint shall stay bounded: no resource it holds shall grow without bound

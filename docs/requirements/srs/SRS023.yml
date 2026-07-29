@@ -4,7 +4,7 @@ header: |
   The backend establishes no client identity and gates no route on one
 level: 1.96
 links:
-- SYS006: null
+- SYS006: v3qSjDNbCins9CcqouJY2Vp6K1NhBAlUsPS8az2R1Kc=
 normative: true
 rationale: |
   Makes SYS006's security model falsifiable. The posture itself — a deployment serves exactly one
@@ -22,7 +22,7 @@ rationale: |
   introducing an identity mechanism elsewhere, and the posture must outlive that. Stated here so the
   overlap does not read as an oversight.
 ref: ''
-reviewed: null
+reviewed: qkxtVS7EUTA2S6zORUnGSwv_2O2H73ZPpkBDkMLGI44=
 status: proposed
 text: |
   The backend shall establish no client identity and shall gate no route on one.

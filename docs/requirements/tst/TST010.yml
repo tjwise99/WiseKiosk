@@ -4,11 +4,11 @@ header: |
   Pending: the published image carries no deployment specifics
 level: 1.12
 links:
-- SRS018: null
+- SRS018: jAdiVAOaHeEAP9caGAN9vBMpjclpje_k3TmKnf5abBw=
 normative: true
 rationale: ''
 ref: ''
-reviewed: null
+reviewed: _hweP7DgZL5n-l_ISlmOKpT9D5W1rPrl3ptuRMcKCKU=
 status: proposed
 text: |
   Pending: test exporting the published image filesystem and asserting nothing exists at the

@@ -12,7 +12,7 @@ rationale: |
   upstream API shapes are defined by whoever runs the API, and the configuration format is shared with
   the operator and governed by SYS003.
 ref: ''
-reviewed: null
+reviewed: vWpFwzXUqypym6hKI0F3IGqVwyPFfH32lieducWW6tM=
 status: accepted
 text: |
   Every shape shared between WiseKiosk's own components shall have exactly one machine-readable

@@ -4,7 +4,7 @@ header: |
   A module-scoped configuration error is reported at that module
 level: 1.5
 links:
-- SYS001: TQyfJejH81RI-POadHI3gN0eM_DDB8AFAnMwcKjCth4=
+- SYS001: ycFTNF2ASjFxjP8A9d3lB7nTzAdgSvE_5Ee71wz7MPY=
 - SYS003: x73sA6VMR9aDga-PqTW6L49gj-iwZdgTOg5xG8VhAwM=
 normative: true
 rationale: |
@@ -13,7 +13,7 @@ rationale: |
   "apply", not "page load", so a future live-apply path validates the same way
   without a rewrite (ADR 0007); page load is today's only apply point.
 ref: ''
-reviewed: null
+reviewed: 29XtvChvNEkuUIPVRmv_3x8mmPxbg1DsGki1PsOxmco=
 status: accepted
 text: |
   A configuration error that can be isolated to a single module shall be reported at that module's

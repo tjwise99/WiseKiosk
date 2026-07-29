@@ -4,7 +4,7 @@ header: |
   Pending: refresh cadence is not configurable
 level: 1.43
 links:
-- SRS011: null
+- SRS011: FXsuJOG4O38HRucPCYF_UaWFAvlfi7_0T8DolNEhWPg=
 normative: true
 rationale: |
   The fake-timer cadence assertion was struck: it measured the frontend's poll interval against a
@@ -13,7 +13,7 @@ rationale: |
   module-contract.md's, under Cadence and TTL are chosen together. What remains here is SRS011's own
   clause that the bound is not raisable by configuration.
 ref: ''
-reviewed: null
+reviewed: ihnpHiILnBezzziflL02pxlbJh13d9Ytu37MAh7qVQo=
 status: proposed
 text: |
   Pending: test asserting the composed configuration schema declares no property that sets a refresh

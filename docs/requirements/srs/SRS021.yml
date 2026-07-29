@@ -4,13 +4,13 @@ header: |
   Frontend runs on a Pi Zero-class browser host
 level: 1.56
 links:
-- SYS007: null
+- SYS007: kkDY1a_aHA-VwY6_1pn2eSxlpXeku555DPqQXUC4jlI=
 normative: true
 rationale: |
   Decomposes SYS007's minimum-host claim on the browser side; demonstrated on
   reference hardware, sharing evidence with SRS022's bounded-growth observation.
 ref: ''
-reviewed: null
+reviewed: 4XMlP6eTteKcUSX7-C62Tuw4d8geRXlw--_K8qVAJwg=
 status: accepted
 text: |
   The frontend shall operate on a Raspberry Pi Zero-class browser host

@@ -13,7 +13,7 @@ rationale: |
   Upstream request URLs and echoed upstream errors are the classic leak
   paths this guards.
 ref: ''
-reviewed: null
+reviewed: w02oh1tDK4uXu9Zx9-Edrwh3IK5xkH79Zc5LE6mZsKo=
 status: accepted
 text: |
   No secret value shall appear in any HTTP response body or header, nor

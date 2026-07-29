@@ -4,8 +4,8 @@ header: |
   Every source reachable through the backend, statelessly
 level: '1.20'
 links:
-- SYS004: null
-- SYS006: null
+- SYS004: -WgxkJ5puavx1z3dZ1VyFaAtygFCvlL2KSrBdQN-kdY=
+- SYS006: v3qSjDNbCins9CcqouJY2Vp6K1NhBAlUsPS8az2R1Kc=
 normative: true
 rationale: |
   The payload's shape is defined once by the boundary contract (#37) and
@@ -19,7 +19,7 @@ rationale: |
   keyed on the request itself, is not per-client state: it may determine whether a
   request is served from cache, but not the payload a client receives.
 ref: ''
-reviewed: null
+reviewed: O_f7x1_Aokt3P3lBbHlhA_WZKXkqsGTcYhbJK5UJqjM=
 status: accepted
 text: |
   Every supported external source shall be reachable through the backend, by the

@@ -12,7 +12,7 @@ rationale: |
   configured for" carries the kiosk-primary, desktop-secondary distinction without fixing viewports in
   the need; SRS017 owns those. Phone widths are deliberately not a requirement.
 ref: ''
-reviewed: WKtMGUBh_Ew881SVgmcG0I3DbchZFVDHjXWT515-NGw=
+reviewed: 4hoIe3sFXRA1b7fqjxvI-vWBDVBWimxgK9cW4PZZ8KQ=
 status: accepted
 text: |
   Every configured module shall be wholly visible on the display it was configured for.

@@ -4,10 +4,11 @@ header: |
   Pending: backend-unreachable display state
 level: 63
 links:
-- SRS026: null
+- SRS026: zivxU0HYyxFMwYJKGpeBNNpbeXTDKC7J41KC9sM68kM=
 normative: true
 rationale: ''
 ref: ''
+reviewed: p2o1iavAz7g-3jNzg8rOnY9aEzLY5-HQPgkURGqNbrA=
 status: proposed
 text: |
   Pending: check that induces a backend outage with the page already served, and asserts the display

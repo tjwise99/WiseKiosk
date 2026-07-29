@@ -13,7 +13,7 @@ rationale: |
   than it needs bounds what a compromise reaches. This is a recorded decision, not an oversight: the
   absence of authentication must not be "fixed" by a later reader who mistakes it for one.
 ref: ''
-reviewed: null
+reviewed: v3qSjDNbCins9CcqouJY2Vp6K1NhBAlUsPS8az2R1Kc=
 status: accepted
 text: |
   The system shall neither grant privilege nor require it.

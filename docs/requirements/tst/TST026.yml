@@ -4,11 +4,11 @@ header: |
   Pending: every external source has a proxy route
 level: 1.21
 links:
-- SRS009: null
+- SRS009: 3Je4gbXE0f_ybWKil2N9ttPdXutP1iu-6HBpspZvTKw=
 normative: true
 rationale: ''
 ref: ''
-reviewed: null
+reviewed: BUZkWNSP9mxy5FJn4aNnr25MrjLI1ms_uapyT_6Hmyg=
 status: proposed
 text: |
   Pending: test asserting the set of external sources declared by upstream-backed modules equals the

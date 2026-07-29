@@ -4,13 +4,13 @@ header: |
   Pending: task count does not grow without bound
 level: 1.4
 links:
-- SRS022: null
+- SRS022: Qxr5bhFduqh2GyEHReQthP4M01CMLv3GRX5FUfDIiCs=
 normative: true
 rationale: |
   A goroutine leak shows in neither resident memory nor handle count until it is far advanced, so
   neither sibling item catches it. Sampled in the run TST004 describes.
 ref: ''
-reviewed: null
+reviewed: 6ZtDtKZdXYNwMxgKTDIuyjlnhV7YtVBNN5qnDvrpdpY=
 status: proposed
 text: |
   Pending: over the run TST004 describes, failing on any increase in the runtime's task count between

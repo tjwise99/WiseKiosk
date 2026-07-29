@@ -4,7 +4,7 @@ header: |
   Pending: a module-scoped configuration error lands at that module
 level: 1.5
 links:
-- SRS002: null
+- SRS002: P9qsChVJOYk34Pj1_835_7zbUaDofY4AFqQ7pBZ-1vc=
 normative: true
 rationale: |
   Both fixtures run the one validation entry point, because the branch this asserts is a property of
@@ -12,7 +12,7 @@ rationale: |
   let each pass against a different code path and leave the branch itself untested - which is what the
   SRS002/SRS004 pair did before.
 ref: ''
-reviewed: null
+reviewed: Bj0xbTnv_MzOS7rY3vuKCYFMoqwAwClUjebOp-VeVmw=
 status: proposed
 text: |
   Pending: render test driving two fixtures through the same validation path and asserting opposite

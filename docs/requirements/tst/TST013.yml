@@ -4,7 +4,7 @@ header: |
   Pending: the published image carries no secret material
 level: 1.14
 links:
-- SRS025: null
+- SRS025: AiVIDF9ZNzEVwww201a-xFGL2lUrsQtPxUc0CRcCbNg=
 normative: true
 rationale: |
   The earlier form asserted that "no secret material is present", a predicate with no oracle anywhere
@@ -13,7 +13,7 @@ rationale: |
   fail on the image either. Both are replaced by artifacts the check owns: a committed pattern set, and
   a canary planted where the image can actually carry it.
 ref: ''
-reviewed: null
+reviewed: Te5W5eDt1oyVB3UwldMwoqSiX0I9BqZrdD--HVxOuTo=
 status: proposed
 text: |
   Pending: test exporting the published image filesystem and every layer, and asserting that no value

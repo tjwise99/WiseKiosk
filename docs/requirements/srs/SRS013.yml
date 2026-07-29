@@ -4,7 +4,7 @@ header: |
   Client-facing contract for rejected requests
 level: 1.26
 links:
-- SYS004: null
+- SYS004: -WgxkJ5puavx1z3dZ1VyFaAtygFCvlL2KSrBdQN-kdY=
 normative: true
 rationale: |
   SRS012 and SRS011 reject invalid and over-limit requests but do not say what
@@ -16,7 +16,7 @@ rationale: |
   is separable from an upstream failure. The particular status codes live in
   TST031 and TST034, where they can change without a specification edit.
 ref: ''
-reviewed: null
+reviewed: ZTiAP31WTVBuv91AhJrpvuskdww22kGHG5ThDqNGHxI=
 status: accepted
 text: |
   A request the backend rejects before making any upstream call shall return a client-error

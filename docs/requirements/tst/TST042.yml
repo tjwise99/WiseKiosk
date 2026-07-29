@@ -4,11 +4,11 @@ header: |
   Pending: served responses declare a type and forbid inference
 level: 1.56
 links:
-- SRS028: null
+- SRS028: Z7Ew9iS07io5WQUQGQhIUzSgVESAsblWEJUS1OAzj4Y=
 normative: true
 rationale: ''
 ref: ''
-reviewed: null
+reviewed: LdK7sNzt4CC_7dl0xl198GS3_oiWBmhoTLyBNqLP4MM=
 status: proposed
 text: |
   Pending: integration test asserting the frontend-serving response and every proxy response carry a

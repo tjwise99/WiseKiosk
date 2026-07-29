@@ -4,7 +4,7 @@ header: |
   One schema, all boundary value classes
 level: 1.29
 links:
-- SYS005: null
+- SYS005: vWpFwzXUqypym6hKI0F3IGqVwyPFfH32lieducWW6tM=
 normative: true
 rationale: |
   "Every payload shape and every parameter name" (TESTING.md Boundary tier)
@@ -17,7 +17,7 @@ rationale: |
   generated from it, which holds wherever the artifact lives; a clause placing it
   outside both packages asserted a layout no decision took.
 ref: ''
-reviewed: null
+reviewed: oFjnWwUA_1gsnnQpICsuihiZiUUYMTxpdUDMN5dXDdI=
 status: accepted
 text: |
   The boundary contract shall be defined by exactly one schema artifact, from which both sides are

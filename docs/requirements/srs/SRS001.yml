@@ -4,7 +4,7 @@ header: |
   A failed module shows why, and only that module
 level: 1.1
 links:
-- SYS001: TQyfJejH81RI-POadHI3gN0eM_DDB8AFAnMwcKjCth4=
+- SYS001: ycFTNF2ASjFxjP8A9d3lB7nTzAdgSvE_5Ee71wz7MPY=
 normative: true
 rationale: |
   The failure state is a framework universal while a success state is not: what a module displays
@@ -14,7 +14,7 @@ rationale: |
   disproportionate degradation SYS001 forbids. The shape of the payload that carries the failure is
   SRS015's, not this item's.
 ref: ''
-reviewed: null
+reviewed: xTtlyVL2JRixLTxiKSjl_AzI2HxoBXY7S8qqdZh8-Jo=
 status: accepted
 text: |
   When a module's data request fails, that module shall render a plain-language error state in

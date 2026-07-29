@@ -4,11 +4,11 @@ header: |
   Pending: secret-resolution unit tests
 level: 1.15
 links:
-- SRS006: null
+- SRS006: ZeplVyYLSsrROM7ALJxI9czolHES2p2NT_Xu10C_gvE=
 normative: true
 rationale: ''
 ref: ''
-reviewed: null
+reviewed: MZKIRj2QjjZ8bh11lvA6nYMRUMZ9wCbiXrK5f4eiFlc=
 status: proposed
 text: |
   Pending: unit tests of secret resolution — value read from the file at

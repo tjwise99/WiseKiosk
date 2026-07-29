@@ -4,7 +4,7 @@ header: |
   Pending: two clients, one request, one answer
 level: 66
 links:
-- SRS009: null
+- SRS009: 3Je4gbXE0f_ybWKil2N9ttPdXutP1iu-6HBpspZvTKw=
 normative: true
 rationale: |
   SRS023's three checks establish that no identity machinery exists - no Set-Cookie or
@@ -14,7 +14,7 @@ rationale: |
   neither status, and registers no middleware, so it satisfies all three while breaking the clause
   this item verifies.
 ref: ''
-reviewed: null
+reviewed: OK5y3PSOwVvyuROZX8gOwRUvYBVR9SQxPOW648CdkX4=
 status: proposed
 text: |
   Pending: integration test issuing the same request to a source endpoint from two clients that differ

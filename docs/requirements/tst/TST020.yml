@@ -4,14 +4,14 @@ header: |
   Pending: Pi Zero-class host demonstration
 level: 1.16
 links:
-- SRS021: null
+- SRS021: p-kpMmEsHxZ3KL65MRvg5UwzleOeUYFT16p2ZVx2-lA=
 normative: true
 rationale: |
   SRS021's justification rested on both proxies before either was specified anywhere. They are stated
   here because they are mechanically decidable and CI-runnable, unlike the demonstration on real
   hardware, which is not.
 ref: ''
-reviewed: null
+reviewed: 5R5BSeGRxboXD38HxLVxnv9WW89__GWAloamPyVfLWU=
 status: proposed
 text: |
   Pending: demonstration that the frontend renders and drives the display on a Raspberry Pi Zero-class

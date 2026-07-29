@@ -4,11 +4,11 @@ header: |
   Pending: boundary codegen drift-gate test
 level: '1.30'
 links:
-- SRS016: null
+- SRS016: hVQCRJ-6Bfgxlzn8FkpR-gonQWctL67--tefiCtcID8=
 normative: true
 rationale: ''
 ref: ''
-reviewed: null
+reviewed: dRPm6rv12c0JonunmcSFrOf7y2SIZ0uwe-EFc5dLVYo=
 status: proposed
 text: |
   Pending: test that injects a deliberate mismatch between the schema and the

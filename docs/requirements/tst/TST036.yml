@@ -4,11 +4,11 @@ header: |
   Pending: both sides consume the generated boundary types
 level: 1.31
 links:
-- SRS016: null
+- SRS016: hVQCRJ-6Bfgxlzn8FkpR-gonQWctL67--tefiCtcID8=
 normative: true
 rationale: ''
 ref: ''
-reviewed: null
+reviewed: MGUOXNsCKbYipER--HoJOzj_MWqZYo99ZHVk_voUvSU=
 status: proposed
 text: |
   Pending: test asserting that for every route in the static registration list the handler's request

@@ -4,7 +4,7 @@ header: |
   Pending: the registered middleware chain is exactly the declared one
 level: 1.17
 links:
-- SRS023: null
+- SRS023: UoKQBk6nKyr9Krjf4SDNA1-zNaVIr_Z30lVJhorRhHs=
 normative: true
 rationale: |
   An equality against the declared chain, not a search for session or authentication packages: a
@@ -12,7 +12,7 @@ rationale: |
   denylist controls on principle. Equality fails closed — any middleware nobody declared, whatever
   it is called, breaks the assertion.
 ref: ''
-reviewed: null
+reviewed: Q4lCgU045oh2f23UeEbfyQneOuwiptqqoz-uzdwizDs=
 status: proposed
 text: |
   Pending: check that the middleware chain registered on the constructed router equals the declared

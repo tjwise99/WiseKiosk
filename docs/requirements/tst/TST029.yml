@@ -4,11 +4,11 @@ header: |
   Pending: per-route rate-limit test
 level: 1.24
 links:
-- SRS011: null
+- SRS011: FXsuJOG4O38HRucPCYF_UaWFAvlfi7_0T8DolNEhWPg=
 normative: true
 rationale: ''
 ref: ''
-reviewed: null
+reviewed: SuVk2Sw9b4NtOkiW57SKO6bLP1ljqBelLx1TY8A8Jqw=
 status: proposed
 text: |
   Pending: test asserting a route's global rate limit rejects requests over the

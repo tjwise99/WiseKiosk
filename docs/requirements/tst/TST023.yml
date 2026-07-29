@@ -4,11 +4,11 @@ header: |
   Pending: schema secret-key inspection
 level: 1.17
 links:
-- SRS007: null
+- SRS007: 4T55vG-p3dGlHY8_Pe4b7v2TWjJ8InvKZT13jBTXAPs=
 normative: true
 rationale: ''
 ref: ''
-reviewed: null
+reviewed: l9QAdmdQzlZmpnXhiWa_xzNUC0byI1zM-sKITybgWG8=
 status: proposed
 text: |
   Pending: inspection of the configuration schema asserting it offers no

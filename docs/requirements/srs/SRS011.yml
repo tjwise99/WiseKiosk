@@ -4,7 +4,7 @@ header: |
   Upstream request rate is bounded, and the bound is not operator-tunable
 level: 1.22
 links:
-- SYS004: null
+- SYS004: -WgxkJ5puavx1z3dZ1VyFaAtygFCvlL2KSrBdQN-kdY=
 normative: true
 rationale: |
   The bound exists to keep WiseKiosk a well-behaved consumer of somebody else's API no matter how
@@ -16,7 +16,7 @@ rationale: |
   against the limit nor rejected by it, and a sustained upstream outage must not cause an upstream
   request on every incoming request.
 ref: ''
-reviewed: null
+reviewed: jmg2D1eXPp6vDieRTJ0UjcL0GEbBP9QTaW467ZtEFuQ=
 status: accepted
 text: |
   The backend's rate of upstream requests to a source shall be bounded regardless of how many

@@ -4,7 +4,7 @@ header: |
   The display says when the backend is gone
 level: 29
 links:
-- SYS001: null
+- SYS001: ycFTNF2ASjFxjP8A9d3lB7nTzAdgSvE_5Ee71wz7MPY=
 normative: true
 rationale: |
   Created when the operator-self-sufficiency need was narrowed and then dissolved: it gave up the
@@ -17,6 +17,7 @@ rationale: |
   same thing twice. Cadence, what the page displays, and whether one endpoint serves both the page and
   an orchestrator are mechanism, and are #72's.
 ref: ''
+reviewed: J23XsIdVZ_-23ju6VwTnghbQfTzfROKs6brnxwJW-8A=
 status: proposed
 text: |
   When the backend is unreachable, the display shall say so rather than showing each module as

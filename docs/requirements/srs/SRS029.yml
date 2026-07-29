@@ -4,7 +4,7 @@ header: |
   One instance, one configuration, nothing shared with another
 level: 32
 links:
-- SYS003: null
+- SYS003: x73sA6VMR9aDga-PqTW6L49gj-iwZdgTOg5xG8VhAwM=
 normative: true
 rationale: |
   SECURITY.md publishes this as a threat-model premise - "one instance serves exactly one
@@ -21,6 +21,7 @@ rationale: |
   The household case is the concrete one: a second kiosk in another room, same image, different
   configuration, and no way for one to disturb the other.
 ref: ''
+reviewed: YWzkxGO5v3vOv7r4YXdahpJWvm2-yG_9PrhBCmxhiH0=
 status: proposed
 text: |
   A running instance shall be determined solely by the configuration and secrets supplied to it,

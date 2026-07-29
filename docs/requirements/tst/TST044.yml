@@ -4,7 +4,7 @@ header: |
   Pending: denied device capabilities
 level: 65
 links:
-- SRS027: null
+- SRS027: 0J_nMvyhbWzNWWoKKYIX3qX6nLFB29T60WfSm4O2FNY=
 normative: true
 rationale: |
   Stated as an allowlist of granted features rather than a list of denied ones. The served header
@@ -15,7 +15,7 @@ rationale: |
   module fails, while against a list of denied ones a feature granted later is asserted about by
   nothing. The list is empty until a module asks.
 ref: ''
-reviewed: null
+reviewed: 9eagIwONqnJiiAIR5UQnyOwgtfwowTLpNUgUUq7uSPU=
 status: proposed
 text: |
   Pending: integration test asserting the frontend-serving response carries a Permissions-Policy, and

@@ -4,14 +4,14 @@ header: |
   Pending: every schema key is varied by a fixture and renders
 level: 1.15
 links:
-- SRS024: null
+- SRS024: jGhiM9f68DTp6BTj1dnCORLxzudyszpJuwYfTOyUzCg=
 normative: true
 rationale: |
   Enumerating from the schema rather than from the fixtures is what makes the check closed: driven
   from the fixtures it would only confirm that whatever is tested passes, which is what it already
   knows.
 ref: ''
-reviewed: null
+reviewed: OQ6pAQrFN-g-kRXYzcDhMgiFmL9FNUwBWVqeRI2GIZo=
 status: proposed
 text: |
   Pending: test enumerating the composed configuration schema's keys and asserting, for each, that

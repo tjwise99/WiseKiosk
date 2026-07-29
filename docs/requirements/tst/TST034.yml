@@ -4,11 +4,11 @@ header: |
   Pending: boundary schema is single and complete
 level: 1.29
 links:
-- SRS015: null
+- SRS015: RmDpYXVdRTwPyGgrFFSNKzUb9phXmgvGdGXZCc6Z2Ro=
 normative: true
 rationale: ''
 ref: ''
-reviewed: null
+reviewed: Q7Cc4Xx4ChGo4rPlocDYe0TcZlKxz845f6aIXykkDLE=
 status: proposed
 text: |
   Pending: test parsing the boundary schema and asserting exactly one schema artifact is tracked;

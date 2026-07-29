@@ -4,11 +4,11 @@ header: |
   Pending: same-origin CSP header test
 level: 1.55
 links:
-- SRS010: null
+- SRS010: EQlTMWNvPWAOKpO_jzE-cMaYXeAXyZJVmsYjbijYSAo=
 normative: true
 rationale: ''
 ref: ''
-reviewed: null
+reviewed: RMccre4vdClulfbQVsVgdxAkrlv35id9JAjqkriYfzU=
 status: proposed
 text: |
   Pending: integration test requesting the backend's frontend-serving route and asserting the

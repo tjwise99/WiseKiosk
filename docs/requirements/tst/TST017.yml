@@ -4,14 +4,14 @@ header: |
   Pending: no credential material on the wire, over every registered route
 level: 1.15
 links:
-- SRS023: null
+- SRS023: UoKQBk6nKyr9Krjf4SDNA1-zNaVIr_Z30lVJhorRhHs=
 normative: true
 rationale: |
   The route set is derived from the single static registration list rather than written by hand, so
   coverage is total by construction and a route added later cannot escape the sweep. A
   hand-listed sweep would pass while the next route leaked.
 ref: ''
-reviewed: null
+reviewed: aTJeMZ6HHGTLVu-VtY5BC-JTeiGtGRsfy4Yy73ZdXLE=
 status: proposed
 text: |
   Pending: integration check that, for every entry in the static route registration list, exercises
