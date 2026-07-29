@@ -235,6 +235,31 @@ violate any of them, so they are checks here rather than obligations there.
   what it needs as props; reaching the configuration itself would let it depend on keys nobody
   declared for it (#12).
 
+## Upstream contract checks
+
+Two jobs, deliberately unequal. What they must prove, and why the pair is composed rather than either
+alone, is [`TESTING.md § Where the Contract tier runs`](TESTING.md#where-the-contract-tier-runs-and-how-it-reaches-upstream);
+what runs where, and what each is allowed to let through, is here.
+
+- **Recorded upstream fixtures are replayed on every commit, and block a merge.** Each shaping library
+  is asserted against a captured response. No credential is present in this job, and no network call
+  is made. What it cannot catch is an upstream that changed after the fixture was recorded — a
+  fixture is a snapshot, and it stays green against a reality that has moved.
+- **A scheduled job runs the same shaping libraries against the live upstreams, off the pull-request
+  path.** It is the only thing that detects the drift above. It fails a scheduled run, never
+  somebody's change: upstream availability is not a merge condition, and a gate that goes red because
+  a third party is having a bad afternoon is a gate authors learn to ignore.
+- **That scheduled job holds one upstream credential, and it is the only job that does.** Of the five
+  sources, only CheckWX requires one; the rest are keyless. The credential is scoped to that workflow
+  and reaches no other job, and no fixture, log or failure output carries its value —
+  [`../SECURITY.md`](../SECURITY.md) rests on that, and SRS008 obliges the running system to the same
+  rule.
+
+**Why a credential is allowed here at all.** A withdrawn requirement once forbade any CI workflow
+from holding an upstream credential. It banned a normal practice, and forced the tier into a nested
+module that [ADR 0010](decisions/0010-runtime-materialised-gate-fixtures.md) independently found
+leaky. Holding it in a scheduled job, off the merge path, is the narrower answer.
+
 ## Gate wiring
 
 These assert that the regime is real rather than declared. Each states a property of machinery

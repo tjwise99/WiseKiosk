@@ -57,10 +57,14 @@ module that [ADR 0010](decisions/0010-runtime-materialised-gate-fixtures.md) ind
 leaky — *"a nested module looked like the escape and is not one."* The scheduled run holds a
 credential, deliberately.
 
-**Open, and not decided here:** whether the fixture-recording procedure and the schedule need a
-requirement in the tree, or belong wholly to this document. Nothing WiseKiosk does can violate "an
-upstream still returns what we expect" — the obligation is on somebody else's API — which points away
-from the tree, but the shaping library's expectation is ours.
+**Decided 2026-07-28 by the owner: no requirement.** Nothing WiseKiosk does can violate "an upstream
+still returns what we expect" — that obligation is on somebody else's API. The half that *is* ours,
+what the product does when an upstream returns something the shaping library did not expect, is
+already **SRS001**, and `TST001` names malformed payload as one of its failure classes. A tree item
+here would restate it. What is left is machinery: recording a fixture is a procedure an author
+follows, and a scheduled credentialed job is a repository-facing check, so both sit in
+[`CI.md § Upstream contract checks`](CI.md#upstream-contract-checks) ([ADR
+0011](decisions/0011-requirement-or-convention.md)).
 
 ---
 
