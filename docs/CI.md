@@ -213,7 +213,7 @@ violate any of them, so they are checks here rather than obligations there.
   import set that is a subset of a declared pure-package allowlist, so I/O is absent by construction
   rather than by a denylist of forbidden packages. No exported shaping function's parameters include
   the secret type or the URL-builder's output type, and the shaping unit tests run against a transport
-  that panics on use (#5).
+  that panics on use (#12).
 - **The configuration schema recomposes from its fragments.** Recomposing from the module fragments
   leaves the committed schema unchanged; module directories and fragments stand in bijection, with no
   registered module lacking a fragment and no orphan fragment; each fragment file is the unique
