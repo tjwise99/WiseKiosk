@@ -1,23 +1,22 @@
 active: false
 derived: false
 header: |
-  Pending: served responses declare a type and forbid inference
-level: 1.56
+  Pending: backend-unreachable display state
+level: 63
 links:
-- SRS028: Z7Ew9iS07io5WQUQGQhIUzSgVESAsblWEJUS1OAzj4Y=
+- SRS026: zivxU0HYyxFMwYJKGpeBNNpbeXTDKC7J41KC9sM68kM=
 normative: true
 rationale: ''
 ref: ''
-reviewed: TPHmgib0hwC5u_R5GY9l8nzDlhbXM5o4IFocHaBWfBM=
+reviewed: oDQD1WR4JmElgp-umcN5EnSKQ4NZuvEQ7CKeVROtCQg=
 status: proposed
 text: |
-  Pending: integration test asserting the frontend-serving response and every proxy response carry a
-  Content-Type header with a concrete media type, and carry X-Content-Type-Options: nosniff. Fails if
-  either is absent on any served route, if a Content-Type is empty or generic enough to leave the
-  type unstated, or if the nosniff value is weakened. Lands with the backend that serves the
-  frontend; activated with a references entry to the integration test then.
+  Pending: check that induces a backend outage with the page already served, and asserts the display
+  renders one page-wide unreachable state rather than a per-module unavailable state in each region;
+  and that the state carries a remediation field, non-empty and not equal to the diagnosis it reports.
+  Lands with the liveness endpoint (#72).
 verification-justification: |
-  Settles that a concrete media type and the no-inference header are present on every served route.
-  Leaves unproven that a declared type is correct for the bytes beneath it - an upstream
-  mislabelling its own payload is outside what this reaches.
+  Settles that one page-wide state replaces the per-module states and that it carries a remediation
+  distinct from its diagnosis. Leaves unproven whether the remediation is the right advice - #71
+  recommends it, no gate decides it.
 verification-method: test

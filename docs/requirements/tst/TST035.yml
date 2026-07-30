@@ -1,25 +1,25 @@
 active: false
 derived: false
 header: |
-  Pending: both sides consume the generated boundary types
-level: 1.31
+  Pending: viewport-driven layout render test
+level: 1.41
 links:
-- SRS016: hVQCRJ-6Bfgxlzn8FkpR-gonQWctL67--tefiCtcID8=
+- SRS017: xPTVN9P-zaD21f3uxJwLepL2kQzR8hOn6pDoJ2aPZnM=
 normative: true
 rationale: ''
 ref: ''
-reviewed: 8F8y2qnAvW4bpZ7uE_gUx67SnQre9wp-OR_OwHvJJp0=
+reviewed: bU1R8CCXOekLbTbIVSduY_hC-aFQroQcNDLOJsxSxzE=
 status: proposed
 text: |
-  Pending: test asserting that for every route in the static registration list the handler's request
-  and response types resolve to declarations under the generated package; and, on the frontend, that
-  for each module holding a boundary fragment the component's payload prop type, and the error-render
-  path's failure and rejection prop types, resolve to declarations under the generated boundary
-  directory. A module with no fragment has no payload prop and is not expected to have one. Both halves
-  are positive: they name where a type must come from rather than where it must not, so a hand-declared
-  twin fails by not resolving rather than by matching a pattern. Lands with the codegen mechanism (#7).
+  Pending: viewport-driven render test asserting a bijection between the modules the fixture
+  configuration names and the regions present in the DOM, each rendered into the region the
+  configuration assigns it, with the module set read from the parsed fixture rather than a hand-written
+  list; and asserting the assembled layout exhibits no overlap, no clipping, and no scrollbars at the
+  kiosk viewport (1920x1080), and reflows with no overlap, no clipping, and no horizontal scroll at the
+  desktop viewports (1280x800 and 1440x900). Lands with the frontend skeleton (#10); activated and
+  given a references entry then.
 verification-justification: |
-  Settles that handler and component types resolve to declarations under the generated package.
-  Leaves unproven a boundary value that crosses without appearing in a handler signature or a
-  component prop.
+  Settles that every configured module is present, in its assigned region, with no overlap or
+  clipping at three viewports. Leaves unproven legibility across a room, which is the property a
+  kiosk actually needs and which no geometric assertion reaches.
 verification-method: test

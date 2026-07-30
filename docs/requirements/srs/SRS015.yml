@@ -17,15 +17,19 @@ rationale: |
   generated from it, which holds wherever the artifact lives; a clause placing it
   outside both packages asserted a layout no decision took.
 ref: ''
-reviewed: oFjnWwUA_1gsnnQpICsuihiZiUUYMTxpdUDMN5dXDdI=
+reviewed: 9AwGvd3KP6n9PYubIzvzDMH4HXMe3OKfXVEbSAnzsUw=
 status: accepted
 text: |
   The boundary contract shall be defined by exactly one schema artifact, from which both sides are
   generated. It shall define every value crossing the boundary, including those a module
   contributes. No boundary value shall be defined in more than one place.
 verification-justification: |
-  Asserted by regenerating both sides from the schema and failing on any difference, and by
-  requiring each boundary value to have one definition site across the schema and its fragments.
-  What no check settles is whether the definition is the right shape - only that there is exactly
-  one of it.
+  Asserted against the schema itself: exactly one schema artifact is tracked, its path items match the
+  declared endpoint set in both directions, and every declared response references a named component
+  rather than an inline body - which leaves components the only position where a boundary value can be
+  defined at all. That both sides in fact agree with the schema is the drift gate's, under SRS016,
+  rather than this item's. What no check settles is whether the definition is the right shape, nor
+  whether two components under different names describe one value: requiring a named component
+  forecloses a second definition at a use site, and an identical pair under two names is not decidable
+  from the schema.
 verification-method: test

@@ -1,22 +1,32 @@
 active: false
 derived: false
 header: |
-  Pending: backend-unreachable display state
-level: 63
+  Pending: denied device capabilities
+level: 65
 links:
-- SRS026: zivxU0HYyxFMwYJKGpeBNNpbeXTDKC7J41KC9sM68kM=
+- SRS027: 0J_nMvyhbWzNWWoKKYIX3qX6nLFB29T60WfSm4O2FNY=
 normative: true
-rationale: ''
+rationale: |
+  Stated as an allowlist of granted features rather than a list of denied ones. The served header
+  enumerates the features it denies either way - Permissions-Policy carries no wildcard, so a
+  capability no version of this header names is governed by the browser's default whichever form is
+  chosen. The form is therefore chosen for what the check asserts, not for what the header serves:
+  against an allowlist every granted feature is a diff someone justified and an entry naming no
+  module fails, while against a list of denied ones a feature granted later is asserted about by
+  nothing. The list is empty until a module asks.
 ref: ''
-reviewed: egzmUQxGqVQvLLYJZ7NDhJt82Xj8YPf9CBnQK3T-PPU=
+reviewed: hg3tl7d7iMCw5mfbiUIX-ohcVKeCnATE9Q0yI1O2mJ4=
 status: proposed
 text: |
-  Pending: check that induces a backend outage with the page already served, and asserts the display
-  renders one page-wide unreachable state rather than a per-module unavailable state in each region;
-  and that the state carries a remediation field, non-empty and not equal to the diagnosis it reports.
-  Lands with the liveness endpoint (#72).
+  Pending: integration test asserting the frontend-serving response carries a Permissions-Policy, and
+  that the set of features the served policy grants equals a committed granted-feature allowlist -
+  empty until a module declares it needs one - with every other feature the policy names denied; and
+  that the page still renders under the served policy. Fails if the header is absent, if a granted
+  feature is not on the allowlist, or if an allowlist entry does not name the module that needs it.
+  Lands with the backend that serves the frontend; activated with a references entry to the integration
+  test then.
 verification-justification: |
-  Settles that one page-wide state replaces the per-module states and that it carries a remediation
-  distinct from its diagnosis. Leaves unproven whether the remediation is the right advice - #71
-  recommends it, no gate decides it.
+  Settles that the page grants no capability outside the committed allowlist and still renders. Leaves
+  unproven whether an allowlist entry is justified - no artifact lets a module declare the capabilities
+  it needs, so the entry names its module by hand and that naming rests on review.
 verification-method: test

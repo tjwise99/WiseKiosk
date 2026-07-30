@@ -1,25 +1,24 @@
 active: false
 derived: false
 header: |
-  Pending: viewport-driven layout render test
-level: 1.41
+  Pending: page fetches same-origin only, statically and at runtime
+level: 1.42
 links:
-- SRS017: _NGbfWSq2Dg1aR-c_JeGRA18-KObOdmRJHHaeYERQWs=
+- SRS010: EQlTMWNvPWAOKpO_jzE-cMaYXeAXyZJVmsYjbijYSAo=
 normative: true
 rationale: ''
 ref: ''
-reviewed: LPa9YGj1OjguZhSANG6tabT9K_tADwJgjhN-M7oQoHA=
+reviewed: QByrFvUuY_I9wVxDVYuqeLSbNblKJ4UwSd-bny6aAfI=
 status: proposed
 text: |
-  Pending: viewport-driven render test asserting a bijection between the modules the fixture
-  configuration names and the regions present in the DOM, each rendered into the region the
-  configuration assigns it, with the module set read from the parsed fixture rather than a hand-written
-  list; and asserting the assembled layout exhibits no overlap, no clipping, and no scrollbars at the
-  kiosk viewport (1920x1080), and reflows with no overlap, no clipping, and no horizontal scroll at the
-  desktop viewports (1280x800 and 1440x900). Lands with the frontend skeleton (#10); activated and
-  given a references entry then.
+  Pending: test scanning the shipped bundle for absolute-URL literals and failing on any origin
+  other than the page's own, which catches paths no render exercises; and assembling the page under
+  a known-good configuration with request interception, asserting every request origin equals the
+  page origin and every module data request matches /api/<source>. The connect-src policy makes
+  a cross-origin fetch fail in the browser regardless, so the two together close the case rather
+  than sample it. Lands with the frontend skeleton (#10).
 verification-justification: |
-  Settles that every configured module is present, in its assigned region, with no overlap or
-  clipping at three viewports. Leaves unproven legibility across a room, which is the property a
-  kiosk actually needs and which no geometric assertion reaches.
+  Settles that no foreign-origin literal ships and that every intercepted request is same-origin.
+  Leaves unproven a URL assembled at run time from parts no literal scan sees; the content-security
+  policy is what closes that at the browser.
 verification-method: test

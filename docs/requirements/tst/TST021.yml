@@ -1,24 +1,25 @@
 active: false
 derived: false
 header: |
-  Pending: the registered middleware chain is exactly the declared one
+  Pending: schema key set equals the committed allowlist
 level: 1.17
 links:
-- SRS023: RkybxYpXWXU4lnHw3cOZEkY3_9dxMGfAQCQ4do6wXjM=
+- SRS007: 4T55vG-p3dGlHY8_Pe4b7v2TWjJ8InvKZT13jBTXAPs=
 normative: true
 rationale: |
-  An equality against the declared chain, not a search for session or authentication packages: a
-  denylist of known middleware passes the first time one is hand-rolled, and this repository rejects
-  denylist controls on principle. Equality fails closed — any middleware nobody declared, whatever
-  it is called, breaks the assertion.
+  Stated as a test rather than an inspection because set equality against a committed artifact is
+  mechanically decidable, which is the method the obligation can bear. An earlier form deferred the
+  form to "repo check or review checklist" when the schema lands; a review checklist was never
+  available to it, since ADR 0011 routes an author obligation leaving no artifact out of the tree, so
+  no TST item can resolve to one.
 ref: ''
-reviewed: 9yssln6Z2gkSm-iUoY3dnky82o_JgcY2_PmnE6JoWXo=
+reviewed: kRP-H3gVVEImzYhXQhHOuEPTED_Gvn-0VP6nO-MYFvE=
 status: proposed
 text: |
-  Pending: check that the middleware chain registered on the constructed router equals the declared
-  chain exactly, so no session, authentication, or access-control middleware can be introduced on
-  the request path without the declaration changing. Runs once the backend skeleton (#9) exists.
+  Pending: test asserting the composed configuration schema's key set equals a committed allowlist, in
+  both directions, so a key added to the schema without an allowlist entry fails. Lands with the config
+  schema (#8); activated then.
 verification-justification: |
-  Settles that the registered middleware chain equals the declared one. Leaves unproven identity
-  established inside a handler rather than in middleware.
+  Asserts key-set equality against the committed allowlist. Does not decide whether a listed key is
+  secret-bearing.
 verification-method: test

@@ -1,24 +1,26 @@
 active: false
 derived: false
 header: |
-  Pending: no credential material on the wire, over every registered route
+  Pending: every schema key is varied by a fixture and renders
 level: 1.15
 links:
-- SRS023: RkybxYpXWXU4lnHw3cOZEkY3_9dxMGfAQCQ4do6wXjM=
+- SRS024: jGhiM9f68DTp6BTj1dnCORLxzudyszpJuwYfTOyUzCg=
 normative: true
 rationale: |
-  The route set is derived from the single static registration list rather than written by hand, so
-  coverage is total by construction and a route added later cannot escape the sweep. A
-  hand-listed sweep would pass while the next route leaked.
+  Enumerating from the schema rather than from the fixtures is what makes the check closed: driven
+  from the fixtures it would only confirm that whatever is tested passes, which is what it already
+  knows.
 ref: ''
-reviewed: StkAdVwUZgBET7jIm8rkOqb4BpKSy29Jralm8ICOugo=
+reviewed: 5lTJo8X6LfdjVR1YW-xQVSbi3stoy-WVywRViH3Lr20=
 status: proposed
 text: |
-  Pending: integration check that, for every entry in the static route registration list, exercises
-  the route's success path and each upstream-failure class and asserts no response carries a
-  `Set-Cookie` or `WWW-Authenticate` header. Runs once the backend skeleton (#9) and the route
-  registration list exist.
+  Pending: test enumerating the composed configuration schema's keys and asserting, for each, that
+  the page rendered from a fixture setting it to a non-default schema-valid value differs observably
+  from the page rendered at its default, and that the page renders without error at each
+  schema-valid value the key admits. Fails on a key no fixture varies, and on a key whose variation
+  changes nothing. Lands with the config schema (#8) and the frontend skeleton (#10).
 verification-justification: |
-  Settles that no route emits an identity header on any success or failure path. Leaves unproven
-  identity carried in a response body rather than a header.
+  Settles per key that a non-default value changes the page and that every admitted value renders.
+  Leaves unproven that the change is the intended one - observability is decidable, correctness is
+  the module's own.
 verification-method: test

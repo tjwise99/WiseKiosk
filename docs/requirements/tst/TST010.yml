@@ -6,15 +6,16 @@ level: 1.13
 links:
 - SRS004: ruKB5Szs333ImjKW4f6l65IaHmbkTH7M4xKKGeTINl4=
 normative: true
-rationale: ''
+rationale: |
+  Scoped to naming the failure. What the state must say beyond that is TST005's, which asserts it on
+  the branch where a correction exists to state.
 ref: ''
-reviewed: fdjom5tGhPrLuO00WUUyvAJdxHvM8mvKeHXL5Z2LmB4=
+reviewed: jdgF5hNCs5q1v5C3EAPEaw4pPMi3qMYcJ99VSpXBloE=
 status: proposed
 text: |
   Pending: render test asserting the page shell loads and renders an operator-language error state
   naming which configuration failure occurred, for each failure class - absent, unfetchable,
-  unparseable, and schema-invalid. What the state must say beyond naming the failure is TST005's,
-  which asserts it on the branch where a correction exists to state. Lands with the frontend skeleton
+  unparseable, and schema-invalid. Lands with the frontend skeleton
   (#10); activated and given a references entry then.
 verification-justification: |
   Settles that each named failure class renders a state that identifies it, without a valid

@@ -1,32 +1,31 @@
 active: false
 derived: false
 header: |
-  Pending: denied device capabilities
-level: 65
+  Pending: two clients, one request, one answer
+level: 66
 links:
-- SRS027: 0J_nMvyhbWzNWWoKKYIX3qX6nLFB29T60WfSm4O2FNY=
+- SRS009: 3Je4gbXE0f_ybWKil2N9ttPdXutP1iu-6HBpspZvTKw=
 normative: true
 rationale: |
-  Stated as an allowlist of granted features rather than a list of denied ones. The served header
-  enumerates the features it denies either way - Permissions-Policy carries no wildcard, so a
-  capability no version of this header names is governed by the browser's default whichever form is
-  chosen. The form is therefore chosen for what the check asserts, not for what the header serves:
-  against an allowlist every granted feature is a diff someone justified and an entry naming no
-  module fails, while against a list of denied ones a feature granted later is asserted about by
-  nothing. The list is empty until a module asks.
+  SRS023's three checks establish that no identity machinery exists - no Set-Cookie or
+  WWW-Authenticate, no 401 or 403, no session or access-control middleware on the chain. None of them
+  asserts that two different callers issuing the same request receive the same payload. A backend
+  reading a caller address from a forwarded header and varying its response sets no cookie, returns
+  neither status, and registers no middleware, so it satisfies all three while breaking the clause
+  this item verifies.
 ref: ''
-reviewed: qy7-INzD-J5yEl7ymxgZKFn4zVyqxk3VciqXxt90MMk=
+reviewed: XIu5-s51I_taNyuR0riWMatRfE5fp0J6Qq769QJBWuw=
 status: proposed
 text: |
-  Pending: integration test asserting the frontend-serving response carries a Permissions-Policy, and
-  that the set of features the served policy grants equals a committed granted-feature allowlist -
-  empty until a module declares it needs one - with every other feature the policy names denied; and
-  that the page still renders under the served policy. Fails if the header is absent, if a granted
-  feature is not on the allowlist, or if an allowlist entry does not name the module that needs it.
-  Lands with the backend that serves the frontend; activated with a references entry to the integration
-  test then.
+  Pending: integration test issuing the same request to a source endpoint from two clients that differ
+  in every way the transport exposes - source address, forwarded-for header, user agent, and
+  connection - and asserting the response bodies are byte-identical and the response headers differ in
+  no value derived from the caller. Repeated after an intervening request from one of the two, so that
+  a response varying with request history fails as well. Lands with the backend skeleton (#9);
+  activated and given a references entry then.
 verification-justification: |
-  Settles that the page grants no capability outside the committed allowlist and still renders. Leaves
-  unproven whether an allowlist entry is justified - no artifact lets a module declare the capabilities
-  it needs, so the entry names its module by hand and that naming rests on review.
+  What the check settles is that the transport-level facts a backend could discriminate on do not
+  change the answer. What it does not settle is discrimination on a fact the test does not vary - a
+  backend keying on something the harness holds constant would pass, so this is evidence against
+  per-client behaviour rather than proof of its absence.
 verification-method: test

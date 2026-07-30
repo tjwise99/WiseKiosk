@@ -20,7 +20,13 @@ and #7's acceptance — schema file present, both generators wired, drift gate g
 ## Decision
 
 - **One hand-authored OpenAPI schema is the single definition**, owned by neither package (its
-  repository location is #5's call).
+  repository location is #5's call). A module contributes its payload as a **named component inside
+  that schema**: the *fragment* [the module contract](../contracts/module-contract.md) part 5 names is
+  that component, a section of the one schema rather than a file of its own, so nothing recomposes and
+  the schema stays authored rather than generated. Rejected — one fragment file per module, recomposed
+  into the committed schema: it buys per-module file ownership at the cost of a composition stage in
+  the drift gate and an OpenAPI that is generated output, which is the same cost that rules out
+  TypeSpec below. The configuration schema's shape is #8's and nothing here settles it.
 - **OpenAPI 3.0.3 now; 3.1 is the stated migration target.** 3.1's schema objects *are* JSON Schema
   2020-12, which would give one dialect shared with the configuration schema (open question 4) and a
   common docsite render — but `oapi-codegen` and `sphinxcontrib-openapi` have both historically
@@ -38,7 +44,7 @@ and #7's acceptance — schema file present, both generators wired, drift gate g
   second definition site.
 - **Drift gate:** a repo-level CI check regenerates both sides and fails on any difference
   (`git diff --exit-status`); the generators are **version-pinned** so a toolchain bump cannot read
-  as schema drift (SRS016; verified by TST034). The gate is repo-level because it spans both
+  as schema drift (SRS016; verified by TST033). The gate is repo-level because it spans both
   packages.
 - **The frontend consumes the generated types only — no runtime re-validation of proxied payloads.**
   The version-skew case a runtime validator defends against is foreclosed by single-image co-deploy,

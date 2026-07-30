@@ -13,13 +13,12 @@ rationale: |
   Upstream request URLs and echoed upstream errors are the classic leak
   paths this guards.
 ref: ''
-reviewed: w02oh1tDK4uXu9Zx9-Edrwh3IK5xkH79Zc5LE6mZsKo=
+reviewed: 33sNbgYmM_fm-2s_6QR0dy5LCTxU6ehX0H9KUe5KBRk=
 status: accepted
 text: |
   No secret value shall appear in any HTTP response body or header, nor
   in any log output, produced by the backend. Where backend output must
-  refer to a secret — as in the failure treatment of SRS006 — it shall do
-  so by the secret's name, never its value.
+  refer to a secret, it shall do so by the secret's name, never its value.
 verification-justification: |
   Asserted by planting a canary secret and sweeping response bodies, headers and log output for its
   value. What no check settles is the case where a secret is transformed before it is emitted - a

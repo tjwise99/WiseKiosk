@@ -1,24 +1,27 @@
 active: false
 derived: false
 header: |
-  Pending: page fetches same-origin only, statically and at runtime
-level: 1.42
+  Pending: refresh cadence is not configurable
+level: 1.43
 links:
-- SRS010: EQlTMWNvPWAOKpO_jzE-cMaYXeAXyZJVmsYjbijYSAo=
+- SRS011: GnP-DyPqrL-vkL2_XcTCrB8NG6AvmlI0MhJdIvU0hxc=
 normative: true
-rationale: ''
+rationale: |
+  The fake-timer cadence assertion was struck: it measured the frontend's poll interval against a
+  backend rate bound SRS011's text declares irrelevant ("regardless of how many clients it serves or
+  how often they ask"). That a cadence is a constant in code rather than an operator-tunable key is
+  module-contract.md's, under Cadence and TTL are chosen together. What remains here is SRS011's own
+  clause that the bound is not raisable by configuration.
 ref: ''
-reviewed: 76AJihFLnEhdW7LxMyG_iA9Uhqk8iclmEgRKfOrzwaU=
+reviewed: XWMAo1TkKICtuqPIcbXDGwS8yb_QxolwRDmFCNvm4_c=
 status: proposed
 text: |
-  Pending: test scanning the shipped bundle for absolute-URL literals and failing on any origin
-  other than the page's own, which catches paths no render exercises; and assembling the page under
-  a known-good configuration with request interception, asserting every request origin equals the
-  page origin and every module data request matches /api/<source>. SRS010's connect-src policy makes
-  a cross-origin fetch fail in the browser regardless, so the two together close the case rather
-  than sample it. Lands with the frontend skeleton (#10).
+  Pending: test asserting the composed configuration schema declares no property that sets a refresh
+  cadence, by ranging over the policies a registration entry owns and asserting none of them is
+  reachable from a schema property - not by matching a keyword list, which fails open on a name nobody
+  anticipated. Lands with the frontend skeleton (#10).
 verification-justification: |
-  Settles that no foreign-origin literal ships and that every intercepted request is same-origin.
-  Leaves unproven a URL assembled at run time from parts no literal scan sees; the content-security
-  policy is what closes that at the browser.
+  Settles that no schema property reaches a cadence policy, by ranging over the registration entry's
+  own policies rather than a keyword list. Leaves unproven a cadence made configurable by a
+  mechanism outside the schema.
 verification-method: test

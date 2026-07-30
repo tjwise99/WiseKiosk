@@ -1,27 +1,23 @@
 active: false
 derived: false
 header: |
-  Pending: refresh cadence is not configurable
-level: 1.43
+  Pending: same-origin CSP header test
+level: 1.55
 links:
-- SRS011: l5_qQTSMHpS4-2CuLN0iicJGutP9QmlIkZaU9QFCyPY=
+- SRS010: EQlTMWNvPWAOKpO_jzE-cMaYXeAXyZJVmsYjbijYSAo=
 normative: true
-rationale: |
-  The fake-timer cadence assertion was struck: it measured the frontend's poll interval against a
-  backend rate bound SRS011's text declares irrelevant ("regardless of how many clients it serves or
-  how often they ask"). That a cadence is a constant in code rather than an operator-tunable key is
-  module-contract.md's, under Cadence and TTL are chosen together. What remains here is SRS011's own
-  clause that the bound is not raisable by configuration.
+rationale: ''
 ref: ''
-reviewed: 56ON2BtvrDV1tRxzpS67dZshbd5JWZ59B9lkA5cRceA=
+reviewed: wsCdklUIbssxnVO6RFkAdAfl-76GmKINE4DMJAgX-SA=
 status: proposed
 text: |
-  Pending: test asserting the composed configuration schema declares no property that sets a refresh
-  cadence, by ranging over the policies a registration entry owns and asserting none of them is
-  reachable from a schema property - not by matching a keyword list, which fails open on a name nobody
-  anticipated. Lands with the frontend skeleton (#10).
+  Pending: integration test requesting the backend's frontend-serving route and asserting the
+  response carries a Content-Security-Policy whose connect-src is exactly 'self' and whose
+  default-src is 'self', and asserting the page still renders under the served policy. Fails if the
+  header is absent, if connect-src admits any host, wildcard, scheme-source, or 'unsafe-' form, or
+  if the served policy breaks rendering. Lands with the backend that serves the frontend; activated
+  with a references entry to the integration test then. Owned by #67.
 verification-justification: |
-  Settles that no schema property reaches a cadence policy, by ranging over the registration entry's
-  own policies rather than a keyword list. Leaves unproven a cadence made configurable by a
-  mechanism outside the schema.
+  Settles that the served policy restricts connect-src and default-src to 'self' and that the page
+  renders under it. Leaves unproven whether the browser in the field enforces the policy as served.
 verification-method: test

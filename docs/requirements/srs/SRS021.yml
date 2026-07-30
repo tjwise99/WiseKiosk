@@ -4,7 +4,7 @@ header: |
   Frontend runs on a Pi Zero-class browser host
 level: 1.56
 links:
-- SYS007: kkDY1a_aHA-VwY6_1pn2eSxlpXeku555DPqQXUC4jlI=
+- SYS007: NFy-WbNRxUQwknLO07y9H-EFDWuo_jGKosorPOiOSes=
 normative: true
 rationale: |
   Decomposes SYS007's minimum-host claim on the browser side; demonstrated on

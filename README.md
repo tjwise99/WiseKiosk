@@ -10,6 +10,13 @@ independent, customised through configuration, never through a fork (SYS003). A 
 added by the documented six-part contract in
 [`docs/contracts/module-contract.md`](docs/contracts/module-contract.md).
 
+**Minimum specs.** The backend runs as a container on `amd64` or `arm64` (SRS019) — a Raspberry Pi, a
+mini PC, a spare desktop. The display is driven by a browser on a host of Raspberry Pi Zero capability
+(SRS021). These are the minimum WiseKiosk declares, and SYS007 is the obligation to run on them and to
+keep running there. They are set by what an operator is likely to already have rather than by what
+WiseKiosk would prefer — requiring a particular machine would make that choice for them (SRS019).
+Which machines an operator buys, and how they are provisioned, is theirs.
+
 **What WiseKiosk does not own.** The kiosk host lies outside the system: its operating system, its
 browser, and whatever starts that browser on boot. WiseKiosk delivers a container image and the
 recipe for running it; provisioning the machine that runs it is the operator's, and no requirement

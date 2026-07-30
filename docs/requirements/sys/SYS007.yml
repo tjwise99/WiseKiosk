@@ -13,7 +13,7 @@ rationale: |
   system, which README.md states; what is inside is WiseKiosk's obligation to fit them. Framed as
   "declares as its minimum" rather than a resource bound because the two children constrain different
   things: one a platform, one a capability floor, and an amd64 host is not less capable than an arm64
-  one. The floor itself is README.md's deployment model, cited rather than restated here.
+  one. The floor itself is README.md's minimum specs, cited rather than restated here.
 
   The second clause is the same want over time rather than a second one. On a host chosen as a
   minimum, unbounded growth is exactly what makes the minimum claim false: a leak invisible on the
@@ -23,16 +23,16 @@ rationale: |
   item's own verification-justification already discharged it — the text was the part that had not
   caught up.
 ref: ''
-reviewed: kkDY1a_aHA-VwY6_1pn2eSxlpXeku555DPqQXUC4jlI=
+reviewed: NFy-WbNRxUQwknLO07y9H-EFDWuo_jGKosorPOiOSes=
 status: proposed
 text: |
   WiseKiosk shall run on the hosts it declares as its minimum, and shall go on running there without
   degrading.
 verification-justification: |
-  Each child is discharged mechanically — a multi-arch build and smoke test, a demonstration on the
-  declared browser host, a bounded-growth observation. What none of them settles is whether the
-  declared minimum is the right one: that is a product decision recorded in README.md, and no check
-  decides whether a cheaper host should have been targeted. Nor does any of them run for the duration
+  Each child is discharged mechanically — a multi-arch build and smoke test, an emulated boot at the
+  declared browser host's resource class, a bounded-growth observation. What none of them settles is
+  whether the declared minimum is the right one: that is a product decision recorded in README.md's
+  minimum specs, and no check decides whether a cheaper host should have been targeted. Nor does any of them run for the duration
   the second clause is really about; bounded growth is observed over a sampling window and read as
   evidence about the months that follow.
 verification-method: test

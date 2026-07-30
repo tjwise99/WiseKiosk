@@ -42,9 +42,11 @@ Parts 1, 2 and 5 apply to upstream-backed modules only. Parts 3, 4 and 6 apply t
    page and by the standalone desk validator, per
    [ADR 0007](../decisions/0007-config-validation-allocation.md). The fragment does not cross the
    frontend/backend boundary.
-5. **A boundary-schema fragment.** Declares the payload this module returns across the boundary,
-   composed into the one boundary schema. This is what makes the module's generated payload type
-   exist; it is the same composition mechanism as part 4, applied to the other schema.
+5. **A boundary-schema fragment.** Declares the payload this module returns across the boundary, as a
+   named component in the one boundary schema — a section of that schema rather than a file of its own,
+   and nothing recomposes it
+   ([ADR 0008](../decisions/0008-boundary-contract-openapi-codegen.md)). This is what makes the
+   module's generated payload type exist.
 6. **Tests.** Unit tests for the shaping library and a render test for the component, both wired into
    CI. What they must cover, where they sit, and the standing obligation they discharge are
    [`TESTING.md`](../TESTING.md)'s — a per-module test obligation is stated there, not here.
@@ -84,8 +86,8 @@ and the review trigger.
    validator.
 3. Add the registration entry, carrying all six of that route's policies — parameter validation,
    success TTL, negative TTL, rate limit, outbound timeout, maximum response size.
-4. Add the boundary-schema fragment declaring the module's payload; the generated type the component
-   consumes comes from composing it into the one boundary schema.
+4. Add the module's payload to the boundary schema as a named component; the generated type the
+   component consumes is emitted from it.
 5. Write the component, plus its render test. Where the module has a payload, write the component
    against the generated type rather than hand-declaring it.
 6. Set the module's poll cadence against that route's TTL.

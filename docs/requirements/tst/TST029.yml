@@ -1,22 +1,22 @@
 active: false
 derived: false
 header: |
-  Pending: secret rotation-without-restart test
-level: 1.25
+  Pending: rejected-request client-contract test
+level: 1.26
 links:
-- SRS006: ZeplVyYLSsrROM7ALJxI9czolHES2p2NT_Xu10C_gvE=
+- SRS013: bfPmtgItVEsIIvHjduzuC4xdz0Cx2CDxbFrW6rDs_90=
 normative: true
 rationale: ''
 ref: ''
-reviewed: nISns1--nsofI2LpQZqa5YFY4d1UBxicZChXZKmM1Ww=
+reviewed: RuOriNMGTE_jeBf8mCqhchHSF1jkvYZ5i9TXXTIv8HM=
 status: proposed
 text: |
-  Pending: test asserting a secret value changed in the <NAME>_FILE file is
-  reflected on the next cache-missing request that resolves it, with no process
-  restart and no in-memory value cache. Lands with the backend skeleton (#9);
-  activated and given a references entry then.
+  Pending: test asserting the backend returns 400 (invalid parameter), 404
+  (unknown source), 405 (non-GET method), and 429 (over rate limit) with a
+  renderable body distinct from the upstream-failure shape, each without
+  an upstream call. Lands with the backend skeleton (#9); activated and given a
+  references entry then.
 verification-justification: |
-  Settles that a changed file is picked up on the next cache-missing request with no restart. Leaves
-  unproven the window between the write and that request, during which the old value is still in
-  use.
+  Settles that each rejection cause produces its own status with a renderable body, before any
+  upstream call. Leaves unproven that a person reading the rendered rejection can act on it.
 verification-method: test

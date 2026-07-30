@@ -13,8 +13,8 @@ rationale: |
   what stops being true quietly: a session added for convenience, an access check added by reflex
   during a later security pass. SYS006's rationale exists to stop that "fix"; this requirement is
   what lets a gate stop it. The observable forms — no session or authentication material in a
-  response, no 401 or 403, no identity middleware on the request path — are TST016, TST020 and
-  TST021's, one apiece. Listing them here would be the requirement enumerating its own children.
+  response, no 401 or 403, no identity middleware on the request path — are TST015, TST019 and
+  TST020's, one apiece. Listing them here would be the requirement enumerating its own children.
 
   SRS009 states statelessness as a transport property of the proxy route, and this requirement
   restates the observable half as a security posture. The duplication is deliberate: SRS009's
@@ -22,7 +22,7 @@ rationale: |
   introducing an identity mechanism elsewhere, and the posture must outlive that. Stated here so the
   overlap does not read as an oversight.
 ref: ''
-reviewed: uPUG3h18EnfL9rna48RxjQxrB91nGGr31Tp6h0NlYHc=
+reviewed: SkipcsEmkApAy52MOXdII77pbRaIzV4FFHXPQMW8LrA=
 status: proposed
 text: |
   The backend shall establish no client identity and shall gate no route on one.

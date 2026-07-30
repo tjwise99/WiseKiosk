@@ -4,7 +4,7 @@ header: |
   A bounded running footprint
 level: 1.57
 links:
-- SYS007: kkDY1a_aHA-VwY6_1pn2eSxlpXeku555DPqQXUC4jlI=
+- SYS007: NFy-WbNRxUQwknLO07y9H-EFDWuo_jGKosorPOiOSes=
 normative: true
 rationale: |
   A declared minimum host has no headroom to absorb a leak, so unbounded

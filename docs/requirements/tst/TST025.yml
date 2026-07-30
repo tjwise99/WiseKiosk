@@ -1,20 +1,23 @@
 active: false
 derived: false
 header: |
-  Pending: every external source has a proxy route
-level: 1.21
+  Pending: TTL cache-behaviour test (liveness canary)
+level: 1.22
 links:
-- SRS009: 3Je4gbXE0f_ybWKil2N9ttPdXutP1iu-6HBpspZvTKw=
+- SRS011: GnP-DyPqrL-vkL2_XcTCrB8NG6AvmlI0MhJdIvU0hxc=
 normative: true
 rationale: ''
 ref: ''
-reviewed: pL5FqURaQVdlt9PeGC2099qSqbTf2vjHXI1-gJhp9jw=
+reviewed: dlrXJdNqCm1CJ0hjjeF4ygm72D2Yem8wvwHoK7YrqXk=
 status: proposed
 text: |
-  Pending: test asserting the set of external sources declared by upstream-backed modules equals the
-  set of registered GET /api/<source> routes, in both directions, so no source is exempted from the
-  proxy and no route exists without a source. Lands with the backend skeleton (#9).
+  Pending: integration test asserting the (source, query) TTL cache serves an
+  identical request from cache within the TTL without an upstream call and
+  refetches after expiry, using a fake upstream that counts calls. This
+  cache-behaviour test is the standing liveness canary for the REST transport.
+  Lands with the backend skeleton (#9); activated
+  and given a references entry then.
 verification-justification: |
-  Settles the source-to-route bijection in both directions. Leaves unproven that a registered route
-  reaches the source it names - the sets match by name, and a misrouted entry matches too.
+  Settles that an identical request within the TTL issues no upstream call and refetches after
+  expiry. Leaves unproven the TTL's value against a source's actual update cadence.
 verification-method: test
