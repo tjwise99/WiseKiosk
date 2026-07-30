@@ -1,0 +1,22 @@
+active: false
+derived: false
+header: |
+  Pending: backend-unreachable display state
+level: 63
+links:
+- SRS026: zivxU0HYyxFMwYJKGpeBNNpbeXTDKC7J41KC9sM68kM=
+normative: true
+rationale: ''
+ref: ''
+reviewed: oDQD1WR4JmElgp-umcN5EnSKQ4NZuvEQ7CKeVROtCQg=
+status: proposed
+text: |
+  Pending: check that induces a backend outage with the page already served, and asserts the display
+  renders one page-wide unreachable state rather than a per-module unavailable state in each region;
+  and that the state carries a remediation field, non-empty and not equal to the diagnosis it reports.
+  Lands with the liveness endpoint (#72).
+verification-justification: |
+  Settles that one page-wide state replaces the per-module states and that it carries a remediation
+  distinct from its diagnosis. Leaves unproven whether the remediation is the right advice - #71
+  recommends it, no gate decides it.
+verification-method: test

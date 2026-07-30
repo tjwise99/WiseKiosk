@@ -1,0 +1,23 @@
+active: true
+derived: false
+header: |
+  One generic published image
+level: 1.44
+links:
+- SYS003: x73sA6VMR9aDga-PqTW6L49gj-iwZdgTOg5xG8VhAwM=
+normative: true
+rationale: |
+  Keeps the one-image model falsifiable: any deployment-specific content baked
+  into the image is a defect.
+ref: ''
+reviewed: DO_OQbHVwAH_7vNEbkMq6H6ez-lDcMqPFDrr0RlYPt0=
+status: accepted
+text: |
+  The published image shall carry no deployment-specific content: no configuration file, and no
+  deployment-specific value in its environment.
+verification-justification: |
+  Asserted by exporting the published image and finding no configuration file and no deployment-
+  specific environment value. What the check does not settle is whether a value is deployment-
+  specific: the check ranges over what the schema declares, so a deployment-varying value the schema
+  does not know about would pass.
+verification-method: test

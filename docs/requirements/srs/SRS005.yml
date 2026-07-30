@@ -1,14 +1,25 @@
 active: true
 derived: false
 header: |
-  Boundary values generated from one schema
-level: 1.4
+  One validation implementation
+level: 1.14
 links:
-- SYS005: 9Vv-d8ZebkQOiiqwMNyo2BpQe-fxSkIfLKfOCeEmH6A=
+- SYS003: x73sA6VMR9aDga-PqTW6L49gj-iwZdgTOg5xG8VhAwM=
 normative: true
+rationale: |
+  A second engine enforces the schema slightly differently, and the divergence
+  surfaces as a desk validator that accepts what the page rejects — the defect
+  class the single-definition rule exists to kill (ADR 0007).
 ref: ''
-reviewed: W42ydJPHzhR5_MNkN_Hzo2LhcdC_-TqbJl-n03knYK4=
+reviewed: nfFTpMuXNH-Czat7s8W4WFvZZ94r1UuE1GSy9cS9Va4=
+status: accepted
 text: |
-  Every value crossing the frontend/backend boundary shall be generated from a
-  single schema, never hand-declared on both sides, and CI shall fail when the
-  committed generated code differs from the schema. Source: FOUNDATIONS section 4.
+  The configuration schema's rules shall be enforced by exactly one
+  implementation, shared by the display page and by any tool that validates a
+  configuration without starting the application.
+verification-justification: |
+  Asserted by running one fixture corpus through both validation entry points and comparing verdicts
+  and error sets. What the check does not settle is agreement on inputs outside the corpus;
+  identical verdicts on five fixtures is evidence of a shared implementation rather than proof of
+  one.
+verification-method: test

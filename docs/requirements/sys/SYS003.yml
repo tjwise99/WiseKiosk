@@ -1,13 +1,27 @@
 active: true
 derived: false
 header: |
-  Configuration knobs are operator-tunable
-level: 1.2
+  A deployment is parameterised from outside the image
+level: 3
 links: []
 normative: true
+rationale: |
+  One image serves every deployment, so everything that makes a deployment particular must arrive from
+  outside it — otherwise a second deployment means a second build, and the fork the product exists to
+  avoid. A secret is a configuration by this reading: the same per-deployment customisation, arriving
+  by a different channel because it cannot be written down. "Honours" is the tunability obligation
+  without enumerating it — a key the format offers but does not act on is a lie the operator cannot
+  detect. Substitutability is recorded because provisioning changes (a bind-mounted file today, a
+  secrets manager later) must not reach application code.
 ref: ''
-reviewed: mZ3iU3vb9J3fYNllBqcKyg2CAneh5pEFtksQcIthulw=
+reviewed: x73sA6VMR9aDga-PqTW6L49gj-iwZdgTOg5xG8VhAwM=
+status: accepted
 text: |
-  Every value the operator is offered as configuration shall be safely
-  changeable by the operator; anything whose alteration would break the
-  deployment is a constant, not a config key. Source: FOUNDATIONS.md section 5.
+  Everything that distinguishes one deployment from another shall come from outside the image:
+  its configuration, against a format the system declares and honours, and its secrets, which
+  shall come from the deployment environment and appear nowhere else.
+verification-justification: |
+  Schema singularity, key behaviour and secret provenance are each asserted mechanically. The
+  configuration key allowlist decides key-set equality, not secret-ness: a secret-bearing key that is
+  listed would pass. What it buys is that no key enters the schema without appearing in a reviewed diff.
+verification-method: test

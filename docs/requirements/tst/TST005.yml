@@ -1,15 +1,29 @@
 active: false
 derived: false
 header: |
-  CI fails on stale generated boundary code (pending)
-level: 1.4
+  Pending: a module-scoped configuration error lands at that module
+level: 1.5
 links:
-- SRS005: null
+- SRS002: P9qsChVJOYk34Pj1_835_7zbUaDofY4AFqQ7pBZ-1vc=
 normative: true
+rationale: |
+  Both fixtures run the one validation entry point, because the branch this asserts is a property of
+  that path rather than of two separately reachable behaviours. Splitting them across two checks would
+  let each pass against a different code path and leave the branch itself untested - which is what the
+  SRS002/SRS004 pair did before.
 ref: ''
-reviewed: dqvlhvJ2WHxzN7z_sm8iR3rIJQauAF3b029JpsZyUP8=
+reviewed: Bj0xbTnv_MzOS7rY3vuKCYFMoqwAwClUjebOp-VeVmw=
+status: proposed
 text: |
-  Will be verified by a CI check that regenerates both sides of the boundary
-  from the schema and fails if the committed generated code differs. Inactive
-  until the boundary-contract codegen mechanism exists (open question 2);
-  activate and add a references entry when the test lands.
+  Pending: render test driving two fixtures through the same validation path and asserting opposite
+  outcomes. A configuration whose only error is inside one module's fragment: the page renders, that
+  module's region carries the error state, it names what is wrong and what to change, and no sibling
+  region is affected. A configuration whose top level is malformed: no module renders and the page
+  carries the page-wide state instead. The two fixtures differ only in where the error sits, so the
+  isolable/non-isolable branch is decided rather than assumed. Lands with the frontend skeleton (#10);
+  activated and given a references entry then.
+verification-justification: |
+  Settles the isolable/non-isolable branch, because both fixtures run one validation path and differ
+  only in where the error sits. Leaves unproven that the correction named is good advice; that one
+  is named is decidable, that it helps is not.
+verification-method: test

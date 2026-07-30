@@ -31,9 +31,18 @@ install-hooks:
     git config core.hooksPath .githooks
 
 [group('checks')]
-[doc('Requirements tree validates: refs resolve, no suspect/unreviewed/orphan items')]
+[doc('Requirements tree validates: refs resolve, no suspect/unreviewed/orphan items, methods consistent, no identifier cited in an item statement')]
 check-reqs:
-    docs/requirements/.venv/bin/doorstop --error-all
+    docs/requirements/.venv/bin/python scripts/check-unreviewed.py
+    docs/requirements/.venv/bin/python scripts/check-suspect-links.py
+    sh scripts/validate-tree.sh
+    docs/requirements/.venv/bin/python scripts/check-method-consistency.py
+    docs/requirements/.venv/bin/python scripts/check-text-citations.py
+
+[group('checks')]
+[doc('Every `just verify` check also runs in CI, and vice versa')]
+check-verify-ci-parity:
+    node scripts/check-verify-ci-parity.mjs
 
 [group('docs')]
 [doc('First-time setup: install the pinned Sphinx toolchain into docs/site/')]
@@ -79,4 +88,4 @@ arch-dev:
 
 [group('checks')]
 [doc('Run every check the PR gate runs')]
-verify: check-links check-eol check-branch check-reqs check-arch check-site
+verify: check-links check-eol check-branch check-reqs check-arch check-site check-verify-ci-parity

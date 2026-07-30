@@ -1,11 +1,36 @@
 # WiseKiosk
 
-A config-driven smart-mirror display. A full-screen browser page renders a fixed set of modules —
-clock, compliments, weather, aviation METAR/TAF, theme-park wait times — from a handful of public
-APIs, running unattended on a display behind one-way glass. Shipped as one container image; each
-deployment is independent, customised through configuration, never through a fork.
+A config-driven smart-mirror display. A full-screen browser page renders a fixed set of five
+modules — `clock`, `compliments`, `OpenMeteo` weather, `AviationWeather` (CheckWX METAR/TAF), and
+`DisneyWaitTimes` (themeparks.wiki) — from a handful of public APIs, running unattended on a display
+behind one-way glass. The layout is fixed (SYS002, SRS017) and there is nothing to interact with:
+it renders and it refreshes.
+Shipped as one container image; each deployment is
+independent, customised through configuration, never through a fork (SYS003). A sixth module is
+added by the documented six-part contract in
+[`docs/contracts/module-contract.md`](docs/contracts/module-contract.md).
 
-> **Status: bootstrapping (pre-code).** The foundations are written; no application code exists yet.
+**Minimum specs.** The backend runs as a container on `amd64` or `arm64` (SRS019) — a Raspberry Pi, a
+mini PC, a spare desktop. The display is driven by a browser on a host of Raspberry Pi Zero capability
+(SRS021). These are the minimum WiseKiosk declares, and SYS007 is the obligation to run on them and to
+keep running there. They are set by what an operator is likely to already have rather than by what
+WiseKiosk would prefer — requiring a particular machine would make that choice for them (SRS019).
+Which machines an operator buys, and how they are provisioned, is theirs.
+
+**What WiseKiosk does not own.** The kiosk host lies outside the system: its operating system, its
+browser, and whatever starts that browser on boot. WiseKiosk delivers a container image and the
+recipe for running it; provisioning the machine that runs it is the operator's, and no requirement
+in the tree reaches it.
+
+**The operator is frequently not the author.** Deployments run at the author's house and at friends'
+and family's houses — separate networks, separate configs, separate owners. This constraint outranks
+every other requirement here: it is why a bad configuration must fail loudly and legibly rather than
+as a blank screen (SYS001), and why a configuration must be validatable before deployment rather than
+only at boot ([`tools/README.md`](tools/README.md)).
+
+Nothing is inherited from any prior mirror framework, and there is no compatibility layer.
+
+> **Status: bootstrapping (pre-code).** The specification is written; no application code exists yet.
 
 ## Stack
 
@@ -15,12 +40,28 @@ deployment is independent, customised through configuration, never through a for
 
 ## Documentation
 
-Start with the foundations spec; it is standalone and everything else hangs off it.
+**The requirements tree is the specification.** Every obligation WiseKiosk is built against is a
+numbered item in [`docs/requirements/`](docs/requirements/README.md) — system needs (`SYS`)
+decomposed into testable "shall" statements (`SRS`), each traced to a verification item (`TST`), with
+CI failing on a broken chain. If a statement is normative, it has an ID. The documents below mostly
+explain, orient, and cite rather than oblige.
 
-- [`docs/FOUNDATIONS.md`](docs/FOUNDATIONS.md) — what WiseKiosk is, who operates it, the settled
-  decisions, the day-one architecture, what must not be built, and the module contract.
+- [`docs/README.md`](docs/README.md) — the documentation index: which document guarantees which kind
+  of fact, and what each one excludes. Read this before adding to any document.
+- [`docs/requirements/`](docs/requirements/README.md) — the specification, and how the tree is gated
+  ([ADR 0002](docs/decisions/0002-requirements-management-doorstop.md),
+  [ADR 0005](docs/decisions/0005-traceability-gating.md)).
 - [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) — the living description of the system as built
   (a skeleton until code lands).
 - [`docs/TESTING.md`](docs/TESTING.md) — the test architecture, written as a specification before any
   tests exist.
-- [`docs/decisions/`](docs/decisions/README.md) — architecture decision records.
+- [`docs/decisions/`](docs/decisions/README.md) — the decisions that carried a rejected alternative.
+- [`docs/contracts/module-contract.md`](docs/contracts/module-contract.md) — the six-part contract
+  for adding a display module.
+- [`docs/CI.md`](docs/CI.md) — every check on the repository: what CI provides, what blocks a merge,
+  and what each gate is allowed to let through. None of it is a requirement — it constrains the
+  repository, not the running system.
+- [`tools/README.md`](tools/README.md) — what ships alongside WiseKiosk to stand a deployment up:
+  the validator, the generator, bring-up and upgrade. Separate programs an operator runs, so their
+  obligations are here rather than in the tree.
+- [`CONTRIBUTING.md`](CONTRIBUTING.md) — running the checks and getting a change merged.

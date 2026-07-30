@@ -1,0 +1,22 @@
+active: false
+derived: false
+header: |
+  Pending: handle count does not grow without bound
+level: 1.4
+links:
+- SRS022: Qxr5bhFduqh2GyEHReQthP4M01CMLv3GRX5FUfDIiCs=
+normative: true
+rationale: |
+  A descriptor leak and a memory leak are separate failures with separate thresholds: a process can
+  hold its memory flat while exhausting the host's descriptors. Sampled in the run TST004 describes.
+ref: ''
+reviewed: VcS18838qnRk4mPTchiPddZjZl8LInUzPoH-Eh54N7U=
+status: proposed
+text: |
+  Pending: over the shared instrumented run, failing on a monotonic increase in the backend's handle
+  count exceeding its own threshold. The threshold is tunable here rather than in the requirement.
+verification-justification: |
+  Settles that the handle count does not grow monotonically past its threshold across the sampled run.
+  Leaves unproven the timescale the obligation is about, and carries no threshold value yet: until the
+  backend exists there is no idle handle count to set one against, so activating this item sets it.
+verification-method: test

@@ -5,8 +5,9 @@ the diagrams in [`../ARCHITECTURE.md`](../ARCHITECTURE.md) — those are generat
 drawn by hand. Why LikeC4 and not D2/Mermaid/Structurizr/PlantUML: see
 [ADR 0003](../decisions/0003-architecture-as-code-likec4.md).
 
-This tooling is **dev-only and siloed here** (FOUNDATIONS §2): its `package.json`, lockfile, and
-`node_modules/` live in this directory; nothing depends on it at app build or runtime.
+This tooling is **dev-only and siloed here** (per [`CI.md`](../CI.md)'s repository-shape gate): its
+`package.json`, lockfile, and `node_modules/` live in this directory; nothing depends on it at app
+build or runtime.
 
 ## Layout
 
@@ -38,12 +39,14 @@ authoring, but it is **not** a gate.
 
 Two properties are enforced, both browser-free and both run in CI:
 
-- **The model is valid.** `likec4 validate` exits non-zero on an undefined element, an unresolved
-  relationship, or an invalid view. It runs *first* in `arch-export` because `codegen` alone does
-  **not** fail on a broken model — validation is the real gate.
-- **The generated outputs are not stale.** `just check-arch` regenerates everything, then
-  `git diff --exit-code docs/architecture/ docs/ARCHITECTURE.md`. If the committed artifacts — or the
-  diagrams spliced into `ARCHITECTURE.md` — don't match what the current model produces, CI fails:
+- **The model is valid**, per [`CI.md`](../CI.md)'s documentation-integrity gate. `likec4 validate`
+  exits non-zero on an undefined element, an unresolved relationship, or an invalid view. It runs
+  *first* in `arch-export` because `codegen` alone does **not** fail on a broken model — validation
+  is the real gate.
+- **The generated outputs are not stale**, per the same gate. `just check-arch` regenerates
+  everything, then `git diff --exit-code docs/architecture/ docs/ARCHITECTURE.md`. If the committed
+  artifacts — or the diagrams spliced into `ARCHITECTURE.md` — don't match what the current model
+  produces, CI fails:
   the same "CI fails on stale generated code" rule the boundary contract and config schema live
   under. The `architecture` job in
   [`../../.github/workflows/checks.yml`](../../.github/workflows/checks.yml) runs the byte-identical
@@ -77,7 +80,8 @@ The model is authored so **Component and Code levels arrive additively** — no 
   where). This is how the model stops being a drawing and starts pointing at the code it describes.
 
 Do not build Component/Code content before the code exists — that would be abstraction without a
-consumer (FOUNDATIONS §5). The hooks are reserved; that is enough.
+second consumer ([`CONTRIBUTING.md`](../../CONTRIBUTING.md)'s review checklist, generality). The
+hooks are reserved; that is enough.
 
 ## Traceability hook: architecture → requirements (mechanism only)
 
@@ -85,7 +89,7 @@ A LikeC4 **tag** is how an element carries the Doorstop `SRS` requirement id it 
 *is* the architecture → requirements link. The mechanism is wired but **no real ids are bound yet**:
 
 - The two containers carry a placeholder `#needs-srs` tag (declared in the model's `specification`).
-- **TODO (issue #18):** today's `SRS` items are placeholder and will be wiped by the fresh
-  requirements pass. When it lands, declare one tag per real `SRS` id (e.g. `tag SRS042`) and apply it
-  (`#SRS042`) to the container(s) that satisfy it, replacing `#needs-srs`. Binding today's throwaway
-  numbers would just create churn — so the model reserves the hook without using it.
+- **TODO(#18):** declare one tag per `SRS` id a container satisfies (e.g. `tag SRS009`) and
+  apply it (`#SRS009`) to that container, replacing `#needs-srs`. The element→source `link`s that
+  complete the trace are checked at review ([`CONTRIBUTING.md`](../../CONTRIBUTING.md)'s checklist,
+  architecture links) once the code they point at exists.

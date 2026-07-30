@@ -1,0 +1,24 @@
+active: false
+derived: false
+header: |
+  Pending: no credential material on the wire, over every registered route
+level: 1.15
+links:
+- SRS023: WhPy70N6y_yJFXePpu7c-bpytXwWjRRZZ9_eF_XQGTo=
+normative: true
+rationale: |
+  The route set is derived from the single static registration list rather than written by hand, so
+  coverage is total by construction and a route added later cannot escape the sweep. A
+  hand-listed sweep would pass while the next route leaked.
+ref: ''
+reviewed: EwgwaFyCoyYX_gmTKsjWxCCxwGM6KvYdkQYuAuWFIQo=
+status: proposed
+text: |
+  Pending: integration check that, for every entry in the static route registration list, exercises
+  the route's success path and each upstream-failure class and asserts no response carries a
+  `Set-Cookie` or `WWW-Authenticate` header. Runs once the backend skeleton (#9) and the route
+  registration list exist.
+verification-justification: |
+  Settles that no route emits an identity header on any success or failure path. Leaves unproven
+  identity carried in a response body rather than a header.
+verification-method: test

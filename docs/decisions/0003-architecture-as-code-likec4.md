@@ -32,8 +32,9 @@ and Container view. It is:
 
 The model is authored so Component and Code levels — and source `link`s into `backend/`/`frontend/` —
 can be **added later without restructuring** (LikeC4 nests elements additively). Those levels are not
-built now: no application code exists, so building them would be abstraction without a consumer
-(FOUNDATIONS §5).
+built now: no application code exists, so building them would be an abstraction with a single
+implementation and no second consumer ([`CONTRIBUTING.md`](../../CONTRIBUTING.md)'s review checklist,
+generality).
 
 ## Alternatives considered
 
@@ -46,18 +47,21 @@ built now: no application code exists, so building them would be abstraction wit
 - **Structurizr** — a real C4 model with validation, but the good rendering path is the hosted/cloud
   workspace or a Java toolchain; the self-hosted DSL story is heavier and less siloable than a
   pure-JS npm dependency.
-- **PlantUML** — mature C4 support, but requires a Java runtime (native toolchain, against
-  FOUNDATIONS §2) and validates syntax, not model integrity.
+- **PlantUML** — mature C4 support, but requires a Java runtime — a native build toolchain, which
+  the project's dependency-footprint discipline
+  ([`CONTRIBUTING.md`](../../CONTRIBUTING.md), review checklist item 7) admits
+  only when nothing else will do — and validates syntax, not model integrity.
 
 LikeC4 was the only option that is a *validated model*, pure-JS (siloable, no native toolchain), and
 renderable browser-free.
 
 ## Consequences
 
-- **First `package.json` in the repo.** This activates the dormant npm supply-chain gates noted in the
-  [hardening backlog](../ARCHITECTURE.md#security--hardening-backlog). This ADR wires the Dependabot
-  `npm` ecosystem now (pointed at `/docs/architecture`, siloed per FOUNDATIONS §2); the **`npm audit`
-  CI gate is deliberately left unbuilt** as a now-unblocked backlog item, to keep this change tight.
+- **First `package.json` in the repo.** This activates the dormant npm supply-chain gates
+  ([`CI.md`](../CI.md)'s dependency-vulnerability scanning). This ADR wires the Dependabot `npm`
+  ecosystem now (pointed at `/docs/architecture`, so the manifest and its ecosystem entry sit in the
+  directory of the feature they serve, per `CI.md`'s repository-shape gate); the **`npm audit` CI
+  gate is deliberately left unbuilt** as a now-unblocked backlog item, to keep this change tight.
 - **Rendering is fully automated in CI** — because diagrams are codegen, not a browser export,
   `arch-export` runs on every push with no chromium. Image (PNG/SVG) export, which *does* need a
   headless browser, is intentionally kept out of the gate.

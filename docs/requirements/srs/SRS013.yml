@@ -1,0 +1,28 @@
+active: true
+derived: false
+header: |
+  Client-facing contract for rejected requests
+level: 1.26
+links:
+- SYS004: -WgxkJ5puavx1z3dZ1VyFaAtygFCvlL2KSrBdQN-kdY=
+normative: true
+rationale: |
+  SRS012 and SRS011 reject invalid and over-limit requests but do not say what
+  the client receives; a module still needs something renderable, and it must be
+  able to tell an operator misconfiguration from a source outage. The concrete
+  body shape is defined by the boundary contract, which SRS015 owns and which
+  admits no second definition site. This item fixes that a rejection is
+  distinct to its cause, that it happens before any upstream call, and that it
+  is separable from an upstream failure. The particular status codes live in
+  TST029 and TST032, where they can change without a specification edit.
+ref: ''
+reviewed: W4qIi0GWZSnhkitY8EUfYtkWwATfzpjK0bOd-KmDzRE=
+status: accepted
+text: |
+  A request the backend rejects before making any upstream call shall return a client-error
+  status distinct to its cause, with a response body the frontend can render.
+verification-justification: |
+  Asserted by driving each rejection cause and requiring a distinct client-error status with a body
+  the frontend renders. What no check settles is whether a person reading the rendered rejection can
+  act on it.
+verification-method: test

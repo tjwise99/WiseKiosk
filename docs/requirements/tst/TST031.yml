@@ -1,0 +1,22 @@
+active: false
+derived: false
+header: |
+  Pending: negative-caching test
+level: 1.28
+links:
+- SRS011: GnP-DyPqrL-vkL2_XcTCrB8NG6AvmlI0MhJdIvU0hxc=
+normative: true
+rationale: ''
+ref: ''
+reviewed: V-X4YJynQ-9OETLB3fp5LXJv5KgJm-ZNFE09UBIfZpg=
+status: proposed
+text: |
+  Pending: test asserting an upstream failure is cached for a negative TTL
+  shorter than the source's success TTL — a second request within that window
+  issues no upstream call, and after it expires the next request retries
+  upstream. Lands with the backend skeleton (#9); activated and given a
+  references entry then.
+verification-justification: |
+  Settles that a failure is cached for a shorter window than a success and that the retry follows
+  expiry. Leaves unproven the negative TTL's value against how long real upstreams stay down.
+verification-method: test

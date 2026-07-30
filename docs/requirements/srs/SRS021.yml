@@ -1,0 +1,22 @@
+active: true
+derived: false
+header: |
+  Frontend runs on a Pi Zero-class browser host
+level: 1.56
+links:
+- SYS007: NFy-WbNRxUQwknLO07y9H-EFDWuo_jGKosorPOiOSes=
+normative: true
+rationale: |
+  Decomposes SYS007's minimum-host claim on the browser side; demonstrated on
+  reference hardware, sharing evidence with SRS022's bounded-growth observation.
+ref: ''
+reviewed: 4XMlP6eTteKcUSX7-C62Tuw4d8geRXlw--_K8qVAJwg=
+status: accepted
+text: |
+  The frontend shall operate on a Raspberry Pi Zero-class browser host
+  driving the display.
+verification-justification: |
+  An emulated ARM boot renders the page and drives the display, and CPU-throttled render timing plus a
+  bundle ceiling bound performance. Emulation does not decide device timing — the emulator's clock is
+  not the device's — so the performance claim rests entirely on the proxies.
+verification-method: test

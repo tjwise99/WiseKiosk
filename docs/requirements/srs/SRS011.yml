@@ -1,0 +1,28 @@
+active: true
+derived: false
+header: |
+  Upstream request rate is bounded, and the bound is not operator-tunable
+level: 1.22
+links:
+- SYS004: -WgxkJ5puavx1z3dZ1VyFaAtygFCvlL2KSrBdQN-kdY=
+normative: true
+rationale: |
+  The bound exists to keep WiseKiosk a well-behaved consumer of somebody else's API no matter how
+  many displays point at it. It is deliberately outside the configuration surface: a tunable limit
+  is a way for a deployment to become the thing the limit was protecting against, which SYS003's
+  parameterisation is not meant to offer. Where the numbers live and how the bound is achieved -
+  a TTL response cache keyed on the request, a token bucket, or both - is TST025's, so tuning one
+  does not touch the specification. Two consequences worth stating: a cache hit is neither counted
+  against the limit nor rejected by it, and a sustained upstream outage must not cause an upstream
+  request on every incoming request.
+ref: ''
+reviewed: gwpNLXft3clW3xIHw0CN6CNNhi7XkuE42tgQZoCO6F4=
+status: accepted
+text: |
+  The backend's rate of upstream requests to a source shall be bounded regardless of how many
+  clients it serves or how often they ask, and the bound shall not be raisable by configuration.
+verification-justification: |
+  Asserted by driving a route past its threshold and observing that no upstream call follows, and by
+  asserting the composed schema exposes no property that sets a cadence. What no check settles is
+  the bound's value against a real source's published limit.
+verification-method: test

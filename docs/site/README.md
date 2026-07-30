@@ -2,14 +2,14 @@
 
 Renders this repository's documentation: the prose files under `docs/` unchanged (no frontmatter, no
 in-source directives — see [ADR 0004](../decisions/0004-docs-site-sphinx-needs.md)), the repo-root
-files (`README.md`, `CONTRIBUTING.md`, `SECURITY.md`, `CLAUDE.md`) via thin include shims, and a
+files (`README.md`, `CONTRIBUTING.md`, `SECURITY.md`) via thin include shims, and a
 generated, click-through view of the Doorstop requirements tree
 ([`../requirements/`](../requirements/README.md), [ADR
 0002](../decisions/0002-requirements-management-doorstop.md)).
 
-**Dev-only and siloed here** (FOUNDATIONS §2): its pinned requirements file and venv live in this
-directory; nothing depends on it at app build or runtime. Doorstop is the canonical requirements
-source and gate — this silo only renders it.
+**Dev-only and siloed here** (per [`CI.md`](../CI.md)'s repository-shape gate): its pinned
+requirements file and venv live in this directory; nothing depends on it at app build or runtime.
+Doorstop is the canonical requirements source and gate — this silo only renders it.
 
 ## Layout
 
@@ -20,7 +20,6 @@ docs/site/
   index.md               root toctree shim: an {include} of ../../README.md plus the site's toctrees
   contributing.md        {include} shim for ../../CONTRIBUTING.md
   security.md             {include} shim for ../../SECURITY.md
-  CLAUDE.md               {include} shim for ../../CLAUDE.md (case matches the link CONTRIBUTING.md uses)
   traceability.md         hand-authored needtable / matrix views
   doorstop_to_needs.py    thin, presentation-free transform: Doorstop YAML -> sphinx-needs MyST
   _static/needs-furo.css  maps sphinx-needs' colors onto furo's light/dark theme variables
@@ -31,11 +30,14 @@ docs/site/
   .venv/                  local venv, gitignored
 ```
 
-`index.md`, `contributing.md`, `security.md`, and `CLAUDE.md` are the only structural concession
-Sphinx demands (ADR 0004): each is a pure `{include}` of its repo-root counterpart, using MyST's
-`relative-docs` option to rewrite that file's root-relative links (e.g. `docs/FOUNDATIONS.md`) to
-resolve from inside the silo. The included file's own top heading becomes the page title — no
-hand-written prose duplicates it.
+`index.md`, `contributing.md`, and `security.md` are the only structural concession Sphinx demands
+(ADR 0004): each is a pure `{include}` of its repo-root counterpart, using MyST's `relative-docs`
+option to rewrite that file's root-relative links (e.g. `docs/ARCHITECTURE.md`) to resolve from
+inside the silo. The included file's own top heading becomes the page title — no hand-written prose
+duplicates it.
+
+The repo-root `CLAUDE.md` has no shim and is not part of the site: `CONTRIBUTING.md`'s link to it
+resolves in the repository, not in the built site.
 
 ## Building
 
@@ -59,6 +61,16 @@ just check-site      # the CI gate: just site-build, part of `just verify`
 [`../../.github/workflows/checks.yml`](../../.github/workflows/checks.yml), job `docs-site`): the
 transform, then `sphinx-build -W -b html -c docs/site docs docs/site/_build/html`. `-W` turns any
 Sphinx warning — a broken cross-reference, an orphaned page — into a build failure.
+
+## Adding a document to the nav
+
+Because `-W` fails on an orphaned page, **a new doc file must be reachable from a toctree in
+[`index.md`](index.md)**, or `check-site` fails. The `Project` toctree globs `../*`, which matches
+only the **direct children** of `docs/` — a doc in a **new subdirectory** (as `docs/contracts/` was
+in the #38 round) is not caught and needs its own toctree entry, mirroring the per-area blocks
+already there (`Decisions`, `Architecture model`, `Requirements & traceability`). ADR pages are the
+one exception: they nest automatically via the `conf.py` `source-read` hook (see below), so a new
+ADR needs no nav edit.
 
 ## The Doorstop -> sphinx-needs transform
 
@@ -92,13 +104,14 @@ this site and deploys it to GitHub Pages on push to `main`. It runs the same bui
 `check-site` and holds `pages: write` + `id-token: write` via OIDC — no stored credentials.
 `checks.yml` stays read-only (ADR 0004).
 
-No document in this repository references the deployed site's URL: the repo stays self-contained
-(`SYS001`) and loses nothing if Pages disappears.
+No document in this repository references the deployed site's URL: the repo stays self-contained and
+loses nothing if Pages disappears.
 
 ## What this silo deliberately does not do
 
 - **No versioned docs, no PDF export, no custom theming beyond a stock theme** — each is abstraction
-  without a consumer (FOUNDATIONS §5).
+  without a second consumer ([`CONTRIBUTING.md`](../../CONTRIBUTING.md)'s review checklist,
+  generality).
 - **No `needflow` link graph.** sphinx-needs' `needflow` directive needs either PlantUML (a JVM
   dependency) or Graphviz, and Graphviz is not guaranteed to be present on every machine this silo is
   built on; see the note in [`traceability.md`](traceability.md).

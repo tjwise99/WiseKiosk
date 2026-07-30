@@ -1,0 +1,26 @@
+active: false
+derived: false
+header: |
+  Pending: no identity-based rejection, in the contract or on the wire
+level: 1.16
+links:
+- SRS023: WhPy70N6y_yJFXePpu7c-bpytXwWjRRZZ9_eF_XQGTo=
+normative: true
+rationale: |
+  Asserted against the boundary schema as well as the running service because the schema is where a
+  401 or 403 would first be declared: catching it there fails the build before any handler exists,
+  and the live half proves the service produces no status the contract never declared.
+
+  Rejection itself remains shape-based rather than identity-based, which is SRS013's; this item asserts
+  only that no identity-based status appears.
+ref: ''
+reviewed: KxEA_pLy7wuUeCPfwglTsrHEGklpTiVNWsd6paSbN5s=
+status: proposed
+text: |
+  Pending: check that the boundary schema declares no 401 or 403 response for any path item, and
+  that the live route sweep produces neither status for any request. Runs once the boundary schema
+  (#37) and the backend skeleton (#9) exist.
+verification-justification: |
+  Settles that neither status appears in the schema or in a live sweep. Leaves unproven a rejection
+  that gates on identity while returning a different status.
+verification-method: test

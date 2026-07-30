@@ -1,0 +1,33 @@
+active: true
+derived: false
+header: |
+  The backend establishes no client identity and gates no route on one
+level: 1.96
+links:
+- SYS006: v3qSjDNbCins9CcqouJY2Vp6K1NhBAlUsPS8az2R1Kc=
+normative: true
+rationale: |
+  Makes SYS006's security model falsifiable. The posture itself — a deployment serves exactly one
+  trusted LAN — is a fact about where the system is installed, which no check inside the repository
+  can decide. What can be decided is the absence the model rests on, and that absence is precisely
+  what stops being true quietly: a session added for convenience, an access check added by reflex
+  during a later security pass. SYS006's rationale exists to stop that "fix"; this requirement is
+  what lets a gate stop it. The observable forms — no session or authentication material in a
+  response, no 401 or 403, no identity middleware on the request path — are TST015, TST019 and
+  TST020's, one apiece. Listing them here would be the requirement enumerating its own children.
+
+  SRS009 states statelessness as a transport property of the proxy route, and this requirement
+  restates the observable half as a security posture. The duplication is deliberate: SRS009's
+  obligation would be satisfied by a route contract rewrite that kept per-request determinism while
+  introducing an identity mechanism elsewhere, and the posture must outlive that. Stated here so the
+  overlap does not read as an oversight.
+ref: ''
+reviewed: SkipcsEmkApAy52MOXdII77pbRaIzV4FFHXPQMW8LrA=
+status: proposed
+text: |
+  The backend shall establish no client identity and shall gate no route on one.
+verification-justification: |
+  Asserted by sweeping every route for identity headers and statuses, comparing the registered
+  middleware chain against the declared one, and requiring two differing clients to receive
+  identical payloads. What no check settles is identity established outside the request path.
+verification-method: test

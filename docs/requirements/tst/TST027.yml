@@ -1,0 +1,22 @@
+active: false
+derived: false
+header: |
+  Pending: per-route rate-limit test
+level: 1.24
+links:
+- SRS011: GnP-DyPqrL-vkL2_XcTCrB8NG6AvmlI0MhJdIvU0hxc=
+normative: true
+rationale: ''
+ref: ''
+reviewed: OvUj7et72Z7jWAwuf1X2omiiLaC4tKkZBHAQZ92ZatQ=
+status: proposed
+text: |
+  Pending: test asserting a route's global rate limit rejects requests over the
+  threshold without an upstream call, while cache hits are neither counted
+  against the limit nor rejected. Lands with the backend skeleton (#9); activated
+  and given a references entry then.
+verification-justification: |
+  Settles that the limit rejects over threshold without an upstream call and that cache hits are
+  neither counted nor rejected. Leaves unproven the threshold's value against a source's published
+  limit.
+verification-method: test

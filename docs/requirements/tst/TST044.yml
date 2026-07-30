@@ -1,0 +1,23 @@
+active: false
+derived: false
+header: |
+  Pending: task count does not grow without bound
+level: 1.4
+links:
+- SRS022: Qxr5bhFduqh2GyEHReQthP4M01CMLv3GRX5FUfDIiCs=
+normative: true
+rationale: |
+  A goroutine leak shows in neither resident memory nor handle count until it is far advanced, so
+  neither sibling item catches it. Sampled in the run TST004 describes.
+ref: ''
+reviewed: VU315aBlTpu_Y44fkwkTCruj35LXC8a3YuRICWT0MPs=
+status: proposed
+text: |
+  Pending: over the shared instrumented run, failing on any increase in the runtime's task count between
+  the first and last sample.
+verification-justification: |
+  Settles that the task count does not end the sampled run above where it started. Leaves unproven the
+  timescale the obligation is about. Its predicate is absolute where its siblings carry thresholds: a
+  steady-state kiosk should return to its starting task count, and whether that survives contact with
+  a real backend is a question activation asks, not this item.
+verification-method: test

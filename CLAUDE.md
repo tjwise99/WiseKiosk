@@ -1,9 +1,20 @@
 # Agent working rules — WiseKiosk
 
-Working conventions for an AI agent in this repo. **Project facts are not here** — they live in
-[`docs/FOUNDATIONS.md`](docs/FOUNDATIONS.md) (standalone; everything hangs off it),
-[`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md), [`docs/TESTING.md`](docs/TESTING.md), and
-[`docs/decisions/`](docs/decisions/README.md). This file holds only the rules layered on top.
+Working conventions for an AI agent in this repo. **Project facts are not here.** The specification is
+the requirements tree, [`docs/requirements/`](docs/requirements/README.md) — every normative
+obligation is a numbered SYS/SRS/TST item there. Product definition lives in the
+[README](README.md), as-built structure in
+[`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md), test strategy in [`docs/TESTING.md`](docs/TESTING.md),
+and decisions with a rejected alternative in [`docs/decisions/`](docs/decisions/README.md); the index
+at [`docs/README.md`](docs/README.md) is authoritative on which holds what. This file holds only the
+rules layered on top.
+
+**Not every obligation is a requirement.** A requirement obliges WiseKiosk itself. A convention a
+machine decides about the repository, and material CI produces, belong to
+[`docs/CI.md`](docs/CI.md); what a program an operator runs must do belongs to
+[`tools/README.md`](tools/README.md); an obligation on an author that leaves no artifact belongs to
+[`CONTRIBUTING.md`](CONTRIBUTING.md)'s review checklist. Writing any of those into the tree is the
+mistake [ADR 0011](docs/decisions/0011-requirement-or-convention.md) exists to prevent.
 
 ## Non-negotiables
 
@@ -15,10 +26,10 @@ Working conventions for an AI agent in this repo. **Project facts are not here**
   types; every value crossing the boundary is **generated from one schema**, never hand-declared on
   both sides. This is the single worst defect class this design guards against — see
   [ADR 0001](docs/decisions/0001-backend-language-go.md). CI fails on stale generated code.
-- **Do not build what FOUNDATIONS §5 forbids** — no plugin system, no abstraction without a second
-  consumer, no transport chosen before the access pattern, no comment-enforced invariants, no
-  denylist secret handling, no non-tunable config keys, no controls that do not function where
-  deployed.
+- **Do not build generality against a case that does not exist** — no plugin system, no abstraction
+  without a second consumer, no transport chosen before the access pattern, no comment-enforced
+  invariants, no denylist secret handling, no non-tunable config keys, no controls that do not
+  function where deployed.
 - **Keep the docs standalone.** No reference points outside this repository. Every relative Markdown
   link resolves inside the repo (`just check-links`).
 

@@ -1,14 +1,34 @@
 active: true
 derived: false
 header: |
-  Secrets delivered by file path, never denylisted
-level: 1.5
+  Unresolvable secret surfaces as that source's upstream failure
+level: 1.16
 links:
-- SYS006: mZtgtX7M56gn4ZB-XMy1WS2JsHqCS2tfpXzMwUETmdA=
+- SYS001: ycFTNF2ASjFxjP8A9d3lB7nTzAdgSvE_5Ee71wz7MPY=
+- SYS003: x73sA6VMR9aDga-PqTW6L49gj-iwZdgTOg5xG8VhAwM=
 normative: true
+rationale: |
+  The backend is config-blind (ADR 0007) and cannot know which sources a
+  deployment uses, so a boot-time secrets gate would brick deployments
+  that use a subset of sources. A per-source failure at the kiosk names
+  what is missing and leaves the rest of the display running (SYS001) —
+  the debuggable outcome chosen on #35 over failing to boot.
 ref: ''
-reviewed: 1Z0HXQvmL_kMA3CoBT92tpxCbhN0cBbiGBUAjM7iN-M=
+reviewed: 1V7hp7zCJnX6R_xbmHAYNYTOjoym8aB9cFTYSqDrMX8=
+status: accepted
 text: |
-  Secrets shall be delivered by resolving <NAME>_FILE to a path (falling back to
-  the bare <NAME> environment variable) and shall never transit configuration
-  delivery, so no secret-stripping denylist exists to fail open. Source: section 5.
+  The backend shall resolve a secret when handling a request for the
+  source that needs it, not at boot; the backend shall boot successfully
+  regardless of which secrets are deliverable. When a source's secret is
+  unresolvable — <NAME>_FILE unset, or the file missing, unreadable, or
+  empty after trailing-whitespace stripping — requests to that source's
+  route shall fail with the same legible
+  per-source failure treatment as any other upstream failure, identifying
+  the unresolvable secret by name, while all other sources remain
+  unaffected.
+verification-justification: |
+  Asserted at both ends - a boot with no secret deliverable succeeds, and a request to a source
+  whose secret is unresolvable fails in the per-source form while its siblings serve. What no check
+  settles is whether every unresolvable case is enumerated; the four named here are the ones the
+  file interface makes reachable.
+verification-method: test

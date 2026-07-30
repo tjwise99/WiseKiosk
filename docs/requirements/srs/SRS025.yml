@@ -1,0 +1,23 @@
+active: true
+derived: false
+header: |
+  No secret material in the published image
+level: 1.104
+links:
+- SYS003: x73sA6VMR9aDga-PqTW6L49gj-iwZdgTOg5xG8VhAwM=
+normative: true
+rationale: |
+  Distinct from SRS018, which bars deployment-specific content. An image can carry no configuration
+  and still carry a key baked in at build time, or left in a layer an earlier stage deleted. This
+  states the secret half on its own so that neither is satisfied by proving the other.
+ref: ''
+reviewed: q9vQV4VXITMDnXPqriHjcjjHUcVC-8YfiaD1xLGDH0g=
+status: accepted
+text: |
+  The published image shall contain no secret material.
+verification-justification: |
+  Asserted by exporting the image filesystem and every layer and matching against a committed
+  secret-pattern set, with a planted canary required to be reported. What no check settles is a
+  secret the pattern set does not describe; the predicate is an enumeration this project maintains,
+  not a general decision procedure.
+verification-method: test

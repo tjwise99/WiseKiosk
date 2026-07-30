@@ -1,13 +1,24 @@
 active: true
 derived: false
 header: |
-  Boundary values never silently disagree
-level: 1.4
+  Single-definition internal contract
+level: 7
 links: []
 normative: true
+rationale: |
+  A shape declared twice drifts, and the drift is invisible until runtime: this is the single worst
+  defect class this design guards against (ADR 0001). The rule binds definitions, not uses — a component
+  whose prop is typed with a generated type is a consumer, not a second declaration. Scope is internal:
+  upstream API shapes are defined by whoever runs the API, and the configuration format is shared with
+  the operator and governed by SYS003.
 ref: ''
-reviewed: 9Vv-d8ZebkQOiiqwMNyo2BpQe-fxSkIfLKfOCeEmH6A=
+reviewed: vWpFwzXUqypym6hKI0F3IGqVwyPFfH32lieducWW6tM=
+status: accepted
 text: |
-  Values exchanged across the frontend/backend boundary shall never silently
-  disagree. This is the single worst defect class the design guards against.
-  Source: FOUNDATIONS.md section 4 and ADR 0001.
+  Every shape shared between WiseKiosk's own components shall have exactly one machine-readable
+  definition, generated into every implementation that must agree on it.
+verification-justification: |
+  Generation and agreement are decided by the drift gate: a committed artifact differing from a fresh
+  regeneration fails. What no check settles is whether the definition is the right shape — only that
+  both sides hold the same one.
+verification-method: test

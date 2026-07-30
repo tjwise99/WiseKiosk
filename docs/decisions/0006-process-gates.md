@@ -8,9 +8,9 @@
 Nothing tied a pull request to a ticket or constrained branch and commit naming: a branch with any
 name, referencing no issue, under any title could merge. GitHub's native enforcement for exactly
 this — ruleset metadata restrictions on branch-name and commit-message patterns — is
-Enterprise-only, so on this repo it is a control that does not function where deployed, the class
-FOUNDATIONS §5 forbids. Whatever enforces these conventions has to live in the repo and run where
-the repo runs.
+Enterprise-only, so on this repo it is a control that does not function where deployed — plausible,
+documented, and inert for its entire life. Whatever enforces these conventions has to live in the
+repo and run where the repo runs.
 
 ## Decision
 

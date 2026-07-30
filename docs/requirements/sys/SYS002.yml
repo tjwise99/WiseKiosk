@@ -1,13 +1,23 @@
 active: true
 derived: false
 header: |
-  Operator is frequently not the author
-level: 1.1
+  The configured layout renders whole
+level: 2
 links: []
 normative: true
+rationale: |
+  The product is a display; a module that is present but clipped, overlapped or scrolled out of view
+  has failed silently. "Wholly visible" absorbs no-overlap, no-clipping and no-scrollbars as one
+  property rather than three observables — none of them is a separate want. "The display it was
+  configured for" carries the kiosk-primary, desktop-secondary distinction without fixing viewports in
+  the need; SRS017 owns those. Phone widths are deliberately not a requirement.
 ref: ''
-reviewed: FPhMhEmyyu-Z31cp2PvzCJt_iAVqnU1yJq18cZSNjGU=
+reviewed: 4hoIe3sFXRA1b7fqjxvI-vWBDVBWimxgK9cW4PZZ8KQ=
+status: accepted
 text: |
-  A deployment's operator is frequently not its author, on a separate network
-  with a separate config. The system shall remain operable and diagnosable by a
-  non-technical, non-author operator. Source: FOUNDATIONS.md section 1.
+  Every configured module shall be wholly visible on the display it was configured for.
+verification-justification: |
+  Geometry is decidable: a rendered layout is measured against the viewport it declares. What the check
+  does not settle is whether a legible layout is a good one — visual judgement is not verification, and
+  no gate claims it.
+verification-method: test

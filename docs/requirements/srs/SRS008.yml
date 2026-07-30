@@ -1,0 +1,26 @@
+active: true
+derived: false
+header: |
+  No secret value in any backend output
+level: 1.18
+links:
+- SYS003: x73sA6VMR9aDga-PqTW6L49gj-iwZdgTOg5xG8VhAwM=
+normative: true
+rationale: |
+  The falsifiable edge of by-construction confinement (SYS003): a canary
+  secret planted through the delivery path and asserted absent from every
+  response and log line turns the structural claim into a failing test.
+  Upstream request URLs and echoed upstream errors are the classic leak
+  paths this guards.
+ref: ''
+reviewed: 33sNbgYmM_fm-2s_6QR0dy5LCTxU6ehX0H9KUe5KBRk=
+status: accepted
+text: |
+  No secret value shall appear in any HTTP response body or header, nor
+  in any log output, produced by the backend. Where backend output must
+  refer to a secret, it shall do so by the secret's name, never its value.
+verification-justification: |
+  Asserted by planting a canary secret and sweeping response bodies, headers and log output for its
+  value. What no check settles is the case where a secret is transformed before it is emitted - a
+  hash or a prefix of a key would not match the canary and would still be a leak.
+verification-method: test

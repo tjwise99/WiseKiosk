@@ -1,0 +1,29 @@
+active: true
+derived: false
+header: |
+  Request parameters validated against known-good per-source patterns
+level: 1.23
+links:
+- SYS004: -WgxkJ5puavx1z3dZ1VyFaAtygFCvlL2KSrBdQN-kdY=
+normative: true
+rationale: |
+  Validating against known-good patterns keeps malformed or unrecognized
+  requests from reaching upstream and bounds the proxy so it cannot be driven to
+  forward arbitrary requests (SYS004). The client-facing form of
+  a rejection is specified by SRS013. What a given source's pattern is — a code
+  format, an enumerated identifier set — is that module's own obligation under
+  ADR 0012, not this one's; naming examples here would put two modules'
+  requirements in a framework item.
+ref: ''
+reviewed: fqw4dgMcHS9VWhg4yZwx_ASepRKUvboAJoVZ8Lqva1E=
+status: accepted
+text: |
+  The backend shall validate each request's parameters against the known-good
+  pattern its source declares, and shall reject a request whose parameters do not
+  conform without issuing any upstream request.
+verification-justification: |
+  Asserted by submitting non-conforming parameters and requiring rejection with no upstream call
+  issued. What no check settles is whether a source's declared pattern actually matches what that
+  source accepts - the pattern is authored per source and a wrong one rejects valid requests just as
+  decidably.
+verification-method: test

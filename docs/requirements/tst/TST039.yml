@@ -1,0 +1,23 @@
+active: false
+derived: false
+header: |
+  Pending: served responses declare a type and forbid inference
+level: 1.56
+links:
+- SRS028: Z7Ew9iS07io5WQUQGQhIUzSgVESAsblWEJUS1OAzj4Y=
+normative: true
+rationale: ''
+ref: ''
+reviewed: w2kp8UWNWZKuSr9YJaeUdx85o1_79ufvgfmDPkNA4Mc=
+status: proposed
+text: |
+  Pending: integration test asserting the frontend-serving response and every proxy response carry a
+  Content-Type header with a concrete media type, and carry X-Content-Type-Options: nosniff. Fails if
+  either is absent on any served route, if a Content-Type is empty or generic enough to leave the
+  type unstated, or if the nosniff value is weakened. Lands with the backend that serves the
+  frontend; activated with a references entry to the integration test then.
+verification-justification: |
+  Settles that a concrete media type and the no-inference header are present on every served route.
+  Leaves unproven that a declared type is correct for the bytes beneath it - an upstream
+  mislabelling its own payload is outside what this reaches.
+verification-method: test

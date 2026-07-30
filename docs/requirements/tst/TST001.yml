@@ -1,24 +1,27 @@
-active: true
+active: false
 derived: false
 header: |
-  check-links resolves every relative Markdown link
-level: 1.0
+  Pending: upstream-failure error payload test
+level: 1.1
 links:
-- SRS001: 3_w-Wcba0ziUDO4XjGDHJklvKNEAT6vI6P-_bTcjMA8=
+- SRS001: qzkriI4rTv8IPKHDauZIxwp6CBHidA5BSzDK4fklZHY=
 normative: true
+rationale: |
+  Driven from the static route registration list rather than a hand-written route set, so coverage is
+  total by construction and a route added later cannot escape the sweep - TST015's ground, against the
+  same list. Malformed payload is the one class that is per module rather than transport: it is the
+  shaping library failing to parse, so it is induced per route rather than once.
 ref: ''
-references:
-- path: scripts/check-links.mjs
-  type: file
-reviewed: iRatjvctHrSQsCg6wNzrLFrkWRtkMyNGDNTWTHmybMQ=
+reviewed: -gYoeIksQxI0vs61DCMu6l3iXyGfikfmknyEIYNsAmU=
+status: proposed
 text: |
-  Verified by scripts/check-links.mjs, which walks every tracked Markdown file
-  and exits non-zero on the first relative link that escapes the repo or points
-  at a missing file. It is wired into CI as the "Markdown links resolve inside
-  the repo" step of the docs-and-hygiene job in .github/workflows/checks.yml,
-  and runnable locally as `just check-links`.
-
-  Note: the machine-checked reference above points only at scripts/check-links.mjs.
-  Doorstop 3.2 cannot resolve a file reference under a dot-prefixed directory
-  such as .github/, so the CI wiring (.github/workflows/checks.yml) is cited in
-  prose rather than as a references entry. See ADR 0002.
+  Pending: backend integration test that, for every entry in the static route registration list,
+  induces each failure class - unreachable, timeout, non-success status, malformed payload - and
+  asserts each produces the structured error payload, with the four pairwise distinguishable from it,
+  so a backend answering all four identically fails. Lands with the proxy skeleton; activated and
+  given a references entry then.
+verification-justification: |
+  Settles that each failure class produces a payload of the declared shape and that the four are
+  pairwise distinguishable from it. Leaves unproven that the four cover what real upstreams do - a
+  source failing in a fifth way produces some payload and nothing here decides which.
+verification-method: test

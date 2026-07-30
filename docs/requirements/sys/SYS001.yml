@@ -1,13 +1,26 @@
 active: true
 derived: false
 header: |
-  Documentation is self-contained
-level: 1.0
+  Failure is legible and proportionate
+level: 1
 links: []
 normative: true
+rationale: |
+  A failure nobody can see is indistinguishable from a system that is working, and an operator who is
+  not the author cannot diagnose what the display does not show. Proportionality is the second half:
+  an upstream source failing must not take the page down, while a configuration that cannot be read at
+  all legitimately may — the bound is what the failure requires, not a fixed blast radius. Stated as
+  containment it would have been satisfiable by defining "the part that failed" as everything.
 ref: ''
-reviewed: ogmPJrSPtzLEL1piOfmqMY0P4tXewbztzHlYKQMd6w8=
+reviewed: ycFTNF2ASjFxjP8A9d3lB7nTzAdgSvE_5Ee71wz7MPY=
+status: accepted
 text: |
-  The repository's documentation shall be self-contained: everything needed to
-  build and operate WiseKiosk lives inside this repository, with no reference
-  point that resolves outside it. Source: FOUNDATIONS.md "Standalone by intent".
+  Every failure shall be legible on the display, and shall degrade no more of it than the failure
+  requires.
+verification-justification: |
+  Each child asserts a rendered state against an induced failure, so the parent is settled by its
+  children. What no check settles is whether the resulting text is intelligible to a person who did not
+  write it; the plain-language obligations in SRS001, SRS002, SRS004 and SRS026 are read at review.
+  This sentence is the corpus's only record that legibility is a human review obligation, so the
+  items it names must be the ones that carry a plain-language clause.
+verification-method: test

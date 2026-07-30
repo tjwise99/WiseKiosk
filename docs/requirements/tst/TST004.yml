@@ -1,15 +1,26 @@
 active: false
 derived: false
 header: |
-  Config schema rejects a malformed input (pending)
-level: 1.3
+  Pending: resident memory does not grow without bound
+level: 1.4
 links:
-- SRS004: null
+- SRS022: Qxr5bhFduqh2GyEHReQthP4M01CMLv3GRX5FUfDIiCs=
 normative: true
+rationale: |
+  One instrumented run serves this item, TST043 and TST044; the run's duration and sampling interval
+  are stated here because this item is the first of the three. Splitting the resources across items
+  rather than listing them in one keeps each threshold reviewable on its own, and makes a leak class
+  found later a new item under SRS022 rather than a longer sentence inside an existing one.
 ref: ''
-reviewed: 6qSm6Hx9LuwBIm4VDqCZb6yHwxZerda6ZIAdjh5FSzQ=
+reviewed: 3o1z7S5ugbKsl26LwiWz7-EdDXLUxCdeuE2rUqnCrog=
+status: proposed
 text: |
-  Will be verified by a unit test feeding a realistic malformed input to the
-  config schema and asserting rejection, plus a CI run of the standalone
-  validator over known-good and known-bad fixtures. Inactive until the config
-  schema exists; activate and add a references entry when the test lands.
+  Pending: bounded-growth observation over a continuous run of at least sixty minutes, sampling at
+  thirty-second intervals, failing on a monotonic increase in resident memory exceeding ten percent.
+  Duration, interval and the threshold are tunable here rather than in the requirement.
+verification-justification: |
+  Settles that resident memory does not grow monotonically past its threshold across the sampled run.
+  Leaves unproven the timescale the obligation is about - an hour is read as evidence about months,
+  and a leak slower than the window is invisible - and says nothing about any other resource: SRS022
+  names none, so what is sampled is only what TST043 and TST044 add to this.
+verification-method: test

@@ -9,6 +9,10 @@ the highest below, and add it to the table.
 it is later superseded: mark the old one `superseded by NNNN` and write a new one. Each entry carries
 a **Decided** date — when the choice was *taken*, not when the work merged.
 
+Immutability protects the argument, not the pointers. Where a cited document is retired or its
+content moves, an ADR's citations may be retargeted to wherever the claim now lives; its reasoning,
+decision, and rejected alternatives stay as written.
+
 | # | Decided | Decision |
 |---|---|---|
 | [0001](0001-backend-language-go.md) | 2026-07-21 | Backend in Go; the frontend/backend boundary contract is generated from one schema |
@@ -17,3 +21,9 @@ a **Decided** date — when the choice was *taken*, not when the work merged.
 | [0004](0004-docs-site-sphinx-needs.md) | 2026-07-22 | Documentation site built with Sphinx + MyST + sphinx-needs; traceability rendered by sphinx-needs, deployed to GitHub Pages |
 | [0005](0005-traceability-gating.md) | 2026-07-22 | All work traces to the requirements tree via four in-repo gates; per-test attribution, derived verification status, tree as backlog |
 | [0006](0006-process-gates.md) | 2026-07-22 | Process gates: branches named type_number-snake_name, typed by ticket template and linked to an open issue; Conventional-Commit PR titles |
+| [0007](0007-config-validation-allocation.md) | 2026-07-23 | Config validation is frontend-owned: one TS engine runs in the page and as the desk CLI; the backend is config-blind |
+| [0008](0008-boundary-contract-openapi-codegen.md) | 2026-07-23 | Boundary contract: one OpenAPI schema (3.0.3 now, 3.1 later), Go + TypeScript types generated from it, CI drift-gated; frontend types-only |
+| [0009](0009-verification-justification-attribute.md) | 2026-07-24 | Every item stores a `verification-justification` naming what its verification settles and what it does not; fingerprint-fenced |
+| [0010](0010-runtime-materialised-gate-fixtures.md) | 2026-07-24 | Negative gate fixtures are committed as data and materialised into a temp tree at run time; no vulnerable artifact is ever committed in resolvable form |
+| [0011](0011-requirement-or-convention.md) | 2026-07-26 | A requirement obliges the running software; a repository convention is a check if a machine decides it and a review-checklist question if not; rules the pass establishes are recorded as ADRs |
+| [0012](0012-module-requirements-in-tree.md) | 2026-07-26 | A module is a need: one `SYS` per module in the same tree, decomposed into what is specific to it; no generic module need, no separate Doorstop document |

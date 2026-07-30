@@ -1,14 +1,29 @@
 active: true
 derived: false
 header: |
-  No config key breaks the deployment when changed
-level: 1.2
+  A configuration change applies no later than the next page load
+level: 1.12
 links:
-- SYS003: mZ3iU3vb9J3fYNllBqcKyg2CAneh5pEFtksQcIthulw=
+- SYS003: x73sA6VMR9aDga-PqTW6L49gj-iwZdgTOg5xG8VhAwM=
 normative: true
+rationale: |
+  Owner decision 2026-07-23 (ADR 0007): page load is the guaranteed floor,
+  phrased as "no later than" so a future live-apply path (e.g. a remote
+  configuration editor) is not designed out. No container restart, rebuild, or
+  redeploy stands between an edit and the display. The freshness guarantee is
+  frontend-owned: the page fetches the configuration bypassing HTTP caches
+  (cache: 'no-store' or equivalent), because the conventional fix — a no-cache
+  header on the config path — is exactly the config-aware code path ADR 0007
+  forbids.
 ref: ''
-reviewed: hU8Jg6BonrvHOoGzs6smeSkMKH8DWUvQEG36NLCqcPo=
+reviewed: Uhlv3SHlEIEk_pG80c4BcM4cbeMjVQIYtgNnx5DeGiU=
+status: accepted
 text: |
-  No configuration key shall exist whose alteration breaks the deployment (no
-  port that breaks the healthcheck, no address that must stay 0.0.0.0, no unread
-  keys). If turning it breaks the deploy, it is a constant. Source: FOUNDATIONS.
+  A modified configuration shall take effect no later than the next load of
+  the display page; no rebuild or redeployment shall be required to apply a
+  configuration change.
+verification-justification: |
+  Asserted by two page loads in one browser context with a configuration edit between them. What the
+  check does not settle is the upper bound on staleness in the field: it proves the next load
+  applies the change, not that any particular deployment reloads on any particular schedule.
+verification-method: test

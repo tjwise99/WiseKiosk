@@ -1,13 +1,27 @@
 active: true
 derived: false
 header: |
-  Secrets never leak by construction
-level: 1.5
+  Neither grant privilege nor require it
+level: 8
 links: []
 normative: true
+rationale: |
+  Trust rests at the network boundary. Accounts, sessions and authentication are all machinery for
+  distinguishing privilege between callers, and a display on a household LAN has no caller to
+  distinguish — so the machinery would add attack surface and operator burden to solve a problem the
+  deployment does not have. Requiring none is the same want facing the host: a process holding no more
+  than it needs bounds what a compromise reaches. This is a recorded decision, not an oversight: the
+  absence of authentication must not be "fixed" by a later reader who mistakes it for one.
 ref: ''
-reviewed: mZtgtX7M56gn4ZB-XMy1WS2JsHqCS2tfpXzMwUETmdA=
+reviewed: v3qSjDNbCins9CcqouJY2Vp6K1NhBAlUsPS8az2R1Kc=
+status: accepted
 text: |
-  A secret shall never reach the browser and shall never leak through
-  configuration delivery. Secret handling is structural, not policy, and must
-  not depend on a denylist that fails open. Source: FOUNDATIONS.md section 5.
+  The system shall neither grant privilege nor require it.
+verification-justification: |
+  Absence is asserted directly — no credential material on the wire, no identity-based rejection, no
+  authentication middleware on the request path, a container whose user is not root, a page served
+  with the device capabilities it does not use denied, and served responses that declare their type
+  so that no content is inferred into script it was never granted. What no check settles is whether
+  the network boundary is in fact trustworthy; that is a property of the household's network, outside
+  the system.
+verification-method: test

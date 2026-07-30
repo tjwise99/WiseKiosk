@@ -1,14 +1,29 @@
 active: true
 derived: false
 header: |
-  Config schema rejects malformed input in a test
-level: 1.3
+  Page renders a legible error state for every configuration failure class
+level: 1.13
 links:
-- SYS004: oaUiVqevRjBT4yHKnyzSJCCbBoxD8cgEdRNHhH5_ebE=
+- SYS001: ycFTNF2ASjFxjP8A9d3lB7nTzAdgSvE_5Ee71wz7MPY=
 normative: true
+rationale: |
+  ADR 0007: the page shell runs validation itself and owns the presentation of
+  its result. Failure classes are enumerated because SYS001's never-a-blank-
+  screen intent covers more than schema errors — an absent, unfetchable, or
+  unparseable file must be as legible as an invalid one. Scoped to "no valid
+  configuration applied" so a future live-apply path keeps the freedom to hold
+  last-good on a bad reload.
 ref: ''
-reviewed: sGYv2XqOIzDeJ1hYpOu8zdKaP2TOQBcPvhukTRM_bxE=
+reviewed: MzS_e_lItPN3kbgUY2zcDl7SXGrb1U2y1coHYxl2WAU=
+status: accepted
 text: |
-  The configuration schema shall reject at least one realistic malformed input,
-  proven by a test, and the standalone validator shall be exercised in CI
-  against known-good and known-bad configs. Source: TESTING.md obligations.
+  When no configuration can be applied - the file absent, unfetchable,
+  unparseable, or failing validation in a way that cannot be isolated to a
+  single module - the display shall render a plain-language error state naming
+  which failure occurred. The page shell shall load and render this state
+  without requiring a valid configuration.
+verification-justification: |
+  Asserted by inducing each failure class and reading the rendered shell. What the check does not
+  settle is that the four classes are exhaustive: a configuration failing in a way none of them
+  names would render some state, and no check decides whether that state is the right one.
+verification-method: test

@@ -1,0 +1,21 @@
+active: false
+derived: false
+header: |
+  Pending: secret-resolution unit tests
+level: 1.15
+links:
+- SRS006: ZeplVyYLSsrROM7ALJxI9czolHES2p2NT_Xu10C_gvE=
+normative: true
+rationale: ''
+ref: ''
+reviewed: 5VZNDbeVlYKHPw1O70sBwYYCsH5jOZAfkMMZCB0OtSU=
+status: proposed
+text: |
+  Pending: unit tests of secret resolution — value read from the file at
+  <NAME>_FILE; trailing whitespace stripped; a bare <NAME>
+  environment variable ignored. Lands with the backend skeleton (#9);
+  activated and given a references entry then.
+verification-justification: |
+  Settles the three resolution rules at unit level. Leaves unproven their behaviour under concurrent
+  resolution of the same secret.
+verification-method: test

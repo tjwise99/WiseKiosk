@@ -1,0 +1,23 @@
+active: false
+derived: false
+header: |
+  Pending: two instances from one image share no state
+level: 1.13
+links:
+- SRS029: BAfAOpaFZURWxbt-K87B018KPIBz78zMp-OimSjVZfM=
+normative: true
+rationale: ''
+ref: ''
+reviewed: QWFwXcG4cVRxzKHMm9LwiRTcERvrEGjOmsAZ2ml_M6U=
+status: proposed
+text: |
+  Pending: test starting two containers from the same digest with two different bind-mounted
+  configurations on two ports, asserting each serves only its own configuration and neither reflects
+  the other; asserting the image declares no shared writable volume; stopping one and asserting the
+  other stays healthy. Lands with the container image build (#54); activated then.
+verification-justification: |
+  Settles that two instances of one image serve only their own configuration, declare no shared
+  writable storage, and survive each other stopping. Leaves unproven what an operator can defeat
+  from outside - two deployments pointed at one bind mount share it, and no image property prevents
+  that.
+verification-method: test

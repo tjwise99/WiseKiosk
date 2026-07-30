@@ -1,13 +1,25 @@
 active: true
 derived: false
 header: |
-  Malformed configuration is rejected loudly
-level: 1.3
+  Upstream data reaches the display only through the backend
+level: 6
 links: []
 normative: true
+rationale: |
+  Two failures share one path. If the browser reaches upstream sources directly, credentials must live
+  where a client can see them and every deployment's traffic is attributable to the household running
+  it. If a caller can choose what the backend requests, the display becomes an open proxy — someone
+  else's traffic against WiseKiosk's key and rate limit. Stating the obligation positively (the set of
+  calls is fixed by configuration) rather than as a prohibition on relaying is what makes SRS012 and
+  SRS013 trace to it; three earlier wordings named the failure and none of them did.
 ref: ''
-reviewed: oaUiVqevRjBT4yHKnyzSJCCbBoxD8cgEdRNHhH5_ebE=
+reviewed: -WgxkJ5puavx1z3dZ1VyFaAtygFCvlL2KSrBdQN-kdY=
+status: accepted
 text: |
-  A malformed configuration shall be rejected loudly and legibly before it can
-  produce a silent or blank-screen failure on a headless kiosk. Validation
-  failing correctly is a product feature. Source: FOUNDATIONS.md section 1.
+  All upstream data shall reach the display only through the backend, which shall issue only the
+  upstream requests its configuration calls for, and shall bound how many it makes.
+verification-justification: |
+  Origin, request shape and volume are all asserted against the running backend. The Content-Security-
+  Policy enforces the same clause at the browser against a page compromised through rendered
+  third-party data — a case no server-side check reaches.
+verification-method: test

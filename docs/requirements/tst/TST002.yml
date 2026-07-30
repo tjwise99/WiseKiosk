@@ -1,15 +1,25 @@
 active: false
 derived: false
 header: |
-  Standalone validator rejects a bad config (pending)
-level: 1.1
+  Pending: module error-state render test
+level: 1.2
 links:
-- SRS002: null
+- SRS001: qzkriI4rTv8IPKHDauZIxwp6CBHidA5BSzDK4fklZHY=
 normative: true
+rationale: |
+  Driven from the registered module set, because an error state is rendered by each module's own
+  component: asserted against one module it would pass while another collapsed the causes. A module
+  holding no boundary payload renders no upstream failure and is not swept.
 ref: ''
-reviewed: ruLephWH1CaF1k9RvBkCIa9JS2QTpk79sLaEtBR7G7w=
+reviewed: lWofSVRNU4htdZIupPMTZzGwqMzhELahqyv6Vb41hQo=
+status: proposed
 text: |
-  Will be verified by a test that runs the standalone config validator against a
-  known-bad config and asserts a legible, non-zero failure before boot. Inactive
-  until the validator and config schema exist (no app code yet); activate and add
-  a references entry when the test lands.
+  Pending: render test that, for every registered module holding a boundary payload, asserts the module
+  renders its error state from an error payload while sibling modules render normally, and that it renders a
+  distinct state for each failure cause, so a component collapsing them to one message fails. Lands with the frontend skeleton; activated and given a references entry
+  then.
+verification-justification: |
+  Settles that a module renders its error state while siblings render normally, and that it does not
+  collapse the causes the backend distinguished. Leaves unproven the wording, which SYS001 routes to
+  review.
+verification-method: test
