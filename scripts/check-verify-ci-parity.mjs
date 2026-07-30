@@ -32,6 +32,7 @@ const CHECK_TOKENS = {
     "scripts/check-suspect-links.py",
     "scripts/validate-tree.sh",
     "scripts/check-method-consistency.py",
+    "scripts/check-text-citations.py",
   ],
   "check-arch": ["scripts/splice-arch-diagrams.mjs"],
   "check-site": ["docs/site/doorstop_to_needs.py"],

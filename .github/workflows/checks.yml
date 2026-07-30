@@ -39,8 +39,9 @@ jobs:
 
   requirements:
     # Validates the Doorstop requirements tree: every TST reference resolves, no
-    # suspect/unreviewed/orphan items, and no item claims a verification method
-    # its children do not support. Runs every command `just check-reqs` runs, in
+    # suspect/unreviewed/orphan items, no item claims a verification method its
+    # children do not support, and no item's statement cites another item by
+    # identifier. Runs every command `just check-reqs` runs, in
     # the same order; check-verify-ci-parity asserts that per command, so adding
     # one to the recipe without adding it here fails. The tool is siloed under
     # docs/requirements/ with the feature it serves. No secrets: pure tree
@@ -69,6 +70,9 @@ jobs:
 
       - name: Verification methods are consistent parent to child
         run: docs/requirements/.venv/bin/python scripts/check-method-consistency.py
+
+      - name: No item's statement cites another item by identifier
+        run: docs/requirements/.venv/bin/python scripts/check-text-citations.py
 
   docs-site:
     # Builds the docs site with -W: a broken cross-reference or orphaned page

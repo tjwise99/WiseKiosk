@@ -56,6 +56,13 @@ fingerprint (editing them re-flags review); `status` is not, because a state tra
 content change. Verified/implemented
 is **derived by tooling from evidence, never stored** (ADR 0005).
 
+**An item's `text` names no other item.** The obligation must be readable on its own —
+ISO/IEC/IEEE 29148's *complete* and *singular* characteristics — and an identifier inside it defeats
+that twice over: the reader cannot tell what is required without a lookup, and a renumber rewrites
+`links:` while leaving the sentence pointing at whatever now occupies the number. Say the thing
+itself. `rationale` and `verification-justification` explain the tree to someone reading it as a
+tree, so they may name items freely; `check-text-citations.py` fails on `text` only.
+
 ### Choosing a verification method
 
 Methods are ordered by **mechanical decidability** — how much of the verification a machine settles,
@@ -152,14 +159,15 @@ docs/requirements/.venv/bin/pip install -r docs/requirements/requirements-dev.tx
 Then:
 
 ```sh
-just check-reqs      # check-unreviewed.py, check-suspect-links.py, validate-tree.sh, check-method-consistency.py
+just check-reqs      # check-unreviewed.py, check-suspect-links.py, validate-tree.sh, check-method-consistency.py, check-text-citations.py
 just verify          # runs check-reqs alongside the other repo gates
 ```
 
 `just check-reqs` runs the **exact** commands CI runs (see
 [`../../.github/workflows/checks.yml`](../../.github/workflows/checks.yml), job `requirements`):
 `scripts/check-unreviewed.py`, then `scripts/check-suspect-links.py`, then
-`scripts/validate-tree.sh`, then `scripts/check-method-consistency.py`. The `--error-all` flag
+`scripts/validate-tree.sh`, then `scripts/check-method-consistency.py`, then
+`scripts/check-text-citations.py`. The `--error-all` flag
 `validate-tree.sh` passes to Doorstop promotes its suspect / unreviewed / orphan /
 unresolved-reference warnings to errors, so the process exits non-zero and the gate actually
 blocks — plain `doorstop` only warns.
@@ -180,11 +188,11 @@ otherwise be "reviewed" by whoever next ran the gate, which is the one thing the
 to prove. Failing first stops Doorstop before it can stamp. Clear it with `doorstop review <uid>`,
 deliberately, never by re-running the gate.
 
-Between them the four commands assert that no item carries a review fingerprint nobody wrote; that
+Between them the five commands assert that no item carries a review fingerprint nobody wrote; that
 every parent link resolves and no item is orphaned or left suspect, **inactive items included**;
 that every active `TST` item's `references` resolve to a real file; that every item carries a
-`verification-justification`; and that no item claims a verification method its own children do not
-support. Each is a property of the
+`verification-justification`; that no item claims a verification method its own children do not
+support; and that no item's `text` names another item. Each is a property of the
 specification, which is why they are stated here rather than in
 [`../CI.md`](../CI.md) with the repository's checks — that document says they run and block, this one
 says what they mean. `check-verify-ci-parity` asserts the recipe-to-CI correspondence one command at
