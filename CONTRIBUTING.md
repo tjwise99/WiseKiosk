@@ -39,7 +39,9 @@ Current gates (they grow as code lands):
   the hooks — no toolchain).
 - `just check-reqs`  — the Doorstop requirements tree validates: no item carries a review
   fingerprint nobody wrote, refs resolve, no suspect/unreviewed/orphan items — inactive ones
-  included, which Doorstop itself skips; one exception is tolerated while every `TST` item is still
+  included, which Doorstop itself skips; no item's parent set moved without a fresh review
+  fingerprint, which the fingerprint itself cannot see because it does not cover `links`; one
+  exception is tolerated while every `TST` item is still
   pending, and it fails once it is no longer needed (#78); every item carries a
   `verification-justification`, and no item claims a method its own children do not support.
   **If it reports unreviewed items or links, do not clear that by re-running it.** Validating the

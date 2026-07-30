@@ -112,7 +112,9 @@ consequences:
 - Renaming an item unreviews it, and makes every child suspect via the parent stamp in `links:`.
 - A `reviewed` stamp copied across a UID change cannot match — the tooling catches forged carry-over.
 - `verification-method`, `verification-justification` and `rationale` are inside the fence; `status`
-  is not.
+  is not, and neither is `links` — a re-parent leaves the stamp valid. `check-reparent-review.py`
+  fails a parent set that moved against the merge base with `reviewed` unchanged, so a re-parented
+  child needs `doorstop review`, not `clear` alone.
 
 Clearing suspect links and re-stamping is a **human read**, never scripted
 (`docs/requirements/README.md`). Inactive items are skipped by Doorstop entirely, so a stamp on a
