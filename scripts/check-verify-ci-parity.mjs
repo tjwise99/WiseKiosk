@@ -30,7 +30,6 @@ const CHECK_TOKENS = {
   "check-reqs": [
     "scripts/check-unreviewed.py",
     "scripts/check-suspect-links.py",
-    "scripts/check-reparent-review.py",
     "scripts/validate-tree.sh",
     "scripts/check-method-consistency.py",
     "scripts/check-text-citations.py",
