@@ -35,17 +35,23 @@ def items():
 
 
 def suspect(by_uid):
-    """Every inactive item's link whose stamp no longer matches its parent's fingerprint."""
-    found = []
+    """Every inactive item's link whose stamp no longer matches its parent's fingerprint, and every
+    link naming a parent the tree does not hold."""
+    found, dangling = [], []
     for item in by_uid.values():
         if item.active:
             continue
         for uid in item.links:
+            parent = by_uid.get(uid)
+            if parent is None:
+                dangling.append((item.uid, uid))
+                continue
             if not uid.stamp:
                 continue  # never stamped: check-unreviewed.py's, and it runs first
-            if uid.stamp != by_uid[uid].stamp():
+            if uid.stamp != parent.stamp():
                 found.append((item.uid, uid))
-    return sorted(found, key=lambda pair: (str(pair[0]), str(pair[1])))
+    key = lambda pair: (str(pair[0]), str(pair[1]))
+    return sorted(found, key=key), sorted(dangling, key=key)
 
 
 def unreviewed_changes(by_uid):
@@ -60,16 +66,23 @@ def unreviewed_changes(by_uid):
 
 def main():
     by_uid = items()
-    links, changed = suspect(by_uid), unreviewed_changes(by_uid)
+    links, dangling = suspect(by_uid)
+    changed = unreviewed_changes(by_uid)
+    inactive = [item for item in by_uid.values() if not item.active]
+
+    if dangling:
+        print(f"{len(dangling)} inactive item link(s) name a parent the tree does not hold:", file=sys.stderr)
+        for child, parent in dangling:
+            print(f"  {child} -> {parent}", file=sys.stderr)
 
     if links:
-        print(f"{len(links)} inactive item link(s) are suspect:", file=sys.stderr)
+        print(f"\n{len(links)} inactive item link(s) are suspect:", file=sys.stderr)
         for child, parent in links:
             print(f"  {child} -> {parent}", file=sys.stderr)
         print(
-            "\nThe parent's text, rationale, verification method or justification changed after"
-            "\nthis link was reviewed, and Doorstop cannot see it: the child is inactive. Re-read"
-            "\nthe item against the parent it now has and run `doorstop review <uid>`.",
+            "\nThe parent's fingerprint no longer matches the stamp this link carries: either the"
+            "\nparent changed after the link was reviewed, or the link was pointed at a different"
+            "\nparent. Doorstop cannot see it, because the child is inactive.",
             file=sys.stderr,
         )
 
@@ -79,17 +92,23 @@ def main():
             print(f"  {uid}", file=sys.stderr)
         print(
             "\nThe item's own statement, attributes or parent links changed after it was reviewed,"
-            "\nand Doorstop cannot see it: the item is inactive. Re-read it — against the parent it"
-            "\nnow has, if that is what moved — and run `doorstop review <uid>`.",
+            "\nand Doorstop cannot see it: the item is inactive.",
             file=sys.stderr,
         )
 
-    if links or changed:
+    if links or changed or dangling:
+        print(
+            "\nRe-read each item — against the parent it now has, if that is what moved — then"
+            "\nre-stamp it. `doorstop review <uid>` cannot: `Tree.find_item` is active-only and"
+            "\nanswers `no item with UID` for a pending item. See `docs/requirements/README.md"
+            "\n§ Adding or changing requirements`.",
+            file=sys.stderr,
+        )
         return 1
 
     print(
-        f"Every inactive item matches the stamp it was reviewed at, links included"
-        f" ({len(by_uid)} items in the tree)."
+        f"Every inactive item matches the stamp it was reviewed at, its parents included"
+        f" ({len(inactive)} pending of {len(by_uid)})."
     )
     return 0
 

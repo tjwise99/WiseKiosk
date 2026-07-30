@@ -141,9 +141,8 @@ artifact, not retired.
 
 **Activation is a review act.** Doorstop skips inactive items entirely, so every stamp signal it
 reports — a suspect link, an item with unreviewed changes — is dead across the whole verification
-tier. `check-suspect-links.py` restores both for that population, which is why **a pending item's
-stamp is held to the same standard as an active one's**: editing its statement, its attributes or its
-parent links fails the gate until it is re-read and re-stamped. What still lands at activation is the
+tier. `check-suspect-links.py` restores both for that population, which is why **editing a pending
+item's statement, attributes or parent links fails the gate** until it is re-read and re-stamped. What still lands at activation is the
 question no stamp can ask — the change that activates an item re-reads it in full against the parent
 it has, and stamps its review (`doorstop review <UID>`) then, never scripted.
 
@@ -200,14 +199,14 @@ has always made. Link *stamps* are not inside the hash, so `doorstop clear` afte
 does not disturb it.
 
 What it does not decide is whether a re-read happened — only that a stamp was rewritten afterwards.
-`doorstop clear` on its own still silences a suspect link without recording any re-read of the parent's
-new text, for an active item as much as a pending one; that one is a human obligation, in
+`doorstop clear` on its own still silences an active item's suspect link without recording any re-read
+of the parent's new text; that one is a human obligation, in
 [`../../CONTRIBUTING.md`](../../CONTRIBUTING.md)'s checklist.
 
 Between them the five commands assert that no item carries a review fingerprint nobody wrote; that
-every parent link resolves and no item is orphaned, left suspect, or carrying changes made after it was
-reviewed — **inactive items included**, which Doorstop evaluates for none of those; that every active
-`TST` item's `references` resolve to a real file; that every item carries a
+every parent link resolves and no item is orphaned or left suspect; that no **inactive** item is left
+suspect or carrying changes made after it was reviewed, which Doorstop reports for none of them; that
+every active `TST` item's `references` resolve to a real file; that every item carries a
 `verification-justification`; that no item claims a verification method its own children do not
 support; and that no item's `text` names another item. Each is a property of the
 specification, which is why they are stated here rather than in
