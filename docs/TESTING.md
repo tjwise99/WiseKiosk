@@ -131,9 +131,9 @@ checked against, rather than prose alone.
   ([`requirements/README.md § Running the gate`](requirements/README.md#running-the-gate)), so a
   parent rewritten under a
   pending check fails a gate in the commit that rewrites it rather than waiting for activation. The
-  mirror case is the check itself moving to a different parent, which no fingerprint can see because
-  the stamp does not cover `links`; `check-reparent-review.py` fails a parent set that moved without a
-  fresh review. What neither can decide is the question activation exists to ask, and that stays a
+  same script decides the mirror case, the check itself moving to a different parent: an item's sorted
+  parent UIDs are inside its own stamp, so a re-parented `TST` item no longer matches the stamp it was
+  reviewed at. What that cannot decide is the question activation exists to ask, and that stays a
   human read: does this check still assert a clause its parent still states?
 - **Every test and check in the repository is executed by CI** — the whole-tree discovery and
   verify/CI parity gates are [`CI.md`](CI.md)'s (§ Gate wiring), not the tree's. A test no runner
