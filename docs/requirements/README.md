@@ -112,8 +112,9 @@ complete and current:
 - **Verification linkage** — every active `TST` item's `references` must resolve to a real file in the
   repo. A dangling reference fails the gate.
 - **Re-validation** — editing a parent item changes its fingerprint, flagging every child **suspect**
-  until re-reviewed, and moving a child to a different parent unreviews the child. A silent divergence
-  is impossible.
+  until re-reviewed, and moving a child to a different parent unreviews the child. Among **active**
+  items a silent divergence is impossible; an inactive item is evaluated for neither, and what covers
+  that is [below](#pending-decomposition).
 
 What Doorstop does **not** do is prove the referenced check actually passes. That is the job of
 [`just verify`](../../justfile) and the CI suite. Doorstop proves a `TST` item *points at* a real
@@ -220,15 +221,14 @@ Run all commands with the venv (`docs/requirements/.venv/bin/doorstop …`):
   `doorstop clear <UID>` followed by `doorstop review <UID>` — `clear` updates the stored parent
   fingerprint in the child's `links:`; `review` alone re-stamps the item but leaves the link
   suspect. Re-blessing is the human act of re-reading a downstream item after its parent moved —
-  do not script it blindly. Both commands `git add` what they rewrite, so check what is staged
-  before committing.
+  do not script it blindly.
 - **After moving an item to a different parent,** the item itself is unreviewed — its parent UIDs are
   inside its own stamp — so `clear` is not enough. Read it against the parent it now has and
   `doorstop review <UID>`. `--error-all` reports it as `unreviewed changes` until you do.
 - **Neither command can reach an inactive item.** `Tree.find_item` is active-only, so `doorstop review
   TST019` and `doorstop clear TST019` both answer `no item with UID` while that item is pending.
-  Stamping a pending item takes a loop over `document._iter()`; this is why re-stamping lands at
-  activation, when the item is active and the CLI can see it.
+  Stamping one takes a loop over `document._iter()`. Where a pending item's link goes suspect before
+  activation, that loop is the only route.
 - **Inactive items are not rewritten by Doorstop**, so write their parent links in dict form,
   `- UID: null` (the form Doorstop itself stamps); a plain-string link breaks the docs-site
   needs generator.

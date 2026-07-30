@@ -106,8 +106,9 @@ then, one written after means what it says now. The map cannot tell you which, s
 
 ## The review fingerprint
 
-`Item.review()` stamps `stamp(links=True)`, which hashes the **UID**, the text, the references, the
-three fenced attributes **and the sorted parent UIDs** (`doorstop/core/item.py`). Four consequences:
+`Item.review()` stamps `stamp(links=True)`, which hashes the **UID**, the text, `ref`, the references,
+the three fenced attributes **and the sorted parent UIDs** (`doorstop/core/item.py`). Four
+consequences:
 
 - Renaming an item unreviews it, and makes every child suspect via the parent stamp in `links:`.
 - A `reviewed` stamp copied across a UID change cannot match — the tooling catches forged carry-over.
@@ -120,7 +121,8 @@ three fenced attributes **and the sorted parent UIDs** (`doorstop/core/item.py`)
 
 Clearing suspect links and re-stamping is a **human read**, never scripted
 (`docs/requirements/README.md`). Inactive items are skipped by Doorstop entirely, so a stamp on a
-pending item carries no authority — edits there are free, and expensive after activation. **Neither
+pending item carries no authority — edits to its *content* are nearly free, and expensive after
+activation. Its *links* are not free: re-point one and `scripts/check-suspect-links.py` fires. **Neither
 `doorstop review` nor `doorstop clear` can reach an inactive item at all**: `Tree.find_item` is
 active-only and both answer `no item with UID`. Stamping a pending item means a loop over
 `document._iter()`.

@@ -6,10 +6,13 @@ child at review time. It skips inactive items entirely, and every `TST` item is 
 code it checks exists — so the signal is dead across the whole verification tier.
 
 This restores it for the items Doorstop skips, and only those: an active item's suspect links are
-`doorstop --error-all`'s to report, and a link carrying no stamp at all is `check-unreviewed.py`'s.
+`doorstop --error-all`'s to report, and a link carrying no stamp at all is `check-unreviewed.py`'s. A
+link naming a parent no document holds is reported alongside, since resolving one is what makes the
+comparison possible at all.
 
-The comparison is Doorstop's own `Stamp`, taken from the library rather than reimplemented, so
-anything reported here is what `doorstop review` would rewrite. Nothing is written.
+The comparison is Doorstop's own `Stamp`, taken from the library rather than reimplemented. Clearing
+what it reports is not a CLI operation — `Tree.find_item` is active-only — so the remedy is the one
+`docs/requirements/README.md § Adding or changing requirements` gives. Nothing is written.
 """
 
 import sys
@@ -44,8 +47,8 @@ def suspect():
                 continue  # never stamped: check-unreviewed.py's, and it runs first
             if uid.stamp != parent.stamp():
                 found.append((item.uid, uid))
-    key = lambda pair: (str(pair[0]), str(pair[1]))
-    return sorted(found, key=key), sorted(dangling, key=key)
+    by_id = lambda pair: (str(pair[0]), str(pair[1]))
+    return sorted(found, key=by_id), sorted(dangling, key=by_id)
 
 
 def main():
@@ -58,6 +61,10 @@ def main():
         )
         for child, parent in dangling:
             print(f"  {child} -> {parent}", file=sys.stderr)
+        print(
+            "\nPoint each at a parent some document holds, or delete the link.",
+            file=sys.stderr,
+        )
 
     if found:
         if dangling:
@@ -68,21 +75,18 @@ def main():
         print(
             "\nThe parent's fingerprint no longer matches the stamp this link carries: either the"
             "\nparent changed after the link was reviewed, or the link was pointed at a different"
-            "\nparent. Doorstop cannot see it, because the child is inactive.",
+            "\nparent. Doorstop cannot see it, because the child is inactive. Re-read the item"
+            "\nagainst the parent it now has, then re-stamp it — which is not a CLI operation:"
+            "\n`Tree.find_item` is active-only, so `doorstop review` and `doorstop clear` both"
+            "\nanswer `no item with UID` for an inactive item. See `docs/requirements/README.md"
+            "\n§ Adding or changing requirements`.",
             file=sys.stderr,
         )
 
     if found or dangling:
-        print(
-            "\nRe-read each item against the parent it now has. Re-stamping it is not a CLI"
-            "\noperation — `Tree.find_item` is active-only, so `doorstop review` and `doorstop"
-            "\nclear` both answer `no item with UID` for an inactive item. See"
-            "\n`docs/requirements/README.md § Adding or changing requirements`.",
-            file=sys.stderr,
-        )
         return 1
 
-    print("Every inactive item's links match the parents they were reviewed against.")
+    print("Every inactive item's links resolve and match the parents they were reviewed against.")
     return 0
 
 
