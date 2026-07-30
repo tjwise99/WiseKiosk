@@ -31,7 +31,7 @@ install-hooks:
     git config core.hooksPath .githooks
 
 [group('checks')]
-[doc('Requirements tree validates: refs resolve, no suspect/unreviewed/orphan items, no inactive item drifted from its stamp, methods consistent, no identifier cited in an item statement')]
+[doc('Requirements tree validates: refs resolve, no suspect/unreviewed/orphan items, methods consistent, no identifier cited in an item statement')]
 check-reqs:
     docs/requirements/.venv/bin/python scripts/check-unreviewed.py
     docs/requirements/.venv/bin/python scripts/check-suspect-links.py

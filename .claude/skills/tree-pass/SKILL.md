@@ -103,26 +103,27 @@ then, one written after means what it says now. The map cannot tell you which, s
 5. **Clause-level tracing.** `--error-all` links item-to-item and cannot see a clause of a child
    tracing to no clause of its parent. **This tree's dominant defect class.** Every merge must be
    checked clause by clause by a human.
-6. **Every moved item re-stamped.** A re-parent unreviews the child, pending or active — see the
-   fingerprint below. Read it against the parent it now has and `doorstop review <UID>` in the same
-   pass, or the gate fails on it.
 
 ## The review fingerprint
 
-`Item.review()` stamps `stamp(links=True)`, which hashes **the UID** and the **sorted parent UIDs**
-along with text and references (`doorstop/core/item.py`). Four consequences:
+`Item.review()` stamps `stamp(links=True)`, which hashes the **UID**, the text, the references, the
+three fenced attributes **and the sorted parent UIDs** (`doorstop/core/item.py`). Four consequences:
 
 - Renaming an item unreviews it, and makes every child suspect via the parent stamp in `links:`.
 - A `reviewed` stamp copied across a UID change cannot match — the tooling catches forged carry-over.
 - `verification-method`, `verification-justification` and `rationale` are inside the fence; `status`
   is not.
-- **Re-parenting an item unreviews it**, so a moved child needs `doorstop review`, not `clear` alone.
-  `clear` rewrites the stamps stored *in* `links:`, and those are not inside the hash.
+- **Re-parenting an item unreviews the item itself**, so a moved child needs `doorstop review`, not
+  `clear` alone — `clear` rewrites the stamps stored *in* `links:`, and those are not in the hash.
+  `--error-all` reports it as `unreviewed changes`, which is why a pass that re-parents active items
+  re-stamps them as it goes.
 
 Clearing suspect links and re-stamping is a **human read**, never scripted
-(`docs/requirements/README.md`). Doorstop evaluates no stamp signal for an inactive item, so its own
-reporting is silent there; `scripts/check-suspect-links.py` decides both signals for that population,
-which is why an edit to a pending item costs a re-stamp like any other.
+(`docs/requirements/README.md`). Inactive items are skipped by Doorstop entirely, so a stamp on a
+pending item carries no authority — edits there are free, and expensive after activation. **Neither
+`doorstop review` nor `doorstop clear` can reach an inactive item at all**: `Tree.find_item` is
+active-only and both answer `no item with UID`. Stamping a pending item means a loop over
+`document._iter()`.
 
 ## Where content goes when it leaves the tree
 

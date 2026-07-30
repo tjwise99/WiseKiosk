@@ -52,8 +52,9 @@ claiming a machine settles it, and the justification bounds that claim — a gre
 set equality against a recorded list has not decided that the list is right.
 
 `verification-method`, `verification-justification`, and `rationale` are fenced by the review
-fingerprint (editing them re-flags review); `status` is not, because a state transition is not a
-content change. Verified/implemented
+fingerprint (editing them re-flags review), as are the item's **parent links** — `Item.review()`
+stamps the sorted parent UIDs along with the content, so re-parenting an item unreviews it. `status` is
+not fenced, because a state transition is not a content change. Verified/implemented
 is **derived by tooling from evidence, never stored** (ADR 0005).
 
 **An item's `text` names no other item.** The obligation must be readable on its own —
@@ -111,7 +112,8 @@ complete and current:
 - **Verification linkage** — every active `TST` item's `references` must resolve to a real file in the
   repo. A dangling reference fails the gate.
 - **Re-validation** — editing a parent item changes its fingerprint, flagging every child **suspect**
-  until re-reviewed. A silent divergence is impossible.
+  until re-reviewed, and moving a child to a different parent unreviews the child. A silent divergence
+  is impossible.
 
 What Doorstop does **not** do is prove the referenced check actually passes. That is the job of
 [`just verify`](../../justfile) and the CI suite. Doorstop proves a `TST` item *points at* a real
@@ -139,12 +141,12 @@ activated in the same change that writes its first child. Elsewhere `active: fal
 retirement (ADR 0005); an item carrying a pending note is awaiting decomposition or its verifying
 artifact, not retired.
 
-**Activation is a review act.** Doorstop skips inactive items entirely, so every stamp signal it
-reports — a suspect link, an item with unreviewed changes — is dead across the whole verification
-tier. `check-suspect-links.py` restores both for that population, which is why **editing a pending
-item's statement, attributes or parent links fails the gate** until it is re-read and re-stamped. What still lands at activation is the
-question no stamp can ask — the change that activates an item re-reads it in full against the parent
-it has, and stamps its review (`doorstop review <UID>`) then, never scripted.
+**Activation is a review act.** Doorstop skips inactive items entirely, so a `reviewed` stamp on a
+pending item carries no authority and edits to a pending item's own text are invisible to the gate.
+One half of that is now mechanical: `check-suspect-links.py` fails when a pending item's *parent*
+moves after the link was reviewed, which is the drift Doorstop cannot see. The rest still lands at
+activation — the change that activates an item re-reads it in full and stamps its review
+(`doorstop review <UID>`) then, never before, never scripted.
 
 ## Running the gate
 
@@ -188,25 +190,9 @@ otherwise be "reviewed" by whoever next ran the gate, which is the one thing the
 to prove. Failing first stops Doorstop before it can stamp. Clear it with `doorstop review <uid>`,
 deliberately, never by re-running the gate.
 
-**`check-suspect-links.py` restores the fingerprint over the items Doorstop skips.** A stamp covers
-the item's `uid`, `text`, `ref`, `references`, the three attributes above **and its sorted parent
-UIDs** — `Item.review()` stamps `stamp(links=True)` — so a re-parented item no longer matches the
-stamp it was reviewed at, and `doorstop --error-all` reports it as *unreviewed changes*. It reports
-nothing for an inactive item, because it evaluates none. That is the whole gap: not the fingerprint's
-coverage, but the population Doorstop applies it to. The check recomputes `stamp(links=True)` for every
-inactive item and compares it against the stored `reviewed`, alongside the suspect-link comparison it
-has always made. Link *stamps* are not inside the hash, so `doorstop clear` after a parent's own edit
-does not disturb it.
-
-What it does not decide is whether a re-read happened — only that a stamp was rewritten afterwards.
-`doorstop clear` on its own still silences an active item's suspect link without recording any re-read
-of the parent's new text; that one is a human obligation, in
-[`../../CONTRIBUTING.md`](../../CONTRIBUTING.md)'s checklist.
-
 Between them the five commands assert that no item carries a review fingerprint nobody wrote; that
-every parent link resolves and no item is orphaned or left suspect; that no **inactive** item is left
-suspect or carrying changes made after it was reviewed, which Doorstop reports for none of them; that
-every active `TST` item's `references` resolve to a real file; that every item carries a
+every parent link resolves and no item is orphaned or left suspect, **inactive items included**;
+that every active `TST` item's `references` resolve to a real file; that every item carries a
 `verification-justification`; that no item claims a verification method its own children do not
 support; and that no item's `text` names another item. Each is a property of the
 specification, which is why they are stated here rather than in
@@ -234,12 +220,15 @@ Run all commands with the venv (`docs/requirements/.venv/bin/doorstop …`):
   `doorstop clear <UID>` followed by `doorstop review <UID>` — `clear` updates the stored parent
   fingerprint in the child's `links:`; `review` alone re-stamps the item but leaves the link
   suspect. Re-blessing is the human act of re-reading a downstream item after its parent moved —
-  do not script it blindly. Both commands `git add` the items they rewrite, so check what is staged
+  do not script it blindly. Both commands `git add` what they rewrite, so check what is staged
   before committing.
-- **After moving an item to a different parent,** or dropping one parent of an item that has two, the
-  item itself is unreviewed: its parent UIDs are inside its own stamp. `clear` does not touch that.
-  Read the item against the parent it now has and `doorstop review <UID>`. This holds for a pending
-  item too — `check-suspect-links.py` decides it for the items Doorstop skips.
+- **After moving an item to a different parent,** the item itself is unreviewed — its parent UIDs are
+  inside its own stamp — so `clear` is not enough. Read it against the parent it now has and
+  `doorstop review <UID>`. `--error-all` reports it as `unreviewed changes` until you do.
+- **Neither command can reach an inactive item.** `Tree.find_item` is active-only, so `doorstop review
+  TST019` and `doorstop clear TST019` both answer `no item with UID` while that item is pending.
+  Stamping a pending item takes a loop over `document._iter()`; this is why re-stamping lands at
+  activation, when the item is active and the CLI can see it.
 - **Inactive items are not rewritten by Doorstop**, so write their parent links in dict form,
   `- UID: null` (the form Doorstop itself stamps); a plain-string link breaks the docs-site
   needs generator.

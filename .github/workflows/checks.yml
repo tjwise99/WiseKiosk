@@ -39,10 +39,8 @@ jobs:
 
   requirements:
     # Validates the Doorstop requirements tree: every TST reference resolves, no
-    # suspect/unreviewed/orphan items, no inactive item drifted from the stamp it
-    # was reviewed at — Doorstop reports neither stamp signal for one — no item
-    # claims a verification method its children do not
-    # support, and no item's statement cites another item by
+    # suspect/unreviewed/orphan items, no item claims a verification method its
+    # children do not support, and no item's statement cites another item by
     # identifier. Runs every command `just check-reqs` runs, in
     # the same order; check-verify-ci-parity asserts that per command, so adding
     # one to the recipe without adding it here fails. The tool is siloed under
@@ -64,7 +62,7 @@ jobs:
       - name: No item carries a review fingerprint nobody wrote
         run: docs/requirements/.venv/bin/python scripts/check-unreviewed.py
 
-      - name: No inactive item drifted from the stamp it was reviewed at, its parents included
+      - name: No inactive item's parent moved after the link was reviewed
         run: docs/requirements/.venv/bin/python scripts/check-suspect-links.py
 
       - name: Requirements tree validates (refs resolve, no suspect/unreviewed/orphan)
