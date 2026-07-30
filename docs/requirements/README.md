@@ -159,14 +159,15 @@ docs/requirements/.venv/bin/pip install -r docs/requirements/requirements-dev.tx
 Then:
 
 ```sh
-just check-reqs      # check-unreviewed.py, check-suspect-links.py, validate-tree.sh, check-method-consistency.py, check-text-citations.py
+just check-reqs      # check-unreviewed.py, check-suspect-links.py, check-reparent-review.py, validate-tree.sh, check-method-consistency.py, check-text-citations.py
 just verify          # runs check-reqs alongside the other repo gates
 ```
 
 `just check-reqs` runs the **exact** commands CI runs (see
 [`../../.github/workflows/checks.yml`](../../.github/workflows/checks.yml), job `requirements`):
 `scripts/check-unreviewed.py`, then `scripts/check-suspect-links.py`, then
-`scripts/validate-tree.sh`, then `scripts/check-method-consistency.py`, then
+`scripts/check-reparent-review.py`, then `scripts/validate-tree.sh`, then
+`scripts/check-method-consistency.py`, then
 `scripts/check-text-citations.py`. The `--error-all` flag
 `validate-tree.sh` passes to Doorstop promotes its suspect / unreviewed / orphan /
 unresolved-reference warnings to errors, so the process exits non-zero and the gate actually
@@ -188,8 +189,22 @@ otherwise be "reviewed" by whoever next ran the gate, which is the one thing the
 to prove. Failing first stops Doorstop before it can stamp. Clear it with `doorstop review <uid>`,
 deliberately, never by re-running the gate.
 
-Between them the five commands assert that no item carries a review fingerprint nobody wrote; that
-every parent link resolves and no item is orphaned or left suspect, **inactive items included**;
+**`check-reparent-review.py` reads the diff, because the fingerprint cannot see `links`.** A stamp
+covers `uid`, `text`, `ref`, `references` and the three attributes above; the parent links are in none
+of them, so an item can be moved to a different parent with its text untouched and still report as
+reviewed — against a parent nobody read it against. Stamping `links` too is not the fix: Doorstop
+holds them in a `set` and serialises it through `str()`, so the stamp of an untouched two-parent item
+differs between processes and would flap on the hash seed. The check compares the **set of parent
+UIDs** against the merge base instead, failing when that set moved and `reviewed` did not — which
+catches both a re-parent re-blessed by `doorstop clear` alone and a dropped parent, the second leaving
+no trace any other check can see. Link *stamps* are ignored, because `clear` rewrites those
+legitimately whenever a parent's own text changes. What it cannot decide is whether the re-read was
+any good, only that one was recorded; and it reads a diff, so it binds on a branch and is a no-op on
+`main`.
+
+Between them the six commands assert that no item carries a review fingerprint nobody wrote; that
+every parent link resolves and no item is orphaned or left suspect, **inactive items included**; that
+no item's parent set moved without a fresh review;
 that every active `TST` item's `references` resolve to a real file; that every item carries a
 `verification-justification`; that no item claims a verification method its own children do not
 support; and that no item's `text` names another item. Each is a property of the
@@ -218,7 +233,12 @@ Run all commands with the venv (`docs/requirements/.venv/bin/doorstop …`):
   `doorstop clear <UID>` followed by `doorstop review <UID>` — `clear` updates the stored parent
   fingerprint in the child's `links:`; `review` alone re-stamps the item but leaves the link
   suspect. Re-blessing is the human act of re-reading a downstream item after its parent moved —
-  do not script it blindly.
+  do not script it blindly. Both commands `git add` the items they rewrite, so check what is staged
+  before committing.
+- **After moving an item to a different parent,** `clear` is not enough: it re-blesses the link and
+  leaves the item's own stamp untouched, which `check-reparent-review.py` fails. Read the item against
+  the parent it now has and `doorstop review <UID>`. The same holds for dropping one parent of an item
+  that has two.
 - **Inactive items are not rewritten by Doorstop**, so write their parent links in dict form,
   `- UID: null` (the form Doorstop itself stamps); a plain-string link breaks the docs-site
   needs generator.
