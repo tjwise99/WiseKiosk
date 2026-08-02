@@ -128,8 +128,8 @@ if ! jq -e --argjson n "$number" '.data.repository.pullRequest.closingIssuesRefe
 fi
 echo "PR #$pr_number records a closing reference to issue #$number."
 
-jq -e '.data.repository.issue | has("parent")' "$tmp" >/dev/null ||
-    fail "the GraphQL response carries no parent field for issue #$number — the membership check read nothing, and a check that reads nothing must not report success. A present key with a null value is how 'no parent' arrives; an absent key means the query never asked"
+jq -e '.data.repository.issue | has("parent") and (.parent == null or (.parent.number | type == "number"))' "$tmp" >/dev/null ||
+    fail "the GraphQL response carries no parent number for issue #$number — the membership check read nothing, and a check that reads nothing must not report success. A present key with a null value is how 'no parent' arrives; anything else means the query stopped naming what is read below"
 parent=$(jq -r '.data.repository.issue.parent.number // ""' "$tmp")
 if [ "$base_ref" = "$default_branch" ]; then
     [ -z "$parent" ] || fail "issue #$number is a sub-issue of #$parent, but PR #$pr_number targets the default branch — sub-issue membership means a shared merge target, not topical grouping; the milestone is what groups (ADR 0013)"

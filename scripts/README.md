@@ -157,16 +157,27 @@ the script misreading rather than the ticket being wrong — one reading a docto
 | Direction | Input |
 |---|---|
 | Must fail | a `branch-shape.regex` carrying a second pattern line, so the type set no longer has one answer while the branch still matches |
-| Must pass | the same copy with the real single-group regex restored |
-| Must fail | the GraphQL `parent` field aliased, so the response is error-free, the issue node is a truthy object, and the field the code consumes is absent |
+| Must fail | a single-line regex holding a top-level alternation (`^(foo\|bar)_baz$\|^(task\|…)_…`), so one group is extracted, the branch matches through the other alternative, and the extracted set does not hold the branch's type |
+| Must pass | the same copy with the real regex restored |
+| Must fail | the GraphQL `parent` selection returning `databaseId` instead of `number`, against an issue that has a parent, so the response is error-free and every enclosing object is present |
 | Must pass | the unmodified query against the same issue |
 
-The parent field is asserted present rather than defaulted because a key that is present and null is
-how *legitimately no parent* arrives, while an absent key means the query never asked — and `// ""`
-erases that difference. With the assertion removed, the aliased query exits 0 and prints `Issue #64
-has no parent, and PR #88 targets the default branch`: a success line for a fact the run never read.
-Asserting the enclosing issue node instead is not enough, because an alias one level in leaves that
-node truthy.
+The second failing row is why two guards stand over the regex file rather than one: a top-level
+alternation satisfies the group count, and only the membership check — the branch matched that
+pattern, so its type must be in the extracted set — rejects it.
+
+The `databaseId` row needs an issue that **has** a parent. Against an unparented one the check
+correctly passes, because a `parent` of null is legitimate however the selection below it is spelled;
+running it on an unparented issue and reading the pass as evidence would record the opposite of what
+the row claims.
+
+The parent number is asserted rather than defaulted because a `parent` key that is present and null is
+how *legitimately no parent* arrives, while anything else means the query stopped naming what is read
+— and `// ""` erases that difference, printing `Issue #64 has no parent, and PR #88 targets the
+default branch` for a fact the run never read. The assertion reaches the scalar the code consumes,
+not a container holding it: asserting the issue node passes an aliased `parent`, and asserting
+`parent` passes a selection returning `databaseId` — a plausible edit here, since the sub-issues REST
+endpoint this repository calls wants the database id and not the number.
 
 The epic-membership assertion needs a pull request, so its cases ran against PR #88 itself rather
 than a throwaway, by re-running the `process` job against mutated live state:
