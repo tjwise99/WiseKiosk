@@ -40,6 +40,11 @@ check-reqs:
     docs/requirements/.venv/bin/python scripts/check-text-citations.py
 
 [group('checks')]
+[doc('Every requirement identifier and ADR number cited in documentation or item prose resolves, and every requirement citation carries its item header')]
+check-citations:
+    docs/requirements/.venv/bin/python scripts/check-citations.py
+
+[group('checks')]
 [doc('The decisions directory and its index table agree: every ADR has a row, every row a file, numbering contiguous')]
 check-adr-index:
     node scripts/check-adr-index.mjs
@@ -98,4 +103,4 @@ arch-dev:
 
 [group('checks')]
 [doc('Run every check the PR gate runs')]
-verify: check-links check-eol check-branch check-reqs check-arch check-site check-adr-index check-repo-silo check-verify-ci-parity
+verify: check-links check-eol check-branch check-reqs check-citations check-arch check-site check-adr-index check-repo-silo check-verify-ci-parity
