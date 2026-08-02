@@ -167,10 +167,16 @@ resolve, a citation to something that does not exist, an index that has drifted 
 - **A requirement citation carries the item's header.** The header follows the identifier, after any
   closing backtick or possessive clitic, verbatim, either as visible text or inside an HTML
   comment — `SRS015 <!-- One schema, all boundary value classes -->`. A citation may wrap across a
-  line, including a blockquote continuation. A number is only a handle: a renumber rewrites `links:`
-  and leaves the sentence pointing at whatever now occupies it, still reading as correct. The header
-  is what turns that drift into a mismatch a machine can see. An ADR number carries no header — ADR
-  numbers are immutable, so one cannot come to mean a different decision.
+  line: a line break, and the blockquote marker continuing it, are whitespace between the identifier
+  and its header rather than text separating them. A number is only a handle: a renumber rewrites
+  `links:` and leaves the sentence pointing at whatever now occupies it, still reading as correct.
+  The header is what turns that drift into a mismatch a machine can see. An ADR number carries no
+  header — ADR numbers are immutable, so one cannot come to mean a different decision.
+- **A header in an HTML comment does not open a line that continues a paragraph.** CommonMark reads
+  a line-initial `<!--` as an HTML block, which interrupts the paragraph and splits it in two on the
+  rendered page while the source still reads as one. Nothing else reports it: the comment is a
+  comment, the prose is correct, and Sphinx does not warn. A comment opening a line after a blank
+  one is a block already, which is what an issue template's guidance comment is, and passes.
 - The `decisions/` directory and its index table agree — every ADR has a row, no gap or duplicate in
   numbering, every row resolves to a real file.
 - The documentation index's row set equals the committed canonical-document list in both directions;

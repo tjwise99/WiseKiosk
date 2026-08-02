@@ -14,8 +14,14 @@ existence is checked.
 An identifier followed by `.yml` names an item's own file rather than citing the item, so it is not
 a citation and carries no header.
 
-Scope is resolution and the header pair. Whether a cited item is accepted, and whether the sentence
-means the item it names, is beyond this.
+A header written as an HTML comment may not open a line that continues a paragraph. CommonMark reads
+a line-initial `<!--` as an HTML block, which interrupts the paragraph and splits it in two — visible
+on the rendered page, invisible in the source, and reported by nothing else: the comment is still a
+comment, the prose still reads correctly, and Sphinx does not warn. A comment opening a line after a
+blank one is a block already and is left alone.
+
+Scope is resolution, the header pair, and that placement. Whether a cited item is accepted, and
+whether the sentence means the item it names, is beyond this.
 """
 
 import re
@@ -33,6 +39,7 @@ UID = re.compile(r"\b(?:SYS|SRS|TST)\d{3}\b")
 # and its number as readily as a space does.
 ADR = re.compile(r"\bADR[ -]?(?:\n[^\S\n]*>?[^\S\n]*)?(\d{4})\b")
 FENCE = re.compile(r"^\s*(?:```|~~~)")
+QUOTE = re.compile(r"^\s*>\s?")
 
 
 def items():
@@ -98,6 +105,19 @@ def follows(text, header):
     return " ".join(window.split()).casefold(), " ".join(header.split()).casefold()
 
 
+def interrupting_comments(source, text):
+    """Every comment opening a line that continues a paragraph, blockquote continuations included."""
+    problems = []
+    lines = [QUOTE.sub("", line) for line in text.split("\n")]
+    for number, line in enumerate(lines[1:], start=2):
+        if line.lstrip().startswith("<!--") and lines[number - 2].strip():
+            problems.append(
+                f"{source}:{number}  a comment opens this line, splitting the paragraph above it"
+                f" — bind it to the text it follows, or leave a blank line before it"
+            )
+    return problems
+
+
 def check(source, text, item_headers, adrs, base=1):
     problems = []
     for match in UID.finditer(text):
@@ -130,17 +150,19 @@ def main():
     problems = []
     for name, text in markdown_sources():
         problems += check(name, text, item_headers, adrs)
+        problems += interrupting_comments(name, text)
     for path, value, base in item_sources(tree_items):
         problems += check(path, value, item_headers, adrs, base)
 
     if problems:
-        print(f"{len(problems)} citation(s) name nothing, or name it without its header:", file=sys.stderr)
+        print(f"{len(problems)} citation problem(s):", file=sys.stderr)
         for problem in problems:
             print(f"  {problem}", file=sys.stderr)
         print(
             "\nA citation carries the identifier and the item's header verbatim, either as visible"
-            "\ntext or in an HTML comment: `SRS015 <!-- One schema, all boundary value classes -->`."
-            "\nAn ADR number needs no header; it needs a file.",
+            "\ntext or in an HTML comment: `SRS015 <!-- One schema, all boundary value classes -->`,"
+            "\nbound to the text it follows so it never opens a line. An ADR number needs no header;"
+            "\nit needs a file.",
             file=sys.stderr,
         )
         return 1
