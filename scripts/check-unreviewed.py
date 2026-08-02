@@ -8,7 +8,8 @@ looked, and `--no-reformat` does not stop it. An item authored in one commit is 
 
 That is the one thing the fingerprint is supposed to prove. ADR 0005 stores state for human
 decisions only and holds the axiom tier by review alone, mechanized by fingerprints; a fingerprint
-the gate writes for itself proves that the gate ran.
+the gate writes for itself proves that the gate ran. `reviewed: true` is the same defect declared by
+hand: Doorstop reads it as "matching, hash to follow" and fills the hash in unprompted.
 
 So this runs first and fails, and `check-reqs` stops before Doorstop can stamp anything. Clearing it
 is `doorstop review <uid>` — the same act, performed deliberately.
@@ -22,6 +23,13 @@ import yaml
 TREE = Path(__file__).resolve().parent.parent / "docs" / "requirements"
 
 
+def unstamped_value(value):
+    """A fingerprint is the digest string Doorstop writes. `true` is its manually-confirmed
+    placeholder, which the `Item.reviewed` property replaces with a computed stamp the next time
+    anything reads it — a review declared rather than recorded, so it is unstamped here."""
+    return not isinstance(value, str) or not value.strip()
+
+
 def load():
     """Parse every item. YAML, not regex: a link is either a bare string (never stamped) or a
     single-key mapping whose value is the stamp or None, and a pattern reading one form drops the
@@ -33,12 +41,12 @@ def load():
                 continue  # pathlib globs dotfiles: the silo's own .doorstop.yml is not an item
             item = yaml.safe_load(path.read_text()) or {}
             uid = path.stem
-            if not str(item.get("reviewed") or "").strip():
+            if unstamped_value(item.get("reviewed")):
                 unreviewed.append(uid)
             for link in item.get("links") or []:
                 parent = next(iter(link)) if isinstance(link, dict) else link
                 stamp = link[parent] if isinstance(link, dict) else None
-                if not str(stamp or "").strip():
+                if unstamped_value(stamp):
                     unstamped.append(f"{uid} -> {parent}")
     return unreviewed, unstamped
 
