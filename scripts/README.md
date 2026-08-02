@@ -127,6 +127,36 @@ Covers only the `github-actions` entry assertion; the rest of the check predates
 | Must fail | a recipe in `just verify` whose script runs in no workflow step |
 | Must pass | the tree as it stands |
 
+## `check-docs-index.mjs`
+
+Covers every assertion the check makes. A case here is a throwaway repository holding a **minimal
+fixture index** — a three-row table over `README.md`, `decisions/` and `architecture/`, plus an
+exclusions file — rather than a copy of the real documentation set, so a case states its own
+premise and the tree cannot drift out from under it.
+
+| Direction | Input |
+|---|---|
+| Must fail | a tracked `docs/NEWDOC.md` with no row in the index |
+| Must fail | the `architecture/` row deleted while `docs/architecture/README.md` remains |
+| Must fail | a row linking `decisions/GONE.md`, which is not a tracked file |
+| Must fail | a row whose *Guarantees* cell is emptied |
+| Must fail | an exclusions entry naming no reason (`docs/scratch/`) |
+| Must fail | an exclusions entry naming a file rather than a silo (`docs/NOTES.md — …`) |
+| Must fail | the index reshaped so its rows are list items rather than table rows |
+| Must pass | a new ADR under `docs/decisions/`, claimed by the `decisions/` subtree row without a row of its own |
+| Must pass | a second tracked `.md` added under `docs/architecture/` |
+| Must pass | an `.md` nested two levels under a subtree row (`docs/decisions/sub/X.md`) |
+| Must pass | an `.md` added under an excluded silo (`.github/`) |
+| Must pass | a row whose rendered text and link target differ (`decisions/` → `decisions/README.md`) |
+
+The last two *Must fail* rows are the ones worth keeping: the first four all fail through the
+unclaimed-document path, and a check that only ever reported through one path would have passed them
+while asserting nothing else.
+
+**What it does not catch.** The population comes from `git ls-files`, so a document that exists but
+has not been staged is invisible to it. CI checks out committed state and is unaffected; a local run
+before `git add` is not. This matches `check-links.mjs`, which draws its file list the same way.
+
 ## `check-branch.sh`
 
 Covers the ticket-metadata and epic-membership assertions
