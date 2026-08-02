@@ -29,7 +29,7 @@
 > holds 255 items, 41 of them non-`test` — 16%, not half. The decision stands and the attribute
 > exists for those 41; only the figures motivating it are of their moment. The Consequences section's
 > docs-site column is likewise not yet rendered — `docs/site/doorstop_to_needs.py` emits no
-> verification fields, and doing so needs a `needs_extra_options` declaration; tracked on #68.
+> verification fields, and doing so needs a `needs_extra_options` declaration; tracked on #25.
 
 ## Context
 
