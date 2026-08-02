@@ -11,6 +11,9 @@ ADR numbers are exempt from the header rule. They are chronological and immutabl
 (`docs/decisions/README.md`), so the number cannot come to mean a different decision; only its
 existence is checked.
 
+An identifier followed by `.yml` names an item's own file rather than citing the item, so it is not
+a citation and carries no header.
+
 Scope is resolution and the header pair. Whether a cited item is accepted, and whether the sentence
 means the item it names, is beyond this.
 """
@@ -84,9 +87,10 @@ def item_sources(tree_items):
 
 def follows(text, header):
     """The text right after a citation begins with the header, once the markup between them is out
-    of the way: the citation's own inline-code delimiter, the HTML comment markers, and a blockquote
-    marker continuing the line the citation sits on."""
+    of the way: the identifier's own closing backtick or possessive clitic, the HTML comment markers,
+    and a blockquote marker continuing the line the citation sits on."""
     window = re.sub(r"\n\s*>", "\n", text[: len(header) + 200])
+    window = re.sub(r"^(?:`|'s)+", "", window)
     for token in ("<!--", "-->", "`"):
         window = window.replace(token, " ")
     return " ".join(window.split()).casefold(), " ".join(header.split()).casefold()
@@ -96,6 +100,8 @@ def check(source, text, item_headers, adrs, base=1):
     problems = []
     for match in UID.finditer(text):
         uid = match.group()
+        if text[match.end() :].startswith(".yml"):
+            continue  # an item's own filename, not a citation
         line = base + text.count("\n", 0, match.start())
         if uid not in item_headers:
             problems.append(f"{source}:{line}  {uid}  names no item in the requirements tree")

@@ -162,13 +162,15 @@ resolve, a citation to something that does not exist, an index that has drifted 
 - Every citation to a requirement ID or ADR number names an item or decision that exists — in
   tracked documentation outside `.claude/`, and in every item's `rationale` and
   `verification-justification`. Fenced code blocks are skipped; an identifier in inline code is a
-  citation like any other.
-- **A requirement citation carries the item's header.** The identifier is followed immediately by
-  that item's `header` verbatim, either as visible text or inside an HTML comment — `SRS015
-  <!-- One schema, all boundary value classes -->`. A number is only a handle: a renumber rewrites
-  `links:` and leaves the sentence pointing at whatever now occupies it, still reading as correct.
-  The header is what turns that drift into a mismatch a machine can see. An ADR number carries no
-  header — ADR numbers are immutable, so one cannot come to mean a different decision.
+  citation like any other, and an identifier followed by `.yml` names an item's file rather than
+  citing it.
+- **A requirement citation carries the item's header.** The header follows the identifier, after any
+  closing backtick or possessive clitic, verbatim, either as visible text or inside an HTML
+  comment — `SRS015 <!-- One schema, all boundary value classes -->`. A number is only a handle: a
+  renumber rewrites `links:` and leaves the sentence pointing at whatever now occupies it, still
+  reading as correct. The header is what turns that drift into a mismatch a machine can see. An ADR
+  number carries no header — ADR numbers are immutable, so one cannot come to mean a different
+  decision.
 - The `decisions/` directory and its index table agree — every ADR has a row, no gap or duplicate in
   numbering, every row resolves to a real file.
 - The documentation index's row set equals the committed canonical-document list in both directions;
