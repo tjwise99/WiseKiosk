@@ -7,8 +7,8 @@ surrounding Markdown, the comment itself, and the citation checker's normalisati
 is a property of the specification rather than of the repository, so it is stated in
 `docs/requirements/README.md` and runs with the tree's own integrity checks (ADR 0011).
 
-The permitted set is an allowlist. A list of characters to reject fails open on the one nobody
-enumerated, and the draft denylist this replaced already omitted `&`, which two headers use.
+The permitted set is an allowlist: a list of characters to reject fails open on the one nobody
+enumerated.
 """
 
 import re
@@ -18,7 +18,7 @@ from pathlib import Path
 import doorstop
 
 ROOT = Path(__file__).resolve().parent.parent
-PERMITTED = re.compile(r"^[A-Za-z0-9 ,.'()&:;-]+$")
+PERMITTED = re.compile(r"^[A-Za-z0-9 ,.'()&:;—-]+$")
 
 
 def headers():
@@ -45,8 +45,14 @@ def main():
     # test would pass exactly the case worth catching.
     for uid, header in known:
         for other, other_header in known:
-            if uid != other and header and other_header.casefold().startswith(header.casefold()):
-                problems.append(f"{uid}  header is a prefix of {other}'s — neither can be told from the other")
+            if uid >= other or not header:
+                continue  # each pair once, in one direction
+            if other_header.casefold() == header.casefold():
+                problems.append(f"{uid}  and {other}  carry the same header")
+            elif other_header.casefold().startswith(header.casefold()):
+                problems.append(f"{uid}  header is a prefix of {other}'s — a reader tells them apart only at the end")
+            elif header.casefold().startswith(other_header.casefold()):
+                problems.append(f"{other}  header is a prefix of {uid}'s — a reader tells them apart only at the end")
 
     if problems:
         print(f"{len(problems)} malformed header(s):", file=sys.stderr)

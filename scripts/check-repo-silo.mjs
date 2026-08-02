@@ -42,12 +42,13 @@ const MANIFESTS = {
 const dependabotText = readFileSync(resolve(repoRoot, ".github/dependabot.yml"), "utf8");
 const entries = dependabotText.split(/\n(?=\s*- package-ecosystem:)/).slice(1);
 
-// The split is this script's only view of the file. A layout it does not anticipate — a reindent,
-// a reordered key, a flow mapping — yields no entries, so the count is checked against the file
-// rather than trusted; without this every entry silently goes unexamined.
-const declared = dependabotText
+// The split is this script's only view of the file, and a layout it does not anticipate yields no
+// entries. The guard counts list items under `updates:` instead — deliberately sharing no assumption
+// with the split, because a guard keyed on the same literal goes to zero alongside the thing it
+// guards and the two then agree that nothing is wrong.
+const declared = (dependabotText.split(/^updates:[^\S\n]*$/m)[1] ?? "")
   .split("\n")
-  .filter((line) => !/^\s*#/.test(line) && line.includes("package-ecosystem:")).length;
+  .filter((line) => /^\s*-\s/.test(line)).length;
 if (entries.length !== declared) {
   problems.push(
     `.github/dependabot.yml declares ${declared} ecosystem entr(ies), of which ${entries.length} ` +

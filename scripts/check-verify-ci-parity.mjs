@@ -91,9 +91,12 @@ for (const chunk of stepChunks) {
   if (!nameMatch) continue;
   const stepName = nameMatch[1].trim();
   if (stepName.startsWith("Install ")) continue;
+  // Searched with the step's own `name:` removed, for the reason the forward loop excludes it: a
+  // step named after a check is not a step running one.
+  const body = chunk.split("\n").filter((line) => !/^\s*- name:/.test(line)).join("\n");
   const covered =
-    Object.values(CHECK_TOKENS).flat().some((token) => chunk.includes(token)) ||
-    CI_ONLY_ALLOWLIST.some((token) => chunk.includes(token));
+    Object.values(CHECK_TOKENS).flat().some((token) => body.includes(token)) ||
+    CI_ONLY_ALLOWLIST.some((token) => body.includes(token));
   if (!covered) {
     fail(
       `CI step '${stepName}' matches no \`just verify\` check and no CI-only allowlist entry — ` +

@@ -162,10 +162,10 @@ def main():
         for problem in problems:
             print(f"  {problem}", file=sys.stderr)
         print(
-            "\nA citation carries the identifier and the item's header verbatim, either as visible"
-            "\ntext or in an HTML comment: `SRS015 <!-- One schema, all boundary value classes -->`,"
-            "\nbound to the text it follows so it never opens a line. An ADR number needs no header;"
-            "\nit needs a file.",
+            "\nA citation carries the identifier and the item's header verbatim, in an HTML comment"
+            "\nclosed up to it: SRS015<!-- One schema, all boundary value classes -->. No whitespace"
+            "\nat the junction, and the comment never opens a line that continues a paragraph. An"
+            "\nADR number needs no header; it needs a file.",
             file=sys.stderr,
         )
         return 1

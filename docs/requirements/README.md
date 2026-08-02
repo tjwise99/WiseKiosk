@@ -50,8 +50,9 @@ together, the header carried verbatim inside an HTML comment
 Every header must therefore be non-empty, drawn from `A-Z a-z 0-9` and `` ,.'()&:;- ``, and not a
 prefix of another item's header. The permitted set is an allowlist: a list of characters to reject
 fails open on the one nobody thought of, and a header carrying `|` would split a table while one
-carrying `-->` would close its own comment — neither visible to any other check. Two items whose
-headers are in a prefix relation are also indistinguishable to a reader, not only to the matcher.
+carrying `-->` would close its own comment — neither visible to any other check. Prefix-freeness is
+the reader's constraint rather than the checker's, which compares a header exactly: two items whose
+headers begin alike are told apart only by a reader who reaches the end of both.
 
 `rationale` and `verification-justification` answer different questions: why the obligation exists,
 versus what its verification does and does not settle. An item at `inspection`, `analysis`, or

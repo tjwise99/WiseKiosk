@@ -41,9 +41,27 @@ readFileSync(resolve(repoRoot, allowlistPath), "utf8")
 const linkRe = /\]\(([^)]+)\)/g;
 const absoluteRe = /\bhttps?:\/\/[^\s<>)\]"'`]+/gi;
 
+// A fenced block is a sample, not a reference: a command shown against an upstream service names a
+// host the documentation does not link to, and allowlisting it to satisfy this check would put a
+// host in the register on the strength of a code sample.
+const blankFences = (text) => {
+  let fence = null;
+  return text
+    .split("\n")
+    .map((line) => {
+      const marker = /^\s*(```|~~~)/.exec(line);
+      if (marker && (fence === null || marker[1][0] === fence)) {
+        fence = fence === null ? marker[1][0] : null;
+        return "";
+      }
+      return fence === null ? line : "";
+    })
+    .join("\n");
+};
+
 for (const file of mdFiles) {
   const abs = resolve(repoRoot, file);
-  const text = readFileSync(abs, "utf8");
+  const text = blankFences(readFileSync(abs, "utf8"));
   for (const match of text.matchAll(linkRe)) {
     const raw = match[1].trim().split("#")[0]; // drop anchor
     if (!raw) continue; // pure in-page anchor
