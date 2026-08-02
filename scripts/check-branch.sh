@@ -76,8 +76,9 @@ if ! jq -e --arg t "$type" '.labels | map(.name) | any(. == $t)' "$tmp" >/dev/nu
     fail "issue #$number is not labeled '$type' (labels: ${labels:-none}) — the branch type must match the ticket's template label"
 fi
 
-types=$(sed -nE 's/^\^\(([^)]+)\)_.*$/\1/p' "$scripts_dir/branch-shape.regex")
-[ -n "$types" ] || fail "cannot read the branch type set from scripts/branch-shape.regex"
+types=$(sed -nE 's/^\^\(([^)]+)\)_.*$/\1/p' "$scripts_dir/branch-shape.regex" | head -1)
+printf '%s' "$types" | tr '|' '\n' | grep -Fxq "$type" ||
+    fail "branch type '$type' is absent from the type set read out of scripts/branch-shape.regex ('$types') — the branch matched that pattern, so the extraction is wrong and the label count below would be meaningless"
 type_labels=$(jq -r --arg types "$types" '($types | split("|")) as $set | [.labels[].name | select(IN($set[]))] | join(", ")' "$tmp")
 type_count=$(jq --arg types "$types" '($types | split("|")) as $set | [.labels[].name | select(IN($set[]))] | length' "$tmp")
 [ "$type_count" = "1" ] || fail "issue #$number carries $type_count type labels (${type_labels:-none}) — exactly one of $types names the template it was opened from, and a second makes the branch type ambiguous"
@@ -124,6 +125,8 @@ if ! jq -e --argjson n "$number" '.data.repository.pullRequest.closingIssuesRefe
 fi
 echo "PR #$pr_number records a closing reference to issue #$number."
 
+jq -e '.data.repository.issue' "$tmp" >/dev/null ||
+    fail "GraphQL returned no issue node for #$number — the membership check read nothing, and a check that reads nothing must not report success"
 parent=$(jq -r '.data.repository.issue.parent.number // ""' "$tmp")
 if [ "$base_ref" = "$default_branch" ]; then
     [ -z "$parent" ] || fail "issue #$number is a sub-issue of #$parent, but PR #$pr_number targets the default branch — sub-issue membership means a shared merge target, not topical grouping; the milestone is what groups (ADR 0013)"

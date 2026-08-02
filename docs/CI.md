@@ -401,7 +401,8 @@ ticket on each template edit.
 **A ticket nobody works.** The shape checks above see an issue only when a branch names it, so a
 malformed ticket left in the backlog stays malformed and stays absent from its milestone's progress.
 A scheduled read-only sweep over every open issue would close that; it was rejected as more machinery
-than a population twice caught by eye has earned, and it is the named remedy if the drift recurs.
+than a backlog small enough to read by eye has earned, and it is the named remedy if the drift
+recurs.
 
 **Test architecture.** Which tier a test belongs to and what that tier guarantees is
 [`TESTING.md`](TESTING.md). A tier organises tests; a gate is a condition on merging, and several

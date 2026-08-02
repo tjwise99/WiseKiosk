@@ -21,7 +21,7 @@ check-eol:
     echo "No CRLF line endings."
 
 [group('checks')]
-[doc('Branch is named type_number-snake_name, links an open type-labeled issue, and its PR records the ticket linkage')]
+[doc('Branch is named type_number-snake_name; its issue is open, type-labeled, milestoned, and parented to match the PR base; the PR records the linkage')]
 check-branch:
     sh scripts/check-branch.sh
 

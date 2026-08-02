@@ -37,15 +37,20 @@ whose branch is being cut:
 Picking the type picks the template and the branch prefix. They cannot diverge; a branch's type names
 the template its ticket was opened from ([ADR 0006](../../../docs/decisions/0006-process-gates.md)).
 
-| Type | Template | Labels the picker would apply | Branch |
-|---|---|---|---|
-| `task` | [`task.md`](../../../.github/ISSUE_TEMPLATE/task.md) | `task` | `task_<n>-…` |
-| `bug` | [`bug_report.md`](../../../.github/ISSUE_TEMPLATE/bug_report.md) | `bug` | `bug_<n>-…` |
-| `design` | [`design_decision.md`](../../../.github/ISSUE_TEMPLATE/design_decision.md) | `design`, `documentation` | `design_<n>-…` |
-| `module` | [`new_module.md`](../../../.github/ISSUE_TEMPLATE/new_module.md) | `module` | `module_<n>-…` |
+| Type | Template | Branch |
+|---|---|---|
+| `task` | [`task.md`](../../../.github/ISSUE_TEMPLATE/task.md) | `task_<n>-…` |
+| `bug` | [`bug_report.md`](../../../.github/ISSUE_TEMPLATE/bug_report.md) | `bug_<n>-…` |
+| `design` | [`design_decision.md`](../../../.github/ISSUE_TEMPLATE/design_decision.md) | `design_<n>-…` |
+| `module` | [`new_module.md`](../../../.github/ISSUE_TEMPLATE/new_module.md) | `module_<n>-…` |
 
-Read the labels from the template's own `labels:` frontmatter rather than this table if the two
-disagree — the template is what the picker obeys.
+**The labels are not listed here.** Read them out of the chosen template's own `labels:` frontmatter
+and pass exactly those — a design decision carries `documentation` alongside `design`, and a copy of
+that set in this file would be one more thing to keep in sync:
+
+```sh
+sed -n '/^labels:/s/^labels:[[:space:]]*//p' .github/ISSUE_TEMPLATE/design_decision.md
+```
 
 ## Filing
 
@@ -55,19 +60,20 @@ picker; body follows `.github/ISSUE_TEMPLATE/<file>`."*
 
 ```sh
 sed '1{/^---$/!q}; 1,/^---$/d' .github/ISSUE_TEMPLATE/task.md > /tmp/body.md   # then edit
-gh issue create --title "…" --body-file /tmp/body.md --label task --milestone 1
+gh issue create --title "…" --body-file /tmp/body.md --label task --milestone "1 · Requirements complete"
 ```
 
 **`--milestone` takes the title, not the number.** `--milestone 1` fails with `'1' not found`; the
 titles carry a `·` (`1 · Requirements complete`), so quote them exactly. `gh milestone list` does not
 exist — read the titles with
 `gh api repos/tjwise99/WiseKiosk/milestones --jq '.[]|"\(.number) \(.title)"'`. `gh issue create`
-resolves the milestone before creating, so this particular mistake costs nothing; a wrong label does
-not fail at all.
+resolves the milestone before creating the issue, so that mistake costs nothing.
 
-**A label the repository does not have is silently dropped**, by `--label` and by a template's
-frontmatter alike. That is how `new_module.md` produced unlabeled tickets for as long as the `module`
-label was missing. After filing, read the labels back rather than trusting the exit code.
+**A template's declared label is dropped when the repository has no such label**, without complaint —
+that is how `new_module.md` produced unlabeled, unbranchable tickets from the picker for as long as
+`module` was missing. Whether `--label` behaves the same way or refuses like `--milestone` has not
+been tested here, so read the labels back after filing rather than trusting the exit code either way:
+`gh issue view <n> --json labels`.
 
 ## Ordering, and epic membership
 

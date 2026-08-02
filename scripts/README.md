@@ -145,6 +145,20 @@ passing check. The cases below ran against throwaway issue #89, closed afterward
 | Must pass | the same issue with the second type label removed |
 | Must pass | an issue carrying a non-type companion label (`design` + `documentation`) |
 
+The two guards over the check's own inputs were seeded against a copy of the script reading a
+doctored `branch-shape.regex` beside it, since both concern the script misreading rather than the
+ticket being wrong:
+
+| Direction | Input |
+|---|---|
+| Must fail | a `branch-shape.regex` whose first line is a different pattern, so the type set extracts from the wrong alternation while the branch still matches a later line |
+| Must pass | the same copy with the real regex restored |
+| Must fail | the GraphQL issue field aliased, so the response is error-free and the parent path resolves to nothing |
+
+The last one is the reason the issue node is asserted rather than defaulted. With that assertion
+removed, the identical input exits 0 and prints `Issue #64 has no parent, and PR #88 targets the
+default branch` — a success line for a fact the run never read.
+
 The last is the one that matters most: `documentation` is declared by `design_decision.md` and rides
 on every design ticket, so a count that read *all* labels rather than type labels would reject the
 repository's own conforming tickets and look like a working check while doing it.
