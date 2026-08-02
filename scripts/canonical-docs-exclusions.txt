@@ -1,0 +1,6 @@
+# Directories a tracked Markdown file may sit under without a row in the documentation index,
+# one `path — why nothing in it is a canonical document` per line.
+# See docs/CI.md § Documentation integrity.
+
+.claude/ — working material for an AI agent rather than a fact about WiseKiosk; docs/CI.md already excludes it from citation resolution
+.github/ — GitHub's own machinery: issue and pull-request templates, which are forms an author fills in rather than documents that guarantee anything
