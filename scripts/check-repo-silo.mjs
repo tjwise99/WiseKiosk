@@ -106,9 +106,8 @@ for (const entry of entries) {
   }
 }
 
-// The loop above exempts github-actions from the manifest rule — the ecosystem's manifests are the
-// workflow files, which are not siloed anywhere. Nothing obliged the entry to exist, so the exemption
-// presupposed an entry that could silently leave, taking the action-pin updates with it.
+// The loop above exempts github-actions from the manifest rule, so its entry is asserted to exist
+// here instead. See docs/CI.md § Repository shape.
 if (!actions) {
   problems.push(".github/dependabot.yml declares no 'github-actions' entry, so action pins go stale");
 }

@@ -114,10 +114,10 @@ and why nothing downstream treats a green scan as proof the history is clean.
 **What no check here decides.** GitHub's own secret scanning and its push protection are repository
 settings rather than files, and they are readable only with admin: `security_and_analysis` is absent
 from the repository object for any lesser token, and the workflow `permissions:` key offers no
-`administration` scope for a job to request one. So no gate can assert they are on. The alternative
-was a standing admin credential held in the repository so that a job could read a setting, which is a
-larger hole than the one it closes — and the scan above is what stands on the merge path either way.
-Both are enabled, and this paragraph is the whole of what a machine here can say about it.
+`administration` scope for a job to request one. So no gate can assert they are on. The alternative —
+a standing admin credential held in the repository so that a job can read a setting — is a larger
+hole than the one it closes, and the scan above stands on the merge path either way. Both settings
+are enabled, and this paragraph is the whole of what a machine here can say about it.
 
 ## Publishing and provenance
 
@@ -227,8 +227,9 @@ changed, which the citation resolver above decides without anyone declaring anyt
   `requirements*.txt` or `.venv/` — tooling is siloed with the feature it serves — and every
   Dependabot entry that is not `github-actions` resolves to a non-root directory holding the matching
   manifest. `github-actions` is exempt from that rule because its manifests are the workflow files,
-  which are siloed nowhere; the exemption presupposed an entry nothing obliged, so the entry's
-  existence is asserted too. Without it the pins below stop being updated and nothing says so.
+  which are siloed nowhere, so its entry is asserted to exist instead — an exemption is otherwise
+  granted to an entry nothing obliges, and without the entry the pins below stop being updated and
+  nothing says so.
 
 ## Action pins and workflow privilege
 

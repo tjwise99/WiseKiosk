@@ -18,8 +18,8 @@ const workflows = execSync("git ls-files .github/workflows", { encoding: "utf8" 
   .split("\n")
   .filter((path) => /\.ya?ml$/.test(path));
 
-// A discovery that returns nothing finds no violations and reports success, which is the shape of a
-// check that has stopped checking. Nothing else here can tell the two apart.
+// Asserted before the scan: a discovery returning nothing finds no violations and reports success.
+// See docs/CI.md § Action pins and workflow privilege.
 if (workflows.length === 0) {
   console.error("check-workflow-hardening: no workflow file discovered under .github/workflows");
   process.exit(1);
@@ -43,8 +43,8 @@ for (const path of workflows) {
     if (!match) continue;
     const [, action, comment] = match;
     references += 1;
-    // A repository-local action or reusable workflow moves with the commit that calls it, so there
-    // is no upstream to pin and nothing a SHA would add.
+    // A repository-local action or reusable workflow has no upstream to pin — docs/CI.md § Action
+    // pins and workflow privilege.
     if (action.startsWith("./")) continue;
     if (!PINNED.test(action)) {
       problems.push(`${path}:${index + 1} uses '${action}', which is not pinned to a commit SHA`);
@@ -71,8 +71,8 @@ for (const path of workflows) {
   }
 
   for (const line of lines.slice(opening + 1)) {
-    // A blank or comment line inside the block ends nothing; stopping on one would leave every
-    // grant below it unread while the scan reported success.
+    // Blank and comment lines sit inside the block; the block ends at the first line that is
+    // neither, and not a grant.
     if (line.trim() === "" || /^\s*#/.test(line)) continue;
     const grant = GRANT.exec(line);
     if (!grant) break; // dedented out of the block: the next top-level key
