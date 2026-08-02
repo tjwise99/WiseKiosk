@@ -47,8 +47,10 @@ def suspect():
                 continue  # never stamped: check-unreviewed.py's, and it runs first
             if uid.stamp != parent.stamp():
                 found.append((item.uid, uid))
-    by_id = lambda pair: (str(pair[0]), str(pair[1]))
-    return sorted(found, key=by_id), sorted(dangling, key=by_id)
+    return (
+        sorted(found, key=lambda pair: (str(pair[0]), str(pair[1]))),
+        sorted(dangling, key=lambda pair: (str(pair[0]), str(pair[1]))),
+    )
 
 
 def main():

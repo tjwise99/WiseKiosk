@@ -113,8 +113,8 @@ complete and current:
   repo. A dangling reference fails the gate.
 - **Re-validation** — editing a parent item changes its fingerprint, flagging every child **suspect**
   until re-reviewed, and moving a child to a different parent unreviews the child. Among **active**
-  items a silent divergence is impossible; an inactive item is evaluated for neither, and what covers
-  that is [below](#pending-decomposition).
+  items a silent divergence is impossible; an inactive item is evaluated for neither, and what is and
+  is not covered there is [below](#pending-decomposition).
 
 What Doorstop does **not** do is prove the referenced check actually passes. That is the job of
 [`just verify`](../../justfile) and the CI suite. Doorstop proves a `TST` item *points at* a real

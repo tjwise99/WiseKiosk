@@ -49,7 +49,8 @@ corrupted tree it appears to succeed while preserving the corruption. Use
 **Validating the tree modifies it.** Doorstop stamps a review fingerprint into any item whose
 `reviewed` is absent or `null`, and into any link carrying no stamp — whether or not a person looked
 — and then `git add`s what it changed. `--no-reformat` stops the wholesale file rewriting but not
-this.
+this. `doorstop review` and `doorstop clear` stage what they rewrite too, so check what is staged
+before committing.
 
 So `reviewed: null` is **not a stable "unreviewed" state**. It survives exactly until the next gate
 run, and the run that clears it is the one that was supposed to be checking for it. This is the most
