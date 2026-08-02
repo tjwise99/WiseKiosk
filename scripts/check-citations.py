@@ -29,7 +29,9 @@ ROOT = Path(__file__).resolve().parent.parent
 DECISIONS = ROOT / "docs" / "decisions"
 
 UID = re.compile(r"\b(?:SYS|SRS|TST)\d{3}\b")
-ADR = re.compile(r"\bADR[ -]?(\d{4})\b")
+# A citation may wrap: one line break, and the blockquote marker continuing it, sit between `ADR`
+# and its number as readily as a space does.
+ADR = re.compile(r"\bADR[ -]?(?:\n[^\S\n]*>?[^\S\n]*)?(\d{4})\b")
 FENCE = re.compile(r"^\s*(?:```|~~~)")
 
 
@@ -115,7 +117,8 @@ def check(source, text, item_headers, adrs, base=1):
     for match in ADR.finditer(text):
         if match.group(1) not in adrs:
             line = base + text.count("\n", 0, match.start())
-            problems.append(f"{source}:{line}  {match.group()}  names no file in docs/decisions/")
+            cited = " ".join(match.group().replace(">", " ").split())
+            problems.append(f"{source}:{line}  {cited}  names no file in docs/decisions/")
     return problems
 
 
