@@ -37,6 +37,9 @@ jobs:
       - name: The decisions directory and its index table agree
         run: node scripts/check-adr-index.mjs
 
+      - name: Every tracked document is claimed by the documentation index or an excluded silo
+        run: node scripts/check-docs-index.mjs
+
       - name: No manifest at the repository root, and every Dependabot entry resolves to its manifest
         run: node scripts/check-repo-silo.mjs
 

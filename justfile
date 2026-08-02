@@ -51,6 +51,11 @@ check-adr-index:
     node scripts/check-adr-index.mjs
 
 [group('checks')]
+[doc('Every tracked document is claimed by a row in the documentation index or an excluded silo, every row links a tracked file, and no cell is empty')]
+check-docs-index:
+    node scripts/check-docs-index.mjs
+
+[group('checks')]
 [doc('No manifest at the repository root, github-actions is covered, and every other Dependabot entry resolves to a non-root directory holding its manifest')]
 check-repo-silo:
     node scripts/check-repo-silo.mjs
@@ -109,4 +114,4 @@ arch-dev:
 
 [group('checks')]
 [doc('Run every check the PR gate runs')]
-verify: check-links check-eol check-branch check-reqs check-citations check-arch check-site check-adr-index check-repo-silo check-workflow-hardening check-verify-ci-parity
+verify: check-links check-eol check-branch check-reqs check-citations check-arch check-site check-adr-index check-docs-index check-repo-silo check-workflow-hardening check-verify-ci-parity
