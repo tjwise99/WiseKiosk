@@ -14,8 +14,10 @@ is unverified — and not a claim that it is verified either.
 
 ## Running a case
 
-Each case is a throwaway repository holding one workflow or manifest, so a case cannot pollute the tree
-it is testing and a seeded credential-shaped string never reaches a remote.
+Each case is a throwaway repository holding a single workflow file, so a case cannot pollute the tree it
+is testing and a seeded credential-shaped string never reaches a remote. Run it from the repository
+root, which is where the `cp` reads from; a case for another check writes that check's input in place of
+the workflow.
 
 ```sh
 case_run () { # $1 label   $2 expect (pass|fail)   $3 file contents
@@ -71,7 +73,7 @@ running, and treat a clean diff as the case failing rather than passing.
 | Digest-pinned container action | `uses: docker://alpine@sha256:<64 hex>` |
 | Repository-local action | `uses: ./.github/actions/local` |
 | Flow-mapping step, pinned | `- {uses: …@<sha>, with: {x: 1}} # v7.0.1` |
-| Apostrophe beside a pinned flow reference | `- {msg: don't, uses: …@<sha>, other: 'x'}` |
+| Apostrophe beside a pinned flow reference | `- {msg: don't, uses: …@<sha>, other: 'x'} # v7.0.1` |
 | No action at all | a job whose only step is `run:` |
 | Workflow fixture inside a heredoc | a `run: \|` body containing `- uses: actions/checkout@v4` |
 | Comment on the block-scalar header | `run: \| # materialise a fixture` above the same body |
@@ -93,6 +95,21 @@ The last row of each table is the pair that matters most: the check must reject 
 read, and must not reject a workflow that is merely spelled unusually. Four defects were found by the
 second column alone — the first three fixes for a fail-open each rejected a legal workflow, and the
 fourth hid a step behind its own `if:` condition.
+
+### Known rejections
+
+Legal YAML this check rejects. Each fails loudly, naming its file and line, and each needs a spelling
+this repository does not use; closing them means another cut at the matcher, and every previous cut
+introduced a defect. They are accepted rather than undiscovered.
+
+| Input | What happens |
+|---|---|
+| `env: {A: 1} # see the uses: rule` | reported as a layout the check cannot read |
+| `- {name: "uses: nothing", run: echo hi}` | the same: a flow step is not skipped as free text |
+| `env: {NOTE: "a, uses: b"}` | read as a reference, and fails as unpinned |
+
+The third is the flow spelling of a value the table above lists as passing. The block spelling still
+passes; only inside a flow mapping is the string read as a reference.
 
 ## `check-repo-silo.mjs`
 
@@ -117,7 +134,7 @@ For that, push a branch that adds its own name to `checks.yml`'s `push:` trigger
 needed, and the `process` job skips itself on a push event — seed the defect, read the run, then push
 the same branch with the seed removed and confirm it goes green.
 
-Two things that only a real run shows. Steps run under `bash -e`, so a job stops at its first failing
-gate: seeding two defects into one job shows the first and hides the second. And a seed placed in
-`pages.yml` is read by the checks without that workflow ever executing, which is how a `contents: write`
-grant can be tested without any run ever holding it.
+Two things that only a real run shows. A step that exits non-zero fails its job, and the steps after it
+do not run — so seeding two defects into one job shows the first gate to fail and hides the second, and
+two seeds want two pushes. And a seed placed in `pages.yml` is read by the checks without that workflow
+ever executing, which is how a `contents: write` grant can be tested without any run ever holding it.

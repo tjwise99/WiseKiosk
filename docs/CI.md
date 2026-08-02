@@ -124,8 +124,8 @@ of it.
 **What no check here decides.** GitHub's own secret scanning and its push protection are repository
 settings rather than files. Reading one directly means reading `security_and_analysis` on the
 repository object, which is returned only to an administrator, and the workflow `permissions:` key
-offers no scope a job could request to become one. Reading a setting indirectly, by asking whether the
-scanner has produced anything, is closed as well: the secret-scanning alerts endpoint answers a
+offers no scope a job could request to become one. That indirect route — asking whether the scanner has
+produced anything — is closed as well: the secret-scanning alerts endpoint answers a
 workflow token `403 Resource not accessible by integration` even where the job requests
 `security-events: read` — a scope that does reach code scanning from the same job, so the refusal is
 the endpoint's rather than the grant's. No gate here decides whether either setting is on. The
