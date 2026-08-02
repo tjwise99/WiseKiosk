@@ -38,8 +38,9 @@ const SCALAR = /^\s*(?:-\s*)?[\w-]+:\s*[|>][-+\d]*\s*(?:#.*)?$/;
 // The key's own column. A block entry's dash sits left of it, and the entry's remaining keys align
 // with the key rather than with the dash.
 const KEY_COLUMN = /^\s*(?:-\s*)?/;
-// A quoted scalar is text, so a flow mapping is read from the line with its strings removed.
-const QUOTED = /(['"])(?:\\.|(?!\1).)*\1/g;
+// A line whose value opens a flow collection. `uses:` inside any other value is text, and reading a
+// flow line needs no view of where its strings begin and end.
+const FLOW_START = /^\s*(?:-\s*)?(?:[\w-]+:\s*)?[[{]/;
 // A top-level block opens at column zero; a job's own block is indented and may elevate.
 const TOP_LEVEL_PERMISSIONS = /^permissions:[^\S\n]*(\S.*)?$/;
 const GRANT = /^["']?([\w-]+)["']?:\s*(\S+)$/;
@@ -69,12 +70,13 @@ for (const path of workflows) {
     const where = `${path}:${index + 1}`;
     const text = uncomment(line);
     const block = USES.exec(text);
-    // A flow mapping can carry several steps on one line, so every `uses:` in it is read. Whether
-    // the line is one is decided with its quoted scalars removed; the values are read from the line.
-    const flow = /[{,]\s*uses:/.test(text.replace(QUOTED, ""));
+    // A flow mapping can carry several steps on one line, so every `uses:` in it is read.
+    const flow = FLOW_START.test(text);
     const found = block ? [block[1]] : flow ? [...text.matchAll(FLOW_USES)].map((m) => m[1]) : [];
     if (found.length === 0) {
-      if (flow) {
+      // Read from the line rather than from `text`: a '#' inside a quoted value truncates `text`,
+      // and the reference it hides must still be reported rather than passing as absent.
+      if (flow && /\buses:/.test(line)) {
         problems.push(`${where} declares 'uses:' in a layout this script cannot read: '${text.trim()}'`);
       }
       continue;

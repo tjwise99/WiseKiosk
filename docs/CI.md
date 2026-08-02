@@ -115,10 +115,11 @@ commit that removes it changes nothing.
 behind the branch point, which this gate does not re-read; a commit reachable only through a merge's
 second parent, because the walk follows first parents and skips merges; and the tail of a range longer
 than the event's own commit list, which is only as long as the API page or the webhook payload that
-carries it — a batch push or a force-push after a rebase reaches that bound without being remarkable. The scan is pattern-based besides, so it catches the credential
-shapes it holds rules for and nothing reports what it missed. It raises the cost of committing a
-credential; it is not an assertion that the repository holds none, and the delivery rules the tree
-carries stand independently of it.
+carries it — a batch push or a force-push after a rebase reaches that bound without being
+remarkable. The scan is pattern-based besides, so it catches the credential shapes it holds rules for
+and nothing reports what it missed. It raises the cost of committing a credential; it is not an
+assertion that the repository holds none, and the delivery rules the tree carries stand independently
+of it.
 
 **What no check here decides.** GitHub's own secret scanning and its push protection are repository
 settings rather than files. Reading one directly means reading `security_and_analysis` on the
