@@ -4,7 +4,7 @@ header: |
   One schema, all boundary value classes
 level: 1.29
 links:
-- SYS005: vWpFwzXUqypym6hKI0F3IGqVwyPFfH32lieducWW6tM=
+- SYS005: pLiWZpzkZG9O9pT5NhI7NRmQNVAq6EOKlEkrj-Zrzjk=
 normative: true
 rationale: |
   "Every payload shape and every parameter name" (TESTING.md Boundary tier)
@@ -17,19 +17,19 @@ rationale: |
   generated from it, which holds wherever the artifact lives; a clause placing it
   outside both packages asserted a layout no decision took.
 ref: ''
-reviewed: 9AwGvd3KP6n9PYubIzvzDMH4HXMe3OKfXVEbSAnzsUw=
+reviewed: c2YGH24fD8ZOS-C0AR-by5le2PFMTygQ-Tf714I9RxE=
 status: accepted
 text: |
   The boundary contract shall be defined by exactly one schema artifact, from which both sides are
   generated. It shall define every value crossing the boundary, including those a module
   contributes. No boundary value shall be defined in more than one place.
 verification-justification: |
-  Asserted against the schema itself: exactly one schema artifact is tracked, its path items match the
-  declared endpoint set in both directions, and every declared response references a named component
-  rather than an inline body - which leaves components the only position where a boundary value can be
-  defined at all. That both sides in fact agree with the schema is the drift gate's, under SRS016,
-  rather than this item's. What no check settles is whether the definition is the right shape, nor
-  whether two components under different names describe one value: requiring a named component
-  forecloses a second definition at a use site, and an identical pair under two names is not decidable
-  from the schema.
+  Asserted against the schema itself: exactly one schema artifact is tracked, its path items match
+  the declared endpoint set in both directions, and every declared response references a named
+  component rather than an inline body - which leaves components the only position where a boundary
+  value can be defined at all. That both sides in fact agree with the schema is the drift gate's,
+  under SRS016 <!-- Both sides consume the generated types -->, rather than this item's. What no
+  check settles is whether the definition is the right shape, nor whether two components under
+  different names describe one value: requiring a named component forecloses a second definition at
+  a use site, and an identical pair under two names is not decidable from the schema.
 verification-method: test

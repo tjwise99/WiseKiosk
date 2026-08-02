@@ -4,7 +4,7 @@ header: |
   Pending: no credential material on the wire, over every registered route
 level: 1.15
 links:
-- SRS023: WhPy70N6y_yJFXePpu7c-bpytXwWjRRZZ9_eF_XQGTo=
+- SRS023: a5oWuns0i60idOZJ_WuboxSKQeBnHYaZkzVG4ANY4wU=
 normative: true
 rationale: |
   The route set is derived from the single static registration list rather than written by hand, so

@@ -8,10 +8,11 @@ links:
 normative: true
 rationale: |
   The backend proxies upstream data and serves it from its own origin, so bytes this project did not
-  author reach the browser under this project's origin. If a response arrives with an absent or wrong
-  media type the browser may infer one, and content inferred to be script is executed as though it
-  had been served deliberately. The connect-src policy does not stop this: a script the backend
-  served is 'self'. That is privilege the response was never granted, which is SYS006's subject.
+  author reach the browser under this project's origin. If a response arrives with an absent or
+  wrong media type the browser may infer one, and content inferred to be script is executed as
+  though it had been served deliberately. The connect-src policy does not stop this: a script the
+  backend served is 'self'. That is privilege the response was never granted, which is SYS006
+  <!-- Neither grant privilege nor require it -->'s subject.
 
   Both halves are obligations on WiseKiosk. An earlier form of this item said served content "shall
   be interpreted by the browser only as the media type the response declares", which obliged the
@@ -20,9 +21,10 @@ rationale: |
   This is the one browser-hardening obligation whose threat survives a kiosk with no browsing user.
   It needs no hostile page, no embedder and no interaction - only an upstream that mislabels a
   response, which is not ours to control. That is what distinguishes it from the frame and referrer
-  policies dropped at SRS010, whose reopen premise records why they went.
+  policies dropped at SRS010 <!-- The display page reaches no origin but the backend's -->, whose
+  reopen premise records why they went.
 ref: ''
-reviewed: d99Vhzt_2vIjHVEvcZyv0VVfkcP2-jKnONNNEKXVIhg=
+reviewed: BDikJg-iSb8M2KqKW1u4Hboy7CVPvPpQYHou1mKAP0Q=
 status: proposed
 text: |
   The backend shall declare a media type on every response it serves, and shall instruct the browser

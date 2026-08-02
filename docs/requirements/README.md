@@ -225,10 +225,12 @@ Run all commands with the venv (`docs/requirements/.venv/bin/doorstop …`):
 - **After moving an item to a different parent,** the item itself is unreviewed — its parent UIDs are
   inside its own stamp — so `clear` is not enough. Read it against the parent it now has and
   `doorstop review <UID>`. `--error-all` reports it as `unreviewed changes` until you do.
-- **Neither command can reach an inactive item.** `Tree.find_item` is active-only, so `doorstop review
-  TST019` and `doorstop clear TST019` both answer `no item with UID` while that item is pending.
-  Stamping one takes a loop over `document._iter()`. Where a pending item's link goes suspect before
-  activation, that loop is the only route.
+- **Neither command can reach an inactive item.** `Tree.find_item` is active-only, so `doorstop
+  review TST019 <!-- Pending: no identity-based rejection, in the contract or on the wire -->` and
+  `doorstop clear TST019
+  <!-- Pending: no identity-based rejection, in the contract or on the wire -->` both answer `no
+  item with UID` while that item is pending. Stamping one takes a loop over `document._iter()`.
+  Where a pending item's link goes suspect before activation, that loop is the only route.
 - **Inactive items are not rewritten by Doorstop**, so write their parent links in dict form,
   `- UID: null` (the form Doorstop itself stamps); a plain-string link breaks the docs-site
   needs generator.
@@ -239,9 +241,10 @@ Run all commands with the venv (`docs/requirements/.venv/bin/doorstop …`):
 - **Check the tree before adding a normative clause.** A new `shall` can contradict a decision
   already recorded in an existing item's `rationale` — a deliberately-excluded case, a boundary an
   owner already fixed. `--error-all` cannot see this; grep the relevant items' rationales first. A
-  clause that reverses a recorded decision is a finding: either the decision is reopened with its own
-  review, or the clause does not land. (A phone-width `shall` slipped this way in the #38 round,
-  against a scope decision recorded in `SYS002` — caught only by independent review.)
+  clause that reverses a recorded decision is a finding: either the decision is reopened with its
+  own review, or the clause does not land. (A phone-width `shall` slipped this way in the #38 round,
+  against a scope decision recorded in `SYS002` <!-- The configured layout renders whole --> —
+  caught only by independent review.)
 - **Traceability is item-level; individual clauses are not checked.** An item that links two parents
   satisfies the orphan gate at item granularity, yet a single clause inside its `text` can be
   supported by *neither* parent — an orphan the gate cannot see. Prefer one obligation per parent;

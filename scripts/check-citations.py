@@ -83,9 +83,10 @@ def item_sources(tree_items):
 
 
 def follows(text, header):
-    """The text right after a citation begins with the header, once the citation's own inline-code
-    delimiter and any HTML comment markers are out of the way."""
-    window = text[: len(header) + 200]
+    """The text right after a citation begins with the header, once the markup between them is out
+    of the way: the citation's own inline-code delimiter, the HTML comment markers, and a blockquote
+    marker continuing the line the citation sits on."""
+    window = re.sub(r"\n\s*>", "\n", text[: len(header) + 200])
     for token in ("<!--", "-->", "`"):
         window = window.replace(token, " ")
     return " ".join(window.split()).casefold(), " ".join(header.split()).casefold()

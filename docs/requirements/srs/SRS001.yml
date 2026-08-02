@@ -4,34 +4,40 @@ header: |
   A failed module shows why, and only that module
 level: 1.1
 links:
-- SYS001: ycFTNF2ASjFxjP8A9d3lB7nTzAdgSvE_5Ee71wz7MPY=
+- SYS001: S72Ttym255pW5SuA1xELQbSn6rPxaSUFZj1Lhfn5xtA=
 normative: true
 rationale: |
   The failure state is a framework universal while a success state is not: what a module displays
   differs per module and is that module's own need, but a module whose upstream is unavailable looks
   the same whichever module it is (ADR 0012). So this is stated once, here, and not per module.
   Containment is the second half - four other regions going blank because one source is down is the
-  disproportionate degradation SYS001 forbids. The shape of the payload that carries the failure is
-  SRS015's, not this item's.
+  disproportionate degradation SYS001 <!-- Failure is legible and proportionate --> forbids. The
+  shape of the payload that carries the failure is SRS015
+  <!-- One schema, all boundary value classes -->'s, not this item's.
 
-  "Distinct to its cause" is SRS013's wording, carried here for the same obligation on the path where
-  the backend does reach upstream. Nothing else obliged it: a backend answering every failure
-  identically satisfied the render clause, leaving an operator who is not the author unable to tell a
-  source being down from a key being wrong, which is the diagnosis SYS001 exists for. Both halves are
-  stated because the backend distinguishing buys nothing if the module collapses the causes again.
-  Which causes there are is TST001's, so a fifth one edits a check rather than this text.
+  "Distinct to its cause" is SRS013 <!-- Client-facing contract for rejected requests -->'s wording,
+  carried here for the same obligation on the path where the backend does reach upstream. Nothing
+  else obliged it: a backend answering every failure identically satisfied the render clause,
+  leaving an operator who is not the author unable to tell a source being down from a key being
+  wrong, which is the diagnosis SYS001 <!-- Failure is legible and proportionate --> exists for.
+  Both halves are stated because the backend distinguishing buys nothing if the module collapses the
+  causes again. Which causes there are is TST001
+  <!-- Pending: upstream-failure error payload test -->'s, so a fifth one edits a check rather than
+  this text.
 ref: ''
-reviewed: e6VCd51xPhCUTLSU0rvEL1ApOuWdbjZlYVjsssxL9r4=
+reviewed: uobjAA4-5S_9_ypQnPikYnn-393rB6XZqDBDjlC4pIk=
 status: accepted
 text: |
   When a module's data request fails, the backend shall report the failure distinct to its cause, and
   that module shall render a plain-language error state in its own region that distinguishes it; no
   other module shall be affected.
 verification-justification: |
-  Asserted against each induced cause: the reported failure differs by cause (TST001), the failing
-  region carries an error state that differs with it while its siblings still render (TST002). What no
-  check settles is whether the distinction is useful - that the causes are told apart is decidable,
-  that the wording helps somebody who did not write it is what SYS001 routes to review. Two causes
-  calling for the same operator action are still required to differ, which is more than the want needs
-  and is the price of a decidable predicate.
+  Asserted against each induced cause: the reported failure differs by cause (TST001
+  <!-- Pending: upstream-failure error payload test -->), the failing region carries an error state
+  that differs with it while its siblings still render (TST002
+  <!-- Pending: module error-state render test -->). What no check settles is whether the
+  distinction is useful - that the causes are told apart is decidable, that the wording helps
+  somebody who did not write it is what SYS001 <!-- Failure is legible and proportionate --> routes
+  to review. Two causes calling for the same operator action are still required to differ, which is
+  more than the want needs and is the price of a decidable predicate.
 verification-method: test

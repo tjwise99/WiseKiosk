@@ -4,7 +4,7 @@ header: |
   Pending: every schema key is varied by a fixture and renders
 level: 1.15
 links:
-- SRS024: jGhiM9f68DTp6BTj1dnCORLxzudyszpJuwYfTOyUzCg=
+- SRS024: z5hXdkJIUKL5QQVNGFgN5u0MhEr_Qu1i7zqEn96nrMQ=
 normative: true
 rationale: |
   Enumerating from the schema rather than from the fixtures is what makes the check closed: driven

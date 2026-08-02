@@ -4,7 +4,7 @@ header: |
   Both sides consume the generated types
 level: 1.31
 links:
-- SYS005: vWpFwzXUqypym6hKI0F3IGqVwyPFfH32lieducWW6tM=
+- SYS005: pLiWZpzkZG9O9pT5NhI7NRmQNVAq6EOKlEkrj-Zrzjk=
 normative: true
 rationale: |
   The failure this forecloses is the hand-declared twin: a struct or interface that mirrors a

@@ -4,7 +4,7 @@ header: |
   The display page reaches no origin but the backend's
 level: 1.21
 links:
-- SYS004: -WgxkJ5puavx1z3dZ1VyFaAtygFCvlL2KSrBdQN-kdY=
+- SYS004: oaEtowM1Sd8Z6JXKd9l64gMmtZAunl38gTaPRSBC4Lk=
 normative: true
 rationale: |
   Proxying even CORS-permitting sources is what makes the single-origin data plane hold for every

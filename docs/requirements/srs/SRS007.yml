@@ -7,13 +7,12 @@ links:
 - SYS003: x73sA6VMR9aDga-PqTW6L49gj-iwZdgTOg5xG8VhAwM=
 normative: true
 rationale: |
-  The configuration is the one channel a client fetches wholesale, so the
-  confinement (SYS003) is structural only if the configuration cannot
-  carry a secret in the first place. Excluding secret-bearing keys from
-  the schema leaves nothing to strip; a denylist applied at delivery
-  would fail open.
+  The configuration is the one channel a client fetches wholesale, so the confinement (SYS003
+  <!-- A deployment is parameterised from outside the image -->) is structural only if the
+  configuration cannot carry a secret in the first place. Excluding secret-bearing keys from the
+  schema leaves nothing to strip; a denylist applied at delivery would fail open.
 ref: ''
-reviewed: 4Cb4ErPw-g7mKPAiYuTfYleZoj7u5xAvE0YONps9vG0=
+reviewed: 69P8GCfNj4nlksdeQH-g2mVrxgTy-wqxoUOHbwBv9CE=
 status: accepted
 text: |
   The configuration schema shall offer no key whose value is a secret —

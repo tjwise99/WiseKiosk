@@ -160,8 +160,9 @@ resolve, a citation to something that does not exist, an index that has drifted 
   upstream-documentation allowlist, and every allowlist entry names the tool or service it serves.
   This extends the link checker above rather than adding a second tool (#68).
 - Every bare-text citation to a requirement ID or ADR number names an item or decision that exists
-  (#68). Not built: the link checker resolves link syntax only, so a bare `SRS003` or `ADR 0002` in
-  prose is unchecked, and a citation that resolves to the wrong item is beyond it either way.
+  (#68). Not built: the link checker resolves link syntax only, so a bare `SRS003`
+  <!-- A configuration change applies no later than the next page load --> or `ADR 0002` in prose is
+  unchecked, and a citation that resolves to the wrong item is beyond it either way.
 - The `decisions/` directory and its index table agree — every ADR has a row, no gap or duplicate in
   numbering, every row resolves to a real file.
 - The documentation index's row set equals the committed canonical-document list in both directions;
@@ -184,7 +185,8 @@ changed, which the citation resolver above decides without anyone declaring anyt
   default-base pull request records the ticket linkage.
 - The Docker build context excludes `.git` and `node_modules`, by `.dockerignore`. Neither is secret
   material; both are build hygiene, and a smaller context is a faster and more predictable build.
-  That the image carries no secret is the tree's, under SRS025 (#54).
+  That the image carries no secret is the tree's, under SRS025
+  <!-- No secret material in the published image --> (#54).
 - A depth-1 listing of the repository root holds no `package.json`, `go.mod`, `pyproject.toml`,
   `requirements*.txt` or `.venv/` — tooling is siloed with the feature it serves — and every
   Dependabot entry that is not `github-actions` resolves to a non-root directory holding the matching
@@ -254,10 +256,9 @@ what runs where, and what each is allowed to let through, is here.
 - **That scheduled job holds one upstream credential, and it is the only job that does.** Of the
   three upstream sources — the clock and compliments modules are local and fetch nothing — only
   CheckWX requires one; OpenMeteo and themeparks.wiki are keyless. The credential is scoped to that
-  workflow
-  and reaches no other job, and no fixture, log or failure output carries its value —
-  [`../SECURITY.md`](../SECURITY.md) rests on that, and SRS008 obliges the running system to the same
-  rule.
+  workflow and reaches no other job, and no fixture, log or failure output carries its value —
+  [`../SECURITY.md`](../SECURITY.md) rests on that, and SRS008
+  <!-- No secret value in any backend output --> obliges the running system to the same rule.
 
 **Why a credential is allowed here at all.** A withdrawn requirement once forbade any CI workflow
 from holding an upstream credential. It banned a normal practice, and forced the tier into a nested

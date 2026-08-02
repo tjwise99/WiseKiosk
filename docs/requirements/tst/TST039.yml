@@ -4,7 +4,7 @@ header: |
   Pending: served responses declare a type and forbid inference
 level: 1.56
 links:
-- SRS028: Z7Ew9iS07io5WQUQGQhIUzSgVESAsblWEJUS1OAzj4Y=
+- SRS028: ASbAU0oqi4AkslRKTTaH2jXxEzKVgegZSiUnL4SV76s=
 normative: true
 rationale: ''
 ref: ''

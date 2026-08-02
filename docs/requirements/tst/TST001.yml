@@ -4,15 +4,17 @@ header: |
   Pending: upstream-failure error payload test
 level: 1.1
 links:
-- SRS001: qzkriI4rTv8IPKHDauZIxwp6CBHidA5BSzDK4fklZHY=
+- SRS001: DlI1cpntA0fIH7HjHADa5IaGI9P7GHfKenADUyy3SKI=
 normative: true
 rationale: |
-  Driven from the static route registration list rather than a hand-written route set, so coverage is
-  total by construction and a route added later cannot escape the sweep - TST015's ground, against the
-  same list. Malformed payload is the one class that is per module rather than transport: it is the
-  shaping library failing to parse, so it is induced per route rather than once.
+  Driven from the static route registration list rather than a hand-written route set, so coverage
+  is total by construction and a route added later cannot escape the sweep - TST015
+  <!-- Pending: no credential material on the wire, over every registered route -->'s ground,
+  against the same list. Malformed payload is the one class that is per module rather than
+  transport: it is the shaping library failing to parse, so it is induced per route rather than
+  once.
 ref: ''
-reviewed: -gYoeIksQxI0vs61DCMu6l3iXyGfikfmknyEIYNsAmU=
+reviewed: wvurO-3_OVOEjstZqogNf-cQ64-stnwoOaVtJtjyOQc=
 status: proposed
 text: |
   Pending: backend integration test that, for every entry in the static route registration list,

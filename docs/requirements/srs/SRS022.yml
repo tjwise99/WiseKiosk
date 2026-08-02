@@ -7,17 +7,17 @@ links:
 - SYS007: NFy-WbNRxUQwknLO07y9H-EFDWuo_jGKosorPOiOSes=
 normative: true
 rationale: |
-  A declared minimum host has no headroom to absorb a leak, so unbounded
-  growth breaks the claim SYS007 makes. Stated so it is provable early —
-  from a bounded instrumented run rather than a full-length soak — and
-  continuously, rather than only at a pre-release demonstration.
+  A declared minimum host has no headroom to absorb a leak, so unbounded growth breaks the claim
+  SYS007 <!-- The declared minimum host, and staying within it --> makes. Stated so it is provable
+  early — from a bounded instrumented run rather than a full-length soak — and continuously, rather
+  than only at a pre-release demonstration.
 
   It names no resource. Which ones are sampled, and at what thresholds, is
   the verification's business: a leak class discovered later is then a change
   to a check rather than to this obligation, and an enumeration here would
   otherwise be read as the complete list of what may not leak.
 ref: ''
-reviewed: _SLlhp39DbuIwG7ls7U6MHU_gaAoPPXI9LsqW8RDxrk=
+reviewed: uBk5Fae_TwZzoaCkfY6eFhjEMiFzwDkWpTR7JLNQ1EQ=
 status: accepted
 text: |
   The backend's running footprint shall stay bounded: no resource it holds shall grow without bound

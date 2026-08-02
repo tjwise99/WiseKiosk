@@ -6,14 +6,16 @@ level: 6
 links: []
 normative: true
 rationale: |
-  Two failures share one path. If the browser reaches upstream sources directly, credentials must live
-  where a client can see them and every deployment's traffic is attributable to the household running
-  it. If a caller can choose what the backend requests, the display becomes an open proxy — someone
-  else's traffic against WiseKiosk's key and rate limit. Stating the obligation positively (the set of
-  calls is fixed by configuration) rather than as a prohibition on relaying is what makes SRS012 and
-  SRS013 trace to it; three earlier wordings named the failure and none of them did.
+  Two failures share one path. If the browser reaches upstream sources directly, credentials must
+  live where a client can see them and every deployment's traffic is attributable to the household
+  running it. If a caller can choose what the backend requests, the display becomes an open proxy —
+  someone else's traffic against WiseKiosk's key and rate limit. Stating the obligation positively
+  (the set of calls is fixed by configuration) rather than as a prohibition on relaying is what
+  makes SRS012 <!-- Request parameters validated against known-good per-source patterns --> and
+  SRS013 <!-- Client-facing contract for rejected requests --> trace to it; three earlier wordings
+  named the failure and none of them did.
 ref: ''
-reviewed: -WgxkJ5puavx1z3dZ1VyFaAtygFCvlL2KSrBdQN-kdY=
+reviewed: oaEtowM1Sd8Z6JXKd9l64gMmtZAunl38gTaPRSBC4Lk=
 status: accepted
 text: |
   All upstream data shall reach the display only through the backend, which shall issue only the

@@ -7,13 +7,13 @@ links:
 - SYS003: x73sA6VMR9aDga-PqTW6L49gj-iwZdgTOg5xG8VhAwM=
 normative: true
 rationale: |
-  The falsifiable edge of by-construction confinement (SYS003): a canary
-  secret planted through the delivery path and asserted absent from every
-  response and log line turns the structural claim into a failing test.
-  Upstream request URLs and echoed upstream errors are the classic leak
-  paths this guards.
+  The falsifiable edge of by-construction confinement (SYS003
+  <!-- A deployment is parameterised from outside the image -->): a canary secret planted through
+  the delivery path and asserted absent from every response and log line turns the structural claim
+  into a failing test. Upstream request URLs and echoed upstream errors are the classic leak paths
+  this guards.
 ref: ''
-reviewed: 33sNbgYmM_fm-2s_6QR0dy5LCTxU6ehX0H9KUe5KBRk=
+reviewed: liGMo4u-ffrcahMSXAgd20gaAKGTtnGVtuCQ3zCvhMI=
 status: accepted
 text: |
   No secret value shall appear in any HTTP response body or header, nor
