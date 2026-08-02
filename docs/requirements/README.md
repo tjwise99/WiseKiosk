@@ -235,6 +235,14 @@ Run all commands with the venv (`docs/requirements/.venv/bin/doorstop …`):
   fingerprint in the child's `links:`; `review` alone re-stamps the item but leaves the link
   suspect. Re-blessing is the human act of re-reading a downstream item after its parent moved —
   do not script it blindly.
+- **One exception, and it carries its own burden of proof: a bulk edit provable as a single
+  transform.** Where every changed item differs only by one mechanical substitution — a corpus-wide
+  rewrite of prose that cites other items, say — re-reading forty items decides nothing a machine has
+  not already settled, and scripting the re-stamp is legitimate. What makes it legitimate is the
+  proof, not the claim: apply the transform to the previous revision and diff the result byte-for-byte
+  against the new one. Every file must match, or the edit was not the single transform you thought it
+  was and the exception does not apply. A word-level or token-level comparison is not enough — it
+  cannot see a reflow, and reflow is how an unintended change hides.
 - **After moving an item to a different parent,** the item itself is unreviewed — its parent UIDs are
   inside its own stamp — so `clear` is not enough. Read it against the parent it now has and
   `doorstop review <UID>`. `--error-all` reports it as `unreviewed changes` until you do.
