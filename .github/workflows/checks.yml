@@ -40,6 +40,9 @@ jobs:
       - name: No manifest at the repository root, and every Dependabot entry resolves to its manifest
         run: node scripts/check-repo-silo.mjs
 
+      - name: Every action is SHA-pinned, and no workflow grants write at the top level
+        run: node scripts/check-workflow-hardening.mjs
+
       - name: Every `just verify` check runs in CI, and vice versa
         run: node scripts/check-verify-ci-parity.mjs
 

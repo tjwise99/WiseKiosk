@@ -40,6 +40,7 @@ const CHECK_TOKENS = {
   "check-site": ["docs/site/doorstop_to_needs.py"],
   "check-adr-index": ["scripts/check-adr-index.mjs"],
   "check-repo-silo": ["scripts/check-repo-silo.mjs"],
+  "check-workflow-hardening": ["scripts/check-workflow-hardening.mjs"],
   "check-verify-ci-parity": ["scripts/check-verify-ci-parity.mjs"],
 };
 
