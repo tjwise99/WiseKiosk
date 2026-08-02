@@ -1,6 +1,8 @@
 # 0006 — Gate branch shape, ticket linkage, and PR titles in CI
 
-**Status:** accepted
+**Status:** accepted; ticket-metadata obligations extended and the parent-ticket definition added by
+[0013](0013-work-tracking-invariants.md), whose read-only stance this ADR's rejected
+write-scoped-token alternative supplies
 **Decided:** 2026-07-22 (process-gates design discussion, ticket #27)
 
 ## Context

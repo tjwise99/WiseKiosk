@@ -233,6 +233,17 @@ changed, which the citation resolver above decides without anyone declaring anyt
 - No tracked text file has CRLF line endings.
 - The branch is named `type_number-snake_name`, links an open issue labelled with its type, and its
   default-base pull request records the ticket linkage.
+- That issue carries a milestone and **exactly one** type label. The type set is read from
+  `scripts/branch-shape.regex` rather than restated, so a new branch type cannot leave the label rule
+  behind. A second type label makes the branch type ambiguous, and an unmilestoned ticket is absent
+  from the phase axis that carries the definition of done. This is detected at merge, on the change
+  whose ticket is wrong, rather than at filing: GitHub cannot refuse to create a malformed issue, and
+  CI does not write ([ADR 0013](decisions/0013-work-tracking-invariants.md)).
+- A pull request's base and its issue's parent agree. A parent implies a non-default base; an
+  integration branch implies membership in the ticket anchoring it; and a non-default base that is
+  not itself a conforming branch fails rather than skips, because an anchor the check cannot resolve
+  must not read as success. Sub-issue membership means a shared merge target — topical grouping is
+  the milestone's job.
 - The Docker build context excludes `.git` and `node_modules`, by `.dockerignore`. Neither is secret
   material; both are build hygiene, and a smaller context is a faster and more predictable build.
   That the image carries no secret is the tree's, under
@@ -376,6 +387,21 @@ citing an identifier restates it. The pull-request template points there.
 **The product's obligations.** What the software must do is in
 [`requirements/`](requirements/README.md), verified by tests that trace to it. A gate here can block a
 merge; only the tree can say the system is wrong.
+
+**How work is tracked, beyond the ticket a branch names.** Three things were weighed and deliberately
+left ungated ([ADR 0013](decisions/0013-work-tracking-invariants.md)). Ordering lives in GitHub's
+native dependency edges and never in a `⛔ Blocked by:` line in a body: the practice is adopted, but a
+literal-string ban flags the very documents that forbid the line, and is respelled for free — what
+enforces it is that there is no second place to write ordering. Whether a ticket should be rescoped
+or closed, which close-reason applies, whether a scope is correct, and whether a body's acceptance
+condition is any good are judgment, and a gate pretending to decide them would be theatre. And a body
+need not carry its template's headings — templates churn, and gating them buys a re-review of every
+ticket on each template edit.
+
+**A ticket nobody works.** The shape checks above see an issue only when a branch names it, so a
+malformed ticket left in the backlog stays malformed and stays absent from its milestone's progress.
+A scheduled read-only sweep over every open issue would close that; it was rejected as more machinery
+than a population twice caught by eye has earned, and it is the named remedy if the drift recurs.
 
 **Test architecture.** Which tier a test belongs to and what that tier guarantees is
 [`TESTING.md`](TESTING.md). A tier organises tests; a gate is a condition on merging, and several
