@@ -39,7 +39,8 @@ const SCALAR = /^\s*(?:-\s*)?[\w-]+:\s*[|>][-+\d]*\s*(?:#.*)?$/;
 // with the key rather than with the dash.
 const KEY_COLUMN = /^\s*(?:-\s*)?/;
 // A line whose value opens a flow collection. `uses:` inside any other value is text, and reading a
-// flow line needs no view of where its strings begin and end.
+// flow line needs no view of where its strings begin and end. A `uses:` written inside a string on
+// such a line is read as a reference, and fails as unpinned rather than passing unseen.
 const FLOW_START = /^\s*(?:-\s*)?(?:[\w-]+:\s*)?[[{]/;
 // A top-level block opens at column zero; a job's own block is indented and may elevate.
 const TOP_LEVEL_PERMISSIONS = /^permissions:[^\S\n]*(\S.*)?$/;
@@ -77,7 +78,7 @@ for (const path of workflows) {
       // Read from the line rather than from `text`: a '#' inside a quoted value truncates `text`,
       // and the reference it hides must still be reported rather than passing as absent.
       if (flow && /\buses:/.test(line)) {
-        problems.push(`${where} declares 'uses:' in a layout this script cannot read: '${text.trim()}'`);
+        problems.push(`${where} declares 'uses:' in a layout this script cannot read: '${line.trim()}'`);
       }
       continue;
     }
