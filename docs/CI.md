@@ -16,10 +16,12 @@ where a gate is unbuilt its ticket is named. That is how this project records sc
 
 Not everything CI does is a gate. These produce material a person acts on.
 
-- **Grouped dependency update proposals.** Dependabot carries one entry per application ecosystem —
-  `gomod` and `npm` — each with a non-empty `groups` key, so an ecosystem's updates arrive as one
-  reviewable change rather than a dozen. The entries are derived from the manifests discovered in the
-  tree, so the configuration cannot be correct while an ecosystem is missing.
+- **Grouped dependency update proposals.** Dependabot carries one entry per ecosystem present in the
+  tree — `github-actions` at the root, and the `pip` and `npm` entries pointing at the silos holding
+  the documentation toolchains' manifests; `gomod` and the application `npm` entry join them with the
+  manifests they need. Each carries a non-empty `groups` key, so an ecosystem's updates arrive as one
+  reviewable change rather than a dozen. That the `github-actions` entry exists and every other entry
+  resolves to its manifest is § *Repository shape*'s.
 - **Code-scanning results.** Every static-analysis finding is reported to the repository's
   code-scanning dashboard and annotated on the pull request, whether or not it fails the build.
 - **Complete scan output.** The vulnerability gates report every advisory they resolve — at any
@@ -100,6 +102,22 @@ finding has a current register entry.
 
 This is what covers operating-system and base-layer packages. The source-level dependency gate never
 inspects them.
+
+## Secret scanning
+
+Every pull request is scanned for committed credentials over the branch's **full history**, not its
+diff: a secret is compromised from the moment it is pushed, and a later commit removing it changes
+nothing. A finding fails the merge. The scan is pattern-based, so it catches credential shapes it has
+rules for and nothing tells it what it missed — which is why the delivery rules exist as well as this,
+and why nothing downstream treats a green scan as proof the history is clean.
+
+**What no check here decides.** GitHub's own secret scanning and its push protection are repository
+settings rather than files, and they are readable only with admin: `security_and_analysis` is absent
+from the repository object for any lesser token, and the workflow `permissions:` key offers no
+`administration` scope for a job to request one. So no gate can assert they are on. The alternative
+was a standing admin credential held in the repository so that a job could read a setting, which is a
+larger hole than the one it closes — and the scan above is what stands on the merge path either way.
+Both are enabled, and this paragraph is the whole of what a machine here can say about it.
 
 ## Publishing and provenance
 
@@ -208,7 +226,31 @@ changed, which the citation resolver above decides without anyone declaring anyt
 - A depth-1 listing of the repository root holds no `package.json`, `go.mod`, `pyproject.toml`,
   `requirements*.txt` or `.venv/` — tooling is siloed with the feature it serves — and every
   Dependabot entry that is not `github-actions` resolves to a non-root directory holding the matching
-  manifest.
+  manifest. `github-actions` is exempt from that rule because its manifests are the workflow files,
+  which are siloed nowhere; the exemption presupposed an entry nothing obliged, so the entry's
+  existence is asserted too. Without it the pins below stop being updated and nothing says so.
+
+## Action pins and workflow privilege
+
+The workflows are themselves a supply chain and themselves privileged. Both are decidable from the
+files, which is why they are gates here rather than settings recorded elsewhere.
+
+- **Every action is pinned to a commit SHA, and names the version that SHA is.** A tag is a pointer
+  its owner can move after anyone reviewed it; a commit is not. The version comment is what tells a
+  reader what the SHA stands for and what Dependabot rewrites when it bumps one, so a pin without one
+  is a pin nobody can review. A `uses:` beginning `./` is exempt: a repository-local action or
+  reusable workflow moves with the commit that calls it, so there is no upstream to pin.
+- **No workflow grants a write permission at the top level.** Every workflow declares a top-level
+  `permissions:` block and every grant in it is `read` or `none`; a job needing more elevates in its
+  own block, which is what confines `pages.yml`'s `pages: write` and `id-token: write` to the deploy
+  job. Declaring no block at all fails rather than passing, because what it would inherit is a
+  repository setting no check here can see.
+- **The scan fails if it discovers no workflow file.** A check with nothing to inspect finds no
+  violations and reports success, which is the same output as a check that has stopped working.
+
+**The repository-level default is not decidable here either.** `GITHUB_TOKEN`'s default permission
+sits behind the same admin-only API as the settings in § *Secret scanning*. It is read-only; the
+top-level blocks are what a check can see, and they are what the rule above constrains.
 
 ## Module and framework structure
 
