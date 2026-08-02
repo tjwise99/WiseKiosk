@@ -55,10 +55,18 @@ const listItems = (dependabotText.split(/^updates:[^\S\n]*$/m)[1] ?? "")
 // configuration that is merely spelled differently.
 const entryDepth = Math.min(...listItems);
 const declared = listItems.filter((depth) => depth === entryDepth).length;
-if (entries.length !== declared) {
+// Asserted before the count, and sharing no assumption with the parser: a count derived from the
+// same literal-matching goes to zero alongside the split, and the two then agree that nothing is
+// wrong. No spelling of the keys can make a real entry list parse as empty.
+if (entries.length === 0) {
   problems.push(
-    `.github/dependabot.yml declares ${declared} ecosystem entr(ies), of which ${entries.length} ` +
-      `parsed — check-repo-silo.mjs cannot read this layout, so no entry was examined`,
+    `.github/dependabot.yml — no ecosystem entry parsed, so none was examined; either the file ` +
+      `declares none, or check-repo-silo.mjs cannot read this layout`,
+  );
+} else if (entries.length !== declared) {
+  problems.push(
+    `.github/dependabot.yml holds ${declared} entr(ies) under 'updates:' but ${entries.length} ` +
+      `parsed — check-repo-silo.mjs cannot read this layout, so the two disagree on what is there`,
   );
 }
 
@@ -69,7 +77,7 @@ for (const entry of entries) {
   checked += 1;
   const directory = entry.match(/^\s*directory:\s*"?([^"\n]+?)"?\s*$/m)?.[1];
   if (!directory) {
-    problems.push(`the '${ecosystem}' Dependabot entry declares no directory`);
+    problems.push(`the '${ecosystem}' Dependabot entry declares no 'directory' key`);
     continue;
   }
   if (directory === "/") {
