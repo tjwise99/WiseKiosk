@@ -36,7 +36,11 @@ Current gates (they grow as code lands):
 - `just check-eol`   — no tracked text file has CRLF line endings.
 - `just check-branch` — the branch is named `type_number-snake_name`, links an open issue labeled
   with its type, and its default-base PR records the ticket linkage (plain sh + curl + jq, like
-  the hooks — no toolchain).
+  the hooks — no toolchain). That issue also carries a milestone and exactly one type label, and
+  its parent agrees with the PR's base: a sub-issue means a shared merge target, so a parent
+  implies an integration branch and an integration branch implies membership in its anchor
+  ([ADR 0013](docs/decisions/0013-work-tracking-invariants.md)). Filing a conforming ticket in the
+  first place is `.claude/skills/file-ticket/SKILL.md`.
 - `just check-reqs`  — the Doorstop requirements tree validates: no item carries a review
   fingerprint nobody wrote, a hand-declared `true` included; refs resolve; no
   suspect/unreviewed/orphan items, with suspect links checked on the inactive items Doorstop

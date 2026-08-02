@@ -99,7 +99,7 @@ unrelated one, and it refuses a merge rather than annotating an issue.
   that a branch-side gate fires too late, when the context that would have made the ticket correct is
   gone. That is sound for body *content*, which decays; it is weak for a milestone and a type label,
   which anyone can supply correctly weeks later in seconds and lose nothing.
-- **The label set is now load-bearing.** `module` was created and stock `enhancement` deleted. A new
+- **The label set is load-bearing.** `module` was created and stock `enhancement` deleted. A new
   branch type requires a label of that name to exist before its template can apply it, or the picker
   silently drops it and the safe path produces an unbranchable ticket again.
 - **The write-time half is advisory by construction.** A `/file-ticket` skill carries the checklist

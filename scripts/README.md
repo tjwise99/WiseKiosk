@@ -161,7 +161,7 @@ Both were observed in CI rather than only locally, which is what shows the step 
 fail the job. **Two cases are unrun**: a pull request into an integration branch whose issue is not a
 sub-issue of the anchor, and one whose issue is. Both need a throwaway integration branch, a child
 branch and a pull request between them; the owner declined that on 2026-08-02 as more repository
-churn than the case is worth for now. So the non-default-base path — anchor parsing, the
+churn than the case is worth. So the non-default-base path — anchor parsing, the
 shape-conformance failure, and the membership comparison — has no live evidence, and the historical
 instance that motivated it (PR #79 into `design_18-closing_review`, whose ticket was never a
 sub-issue of the anchor) cannot serve as one: the gate exits at the open-issue check before reaching
