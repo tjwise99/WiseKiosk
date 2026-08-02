@@ -105,19 +105,23 @@ inspects them.
 
 ## Secret scanning
 
-Every pull request is scanned for committed credentials over the branch's **full history**, not its
-diff: a secret is compromised from the moment it is pushed, and a later commit removing it changes
-nothing. A finding fails the merge. The scan is pattern-based, so it catches credential shapes it has
-rules for and nothing tells it what it missed — which is why the delivery rules exist as well as this,
-and why nothing downstream treats a green scan as proof the history is clean.
+Every commit reaching a pull request or the default branch is scanned for committed credentials as it
+arrives, and a finding fails the merge. The scan walks **commits, not the tree**, so a secret added
+and then removed within the same branch still fails: the value is compromised from the moment it is
+pushed, and the commit that removes it changes nothing. What that shape does not do is re-read history
+that arrived earlier — each commit is scanned once, when it lands — so this is a gate on what is being
+added rather than an assertion about the repository behind it. The scan is also pattern-based, and
+catches only credential shapes it holds rules for; nothing reports what it missed. Neither limit is a
+reason to weaken the delivery rules the tree carries, and nothing downstream may read a green scan as
+proof that the history is clean.
 
 **What no check here decides.** GitHub's own secret scanning and its push protection are repository
-settings rather than files, and they are readable only with admin: `security_and_analysis` is absent
-from the repository object for any lesser token, and the workflow `permissions:` key offers no
-`administration` scope for a job to request one. So no gate can assert they are on. The alternative —
-a standing admin credential held in the repository so that a job can read a setting — is a larger
-hole than the one it closes, and the scan above stands on the merge path either way. Both settings
-are enabled, and this paragraph is the whole of what a machine here can say about it.
+settings rather than files. Reading one directly means reading `security_and_analysis` on the
+repository object, which is returned only to an administrator, and the workflow `permissions:` key
+offers no scope a job could request to become one — so no gate here decides whether either is on. The
+alternative is a standing admin credential held in the repository so that a job can read a setting,
+which is a larger hole than the one it closes; the scan above stands on the merge path either way.
+Both settings are enabled, and this paragraph rather than a check is what records it.
 
 ## Publishing and provenance
 
@@ -236,18 +240,21 @@ changed, which the citation resolver above decides without anyone declaring anyt
 The workflows are themselves a supply chain and themselves privileged. Both are decidable from the
 files, which is why they are gates here rather than settings recorded elsewhere.
 
-- **Every action is pinned to a commit SHA, and names the version that SHA is.** A tag is a pointer
-  its owner can move after anyone reviewed it; a commit is not. The version comment is what tells a
-  reader what the SHA stands for and what Dependabot rewrites when it bumps one, so a pin without one
-  is a pin nobody can review. A `uses:` beginning `./` is exempt: a repository-local action or
-  reusable workflow moves with the commit that calls it, so there is no upstream to pin.
+- **Every action is pinned to an immutable reference, and names the version that reference is** — a
+  commit SHA, or an image digest where the action is a container. A tag is a pointer its owner can
+  move after anyone reviewed it; neither of those is. The version comment is what tells a reader what
+  the SHA stands for and what Dependabot rewrites when it bumps one, so a pin without one is a pin
+  nobody can review. A `uses:` beginning `./` is exempt: a repository-local action or reusable
+  workflow moves with the commit that calls it, so there is no upstream to pin.
 - **No workflow grants a write permission at the top level.** Every workflow declares a top-level
   `permissions:` block and every grant in it is `read` or `none`; a job needing more elevates in its
   own block, which is what confines `pages.yml`'s `pages: write` and `id-token: write` to the deploy
   job. Declaring no block at all fails rather than passing, because what it would inherit is a
   repository setting no check here can see.
-- **The scan fails if it discovers no workflow file.** A check with nothing to inspect finds no
-  violations and reports success, which is the same output as a check that has stopped working.
+- **A layout the check cannot read fails, and so does discovering no workflow file at all.** A scan
+  that skips what it does not recognise, or finds nothing to inspect, reports the same success as one
+  with nothing to report — so an unreadable `uses:` value, and an unreadable line inside a top-level
+  `permissions:` block, are failures rather than skips.
 
 **The repository-level default is not decidable here either.** `GITHUB_TOKEN`'s default permission
 sits behind the same admin-only API as the settings in § *Secret scanning*. It is read-only; the

@@ -1,7 +1,7 @@
 #!/usr/bin/env node
-// Every action a workflow uses is pinned to a commit SHA and says which version that is, and no
-// workflow grants GITHUB_TOKEN a write permission at the top level. See docs/CI.md § Action pins and
-// workflow privilege.
+// Every action a workflow uses is pinned to an immutable reference and says which version that is,
+// and no workflow grants GITHUB_TOKEN a write permission at the top level. A line this script cannot
+// read is a failure rather than a skip. See docs/CI.md § Action pins and workflow privilege.
 //
 // No dependencies: Node stdlib only, plain text scanning (no YAML parser) — matches
 // scripts/check-repo-silo.mjs's idiom.
@@ -25,13 +25,17 @@ if (workflows.length === 0) {
   process.exit(1);
 }
 
-const PINNED = /@[0-9a-f]{40}$/;
-// `uses:` and its value, and any comment trailing it. A reusable-workflow `uses:` at job level takes
-// the same forms as a step's.
-const USES = /^\s*(?:-\s*)?uses:\s*(\S+)\s*(?:#\s*(.*?)\s*)?$/;
+const SHA = /@[0-9a-f]{40}$/;
+const DIGEST = /@sha256:[0-9a-f]{64}$/;
+// `uses:` as a mapping key — at the head of a block entry, or inside a flow mapping.
+const USES = /(?:^|[-{,])\s*uses:\s*(.*)$/;
 // A top-level block opens at column zero; a job's own block is indented and may elevate.
 const TOP_LEVEL_PERMISSIONS = /^permissions:[^\S\n]*(\S.*)?$/;
-const GRANT = /^\s+([\w-]+):\s*"?([\w-]+)"?\s*$/;
+const GRANT = /^([\w-]+):\s*(\S+)$/;
+
+const uncomment = (text) => text.replace(/\s+#.*$/, "").trim();
+const unquote = (text) => text.replace(/^(['"])(.*)\1$/, "$2").trim();
+const version = (line) => line.match(/\s#\s*(\S.*?)\s*$/)?.[1] ?? "";
 
 let references = 0;
 
@@ -39,19 +43,32 @@ for (const path of workflows) {
   const lines = readFileSync(resolve(repoRoot, path), "utf8").split("\n");
 
   for (const [index, line] of lines.entries()) {
-    const match = USES.exec(line);
-    if (!match) continue;
-    const [, action, comment] = match;
+    if (/^\s*#/.test(line)) continue;
+    const key = USES.exec(line);
+    if (!key) continue;
     references += 1;
+    const where = `${path}:${index + 1}`;
+    // A flow mapping continues past the value, so the reference ends at the first ',' or '}'.
+    const action = unquote(uncomment(key[1]).split(/[,}]/)[0].trim());
+    if (!action) {
+      problems.push(`${where} declares 'uses:' with no value this script can read`);
+      continue;
+    }
     // A repository-local action or reusable workflow has no upstream to pin — docs/CI.md § Action
     // pins and workflow privilege.
     if (action.startsWith("./")) continue;
-    if (!PINNED.test(action)) {
-      problems.push(`${path}:${index + 1} uses '${action}', which is not pinned to a commit SHA`);
-    } else if (!comment) {
+    if (action.startsWith("docker://")) {
+      if (!DIGEST.test(action)) {
+        problems.push(`${where} uses '${action}', which is not pinned to an image digest`);
+      }
+      continue;
+    }
+    if (!SHA.test(action)) {
+      problems.push(`${where} uses '${action}', which is not pinned to a commit SHA`);
+    } else if (!version(line)) {
       problems.push(
-        `${path}:${index + 1} pins '${action}' but names no version — the comment is the only thing ` +
-          `that tells a reader what the SHA is`,
+        `${where} pins '${action}' but names no version — the comment is the only thing that tells ` +
+          `a reader what the SHA is`,
       );
     }
   }
@@ -62,24 +79,41 @@ for (const path of workflows) {
     continue;
   }
 
-  const inline = TOP_LEVEL_PERMISSIONS.exec(lines[opening])[1];
-  if (inline) {
-    if (inline !== "{}" && inline !== "read-all") {
-      problems.push(`${path}:${opening + 1} grants '${inline}' at the top level; use read-all or {}`);
-    }
+  const declared = uncomment(TOP_LEVEL_PERMISSIONS.exec(lines[opening])[1] ?? "");
+  if (declared === "read-all" || declared === "{}") continue;
+
+  const grants = [];
+  if (declared.startsWith("{")) {
+    // A flow mapping holds the whole block on the opening line.
+    const pairs = declared.replace(/^\{/, "").replace(/\}$/, "");
+    for (const pair of pairs.split(",")) grants.push([`${path}:${opening + 1}`, pair]);
+  } else if (declared) {
+    problems.push(`${path}:${opening + 1} grants '${declared}' at the top level; use read-all or {}`);
     continue;
+  } else {
+    let indent = null;
+    for (const [offset, line] of lines.slice(opening + 1).entries()) {
+      if (line.trim() === "" || /^\s*#/.test(line)) continue;
+      const depth = line.search(/\S/);
+      // A grant is indented under the key, so column zero is the next top-level key, and anything
+      // shallower than the first grant has dedented out of the block.
+      if (depth === 0 || (indent !== null && depth < indent)) break;
+      indent ??= depth;
+      grants.push([`${path}:${opening + offset + 2}`, line]);
+    }
   }
 
-  for (const line of lines.slice(opening + 1)) {
-    // Blank and comment lines sit inside the block; the block ends at the first line that is
-    // neither, and not a grant.
-    if (line.trim() === "" || /^\s*#/.test(line)) continue;
-    const grant = GRANT.exec(line);
-    if (!grant) break; // dedented out of the block: the next top-level key
+  for (const [where, text] of grants) {
+    const grant = GRANT.exec(uncomment(text));
+    // Breaking out here instead would leave every grant below the unreadable line unread.
+    if (!grant) {
+      problems.push(`${where} sits in the top-level 'permissions:' block and cannot be read: '${text.trim()}'`);
+      continue;
+    }
     const [, scope, level] = grant;
-    if (level !== "read" && level !== "none") {
+    if (unquote(level) !== "read" && unquote(level) !== "none") {
       problems.push(
-        `${path} grants '${scope}: ${level}' at the top level, where it reaches every job — ` +
+        `${where} grants '${scope}: ${level}' at the top level, where it reaches every job — ` +
           `elevate in the job that needs it`,
       );
     }

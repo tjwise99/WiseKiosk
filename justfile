@@ -56,7 +56,7 @@ check-repo-silo:
     node scripts/check-repo-silo.mjs
 
 [group('checks')]
-[doc('Every action is pinned to a commit SHA naming its version, and no workflow grants a write permission at the top level')]
+[doc('Every action is pinned to an immutable reference naming its version, and no workflow grants a write permission at the top level')]
 check-workflow-hardening:
     node scripts/check-workflow-hardening.mjs
 

@@ -40,7 +40,7 @@ jobs:
       - name: No manifest at the repository root, and every Dependabot entry resolves to its manifest
         run: node scripts/check-repo-silo.mjs
 
-      - name: Every action is SHA-pinned, and no workflow grants write at the top level
+      - name: Every action is pinned to an immutable reference, and no workflow grants write at the top level
         run: node scripts/check-workflow-hardening.mjs
 
       - name: Every `just verify` check runs in CI, and vice versa
@@ -177,7 +177,7 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          fetch-depth: 0 # full history — a secret is a secret even if a later commit removed it
+          fetch-depth: 0 # the scan walks the pull request's base..head range, which a shallow clone does not carry
       - name: gitleaks
         uses: gitleaks/gitleaks-action@e0c47f4f8be36e29cdc102c57e68cb5cbf0e8d1e # v3.0.0
         env:

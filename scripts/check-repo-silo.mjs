@@ -108,7 +108,9 @@ for (const entry of entries) {
 
 // The loop above exempts github-actions from the manifest rule, so its entry is asserted to exist
 // here instead. See docs/CI.md § Repository shape.
-if (!actions) {
+// Conditioned on the split above having produced entries: with none, the guard has already reported
+// why, and this would add a claim about the file that the parse cannot support.
+if (entries.length && !actions) {
   problems.push(".github/dependabot.yml declares no 'github-actions' entry, so action pins go stale");
 }
 
