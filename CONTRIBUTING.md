@@ -52,8 +52,13 @@ Current gates (they grow as code lands):
   requirement citation carries that item's header verbatim beside it.
 - `just check-adr-index` — the `decisions/` directory and its index table agree: every ADR has a
   row, every row a file, numbering contiguous from 0001.
-- `just check-repo-silo` — no manifest or `.venv/` at the repository root, and every Dependabot
-  entry that is not `github-actions` resolves to a non-root directory holding its manifest.
+- `just check-repo-silo` — no manifest or `.venv/` at the repository root, a `github-actions`
+  Dependabot entry exists, and every entry that is not `github-actions` resolves to a non-root
+  directory holding its manifest.
+- `just check-workflow-hardening` — every action a workflow uses is pinned to an immutable reference
+  naming the version it is, and no workflow grants a write permission at the top level; a job that
+  needs one elevates in its own block. A layout the check cannot read fails rather than being
+  skipped.
 - `just check-arch`  — the LikeC4 architecture model validates and its generated artifacts are not
   stale.
 - `just check-site`  — the documentation site builds clean with warnings-as-errors.

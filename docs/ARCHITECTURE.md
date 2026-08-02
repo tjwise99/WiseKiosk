@@ -160,7 +160,7 @@ scanning, and verify-CI parity — are [`CI.md`](CI.md)'s; no requirement states
 The posture **already enforced** (branch protection: all six checks required — `docs-and-hygiene`,
 `secret-scan`, `process`, `requirements`, `architecture`, `docs-site` — strict, admins bound; secret
 scanning with push protection, SHA-pinned Actions, least-privilege `GITHUB_TOKEN`, Dependabot for the
-Actions ecosystem) lives in `.github/` and the repo's branch-protection settings. `CI.md` carries the
-first-party and dependency/image scanning gates and verify-CI parity. Four are carried by nothing and
-this paragraph is their only record: secret scanning with push protection, SHA-pinned Actions, the
-least-privilege `GITHUB_TOKEN`, and Dependabot for the Actions ecosystem.
+Actions ecosystem) lives in `.github/` and the repo's branch-protection settings. What each of those
+asserts is [`CI.md`](CI.md)'s: the action pins, the top-level token grants and the Actions ecosystem
+entry are gated there, and secret scanning with push protection is recorded there as configuration no
+workflow token can read.

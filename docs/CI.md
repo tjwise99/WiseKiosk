@@ -16,10 +16,12 @@ where a gate is unbuilt its ticket is named. That is how this project records sc
 
 Not everything CI does is a gate. These produce material a person acts on.
 
-- **Grouped dependency update proposals.** Dependabot carries one entry per application ecosystem —
-  `gomod` and `npm` — each with a non-empty `groups` key, so an ecosystem's updates arrive as one
-  reviewable change rather than a dozen. The entries are derived from the manifests discovered in the
-  tree, so the configuration cannot be correct while an ecosystem is missing.
+- **Grouped dependency update proposals.** Dependabot carries one entry per ecosystem present in the
+  tree — `github-actions` at the root, and the `pip` and `npm` entries pointing at the silos holding
+  the documentation toolchains' manifests; `gomod` and the application `npm` entry join them with the
+  manifests they need. Each carries a non-empty `groups` key, so an ecosystem's updates arrive as one
+  reviewable change rather than a dozen. That the `github-actions` entry exists and every other entry
+  resolves to its manifest is § *Repository shape*'s.
 - **Code-scanning results.** Every static-analysis finding is reported to the repository's
   code-scanning dashboard and annotated on the pull request, whether or not it fails the build.
 - **Complete scan output.** The vulnerability gates report every advisory they resolve — at any
@@ -100,6 +102,36 @@ finding has a current register entry.
 
 This is what covers operating-system and base-layer packages. The source-level dependency gate never
 inspects them.
+
+## Secret scanning
+
+A pull request, and every push to the default branch, is scanned for committed credentials, and a
+finding fails the merge. The scan walks **the commits the event carries** rather than the tree at its
+tip — the pull request's own commits, or the commits a push delivered — so a secret added and then
+removed within one branch still fails: the value is compromised from the moment it is pushed, and the
+commit that removes it changes nothing.
+
+**What that shape does not reach**, and what may therefore not be read into a green result: history
+behind the branch point, which this gate does not re-read; a commit reachable only through a merge's
+second parent, because the walk follows first parents and skips merges; and the tail of a range longer
+than the event's own commit list, which is only as long as the API page or the webhook payload that
+carries it — a batch push or a force-push after a rebase reaches that bound without being
+remarkable. The scan is pattern-based besides, so it catches the credential shapes it holds rules for
+and nothing reports what it missed. It raises the cost of committing a credential; it is not an
+assertion that the repository holds none, and the delivery rules the tree carries stand independently
+of it.
+
+**What no check here decides.** GitHub's own secret scanning and its push protection are repository
+settings rather than files. Reading one directly means reading `security_and_analysis` on the
+repository object, which is returned only to an administrator, and the workflow `permissions:` key
+offers no scope a job could request to become one. That indirect route — asking whether the scanner has
+produced anything — is closed as well: the secret-scanning alerts endpoint answers a
+workflow token `403 Resource not accessible by integration` even where the job requests
+`security-events: read` — a scope that does reach code scanning from the same job, so the refusal is
+the endpoint's rather than the grant's. No gate here decides whether either setting is on. The
+alternative is a standing admin credential held in the repository so that a job can read one, which is
+a larger hole than it closes; the scan above stands on the merge path either way. Both settings are
+enabled, and this paragraph rather than a check is what records it.
 
 ## Publishing and provenance
 
@@ -208,7 +240,35 @@ changed, which the citation resolver above decides without anyone declaring anyt
 - A depth-1 listing of the repository root holds no `package.json`, `go.mod`, `pyproject.toml`,
   `requirements*.txt` or `.venv/` — tooling is siloed with the feature it serves — and every
   Dependabot entry that is not `github-actions` resolves to a non-root directory holding the matching
-  manifest.
+  manifest. `github-actions` is exempt from that rule because its manifests are the workflow files,
+  which are siloed nowhere, so its entry is asserted to exist instead — an exemption is otherwise
+  granted to an entry nothing obliges, and without the entry the pins below stop being updated and
+  nothing says so.
+
+## Action pins and workflow privilege
+
+The workflows are themselves a supply chain and themselves privileged. Both are decidable from the
+files, which is why they are gates here rather than settings recorded elsewhere.
+
+- **Every action is pinned to an immutable reference, and names the version that reference is** — a
+  commit SHA, or an image digest where the action is a container. A tag is a pointer its owner can
+  move after anyone reviewed it; neither of those is. The version comment is what tells a reader what
+  the SHA stands for and what Dependabot rewrites when it bumps one, so a pin without one is a pin
+  nobody can review. A `uses:` beginning `./` is exempt: a repository-local action or reusable
+  workflow moves with the commit that calls it, so there is no upstream to pin.
+- **No workflow grants a write permission at the top level.** Every workflow declares a top-level
+  `permissions:` block and every grant in it is `read` or `none`; a job needing more elevates in its
+  own block, which is what confines `pages.yml`'s `pages: write` and `id-token: write` to the deploy
+  job. Declaring no block at all fails rather than passing, because what it would inherit is a
+  repository setting no check here can see.
+- **A layout the check cannot read fails, and so does discovering no workflow file at all.** A scan
+  that skips what it does not recognise, or finds nothing to inspect, reports the same success as one
+  with nothing to report — so an unreadable `uses:` value, and an unreadable line inside a top-level
+  `permissions:` block, are failures rather than skips.
+
+**The repository-level default is not decidable here either.** `GITHUB_TOKEN`'s default permission
+sits behind the same admin-only API as the settings in § *Secret scanning*. It is read-only; the
+top-level blocks are what a check can see, and they are what the rule above constrains.
 
 ## Module and framework structure
 

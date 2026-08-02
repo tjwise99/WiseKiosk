@@ -71,9 +71,13 @@ if (entries.length === 0) {
 }
 
 let checked = 0;
+let actions = false;
 for (const entry of entries) {
   const ecosystem = entry.match(/^\s*- package-ecosystem:\s*"?([\w-]+)"?/m)?.[1];
-  if (ecosystem === "github-actions") continue;
+  if (ecosystem === "github-actions") {
+    actions = true;
+    continue;
+  }
   checked += 1;
   const directory = entry.match(/^\s*directory:\s*"?([^"\n]+?)"?\s*$/m)?.[1];
   if (!directory) {
@@ -102,11 +106,20 @@ for (const entry of entries) {
   }
 }
 
+// The loop above exempts github-actions from the manifest rule, so its entry is asserted to exist
+// here instead. See docs/CI.md § Repository shape.
+// Conditioned on the split above having produced entries: with none, the guard has already reported
+// why, and this would add a claim about the file that the parse cannot support.
+if (entries.length && !actions) {
+  problems.push(".github/dependabot.yml declares no 'github-actions' entry, so action pins go stale");
+}
+
 if (problems.length) {
   console.error(`check-repo-silo: tooling is not siloed (${problems.length}):`);
   for (const problem of problems) console.error("  " + problem);
   process.exit(1);
 }
 console.log(
-  `Repository root holds no manifest, and ${checked} Dependabot entr(ies) resolve to their manifests.`,
+  `Repository root holds no manifest, github-actions is covered, and ${checked} Dependabot ` +
+    `entr(ies) resolve to their manifests.`,
 );

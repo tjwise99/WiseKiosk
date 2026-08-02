@@ -51,9 +51,14 @@ check-adr-index:
     node scripts/check-adr-index.mjs
 
 [group('checks')]
-[doc('No manifest at the repository root, and every Dependabot entry resolves to a non-root directory holding its manifest')]
+[doc('No manifest at the repository root, github-actions is covered, and every other Dependabot entry resolves to a non-root directory holding its manifest')]
 check-repo-silo:
     node scripts/check-repo-silo.mjs
+
+[group('checks')]
+[doc('Every action is pinned to an immutable reference naming its version, and no workflow grants a write permission at the top level')]
+check-workflow-hardening:
+    node scripts/check-workflow-hardening.mjs
 
 [group('checks')]
 [doc('Every `just verify` check also runs in CI, and vice versa')]
@@ -104,4 +109,4 @@ arch-dev:
 
 [group('checks')]
 [doc('Run every check the PR gate runs')]
-verify: check-links check-eol check-branch check-reqs check-citations check-arch check-site check-adr-index check-repo-silo check-verify-ci-parity
+verify: check-links check-eol check-branch check-reqs check-citations check-arch check-site check-adr-index check-repo-silo check-workflow-hardening check-verify-ci-parity
