@@ -16,13 +16,13 @@ Each tier states what it **guarantees** and when it runs.
 | Tier | Guarantees | Specified by | Runs |
 |---|---|---|---|
 | **Unit** | Shaping libraries transform known upstream responses into correct payloads. Pure, fast, no network | [module contract](contracts/module-contract.md), part 1 | Every commit, in CI |
-| **Boundary** | The frontend and backend agree on every value that crosses: parameter names *and types*, success payloads, the structured upstream-failure body, the client-error rejection body, and every status code the frontend discriminates on | SYS005 <!-- Single-definition internal contract --> / SRS015 <!-- One schema, all boundary value classes --> | Every commit, in CI |
-| **Integration** | Routes serve; the TTL cache honours its TTL; parameter validation rejects bad input; config validation fails loudly on bad config | SRS009 <!-- Every source reachable through the backend, statelessly --> / SRS011 <!-- Upstream request rate is bounded, and the bound is not operator-tunable --> / SRS012 <!-- Request parameters validated against known-good per-source patterns --> / SRS002 <!-- A module-scoped configuration error is reported at that module --> | Every commit, in CI |
-| **Render** | Each module renders from its props; the page assembles with a known-good config | [module contract](contracts/module-contract.md), part 3 / SRS017 <!-- Full-screen assembly at kiosk; reflow, not overlap, at narrower widths --> | Every commit, in CI |
+| **Boundary** | The frontend and backend agree on every value that crosses: parameter names *and types*, success payloads, the structured upstream-failure body, the client-error rejection body, and every status code the frontend discriminates on | SYS005<!-- Single-definition internal contract --> / SRS015<!-- One schema, all boundary value classes --> | Every commit, in CI |
+| **Integration** | Routes serve; the TTL cache honours its TTL; parameter validation rejects bad input; config validation fails loudly on bad config | SRS009<!-- Every source reachable through the backend, statelessly --> / SRS011<!-- Upstream request rate is bounded, and the bound is not operator-tunable --> / SRS012<!-- Request parameters validated against known-good per-source patterns --> / SRS002<!-- A module-scoped configuration error is reported at that module --> | Every commit, in CI |
+| **Render** | Each module renders from its props; the page assembles with a known-good config | [module contract](contracts/module-contract.md), part 3 / SRS017<!-- Full-screen assembly at kiosk; reflow, not overlap, at narrower widths --> | Every commit, in CI |
 | **Contract** | Upstream APIs still return what the shaping libraries expect | this document | Fixtures every commit, in CI; a live run on a schedule, off the merge path |
 
 The Boundary row enumerates the value classes deliberately: "payload shape and parameter name" reads
-narrower than SRS015 <!-- One schema, all boundary value classes -->, and an error body or a status
+narrower than SRS015<!-- One schema, all boundary value classes -->, and an error body or a status
 code left out of the schema is exactly the value that crosses unproven.
 
 ### Where the Contract tier runs, and how it reaches upstream
@@ -60,8 +60,8 @@ credential, deliberately.
 **Decided 2026-07-28 by the owner: no requirement.** Nothing WiseKiosk does can violate "an upstream
 still returns what we expect" — that obligation is on somebody else's API. The half that *is* ours,
 what the product does when an upstream returns something the shaping library did not expect, is
-already **SRS001 <!-- A failed module shows why, and only that module -->**, and
-`TST001` <!-- Pending: upstream-failure error payload test --> names malformed payload as one of its
+already **SRS001<!-- A failed module shows why, and only that module -->**, and
+`TST001`<!-- Pending: upstream-failure error payload test --> names malformed payload as one of its
 failure classes. A tree item here would restate it. What is left is machinery: recording a fixture
 is a procedure an author follows, and a scheduled credentialed job is a repository-facing check, so
 both sit in [`CI.md § Upstream contract checks`](CI.md#upstream-contract-checks)
@@ -80,14 +80,14 @@ sides generated from it**. The tier's job in CI is to prove the generation is re
   ([ADR 0008](decisions/0008-boundary-contract-openapi-codegen.md)), the CI drift gate that fails on
   committed output differing from a fresh regeneration, and version-pinning of the generators so
   regeneration is deterministic. Generation from one schema is
-  **SRS015 <!-- One schema, all boundary value classes -->** and the drift gate is verified under
-  **SRS016 <!-- Both sides consume the generated types -->**; the version pin itself is no
+  **SRS015<!-- One schema, all boundary value classes -->** and the drift gate is verified under
+  **SRS016<!-- Both sides consume the generated types -->**; the version pin itself is no
   requirement's — it is a repository convention, in
   [`CI.md § Publishing and provenance`](CI.md#publishing-and-provenance).
 - That the generated types are the ones actually *used* on both sides, including the per-module
   error-render path, rather than shadowed by a hand-declared twin —
-  **SRS016 <!-- Both sides consume the generated types -->**, under
-  **SYS005 <!-- Single-definition internal contract -->**.
+  **SRS016<!-- Both sides consume the generated types -->**, under
+  **SYS005<!-- Single-definition internal contract -->**.
 - That the frontend adds no second, runtime validator over proxied payloads, so agreement rests on
   the schema and the drift gate rather than a bundled re-check —
   [ADR 0008](decisions/0008-boundary-contract-openapi-codegen.md). No requirement states this: it was
@@ -110,9 +110,9 @@ module contract or [`../tools/README.md`](../tools/README.md) where it is not
 checked against, rather than prose alone.
 
 - **Every value crossing the frontend/backend boundary is generated from one definition** →
-  SYS005 <!-- Single-definition internal contract --> /
-  SRS015 <!-- One schema, all boundary value classes --> /
-  SRS016 <!-- Both sides consume the generated types -->, and
+  SYS005<!-- Single-definition internal contract --> /
+  SRS015<!-- One schema, all boundary value classes --> /
+  SRS016<!-- Both sides consume the generated types -->, and
   [above](#the-boundary-tier-is-generated-not-hand-written).
 - **Every module supplies a render test for its component, and — where it registers against an
   external source — unit tests for its shaping library.** A module with no registration entry is a
@@ -122,9 +122,9 @@ checked against, rather than prose alone.
   cover is stated here. The module contract lists tests as part 6 of what a module supplies and
   defers to this section for what they prove.
 - **Every config schema rejects a realistic malformed input, in a test** →
-  SRS002 <!-- A module-scoped configuration error is reported at that module --> (a config error
+  SRS002<!-- A module-scoped configuration error is reported at that module --> (a config error
   isolatable to one module is reported there and never silently worked around) and
-  SRS005 <!-- One validation implementation --> (the schema's rules are enforced by one
+  SRS005<!-- One validation implementation --> (the schema's rules are enforced by one
   implementation, so an unknown key is rejected and named). The operator is not the author, so
   validation failing correctly and legibly is a product feature, and it is tested as one.
 - **The standalone validator is exercised against known-good and known-bad configs** →

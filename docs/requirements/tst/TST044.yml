@@ -4,14 +4,14 @@ header: |
   Pending: task count does not grow without bound
 level: 1.4
 links:
-- SRS022: kBPfCbUCf_y6fylGo5WPyvRw_wVve7LycdYKdZFpjgs=
+- SRS022: 538EqpdHbQ1nebfzQj8OBwdB2Xo-7GVRXa8mb1_IKWc=
 normative: true
 rationale: |
   A goroutine leak shows in neither resident memory nor handle count until it is far advanced, so
   neither sibling item catches it. Sampled in the run
-  TST004 <!-- Pending: resident memory does not grow without bound --> describes.
+  TST004<!-- Pending: resident memory does not grow without bound --> describes.
 ref: ''
-reviewed: T44nGrrEZDiAJuMzgpTykqEmvmzSV3vnqv2aej0xPhc=
+reviewed: WlE3mZT7Nqen6lv0UcNKpB7H-hHHphAi62trRvqmOng=
 status: proposed
 text: |
   Pending: over the shared instrumented run, failing on any increase in the runtime's task count between

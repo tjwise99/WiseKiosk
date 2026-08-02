@@ -30,12 +30,12 @@ the same prefixes and the same gate.
 and failure rendering are already obliged for every module by framework items. A module need
 decomposes into what is true of that module and nothing else. The decomposition list above is
 bounded by this: an earlier draft named *parameters* and *failure states*, which are
-`SRS012` <!-- Request parameters validated against known-good per-source patterns --> and
-`SRS001` <!-- A failed module shows why, and only that module --> — a module author following it
+`SRS012`<!-- Request parameters validated against known-good per-source patterns --> and
+`SRS001`<!-- A failed module shows why, and only that module --> — a module author following it
 literally would have written both twice.
 
 No gate can decide this. Doorstop cannot see that a module need restates
-`SYS001` <!-- Failure is legible and proportionate -->, so the rule is carried where every other
+`SYS001`<!-- Failure is legible and proportionate -->, so the rule is carried where every other
 unmachineable obligation in this project is carried: as a question on
 [`CONTRIBUTING.md`](../../CONTRIBUTING.md)'s review checklist, reached from the pull-request
 template. An authoring rule with no activation path is the dead letter
@@ -80,11 +80,11 @@ non-technical reader can validate the product against, which is what the need ti
 
 **Until one lands, nothing in the tree says the display shows anything.** The framework needs are
 satisfied by a build that fetches correctly, proxies correctly, fails legibly and renders empty
-regions — `SYS002`'s <!-- The configured layout renders whole --> *"wholly visible"* is a layout
+regions — `SYS002`'s<!-- The configured layout renders whole --> *"wholly visible"* is a layout
 property an empty region of the right size passes. That is scope rather than omission, and the shape
 is deliberate: what a module shows differs per module, so it is stated per module, while a module's
 *failure* state looks the same whatever module owns it and is therefore a framework universal
-(`SRS001` <!-- A failed module shows why, and only that module -->). Adding a framework requirement
+(`SRS001`<!-- A failed module shows why, and only that module -->). Adding a framework requirement
 that modules display their data would be the generic hat rejected above.
 
 **The extensibility need stays dissolved.** *"A display module shall be addable and removable as a

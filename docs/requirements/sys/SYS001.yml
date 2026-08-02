@@ -12,7 +12,7 @@ rationale: |
   all legitimately may — the bound is what the failure requires, not a fixed blast radius. Stated as
   containment it would have been satisfiable by defining "the part that failed" as everything.
 ref: ''
-reviewed: 6qFC_CQhjx9LmDh-ODsNnVL1vJeEfMTJLKl3dXhLnr8=
+reviewed: VGhozQiiHRgx8gA75WcFC3WXgp9KCc4dS_FDyA8tuGg=
 status: accepted
 text: |
   Every failure shall be legible on the display, and shall degrade no more of it than the failure
@@ -21,10 +21,10 @@ verification-justification: |
   Each child asserts a rendered state against an induced failure, so the parent is settled by its
   children. What no check settles is whether the resulting text is intelligible to a person who did
   not write it; the plain-language obligations in
-  SRS001 <!-- A failed module shows why, and only that module -->,
-  SRS002 <!-- A module-scoped configuration error is reported at that module -->,
-  SRS004 <!-- Page renders a legible error state for every configuration failure class --> and
-  SRS026 <!-- The display says when the backend is gone --> are read at review. This sentence is the
+  SRS001<!-- A failed module shows why, and only that module -->,
+  SRS002<!-- A module-scoped configuration error is reported at that module -->,
+  SRS004<!-- Page renders a legible error state for every configuration failure class --> and
+  SRS026<!-- The display says when the backend is gone --> are read at review. This sentence is the
   corpus's only record that legibility is a human review obligation, so the items it names must be
   the ones that carry a plain-language clause.
 verification-method: test

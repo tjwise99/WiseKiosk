@@ -33,6 +33,7 @@ const CHECK_TOKENS = {
     "scripts/validate-tree.sh",
     "scripts/check-method-consistency.py",
     "scripts/check-text-citations.py",
+    "scripts/check-headers.py",
   ],
   "check-citations": ["scripts/check-citations.py"],
   "check-arch": ["scripts/splice-arch-diagrams.mjs"],
@@ -63,10 +64,18 @@ for (const check of Object.keys(CHECK_TOKENS)) {
   }
 }
 
+// Searched instead of the whole file: a token in a comment names no step that runs, and a token in
+// a step's `name:` describes one rather than invoking it. Either would satisfy a plain text search
+// while the step it stands for was deleted.
+const runningText = workflowText
+  .split("\n")
+  .filter((line) => !/^\s*#/.test(line) && !/^\s*- name:/.test(line))
+  .join("\n");
+
 for (const [check, tokens] of Object.entries(CHECK_TOKENS)) {
   for (const token of tokens) {
-    if (!workflowText.includes(token)) {
-      fail(`'${check}' (token '${token}') is in \`just verify\` but not found in .github/workflows/checks.yml`);
+    if (!runningText.includes(token)) {
+      fail(`'${check}' (token '${token}') is in \`just verify\` but no step in .github/workflows/checks.yml runs it`);
     }
   }
 }

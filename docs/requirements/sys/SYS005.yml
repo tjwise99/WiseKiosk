@@ -11,9 +11,9 @@ rationale: |
   component whose prop is typed with a generated type is a consumer, not a second declaration. Scope
   is internal: upstream API shapes are defined by whoever runs the API, and the configuration format
   is shared with the operator and governed by
-  SYS003 <!-- A deployment is parameterised from outside the image -->.
+  SYS003<!-- A deployment is parameterised from outside the image -->.
 ref: ''
-reviewed: Me6U5pYUXv4U34oOzGsnuf5cJhk8hKJCUOHnYAItK18=
+reviewed: 1vWnTV-wqKezKhWG5FGQ2wWC5KuV43D2fs51K1aIHt0=
 status: accepted
 text: |
   Every shape shared between WiseKiosk's own components shall have exactly one machine-readable

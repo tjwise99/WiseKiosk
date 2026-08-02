@@ -38,6 +38,7 @@ check-reqs:
     sh scripts/validate-tree.sh
     docs/requirements/.venv/bin/python scripts/check-method-consistency.py
     docs/requirements/.venv/bin/python scripts/check-text-citations.py
+    docs/requirements/.venv/bin/python scripts/check-headers.py
 
 [group('checks')]
 [doc('Every requirement identifier and ADR number cited in documentation or item prose resolves, and every requirement citation carries its item header')]

@@ -35,6 +35,10 @@ docs/site/_build/
 coverage/
 *.log
 
+# Python bytecode — the checks in scripts/ run from the siloed venvs and leave this behind
+__pycache__/
+*.pyc
+
 # OS / editor
 .DS_Store
 Thumbs.db

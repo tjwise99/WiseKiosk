@@ -8,11 +8,11 @@ links:
 normative: true
 rationale: |
   The configuration is the one channel a client fetches wholesale, so the confinement
-  (SYS003 <!-- A deployment is parameterised from outside the image -->) is structural only if the
+  (SYS003<!-- A deployment is parameterised from outside the image -->) is structural only if the
   configuration cannot carry a secret in the first place. Excluding secret-bearing keys from the
   schema leaves nothing to strip; a denylist applied at delivery would fail open.
 ref: ''
-reviewed: KnUcT5V65rXLmeLg-2pfB8k9xJtyfKJHMcT1zxmnU3Q=
+reviewed: F0fBl-uN8WrauV31tM4sPli1rhU0vf5rciYGudK6Oho=
 status: accepted
 text: |
   The configuration schema shall offer no key whose value is a secret —

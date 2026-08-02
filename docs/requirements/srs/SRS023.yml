@@ -7,28 +7,28 @@ links:
 - SYS006: v3qSjDNbCins9CcqouJY2Vp6K1NhBAlUsPS8az2R1Kc=
 normative: true
 rationale: |
-  Makes SYS006's <!-- Neither grant privilege nor require it --> security model falsifiable. The
+  Makes SYS006's<!-- Neither grant privilege nor require it --> security model falsifiable. The
   posture itself — a deployment serves exactly one trusted LAN — is a fact about where the system is
   installed, which no check inside the repository can decide. What can be decided is the absence the
   model rests on, and that absence is precisely what stops being true quietly: a session added for
   convenience, an access check added by reflex during a later security pass.
-  SYS006's <!-- Neither grant privilege nor require it --> rationale exists to stop that "fix"; this
+  SYS006's<!-- Neither grant privilege nor require it --> rationale exists to stop that "fix"; this
   requirement is what lets a gate stop it. The observable forms — no session or authentication
   material in a response, no 401 or 403, no identity middleware on the request path — are
-  TST015 <!-- Pending: no credential material on the wire, over every registered route -->,
-  TST019 <!-- Pending: no identity-based rejection, in the contract or on the wire --> and
-  TST020's <!-- Pending: the registered middleware chain is exactly the declared one -->, one
+  TST015<!-- Pending: no credential material on the wire, over every registered route -->,
+  TST019<!-- Pending: no identity-based rejection, in the contract or on the wire --> and
+  TST020's<!-- Pending: the registered middleware chain is exactly the declared one -->, one
   apiece. Listing them here would be the requirement enumerating its own children.
 
-  SRS009 <!-- Every source reachable through the backend, statelessly --> states statelessness as a
+  SRS009<!-- Every source reachable through the backend, statelessly --> states statelessness as a
   transport property of the proxy route, and this requirement restates the observable half as a
   security posture. The duplication is deliberate:
-  SRS009's <!-- Every source reachable through the backend, statelessly --> obligation would be
+  SRS009's<!-- Every source reachable through the backend, statelessly --> obligation would be
   satisfied by a route contract rewrite that kept per-request determinism while introducing an
   identity mechanism elsewhere, and the posture must outlive that. Stated here so the overlap does
   not read as an oversight.
 ref: ''
-reviewed: q9YqAAzeXH9oMXGtM7B9nQUJPMkn2MMs-E-gAco0WAY=
+reviewed: Mw5FmnQ32_9EQXqgHAmaSfJiEjuLNWDuYfrlAOSX0Gw=
 status: proposed
 text: |
   The backend shall establish no client identity and shall gate no route on one.

@@ -8,7 +8,7 @@ links:
 normative: true
 rationale: |
   A declared minimum host has no headroom to absorb a leak, so unbounded growth breaks the claim
-  SYS007 <!-- The declared minimum host, and staying within it --> makes. Stated so it is provable
+  SYS007<!-- The declared minimum host, and staying within it --> makes. Stated so it is provable
   early — from a bounded instrumented run rather than a full-length soak — and continuously, rather
   than only at a pre-release demonstration.
 
@@ -17,7 +17,7 @@ rationale: |
   to a check rather than to this obligation, and an enumeration here would
   otherwise be read as the complete list of what may not leak.
 ref: ''
-reviewed: uBk5Fae_TwZzoaCkfY6eFhjEMiFzwDkWpTR7JLNQ1EQ=
+reviewed: BT5IDdJPmgF5S9_XRTOvDrB7B0DuYVTDWS9kRYh3TsY=
 status: accepted
 text: |
   The backend's running footprint shall stay bounded: no resource it holds shall grow without bound

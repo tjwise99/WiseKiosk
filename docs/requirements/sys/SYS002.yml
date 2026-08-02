@@ -11,10 +11,10 @@ rationale: |
   property rather than three observables — none of them is a separate want. "The display it was
   configured for" carries the kiosk-primary, desktop-secondary distinction without fixing viewports
   in the need;
-  SRS017 <!-- Full-screen assembly at kiosk; reflow, not overlap, at narrower widths --> owns those.
+  SRS017<!-- Full-screen assembly at kiosk; reflow, not overlap, at narrower widths --> owns those.
   Phone widths are deliberately not a requirement.
 ref: ''
-reviewed: DI697gkUFc6ErHyYrqQ1wgJVe6QoejFvV-vgSYfv3Bs=
+reviewed: 7SUfOJEsZezu9KnDJgQyhRHtIyI0db2eT2uOxRUfXtc=
 status: accepted
 text: |
   Every configured module shall be wholly visible on the display it was configured for.

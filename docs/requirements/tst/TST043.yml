@@ -4,14 +4,14 @@ header: |
   Pending: handle count does not grow without bound
 level: 1.4
 links:
-- SRS022: kBPfCbUCf_y6fylGo5WPyvRw_wVve7LycdYKdZFpjgs=
+- SRS022: 538EqpdHbQ1nebfzQj8OBwdB2Xo-7GVRXa8mb1_IKWc=
 normative: true
 rationale: |
   A descriptor leak and a memory leak are separate failures with separate thresholds: a process can
   hold its memory flat while exhausting the host's descriptors. Sampled in the run
-  TST004 <!-- Pending: resident memory does not grow without bound --> describes.
+  TST004<!-- Pending: resident memory does not grow without bound --> describes.
 ref: ''
-reviewed: HOdtuT6CQhzY2U3i-tx1O1Ny93XCpX_UkZkz1TFHXiI=
+reviewed: -unJvDOLePjNx4UA0nLJHjGoOI9r2P-3qIBPB5L-ZzE=
 status: proposed
 text: |
   Pending: over the shared instrumented run, failing on a monotonic increase in the backend's handle

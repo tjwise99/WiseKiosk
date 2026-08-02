@@ -60,18 +60,18 @@ owner challenged it; it fell; the allocation below is what remains when it does.
 ## Consequences
 
 - Page-load and desk validation are one implementation
-  (SRS005 <!-- One validation implementation -->); the engine ships in the bundle — acceptable for a
+  (SRS005<!-- One validation implementation -->); the engine ships in the bundle — acceptable for a
   small schema, even on a Pi-Zero-class browser — and as a packaged CLI, a distribution question the
   generator has in every variant.
 - The validation report never crosses the frontend/backend boundary: one less payload in the
   contract, and the boundary-contract domain (#37) is untouched by configuration.
 - The apply floor improves: edit the file, reload the page — no container restart, rebuild, or
-  redeploy (SRS003 <!-- A configuration change applies no later than the next page load -->).
+  redeploy (SRS003<!-- A configuration change applies no later than the next page load -->).
 - A future remote config editor composes naturally: same schema, same engine.
 - The page shell acquires a hard obligation to load and render diagnostics without a valid
-  configuration (TST010 <!-- Pending: configuration failure-class render test -->).
+  configuration (TST010<!-- Pending: configuration failure-class render test -->).
 - The freshness floor
-  (SRS003 <!-- A configuration change applies no later than the next page load -->) is
+  (SRS003<!-- A configuration change applies no later than the next page load -->) is
   frontend-owned: the page must fetch the configuration bypassing HTTP caches (`cache: 'no-store'`
   or equivalent), because the conventional server-side fix — a no-cache header on the config path —
   is a config-aware code path this decision forbids.

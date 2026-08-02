@@ -11,10 +11,10 @@ rationale: |
   that path rather than of two separately reachable behaviours. Splitting them across two checks
   would let each pass against a different code path and leave the branch itself untested - which is
   what the
-  SRS002 <!-- A module-scoped configuration error is reported at that module -->/SRS004 <!-- Page renders a legible error state for every configuration failure class -->
+  SRS002<!-- A module-scoped configuration error is reported at that module -->/SRS004<!-- Page renders a legible error state for every configuration failure class -->
   pair did before.
 ref: ''
-reviewed: gUOqjY2Q7E4bb5SoG-UcNCbQU-OWGhPiUqbC4gqf0XY=
+reviewed: tbxWc-4UIdU4sORpz6FEMWBXXwXSp0MRnY4kdE-NFjY=
 status: proposed
 text: |
   Pending: render test driving two fixtures through the same validation path and asserting opposite

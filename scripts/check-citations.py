@@ -1,27 +1,10 @@
 #!/usr/bin/env python3
 """Every citation names something that exists, and requirement citations carry the item's header.
 
-A bare identifier is a pointer with no meaning of its own. A renumber rewrites `links:` and leaves
-every sentence pointing at whatever now occupies the number, and the prose still reads as correct —
-so an identifier alone can go silently wrong in a way no reader notices. Repeating the header beside
-it makes the citation self-describing: the name carries the meaning, the number is only the handle,
-and a drifted pair is a mismatch a machine can see.
+The rule, its exemptions and the reasoning for each are `docs/CI.md` § Documentation integrity.
 
-ADR numbers are exempt from the header rule. They are chronological and immutable
-(`docs/decisions/README.md`), so the number cannot come to mean a different decision; only its
-existence is checked.
-
-An identifier followed by `.yml` names an item's own file rather than citing the item, so it is not
-a citation and carries no header.
-
-A header written as an HTML comment may not open a line that continues a paragraph. CommonMark reads
-a line-initial `<!--` as an HTML block, which interrupts the paragraph and splits it in two — visible
-on the rendered page, invisible in the source, and reported by nothing else: the comment is still a
-comment, the prose still reads correctly, and Sphinx does not warn. A comment opening a line after a
-blank one is a block already and is left alone.
-
-Scope is resolution, the header pair, and that placement. Whether a cited item is accepted, and
-whether the sentence means the item it names, is beyond this.
+Scope is resolution, the header pair, and the comment's placement. Whether a cited item is accepted,
+and whether the sentence means the item it names, is beyond this.
 """
 
 import re
@@ -94,15 +77,25 @@ def item_sources(tree_items):
             yield path.relative_to(ROOT).as_posix(), value, start + 2
 
 
-def follows(text, header):
-    """The text right after a citation begins with the header, once the markup between them is out
-    of the way: the identifier's own closing backtick or possessive clitic, the HTML comment markers,
-    and a blockquote marker continuing the line the citation sits on."""
-    window = re.sub(r"\n\s*>", "\n", text[: len(header) + 200])
-    window = re.sub(r"^(?:\s*(?:`|'s))+", "", window)
-    for token in ("<!--", "-->", "`"):
-        window = window.replace(token, " ")
-    return " ".join(window.split()).casefold(), " ".join(header.split()).casefold()
+def normalise(text):
+    """One normaliser, applied to both sides of every comparison. A line break and the blockquote
+    marker continuing it are whitespace between the identifier and its header, not text separating
+    them; case and run length do not signify. Normalising the header the same way is what lets a
+    header contain a character the surrounding markup also uses."""
+    return " ".join(re.sub(r"\n[^\S\n]*>?", " ", text).split()).casefold()
+
+
+def annotation(text):
+    """The header a citation carries, and the form it was written in. The identifier's own closing
+    backtick and possessive clitic may sit between the two; whitespace may not — a space there
+    outlives the comment into the rendered page as a gap before the following punctuation."""
+    rest = re.sub(r"^(?:`|'s|')+", "", text)
+    if rest.startswith("<!--"):
+        end = rest.find("-->")
+        return ("comment", rest[4:end]) if end != -1 else ("unterminated", "")
+    if re.match(r"\s+<!--", rest):
+        return ("loose", "")
+    return ("missing", "")
 
 
 def interrupting_comments(source, text):
@@ -122,17 +115,27 @@ def check(source, text, item_headers, adrs, base=1):
     problems = []
     for match in UID.finditer(text):
         uid = match.group()
-        if text[match.end() :].startswith(".yml"):
-            continue  # an item's own filename, not a citation
         line = base + text.count("\n", 0, match.start())
         if uid not in item_headers:
             problems.append(f"{source}:{line}  {uid}  names no item in the requirements tree")
             continue
-        found, expected = follows(text[match.end() :], item_headers[uid])
-        if not found.startswith(expected):
+        if text[match.end() :].startswith(".yml"):
+            continue  # an item's own filename: it resolves, and names rather than cites the item
+        expected = normalise(item_headers[uid])
+        kind, carried = annotation(text[match.end() :])
+        if kind == "loose":
+            problems.append(
+                f"{source}:{line}  {uid}  whitespace separates the identifier from its header"
+                f" — close it up, or the gap renders as one before the punctuation that follows"
+            )
+        elif kind == "unterminated":
+            problems.append(f"{source}:{line}  {uid}  opens a header comment that never closes")
+        elif kind == "missing":
+            problems.append(f"{source}:{line}  {uid}  carries no header comment")
+        elif kind == "comment" and normalise(carried) != expected:
             problems.append(
                 f"{source}:{line}  {uid}  expected the item's header '{item_headers[uid]}'"
-                f", found '{found[: len(expected)]}'"
+                f", found '{normalise(carried)}'"
             )
     for match in ADR.finditer(text):
         if match.group(1) not in adrs:

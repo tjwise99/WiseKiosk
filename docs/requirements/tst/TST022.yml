@@ -4,7 +4,7 @@ header: |
   Pending: canary-secret leak test
 level: 1.18
 links:
-- SRS008: dYIx7sWxaBEt2APvpnDp3Oo93w366HpijWs6-9yI840=
+- SRS008: zPNR94VDLVTvYhIrdW2Uhq-1ldORxMZEtF-Y1cLAbdc=
 normative: true
 rationale: ''
 ref: ''

@@ -13,18 +13,18 @@ rationale: |
   no requirement stated.
 
   It is the runtime consequence of
-  SYS003 <!-- A deployment is parameterised from outside the image --> rather than a restatement of
-  it. SYS003 <!-- A deployment is parameterised from outside the image --> and
-  SRS018 <!-- One generic published image --> say difference enters from outside the image; this
+  SYS003<!-- A deployment is parameterised from outside the image --> rather than a restatement of
+  it. SYS003<!-- A deployment is parameterised from outside the image --> and
+  SRS018<!-- One generic published image --> say difference enters from outside the image; this
   says two instances given different inputs stay different, and that neither can reach the other's
   state. An image carrying no deployment-specific content still permits a shared writable volume,
-  and two containers sharing one would satisfy SRS018 <!-- One generic published image --> while
+  and two containers sharing one would satisfy SRS018<!-- One generic published image --> while
   breaking the claim SECURITY.md makes.
 
   The household case is the concrete one: a second kiosk in another room, same image, different
   configuration, and no way for one to disturb the other.
 ref: ''
-reviewed: Ii5t3xsNnCABlfIQQqbUqaReC3IlxVIoCcw8zOerhe8=
+reviewed: Bx9xPpF1wWQPYvygCT6TScGcTNSDkDdAmEeoHbnp4d8=
 status: proposed
 text: |
   A running instance shall be determined solely by the configuration and secrets supplied to it,

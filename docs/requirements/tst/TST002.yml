@@ -4,14 +4,14 @@ header: |
   Pending: module error-state render test
 level: 1.2
 links:
-- SRS001: xR0FE3_wmuS4U24VTDjiFmF9I5-kOxpP_M6_RgtFp_w=
+- SRS001: m-nuuZThZFcCrW0gOLLrS7iZuJ3ps1GEVUNjGLIVYyQ=
 normative: true
 rationale: |
   Driven from the registered module set, because an error state is rendered by each module's own
   component: asserted against one module it would pass while another collapsed the causes. A module
   holding no boundary payload renders no upstream failure and is not swept.
 ref: ''
-reviewed: CDZKU2zLv7A0_yvnZxoAFZdSfvw0wsgitQ8qtabFruc=
+reviewed: 6z4j7NKd59ngiKh39i6d13J4sU6ZpygdQoXbWkUuJMo=
 status: proposed
 text: |
   Pending: render test that, for every registered module holding a boundary payload, asserts the module
@@ -21,5 +21,5 @@ text: |
 verification-justification: |
   Settles that a module renders its error state while siblings render normally, and that it does not
   collapse the causes the backend distinguished. Leaves unproven the wording, which
-  SYS001 <!-- Failure is legible and proportionate --> routes to review.
+  SYS001<!-- Failure is legible and proportionate --> routes to review.
 verification-method: test

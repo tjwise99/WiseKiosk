@@ -39,6 +39,7 @@ readFileSync(resolve(repoRoot, allowlistPath), "utf8")
   });
 
 const linkRe = /\]\(([^)]+)\)/g;
+const absoluteRe = /\bhttps?:\/\/[^\s<>)\]"'`]+/gi;
 
 for (const file of mdFiles) {
   const abs = resolve(repoRoot, file);
@@ -46,15 +47,7 @@ for (const file of mdFiles) {
   for (const match of text.matchAll(linkRe)) {
     const raw = match[1].trim().split("#")[0]; // drop anchor
     if (!raw) continue; // pure in-page anchor
-    if (/^https?:/i.test(raw)) {
-      const host = URL.parse(raw)?.hostname;
-      if (!host) {
-        problems.push(`${file}  ->  ${raw}   (not a parseable URL)`);
-      } else if (!allowedHosts.has(host)) {
-        problems.push(`${file}  ->  ${raw}   (host '${host}' is not on ${allowlistPath})`);
-      }
-      continue;
-    }
+    if (/^https?:/i.test(raw)) continue; // absolute: the host scan below owns it
     if (/^[a-z][a-z0-9+.-]*:/i.test(raw)) continue; // other scheme: mailto, etc.
     const target = resolve(dirname(abs), raw);
     const rel = relative(repoRoot, target);
@@ -62,6 +55,17 @@ for (const file of mdFiles) {
       problems.push(`${file}  ->  ${raw}   (escapes the repository)`);
     } else if (!existsSync(target)) {
       problems.push(`${file}  ->  ${raw}   (does not exist)`);
+    }
+  }
+
+  // Every absolute URL, whatever syntax carries it — inline link, reference definition, autolink or
+  // bare text. Matching the link form alone would leave the other three unchecked.
+  for (const [url] of text.matchAll(absoluteRe)) {
+    const host = URL.parse(url)?.hostname;
+    if (!host) {
+      problems.push(`${file}  ->  ${url}   (not a parseable URL)`);
+    } else if (!allowedHosts.has(host)) {
+      problems.push(`${file}  ->  ${url}   (host '${host}' is not on ${allowlistPath})`);
     }
   }
 }

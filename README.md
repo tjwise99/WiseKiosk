@@ -3,22 +3,22 @@
 A config-driven smart-mirror display. A full-screen browser page renders a fixed set of five modules
 — `clock`, `compliments`, `OpenMeteo` weather, `AviationWeather` (CheckWX METAR/TAF), and
 `DisneyWaitTimes` (themeparks.wiki) — from a handful of public APIs, running unattended on a display
-behind one-way glass. The layout is fixed (SYS002 <!-- The configured layout renders whole -->,
-SRS017 <!-- Full-screen assembly at kiosk; reflow, not overlap, at narrower widths -->) and there is
+behind one-way glass. The layout is fixed (SYS002<!-- The configured layout renders whole -->,
+SRS017<!-- Full-screen assembly at kiosk; reflow, not overlap, at narrower widths -->) and there is
 nothing to interact with: it renders and it refreshes. Shipped as one container image; each
 deployment is independent, customised through configuration, never through a fork
-(SYS003 <!-- A deployment is parameterised from outside the image -->). A sixth module is added by
+(SYS003<!-- A deployment is parameterised from outside the image -->). A sixth module is added by
 the documented six-part contract in
 [`docs/contracts/module-contract.md`](docs/contracts/module-contract.md).
 
 **Minimum specs.** The backend runs as a container on `amd64` or `arm64`
-(SRS019 <!-- The backend runs on both supported architectures -->) — a Raspberry Pi, a mini PC, a
+(SRS019<!-- The backend runs on both supported architectures -->) — a Raspberry Pi, a mini PC, a
 spare desktop. The display is driven by a browser on a host of Raspberry Pi Zero capability
-(SRS021 <!-- Frontend runs on a Pi Zero-class browser host -->). These are the minimum WiseKiosk
-declares, and SYS007 <!-- The declared minimum host, and staying within it --> is the obligation to
+(SRS021<!-- Frontend runs on a Pi Zero-class browser host -->). These are the minimum WiseKiosk
+declares, and SYS007<!-- The declared minimum host, and staying within it --> is the obligation to
 run on them and to keep running there. They are set by what an operator is likely to already have
 rather than by what WiseKiosk would prefer — requiring a particular machine would make that choice
-for them (SRS019 <!-- The backend runs on both supported architectures -->). Which machines an
+for them (SRS019<!-- The backend runs on both supported architectures -->). Which machines an
 operator buys, and how they are provisioned, is theirs.
 
 **What WiseKiosk does not own.** The kiosk host lies outside the system: its operating system, its
@@ -29,7 +29,7 @@ in the tree reaches it.
 **The operator is frequently not the author.** Deployments run at the author's house and at friends'
 and family's houses — separate networks, separate configs, separate owners. This constraint outranks
 every other requirement here: it is why a bad configuration must fail loudly and legibly rather than
-as a blank screen (SYS001 <!-- Failure is legible and proportionate -->), and why a configuration
+as a blank screen (SYS001<!-- Failure is legible and proportionate -->), and why a configuration
 must be validatable before deployment rather than only at boot
 ([`tools/README.md`](tools/README.md)).
 

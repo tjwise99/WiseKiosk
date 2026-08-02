@@ -4,7 +4,7 @@ header: |
   Pending: no identity-based rejection, in the contract or on the wire
 level: 1.16
 links:
-- SRS023: KuzB7plb4Cs2qqTw4U9cantlVEBf_QTpQkyePN3cBbw=
+- SRS023: OgK-aIkPiGcrNYQA_DwsHIIEMpwz_a3SoSi4ohl_nhU=
 normative: true
 rationale: |
   Asserted against the boundary schema as well as the running service because the schema is where a
@@ -12,10 +12,10 @@ rationale: |
   and the live half proves the service produces no status the contract never declared.
 
   Rejection itself remains shape-based rather than identity-based, which is
-  SRS013's <!-- Client-facing contract for rejected requests -->; this item asserts only that no
+  SRS013's<!-- Client-facing contract for rejected requests -->; this item asserts only that no
   identity-based status appears.
 ref: ''
-reviewed: 1CrdH6mS_SlCNTGM0jZyw7DgWD9m0_Mj_3bz7xM81vs=
+reviewed: I2RUo6d9wsKXsOzmNJKfxgl-n0b9p6Ewl-ghJ4p2T0E=
 status: proposed
 text: |
   Pending: check that the boundary schema declares no 401 or 403 response for any path item, and

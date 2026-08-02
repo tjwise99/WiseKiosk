@@ -7,13 +7,13 @@ links:
 - SYS006: v3qSjDNbCins9CcqouJY2Vp6K1NhBAlUsPS8az2R1Kc=
 normative: true
 rationale: |
-  SYS006's <!-- Neither grant privilege nor require it --> least-privilege half made falsifiable on
+  SYS006's<!-- Neither grant privilege nor require it --> least-privilege half made falsifiable on
   the artifact: a process holding no more than it needs bounds what a compromise reaches, and root
   inside a container is the largest single grant available to it. The image is where this is
   decidable - the running user is a property of what was published, not of how an operator starts
   it.
 ref: ''
-reviewed: IR4fxX4YgiOyIsyE7FEnmeZBmSHsllH1ecnQck9seCk=
+reviewed: TIWdQp7LeyR-SYajNd7adfBTI0GMyBUTWCoMg17jClA=
 status: accepted
 text: |
   The container image shall run as a non-root user.

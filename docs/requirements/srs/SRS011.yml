@@ -4,21 +4,21 @@ header: |
   Upstream request rate is bounded, and the bound is not operator-tunable
 level: 1.22
 links:
-- SYS004: oaEtowM1Sd8Z6JXKd9l64gMmtZAunl38gTaPRSBC4Lk=
+- SYS004: zDeVzrtkJX0x8iRss9MhCXDMfx62PK7NqmJJoh2OQ9c=
 normative: true
 rationale: |
   The bound exists to keep WiseKiosk a well-behaved consumer of somebody else's API no matter how
   many displays point at it. It is deliberately outside the configuration surface: a tunable limit
   is a way for a deployment to become the thing the limit was protecting against, which
-  SYS003's <!-- A deployment is parameterised from outside the image --> parameterisation is not
+  SYS003's<!-- A deployment is parameterised from outside the image --> parameterisation is not
   meant to offer. Where the numbers live and how the bound is achieved - a TTL response cache keyed
   on the request, a token bucket, or both - is
-  TST025's <!-- Pending: TTL cache-behaviour test (liveness canary) -->, so tuning one does not
+  TST025's<!-- Pending: TTL cache-behaviour test (liveness canary) -->, so tuning one does not
   touch the specification. Two consequences worth stating: a cache hit is neither counted against
   the limit nor rejected by it, and a sustained upstream outage must not cause an upstream request
   on every incoming request.
 ref: ''
-reviewed: STME6vWTOvKX26VPiuFdiapR5BLzC8V93Mi_Rqllhas=
+reviewed: 1rKkz6_cqh1oePyo4OcEnjB0iM4wqke4aZuGSVj8_Dk=
 status: accepted
 text: |
   The backend's rate of upstream requests to a source shall be bounded regardless of how many

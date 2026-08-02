@@ -40,14 +40,27 @@ const MANIFESTS = {
 };
 
 const dependabotText = readFileSync(resolve(repoRoot, ".github/dependabot.yml"), "utf8");
-const entries = dependabotText.split(/\n(?=  - package-ecosystem: )/).slice(1);
+const entries = dependabotText.split(/\n(?=\s*- package-ecosystem:)/).slice(1);
+
+// The split is this script's only view of the file. A layout it does not anticipate — a reindent,
+// a reordered key, a flow mapping — yields no entries, so the count is checked against the file
+// rather than trusted; without this every entry silently goes unexamined.
+const declared = dependabotText
+  .split("\n")
+  .filter((line) => !/^\s*#/.test(line) && line.includes("package-ecosystem:")).length;
+if (entries.length !== declared) {
+  problems.push(
+    `.github/dependabot.yml declares ${declared} ecosystem entr(ies), of which ${entries.length} ` +
+      `parsed — check-repo-silo.mjs cannot read this layout, so no entry was examined`,
+  );
+}
 
 let checked = 0;
 for (const entry of entries) {
-  const ecosystem = entry.match(/^ {2}- package-ecosystem:\s*"?([\w-]+)"?/m)?.[1];
+  const ecosystem = entry.match(/^\s*- package-ecosystem:\s*"?([\w-]+)"?/m)?.[1];
   if (ecosystem === "github-actions") continue;
   checked += 1;
-  const directory = entry.match(/^ {4}directory:\s*"?([^"\n]+)"?\s*$/m)?.[1];
+  const directory = entry.match(/^\s*directory:\s*"?([^"\n]+?)"?\s*$/m)?.[1];
   if (!directory) {
     problems.push(`the '${ecosystem}' Dependabot entry declares no directory`);
     continue;
