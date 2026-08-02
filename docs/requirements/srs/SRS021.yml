@@ -7,11 +7,11 @@ links:
 - SYS007: NFy-WbNRxUQwknLO07y9H-EFDWuo_jGKosorPOiOSes=
 normative: true
 rationale: |
-  Decomposes SYS007 <!-- The declared minimum host, and staying within it -->'s minimum-host claim
-  on the browser side; demonstrated on reference hardware, sharing evidence with SRS022
-  <!-- A bounded running footprint -->'s bounded-growth observation.
+  Decomposes SYS007's <!-- The declared minimum host, and staying within it --> minimum-host claim
+  on the browser side; demonstrated on reference hardware, sharing evidence with
+  SRS022's <!-- A bounded running footprint --> bounded-growth observation.
 ref: ''
-reviewed: XmX37a09pCmErSkvSwFN3AgzPQlizNrS-CjZXq3wK40=
+reviewed: 4nsbnucrN5M0OnZ6nGZP5SxZXC3X47hXjAoYz-eHsk8=
 status: accepted
 text: |
   The frontend shall operate on a Raspberry Pi Zero-class browser host

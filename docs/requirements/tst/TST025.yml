@@ -4,7 +4,7 @@ header: |
   Pending: TTL cache-behaviour test (liveness canary)
 level: 1.22
 links:
-- SRS011: eFJ9qbsBNv7kVNQ4LeDPmXnuyZVkM8HL-PKVyuujRuU=
+- SRS011: IXxdEuzxO8AnMGKIB1nEvFvlAr-5YINWq_uIKG5Owu4=
 normative: true
 rationale: ''
 ref: ''

@@ -4,10 +4,10 @@ header: |
   Pending: emulated Pi Zero-class host, and performance bounds
 level: 1.16
 links:
-- SRS021: 00FFXKmjG0pD-ViY1JnNm7Qz-7yeAYObCqFhbkBzTww=
+- SRS021: cUPmSbIwzOHRnkC6wgjdtrMSGy_YLrW5aUXnUwVTXME=
 normative: true
 rationale: |
-  SRS021 <!-- Frontend runs on a Pi Zero-class browser host -->'s justification rested on both
+  SRS021's <!-- Frontend runs on a Pi Zero-class browser host --> justification rested on both
   proxies before either was specified anywhere, so they are stated here.
 
   Emulation is the accepted evidence for the Zero-class claim (owner decision 2026-07-29). A run on
@@ -16,7 +16,7 @@ rationale: |
   CI-runnable, which is why it sits at test rather than demonstration. What emulation cannot decide is
   device timing, and the throttled budget and bundle ceiling carry that half instead of the boot.
 ref: ''
-reviewed: fcZXZ-qORP6aB037uEUm6XBJhVO2Z-2IBVBtD73uMIE=
+reviewed: lP8PlqHAtdYkjd_7WxrHVw7O6wOUxW2TSpWnjvhx3d4=
 status: proposed
 text: |
   Pending: test booting the frontend under ARM emulation at Raspberry Pi Zero-class resources and

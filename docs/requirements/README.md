@@ -24,12 +24,12 @@ stating only what is specific to that module. Obligations true of every module s
 needs and are not restated ([ADR 0012](../decisions/0012-module-requirements-in-tree.md)).
 
 Each item is one YAML file named for its ID (`SYS001.yml`, `SRS001.yml`, `TST001.yml`). IDs are the
-prefix plus a zero-padded 3-digit number. **An ID is permanent** — once assigned it is never reused or
-renumbered, so external references to it stay valid.
+prefix plus a zero-padded 3-digit number. **An ID is permanent** — once assigned it is never reused
+or renumbered, so external references to it stay valid.
 
-> **One-time ID reset.** The tree seeded alongside the tooling (`SYS001`–`006` and children) was
-> placeholder content and was cleared by the requirements rewrite; IDs were re-established from
-> `001` with new meanings. Permanence applies from that reset forward.
+> **One-time ID reset.** The tree seeded alongside the tooling (the first six `SYS` items and their
+> children) was placeholder content and was cleared by the requirements rewrite; IDs were
+> re-established from `001` with new meanings. Permanence applies from that reset forward.
 
 ## Item attributes
 
@@ -226,10 +226,10 @@ Run all commands with the venv (`docs/requirements/.venv/bin/doorstop …`):
   inside its own stamp — so `clear` is not enough. Read it against the parent it now has and
   `doorstop review <UID>`. `--error-all` reports it as `unreviewed changes` until you do.
 - **Neither command can reach an inactive item.** `Tree.find_item` is active-only, so `doorstop
-  review TST019 <!-- Pending: no identity-based rejection, in the contract or on the wire -->` and
-  `doorstop clear TST019
-  <!-- Pending: no identity-based rejection, in the contract or on the wire -->` both answer `no
-  item with UID` while that item is pending. Stamping one takes a loop over `document._iter()`.
+  review TST019` <!-- Pending: no identity-based rejection, in the contract or on the wire --> and
+  `doorstop clear
+  TST019` <!-- Pending: no identity-based rejection, in the contract or on the wire --> both answer
+  `no item with UID` while that item is pending. Stamping one takes a loop over `document._iter()`.
   Where a pending item's link goes suspect before activation, that loop is the only route.
 - **Inactive items are not rewritten by Doorstop**, so write their parent links in dict form,
   `- UID: null` (the form Doorstop itself stamps); a plain-string link breaks the docs-site

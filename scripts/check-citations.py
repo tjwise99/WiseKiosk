@@ -90,7 +90,7 @@ def follows(text, header):
     of the way: the identifier's own closing backtick or possessive clitic, the HTML comment markers,
     and a blockquote marker continuing the line the citation sits on."""
     window = re.sub(r"\n\s*>", "\n", text[: len(header) + 200])
-    window = re.sub(r"^(?:`|'s)+", "", window)
+    window = re.sub(r"^(?:\s*(?:`|'s))+", "", window)
     for token in ("<!--", "-->", "`"):
         window = window.replace(token, " ")
     return " ".join(window.split()).casefold(), " ".join(header.split()).casefold()

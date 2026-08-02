@@ -8,12 +8,11 @@ carried by #7). This ADR records the mechanism **decision**; the **build** is #7
 
 The Go backend and the TypeScript frontend share no types ([ADR 0001](0001-backend-language-go.md)),
 which makes the boundary contract non-negotiable: **one schema, both sides generated from it**, CI
-failing on stale generated code. Round #37 elicited the requirements for that property (SYS005
-<!-- Single-definition internal contract -->; SRS015
-<!-- One schema, all boundary value classes -->–SRS016
-<!-- Both sides consume the generated types -->) deliberately **mechanism-agnostic** — a "shall"
-that names a tool churns when the tool changes. This ADR chooses the tool, which is the decision
-half of #7.
+failing on stale generated code. Round #37 elicited the requirements for that property
+(SYS005 <!-- Single-definition internal contract -->;
+SRS015 <!-- One schema, all boundary value classes -->–SRS016 <!-- Both sides consume the generated types -->)
+deliberately **mechanism-agnostic** — a "shall" that names a tool churns when the tool changes. This
+ADR chooses the tool, which is the decision half of #7.
 
 #7 is gated on #5 (repo layout — where the single schema and the two packages live). Choosing the
 mechanism does not need that layout; only *building* it does. So this ADR lands the decision now,
@@ -38,21 +37,21 @@ and #7's acceptance — schema file present, both generators wired, drift gate g
   **TypeScript types via `openapi-typescript`** — build-time type emission, erased at compile,
   **zero runtime weight in the browser bundle** (the Raspberry-Pi-Zero-class constraint decides
   this).
-- **The schema defines every value class that crosses the boundary** (SRS015
-  <!-- One schema, all boundary value classes -->): request parameter names and types, success
-  payloads, the structured body for the upstream failure SRS001
-  <!-- A failed module shows why, and only that module --> obliges a module to render, the
+- **The schema defines every value class that crosses the boundary**
+  (SRS015 <!-- One schema, all boundary value classes -->): request parameter names and types,
+  success payloads, the structured body for the upstream failure
+  SRS001 <!-- A failed module shows why, and only that module --> obliges a module to render, the
   client-error rejection body SRS013 <!-- Client-facing contract for rejected requests --> requires
   the frontend to be able to render, and every response status code the frontend discriminates on.
-  SRS001 <!-- A failed module shows why, and only that module --> and SRS013
-  <!-- Client-facing contract for rejected requests --> oblige the behaviour; the shapes that carry
-  it are defined here and nowhere else, because SRS015
-  <!-- One schema, all boundary value classes --> admits no second definition site.
+  SRS001 <!-- A failed module shows why, and only that module --> and
+  SRS013 <!-- Client-facing contract for rejected requests --> oblige the behaviour; the shapes that
+  carry it are defined here and nowhere else, because
+  SRS015 <!-- One schema, all boundary value classes --> admits no second definition site.
 - **Drift gate:** a repo-level CI check regenerates both sides and fails on any difference (`git
   diff --exit-status`); the generators are **version-pinned** so a toolchain bump cannot read as
-  schema drift (SRS016 <!-- Both sides consume the generated types -->; verified by TST033
-  <!-- Pending: boundary codegen drift-gate test -->). The gate is repo-level because it spans both
-  packages.
+  schema drift (SRS016 <!-- Both sides consume the generated types -->; verified by
+  TST033 <!-- Pending: boundary codegen drift-gate test -->). The gate is repo-level because it
+  spans both packages.
 - **The frontend consumes the generated types only — no runtime re-validation of proxied payloads.**
   The version-skew case a runtime validator defends against is foreclosed by single-image co-deploy,
   and a bundled validator (schema→zod/ajv) would cost weight and per-render CPU on the Pi against a
@@ -102,9 +101,8 @@ and #7's acceptance — schema file present, both generators wired, drift gate g
   consumer).
 - **ARCHITECTURE.md's "boundary contract" section** (its "open question 2") is answered by this ADR;
   the fuller prose is written when the mechanism is built under #7/#5.
-- **Requirement text stays mechanism-agnostic** (SYS005
-  <!-- Single-definition internal contract -->, SRS015
-  <!-- One schema, all boundary value classes -->–SRS016
-  <!-- Both sides consume the generated types -->): this ADR is provenance, not cited inside the
-  "shall" statements, so a later mechanism change touches the ADR and the generate step, not the
-  tree.
+- **Requirement text stays mechanism-agnostic**
+  (SYS005 <!-- Single-definition internal contract -->,
+  SRS015 <!-- One schema, all boundary value classes -->–SRS016 <!-- Both sides consume the generated types -->):
+  this ADR is provenance, not cited inside the "shall" statements, so a later mechanism change
+  touches the ADR and the generate step, not the tree.

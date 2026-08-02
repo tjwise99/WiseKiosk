@@ -7,15 +7,15 @@ links:
 - SRS022: kBPfCbUCf_y6fylGo5WPyvRw_wVve7LycdYKdZFpjgs=
 normative: true
 rationale: |
-  One instrumented run serves this item, TST043
-  <!-- Pending: handle count does not grow without bound --> and TST044
-  <!-- Pending: task count does not grow without bound -->; the run's duration and sampling interval
-  are stated here because this item is the first of the three. Splitting the resources across items
-  rather than listing them in one keeps each threshold reviewable on its own, and makes a leak class
-  found later a new item under SRS022 <!-- A bounded running footprint --> rather than a longer
-  sentence inside an existing one.
+  One instrumented run serves this item,
+  TST043 <!-- Pending: handle count does not grow without bound --> and
+  TST044 <!-- Pending: task count does not grow without bound -->; the run's duration and sampling
+  interval are stated here because this item is the first of the three. Splitting the resources
+  across items rather than listing them in one keeps each threshold reviewable on its own, and makes
+  a leak class found later a new item under SRS022 <!-- A bounded running footprint --> rather than
+  a longer sentence inside an existing one.
 ref: ''
-reviewed: cNnY15bZYmIjWAgPawwECcShmfwUEqSqdauOhriyRwM=
+reviewed: pEqlj1ipM-pMDsleFsHNzy4H_Z3gG2Sw228pSWJU8Nc=
 status: proposed
 text: |
   Pending: bounded-growth observation over a continuous run of at least sixty minutes, sampling at
@@ -26,6 +26,6 @@ verification-justification: |
   run. Leaves unproven the timescale the obligation is about - an hour is read as evidence about
   months, and a leak slower than the window is invisible - and says nothing about any other
   resource: SRS022 <!-- A bounded running footprint --> names none, so what is sampled is only what
-  TST043 <!-- Pending: handle count does not grow without bound --> and TST044
-  <!-- Pending: task count does not grow without bound --> add to this.
+  TST043 <!-- Pending: handle count does not grow without bound --> and
+  TST044 <!-- Pending: task count does not grow without bound --> add to this.
 verification-method: test

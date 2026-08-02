@@ -8,10 +8,10 @@ links:
 normative: true
 rationale: |
   A goroutine leak shows in neither resident memory nor handle count until it is far advanced, so
-  neither sibling item catches it. Sampled in the run TST004
-  <!-- Pending: resident memory does not grow without bound --> describes.
+  neither sibling item catches it. Sampled in the run
+  TST004 <!-- Pending: resident memory does not grow without bound --> describes.
 ref: ''
-reviewed: g2WH9EbjCXzKBDXnlgtspUynZg-G_qvpCK_bTJOs2Vw=
+reviewed: T44nGrrEZDiAJuMzgpTykqEmvmzSV3vnqv2aej0xPhc=
 status: proposed
 text: |
   Pending: over the shared instrumented run, failing on any increase in the runtime's task count between

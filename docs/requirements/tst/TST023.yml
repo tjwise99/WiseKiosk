@@ -4,13 +4,13 @@ header: |
   Pending: proxy endpoint & statelessness test
 level: '1.20'
 links:
-- SRS009: Iz0kWCojSM6ojHTcM2a4-9Tqa9FZB0HS2rR5tLH5zOY=
+- SRS009: ZU8-0xrzJ9Dp5APZacSM_wczRh-f8qQ3egW5vEybShI=
 normative: true
 rationale: |
-  Cache-hit/miss behaviour is TST025 <!-- Pending: TTL cache-behaviour test (liveness canary) -->'s,
+  Cache-hit/miss behaviour is TST025's <!-- Pending: TTL cache-behaviour test (liveness canary) -->,
   so this item settles payload determinism without asserting whether an upstream call occurred.
 ref: ''
-reviewed: Vb8DeKvEpKJcV2a5sseI1IZjmJSpS7IJbjgDS_ZE2iY=
+reviewed: ERKnbWVCgs5myhERuRH01sUVnHusmYOkn5rfztiUtB8=
 status: proposed
 text: |
   Pending: backend integration test driving every endpoint the boundary contract

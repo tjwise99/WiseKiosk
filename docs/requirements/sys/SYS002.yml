@@ -10,11 +10,11 @@ rationale: |
   has failed silently. "Wholly visible" absorbs no-overlap, no-clipping and no-scrollbars as one
   property rather than three observables — none of them is a separate want. "The display it was
   configured for" carries the kiosk-primary, desktop-secondary distinction without fixing viewports
-  in the need; SRS017
-  <!-- Full-screen assembly at kiosk; reflow, not overlap, at narrower widths --> owns those. Phone
-  widths are deliberately not a requirement.
+  in the need;
+  SRS017 <!-- Full-screen assembly at kiosk; reflow, not overlap, at narrower widths --> owns those.
+  Phone widths are deliberately not a requirement.
 ref: ''
-reviewed: CfhtsFEVaoduGoBOCOnVcburvdKZ2bx5u3tYXFWLJMg=
+reviewed: DI697gkUFc6ErHyYrqQ1wgJVe6QoejFvV-vgSYfv3Bs=
 status: accepted
 text: |
   Every configured module shall be wholly visible on the display it was configured for.

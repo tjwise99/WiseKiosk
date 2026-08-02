@@ -14,12 +14,12 @@ rationale: |
   called. Fixing a route template here would declare the interface a second time, which is the
   defect ADR 0008 exists to prevent, and would forbid a module that needs two calls for no reason
   anyone stated. Statelessness is stated as an observable so it can be tested rather than asserted.
-  The shared response cache (SRS011
-  <!-- Upstream request rate is bounded, and the bound is not operator-tunable -->), keyed on the
-  request itself, is not per-client state: it may determine whether a request is served from cache,
-  but not the payload a client receives.
+  The shared response cache
+  (SRS011 <!-- Upstream request rate is bounded, and the bound is not operator-tunable -->), keyed
+  on the request itself, is not per-client state: it may determine whether a request is served from
+  cache, but not the payload a client receives.
 ref: ''
-reviewed: QVT3RsgIcecExIAlGdNTLrnk1A3mNcNlqIntwgIUjYc=
+reviewed: s7ZSdMCXNWNsAEYGksH2otWqa-2D1hOKhhppoC4WgP0=
 status: accepted
 text: |
   Every supported external source shall be reachable through the backend, by the

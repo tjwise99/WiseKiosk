@@ -10,10 +10,10 @@ rationale: |
   defect class this design guards against (ADR 0001). The rule binds definitions, not uses — a
   component whose prop is typed with a generated type is a consumer, not a second declaration. Scope
   is internal: upstream API shapes are defined by whoever runs the API, and the configuration format
-  is shared with the operator and governed by SYS003
-  <!-- A deployment is parameterised from outside the image -->.
+  is shared with the operator and governed by
+  SYS003 <!-- A deployment is parameterised from outside the image -->.
 ref: ''
-reviewed: pLiWZpzkZG9O9pT5NhI7NRmQNVAq6EOKlEkrj-Zrzjk=
+reviewed: Me6U5pYUXv4U34oOzGsnuf5cJhk8hKJCUOHnYAItK18=
 status: accepted
 text: |
   Every shape shared between WiseKiosk's own components shall have exactly one machine-readable

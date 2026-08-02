@@ -8,10 +8,10 @@ links:
 normative: true
 rationale: |
   A descriptor leak and a memory leak are separate failures with separate thresholds: a process can
-  hold its memory flat while exhausting the host's descriptors. Sampled in the run TST004
-  <!-- Pending: resident memory does not grow without bound --> describes.
+  hold its memory flat while exhausting the host's descriptors. Sampled in the run
+  TST004 <!-- Pending: resident memory does not grow without bound --> describes.
 ref: ''
-reviewed: tF4GxDuy4WIh3RCCyFdReuyQ93hobkXtk_uvO8c-ZCM=
+reviewed: HOdtuT6CQhzY2U3i-tx1O1Ny93XCpX_UkZkz1TFHXiI=
 status: proposed
 text: |
   Pending: over the shared instrumented run, failing on a monotonic increase in the backend's handle

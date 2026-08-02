@@ -78,9 +78,9 @@ Each needs a machine-readable *is it serving yet* rather than a scraped log line
 
 Nothing acts on the status. Docker and Compose restart a container whose process exits, not one
 reporting unhealthy, so an unhealthy kiosk stays unhealthy until somebody intervenes. What tells an
-operator the kiosk is broken is the kiosk — `SRS026`
-<!-- The display says when the backend is gone --> obliges the display to say so, on the screen in
-the room.
+operator the kiosk is broken is the kiosk —
+`SRS026` <!-- The display says when the backend is gone --> obliges the display to say so, on the
+screen in the room.
 
 **Reopen premise.** This sits outside the requirements tree because nothing acts on it. If WiseKiosk
 is ever run under an orchestrator that restarts on health status, or external monitoring is pointed

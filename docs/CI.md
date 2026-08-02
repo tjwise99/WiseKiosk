@@ -193,8 +193,8 @@ changed, which the citation resolver above decides without anyone declaring anyt
   default-base pull request records the ticket linkage.
 - The Docker build context excludes `.git` and `node_modules`, by `.dockerignore`. Neither is secret
   material; both are build hygiene, and a smaller context is a faster and more predictable build.
-  That the image carries no secret is the tree's, under SRS025
-  <!-- No secret material in the published image --> (#54).
+  That the image carries no secret is the tree's, under
+  SRS025 <!-- No secret material in the published image --> (#54).
 - A depth-1 listing of the repository root holds no `package.json`, `go.mod`, `pyproject.toml`,
   `requirements*.txt` or `.venv/` — tooling is siloed with the feature it serves — and every
   Dependabot entry that is not `github-actions` resolves to a non-root directory holding the matching
@@ -265,8 +265,8 @@ what runs where, and what each is allowed to let through, is here.
   three upstream sources — the clock and compliments modules are local and fetch nothing — only
   CheckWX requires one; OpenMeteo and themeparks.wiki are keyless. The credential is scoped to that
   workflow and reaches no other job, and no fixture, log or failure output carries its value —
-  [`../SECURITY.md`](../SECURITY.md) rests on that, and SRS008
-  <!-- No secret value in any backend output --> obliges the running system to the same rule.
+  [`../SECURITY.md`](../SECURITY.md) rests on that, and
+  SRS008 <!-- No secret value in any backend output --> obliges the running system to the same rule.
 
 **Why a credential is allowed here at all.** A withdrawn requirement once forbade any CI workflow
 from holding an upstream credential. It banned a normal practice, and forced the tier into a nested

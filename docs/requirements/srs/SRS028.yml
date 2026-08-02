@@ -11,8 +11,8 @@ rationale: |
   author reach the browser under this project's origin. If a response arrives with an absent or
   wrong media type the browser may infer one, and content inferred to be script is executed as
   though it had been served deliberately. The connect-src policy does not stop this: a script the
-  backend served is 'self'. That is privilege the response was never granted, which is SYS006
-  <!-- Neither grant privilege nor require it -->'s subject.
+  backend served is 'self'. That is privilege the response was never granted, which is
+  SYS006's <!-- Neither grant privilege nor require it --> subject.
 
   Both halves are obligations on WiseKiosk. An earlier form of this item said served content "shall
   be interpreted by the browser only as the media type the response declares", which obliged the
@@ -24,7 +24,7 @@ rationale: |
   policies dropped at SRS010 <!-- The display page reaches no origin but the backend's -->, whose
   reopen premise records why they went.
 ref: ''
-reviewed: BDikJg-iSb8M2KqKW1u4Hboy7CVPvPpQYHou1mKAP0Q=
+reviewed: 5atJr1zgzfPYLrGD79LXw02VsqYBqtyjkA1167d4ccM=
 status: proposed
 text: |
   The backend shall declare a media type on every response it serves, and shall instruct the browser

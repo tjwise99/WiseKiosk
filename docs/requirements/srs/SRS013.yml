@@ -7,19 +7,19 @@ links:
 - SYS004: oaEtowM1Sd8Z6JXKd9l64gMmtZAunl38gTaPRSBC4Lk=
 normative: true
 rationale: |
-  SRS012 <!-- Request parameters validated against known-good per-source patterns --> and SRS011
-  <!-- Upstream request rate is bounded, and the bound is not operator-tunable --> reject invalid
-  and over-limit requests but do not say what the client receives; a module still needs something
-  renderable, and it must be able to tell an operator misconfiguration from a source outage. The
-  concrete body shape is defined by the boundary contract, which SRS015
-  <!-- One schema, all boundary value classes --> owns and which admits no second definition site.
-  This item fixes that a rejection is distinct to its cause, that it happens before any upstream
-  call, and that it is separable from an upstream failure. The particular status codes live in
-  TST029 <!-- Pending: rejected-request client-contract test --> and TST032
-  <!-- Pending: boundary schema is single and complete -->, where they can change without a
+  SRS012 <!-- Request parameters validated against known-good per-source patterns --> and
+  SRS011 <!-- Upstream request rate is bounded, and the bound is not operator-tunable --> reject
+  invalid and over-limit requests but do not say what the client receives; a module still needs
+  something renderable, and it must be able to tell an operator misconfiguration from a source
+  outage. The concrete body shape is defined by the boundary contract, which
+  SRS015 <!-- One schema, all boundary value classes --> owns and which admits no second definition
+  site. This item fixes that a rejection is distinct to its cause, that it happens before any
+  upstream call, and that it is separable from an upstream failure. The particular status codes live
+  in TST029 <!-- Pending: rejected-request client-contract test --> and
+  TST032 <!-- Pending: boundary schema is single and complete -->, where they can change without a
   specification edit.
 ref: ''
-reviewed: Bn2XvjqE_eRRVc3ENvOUrXwzQrFtrSUb_hDlI48ox28=
+reviewed: cpcmAbu6HPUpdhA0frKk2Z6eqeB4FVptnuqtbw6iMD0=
 status: accepted
 text: |
   A request the backend rejects before making any upstream call shall return a client-error

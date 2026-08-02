@@ -4,7 +4,7 @@ header: |
   Pending: denied device capabilities
 level: 65
 links:
-- SRS027: nUPajhXS5kPFS-LV7IoItzBBLuo8kNWHP6Oh9FT9NE8=
+- SRS027: 2VK04T-vNKRMrS73WVBWbbOF9CNyUgJO_qv7PXsmy6w=
 normative: true
 rationale: |
   Stated as an allowlist of granted features rather than a list of denied ones. The served header

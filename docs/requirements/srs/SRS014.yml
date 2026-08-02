@@ -4,7 +4,7 @@ header: |
   No single upstream exchange can stall or exhaust the backend
 level: 1.27
 links:
-- SYS001: S72Ttym255pW5SuA1xELQbSn6rPxaSUFZj1Lhfn5xtA=
+- SYS001: 6qFC_CQhjx9LmDh-ODsNnVL1vJeEfMTJLKl3dXhLnr8=
 normative: true
 rationale: |
   SYS004 <!-- Upstream data reaches the display only through the backend --> bounds the system's
