@@ -76,7 +76,10 @@ if ! jq -e --arg t "$type" '.labels | map(.name) | any(. == $t)' "$tmp" >/dev/nu
     fail "issue #$number is not labeled '$type' (labels: ${labels:-none}) — the branch type must match the ticket's template label"
 fi
 
-types=$(sed -nE 's/^\^\(([^)]+)\)_.*$/\1/p' "$scripts_dir/branch-shape.regex" | head -1)
+types=$(sed -nE 's/^\^\(([^)]+)\)_.*$/\1/p' "$scripts_dir/branch-shape.regex")
+groups=$(printf '%s\n' "$types" | grep -c . || true)
+[ "$groups" = "1" ] ||
+    fail "scripts/branch-shape.regex yields $groups type group(s) — the set must have exactly one answer, and taking the first would let the count below read a group that does not govern this branch"
 printf '%s' "$types" | tr '|' '\n' | grep -Fxq "$type" ||
     fail "branch type '$type' is absent from the type set read out of scripts/branch-shape.regex ('$types') — the branch matched that pattern, so the extraction is wrong and the label count below would be meaningless"
 type_labels=$(jq -r --arg types "$types" '($types | split("|")) as $set | [.labels[].name | select(IN($set[]))] | join(", ")' "$tmp")
@@ -125,8 +128,8 @@ if ! jq -e --argjson n "$number" '.data.repository.pullRequest.closingIssuesRefe
 fi
 echo "PR #$pr_number records a closing reference to issue #$number."
 
-jq -e '.data.repository.issue' "$tmp" >/dev/null ||
-    fail "GraphQL returned no issue node for #$number — the membership check read nothing, and a check that reads nothing must not report success"
+jq -e '.data.repository.issue | has("parent")' "$tmp" >/dev/null ||
+    fail "the GraphQL response carries no parent field for issue #$number — the membership check read nothing, and a check that reads nothing must not report success. A present key with a null value is how 'no parent' arrives; an absent key means the query never asked"
 parent=$(jq -r '.data.repository.issue.parent.number // ""' "$tmp")
 if [ "$base_ref" = "$default_branch" ]; then
     [ -z "$parent" ] || fail "issue #$number is a sub-issue of #$parent, but PR #$pr_number targets the default branch — sub-issue membership means a shared merge target, not topical grouping; the milestone is what groups (ADR 0013)"

@@ -145,23 +145,28 @@ passing check. The cases below ran against throwaway issue #89, closed afterward
 | Must pass | the same issue with the second type label removed |
 | Must pass | an issue carrying a non-type companion label (`design` + `documentation`) |
 
-The two guards over the check's own inputs were seeded against a copy of the script reading a
-doctored `branch-shape.regex` beside it, since both concern the script misreading rather than the
-ticket being wrong:
+The companion-label row is the one that matters most: `documentation` is declared by
+`design_decision.md` and rides on every design ticket, so a count that read *all* labels rather than
+type labels would reject the repository's own conforming tickets and look like a working check while
+doing it.
+
+The guards over the check's own inputs were seeded against a copy of the script, since both concern
+the script misreading rather than the ticket being wrong — one reading a doctored
+`branch-shape.regex` placed beside the copy, the other a doctored GraphQL query:
 
 | Direction | Input |
 |---|---|
-| Must fail | a `branch-shape.regex` whose first line is a different pattern, so the type set extracts from the wrong alternation while the branch still matches a later line |
-| Must pass | the same copy with the real regex restored |
-| Must fail | the GraphQL issue field aliased, so the response is error-free and the parent path resolves to nothing |
+| Must fail | a `branch-shape.regex` carrying a second pattern line, so the type set no longer has one answer while the branch still matches |
+| Must pass | the same copy with the real single-group regex restored |
+| Must fail | the GraphQL `parent` field aliased, so the response is error-free, the issue node is a truthy object, and the field the code consumes is absent |
+| Must pass | the unmodified query against the same issue |
 
-The last one is the reason the issue node is asserted rather than defaulted. With that assertion
-removed, the identical input exits 0 and prints `Issue #64 has no parent, and PR #88 targets the
-default branch` — a success line for a fact the run never read.
-
-The last is the one that matters most: `documentation` is declared by `design_decision.md` and rides
-on every design ticket, so a count that read *all* labels rather than type labels would reject the
-repository's own conforming tickets and look like a working check while doing it.
+The parent field is asserted present rather than defaulted because a key that is present and null is
+how *legitimately no parent* arrives, while an absent key means the query never asked — and `// ""`
+erases that difference. With the assertion removed, the aliased query exits 0 and prints `Issue #64
+has no parent, and PR #88 targets the default branch`: a success line for a fact the run never read.
+Asserting the enclosing issue node instead is not enough, because an alias one level in leaves that
+node truthy.
 
 The epic-membership assertion needs a pull request, so its cases ran against PR #88 itself rather
 than a throwaway, by re-running the `process` job against mutated live state:
