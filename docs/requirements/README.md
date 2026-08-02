@@ -47,8 +47,11 @@ Beyond Doorstop's native fields, every item carries four stored attributes
 **`header` is machine-read, so it is constrained.** Prose cites an item by identifier and header
 together, the header carried verbatim inside an HTML comment
 ([`../CI.md`](../CI.md) § Documentation integrity), so header text is embedded into running Markdown.
-Every header must therefore be non-empty, drawn from `A-Z a-z 0-9` and `` ,.'()&:;- ``, and not a
-prefix of another item's header. The permitted set is an allowlist: a list of characters to reject
+Every header must therefore be non-empty, drawn from `A-Z`, `a-z`, `0-9`, the space, and
+`` , . ' ( ) & : ; - ``, and not a prefix of another item's header. A character absent from that
+list is not forbidden on sight — it is unadmitted, and admitting one takes a check that it renders
+as written both inside a comment and inside a table cell. The permitted set is an allowlist: a list
+of characters to reject
 fails open on the one nobody thought of, and a header carrying `|` would split a table while one
 carrying `-->` would close its own comment — neither visible to any other check. Prefix-freeness is
 the reader's constraint rather than the checker's, which compares a header exactly: two items whose

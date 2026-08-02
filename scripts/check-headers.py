@@ -18,7 +18,7 @@ from pathlib import Path
 import doorstop
 
 ROOT = Path(__file__).resolve().parent.parent
-PERMITTED = re.compile(r"^[A-Za-z0-9 ,.'()&:;—-]+$")
+PERMITTED = re.compile(r"^[A-Za-z0-9 ,.'()&:;-]+$")
 
 
 def headers():
