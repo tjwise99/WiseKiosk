@@ -46,9 +46,15 @@ const entries = dependabotText.split(/\n(?=\s*- package-ecosystem:)/).slice(1);
 // entries. The guard counts list items under `updates:` instead — deliberately sharing no assumption
 // with the split, because a guard keyed on the same literal goes to zero alongside the thing it
 // guards and the two then agree that nothing is wrong.
-const declared = (dependabotText.split(/^updates:[^\S\n]*$/m)[1] ?? "")
+const listItems = (dependabotText.split(/^updates:[^\S\n]*$/m)[1] ?? "")
   .split("\n")
-  .filter((line) => /^\s*-\s/.test(line)).length;
+  .filter((line) => /^\s*-\s/.test(line))
+  .map((line) => line.search(/\S/));
+// Only the shallowest list items are entries. A nested one belongs to a key an entry contains —
+// `patterns:` written as a block list rather than inline — and counting those as entries fails a
+// configuration that is merely spelled differently.
+const entryDepth = Math.min(...listItems);
+const declared = listItems.filter((depth) => depth === entryDepth).length;
 if (entries.length !== declared) {
   problems.push(
     `.github/dependabot.yml declares ${declared} ecosystem entr(ies), of which ${entries.length} ` +
