@@ -149,6 +149,24 @@ The last is the one that matters most: `documentation` is declared by `design_de
 on every design ticket, so a count that read *all* labels rather than type labels would reject the
 repository's own conforming tickets and look like a working check while doing it.
 
+The epic-membership assertion needs a pull request, so its cases ran against PR #88 itself rather
+than a throwaway, by re-running the `process` job against mutated live state:
+
+| Direction | Input |
+|---|---|
+| Must fail | the branch's issue given a parent while its pull request targets the default branch |
+| Must pass | the same issue with the parent removed |
+
+Both were observed in CI rather than only locally, which is what shows the step is reached and can
+fail the job. **Two cases are unrun**: a pull request into an integration branch whose issue is not a
+sub-issue of the anchor, and one whose issue is. Both need a throwaway integration branch, a child
+branch and a pull request between them; the owner declined that on 2026-08-02 as more repository
+churn than the case is worth for now. So the non-default-base path — anchor parsing, the
+shape-conformance failure, and the membership comparison — has no live evidence, and the historical
+instance that motivated it (PR #79 into `design_18-closing_review`, whose ticket was never a
+sub-issue of the anchor) cannot serve as one: the gate exits at the open-issue check before reaching
+it, because that ticket is closed.
+
 ## Confirming a gate in CI rather than locally
 
 Local runs prove the script; they do not prove the step is wired, reached, and able to fail the job.

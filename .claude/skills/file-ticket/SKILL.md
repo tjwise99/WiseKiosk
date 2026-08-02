@@ -82,12 +82,18 @@ in both directions, so a sub-issue whose PR targets `main` fails just as a PR in
 branch from a non-member does.
 
 The sub-issues endpoint takes the parent's **issue number** in the path but the child's **database
-`id`** in the body — not its number. Passing the number silently attaches the wrong issue or 404s:
+`id`** in the body — not its number. And it takes it as an **integer**: `-f` sends a string and the
+edge is not created, so use `-F`. Both mistakes leave the parent's sub-issue list untouched while the
+command looks like it did something, which is why the edge is read back below rather than assumed.
 
 ```sh
 child=$(gh api repos/tjwise99/WiseKiosk/issues/<child-number> --jq .id)
-gh api repos/tjwise99/WiseKiosk/issues/<parent-number>/sub_issues -f sub_issue_id=$child
+gh api repos/tjwise99/WiseKiosk/issues/<parent-number>/sub_issues -F sub_issue_id=$child
+gh api repos/tjwise99/WiseKiosk/issues/<parent-number>/sub_issues --jq '[.[].number]'   # confirm
 ```
+
+Detaching is the same shape against the singular path: `gh api -X DELETE
+repos/tjwise99/WiseKiosk/issues/<parent-number>/sub_issue -F sub_issue_id=$child`.
 
 ## In the body
 
