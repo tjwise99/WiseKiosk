@@ -40,6 +40,16 @@ check-reqs:
     docs/requirements/.venv/bin/python scripts/check-text-citations.py
 
 [group('checks')]
+[doc('The decisions directory and its index table agree: every ADR has a row, every row a file, numbering contiguous')]
+check-adr-index:
+    node scripts/check-adr-index.mjs
+
+[group('checks')]
+[doc('No manifest at the repository root, and every Dependabot entry resolves to a non-root directory holding its manifest')]
+check-repo-silo:
+    node scripts/check-repo-silo.mjs
+
+[group('checks')]
 [doc('Every `just verify` check also runs in CI, and vice versa')]
 check-verify-ci-parity:
     node scripts/check-verify-ci-parity.mjs
@@ -88,4 +98,4 @@ arch-dev:
 
 [group('checks')]
 [doc('Run every check the PR gate runs')]
-verify: check-links check-eol check-branch check-reqs check-arch check-site check-verify-ci-parity
+verify: check-links check-eol check-branch check-reqs check-arch check-site check-adr-index check-repo-silo check-verify-ci-parity

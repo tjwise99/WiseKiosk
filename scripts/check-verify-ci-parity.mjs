@@ -36,6 +36,8 @@ const CHECK_TOKENS = {
   ],
   "check-arch": ["scripts/splice-arch-diagrams.mjs"],
   "check-site": ["docs/site/doorstop_to_needs.py"],
+  "check-adr-index": ["scripts/check-adr-index.mjs"],
+  "check-repo-silo": ["scripts/check-repo-silo.mjs"],
   "check-verify-ci-parity": ["scripts/check-verify-ci-parity.mjs"],
 };
 
