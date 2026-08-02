@@ -225,12 +225,13 @@ Run all commands with the venv (`docs/requirements/.venv/bin/doorstop …`):
 - **After moving an item to a different parent,** the item itself is unreviewed — its parent UIDs are
   inside its own stamp — so `clear` is not enough. Read it against the parent it now has and
   `doorstop review <UID>`. `--error-all` reports it as `unreviewed changes` until you do.
-- **Neither command can reach an inactive item.** `Tree.find_item` is active-only, so `doorstop
-  review TST019` <!-- Pending: no identity-based rejection, in the contract or on the wire --> and
-  `doorstop clear
-  TST019` <!-- Pending: no identity-based rejection, in the contract or on the wire --> both answer
-  `no item with UID` while that item is pending. Stamping one takes a loop over `document._iter()`.
-  Where a pending item's link goes suspect before activation, that loop is the only route.
+- **Neither command can reach an inactive item.** `Tree.find_item` is active-only, so
+  `doorstop review TST019` <!-- Pending: no identity-based rejection, in the contract or on the wire -->
+  and
+  `doorstop clear TST019` <!-- Pending: no identity-based rejection, in the contract or on the wire -->
+  both answer `no item with UID` while that item is pending. Stamping one takes a loop over
+  `document._iter()`. Where a pending item's link goes suspect before activation, that loop is the
+  only route.
 - **Inactive items are not rewritten by Doorstop**, so write their parent links in dict form,
   `- UID: null` (the form Doorstop itself stamps); a plain-string link breaks the docs-site
   needs generator.

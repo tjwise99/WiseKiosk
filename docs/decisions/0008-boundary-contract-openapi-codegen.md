@@ -47,9 +47,9 @@ and #7's acceptance — schema file present, both generators wired, drift gate g
   SRS013 <!-- Client-facing contract for rejected requests --> oblige the behaviour; the shapes that
   carry it are defined here and nowhere else, because
   SRS015 <!-- One schema, all boundary value classes --> admits no second definition site.
-- **Drift gate:** a repo-level CI check regenerates both sides and fails on any difference (`git
-  diff --exit-status`); the generators are **version-pinned** so a toolchain bump cannot read as
-  schema drift (SRS016 <!-- Both sides consume the generated types -->; verified by
+- **Drift gate:** a repo-level CI check regenerates both sides and fails on any difference
+  (`git diff --exit-status`); the generators are **version-pinned** so a toolchain bump cannot read
+  as schema drift (SRS016 <!-- Both sides consume the generated types -->; verified by
   TST033 <!-- Pending: boundary codegen drift-gate test -->). The gate is repo-level because it
   spans both packages.
 - **The frontend consumes the generated types only — no runtime re-validation of proxied payloads.**

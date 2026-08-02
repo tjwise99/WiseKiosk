@@ -82,8 +82,8 @@ sides generated from it**. The tier's job in CI is to prove the generation is re
   regeneration is deterministic. Generation from one schema is
   **SRS015 <!-- One schema, all boundary value classes -->** and the drift gate is verified under
   **SRS016 <!-- Both sides consume the generated types -->**; the version pin itself is no
-  requirement's — it is a repository convention, in [`CI.md § Publishing and
-  provenance`](CI.md#publishing-and-provenance).
+  requirement's — it is a repository convention, in
+  [`CI.md § Publishing and provenance`](CI.md#publishing-and-provenance).
 - That the generated types are the ones actually *used* on both sides, including the per-module
   error-render path, rather than shadowed by a hand-declared twin —
   **SRS016 <!-- Both sides consume the generated types -->**, under
