@@ -45,7 +45,7 @@ def markdown_sources():
     for name in tracked:
         if name.startswith(".claude/"):
             continue
-        yield name, blank_fences((ROOT / name).read_text())
+        yield (name, *blank_fences((ROOT / name).read_text()))
 
 
 def blank_fences(text):
@@ -60,7 +60,9 @@ def blank_fences(text):
             out.append(" " * len(line))
             continue
         out.append(" " * len(line) if fence is not None else line)
-    return "\n".join(out)
+    # A fence that never closes blanks the rest of the file, so every citation below it would go
+    # unread. Reported rather than skipped.
+    return "\n".join(out), fence is not None
 
 
 def item_sources(tree_items):
@@ -151,7 +153,9 @@ def main():
     adrs = adr_numbers()
 
     problems = []
-    for name, text in markdown_sources():
+    for name, text, unterminated in markdown_sources():
+        if unterminated:
+            problems.append(f"{name}  a code fence is never closed, so everything below it goes unread")
         problems += check(name, text, item_headers, adrs)
         problems += interrupting_comments(name, text)
     for path, value, base in item_sources(tree_items):

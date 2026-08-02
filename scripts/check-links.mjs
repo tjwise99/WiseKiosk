@@ -46,22 +46,25 @@ const absoluteRe = /\bhttps?:\/\/[^\s<>)\]"'`]+/gi;
 // host in the register on the strength of a code sample.
 const blankFences = (text) => {
   let fence = null;
-  return text
-    .split("\n")
-    .map((line) => {
-      const marker = /^\s*(```|~~~)/.exec(line);
-      if (marker && (fence === null || marker[1][0] === fence)) {
-        fence = fence === null ? marker[1][0] : null;
-        return "";
-      }
-      return fence === null ? line : "";
-    })
-    .join("\n");
+  const lines = text.split("\n").map((line) => {
+    const marker = /^\s*(```|~~~)/.exec(line);
+    if (marker && (fence === null || marker[1][0] === fence)) {
+      fence = fence === null ? marker[1][0] : null;
+      return "";
+    }
+    return fence === null ? line : "";
+  });
+  // A fence that never closes blanks the rest of the file, so everything below it would pass
+  // unread. Reported rather than skipped.
+  return { text: lines.join("\n"), unterminated: fence !== null };
 };
 
 for (const file of mdFiles) {
   const abs = resolve(repoRoot, file);
-  const text = blankFences(readFileSync(abs, "utf8"));
+  const { text, unterminated } = blankFences(readFileSync(abs, "utf8"));
+  if (unterminated) {
+    problems.push(`${file}  ->  a code fence is never closed, so everything below it goes unchecked`);
+  }
   for (const match of text.matchAll(linkRe)) {
     const raw = match[1].trim().split("#")[0]; // drop anchor
     if (!raw) continue; // pure in-page anchor
