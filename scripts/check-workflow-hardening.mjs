@@ -34,7 +34,12 @@ const FLOW_USES = /[{,]\s*uses:\s*([^,}]+)/g;
 // Keys whose value is free text. A `uses:` inside one names no action.
 const PROSE = /^\s*(?:-\s*)?(?:run|name|if|shell|working-directory):/;
 // A block scalar's content is indented under its key and is free text throughout.
-const SCALAR = /^(\s*)(?:-\s*)?[\w-]+:\s*[|>][-+\d]*\s*$/;
+const SCALAR = /^\s*(?:-\s*)?[\w-]+:\s*[|>][-+\d]*\s*(?:#.*)?$/;
+// The key's own column. A block entry's dash sits left of it, and the entry's remaining keys align
+// with the key rather than with the dash.
+const KEY_COLUMN = /^\s*(?:-\s*)?/;
+// A quoted scalar is text, so a flow mapping is read from the line with its strings removed.
+const QUOTED = /(['"])(?:\\.|(?!\1).)*\1/g;
 // A top-level block opens at column zero; a job's own block is indented and may elevate.
 const TOP_LEVEL_PERMISSIONS = /^permissions:[^\S\n]*(\S.*)?$/;
 const GRANT = /^["']?([\w-]+)["']?:\s*(\S+)$/;
@@ -56,18 +61,20 @@ for (const path of workflows) {
     }
     if (/^\s*#/.test(line)) continue;
     if (SCALAR.test(line)) {
-      scalar = line.search(/\S/);
+      scalar = KEY_COLUMN.exec(line)[0].length;
       continue;
     }
     if (PROSE.test(line)) continue;
 
     const where = `${path}:${index + 1}`;
     const text = uncomment(line);
-    // A flow mapping can carry several steps on one line, so every `uses:` in it is read.
     const block = USES.exec(text);
-    const found = block ? [block[1]] : [...text.matchAll(FLOW_USES)].map((match) => match[1]);
+    // A flow mapping can carry several steps on one line, so every `uses:` in it is read. Whether
+    // the line is one is decided with its quoted scalars removed; the values are read from the line.
+    const flow = /[{,]\s*uses:/.test(text.replace(QUOTED, ""));
+    const found = block ? [block[1]] : flow ? [...text.matchAll(FLOW_USES)].map((m) => m[1]) : [];
     if (found.length === 0) {
-      if (/(?:^|[-{,])\s*uses:/.test(text)) {
+      if (flow) {
         problems.push(`${where} declares 'uses:' in a layout this script cannot read: '${text.trim()}'`);
       }
       continue;
@@ -112,11 +119,13 @@ for (const path of workflows) {
     if (at >= lines.length) break;
     declared += " " + uncomment(lines[at]);
   }
-  if (declared === "read-all" || declared === "{}") continue;
+  if (declared === "read-all") continue;
 
   const grants = [];
   if (declared.startsWith("{")) {
-    const pairs = declared.replace(/^\{/, "").replace(/\}$/, "");
+    const pairs = declared.replace(/^\{/, "").replace(/\}$/, "").trim();
+    // An empty flow mapping grants nothing, which is the most restricted a workflow can be.
+    if (pairs === "") continue;
     for (const pair of pairs.split(",")) grants.push([`${path}:${opening + 1}`, pair]);
   } else if (declared) {
     problems.push(`${path}:${opening + 1} grants '${declared}' at the top level; use read-all or {}`);
