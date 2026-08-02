@@ -33,9 +33,13 @@ const CHECK_TOKENS = {
     "scripts/validate-tree.sh",
     "scripts/check-method-consistency.py",
     "scripts/check-text-citations.py",
+    "scripts/check-headers.py",
   ],
+  "check-citations": ["scripts/check-citations.py"],
   "check-arch": ["scripts/splice-arch-diagrams.mjs"],
   "check-site": ["docs/site/doorstop_to_needs.py"],
+  "check-adr-index": ["scripts/check-adr-index.mjs"],
+  "check-repo-silo": ["scripts/check-repo-silo.mjs"],
   "check-verify-ci-parity": ["scripts/check-verify-ci-parity.mjs"],
 };
 
@@ -60,10 +64,18 @@ for (const check of Object.keys(CHECK_TOKENS)) {
   }
 }
 
+// Searched instead of the whole file: a token in a comment names no step that runs, and a token in
+// a step's `name:` describes one rather than invoking it. Either would satisfy a plain text search
+// while the step it stands for was deleted.
+const runningText = workflowText
+  .split("\n")
+  .filter((line) => !/^\s*#/.test(line) && !/^\s*- name:/.test(line))
+  .join("\n");
+
 for (const [check, tokens] of Object.entries(CHECK_TOKENS)) {
   for (const token of tokens) {
-    if (!workflowText.includes(token)) {
-      fail(`'${check}' (token '${token}') is in \`just verify\` but not found in .github/workflows/checks.yml`);
+    if (!runningText.includes(token)) {
+      fail(`'${check}' (token '${token}') is in \`just verify\` but no step in .github/workflows/checks.yml runs it`);
     }
   }
 }
@@ -79,9 +91,12 @@ for (const chunk of stepChunks) {
   if (!nameMatch) continue;
   const stepName = nameMatch[1].trim();
   if (stepName.startsWith("Install ")) continue;
+  // Searched with the step's own `name:` removed, for the reason the forward loop excludes it: a
+  // step named after a check is not a step running one.
+  const body = chunk.split("\n").filter((line) => !/^\s*- name:/.test(line)).join("\n");
   const covered =
-    Object.values(CHECK_TOKENS).flat().some((token) => chunk.includes(token)) ||
-    CI_ONLY_ALLOWLIST.some((token) => chunk.includes(token));
+    Object.values(CHECK_TOKENS).flat().some((token) => body.includes(token)) ||
+    CI_ONLY_ALLOWLIST.some((token) => body.includes(token));
   if (!covered) {
     fail(
       `CI step '${stepName}' matches no \`just verify\` check and no CI-only allowlist entry — ` +

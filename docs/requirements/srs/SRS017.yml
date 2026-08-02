@@ -4,24 +4,23 @@ header: |
   Full-screen assembly at kiosk; reflow, not overlap, at narrower widths
 level: 1.41
 links:
-- SYS002: 4hoIe3sFXRA1b7fqjxvI-vWBDVBWimxgK9cW4PZZ8KQ=
+- SYS002: 7SUfOJEsZezu9KnDJgQyhRHtIyI0db2eT2uOxRUfXtc=
 normative: true
 rationale: |
-  Decomposes SYS002's kiosk-primary, desktop-secondary distinction into the
-  concrete viewport-driven render obligations its rationale anticipates, which
-  fixes no viewports itself. The deployed display is a 16:9 television, so
-  1920×1080 landscape is the canonical kiosk test viewport; relative units carry
-  the same layout to 4K without a second viewport. 1280×800 and 1440×900 are the
-  desktop window sizes the secondary use case must render sensibly at. Phone
-  widths are deliberately not a requirement (SYS002; owner decision 2026-07-22) —
-  if wanted later, support arrives as its own reviewed system need, not a clause
-  here. What is owed is a reflowing layout, not a responsive-design programme,
-  and the viewport figures are TST035's so tuning one does not touch the
-  specification. Verified by viewport-driven render tests
-  (Playwright-class) asserting the structural properties at each size; the
-  residual aesthetic judgement stays human.
+  Decomposes SYS002's<!-- The configured layout renders whole --> kiosk-primary, desktop-secondary
+  distinction into the concrete viewport-driven render obligations its rationale anticipates, which
+  fixes no viewports itself. The deployed display is a 16:9 television, so 1920×1080 landscape is
+  the canonical kiosk test viewport; relative units carry the same layout to 4K without a second
+  viewport. 1280×800 and 1440×900 are the desktop window sizes the secondary use case must render
+  sensibly at. Phone widths are deliberately not a requirement
+  (SYS002<!-- The configured layout renders whole -->; owner decision 2026-07-22) — if wanted
+  later, support arrives as its own reviewed system need, not a clause here. What is owed is a
+  reflowing layout, not a responsive-design programme, and the viewport figures are
+  TST035's<!-- Pending: viewport-driven layout render test --> so tuning one does not touch the
+  specification. Verified by viewport-driven render tests (Playwright-class) asserting the
+  structural properties at each size; the residual aesthetic judgement stays human.
 ref: ''
-reviewed: QLMzP52cERwIy97kPbdNzk2jINOTatdm0GO8hM_htYA=
+reviewed: SV0yIhagVDhRzbYJnNuNZe1QQFJXReqwXlvv8BVVVyg=
 status: accepted
 text: |
   The display page shall assemble the modules named in the configuration, each

@@ -4,16 +4,19 @@ header: |
   Pending: refresh cadence is not configurable
 level: 1.43
 links:
-- SRS011: GnP-DyPqrL-vkL2_XcTCrB8NG6AvmlI0MhJdIvU0hxc=
+- SRS011: uYFYvPdpl7RwD5-lwsxocy1pCg7VCfFB3zlGeTo9MJI=
 normative: true
 rationale: |
   The fake-timer cadence assertion was struck: it measured the frontend's poll interval against a
-  backend rate bound SRS011's text declares irrelevant ("regardless of how many clients it serves or
-  how often they ask"). That a cadence is a constant in code rather than an operator-tunable key is
-  module-contract.md's, under Cadence and TTL are chosen together. What remains here is SRS011's own
+  backend rate bound
+  SRS011's<!-- Upstream request rate is bounded, and the bound is not operator-tunable --> text
+  declares irrelevant ("regardless of how many clients it serves or how often they ask"). That a
+  cadence is a constant in code rather than an operator-tunable key is module-contract.md's, under
+  Cadence and TTL are chosen together. What remains here is
+  SRS011's<!-- Upstream request rate is bounded, and the bound is not operator-tunable --> own
   clause that the bound is not raisable by configuration.
 ref: ''
-reviewed: XWMAo1TkKICtuqPIcbXDGwS8yb_QxolwRDmFCNvm4_c=
+reviewed: uSYtSkEkzKrAZTbG4P9YmPjGbtNW6Q3k1EheRDhy7Xg=
 status: proposed
 text: |
   Pending: test asserting the composed configuration schema declares no property that sets a refresh

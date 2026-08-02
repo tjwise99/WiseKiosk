@@ -8,11 +8,13 @@ links:
 normative: true
 rationale: |
   Both fixtures run the one validation entry point, because the branch this asserts is a property of
-  that path rather than of two separately reachable behaviours. Splitting them across two checks would
-  let each pass against a different code path and leave the branch itself untested - which is what the
-  SRS002/SRS004 pair did before.
+  that path rather than of two separately reachable behaviours. Splitting them across two checks
+  would let each pass against a different code path and leave the branch itself untested - which is
+  what the
+  SRS002<!-- A module-scoped configuration error is reported at that module -->/SRS004<!-- Page renders a legible error state for every configuration failure class -->
+  pair did before.
 ref: ''
-reviewed: Bj0xbTnv_MzOS7rY3vuKCYFMoqwAwClUjebOp-VeVmw=
+reviewed: tbxWc-4UIdU4sORpz6FEMWBXXwXSp0MRnY4kdE-NFjY=
 status: proposed
 text: |
   Pending: render test driving two fixtures through the same validation path and asserting opposite

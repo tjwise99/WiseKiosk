@@ -8,9 +8,11 @@ links:
 normative: true
 rationale: |
   Asserts what the mount delivers, not what the image omits: that nothing sits at the configuration
-  path in the image is TST009's, under the same parent.
+  path in the image is
+  TST009's<!-- Pending: the published image carries no deployment specifics -->, under the same
+  parent.
 ref: ''
-reviewed: aGirphJ8gpUl5CINSLwwgavQveFb4bylEUW1TXDRzLk=
+reviewed: Eu59QBCDZOa7lBypptiPhrT8mlqu0vwjvhQ933ygl2s=
 status: proposed
 text: |
   Pending: test running the published image with a fixture configuration bind-mounted at the

@@ -47,6 +47,13 @@ Current gates (they grow as code lands):
   **If it reports unreviewed items or links, do not clear that by re-running it.** Validating the
   tree makes Doorstop stamp a fingerprint into anything unstamped, which is why that check runs
   first and stops it. Read the item against its parent and run `doorstop review <uid>`.
+- `just check-citations` — every requirement ID and ADR number cited in the documentation set or in
+  an item's `rationale` or `verification-justification` names something that exists, and every
+  requirement citation carries that item's header verbatim beside it.
+- `just check-adr-index` — the `decisions/` directory and its index table agree: every ADR has a
+  row, every row a file, numbering contiguous from 0001.
+- `just check-repo-silo` — no manifest or `.venv/` at the repository root, and every Dependabot
+  entry that is not `github-actions` resolves to a non-root directory holding its manifest.
 - `just check-arch`  — the LikeC4 architecture model validates and its generated artifacts are not
   stale.
 - `just check-site`  — the documentation site builds clean with warnings-as-errors.

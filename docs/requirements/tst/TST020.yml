@@ -4,7 +4,7 @@ header: |
   Pending: the registered middleware chain is exactly the declared one
 level: 1.17
 links:
-- SRS023: WhPy70N6y_yJFXePpu7c-bpytXwWjRRZZ9_eF_XQGTo=
+- SRS023: OgK-aIkPiGcrNYQA_DwsHIIEMpwz_a3SoSi4ohl_nhU=
 normative: true
 rationale: |
   An equality against the declared chain, not a search for session or authentication packages: a

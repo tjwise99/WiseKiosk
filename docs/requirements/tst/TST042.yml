@@ -4,17 +4,17 @@ header: |
   Pending: two clients, one request, one answer
 level: 66
 links:
-- SRS009: 3Je4gbXE0f_ybWKil2N9ttPdXutP1iu-6HBpspZvTKw=
+- SRS009: 9PH-xV1W9tspjeCq39r-s1I8TmOzZVWU5sQinie8tPk=
 normative: true
 rationale: |
-  SRS023's three checks establish that no identity machinery exists - no Set-Cookie or
-  WWW-Authenticate, no 401 or 403, no session or access-control middleware on the chain. None of them
-  asserts that two different callers issuing the same request receive the same payload. A backend
-  reading a caller address from a forwarded header and varying its response sets no cookie, returns
-  neither status, and registers no middleware, so it satisfies all three while breaking the clause
-  this item verifies.
+  SRS023's<!-- The backend establishes no client identity and gates no route on one --> three
+  checks establish that no identity machinery exists - no Set-Cookie or WWW-Authenticate, no 401 or
+  403, no session or access-control middleware on the chain. None of them asserts that two different
+  callers issuing the same request receive the same payload. A backend reading a caller address from
+  a forwarded header and varying its response sets no cookie, returns neither status, and registers
+  no middleware, so it satisfies all three while breaking the clause this item verifies.
 ref: ''
-reviewed: XIu5-s51I_taNyuR0riWMatRfE5fp0J6Qq769QJBWuw=
+reviewed: lw10PxIoE4HZtXyRRf7pBoBPc43qdv18lPnwSawGI3w=
 status: proposed
 text: |
   Pending: integration test issuing the same request to a source endpoint from two clients that differ

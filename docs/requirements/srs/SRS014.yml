@@ -4,15 +4,16 @@ header: |
   No single upstream exchange can stall or exhaust the backend
 level: 1.27
 links:
-- SYS001: ycFTNF2ASjFxjP8A9d3lB7nTzAdgSvE_5Ee71wz7MPY=
+- SYS001: VGhozQiiHRgx8gA75WcFC3WXgp9KCc4dS_FDyA8tuGg=
 normative: true
 rationale: |
-  SYS004 bounds the system's upstream use in volume, and SRS001 reports a
-  timeout failure class — but nothing else imposes a timeout or a size limit, so
-  a hung or oversized upstream could stall the handler or exhaust the single
-  process. This item imposes the bounds that make those failure classes real.
+  SYS004<!-- Upstream data reaches the display only through the backend --> bounds the system's
+  upstream use in volume, and SRS001<!-- A failed module shows why, and only that module -->
+  reports a timeout failure class — but nothing else imposes a timeout or a size limit, so a hung or
+  oversized upstream could stall the handler or exhaust the single process. This item imposes the
+  bounds that make those failure classes real.
 ref: ''
-reviewed: YEMDEhgAia8cZWMmopO5F2rVXY4BgcoHXinWLVzlR0Q=
+reviewed: szmINZhQ4SNIB1BfS1bQSrVWGqgiVcPVAdXwYJ_x3_s=
 status: accepted
 text: |
   No single upstream request or response shall be able to stall the backend or exhaust its

@@ -9,8 +9,9 @@ pointing at whatever now occupies the number.
 The explanatory fields are not bound by that. `rationale` and `verification-justification` explain a
 decision to someone reading the tree as a tree, so they may name items; the obligation may not.
 
-Scope is the identifier shape only. Whether a cited identifier resolves, and whether it resolves to
-the item the sentence means, is #68's.
+Scope is the identifier shape only. Whether a cited identifier resolves, and whether it carries the
+header of the item it names, is `scripts/check-citations.py`. Whether the sentence means the item it
+names is decided by nothing here.
 """
 
 import re

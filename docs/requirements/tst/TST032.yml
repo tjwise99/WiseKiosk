@@ -4,11 +4,11 @@ header: |
   Pending: boundary schema is single and complete
 level: 1.29
 links:
-- SRS015: EEbGOlkV-EcNf5-dB0yGlMxDyE0wQJb0cbo13vYnAcQ=
+- SRS015: Bv28udU9Ayipnz0S1C8A3LrnXtEMZah9quGw3HlOjrA=
 normative: true
 rationale: ''
 ref: ''
-reviewed: mn3kWjPPB1ZgFINelI7Oh1iXdg8mjGal7MeYDqSaqbo=
+reviewed: oJhlzHnyx6GUZpuK33bZLK4XvhqvqleJRsKUOSoIPnI=
 status: proposed
 text: |
   Pending: test parsing the boundary schema and asserting exactly one schema artifact is tracked;
@@ -21,5 +21,6 @@ text: |
 verification-justification: |
   Settles that one schema artifact exists and that its path items match the declared endpoint set.
   Leaves unproven that the schema describes the payloads the backend actually sends - that is the
-  drift gate's, under SRS016 - and says nothing about where the artifact sits, which #5 allocates.
+  drift gate's, under SRS016<!-- Both sides consume the generated types --> - and says nothing
+  about where the artifact sits, which #5 allocates.
 verification-method: test

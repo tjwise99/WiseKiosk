@@ -34,6 +34,12 @@ jobs:
           fi
           echo "No CRLF line endings."
 
+      - name: The decisions directory and its index table agree
+        run: node scripts/check-adr-index.mjs
+
+      - name: No manifest at the repository root, and every Dependabot entry resolves to its manifest
+        run: node scripts/check-repo-silo.mjs
+
       - name: Every `just verify` check runs in CI, and vice versa
         run: node scripts/check-verify-ci-parity.mjs
 
@@ -42,8 +48,9 @@ jobs:
     # suspect/unreviewed/orphan items, no item claims a verification method its
     # children do not support, and no item's statement cites another item by
     # identifier. Runs every command `just check-reqs` runs, in
-    # the same order; check-verify-ci-parity asserts that per command, so adding
-    # one to the recipe without adding it here fails. The tool is siloed under
+    # the same order, then `just check-citations`, which reads the tree through
+    # the same venv; check-verify-ci-parity asserts that per command, so adding
+    # one to a recipe without adding it here fails. The tool is siloed under
     # docs/requirements/ with the feature it serves. No secrets: pure tree
     # validation.
     runs-on: ubuntu-latest
@@ -73,6 +80,12 @@ jobs:
 
       - name: No item's statement cites another item by identifier
         run: docs/requirements/.venv/bin/python scripts/check-text-citations.py
+
+      - name: Every citation resolves and carries its item header
+        run: docs/requirements/.venv/bin/python scripts/check-citations.py
+
+      - name: Every header is non-empty, charset-safe and prefix-free
+        run: docs/requirements/.venv/bin/python scripts/check-headers.py
 
   docs-site:
     # Builds the docs site with -W: a broken cross-reference or orphaned page

@@ -9,9 +9,11 @@ normative: true
 rationale: |
   Split from the reachability item, whose text had carried this as a trailing clause. The two
   decompose from different needs: reaching no foreign origin is the single-origin data plane
-  (SYS004), while holding no capability beyond what is needed is SYS006's second half - a process
-  holding no more than it needs bounds what a compromise reaches. Under one parent the capability
-  clause traced to no clause of its own need, which item-level link checking cannot see.
+  (SYS004<!-- Upstream data reaches the display only through the backend -->), while holding no
+  capability beyond what is needed is SYS006's<!-- Neither grant privilege nor require it -->
+  second half - a process holding no more than it needs bounds what a compromise reaches. Under one
+  parent the capability clause traced to no clause of its own need, which item-level link checking
+  cannot see.
 
   The clause was originally rescued from a dropped browser-headers item and appended here rather than
   given its own text, to avoid re-creating an item a merge had just absorbed. That reason does not
@@ -20,7 +22,7 @@ rationale: |
   A module renders third-party data. A page that cannot reach camera, microphone, geolocation, USB,
   serial or Bluetooth cannot be made to, whatever that data turns out to contain.
 ref: ''
-reviewed: HAKFycp4P5_kB3zgj71u9NTA8n39-6mV3js4uU-ILWQ=
+reviewed: 2lFm_qjKuAbVT9WJ5sE_ptMJRd6IEZhduwFMSwAkvG8=
 status: proposed
 text: |
   The display page shall be unable to use any device feature it does not need.

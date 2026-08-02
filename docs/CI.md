@@ -158,10 +158,29 @@ resolve, a citation to something that does not exist, an index that has drifted 
 - Every relative Markdown link in every tracked file resolves inside the repository.
 - Every absolute `http` or `https` link in tracked documentation names a host on the committed
   upstream-documentation allowlist, and every allowlist entry names the tool or service it serves.
-  This extends the link checker above rather than adding a second tool (#68).
-- Every bare-text citation to a requirement ID or ADR number names an item or decision that exists
-  (#68). Not built: the link checker resolves link syntax only, so a bare `SRS003` or `ADR 0002` in
-  prose is unchecked, and a citation that resolves to the wrong item is beyond it either way.
+  This extends the link checker above rather than adding a second tool.
+- Every citation to a requirement ID or ADR number names an item or decision that exists — in
+  tracked documentation outside `.claude/`, and in every item's `rationale` and
+  `verification-justification`. Fenced code blocks are skipped; an identifier in inline code is a
+  citation like any other. An identifier followed by `.yml` names an item's file rather than citing
+  it: it must still resolve, and carries no header.
+- **A requirement citation carries the item's header, in an HTML comment, closed up to the
+  identifier.** The header is verbatim and the comment is the only form —
+  `SRS015<!-- One schema, all boundary value classes -->`. The identifier's own closing backtick and
+  possessive clitic may sit between the two; whitespace may not, because a browser strips the comment
+  and leaves the space, which then reads as a gap before whatever punctuation follows. Closing the
+  junction also removes the one place a line could break inside a citation, which is what once split
+  paragraphs on the rendered page. A citation may still wrap after the comment opens: a line break,
+  and the blockquote marker continuing it, are whitespace inside the header rather than text
+  separating it. A number is only a handle: a renumber rewrites
+  `links:` and leaves the sentence pointing at whatever now occupies it, still reading as correct.
+  The header is what turns that drift into a mismatch a machine can see. An ADR number carries no
+  header — ADR numbers are immutable, so one cannot come to mean a different decision.
+- **A header in an HTML comment does not open a line that continues a paragraph.** CommonMark reads
+  a line-initial `<!--` as an HTML block, which interrupts the paragraph and splits it in two on the
+  rendered page while the source still reads as one. Nothing else reports it: the comment is a
+  comment, the prose is correct, and Sphinx does not warn. A comment opening a line after a blank
+  one is a block already, which is what an issue template's guidance comment is, and passes.
 - The `decisions/` directory and its index table agree — every ADR has a row, no gap or duplicate in
   numbering, every row resolves to a real file.
 - The documentation index's row set equals the committed canonical-document list in both directions;
@@ -184,7 +203,8 @@ changed, which the citation resolver above decides without anyone declaring anyt
   default-base pull request records the ticket linkage.
 - The Docker build context excludes `.git` and `node_modules`, by `.dockerignore`. Neither is secret
   material; both are build hygiene, and a smaller context is a faster and more predictable build.
-  That the image carries no secret is the tree's, under SRS025 (#54).
+  That the image carries no secret is the tree's, under
+  SRS025<!-- No secret material in the published image --> (#54).
 - A depth-1 listing of the repository root holds no `package.json`, `go.mod`, `pyproject.toml`,
   `requirements*.txt` or `.venv/` — tooling is siloed with the feature it serves — and every
   Dependabot entry that is not `github-actions` resolves to a non-root directory holding the matching
@@ -254,10 +274,9 @@ what runs where, and what each is allowed to let through, is here.
 - **That scheduled job holds one upstream credential, and it is the only job that does.** Of the
   three upstream sources — the clock and compliments modules are local and fetch nothing — only
   CheckWX requires one; OpenMeteo and themeparks.wiki are keyless. The credential is scoped to that
-  workflow
-  and reaches no other job, and no fixture, log or failure output carries its value —
-  [`../SECURITY.md`](../SECURITY.md) rests on that, and SRS008 obliges the running system to the same
-  rule.
+  workflow and reaches no other job, and no fixture, log or failure output carries its value —
+  [`../SECURITY.md`](../SECURITY.md) rests on that, and
+  SRS008<!-- No secret value in any backend output --> obliges the running system to the same rule.
 
 **Why a credential is allowed here at all.** A withdrawn requirement once forbade any CI workflow
 from holding an upstream credential. It banned a normal practice, and forced the tier into a nested
@@ -272,10 +291,13 @@ already decided, which is what makes it a check and not a want.
 - Every check `just verify` depends on also runs in CI, and every named CI step is one of those
   checks or an enumerated CI-only exception. A recipe running more than one command lists one token
   per command — mapping a recipe to a single token hides any command added to it later, which is how
-  a check once reached `just verify` without reaching CI.
+  a check once reached `just verify` without reaching CI. A token is sought only where a step runs
+  one: neither a comment nor a step's own `name:` satisfies it, or deleting a step and leaving its
+  name behind would pass.
 - Every committed test file falls under a configured runner's reach; a file excluded by skip, build
   tag, glob gap, or wrong directory fails. The requirements tier is covered by `doorstop --error-all`
-  and is deliberately not re-encoded here.
+  and is deliberately not re-encoded here. Unbuilt until a runner exists to detect anything: #82
+  dead-test detector.
 - The default branch's required status checks equal the gate jobs the workflow defines — a gate job
   absent from the required set fails, and so does a required entry naming no defined job.
 

@@ -4,17 +4,16 @@ header: |
   Page renders a legible error state for every configuration failure class
 level: 1.13
 links:
-- SYS001: ycFTNF2ASjFxjP8A9d3lB7nTzAdgSvE_5Ee71wz7MPY=
+- SYS001: VGhozQiiHRgx8gA75WcFC3WXgp9KCc4dS_FDyA8tuGg=
 normative: true
 rationale: |
-  ADR 0007: the page shell runs validation itself and owns the presentation of
-  its result. Failure classes are enumerated because SYS001's never-a-blank-
-  screen intent covers more than schema errors — an absent, unfetchable, or
-  unparseable file must be as legible as an invalid one. Scoped to "no valid
-  configuration applied" so a future live-apply path keeps the freedom to hold
-  last-good on a bad reload.
+  ADR 0007: the page shell runs validation itself and owns the presentation of its result. Failure
+  classes are enumerated because SYS001's<!-- Failure is legible and proportionate -->
+  never-a-blank- screen intent covers more than schema errors — an absent, unfetchable, or
+  unparseable file must be as legible as an invalid one. Scoped to "no valid configuration applied"
+  so a future live-apply path keeps the freedom to hold last-good on a bad reload.
 ref: ''
-reviewed: MzS_e_lItPN3kbgUY2zcDl7SXGrb1U2y1coHYxl2WAU=
+reviewed: lhNKVQsNcK0UAkEwUk66yYPNRWprJFK75VCZhxYy_Ks=
 status: accepted
 text: |
   When no configuration can be applied - the file absent, unfetchable,

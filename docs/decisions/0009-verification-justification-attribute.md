@@ -15,19 +15,21 @@
 > original reading still applies if an item ever sits there again.
 >
 > **The evidence is the 2026-07-28 audit.** Three reviewers, filing blind against opposed briefs,
-> produced two of their strongest convergent findings by reading justifications: `SRS027`'s admission
-> that no check settles *"whether an entry on that allowlist is justified"* is what exposed a check
-> asserting over a set no artifact defines, and `SRS028`'s *"whether a declared type is the correct
-> one for the bytes beneath it"* scoped all three
-> readings of a requirement that obliged the browser rather than the product. Fourteen items carried
-> the attribute at the time. Both findings came from that fourteen.
+> produced two of their strongest convergent findings by reading justifications:
+> `SRS027`'s<!-- The display page holds no device capability it does not use --> admission that no
+> check settles *"whether an entry on that allowlist is justified"* is what exposed a check
+> asserting over a set no artifact defines, and
+> `SRS028`'s<!-- Served responses declare their type, and forbid the browser inferring one -->
+> *"whether a declared type is the correct one for the bytes beneath it"* scoped all three readings
+> of a requirement that obliged the browser rather than the product. Fourteen items carried the
+> attribute at the time. Both findings came from that fourteen.
 
 > **Note, 2026-07-25.** The counts below describe the tree as it stood when this decision was taken,
 > partway through #18's closing pass. That pass then promoted most of those items: at merge the tree
 > holds 255 items, 41 of them non-`test` — 16%, not half. The decision stands and the attribute
 > exists for those 41; only the figures motivating it are of their moment. The Consequences section's
 > docs-site column is likewise not yet rendered — `docs/site/doorstop_to_needs.py` emits no
-> verification fields, and doing so needs a `needs_extra_options` declaration; tracked on #68.
+> verification fields, and doing so needs a `needs_extra_options` declaration; tracked on #25.
 
 ## Context
 

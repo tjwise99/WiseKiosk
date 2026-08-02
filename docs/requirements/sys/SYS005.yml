@@ -7,12 +7,13 @@ links: []
 normative: true
 rationale: |
   A shape declared twice drifts, and the drift is invisible until runtime: this is the single worst
-  defect class this design guards against (ADR 0001). The rule binds definitions, not uses — a component
-  whose prop is typed with a generated type is a consumer, not a second declaration. Scope is internal:
-  upstream API shapes are defined by whoever runs the API, and the configuration format is shared with
-  the operator and governed by SYS003.
+  defect class this design guards against (ADR 0001). The rule binds definitions, not uses — a
+  component whose prop is typed with a generated type is a consumer, not a second declaration. Scope
+  is internal: upstream API shapes are defined by whoever runs the API, and the configuration format
+  is shared with the operator and governed by
+  SYS003<!-- A deployment is parameterised from outside the image -->.
 ref: ''
-reviewed: vWpFwzXUqypym6hKI0F3IGqVwyPFfH32lieducWW6tM=
+reviewed: 1vWnTV-wqKezKhWG5FGQ2wWC5KuV43D2fs51K1aIHt0=
 status: accepted
 text: |
   Every shape shared between WiseKiosk's own components shall have exactly one machine-readable

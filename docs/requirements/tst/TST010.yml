@@ -4,13 +4,14 @@ header: |
   Pending: configuration failure-class render test
 level: 1.13
 links:
-- SRS004: ruKB5Szs333ImjKW4f6l65IaHmbkTH7M4xKKGeTINl4=
+- SRS004: 4wNFcQO40WlzDjaLpakN4eECPe-d366npNbq_oSqI7E=
 normative: true
 rationale: |
-  Scoped to naming the failure. What the state must say beyond that is TST005's, which asserts it on
-  the branch where a correction exists to state.
+  Scoped to naming the failure. What the state must say beyond that is
+  TST005's<!-- Pending: a module-scoped configuration error lands at that module -->, which asserts
+  it on the branch where a correction exists to state.
 ref: ''
-reviewed: jdgF5hNCs5q1v5C3EAPEaw4pPMi3qMYcJ99VSpXBloE=
+reviewed: F1Zv1gGkTDK6RXWr3PpXa3JuTVIpnCPr6d5k3QBkq-0=
 status: proposed
 text: |
   Pending: render test asserting the page shell loads and renders an operator-language error state

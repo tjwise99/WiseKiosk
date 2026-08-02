@@ -24,12 +24,12 @@ stating only what is specific to that module. Obligations true of every module s
 needs and are not restated ([ADR 0012](../decisions/0012-module-requirements-in-tree.md)).
 
 Each item is one YAML file named for its ID (`SYS001.yml`, `SRS001.yml`, `TST001.yml`). IDs are the
-prefix plus a zero-padded 3-digit number. **An ID is permanent** — once assigned it is never reused or
-renumbered, so external references to it stay valid.
+prefix plus a zero-padded 3-digit number. **An ID is permanent** — once assigned it is never reused
+or renumbered, so external references to it stay valid.
 
-> **One-time ID reset.** The tree seeded alongside the tooling (`SYS001`–`006` and children) was
-> placeholder content and was cleared by the requirements rewrite; IDs were re-established from
-> `001` with new meanings. Permanence applies from that reset forward.
+> **One-time ID reset.** The tree seeded alongside the tooling (the first six `SYS` items and their
+> children) was placeholder content and was cleared by the requirements rewrite; IDs were
+> re-established from `001` with new meanings. Permanence applies from that reset forward.
 
 ## Item attributes
 
@@ -43,6 +43,19 @@ Beyond Doorstop's native fields, every item carries four stored attributes
 | `verification-method` | `test` \| `inspection` \| `analysis` \| `demonstration` | How the requirement is verified; gates route on it |
 | `verification-justification` | free text | What the item's verification settles and what it does not. Below `test`, what specifically blocks a mechanically-decidable check; at `test`, what the check leaves unproven. **Required on every item** |
 | `rationale` | free text | Why the requirement exists. **Required at the `SYS` tier**, optional below |
+
+**`header` is machine-read, so it is constrained.** Prose cites an item by identifier and header
+together, the header carried verbatim inside an HTML comment
+([`../CI.md`](../CI.md) § Documentation integrity), so header text is embedded into running Markdown.
+Every header must therefore be non-empty, drawn from `A-Z`, `a-z`, `0-9`, the space, and
+`` , . ' ( ) & : ; - ``, and not a prefix of another item's header. A character absent from that
+list is not forbidden on sight — it is unadmitted, and admitting one takes a check that it renders
+as written both inside a comment and inside a table cell. The permitted set is an allowlist: a list
+of characters to reject
+fails open on the one nobody thought of, and a header carrying `|` would split a table while one
+carrying `-->` would close its own comment — neither visible to any other check. Prefix-freeness is
+the reader's constraint rather than the checker's, which compares a header exactly: two items whose
+headers begin alike are told apart only by a reader who reaches the end of both.
 
 `rationale` and `verification-justification` answer different questions: why the obligation exists,
 versus what its verification does and does not settle. An item at `inspection`, `analysis`, or
@@ -162,7 +175,7 @@ docs/requirements/.venv/bin/pip install -r docs/requirements/requirements-dev.tx
 Then:
 
 ```sh
-just check-reqs      # check-unreviewed.py, check-suspect-links.py, validate-tree.sh, check-method-consistency.py, check-text-citations.py
+just check-reqs      # check-unreviewed.py, check-suspect-links.py, validate-tree.sh, check-method-consistency.py, check-text-citations.py, check-headers.py
 just verify          # runs check-reqs alongside the other repo gates
 ```
 
@@ -170,7 +183,7 @@ just verify          # runs check-reqs alongside the other repo gates
 [`../../.github/workflows/checks.yml`](../../.github/workflows/checks.yml), job `requirements`):
 `scripts/check-unreviewed.py`, then `scripts/check-suspect-links.py`, then
 `scripts/validate-tree.sh`, then `scripts/check-method-consistency.py`, then
-`scripts/check-text-citations.py`. The `--error-all` flag
+`scripts/check-text-citations.py`, then `scripts/check-headers.py`. The `--error-all` flag
 `validate-tree.sh` passes to Doorstop promotes its suspect / unreviewed / orphan /
 unresolved-reference warnings to errors, so the process exits non-zero and the gate actually
 blocks — plain `doorstop` only warns.
@@ -222,13 +235,24 @@ Run all commands with the venv (`docs/requirements/.venv/bin/doorstop …`):
   fingerprint in the child's `links:`; `review` alone re-stamps the item but leaves the link
   suspect. Re-blessing is the human act of re-reading a downstream item after its parent moved —
   do not script it blindly.
+- **One exception, and it carries its own burden of proof: a bulk edit provable as a single
+  transform.** Where every changed item differs only by one mechanical substitution — a corpus-wide
+  rewrite of prose that cites other items, say — re-reading forty items decides nothing a machine has
+  not already settled, and scripting the re-stamp is legitimate. What makes it legitimate is the
+  proof, not the claim: apply the transform to the previous revision and diff the result byte-for-byte
+  against the new one. Every file must match, or the edit was not the single transform you thought it
+  was and the exception does not apply. A word-level or token-level comparison is not enough — it
+  cannot see a reflow, and reflow is how an unintended change hides.
 - **After moving an item to a different parent,** the item itself is unreviewed — its parent UIDs are
   inside its own stamp — so `clear` is not enough. Read it against the parent it now has and
   `doorstop review <UID>`. `--error-all` reports it as `unreviewed changes` until you do.
-- **Neither command can reach an inactive item.** `Tree.find_item` is active-only, so `doorstop review
-  TST019` and `doorstop clear TST019` both answer `no item with UID` while that item is pending.
-  Stamping one takes a loop over `document._iter()`. Where a pending item's link goes suspect before
-  activation, that loop is the only route.
+- **Neither command can reach an inactive item.** `Tree.find_item` is active-only, so
+  `doorstop review TST019`<!-- Pending: no identity-based rejection, in the contract or on the wire -->
+  and
+  `doorstop clear TST019`<!-- Pending: no identity-based rejection, in the contract or on the wire -->
+  both answer `no item with UID` while that item is pending. Stamping one takes a loop over
+  `document._iter()`. Where a pending item's link goes suspect before activation, that loop is the
+  only route.
 - **Inactive items are not rewritten by Doorstop**, so write their parent links in dict form,
   `- UID: null` (the form Doorstop itself stamps); a plain-string link breaks the docs-site
   needs generator.
@@ -239,9 +263,10 @@ Run all commands with the venv (`docs/requirements/.venv/bin/doorstop …`):
 - **Check the tree before adding a normative clause.** A new `shall` can contradict a decision
   already recorded in an existing item's `rationale` — a deliberately-excluded case, a boundary an
   owner already fixed. `--error-all` cannot see this; grep the relevant items' rationales first. A
-  clause that reverses a recorded decision is a finding: either the decision is reopened with its own
-  review, or the clause does not land. (A phone-width `shall` slipped this way in the #38 round,
-  against a scope decision recorded in `SYS002` — caught only by independent review.)
+  clause that reverses a recorded decision is a finding: either the decision is reopened with its
+  own review, or the clause does not land. (A phone-width `shall` slipped this way in the #38 round,
+  against a scope decision recorded in `SYS002`<!-- The configured layout renders whole --> —
+  caught only by independent review.)
 - **Traceability is item-level; individual clauses are not checked.** An item that links two parents
   satisfies the orphan gate at item granularity, yet a single clause inside its `text` can be
   supported by *neither* parent — an orphan the gate cannot see. Prefer one obligation per parent;

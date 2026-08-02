@@ -4,7 +4,7 @@ header: |
   Pending: schema key set equals the committed allowlist
 level: 1.17
 links:
-- SRS007: 4T55vG-p3dGlHY8_Pe4b7v2TWjJ8InvKZT13jBTXAPs=
+- SRS007: FajElfUx9Nb5oDhpUASb81hesjJXNzbPPXm2laFwS1w=
 normative: true
 rationale: |
   Stated as a test rather than an inspection because set equality against a committed artifact is
