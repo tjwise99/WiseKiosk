@@ -27,11 +27,17 @@ if (workflows.length === 0) {
 
 const SHA = /@[0-9a-f]{40}$/;
 const DIGEST = /@sha256:[0-9a-f]{64}$/;
-// `uses:` as a mapping key — at the head of a block entry, or inside a flow mapping.
-const USES = /(?:^|[-{,])\s*uses:\s*(.*)$/;
+// `uses:` as a mapping key: at the head of a block entry, or inside a flow mapping. Both anchored —
+// an unanchored match reads `uses:` out of any string that happens to contain it.
+const USES = /^\s*(?:-\s*)?uses:\s*(.*)$/;
+const FLOW_USES = /[{,]\s*uses:\s*([^,}]+)/g;
+// Keys whose value is free text. A `uses:` inside one names no action.
+const PROSE = /^\s*(?:-\s*)?(?:run|name|if|shell|working-directory):/;
+// A block scalar's content is indented under its key and is free text throughout.
+const SCALAR = /^(\s*)(?:-\s*)?[\w-]+:\s*[|>][-+\d]*\s*$/;
 // A top-level block opens at column zero; a job's own block is indented and may elevate.
 const TOP_LEVEL_PERMISSIONS = /^permissions:[^\S\n]*(\S.*)?$/;
-const GRANT = /^([\w-]+):\s*(\S+)$/;
+const GRANT = /^["']?([\w-]+)["']?:\s*(\S+)$/;
 
 const uncomment = (text) => text.replace(/\s+#.*$/, "").trim();
 const unquote = (text) => text.replace(/^(['"])(.*)\1$/, "$2").trim();
@@ -42,34 +48,55 @@ let references = 0;
 for (const path of workflows) {
   const lines = readFileSync(resolve(repoRoot, path), "utf8").split("\n");
 
+  let scalar = null;
   for (const [index, line] of lines.entries()) {
+    if (scalar !== null) {
+      if (line.trim() === "" || line.search(/\S/) > scalar) continue;
+      scalar = null;
+    }
     if (/^\s*#/.test(line)) continue;
-    const key = USES.exec(line);
-    if (!key) continue;
-    references += 1;
-    const where = `${path}:${index + 1}`;
-    // A flow mapping continues past the value, so the reference ends at the first ',' or '}'.
-    const action = unquote(uncomment(key[1]).split(/[,}]/)[0].trim());
-    if (!action) {
-      problems.push(`${where} declares 'uses:' with no value this script can read`);
+    if (SCALAR.test(line)) {
+      scalar = line.search(/\S/);
       continue;
     }
-    // A repository-local action or reusable workflow has no upstream to pin — docs/CI.md § Action
-    // pins and workflow privilege.
-    if (action.startsWith("./")) continue;
-    if (action.startsWith("docker://")) {
-      if (!DIGEST.test(action)) {
-        problems.push(`${where} uses '${action}', which is not pinned to an image digest`);
+    if (PROSE.test(line)) continue;
+
+    const where = `${path}:${index + 1}`;
+    const text = uncomment(line);
+    // A flow mapping can carry several steps on one line, so every `uses:` in it is read.
+    const block = USES.exec(text);
+    const found = block ? [block[1]] : [...text.matchAll(FLOW_USES)].map((match) => match[1]);
+    if (found.length === 0) {
+      if (/(?:^|[-{,])\s*uses:/.test(text)) {
+        problems.push(`${where} declares 'uses:' in a layout this script cannot read: '${text.trim()}'`);
       }
       continue;
     }
-    if (!SHA.test(action)) {
-      problems.push(`${where} uses '${action}', which is not pinned to a commit SHA`);
-    } else if (!version(line)) {
-      problems.push(
-        `${where} pins '${action}' but names no version — the comment is the only thing that tells ` +
-          `a reader what the SHA is`,
-      );
+
+    for (const reference of found) {
+      references += 1;
+      const action = unquote(reference.trim());
+      if (!action) {
+        problems.push(`${where} declares 'uses:' with no value this script can read`);
+        continue;
+      }
+      // A repository-local action or reusable workflow has no upstream to pin — docs/CI.md § Action
+      // pins and workflow privilege.
+      if (action.startsWith("./")) continue;
+      if (action.startsWith("docker://")) {
+        if (!DIGEST.test(action)) {
+          problems.push(`${where} uses '${action}', which is not pinned to an image digest`);
+        }
+        continue;
+      }
+      if (!SHA.test(action)) {
+        problems.push(`${where} uses '${action}', which is not pinned to a commit SHA`);
+      } else if (!version(line)) {
+        problems.push(
+          `${where} pins '${action}' but names no version — the comment is the only thing that ` +
+            `tells a reader what the SHA is`,
+        );
+      }
     }
   }
 
@@ -79,12 +106,16 @@ for (const path of workflows) {
     continue;
   }
 
-  const declared = uncomment(TOP_LEVEL_PERMISSIONS.exec(lines[opening])[1] ?? "");
+  let declared = uncomment(TOP_LEVEL_PERMISSIONS.exec(lines[opening])[1] ?? "");
+  // A flow mapping may close on a later line.
+  for (let at = opening + 1; declared.startsWith("{") && !declared.endsWith("}"); at += 1) {
+    if (at >= lines.length) break;
+    declared += " " + uncomment(lines[at]);
+  }
   if (declared === "read-all" || declared === "{}") continue;
 
   const grants = [];
   if (declared.startsWith("{")) {
-    // A flow mapping holds the whole block on the opening line.
     const pairs = declared.replace(/^\{/, "").replace(/\}$/, "");
     for (const pair of pairs.split(",")) grants.push([`${path}:${opening + 1}`, pair]);
   } else if (declared) {
@@ -101,6 +132,10 @@ for (const path of workflows) {
       indent ??= depth;
       grants.push([`${path}:${opening + offset + 2}`, line]);
     }
+  }
+
+  if (grants.length === 0) {
+    problems.push(`${path}:${opening + 1} declares 'permissions:' with nothing under it`);
   }
 
   for (const [where, text] of grants) {

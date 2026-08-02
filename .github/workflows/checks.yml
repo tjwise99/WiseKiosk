@@ -177,7 +177,7 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          fetch-depth: 0 # the scan walks the pull request's base..head range, which a shallow clone does not carry
+          fetch-depth: 0 # the scan walks a commit range, which a shallow clone does not carry
       - name: gitleaks
         uses: gitleaks/gitleaks-action@e0c47f4f8be36e29cdc102c57e68cb5cbf0e8d1e # v3.0.0
         env:

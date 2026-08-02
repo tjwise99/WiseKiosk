@@ -105,20 +105,25 @@ inspects them.
 
 ## Secret scanning
 
-Every commit reaching a pull request or the default branch is scanned for committed credentials as it
-arrives, and a finding fails the merge. The scan walks **commits, not the tree**, so a secret added
-and then removed within the same branch still fails: the value is compromised from the moment it is
-pushed, and the commit that removes it changes nothing. What that shape does not do is re-read history
-that arrived earlier — each commit is scanned once, when it lands — so this is a gate on what is being
-added rather than an assertion about the repository behind it. The scan is also pattern-based, and
-catches only credential shapes it holds rules for; nothing reports what it missed. Neither limit is a
-reason to weaken the delivery rules the tree carries, and nothing downstream may read a green scan as
-proof that the history is clean.
+A pull request, and every push to the default branch, is scanned for committed credentials, and a
+finding fails the merge. The scan walks **the commits the event carries** rather than the tree at its
+tip — the pull request's own commits, or the commits a push delivered — so a secret added and then
+removed within one branch still fails: the value is compromised from the moment it is pushed, and the
+commit that removes it changes nothing.
+
+**What that shape does not reach**, and what may therefore not be read into a green result: history
+behind the branch point, which was scanned when it arrived rather than again here; a commit reachable
+only through a merge's second parent, because the walk follows first parents and skips merges; and the
+tail of an unusually long range, because the event's commit list is only as long as the API page or
+the webhook payload that carries it. The scan is pattern-based besides, so it catches the credential
+shapes it holds rules for and nothing reports what it missed. It raises the cost of committing a
+credential; it is not an assertion that the repository holds none, and the delivery rules the tree
+carries stand independently of it.
 
 **What no check here decides.** GitHub's own secret scanning and its push protection are repository
 settings rather than files. Reading one directly means reading `security_and_analysis` on the
 repository object, which is returned only to an administrator, and the workflow `permissions:` key
-offers no scope a job could request to become one — so no gate here decides whether either is on. The
+offers no scope a job could request to become one. No gate here decides whether either is on. The
 alternative is a standing admin credential held in the repository so that a job can read a setting,
 which is a larger hole than the one it closes; the scan above stands on the merge path either way.
 Both settings are enabled, and this paragraph rather than a check is what records it.
