@@ -158,11 +158,17 @@ resolve, a citation to something that does not exist, an index that has drifted 
 - Every relative Markdown link in every tracked file resolves inside the repository.
 - Every absolute `http` or `https` link in tracked documentation names a host on the committed
   upstream-documentation allowlist, and every allowlist entry names the tool or service it serves.
-  This extends the link checker above rather than adding a second tool (#68).
-- Every bare-text citation to a requirement ID or ADR number names an item or decision that exists
-  (#68). Not built: the link checker resolves link syntax only, so a bare `SRS003`
-  <!-- A configuration change applies no later than the next page load --> or `ADR 0002` in prose is
-  unchecked, and a citation that resolves to the wrong item is beyond it either way.
+  This extends the link checker above rather than adding a second tool.
+- Every citation to a requirement ID or ADR number names an item or decision that exists — in
+  tracked documentation outside `.claude/`, and in every item's `rationale` and
+  `verification-justification`. Fenced code blocks are skipped; an identifier in inline code is a
+  citation like any other.
+- **A requirement citation carries the item's header.** The identifier is followed immediately by
+  that item's `header` verbatim, either as visible text or inside an HTML comment — `SRS015
+  <!-- One schema, all boundary value classes -->`. A number is only a handle: a renumber rewrites
+  `links:` and leaves the sentence pointing at whatever now occupies it, still reading as correct.
+  The header is what turns that drift into a mismatch a machine can see. An ADR number carries no
+  header — ADR numbers are immutable, so one cannot come to mean a different decision.
 - The `decisions/` directory and its index table agree — every ADR has a row, no gap or duplicate in
   numbering, every row resolves to a real file.
 - The documentation index's row set equals the committed canonical-document list in both directions;
