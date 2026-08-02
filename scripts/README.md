@@ -127,6 +127,76 @@ Covers only the `github-actions` entry assertion; the rest of the check predates
 | Must fail | a recipe in `just verify` whose script runs in no workflow step |
 | Must pass | the tree as it stands |
 
+## `check-branch.sh`
+
+Covers the ticket-metadata and epic-membership assertions
+([ADR 0013](../docs/decisions/0013-work-tracking-invariants.md)); the branch shape, issue resolution
+and recorded-linkage assertions predate this record.
+
+**A case here is not a fixture.** This check reads live GitHub state, so a case is a real throwaway
+issue mutated between runs, and the branch name is passed as `$1` rather than checked out. Read the
+mutated field back before each run — a seed that silently failed to apply looks exactly like a
+passing check. The cases below ran against throwaway issue #89, closed afterwards.
+
+| Direction | Input |
+|---|---|
+| Must fail | an issue with no milestone |
+| Must fail | an issue carrying two type labels (`task` and `design`) |
+| Must pass | the same issue with the second type label removed |
+| Must pass | an issue carrying a non-type companion label (`design` + `documentation`) |
+
+The companion-label row is the one that matters most: `documentation` is declared by
+`design_decision.md` and rides on every design ticket, so a count that read *all* labels rather than
+type labels would reject the repository's own conforming tickets and look like a working check while
+doing it.
+
+The guards over the check's own inputs were seeded against a copy of the script, since both concern
+the script misreading rather than the ticket being wrong — one reading a doctored
+`branch-shape.regex` placed beside the copy, the other a doctored GraphQL query:
+
+| Direction | Input |
+|---|---|
+| Must fail | a `branch-shape.regex` carrying a second pattern line, so the type set no longer has one answer while the branch still matches |
+| Must fail | a single-line regex holding a top-level alternation (`^(foo\|bar)_baz$\|^(task\|…)_…`), so one group is extracted, the branch matches through the other alternative, and the extracted set does not hold the branch's type |
+| Must pass | the same copy with the real regex restored |
+| Must fail | the GraphQL `parent` selection returning `databaseId` instead of `number`, against an issue that has a parent, so the response is error-free and every enclosing object is present |
+| Must pass | the unmodified query against the same issue |
+
+The second failing row is why two guards stand over the regex file rather than one: a top-level
+alternation satisfies the group count, and only the membership check — the branch matched that
+pattern, so its type must be in the extracted set — rejects it.
+
+The `databaseId` row needs an issue that **has** a parent. Against an unparented one the check
+correctly passes, because a `parent` of null is legitimate however the selection below it is spelled;
+running it on an unparented issue and reading the pass as evidence would record the opposite of what
+the row claims.
+
+The parent number is asserted rather than defaulted because a `parent` key that is present and null is
+how *legitimately no parent* arrives, while anything else means the query stopped naming what is read
+— and `// ""` erases that difference, printing `Issue #64 has no parent, and PR #88 targets the
+default branch` for a fact the run never read. The assertion reaches the scalar the code consumes,
+not a container holding it: asserting the issue node passes an aliased `parent`, and asserting
+`parent` passes a selection returning `databaseId` — a plausible edit here, since the sub-issues REST
+endpoint this repository calls wants the database id and not the number.
+
+The epic-membership assertion needs a pull request, so its cases ran against PR #88 itself rather
+than a throwaway, by re-running the `process` job against mutated live state:
+
+| Direction | Input |
+|---|---|
+| Must fail | the branch's issue given a parent while its pull request targets the default branch |
+| Must pass | the same issue with the parent removed |
+
+Both were observed in CI rather than only locally, which is what shows the step is reached and can
+fail the job. **Two cases are unrun**: a pull request into an integration branch whose issue is not a
+sub-issue of the anchor, and one whose issue is. Both need a throwaway integration branch, a child
+branch and a pull request between them; the owner declined that on 2026-08-02 as more repository
+churn than the case is worth. So the non-default-base path — anchor parsing, the
+shape-conformance failure, and the membership comparison — has no live evidence, and the historical
+instance that motivated it (PR #79 into `design_18-closing_review`, whose ticket was never a
+sub-issue of the anchor) cannot serve as one: the gate exits at the open-issue check before reaching
+it, because that ticket is closed.
+
 ## Confirming a gate in CI rather than locally
 
 Local runs prove the script; they do not prove the step is wired, reached, and able to fail the job.

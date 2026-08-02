@@ -1,11 +1,13 @@
 #!/bin/sh
 # The branch name must follow type_number-snake_name (ADR 0006): the shape is
 # defined once in scripts/branch-shape.regex, shared with the pre-push hook;
-# the number resolves via the GitHub API to an open issue whose labels include
-# the type. main and dependabot/* are exempt. When an open PR exists, its
-# Development field (closingIssuesReferences) must link the branch's issue —
-# any base; body keywords only write the record against the default branch,
-# so other bases need the manual link. Owner/repo come from the origin
+# the number resolves via the GitHub API to an open issue carrying a milestone
+# and exactly one type label, which is the branch type (ADR 0013). main and
+# dependabot/* are exempt. When an open PR exists, its Development field
+# (closingIssuesReferences) must link the branch's issue — any base; body
+# keywords only write the record against the default branch, so other bases
+# need the manual link. The PR's base and the issue's parent must agree: a
+# sub-issue means a shared merge target. Owner/repo come from the origin
 # remote, so the check works on any clone. GITHUB_TOKEN or GH_TOKEN is used as
 # a bearer token when set (rate limits, CI); the GraphQL phase requires it.
 #
@@ -73,6 +75,18 @@ if ! jq -e --arg t "$type" '.labels | map(.name) | any(. == $t)' "$tmp" >/dev/nu
     labels=$(jq -r '[.labels[].name] | join(", ")' "$tmp")
     fail "issue #$number is not labeled '$type' (labels: ${labels:-none}) — the branch type must match the ticket's template label"
 fi
+
+types=$(sed -nE 's/^\^\(([^)]+)\)_.*$/\1/p' "$scripts_dir/branch-shape.regex")
+groups=$(printf '%s\n' "$types" | grep -c . || true)
+[ "$groups" = "1" ] ||
+    fail "scripts/branch-shape.regex yields $groups type group(s) — the set must have exactly one answer, and taking the first would let the count below read a group that does not govern this branch"
+printf '%s' "$types" | tr '|' '\n' | grep -Fxq "$type" ||
+    fail "branch type '$type' is absent from the type set read out of scripts/branch-shape.regex ('$types') — the branch matched that pattern, so the extraction is wrong and the label count below would be meaningless"
+type_labels=$(jq -r --arg types "$types" '($types | split("|")) as $set | [.labels[].name | select(IN($set[]))] | join(", ")' "$tmp")
+type_count=$(jq --arg types "$types" '($types | split("|")) as $set | [.labels[].name | select(IN($set[]))] | length' "$tmp")
+[ "$type_count" = "1" ] || fail "issue #$number carries $type_count type labels (${type_labels:-none}) — exactly one of $types names the template it was opened from, and a second makes the branch type ambiguous"
+jq -e '.milestone != null' "$tmp" >/dev/null || fail "issue #$number has no milestone — the milestone is this repo's phase axis, and a ticket outside it is absent from the definition of done it belongs to"
+
 title=$(jq -r .title "$tmp")
 echo "Branch '$branch' links open issue #$number ('$title', labeled '$type')."
 
@@ -97,9 +111,9 @@ default_branch=$(jq -r .base.repo.default_branch "$tmp")
 
 [ -n "$token" ] || fail "PR #$pr_number requires the recorded-linkage check, which needs GraphQL auth — export GH_TOKEN; a silently skipped gate is a false pass"
 
-query='query($owner:String!,$repo:String!,$number:Int!){repository(owner:$owner,name:$repo){pullRequest(number:$number){closingIssuesReferences(first:20){nodes{number}}}}}'
-payload=$(jq -n --arg q "$query" --arg owner "$owner" --arg repo "$repo" --argjson number "$pr_number" \
-    '{query: $q, variables: {owner: $owner, repo: $repo, number: $number}}')
+query='query($owner:String!,$repo:String!,$number:Int!,$issue:Int!){repository(owner:$owner,name:$repo){pullRequest(number:$number){closingIssuesReferences(first:20){nodes{number}}} issue(number:$issue){parent{number}}}}'
+payload=$(jq -n --arg q "$query" --arg owner "$owner" --arg repo "$repo" --argjson number "$pr_number" --argjson issue "$number" \
+    '{query: $q, variables: {owner: $owner, repo: $repo, number: $number, issue: $issue}}')
 status=$(api -o "$tmp" -w '%{http_code}' -X POST -d "$payload" https://api.github.com/graphql)
 [ "$status" = "200" ] || fail "GitHub GraphQL returned $status"
 if jq -e 'has("errors")' "$tmp" >/dev/null; then
@@ -113,3 +127,19 @@ if ! jq -e --argjson n "$number" '.data.repository.pullRequest.closingIssuesRefe
     fail "PR #$pr_number's Development field does not link issue #$number — $hint; the gate reads GitHub's recorded state"
 fi
 echo "PR #$pr_number records a closing reference to issue #$number."
+
+jq -e '.data.repository.issue | has("parent") and (.parent == null or (.parent.number | type == "number"))' "$tmp" >/dev/null ||
+    fail "the GraphQL response carries no parent number for issue #$number — the membership check read nothing, and a check that reads nothing must not report success. A present key with a null value is how 'no parent' arrives; anything else means the query stopped naming what is read below"
+parent=$(jq -r '.data.repository.issue.parent.number // ""' "$tmp")
+if [ "$base_ref" = "$default_branch" ]; then
+    [ -z "$parent" ] || fail "issue #$number is a sub-issue of #$parent, but PR #$pr_number targets the default branch — sub-issue membership means a shared merge target, not topical grouping; the milestone is what groups (ADR 0013)"
+    echo "Issue #$number has no parent, and PR #$pr_number targets the default branch."
+else
+    printf '%s' "$base_ref" | grep -Eqf "$scripts_dir/branch-shape.regex" ||
+        fail "PR #$pr_number's base '$base_ref' is neither the default branch nor a conforming integration branch — an integration branch is a branch, so it links a ticket of its own (ADR 0006)"
+    anchor_rest=${base_ref#*_}
+    anchor=${anchor_rest%%-*}
+    [ -n "$parent" ] || fail "PR #$pr_number targets integration branch '$base_ref' but issue #$number has no parent — a ticket whose PR targets an integration branch is a sub-issue of that branch's anchor #$anchor (ADR 0013)"
+    [ "$parent" = "$anchor" ] || fail "issue #$number is a sub-issue of #$parent, but PR #$pr_number targets '$base_ref', which is anchored at #$anchor — membership tracks the merge target"
+    echo "Issue #$number is a sub-issue of #$anchor, which anchors base branch '$base_ref'."
+fi
