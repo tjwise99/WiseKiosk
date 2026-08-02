@@ -58,9 +58,12 @@ sed '1{/^---$/!q}; 1,/^---$/d' .github/ISSUE_TEMPLATE/task.md > /tmp/body.md   #
 gh issue create --title "…" --body-file /tmp/body.md --label task --milestone 1
 ```
 
-`--milestone` takes the number or the title; the titles carry a `·` (`1 · Requirements complete`), so
-the number is less error-prone. `gh milestone list` does not exist — read them with
-`gh api repos/tjwise99/WiseKiosk/milestones --jq '.[]|"\(.number) \(.title)"'`.
+**`--milestone` takes the title, not the number.** `--milestone 1` fails with `'1' not found`; the
+titles carry a `·` (`1 · Requirements complete`), so quote them exactly. `gh milestone list` does not
+exist — read the titles with
+`gh api repos/tjwise99/WiseKiosk/milestones --jq '.[]|"\(.number) \(.title)"'`. `gh issue create`
+resolves the milestone before creating, so this particular mistake costs nothing; a wrong label does
+not fail at all.
 
 **A label the repository does not have is silently dropped**, by `--label` and by a template's
 frontmatter alike. That is how `new_module.md` produced unlabeled tickets for as long as the `module`

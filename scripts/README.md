@@ -127,6 +127,28 @@ Covers only the `github-actions` entry assertion; the rest of the check predates
 | Must fail | a recipe in `just verify` whose script runs in no workflow step |
 | Must pass | the tree as it stands |
 
+## `check-branch.sh`
+
+Covers the ticket-metadata and epic-membership assertions
+([ADR 0013](../docs/decisions/0013-work-tracking-invariants.md)); the branch shape, issue resolution
+and recorded-linkage assertions predate this record.
+
+**A case here is not a fixture.** This check reads live GitHub state, so a case is a real throwaway
+issue mutated between runs, and the branch name is passed as `$1` rather than checked out. Read the
+mutated field back before each run — a seed that silently failed to apply looks exactly like a
+passing check. The cases below ran against throwaway issue #89, closed afterwards.
+
+| Direction | Input |
+|---|---|
+| Must fail | an issue with no milestone |
+| Must fail | an issue carrying two type labels (`task` and `design`) |
+| Must pass | the same issue with the second type label removed |
+| Must pass | an issue carrying a non-type companion label (`design` + `documentation`) |
+
+The last is the one that matters most: `documentation` is declared by `design_decision.md` and rides
+on every design ticket, so a count that read *all* labels rather than type labels would reject the
+repository's own conforming tickets and look like a working check while doing it.
+
 ## Confirming a gate in CI rather than locally
 
 Local runs prove the script; they do not prove the step is wired, reached, and able to fail the job.
