@@ -71,9 +71,13 @@ if (entries.length === 0) {
 }
 
 let checked = 0;
+let actions = false;
 for (const entry of entries) {
   const ecosystem = entry.match(/^\s*- package-ecosystem:\s*"?([\w-]+)"?/m)?.[1];
-  if (ecosystem === "github-actions") continue;
+  if (ecosystem === "github-actions") {
+    actions = true;
+    continue;
+  }
   checked += 1;
   const directory = entry.match(/^\s*directory:\s*"?([^"\n]+?)"?\s*$/m)?.[1];
   if (!directory) {
@@ -102,11 +106,19 @@ for (const entry of entries) {
   }
 }
 
+// The loop above exempts github-actions from the manifest rule — the ecosystem's manifests are the
+// workflow files, which are not siloed anywhere. Nothing obliged the entry to exist, so the exemption
+// presupposed an entry that could silently leave, taking the action-pin updates with it.
+if (!actions) {
+  problems.push(".github/dependabot.yml declares no 'github-actions' entry, so action pins go stale");
+}
+
 if (problems.length) {
   console.error(`check-repo-silo: tooling is not siloed (${problems.length}):`);
   for (const problem of problems) console.error("  " + problem);
   process.exit(1);
 }
 console.log(
-  `Repository root holds no manifest, and ${checked} Dependabot entr(ies) resolve to their manifests.`,
+  `Repository root holds no manifest, github-actions is covered, and ${checked} Dependabot ` +
+    `entr(ies) resolve to their manifests.`,
 );
