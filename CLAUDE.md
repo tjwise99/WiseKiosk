@@ -1,15 +1,9 @@
 # Agent working rules — WiseKiosk
 
 Working conventions for an AI agent in this repo. **Project facts are not here** — the index at
-[`docs/README.md`](docs/README.md) is authoritative on which document holds what, and
-[`CONTRIBUTING.md`](CONTRIBUTING.md) is how a change gets made and merged. This file holds only the
-rules layered on top, which is why it is short: a rule stated in one of those documents does not
-belong here as well.
-
-[`CONTRIBUTING.md`](CONTRIBUTING.md) is injected at session start by the `SessionStart` hook in
-[`.claude/settings.json`](.claude/settings.json), so its review checklist is in context before the
-change it governs is written. Nothing else delivers it — an instruction to go and read it does not
-reliably fire.
+[`docs/README.md`](docs/README.md) is authoritative on which document holds what. This file holds only
+the rules layered on top, which is why it is short: a rule stated in another document does not belong
+here as well.
 
 **Where an obligation lives is decided by
 [ADR 0011](docs/decisions/0011-requirement-or-convention.md)**, not by which document is convenient.
