@@ -10,7 +10,7 @@
 //
 // Run as the final step of `just arch-export`. No dependencies: Node stdlib only.
 
-import { readFileSync, writeFileSync, existsSync } from "node:fs";
+import { readFileSync, writeFileSync, existsSync, realpathSync, statSync } from "node:fs";
 import { execSync } from "node:child_process";
 import { resolve, sep } from "node:path";
 
@@ -52,8 +52,21 @@ for (let i = 0; i < markers.length; i += 2) {
   if (!existsSync(artifact)) {
     fail(`${begin.name}: no such generated artifact under docs/architecture/`);
   }
+  // The guard above tests the marker text; this tests where the file actually is. A symlink under
+  // docs/architecture/ satisfies the first and still reads from anywhere on the host.
+  if (!realpathSync(artifact).startsWith(realpathSync(artifactRoot) + sep)) {
+    fail(`${begin.name}: resolves outside docs/architecture/ through a symlink`);
+  }
+  if (!statSync(artifact).isFile()) {
+    fail(`${begin.name}: is not a regular file`);
+  }
   let body = readFileSync(artifact, "utf8");
   if (!body.endsWith("\n")) body += "\n";
+  // The body is about to be wrapped in a ```mermaid fence: a fence marker inside it would close
+  // that fence early and splice the remainder into the document as running Markdown.
+  if (/^\s*```/m.test(body)) {
+    fail(`${begin.name}: contains a \`\`\` fence marker, which would break the generated fence`);
+  }
   out += text.slice(cursor, begin.end);
   out += "\n\n```mermaid\n" + body + "```\n\n";
   cursor = end.start;

@@ -6,7 +6,7 @@
 // No dependencies: Node stdlib only, plain text scanning — matches
 // scripts/check-links.mjs's idiom.
 
-import { readFileSync, readdirSync } from "node:fs";
+import { readFileSync, readdirSync, statSync } from "node:fs";
 import { execSync } from "node:child_process";
 import { resolve } from "node:path";
 
@@ -21,6 +21,12 @@ for (const name of readdirSync(decisionsDir).sort()) {
   const match = name.match(/^(\d{4})-.+\.md$/);
   if (!match) {
     problems.push(`docs/decisions/${name} is not named NNNN-<slug>.md`);
+    continue;
+  }
+  // readdirSync reports names, not what they are: a directory or a dangling symlink named
+  // NNNN-<slug>.md otherwise counts as an ADR on the strength of its name alone.
+  if (!statSync(resolve(decisionsDir, name), { throwIfNoEntry: false })?.isFile()) {
+    problems.push(`docs/decisions/${name} is not a readable file`);
     continue;
   }
   if (files.has(match[1])) {

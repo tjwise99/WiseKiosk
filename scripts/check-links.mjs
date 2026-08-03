@@ -39,7 +39,20 @@ readFileSync(resolve(repoRoot, allowlistPath), "utf8")
   });
 
 const linkRe = /\]\(([^)]+)\)/g;
+// A relative link reaches a file by three syntaxes, not one. Matching only the inline form leaves
+// the other two carrying unchecked paths.
+const refDefRe = /^ {0,3}\[[^\]]+\]:\s*(\S+?)(?:\s+["'(].*)?\s*$/gm;
+const htmlHrefRe = /<a\s[^>]*href\s*=\s*["']([^"']+)["']/gi;
 const absoluteRe = /\bhttps?:\/\/[^\s<>)\]"'`]+/gi;
+
+// A destination may be angle-bracketed and may carry a title; neither belongs to the path.
+const destination = (value) => {
+  let raw = value.trim();
+  const titled = raw.match(/^(\S+)\s+["'(]/);
+  if (titled) raw = titled[1];
+  if (raw.startsWith("<") && raw.endsWith(">")) raw = raw.slice(1, -1);
+  return raw.split("#")[0];
+};
 
 // A fenced block is a sample, not a reference: a command shown against an upstream service names a
 // host the documentation does not link to, and allowlisting it to satisfy this check would put a
@@ -65,8 +78,13 @@ for (const file of mdFiles) {
   if (unterminated) {
     problems.push(`${file}  ->  a code fence is never closed, so everything below it goes unchecked`);
   }
-  for (const match of text.matchAll(linkRe)) {
-    const raw = match[1].trim().split("#")[0]; // drop anchor
+  const destinations = [
+    ...[...text.matchAll(linkRe)].map((m) => m[1]),
+    ...[...text.matchAll(refDefRe)].map((m) => m[1]),
+    ...[...text.matchAll(htmlHrefRe)].map((m) => m[1]),
+  ];
+  for (const value of destinations) {
+    const raw = destination(value);
     if (!raw) continue; // pure in-page anchor
     if (/^https?:/i.test(raw)) continue; // absolute: the host scan below owns it
     if (/^[a-z][a-z0-9+.-]*:/i.test(raw)) continue; // other scheme: mailto, etc.
@@ -76,6 +94,10 @@ for (const file of mdFiles) {
       problems.push(`${file}  ->  ${raw}   (escapes the repository)`);
     } else if (!existsSync(target)) {
       problems.push(`${file}  ->  ${raw}   (does not exist)`);
+    } else if (relative(repoRoot, realpathSync(target)).startsWith("..")) {
+      // The path text staying inside the repo says nothing about where it lands: resolve() and
+      // existsSync() both follow symlinks without reporting that they did.
+      problems.push(`${file}  ->  ${raw}   (leaves the repository through a symlink)`);
     }
   }
 
