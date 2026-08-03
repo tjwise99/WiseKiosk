@@ -1,43 +1,25 @@
 # Agent working rules — WiseKiosk
 
-Working conventions for an AI agent in this repo. **Project facts are not here.** The specification is
-the requirements tree, [`docs/requirements/`](docs/requirements/README.md) — every normative
-obligation is a numbered SYS/SRS/TST item there. Product definition lives in the
-[README](README.md), as-built structure in
-[`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md), test strategy in [`docs/TESTING.md`](docs/TESTING.md),
-and decisions with a rejected alternative in [`docs/decisions/`](docs/decisions/README.md); the index
-at [`docs/README.md`](docs/README.md) is authoritative on which holds what. This file holds only the
-rules layered on top.
+Working conventions for an AI agent in this repo. **Project facts are not here** — the index at
+[`docs/README.md`](docs/README.md) is authoritative on which document holds what, and
+[`CONTRIBUTING.md`](CONTRIBUTING.md) is how a change gets made and merged. This file holds only the
+rules layered on top, which is why it is short: a rule stated in one of those documents does not
+belong here as well.
 
-**Read [`CONTRIBUTING.md`](CONTRIBUTING.md) at the start of any session that touches this repository.**
-It is not loaded into an agent's context automatically, and this file is; its review checklist carries
-obligations no gate decides, several of which describe defects introduced while authoring and invisible
-in a green run. Reading it only when a workflow happens to prompt for it means meeting the rule after
-the change it governs.
+[`CONTRIBUTING.md`](CONTRIBUTING.md) is injected at session start by the `SessionStart` hook in
+[`.claude/settings.json`](.claude/settings.json), so its review checklist is in context before the
+change it governs is written. Nothing else delivers it — an instruction to go and read it does not
+reliably fire.
 
-**Not every obligation is a requirement.** A requirement obliges WiseKiosk itself. A convention a
-machine decides about the repository, and material CI produces, belong to
-[`docs/CI.md`](docs/CI.md); what a program an operator runs must do belongs to
-[`tools/README.md`](tools/README.md); an obligation on an author that leaves no artifact belongs to
-[`CONTRIBUTING.md`](CONTRIBUTING.md)'s review checklist. Writing any of those into the tree is the
-mistake [ADR 0011](docs/decisions/0011-requirement-or-convention.md) exists to prevent.
+**Where an obligation lives is decided by
+[ADR 0011](docs/decisions/0011-requirement-or-convention.md)**, not by which document is convenient.
 
-## Non-negotiables
+## Halt and ask
 
-- **Design before implementation.** Nothing is implemented that is not written down first. If the
-  spec is silent on something observable (an interface name, a payload shape, a config key, a failure
-  behaviour, a threshold, a new file or dependency), **halt and ask** rather than inventing it — a
-  plausible invention reviews as normal code while encoding a choice nobody made.
-- **The boundary contract has exactly one definition.** The Go backend and Svelte frontend share no
-  types; every value crossing the boundary is **generated from one schema**, never hand-declared on
-  both sides. This is the single worst defect class this design guards against — see
-  [ADR 0001](docs/decisions/0001-backend-language-go.md). CI fails on stale generated code.
-- **Do not build generality against a case that does not exist** — no plugin system, no abstraction
-  without a second consumer, no transport chosen before the access pattern, no comment-enforced
-  invariants, no denylist secret handling, no non-tunable config keys, no controls that do not
-  function where deployed.
-- **Keep the docs standalone.** No reference points outside this repository. Every relative Markdown
-  link resolves inside the repo (`just check-links`).
+Where the spec is silent on something observable — an interface name, a payload shape, a config key,
+a failure behaviour, a threshold, a new file or dependency — **halt and ask** rather than inventing
+it. A plausible invention reviews as normal code while encoding a choice nobody made, which is what
+makes this failure worth a rule of its own rather than care.
 
 ## Review independence
 
@@ -45,7 +27,3 @@ Code this session wrote cannot be reviewed by this session — independence come
 written it. Delegate review of your own diffs to a fresh context, handed the diff and the spec, not
 the narrative of what you did. Human-written code, or code from a session you had no part in, you may
 review inline.
-
-## Verify, don't assume
-
-Run `just verify` before proposing merge; confirm green via CI, not a local pass.

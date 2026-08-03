@@ -1,0 +1,15 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "jq -Rs '{hookSpecificOutput:{hookEventName:\"SessionStart\",additionalContext:(\"CONTRIBUTING.md for this repository, injected at session start so its review checklist is in context before the change it governs is written.\\n\\n\" + .)}}' \"${CLAUDE_PROJECT_DIR:-.}/CONTRIBUTING.md\"",
+            "statusMessage": "Loading CONTRIBUTING.md"
+          }
+        ]
+      }
+    ]
+  }
+}
