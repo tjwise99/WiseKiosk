@@ -114,12 +114,13 @@ const bodyCommands = (recipe, name) => {
     pending = "";
     if (joined === "") continue;
     // `@` suppresses the echo and is stripped; `-` discards the command's failing status, so the
-    // recipe passes where CI's identical command fails. Failing beats normalising it away.
-    const prefix = joined.match(/^[@-]+/)?.[0] ?? "";
+    // recipe passes where CI's identical command fails. Failing beats normalising it away. The
+    // prefix is taken once, with the whitespace `just` allows after it, so both read the same shape.
+    const prefix = joined.match(/^[@-]+\s*/)?.[0] ?? "";
     if (prefix.includes("-")) {
       fail(`'${name}' prefixes '${joined}' with '-', which ignores its failing status — the recipe would pass a check CI fails`);
     }
-    commands.push(joined.replace(/^@+/, ""));
+    commands.push(joined.slice(prefix.length));
   }
   if (pending) fail(`'${name}' ends on a line continuation with no line after it`);
   return commands;

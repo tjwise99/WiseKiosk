@@ -212,7 +212,7 @@ fires rather than joining the silence.
 | Commands reordered within a recipe | `check-reqs`'s first two commands swapped |
 | A command split across a `\` continuation | `check-links` written as `node \` then `scripts/check-links.mjs` |
 | A comment line inside a recipe body | `check-links` with a `#` line above its command |
-| A recipe line prefixed `@` | `@node scripts/check-links.mjs`, where the prefix suppresses the echo rather than naming a different command |
+| A recipe line prefixed `@` | `@node scripts/check-links.mjs`, and `@ node …` with the whitespace `just` allows after the prefix — both suppress the echo rather than naming a different command |
 | `#!` below the first body line | a shell comment, which `just` runs rather than treating as a script body — only the first line opens one |
 | A recipe reached through `just <recipe>` | `check-arch`, whose commands come from `arch-export` |
 | CI spelling a command with an extra argument | `sh scripts/check-branch.sh "$HEAD_REF"`, where the recipe passes none |

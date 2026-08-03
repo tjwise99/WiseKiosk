@@ -437,9 +437,10 @@ already decided, which is what makes it a check and not a want.
   naming a venv or `node_modules` executable is proved present in both places while the toolchain
   providing it is installed per job, by steps this deliberately skips — so a check can be wired
   identically in both and still be unable to execute in one. Nothing maps a check to the toolchain
-  its job installs. A tool a check *invokes internally* is further out of reach still — it appears in
-  no token, no recipe line and no step, so no gate here can see it at all: `just` itself is the live
-  instance, read by two of the scripts these checks run.
+  its job installs. A tool a check *invokes internally* is further out of reach still: no gate here
+  reads a check's source, so a dependency written inside one is declared nowhere any of them look.
+  `just` is the live instance — two of these scripts read its dump. The justfile names `just` where a
+  recipe delegates to another, and nothing there says the scripts themselves require it.
 - Every committed test file falls under a configured runner's reach; a file excluded by skip, build
   tag, glob gap, or wrong directory fails. The requirements tier is covered by `doorstop --error-all`
   and is deliberately not re-encoded here. Unbuilt until a runner exists to detect anything: #82
