@@ -53,28 +53,19 @@ is a fixed location and is supplied to the build as a literal, since the tooling
 be hardcoded and stay true, and splitting a set between hardcoded and generated values creates two
 drift surfaces where one is unavoidable.
 
-**`.created` is the commit's timestamp, not the build clock**, following the `SOURCE_DATE_EPOCH`
-convention. No standing claim of a bit-identical rebuild was being defended when this was decided —
-the reproducibility need left the tree with the #69 rebuild, and the SBOM assertion in `../CI.md`
-claims only a matching package set, which a timestamp does not disturb. The reason to decide it anyway
-is that the default decides otherwise, silently: a wall-clock stamp makes two builds of one commit
-differ, and forecloses a rebuild comparison before anyone has asked for one.
+**`.created` is the time the build ran**, which is what the tooling emits and what the specification's
+own wording describes. **Bit-identical rebuilds are not a goal of this project**: the reproducibility
+need left the tree with the #69 rebuild, no requirement states one, and the SBOM assertion in
+`../CI.md` claims a matching package set, which a timestamp does not disturb.
 
 **The nine keys are checked, on both surfaces.** Labels land in the image config and annotations on
 the manifest; these are different surfaces with different readers, the manifest being what signature
 and attestation consumers already read. A check reading one of them passes vacuously the day the build
-stops populating the other. Beyond presence and non-emptiness, two values are bound: `.revision`
-equals the commit the job published, and `.created` equals that commit's timestamp. Those two bindings
-are what the check is for — presence alone passes on a hardcoded `.revision` naming a commit from last
-year, which is the failure the annotations exist to prevent.
-
-**The two bindings are asserted in different jobs**, because they need different things. `.revision`
-is decidable from the registry and the workflow's own context, so it sits with the rest of the
-published-artifact verification. `.created` is the only assertion in this regime needing the published
-artifact and the repository *at the same time* — a commit's timestamp is in neither the registry nor
-the transparency log — so it is asserted in the build job, where the commit is already in hand. The
-alternative, handing the expected value to the verification job, would have that job assert the build
-job's own claim about itself, which is not verification.
+stops populating the other. Beyond presence and non-emptiness, one value is bound: `.revision` equals
+the commit the job published. That binding is what the check is for — presence alone passes on a
+hardcoded `.revision` naming a commit from last year, which is the failure the annotations exist to
+prevent. It is decidable from the registry and the workflow's own context, so the whole check sits
+with the rest of the published-artifact verification, in one job holding no credential.
 
 ## Alternatives considered
 
@@ -91,10 +82,9 @@ the metadata action, the build-and-push action, layer caching and the attestatio
 better-trodden on Buildx under this project's CI, and for a solo maintainer the well-trodden path is
 the whole argument.
 
-**apko/melange, and Nix's image builders.** These give bit-identical builds outright — the property
-the `SOURCE_DATE_EPOCH` decision above reaches toward by hand. Rejected on adoption cost: each is a
-second toolchain to learn and keep current, with no second maintainer to absorb that, against a
-reproducibility need this project has not stated.
+**apko/melange, and Nix's image builders.** These give bit-identical builds outright. Rejected on
+adoption cost: each is a second toolchain to learn and keep current, with no second maintainer to
+absorb that, against a reproducibility need this project has not stated.
 
 **Hardcoded `LABEL` lines in the Dockerfile.** Rejected outright for `.revision`, which cannot be
 hardcoded and remain true for more than one commit, and rejected for the rest by consequence.
@@ -106,9 +96,15 @@ favour of the tooling's defaults, deliberately and with the cost stated below: t
 path is the default path, and deviating from it here would buy decidability for two human-readable
 strings at the price of a bespoke wiring every future reader has to understand.
 
-**A wall-clock `.created`**, which is what the OCI specification's own wording describes and what
-nearly every pipeline ships. Rejected above. **An epoch-zero `.created`**, the reproducibility-first
-answer, was rejected as discarding information the commit timestamp keeps at no extra cost.
+**Pinning `.created` to the commit's timestamp**, by the `SOURCE_DATE_EPOCH` convention, so that two
+builds of one commit agree on it. Taken first and reversed. It buys a bit-identical rebuild, which
+this project does not need, and charges two things for it. One is a regime where a single value of
+nine is derived per commit while the rest come from the tooling's defaults — the quasi-state that
+decided it. The other is that the variable does not achieve it alone: it reaches the timestamps in the
+image's own index, config and file metadata, and not the annotation, which the metadata action
+computes at run time and whose documentation records no handling of the variable. Setting it and
+stopping looks finished and is not. **An epoch-zero `.created`**, the reproducibility-first answer,
+loses the same argument and discards information besides.
 
 **No check at all**, which is the industry norm — the annotations are written by a trusted action and
 almost nobody verifies them afterwards. Rejected because every other convention in `../CI.md` has a
@@ -125,21 +121,14 @@ neither changes that nor rests on it. Only the metadata wiring is Buildx-specifi
 workflow lines. A future maintainer reversing this decision rewrites those lines and keeps everything
 else.
 
-**Reproducibility stays hand-rolled**, and it takes more than one setting. `SOURCE_DATE_EPOCH` makes
-the timestamps in the image index, config and file metadata reflect the given time — the image's own
-timestamps. It does not reach the `.created` annotation, which the metadata action computes from run
-time and whose documentation records no handling of the variable at all. Setting the variable and
-stopping therefore leaves a wall-clock annotation and a digest that still varies per build, while
-looking finished. The annotation value has to be overridden explicitly, through the documented
-label-overwrite input.
+**Two builds of one commit differ**, and no rebuild comparison is available as evidence of anything.
+That is the price of the decision above and is accepted, not overlooked: the provenance question this
+regime answers is *which commit produced this image*, which `.revision` answers on its own.
 
 **Two published values are not decidable from the commit.** `.description` and `.licenses` resolve
 from repository metadata, so either can change with no commit, and no check here sees it — the gate
 asserts they are present, not what they say. This is the same class of blind spot `../CI.md` already
 records for repository settings, accepted here knowingly rather than discovered later.
-
-**Rebuilding an old commit publishes an image dated then**, which reads oddly beside a recent release.
-`.revision` sits next to it and resolves the ambiguity for anyone who follows it.
 
 **What this does not decide**, and must not be read as deciding: the container engine a deployment
 runs the image under, the registry, the tag scheme, the
