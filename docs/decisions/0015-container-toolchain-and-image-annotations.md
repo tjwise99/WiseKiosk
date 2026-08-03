@@ -12,20 +12,25 @@ image is. Nothing required the image to say where it came from. `LABEL`, `OCI` a
 in an ADR. `.source` and `.revision` are the standard companions to exactly that provenance work, and
 they were missing beside it.
 
-The tree constrains what the image must *not* carry —
-SRS018<!-- One generic published image -->, SRS020<!-- Non-root container user --> and
-SRS025<!-- No secret material in the published image --> — and says nothing about its metadata. Under
+The tree constrains what the image carries and who it runs as —
+SRS018<!-- One generic published image --> and
+SRS025<!-- No secret material in the published image --> bar content,
+SRS020<!-- Non-root container user --> fixes the user — and says nothing about its metadata. Under
 [ADR 0011](0011-requirement-or-convention.md) it cannot: an annotation is baked by the publishing
 pipeline, and no behaviour of the running kiosk can violate one. So this is a repository-facing
 convention, checked, and no requirement item is written for it.
 
 **The second half of this decision was forced rather than chosen.** The annotation set, the two
 surfaces it lands on, and "generated rather than written by hand" are all shaped by what Docker Buildx
-and its build-metadata action do — and **the project had never decided on a container toolchain.**
-Across every tracked document, Docker appears only incidentally: `../CI.md` naming "every base and
-stage in the Dockerfile" and the Docker build context excluded by `.dockerignore`, and
-[ADR 0010](0010-runtime-materialised-gate-fixtures.md)'s list of throwaway fixture manifests. The
-requirements tree says *container image* throughout and never *Docker*. Writing one tool's defaults
+and its build-metadata action do — and **no decision record chose a container toolchain.** Four
+documents presume one without arguing for it: `../CI.md` names "every base and stage in the
+Dockerfile" and excludes the Docker build context by `.dockerignore`;
+[ADR 0010](0010-runtime-materialised-gate-fixtures.md) lists a `Dockerfile` among its throwaway
+fixture manifests; [`../../scripts/README.md`](../../scripts/README.md) carries `docker://` action
+references as pin fixtures; and [`../../tools/README.md`](../../tools/README.md) goes furthest,
+naming Docker and Compose as what restarts a container whose process exits. The requirements tree
+says *container image* throughout and never *Docker*. The presumption is load-bearing in four places
+and argued in none. Writing one tool's defaults
 into `../CI.md` would have deepened an unrecorded commitment a level further down, where the next
 reader would inherit it without an argument attached.
 
@@ -40,7 +45,9 @@ already presumed; it is recorded here rather than presumed further.
 `.revision`, `.licenses` — plus `.documentation`, which it does not default and which is added because
 this project publishes a documentation site and the key is defined for exactly that.
 
-**Values are generated from the build context, never written into the Dockerfile.** `.revision` cannot
+**No value is written into the Dockerfile.** Eight are generated from the build context; `.documentation`
+is a fixed location and is supplied to the build as a literal, since the tooling does not default it.
+`.revision` cannot
 be hardcoded and stay true, and splitting a set between hardcoded and generated values creates two
 drift surfaces where one is unavoidable.
 
@@ -63,9 +70,10 @@ year, which is the failure the annotations exist to prevent.
 
 **`ko`.** Builds a Go binary into a distroless image with no Dockerfile, reproducibly, with an
 epoch-fixed creation time and SBOM support already wired. Rejected on fit rather than merit: this
-image also carries a built frontend bundle, and `ko` builds *Go binary* images — an asset stage and a
-deliberate filesystem layout work against the grain of the tool, and fighting a tool's model is how a
-build becomes unmaintainable by one person.
+image also carries a built frontend bundle, and `ko` has no multi-stage build: it ships a documented
+mechanism for bundling static assets into the image, but producing them is a step outside it. That
+splits one build across two tools, and a build a single maintainer has to hold in two halves is how a
+pipeline becomes unmaintainable.
 
 **Buildah and Podman.** The closest contender, and the reason this decision is cheap to reverse: they
 consume the same Dockerfile, daemonless and rootless. Rejected on ecosystem rather than capability —
@@ -100,8 +108,10 @@ the action used to generate, which is invisible to review and to every other gat
 ## Consequences
 
 **What is actually locked in is the Dockerfile format** — the most portable artifact of the options
-weighed. Buildah consumes it unchanged, and the published image runs under Podman on the kiosk
-regardless of what built it. Only the metadata wiring is Buildx-specific, and it is a handful of
+weighed. Buildah consumes it unchanged, and an OCI image is runnable by any conforming runtime, so
+what builds the image does not fix what runs it —
+[`../../tools/README.md`](../../tools/README.md) names Docker and Compose there, and this decision
+neither changes that nor rests on it. Only the metadata wiring is Buildx-specific, and it is a handful of
 workflow lines. A future maintainer reversing this decision rewrites those lines and keeps everything
 else.
 
@@ -121,6 +131,7 @@ records for repository settings, accepted here knowingly rather than discovered 
 **Rebuilding an old commit publishes an image dated then**, which reads oddly beside a recent release.
 `.revision` sits next to it and resolves the ambiguity for anyone who follows it.
 
-**What this does not decide**, and must not be read as deciding: the registry, the tag scheme, the
+**What this does not decide**, and must not be read as deciding: the container engine a deployment
+runs the image under, the registry, the tag scheme, the
 platform matrix and whether a multi-platform index carries the annotations too, the base image, and
 the release asset set. Those belong to #54 and #71, which were scoped for them.
