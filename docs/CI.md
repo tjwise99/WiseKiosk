@@ -162,7 +162,8 @@ a posture resting on this section. Until #77 fences this document, read it as in
   are bound to the commit — `.revision` is the commit the job published, and `.created` is that
   commit's timestamp. A missing key, an empty value, or either binding failing exits non-zero;
   presence alone passes on a stale hardcoded value. A surface the check cannot read fails rather than
-  being skipped. **What no check here decides:** `.description` and `.licenses` resolve from
+  being skipped, and so does resolving fewer than the two surfaces there are: a run that inspected
+  nothing reports the same success as one with nothing to report. **What no check here decides:** `.description` and `.licenses` resolve from
   repository metadata rather than from the commit, so either can change with no commit and nothing
   reports it. The emission is #54's.
 - **Base images are pinned** to a `@sha256:` digest rather than a floating tag, for every base and

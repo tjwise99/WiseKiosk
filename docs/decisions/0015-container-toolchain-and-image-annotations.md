@@ -1,4 +1,4 @@
-# 0015 — Build with Docker Buildx, and publish an image carrying nine OCI annotations generated from the commit
+# 0015 — Build with Docker Buildx, and publish an image carrying nine OCI metadata keys as config labels and manifest annotations
 
 **Status:** accepted
 **Decided:** 2026-08-02 (#61 OCI image annotations)
@@ -40,7 +40,9 @@ reader would inherit it without an argument attached.
 build-metadata action.** That is what a Dockerfile, a `.dockerignore` and the existing image gates
 already presumed; it is recorded here rather than presumed further.
 
-**The published image carries nine annotations.** The eight the metadata action emits by default —
+**The published image carries nine keys** — as labels on the image config, and as annotations on the
+manifest, which is the only surface the specification defines annotations for. The eight the metadata
+action emits by default —
 `org.opencontainers.image.title`, `.description`, `.url`, `.source`, `.version`, `.created`,
 `.revision`, `.licenses` — plus `.documentation`, which it does not default and which is added because
 this project publishes a documentation site and the key is defined for exactly that.
