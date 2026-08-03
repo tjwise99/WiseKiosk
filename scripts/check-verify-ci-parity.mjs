@@ -65,6 +65,12 @@ const dump = JSON.parse(
   execSync("just --dump --dump-format json", { cwd: repoRoot, encoding: "utf8" }),
 );
 
+// A module's recipes sit outside `recipes`, so nothing below would see one. Reported rather than
+// skipped: a check that cannot reach a population must not report success over the rest of it.
+if (Object.keys(dump.modules ?? {}).length) {
+  fail(`the justfile declares module(s) ${Object.keys(dump.modules).join(", ")}, whose recipes this does not read`);
+}
+
 const verifyRecipe = dump.recipes.verify;
 if (!verifyRecipe) fail("the justfile declares no `verify` recipe");
 const verifyChecks = verifyRecipe.dependencies.map((dependency) => dependency.recipe);
@@ -88,6 +94,26 @@ const renderLine = (fragments, recipe) => {
   return fragments.join("").trim();
 };
 
+// `just` emits a comment as its own body entry, and splits a `\` continuation across entries. Both
+// are rejoined to the commands actually run, so neither shape reads as a command needing a token.
+const bodyCommands = (recipe, name) => {
+  const commands = [];
+  let pending = "";
+  for (const fragments of recipe.body) {
+    const line = renderLine(fragments, name);
+    if (!pending && line.startsWith("#")) continue;
+    const joined = pending + line;
+    if (joined.endsWith("\\")) {
+      pending = `${joined.slice(0, -1).trimEnd()} `;
+      continue;
+    }
+    pending = "";
+    if (joined !== "") commands.push(joined);
+  }
+  if (pending) fail(`'${name}' ends on a line continuation with no line after it`);
+  return commands;
+};
+
 // Dependencies and `just <recipe>` both reach another recipe's commands, so both are expanded.
 const commandsOf = (name, seen = new Set()) => {
   if (seen.has(name)) fail(`recipe '${name}' depends on itself`);
@@ -102,9 +128,7 @@ const commandsOf = (name, seen = new Set()) => {
 
   return [
     ...recipe.dependencies.flatMap((dependency) => reach(dependency.recipe)),
-    ...recipe.body.flatMap((line) => {
-      const command = renderLine(line, name);
-      if (command === "") return [];
+    ...bodyCommands(recipe, name).flatMap((command) => {
       const delegated = command.match(/^@?just (\S+)$/);
       return delegated ? reach(delegated[1]) : [command];
     }),

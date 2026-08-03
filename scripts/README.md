@@ -151,6 +151,7 @@ resolution, and the `github-actions` entry.
 | Environment directory at the root | `.venv/` |
 | Recipe carries a shebang | a `probe-recipe` whose body opens `#!/usr/bin/env bash`, grouped under `docs` and reachable from no gate — the assertion is over every recipe, not the ones `verify` runs |
 | The dump names no recipe | `just --dump` returning an empty recipe set, so the loop cannot judge anything |
+| A module hides a script recipe | `mod deploy` beside a `deploy.just` whose `push` recipe opens `#!` — the dump lists it under `modules`, not `recipes`, so the loop over recipes never sees it |
 | Entry names a directory that does not exist | the `pip` entry pointed at `/nope` |
 | Entry's directory holds no manifest | the `pip` directory emptied of `requirements*.txt` |
 | Entry points at the root | `directory: "/"` on a non-`github-actions` entry |
@@ -187,6 +188,8 @@ fires rather than joining the silence.
 | Shebang recipe on the gate path | a `verify` check whose body opens `#!`, which cannot be mapped to CI commands |
 | A command that does not resolve to text | a body line interpolating a variable, which names no fixed command |
 | `verify` depends on nothing | the dependency list emptied, so the loops below judge an empty set |
+| A module the dump does not fold in | `mod deploy`, whose recipes sit outside `recipes` and are read by nothing here |
+| A continuation with no line after it | a recipe body ending on a trailing `\` |
 | Recipe with no `CHECK_TOKENS` entry | a new name added to the `verify` recipe |
 | Stale `CHECK_TOKENS` entry | a mapped check removed from the `verify` recipe |
 | CI step matching nothing | a named step running neither a mapped check nor an allowlisted one |
@@ -203,6 +206,8 @@ fires rather than joining the silence.
 |---|---|
 | The tree as it stands | — |
 | Commands reordered within a recipe | `check-reqs`'s first two commands swapped |
+| A command split across a `\` continuation | `check-links` written as `node \` then `scripts/check-links.mjs` |
+| A comment line inside a recipe body | `check-links` with a `#` line above its command |
 | A recipe reached through `just <recipe>` | `check-arch`, whose commands come from `arch-export` |
 | CI spelling a command with an extra argument | `sh scripts/check-branch.sh "$HEAD_REF"`, where the recipe passes none |
 | A toolchain step | a step named `Install …`, which prepares a check rather than being one |
