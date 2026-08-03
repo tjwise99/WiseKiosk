@@ -215,19 +215,18 @@ resolve, a citation to something that does not exist, an index that has drifted 
   one is a block already, which is what an issue template's guidance comment is, and passes.
 - The `decisions/` directory and its index table agree — every ADR has a row, no gap or duplicate in
   numbering, every row resolves to a real file.
-- **Every tracked Markdown file is claimed by a row in the documentation index**, or sits under a
-  directory named in `scripts/canonical-docs-exclusions.txt` with a stated reason for why nothing in
-  it is a canonical document. The claimable set is derived from the repository rather than read from
-  a committed inventory, so adding a document without indexing it fails and retiring one fails until
-  its row goes — an inventory would be a third artifact drifting from both the table and the tree
+- **Every tracked Markdown file is claimed by a row in the documentation index**, unless it sits under
+  a top-level dot-directory, which holds machinery rather than documents. Both sides are derived from
+  the repository rather than read from an inventory: adding a document without indexing it fails,
+  retiring one fails until its row goes, and there is no exclusions list to append to — excluding
+  anything that is not machinery by that rule takes a change to the check and a successor ADR
   ([ADR 0014](decisions/0014-documentation-index-claims-documents.md)). A row whose *Document* cell
   renders with a trailing slash claims the subtree beneath it, which is how `decisions/`,
   `requirements/`, `contracts/`, `architecture/` and `site/` are covered by one row each. Every row's
   link resolves to a tracked file, one rendered path carries one row, a row names a tracked document
-  or a directory holding one, and no *Guarantees* or *Excludes* cell is empty. An exclusion covering a
-  path the index claims is refused, and so is one excluding no tracked document — a document can still
-  be hidden by deleting its row and excluding its directory together, which takes two visible edits
-  and is left to review. The index does not index itself. Scope is Markdown: the tree's items are
+  or a directory holding one, no row indexes a dot-directory, and no *Guarantees* or *Excludes* cell
+  is empty. The index does not index itself. A new top-level dot-directory is excluded the moment it
+  exists, with no edit anywhere — the trade ADR 0014 records. Scope is Markdown: the tree's items are
   claimed by the tree and gated by `check-reqs`, and code is claimed by nothing here.
 - The LikeC4 architecture model validates: no undefined element, no unresolved relationship.
 - Spliced diagrams and generated architecture artifacts are byte-identical to a regeneration.

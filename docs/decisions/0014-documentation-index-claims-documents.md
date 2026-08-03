@@ -42,13 +42,14 @@ and one rendering with a trailing slash (`decisions/`) claims every tracked Mark
 `check-reqs`; scripts and the LikeC4 model are code, which the index explicitly declines to index —
 *"How a particular piece of code works is a fact about that code, not about the product."*
 
-**Exclusions are a committed list** in the form [`../../scripts/upstream-hosts.txt`](../../scripts/upstream-hosts.txt)
-already establishes: one `entry — what it serves` per line, naming directories rather than documents.
-An entry covering a path the index claims is refused, and so is one that excludes no tracked document,
-so the list cannot shadow an indexed document nor accumulate entries that have stopped meaning
-anything. It is not thereby tamper-proof: deleting a row and excluding its directory in the same
-change still hides a document, because no rule can tell that edit from a legitimate exclusion. What
-the check buys is that hiding a document takes two visible edits rather than one.
+**What is not a document is derived too.** A tracked Markdown file under a **top-level
+dot-directory** is machinery — an agent's working material, GitHub's own forms — and is claimed by
+nothing. There is no exclusions list, so excluding anything else takes an edit to the check, reviewed
+as code and needing a successor to this ADR, rather than a line anyone can append to a list.
+
+Deriving both sides is the point. An inventory of documents and an inventory of exclusions are the
+same artifact facing opposite directions, and a decision that rejects one while shipping the other
+has only moved where the drift lives.
 
 **The index's rows are unique and real.** One rendered path carries one row — two rows for a document
 is two canonical homes, which is the property the index exists to state — and a row names a tracked
@@ -68,6 +69,16 @@ shape — *"a gate satisfied by declaring is a checkbox"* — and a hand-maintai
 declaration. The sentence is amended to describe what was built; it was never load-bearing, having
 described a check nobody ran.
 
+**A committed exclusions list** naming the silos nothing indexes, one `entry — what it serves` per
+line in the [`../../scripts/upstream-hosts.txt`](../../scripts/upstream-hosts.txt) form. This was
+built and carried through review before being removed, so the reasons are measured rather than
+predicted. Two entries — `.claude/` and `.github/` — were ever needed, and every one-line edit to
+that file was a way to hide a document: appending a silo over a directory whose row had just gone
+passed; appending one over a directory nobody had indexed yet passed with no row touched at all.
+Rules were added against each and the next spelling walked round them. The derived rule refuses all
+of it and deletes four rules and a file, and the list's supposed advantage — adding a silo without
+touching code — is precisely the property that made it an opt-out.
+
 **Excluding `architecture/` as a tooling silo**, on the index's own argument that a document
 explaining how code works belongs beside that code. Rejected: the LikeC4 model is the source the
 architecture diagrams are generated from, a reader looking for it should find it in the table, and a
@@ -78,12 +89,18 @@ silo exclusion would hide it. It gets a row.
 Adding a document to `docs/` fails until it is indexed; retiring one fails until its row goes. That is
 the obligation the index has always stated and never enforced.
 
-The exclusions list remains the soft spot, narrowed rather than closed. A silo added to it is a
-document set nothing indexes; the check refuses the one-edit forms of that, and the two-edit form —
-row deleted, directory excluded — is left to review. That is accepted rather than solved: the
-alternative is a rule that decides which directories *ought* to be indexed, which is the judgement the
-list exists to record. Requiring each entry to say what it serves, and failing an entry that excludes
-nothing, is what keeps the list short enough to read.
+The soft spot moves rather than vanishing, and it is narrower and differently shaped. **A new
+top-level dot-directory is excluded the moment it exists, with no edit anywhere** — measured:
+`.notes/NOTES.md` alone gives exit 0. The list would have demanded a visible line for that, so this
+is the one respect in which the derived rule is weaker, and it is accepted: creating a dot-directory
+at the repository root is a conspicuous structural change, where appending to a list was not. Closing
+it would mean asserting which dot-directories may exist, which is the inventory this decision exists
+to avoid.
+
+The cost of having no list is that a silo which is *not* a dot-directory — vendored documentation, a
+`third_party/` tree — cannot be excluded without changing the check and superseding this ADR. That is
+the intended price. It is also why the rule is stated here: nothing else in the repository says a
+dot-directory holds machinery.
 
 The check reads rendered table structure, so reformatting the index — changing its columns, or
 moving it off a Markdown table — breaks it. `check-adr-index.mjs` has carried the same exposure since

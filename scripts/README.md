@@ -130,9 +130,9 @@ Covers only the `github-actions` entry assertion; the rest of the check predates
 ## `check-docs-index.mjs`
 
 Covers every assertion the check makes. A case here is a throwaway repository holding a **minimal
-fixture index** — a three-row table over `README.md`, `decisions/` and `architecture/`, plus an
-exclusions file — rather than a copy of the real documentation set, so a case states its own
-premise and the tree cannot drift out from under it.
+fixture index** — a three-row table over `README.md`, `decisions/` and `architecture/` — rather than a
+copy of the real documentation set, so a case states its own premise and the tree cannot drift out
+from under it.
 
 | Direction | Input |
 |---|---|
@@ -140,25 +140,22 @@ premise and the tree cannot drift out from under it.
 | Must fail | the `architecture/` row deleted while `docs/architecture/README.md` remains |
 | Must fail | a row linking `decisions/GONE.md`, which is not a tracked file |
 | Must fail | a row whose *Guarantees* cell is emptied |
-| Must fail | an exclusions entry naming no reason (`docs/scratch/`) |
-| Must fail | an exclusions entry naming a file rather than a silo (`docs/NOTES.md — …`) |
 | Must fail | the index reshaped so its rows are list items rather than table rows |
-| Must fail | an exclusion covering a directory the index claims (`docs/architecture/`) |
-| Must fail | an exclusion covering the whole documentation set (`docs/`) while its rows stand |
-| Must fail | an exclusion covering no tracked document (`docs/ghost/`) |
 | Must fail | two rows for one rendered path |
 | Must fail | a row whose rendered path names no tracked document (`GHOST.md`) |
 | Must fail | a subtree row over a directory holding no tracked document (`ghost/`) |
+| Must fail | a row indexing a dot-directory, which holds machinery rather than documents |
 | Must pass | a new ADR under `docs/decisions/`, claimed by the `decisions/` subtree row without a row of its own |
 | Must pass | a second tracked `.md` added under `docs/architecture/` |
 | Must pass | an `.md` nested two levels under a subtree row (`docs/decisions/sub/X.md`) |
-| Must pass | an `.md` added under an excluded silo (`.github/`) |
+| Must pass | an `.md` added under a dot-directory (`.github/`) |
+| Must pass | a **new** top-level dot-directory (`.notes/NOTES.md`) — the accepted trade, see below |
 | Must pass | a row whose rendered text and link target differ (`decisions/` → `decisions/README.md`) |
 
-The rows exercise five distinct reporting paths, not one: an unclaimed document, a row link that
-resolves to no tracked file, an empty cell, a malformed exclusions entry, and an index whose table
-shape has gone. A check reporting through a single path would pass most of these while asserting
-nothing else, so the spread is the point rather than the count.
+The rows exercise several distinct reporting paths, not one: an unclaimed document, a row link that
+resolves to no tracked file, a rendered path naming nothing, a duplicate row, an empty cell, and an
+index whose table shape has gone. A check reporting through a single path would pass most of these
+while asserting nothing else, so the spread is the point rather than the count.
 
 ### Known rejections
 
@@ -182,11 +179,11 @@ whose text is a backticked path — the prose is looser than the code.
 
 **What it does not catch.** Two things, both run and observed rather than reasoned about.
 
-Deleting a document's row **and** excluding its directory in the same change passes: with the row
-gone there is nothing left for the exclusion to shadow. Verified against a frozen extraction —
-appending `tools/ — x` alone gives exit 1, and appending it while deleting the `../tools/README.md`
-row gives exit 0. No rule can separate that edit from a legitimate exclusion, so it is review's, and
-it is why the exclusions list is kept short and each entry made to say what it serves.
+**A new top-level dot-directory is excluded the moment it exists**, with no edit anywhere: adding
+`.notes/NOTES.md` alone gives exit 0. This is the accepted trade recorded in ADR 0014 — it is what
+buys the absence of an exclusions list, since anything that is *not* a dot-directory cannot be
+excluded without changing this check. An earlier revision of this PR carried such a list, and every
+one-line edit to it turned out to be a way to hide a document.
 
 The population comes from `git ls-files`, so a document that exists but has not been staged is
 invisible. CI checks out committed state and is unaffected; a local run before `git add` is not. This
