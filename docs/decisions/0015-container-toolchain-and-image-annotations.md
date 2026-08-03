@@ -68,6 +68,14 @@ equals the commit the job published, and `.created` equals that commit's timesta
 are what the check is for — presence alone passes on a hardcoded `.revision` naming a commit from last
 year, which is the failure the annotations exist to prevent.
 
+**The two bindings are asserted in different jobs**, because they need different things. `.revision`
+is decidable from the registry and the workflow's own context, so it sits with the rest of the
+published-artifact verification. `.created` is the only assertion in this regime needing the published
+artifact and the repository *at the same time* — a commit's timestamp is in neither the registry nor
+the transparency log — so it is asserted in the build job, where the commit is already in hand. The
+alternative, handing the expected value to the verification job, would have that job assert the build
+job's own claim about itself, which is not verification.
+
 ## Alternatives considered
 
 **`ko`.** Builds a Go binary into a distroless image with no Dockerfile, reproducibly, with an

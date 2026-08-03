@@ -159,8 +159,10 @@ a posture resting on this section. Until #77 fences this document, read it as in
   the manifest**, which are separate metadata with separate readers
   ([ADR 0015](decisions/0015-container-toolchain-and-image-annotations.md)). Both are read: a check
   reading one reports nothing about the other. No value is a `LABEL` line in the Dockerfile, and two
-  are bound to the commit — `.revision` is the commit the job published, and `.created` is that
-  commit's timestamp. A missing key, an empty value, or either binding failing exits non-zero;
+  are bound to the commit rather than merely present: `.revision` is the commit the job published,
+  decided here against the registry; and `.created` is that commit's timestamp, decided in the build
+  job, which is the only place holding the artifact and the repository at once. A missing key, an
+  empty value, or either binding failing exits non-zero;
   presence alone passes on a stale hardcoded value. A surface the check cannot read fails rather than
   being skipped, and so does resolving fewer than the two surfaces there are: a run that inspected
   nothing reports the same success as one with nothing to report. **What no check here decides:** `.description` and `.licenses` resolve from
