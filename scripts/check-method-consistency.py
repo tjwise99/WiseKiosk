@@ -31,7 +31,9 @@ def load():
     them."""
     method, children, justified = {}, {}, set()
     for silo in ("sys", "srs", "tst"):
-        for path in sorted((TREE / silo).glob("*.yml")):
+        # Both suffixes, for the reason check-unreviewed.py globs both: Doorstop indexes a .yaml
+        # item, and one this loader never reads is exempt from the rule rather than judged by it.
+        for path in sorted([*(TREE / silo).glob("*.yml"), *(TREE / silo).glob("*.yaml")]):
             if path.stem.startswith("."):
                 continue  # pathlib globs dotfiles: the silo's own .doorstop.yml is not an item
             item = yaml.safe_load(path.read_text()) or {}
@@ -48,6 +50,9 @@ def load():
 def main():
     method, children, justified = load()
     unjustified = sorted(set(method) - justified)
+    # A value outside RANK ranks as nothing, and the rule below then skips the item rather than
+    # judging it — so a typo or a capitalised token silently exempts an item from the whole check.
+    unranked = sorted(uid for uid, value in method.items() if value not in RANK)
     failures = []
     for parent, kids in sorted(children.items()):
         rank = RANK.get(method.get(parent, ""))
@@ -79,6 +84,16 @@ def main():
             file=sys.stderr,
         )
 
+    if unranked:
+        print(f"\n{len(unranked)} item(s) carry an unrecognised verification-method:", file=sys.stderr)
+        for uid in unranked:
+            print(f"  {uid}  '{method[uid]}' is not one of {', '.join(RANK)}", file=sys.stderr)
+        print(
+            "\nAn unrecognised value ranks as nothing, so the rule above cannot judge the item and"
+            "\nwould pass it in silence. Spell the method as one of the four (docs/requirements/README.md).",
+            file=sys.stderr,
+        )
+
     if failures:
         print("\nVerification-method inconsistency:", file=sys.stderr)
         for line in failures:
@@ -91,7 +106,7 @@ def main():
             file=sys.stderr,
         )
 
-    if unjustified or failures:
+    if unjustified or unranked or failures:
         return 1
 
     print(

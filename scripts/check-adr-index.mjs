@@ -37,9 +37,21 @@ for (const name of readdirSync(decisionsDir).sort()) {
 }
 
 const indexText = readFileSync(resolve(decisionsDir, "README.md"), "utf8");
+
+// A destination may be angle-bracketed, carry a title, lead with ./ or end in an anchor; none of
+// that is part of the filename the row is claiming.
+const destination = (value) => {
+  let raw = value.trim();
+  const titled = raw.match(/^(\S+)\s+["'(]/);
+  if (titled) raw = titled[1];
+  if (raw.startsWith("<") && raw.endsWith(">")) raw = raw.slice(1, -1);
+  return raw.split("#")[0].replace(/^\.\//, "");
+};
+
 const rows = new Map();
 for (const match of indexText.matchAll(/^\|\s*\[(\d{4})\]\(([^)]+)\)\s*\|/gm)) {
-  const [, number, target] = match;
+  const [, number, rawTarget] = match;
+  const target = destination(rawTarget);
   if (rows.has(number)) {
     problems.push(`docs/decisions/README.md has two rows for number ${number}`);
   } else {
