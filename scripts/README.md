@@ -127,6 +127,71 @@ Covers only the `github-actions` entry assertion; the rest of the check predates
 | Must fail | a recipe in `just verify` whose script runs in no workflow step |
 | Must pass | the tree as it stands |
 
+## `check-docs-index.mjs`
+
+Covers every assertion the check makes. A case here is a throwaway repository holding a **minimal
+fixture index** — a three-row table over `README.md`, `decisions/` and `architecture/` — rather than a
+copy of the real documentation set, so a case states its own premise and the tree cannot drift out
+from under it.
+
+| Direction | Input |
+|---|---|
+| Must fail | a tracked `docs/NEWDOC.md` with no row in the index |
+| Must fail | the `architecture/` row deleted while `docs/architecture/README.md` remains |
+| Must fail | a row linking `decisions/GONE.md`, which is not a tracked file |
+| Must fail | a row whose *Guarantees* cell is emptied |
+| Must fail | the index reshaped so its rows are list items rather than table rows |
+| Must fail | two rows for one rendered path |
+| Must fail | a row whose rendered path names no tracked document (`GHOST.md`) |
+| Must fail | a subtree row over a directory holding no tracked document (`ghost/`) |
+| Must fail | a row indexing a dot-directory, which holds machinery rather than documents |
+| Must fail | a dot-prefixed file at the repository root (`.HIDDEN.md`) — a dot-*file* is not a dot-*directory* |
+| Must pass | a new ADR under `docs/decisions/`, claimed by the `decisions/` subtree row without a row of its own |
+| Must pass | a second tracked `.md` added under `docs/architecture/` |
+| Must pass | an `.md` nested two levels under a subtree row (`docs/decisions/sub/X.md`) |
+| Must pass | an `.md` added under a dot-directory (`.github/`) |
+| Must pass | a **new** top-level dot-directory (`.notes/NOTES.md`) — the accepted trade, see below |
+| Must pass | a row whose rendered text and link target differ (`decisions/` → `decisions/README.md`) |
+
+The rows exercise several distinct reporting paths, not one: an unclaimed document, a row link that
+resolves to no tracked file, a rendered path naming nothing, a duplicate row, an empty cell, and an
+index whose table shape has gone. A check reporting through a single path would pass most of these
+while asserting nothing else, so the spread is the point rather than the count.
+
+### Known rejections
+
+Legal Markdown the check refuses. Each was run against a frozen extraction and observed; all fail
+closed, so none can let a defect through, and each is a constraint on how `docs/README.md` may be
+written rather than a defect in the document.
+
+| Input | Reported as |
+|---|---|
+| GFM alignment delimiters in the separator row (`\|:---\|:---:\|---:\|`) | the delimiter read as a *Document* cell, which is not a backticked-path link |
+| a second Markdown table anywhere in the file | `a row has 2 cells, expected Document, Guarantees, Excludes` |
+| a fenced table example — a code fence is not skipped | `a row has 2 cells, …` |
+| the table indented one to three spaces, which still renders | `no index row parsed — the table's shape has moved` |
+| a *Document* cell whose link text carries no backticks | the cell read as not a backticked-path link |
+| an escaped pipe inside any cell | `a row has 4 cells, …` |
+
+The consequential one is the second: every `|`-leading line in `docs/README.md` is read as an index
+row, so the file may hold exactly one table and no fenced example containing one. `docs/CI.md` and
+ADR 0014 both say a *Document* cell *renders* as a path, where the check requires a Markdown link
+whose text is a backticked path — the prose is looser than the code.
+
+**What it does not catch.** Two things, both run and observed rather than reasoned about.
+
+**A new top-level dot-directory is excluded the moment it exists**, with no edit anywhere: adding
+`.notes/NOTES.md` alone gives exit 0. This is the accepted trade recorded in ADR 0014 — it is what
+buys the absence of an exclusions list, since anything that is *not* a dot-directory cannot be
+excluded without changing this check. The check names the machinery directories it skipped on every
+run, so a new one is on screen rather than inferred from a count. An earlier revision of this PR
+carried an exclusions list instead; two one-line edits to it turned out to hide a document, one of
+them needing no other change at all.
+
+The population comes from `git ls-files`, so a document that exists but has not been staged is
+invisible. CI checks out committed state and is unaffected; a local run before `git add` is not. This
+matches `check-links.mjs`, which draws its file list the same way.
+
 ## `check-branch.sh`
 
 Covers the ticket-metadata and epic-membership assertions

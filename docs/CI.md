@@ -215,8 +215,21 @@ resolve, a citation to something that does not exist, an index that has drifted 
   one is a block already, which is what an issue template's guidance comment is, and passes.
 - The `decisions/` directory and its index table agree — every ADR has a row, no gap or duplicate in
   numbering, every row resolves to a real file.
-- The documentation index's row set equals the committed canonical-document list in both directions;
-  every named path resolves to a tracked file; no *Guarantees* or *Excludes* cell is empty.
+- **Every tracked Markdown file is claimed by a row in the documentation index**, unless it sits under
+  a top-level dot-directory, which holds machinery rather than documents. Both sides are derived from
+  the repository rather than read from an inventory: adding a document without indexing it fails,
+  retiring one fails until its row goes, and there is no exclusions list to append to — excluding
+  anything that is not machinery by that rule takes a change to the check itself
+  ([ADR 0014](decisions/0014-documentation-index-claims-documents.md)). A row whose *Document* cell
+  renders with a trailing slash claims the subtree beneath it, which is how `decisions/`,
+  `requirements/`, `contracts/`, `architecture/` and `site/` are covered by one row each. Every row's
+  link resolves to a tracked file, one rendered path carries one row, a row names a tracked document
+  or a directory holding one, no row indexes a dot-directory, and no *Guarantees* or *Excludes* cell
+  is empty. The index does not index itself. A new top-level dot-directory is excluded the moment it
+  exists, with no edit anywhere — the trade ADR 0014 records, which is why the check names the
+  machinery directories it skipped on every run. A dot-prefixed file at the repository root is not a
+  directory and must be indexed like any other document. Scope is Markdown: the tree's items are
+  claimed by the tree and gated by `check-reqs`, and code is claimed by nothing here.
 - The LikeC4 architecture model validates: no undefined element, no unresolved relationship.
 - Spliced diagrams and generated architecture artifacts are byte-identical to a regeneration.
 - The documentation site builds under Sphinx with warnings-as-errors.
