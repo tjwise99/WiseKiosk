@@ -65,7 +65,12 @@ const dump = JSON.parse(
 
 // A module's recipes sit outside `recipes`, so nothing below would see one. Reported rather than
 // skipped: a check that cannot reach a population must not report success over the rest of it.
-if (Object.keys(dump.modules ?? {}).length) {
+// The field's absence is not its emptiness — `--dump` is a debug surface, not a stable schema, so a
+// shape this does not recognise fails rather than reading as "no modules".
+if (!dump.modules || typeof dump.modules !== "object") {
+  fail("the justfile dump carries no `modules` map, so this cannot tell whether a module is declared");
+}
+if (Object.keys(dump.modules).length) {
   fail(`the justfile declares module(s) ${Object.keys(dump.modules).join(", ")}, whose recipes this does not read`);
 }
 
@@ -99,14 +104,17 @@ const bodyCommands = (recipe, name) => {
   let pending = "";
   for (const fragments of recipe.body) {
     const line = renderLine(fragments, name);
-    if (!pending && line.startsWith("#")) continue;
+    // `#!` opens a script body, which the shebang assertion owns; only a plain `#` is a comment.
+    if (!pending && line.startsWith("#") && !line.startsWith("#!")) continue;
     const joined = pending + line;
     if (joined.endsWith("\\")) {
       pending = `${joined.slice(0, -1).trimEnd()} `;
       continue;
     }
     pending = "";
-    if (joined !== "") commands.push(joined);
+    // `@` and `-` prefix the recipe line, not the command: they suppress the echo and ignore a
+    // failing status. Stripped so a command's spelling is what CI has to run.
+    if (joined !== "") commands.push(joined.replace(/^[@-]+/, ""));
   }
   if (pending) fail(`'${name}' ends on a line continuation with no line after it`);
   return commands;
@@ -120,6 +128,9 @@ const commandsOf = (name, seen = new Set()) => {
   if (!recipe) fail(`no '${name}' recipe in the justfile`);
   // A shebang body is one shell script, whose lines are control flow rather than commands to map.
   // Failing beats exempting: an exemption is an opt-out any recipe could take by adding a line.
+  if (typeof recipe.shebang !== "boolean") {
+    fail(`the dump for '${name}' carries no \`shebang\` field, so this cannot tell a script from a list of commands`);
+  }
   if (recipe.shebang) fail(`'${name}' is a shell script, which this cannot map to CI commands — move it under scripts/`);
 
   const reach = (target) => commandsOf(target, new Set(seen));

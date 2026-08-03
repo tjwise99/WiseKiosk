@@ -119,8 +119,12 @@ const justDump = JSON.parse(
   execSync("just --dump --dump-format json", { cwd: repoRoot, encoding: "utf8" }),
 );
 const recipes = justDump.recipes;
-// A module's recipes sit outside `recipes`, so a script hidden in one would pass unseen.
-if (Object.keys(justDump.modules ?? {}).length) {
+// A module's recipes sit outside `recipes`, so a script hidden in one would pass unseen. A dump
+// shape this does not recognise is reported too: `--dump` is a debug surface, not a stable schema,
+// and a missing field would otherwise read as an affirmative "no script here".
+if (!justDump.modules || typeof justDump.modules !== "object") {
+  problems.push("the justfile dump carries no `modules` map, so this cannot tell whether a module is declared");
+} else if (Object.keys(justDump.modules).length) {
   problems.push(`the justfile declares module(s) ${Object.keys(justDump.modules).join(", ")}, whose recipes this does not read`);
 }
 // Asserted before the loop, which passes vacuously over an empty set and would then agree that a
@@ -129,6 +133,10 @@ if (!recipes || !Object.keys(recipes).length) {
   problems.push("the justfile dump names no recipe, so nothing here judged it");
 }
 for (const [name, recipe] of Object.entries(recipes ?? {})) {
+  if (typeof recipe.shebang !== "boolean") {
+    problems.push(`the dump for recipe '${name}' carries no \`shebang\` field, so this judged nothing about it`);
+    continue;
+  }
   if (recipe.shebang) {
     problems.push(`justfile recipe '${name}' is a shell script — move it under scripts/ and call it from a one-line recipe`);
   }

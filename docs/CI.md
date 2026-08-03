@@ -433,7 +433,11 @@ already decided, which is what makes it a check and not a want.
   `#!` recipe is one script rather than a list of commands, so its lines are not mapped
   individually. A token is sought only where a step runs
   one: neither a comment nor a step's own `name:` satisfies it, or deleting a step and leaving its
-  name behind would pass.
+  name behind would pass. **What it compares is command text, not the ability to run it.** A command
+  naming a venv or `node_modules` executable is proved present in both places while the toolchain
+  providing it is installed per job, by steps this deliberately skips — so a check can be wired
+  identically in both and still be unable to execute in one. Nothing maps a check to the toolchain
+  its job installs.
 - Every committed test file falls under a configured runner's reach; a file excluded by skip, build
   tag, glob gap, or wrong directory fails. The requirements tier is covered by `doorstop --error-all`
   and is deliberately not re-encoded here. Unbuilt until a runner exists to detect anything: #82
