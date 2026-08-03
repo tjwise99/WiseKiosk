@@ -66,7 +66,7 @@ check-workflow-hardening:
     node scripts/check-workflow-hardening.mjs
 
 [group('checks')]
-[doc('Every `just verify` check also runs in CI, and vice versa')]
+[doc('Every `just verify` check runs in CI, every CI step is one of them or a named exception, and every token names a command its recipe runs')]
 check-verify-ci-parity:
     node scripts/check-verify-ci-parity.mjs
 

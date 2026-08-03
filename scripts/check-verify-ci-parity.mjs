@@ -36,8 +36,16 @@ const CHECK_TOKENS = {
     "scripts/check-headers.py",
   ],
   "check-citations": ["scripts/check-citations.py"],
-  "check-arch": ["scripts/splice-arch-diagrams.mjs"],
-  "check-site": ["docs/site/doorstop_to_needs.py"],
+  "check-arch": [
+    "docs/architecture/node_modules/.bin/likec4 validate",
+    "docs/architecture/node_modules/.bin/likec4 codegen",
+    "scripts/splice-arch-diagrams.mjs",
+    "git diff --exit-code docs/architecture/",
+  ],
+  "check-site": [
+    "docs/site/doorstop_to_needs.py",
+    "docs/site/.venv/bin/sphinx-build -W",
+  ],
   "check-adr-index": ["scripts/check-adr-index.mjs"],
   "check-docs-index": ["scripts/check-docs-index.mjs"],
   "check-repo-silo": ["scripts/check-repo-silo.mjs"],
@@ -63,6 +71,52 @@ for (const check of verifyChecks) {
 for (const check of Object.keys(CHECK_TOKENS)) {
   if (!verifyChecks.includes(check)) {
     fail(`CHECK_TOKENS has '${check}' but it is not a \`verify\` dependency — remove the stale entry`);
+  }
+}
+
+// A recipe's body, from its header line to the next unindented line. `just <recipe>` is expanded in
+// place, so a check that delegates is measured by the commands that ultimately run.
+const recipeBody = (name) => {
+  const lines = justfileText.split("\n");
+  const start = lines.findIndex((line) => line.startsWith(`${name}:`));
+  if (start === -1) fail(`no '${name}:' recipe found in justfile`);
+  const body = [];
+  for (const line of lines.slice(start + 1)) {
+    if (line.trim() === "") continue;
+    if (!/^\s/.test(line)) break;
+    body.push(line.trim());
+  }
+  return body;
+};
+
+const expand = (name, seen = new Set()) => {
+  if (seen.has(name)) fail(`recipe '${name}' delegates to itself`);
+  seen.add(name);
+  return recipeBody(name).flatMap((command) => {
+    const delegated = command.match(/^@?just (\S+)$/);
+    return delegated ? expand(delegated[1], new Set(seen)) : [command];
+  });
+};
+
+for (const [check, tokens] of Object.entries(CHECK_TOKENS)) {
+  const commands = expand(check);
+  // Asserted before the token loops: both of those pass vacuously over an empty parse, and would
+  // then agree that a recipe this cannot read is correctly mapped.
+  if (commands.length === 0) fail(`'${check}' has an empty recipe body, or this could not read it`);
+
+  for (const token of tokens) {
+    if (!commands.some((command) => command.includes(token))) {
+      fail(`'${check}' (token '${token}') names no command its recipe runs — the recipe changed, or the token is stale`);
+    }
+  }
+
+  // A `#!` recipe is one script rather than a list of commands: its lines are shell control flow,
+  // not work to be mapped one-for-one.
+  if (commands[0].startsWith("#!")) continue;
+  for (const command of commands) {
+    if (!tokens.some((token) => command.includes(token))) {
+      fail(`'${check}' runs '${command}' but no CHECK_TOKENS entry covers it — add one`);
+    }
   }
 }
 

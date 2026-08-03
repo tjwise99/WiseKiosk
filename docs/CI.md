@@ -411,8 +411,10 @@ already decided, which is what makes it a check and not a want.
 
 - Every check `just verify` depends on also runs in CI, and every named CI step is one of those
   checks or an enumerated CI-only exception. A recipe running more than one command lists one token
-  per command — mapping a recipe to a single token hides any command added to it later, which is how
-  a check once reached `just verify` without reaching CI. A token is sought only where a step runs
+  per command, and the tokens are held against the recipe body with `just <recipe>` expanded in
+  place: a token naming no command its recipe runs fails, and a command no token covers fails. A
+  `#!` recipe is one script rather than a list of commands, so its lines are not mapped
+  individually. A token is sought only where a step runs
   one: neither a comment nor a step's own `name:` satisfies it, or deleting a step and leaving its
   name behind would pass.
 - Every committed test file falls under a configured runner's reach; a file excluded by skip, build
