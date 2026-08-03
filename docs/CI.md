@@ -153,6 +153,23 @@ a posture resting on this section. Until #77 fences this document, read it as in
 - **SBOM.** The SBOM for the published digest is retrievable and non-empty, validates against its SPDX
   or CycloneDX schema, and enumerates the Go main module and the base distribution. Regenerating from
   the same digest yields a matching package set. A release missing the asset fails.
+- **The image says where it came from.** Nine annotations — `org.opencontainers.image.title`,
+  `.description`, `.url`, `.source`, `.version`, `.created`, `.revision`, `.licenses` and
+  `.documentation` — are present and non-empty on **both surfaces the image exposes**: the config, and
+  the manifest the signature and attestation assertions above already read. A check reading one of
+  them passes vacuously the day the build stops populating the other. Every value is generated from
+  the build context rather than written into the Dockerfile, and two are bound to the commit:
+  `.revision` is the commit the job published, and `.created` is that commit's timestamp. A missing
+  key, an empty value or either binding failing exits non-zero — presence alone would pass on a
+  hardcoded `.revision` naming an older commit, which is the failure the set exists to prevent
+  ([ADR 0015](decisions/0015-container-toolchain-and-image-annotations.md)). **What no check here
+  decides:** `.description` and `.licenses` resolve from repository metadata rather than from the
+  commit, so either can change with no commit and nothing reports it. Unbuilt; owned by #67, over an
+  emission owned by #54.
+- **`.created` is the commit's timestamp**, not the build clock, so two builds of one commit do not
+  differ on it. It takes more than the reproducibility variable to hold: that variable reaches the
+  timestamps in the image's own index, config and file metadata, and not the annotation, which is
+  generated at run time unless overridden.
 - **Base images are pinned** to a `@sha256:` digest rather than a floating tag, for every base and
   stage in the Dockerfile.
 - **The code generators are pinned** to an exact version, so a toolchain bump cannot present as
