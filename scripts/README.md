@@ -12,10 +12,11 @@ it. That list is expensive to rebuild and worthless to guess at.
 **A check with no section here has no record.** That is a gap in this file, not a claim that the check
 is unverified — and not a claim that it is verified either.
 
-**This is a snapshot, and nothing fails when it goes stale.** Every check `just verify` runs today has
-a section below. `just verify` grows — #67 adds signing, SBOM and scanning gates, #54 the container
+**This is a snapshot, and nothing fails when it goes stale.** Every check `just verify` runs has a
+section below. `just verify` grows — #67 adds signing, SBOM and scanning gates, #54 the container
 build, #59 the comment-discipline gate — and each new one arrives with no record and nothing to say
-so. The correspondence check that would notice is #77, which is not buildable
+so. **Nothing gates this file at all** — #77 gate CI.md against the workflow covers `CI.md`'s sections
+against the workflow's jobs, not this record against the checks, and it is itself unbuildable
 ([`../docs/CI.md`](../docs/CI.md) § *What is not gated here* says why). So a complete-looking file is
 not a standing guarantee; it is a record of what somebody ran, on the day they ran it.
 
@@ -194,10 +195,12 @@ fires rather than joining the silence.
 | A quoted `#` in a command | `run: … && echo "pin # it"` beside a real token |
 | An unquoted `#` with no leading space | `run: … --tag=#x`, which YAML does not read as a comment |
 
-The trailing-comment row is the one that matters, and it needs its control to mean anything: a step
-deleted outright **is** caught, which is what makes the comment case a hole rather than a
-misreading of the design. Only lines carrying no quote are stripped — a quoted `#` is content, and
-reading one as a comment would reject a legal workflow.
+The trailing-comment rows are the ones that matter, and they need their control to mean anything: a
+step deleted outright **is** caught, which is what made the comment cases holes rather than a
+misreading of the design. The first fix skipped any line containing a quote, which closed the
+quote-free spelling and left `key: "value" # token` open one spelling along — found by review, not by
+the seeding that prompted the fix. Quote state is tracked instead, so a `#` inside a quoted scalar
+stays content while one opening a token ends the line.
 
 ## `check-docs-index.mjs`
 
@@ -433,16 +436,18 @@ Not a script: the recipe is `git grep -lIP '\r$' -- .`, and the recipe fails if 
 | Must pass | an all-LF tree |
 | Must pass | a binary file containing CR — excluded by `-I` |
 | Must pass | a genuinely untracked CRLF file |
-| Must pass | lone CR line endings with no LF, which the pattern does not describe |
+| Must pass | CR appearing mid-line, where the line still ends in LF |
 
 ### What it does not catch
 
 **A file whose `.gitattributes` sets the `binary` attribute.** That attribute both exempts the file
 from CRLF→LF normalisation when it is added *and* makes `-I` skip it during the grep, so genuinely
 CRLF-terminated text commits and survives a fresh clone unseen. A plain `-text` does **not** do this;
-only the full `binary` macro. The repository declares no such attribute today, and the owner ruled on
-2026-08-02 not to gate it — so the honest statement of what holds is that **the LF invariant holds for
-files git treats as text, and `.gitattributes` decides which those are.**
+only the full `binary` macro. `.gitattributes` declares `binary` on the image, font and PDF globs —
+files that are not text, which is the attribute used as intended — so the reachable case is a *text*
+glob given the attribute. The owner ruled on 2026-08-02 not to gate that, so the honest statement of
+what holds is that **the LF invariant holds for files git treats as text, and `.gitattributes` decides
+which those are.**
 
 Worth keeping beside that: the check is not made redundant by git's own normalisation. A CRLF blob
 forced into history via `hash-object`/`update-index`, bypassing the add-time filter, is still caught
@@ -474,7 +479,7 @@ after a fresh checkout.
 | A non-`.md` file, and a subdirectory | `notes.txt`, `assets/` |
 | A row target carrying a title, angle brackets, `./` or an `#anchor` | four spellings of the same filename |
 | A 4-space indented example row | not a table row, because it does not start with `\|` |
-| A row in a file other than `README.md` | only the index is read |
+| A row in a Markdown file outside `docs/decisions/` | only the index is read |
 
 The directory row is the one that matters: `readdirSync` reports *names*, so an entry counted as an ADR
 on the strength of its name alone needed only a matching row to be reported as fully agreeing. A
@@ -529,15 +534,26 @@ The recipe runs `doorstop_to_needs.py` and then `sphinx-build -W`, so any warnin
 | Must fail | an item whose link names a parent the tree does not hold — the generator emits a warning |
 | Must fail | malformed item YAML — the generator raises rather than warns |
 | Must pass | the tree as it stands |
+| Must pass | a `.yaml`-suffixed item — it reaches the generated pages rather than being dropped |
+
+The `.yaml` row closes the third of three raw item loaders. Two are in `scripts/`; this one is the
+generator, and leaving it would have meant the tree gates judging an item the published site silently
+omits, with warnings-as-errors unable to report a page nobody asked for.
 
 ### What it does not catch
 
-Two things, both run and observed rather than reasoned about. **A broken cross-reference does not fail
-the build**: `conf.py` sets `suppress_warnings = ["myst.xref_missing"]`, so a link to a missing target
-is silently dropped. **A new top-level document does not orphan-warn**, because `docs/site/index.md`
-carries `:glob:` toctrees that adopt it. Both are configuration choices rather than defects, but they
-mean this gate asserts *the site builds*, not *the site is internally consistent* — the link half of
-that belongs to `check-links.mjs`.
+Two things, both run and observed rather than reasoned about. **A broken MyST cross-reference does not
+fail the build**: `conf.py` sets `suppress_warnings = ["myst.xref_missing"]`, so the MyST forms — a
+bare anchor link, a reference-style link, a `<project:#target>` — are silently dropped. Sphinx's own
+`{ref}` role is *not* covered by that suppression and still fails under `-W`. **A new top-level
+document does not orphan-warn**, because `docs/site/index.md` carries `:glob:` toctrees that adopt it.
+Both are configuration choices rather than defects, but they mean this gate asserts *the site builds*,
+not *the site is internally consistent* — the link half of that belongs to `check-links.mjs`.
+
+`likec4 validate` and `likec4 codegen` are the two commands in `check-arch` with no case of their own.
+Seeding them means authoring an invalid LikeC4 model, which exercises a vendored toolchain's own
+validator rather than anything this repository decides; the staleness comparison that follows them is
+what the gate is for, and it has rows above.
 
 ## The requirements-tree checks
 
@@ -632,18 +648,23 @@ renumber still leaves the sentence pointing at whatever now occupies the number.
 
 | Direction | Input |
 |---|---|
-| Must fail | an emptied header — which also trips the prefix-free rule, reporting thirty problems |
+| Must fail | an emptied header — which also trips the prefix-free rule, since an empty string prefixes every other header |
 | Must fail | a header containing `/`, outside the permitted set |
 | Must fail | a header containing an en dash |
-| Must fail | a header containing a **non-breaking space** |
+| Must fail | a header containing a **non-breaking space**, leading or mid-string |
 | Must pass | a header folded across two lines in the YAML block scalar |
 
 The non-breaking space is the row that matters, and the script's own docstring predicted it: *the
 permitted set is an allowlist, because a list of characters to reject fails open on the one nobody
-enumerated.* The allowlist was right; the normalisation in front of it was not. `str.split()` is
-unicode-aware and folded U+00A0 into a plain space before the allowlist ever saw it — retiring exactly
-the character the allowlist existed to catch. A zero-width space, not being whitespace, was caught all
-along.
+enumerated.* The allowlist was right; the normalisation in front of it was not. `str.split()` and
+`str.strip()` are both unicode-aware and folded U+00A0 into ordinary whitespace before the allowlist
+ever saw it — retiring exactly the character the allowlist existed to catch. The first fix replaced
+the split and left the strip, so a mid-string space was caught while a leading one still passed; both
+had to go. A zero-width space, not being whitespace to Python, was caught throughout.
+
+A *trailing* non-breaking space is unreachable rather than accepted: Doorstop strips it from the block
+scalar before the check reads the header. Confirmed by reading `item.header` directly, not inferred
+from the check passing.
 
 ### `check-citations.py`
 

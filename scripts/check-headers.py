@@ -25,9 +25,12 @@ def headers():
     tree = doorstop.build(cwd=str(ROOT), root=str(ROOT))
     for document in tree.documents:
         for item in document._iter():
-            # Split on ASCII whitespace only: str.split() also folds U+00A0 and friends into a
-            # plain space, which would retire them before the permitted-set test ever sees them.
-            yield str(item.uid), " ".join(re.split(r"[ \t\r\n\f\v]+", (item.header or "").strip()))
+            # Split on ASCII whitespace only, and trim by dropping the empty edge segments the split
+            # produces: str.split() and str.strip() both fold U+00A0 and friends into ordinary
+            # whitespace, retiring them before the permitted-set test ever sees them.
+            yield str(item.uid), " ".join(
+                part for part in re.split(r"[ \t\r\n\f\v]+", item.header or "") if part
+            )
 
 
 def main():

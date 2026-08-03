@@ -69,16 +69,33 @@ for (const check of Object.keys(CHECK_TOKENS)) {
 // Searched instead of the whole file: a token in a comment names no step that runs, and a token in
 // a step's `name:` describes one rather than invoking it. Either would satisfy a plain text search
 // while the step it stands for was deleted.
-// YAML ends a line at an unquoted ` #`, so a token can outlive the step it names in a trailing
-// comment. Only lines carrying no quote are stripped: a quoted '#' is content, and reading one as a
-// comment would reject a legal workflow.
-const stripTrailingComment = (line) => (/["']/.test(line) ? line : line.replace(/\s+#.*$/, ""));
+// YAML ends a line at a `#` that opens a token outside a quoted scalar, so a token can outlive the
+// step it names in a trailing comment. Quote state is tracked rather than the line being skipped for
+// containing a quote: skipping leaves `key: "value" # token` unstripped, which is the same hole one
+// spelling along.
+const stripTrailingComment = (line) => {
+  let quote = null;
+  for (let i = 0; i < line.length; i += 1) {
+    const character = line[i];
+    if (quote) {
+      if (character === quote) quote = null;
+    } else if (character === '"' || character === "'") {
+      quote = character;
+    } else if (character === "#" && (i === 0 || /\s/.test(line[i - 1]))) {
+      return line.slice(0, i);
+    }
+  }
+  return line;
+};
 
-const runningText = workflowText
-  .split("\n")
-  .filter((line) => !/^\s*#/.test(line) && !/^\s*- name:/.test(line))
-  .map(stripTrailingComment)
-  .join("\n");
+const strip = (text) =>
+  text
+    .split("\n")
+    .filter((line) => !/^\s*#/.test(line) && !/^\s*- name:/.test(line))
+    .map(stripTrailingComment)
+    .join("\n");
+
+const runningText = strip(workflowText);
 
 for (const [check, tokens] of Object.entries(CHECK_TOKENS)) {
   for (const token of tokens) {
@@ -99,9 +116,10 @@ for (const chunk of stepChunks) {
   if (!nameMatch) continue;
   const stepName = nameMatch[1].trim();
   if (stepName.startsWith("Install ")) continue;
-  // Searched with the step's own `name:` removed, for the reason the forward loop excludes it: a
-  // step named after a check is not a step running one.
-  const body = chunk.split("\n").filter((line) => !/^\s*- name:/.test(line)).join("\n");
+  // Searched with the step's own `name:` and every comment removed, for the reason the forward loop
+  // excludes them: a step named after a check is not a step running one, and neither is a comment
+  // mentioning it.
+  const body = strip(chunk);
   const covered =
     Object.values(CHECK_TOKENS).flat().some((token) => body.includes(token)) ||
     CI_ONLY_ALLOWLIST.some((token) => body.includes(token));

@@ -45,7 +45,9 @@ def load_items(doc_dir: Path) -> list[dict]:
     requirement item.
     """
     items = []
-    for path in sorted(doc_dir.glob("*.yml")):
+    # Both suffixes: Doorstop indexes a .yaml item, and one this loader misses is judged by the
+    # tree gates and then dropped from the published site with nothing to report the difference.
+    for path in sorted([*doc_dir.glob("*.yml"), *doc_dir.glob("*.yaml")]):
         if path.name == ".doorstop.yml":
             continue
         with path.open(encoding="utf-8") as f:

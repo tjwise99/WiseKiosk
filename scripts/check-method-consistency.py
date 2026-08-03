@@ -29,7 +29,7 @@ def load():
     single-key mapping, and a justification a block or a plain scalar — forms a
     pattern would drop silently, taking the item's children or its argument with
     them."""
-    method, children, justified = {}, {}, set()
+    method, children, justified, obliging = {}, {}, set(), set()
     for silo in ("sys", "srs", "tst"):
         # Both suffixes, for the reason check-unreviewed.py globs both: Doorstop indexes a .yaml
         # item, and one this loader never reads is exempt from the rule rather than judged by it.
@@ -39,20 +39,24 @@ def load():
             item = yaml.safe_load(path.read_text()) or {}
             uid = path.stem
             method[uid] = str(item.get("verification-method") or "").strip()
+            if item.get("normative") is not False:
+                obliging.add(uid)
             if str(item.get("verification-justification") or "").strip():
                 justified.add(uid)
             for link in item.get("links") or []:
                 parent = next(iter(link)) if isinstance(link, dict) else link
                 children.setdefault(str(parent), []).append(uid)
-    return method, children, justified
+    return method, children, justified, obliging
 
 
 def main():
-    method, children, justified = load()
-    unjustified = sorted(set(method) - justified)
+    method, children, justified, obliging = load()
+    # A non-normative item obliges nothing, so it carries an empty method and no justification
+    # (docs/requirements/README.md). Both rules below are about what an obligation must state.
+    unjustified = sorted(obliging - justified)
     # A value outside RANK ranks as nothing, and the rule below then skips the item rather than
     # judging it — so a typo or a capitalised token silently exempts an item from the whole check.
-    unranked = sorted(uid for uid, value in method.items() if value not in RANK)
+    unranked = sorted(uid for uid in obliging if method[uid] not in RANK)
     failures = []
     for parent, kids in sorted(children.items()):
         rank = RANK.get(method.get(parent, ""))
