@@ -69,23 +69,29 @@ for (const check of Object.keys(CHECK_TOKENS)) {
 // Searched instead of the whole file: a token in a comment names no step that runs, and a token in
 // a step's `name:` describes one rather than invoking it. Either would satisfy a plain text search
 // while the step it stands for was deleted.
-// YAML ends a line at a `#` that opens a token outside a quoted scalar, so a token can outlive the
-// step it names in a trailing comment. Quote state is tracked rather than the line being skipped for
-// containing a quote: skipping leaves `key: "value" # token` unstripped, which is the same hole one
-// spelling along.
+// YAML ends a line at a ` #` outside a quoted scalar, so a token can outlive the step it names in a
+// trailing comment. A quote is syntactic only where a scalar may begin — after the indent, an
+// optional `- `, and an optional `key:`; anywhere else it is an ordinary character, which is why an
+// apostrophe in prose neither opens a quote nor hides what follows it.
+const SCALAR_START = /^\s*(?:-\s+)?(?:[^\s:#]+:(?:\s+|$))?/;
+
 const stripTrailingComment = (line) => {
-  let quote = null;
-  for (let i = 0; i < line.length; i += 1) {
-    const character = line[i];
-    if (quote) {
-      if (character === quote) quote = null;
-    } else if (character === '"' || character === "'") {
-      quote = character;
-    } else if (character === "#" && (i === 0 || /\s/.test(line[i - 1]))) {
-      return line.slice(0, i);
+  let index = line.match(SCALAR_START)[0].length;
+  const quote = line[index];
+  if (quote === '"' || quote === "'") {
+    index += 1;
+    while (index < line.length) {
+      if (quote === '"' && line[index] === "\\") index += 1;
+      else if (line[index] === quote) {
+        if (quote === "'" && line[index + 1] === "'") index += 1;
+        else break;
+      }
+      index += 1;
     }
+    index += 1; // past the closing quote
   }
-  return line;
+  const comment = line.slice(index).search(/(?:^|\s)#/);
+  return comment === -1 ? line : line.slice(0, index + comment);
 };
 
 const strip = (text) =>

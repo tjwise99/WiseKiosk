@@ -113,9 +113,11 @@ def main():
     if unjustified or unranked or failures:
         return 1
 
+    # Counted over the population the rules above judged, not every item loaded: a success line
+    # naming a larger set claims the check looked at items it exempted.
     print(
-        f"All {len(method)} items carry a verification-justification; methods are consistent "
-        f"across {len(children)} parent items."
+        f"All {len(obliging)} obliging item(s) carry a verification-justification; methods are "
+        f"consistent across {len(children)} parent items."
     )
     return 0
 

@@ -184,6 +184,9 @@ fires rather than joining the silence.
 | Token surviving only in a step's `name:` | the command renamed, the old path left in the step title |
 | Token commented out inside a `run: \|` block | the command replaced by a whole-line comment |
 | Token surviving only in a **trailing** comment | the step deleted, its path left after a `#` on another step's line |
+| The same, on a line holding a quoted value | the path left after a `#` on a `key: "value"` line |
+| The same, after an unbalanced apostrophe | the path left after a `#` on a line whose value carries `it's` |
+| A comment covering an unmapped step | a step matching nothing, its body naming a mapped path only in a comment |
 
 ### Must pass
 
@@ -197,10 +200,18 @@ fires rather than joining the silence.
 
 The trailing-comment rows are the ones that matter, and they need their control to mean anything: a
 step deleted outright **is** caught, which is what made the comment cases holes rather than a
-misreading of the design. The first fix skipped any line containing a quote, which closed the
-quote-free spelling and left `key: "value" # token` open one spelling along — found by review, not by
-the seeding that prompted the fix. Quote state is tracked instead, so a `#` inside a quoted scalar
-stays content while one opening a token ends the line.
+misreading of the design.
+
+Three cuts were needed and the first two each shipped a hole a row did not describe. Skipping any line
+that contained a quote closed the quote-free spelling and left `key: "value" # token` open. Tracking
+quote state closed that and left an *unbalanced* quote — an apostrophe in `it's` — opening a phantom
+scalar that swallowed the rest of the line, while newly rejecting a legal workflow whose escaped quote
+closed the tracker early. Both were found by review, neither by the seeding that prompted the fix.
+
+What holds is YAML's own rule rather than a heuristic about quotes: **a quote is syntactic only where
+a scalar may begin** — after the indent, an optional `- `, and an optional `key:`. Anywhere else it is
+an ordinary character, so an apostrophe in prose opens nothing, and a `#` inside a genuinely quoted
+scalar stays content.
 
 ## `check-docs-index.mjs`
 
@@ -522,6 +533,12 @@ Confirmed separately, because only a real run shows it: a hand edit inside a mar
 overwritten and the tree goes clean again, and a change to a generated artifact reaches the document,
 so `git diff --exit-code` is what catches staleness.
 
+**`likec4 validate` and `likec4 codegen` have no case here.** That is a gap, not a reasoned exemption:
+`check-site` seeds Sphinx's validator in the section below, so "it is a vendored toolchain's own
+validator" would not distinguish them. The justfile records why `validate` runs first — `codegen` alone
+does not fail on a broken model — so the two are not interchangeable and the staleness diff does not
+stand in for either. Seeding them wants an invalid LikeC4 model, which nobody has authored.
+
 ## `check-site`
 
 The recipe runs `doorstop_to_needs.py` and then `sphinx-build -W`, so any warning fails the gate.
@@ -550,10 +567,6 @@ document does not orphan-warn**, because `docs/site/index.md` carries `:glob:` t
 Both are configuration choices rather than defects, but they mean this gate asserts *the site builds*,
 not *the site is internally consistent* — the link half of that belongs to `check-links.mjs`.
 
-`likec4 validate` and `likec4 codegen` are the two commands in `check-arch` with no case of their own.
-Seeding them means authoring an invalid LikeC4 model, which exercises a vendored toolchain's own
-validator rather than anything this repository decides; the staleness comparison that follows them is
-what the gate is for, and it has rows above.
 
 ## The requirements-tree checks
 
@@ -625,12 +638,18 @@ tree's topology it never occurs without a distinct second `ERROR:` line from the
 | Must fail | a capitalised `Test` on a parent |
 | Must fail | a typo such as `tset` |
 | Must fail | the `verification-method` key deleted |
+| Must pass | a `normative: false` item carrying an empty method and no justification |
 
 The last three are one defect and it is the worst kind. An unrecognised value ranked as nothing, and
 the rule then *skipped* the item rather than judging it — so a single mis-typed character exempted an
-item from the check meant to judge it, while the run still printed *methods are consistent across 36
-parent items*. A check that silently declines to judge what it cannot parse reports the same success as
-one that judged everything.
+item from the check meant to judge it, while the run still reported the methods consistent across every
+parent. A check that silently declines to judge what it cannot parse reports the same success as one
+that judged everything.
+
+The same shape came back in the fix. The success line kept counting every item loaded while the rules
+had narrowed to the items that oblige something, so a blanked justification on a non-normative item
+printed a clean sentence over a population the run had not judged. The count now names the judged set.
+A review caught it; the seeding did not.
 
 ### `check-text-citations.py`
 

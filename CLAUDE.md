@@ -33,6 +33,13 @@ mistake [ADR 0011](docs/decisions/0011-requirement-or-convention.md) exists to p
 - **Keep the docs standalone.** No reference points outside this repository. Every relative Markdown
   link resolves inside the repo (`just check-links`).
 
+## Before you add or change a check
+
+Walk the **Code** questions in [`CONTRIBUTING.md`](CONTRIBUTING.md)'s review checklist first, not at
+review time. Two of them describe defects introduced while authoring and invisible in a green run —
+a check that skips input outside the set it recognises, and a guard narrowed to stop rejecting legal
+input that the defect then walks through. Both have shipped here.
+
 ## Review independence
 
 Code this session wrote cannot be reviewed by this session — independence comes from not having
