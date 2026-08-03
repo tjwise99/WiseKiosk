@@ -35,7 +35,7 @@ jobs:
       - name: Every tracked document outside a dot-directory is claimed by the documentation index
         run: node scripts/check-docs-index.mjs
 
-      - name: No manifest at the repository root, and every Dependabot entry resolves to its manifest
+      - name: No manifest at the repository root, no recipe is a shell script, and every Dependabot entry resolves to its manifest
         run: node scripts/check-repo-silo.mjs
 
       - name: Every action is pinned to an immutable reference, and no workflow grants write at the top level

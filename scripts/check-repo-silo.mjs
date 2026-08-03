@@ -114,12 +114,29 @@ if (entries.length && !actions) {
   problems.push(".github/dependabot.yml declares no 'github-actions' entry, so action pins go stale");
 }
 
+// A recipe is a list of commands; shell control flow is a script, and a script is siloed under
+// scripts/ like every other kind of tooling. Read from just's own dump so the shape is whatever just
+// resolves it to. See docs/CI.md § Repository shape.
+const recipes = JSON.parse(
+  execSync("just --dump --dump-format json", { cwd: repoRoot, encoding: "utf8" }),
+).recipes;
+// Asserted before the loop, which passes vacuously over an empty set and would then agree that a
+// justfile this could not read holds no script.
+if (!recipes || !Object.keys(recipes).length) {
+  problems.push("the justfile dump names no recipe, so nothing here judged it");
+}
+for (const [name, recipe] of Object.entries(recipes ?? {})) {
+  if (recipe.shebang) {
+    problems.push(`justfile recipe '${name}' is a shell script — move it under scripts/ and call it from a one-line recipe`);
+  }
+}
+
 if (problems.length) {
   console.error(`check-repo-silo: tooling is not siloed (${problems.length}):`);
   for (const problem of problems) console.error("  " + problem);
   process.exit(1);
 }
 console.log(
-  `Repository root holds no manifest, github-actions is covered, and ${checked} Dependabot ` +
-    `entr(ies) resolve to their manifests.`,
+  `Repository root holds no manifest, no justfile recipe is a shell script, github-actions is ` +
+    `covered, and ${checked} Dependabot entr(ies) resolve to their manifests.`,
 );

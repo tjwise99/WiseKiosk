@@ -140,8 +140,8 @@ passes; only inside a flow mapping is the string read as a reference.
 
 ## `check-repo-silo.mjs`
 
-Covers all three assertions: the root listing, the Dependabot manifest resolution, and the
-`github-actions` entry.
+Covers all four assertions: the root listing, the shebang-recipe ban, the Dependabot manifest
+resolution, and the `github-actions` entry.
 
 ### Must fail
 
@@ -149,6 +149,8 @@ Covers all three assertions: the root listing, the Dependabot manifest resolutio
 |---|---|
 | Manifest at the root | `package.json`, `go.mod`, `pyproject.toml` and `requirements.txt`, each at the repository root |
 | Environment directory at the root | `.venv/` |
+| Recipe carries a shebang | a `probe-recipe` whose body opens `#!/usr/bin/env bash`, grouped under `docs` and reachable from no gate — the assertion is over every recipe, not the ones `verify` runs |
+| The dump names no recipe | `just --dump` returning an empty recipe set, so the loop cannot judge anything |
 | Entry names a directory that does not exist | the `pip` entry pointed at `/nope` |
 | Entry's directory holds no manifest | the `pip` directory emptied of `requirements*.txt` |
 | Entry points at the root | `directory: "/"` on a non-`github-actions` entry |

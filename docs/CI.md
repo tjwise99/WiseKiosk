@@ -297,6 +297,10 @@ changed, which the citation resolver above decides without anyone declaring anyt
   material; both are build hygiene, and a smaller context is a faster and more predictable build.
   That the image carries no secret is the tree's, under
   SRS025<!-- No secret material in the published image --> (#54).
+- No `justfile` recipe carries a shebang. A recipe is a list of commands; shell control flow is a
+  script, and a script is siloed under `scripts/` where a case can be recorded against it, like every
+  other kind of tooling. Detected from `just`'s own dump rather than from the file's text, so the
+  shape is whatever `just` resolves it to.
 - A depth-1 listing of the repository root holds no `package.json`, `go.mod`, `pyproject.toml`,
   `requirements*.txt` or `.venv/` — tooling is siloed with the feature it serves — and every
   Dependabot entry that is not `github-actions` resolves to a non-root directory holding the matching

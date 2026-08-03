@@ -50,7 +50,7 @@ check-docs-index:
     node scripts/check-docs-index.mjs
 
 [group('checks')]
-[doc('No manifest at the repository root, github-actions is covered, and every other Dependabot entry resolves to a non-root directory holding its manifest')]
+[doc('No manifest at the repository root, no recipe is a shell script, github-actions is covered, and every other Dependabot entry resolves to a non-root directory holding its manifest')]
 check-repo-silo:
     node scripts/check-repo-silo.mjs
 
