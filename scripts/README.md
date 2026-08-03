@@ -180,6 +180,13 @@ fires rather than joining the silence.
 | Case | Input |
 |---|---|
 | Recipe runs in no workflow step | a `just verify` check whose script no step invokes |
+| Token names no command its recipe runs | a recipe's command changed, `CHECK_TOKENS` and the workflow left untouched |
+| Command covered by no token | the `git diff --exit-code` line of `check-arch` with its token removed |
+| A dependency on the recipe's header line | `check-links: link-lint`, where `link-lint` runs a script no token covers |
+| Truncated token hiding a dropped argument | CI's staleness command shortened to `git diff --exit-code docs/architecture/`, dropping `docs/ARCHITECTURE.md` |
+| Shebang recipe on the gate path | a `verify` check whose body opens `#!`, which cannot be mapped to CI commands |
+| A command that does not resolve to text | a body line interpolating a variable, which names no fixed command |
+| `verify` depends on nothing | the dependency list emptied, so the loops below judge an empty set |
 | Recipe with no `CHECK_TOKENS` entry | a new name added to the `verify` recipe |
 | Stale `CHECK_TOKENS` entry | a mapped check removed from the `verify` recipe |
 | CI step matching nothing | a named step running neither a mapped check nor an allowlisted one |
@@ -195,6 +202,9 @@ fires rather than joining the silence.
 | Case | Input |
 |---|---|
 | The tree as it stands | — |
+| Commands reordered within a recipe | `check-reqs`'s first two commands swapped |
+| A recipe reached through `just <recipe>` | `check-arch`, whose commands come from `arch-export` |
+| CI spelling a command with an extra argument | `sh scripts/check-branch.sh "$HEAD_REF"`, where the recipe passes none |
 | A toolchain step | a step named `Install …`, which prepares a check rather than being one |
 | An unnamed step | `- uses:` infrastructure with no `name:` |
 | A quoted `#` in a command | `run: … && echo "pin # it"` beside a real token |

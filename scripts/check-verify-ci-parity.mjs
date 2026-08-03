@@ -12,7 +12,6 @@ import { execSync } from "node:child_process";
 import { resolve } from "node:path";
 
 const repoRoot = execSync("git rev-parse --show-toplevel", { encoding: "utf8" }).trim();
-const justfileText = readFileSync(resolve(repoRoot, "justfile"), "utf8");
 const workflowText = readFileSync(resolve(repoRoot, ".github/workflows/checks.yml"), "utf8");
 
 const fail = (msg) => {
@@ -20,37 +19,38 @@ const fail = (msg) => {
   process.exit(1);
 };
 
-// Each `just verify` check → every token proving the same work runs in CI (the
-// script path or command each of the recipe's commands runs). A recipe running
-// more than one command lists one token per command (docs/CI.md § Gate wiring).
+// Each `just verify` check → every token proving the same work runs in CI, one per command the
+// recipe runs (docs/CI.md § Gate wiring). A token carries the command whole: a prefix leaves the
+// arguments it omits free to differ in CI, so the staleness path a command guards could narrow with
+// parity still green.
 const CHECK_TOKENS = {
-  "check-links": ["scripts/check-links.mjs"],
-  "check-eol": ["scripts/check-eol.sh"],
-  "check-branch": ["scripts/check-branch.sh"],
+  "check-links": ["node scripts/check-links.mjs"],
+  "check-eol": ["sh scripts/check-eol.sh"],
+  "check-branch": ["sh scripts/check-branch.sh"],
   "check-reqs": [
-    "scripts/check-unreviewed.py",
-    "scripts/check-suspect-links.py",
-    "scripts/validate-tree.sh",
-    "scripts/check-method-consistency.py",
-    "scripts/check-text-citations.py",
-    "scripts/check-headers.py",
+    "docs/requirements/.venv/bin/python scripts/check-unreviewed.py",
+    "docs/requirements/.venv/bin/python scripts/check-suspect-links.py",
+    "sh scripts/validate-tree.sh",
+    "docs/requirements/.venv/bin/python scripts/check-method-consistency.py",
+    "docs/requirements/.venv/bin/python scripts/check-text-citations.py",
+    "docs/requirements/.venv/bin/python scripts/check-headers.py",
   ],
-  "check-citations": ["scripts/check-citations.py"],
+  "check-citations": ["docs/requirements/.venv/bin/python scripts/check-citations.py"],
   "check-arch": [
-    "docs/architecture/node_modules/.bin/likec4 validate",
-    "docs/architecture/node_modules/.bin/likec4 codegen",
-    "scripts/splice-arch-diagrams.mjs",
-    "git diff --exit-code docs/architecture/",
+    "docs/architecture/node_modules/.bin/likec4 validate docs/architecture/model",
+    "docs/architecture/node_modules/.bin/likec4 codegen mermaid docs/architecture/model -o docs/architecture/generated",
+    "node scripts/splice-arch-diagrams.mjs",
+    "git diff --exit-code docs/architecture/ docs/ARCHITECTURE.md",
   ],
   "check-site": [
-    "docs/site/doorstop_to_needs.py",
-    "docs/site/.venv/bin/sphinx-build -W",
+    "docs/site/.venv/bin/python docs/site/doorstop_to_needs.py",
+    "docs/site/.venv/bin/sphinx-build -W -b html -c docs/site docs docs/site/_build/html",
   ],
-  "check-adr-index": ["scripts/check-adr-index.mjs"],
-  "check-docs-index": ["scripts/check-docs-index.mjs"],
-  "check-repo-silo": ["scripts/check-repo-silo.mjs"],
-  "check-workflow-hardening": ["scripts/check-workflow-hardening.mjs"],
-  "check-verify-ci-parity": ["scripts/check-verify-ci-parity.mjs"],
+  "check-adr-index": ["node scripts/check-adr-index.mjs"],
+  "check-docs-index": ["node scripts/check-docs-index.mjs"],
+  "check-repo-silo": ["node scripts/check-repo-silo.mjs"],
+  "check-workflow-hardening": ["node scripts/check-workflow-hardening.mjs"],
+  "check-verify-ci-parity": ["node scripts/check-verify-ci-parity.mjs"],
 };
 
 // CI steps with no local equivalent — exempted by name, not mapped from `just verify`.
@@ -59,9 +59,16 @@ const CI_ONLY_ALLOWLIST = [
   "scripts/check-commit-msg.sh", // PR-title Conventional-Commit check: no PR title exists locally
 ];
 
-const verifyLine = justfileText.match(/^verify:(.*)$/m);
-if (!verifyLine) fail("no `verify:` recipe line found in justfile");
-const verifyChecks = verifyLine[1].trim().split(/\s+/).filter(Boolean);
+// Recipes are read from `just`'s own dump rather than parsed out of the justfile, so a recipe's
+// dependencies and body are whatever `just` resolves them to.
+const dump = JSON.parse(
+  execSync("just --dump --dump-format json", { cwd: repoRoot, encoding: "utf8" }),
+);
+
+const verifyRecipe = dump.recipes.verify;
+if (!verifyRecipe) fail("the justfile declares no `verify` recipe");
+const verifyChecks = verifyRecipe.dependencies.map((dependency) => dependency.recipe);
+if (!verifyChecks.length) fail("`verify` depends on no check, so nothing below judged anything");
 
 for (const check of verifyChecks) {
   if (!(check in CHECK_TOKENS)) {
@@ -73,12 +80,6 @@ for (const check of Object.keys(CHECK_TOKENS)) {
     fail(`CHECK_TOKENS has '${check}' but it is not a \`verify\` dependency — remove the stale entry`);
   }
 }
-
-// Recipes are read from `just`'s own dump rather than parsed out of the justfile: dependencies,
-// bodies and line continuations are then whatever `just` says they are.
-const dump = JSON.parse(
-  execSync("just --dump --dump-format json", { cwd: repoRoot, encoding: "utf8" }),
-);
 
 const renderLine = (fragments, recipe) => {
   if (!fragments.every((fragment) => typeof fragment === "string")) {
