@@ -203,9 +203,13 @@ resolve, a citation to something that does not exist, an index that has drifted 
 - **An identifier is uppercase.** A lowercase or mixed-case spelling is reported as malformed rather
   than resolved, and the same spelling inside an item's `text` is caught as the citation it is.
   Matching only the canonical case would make every other case invisible to both checks instead of
-  wrong, which is the failure a resolution check exists to prevent. This rule cannot state its own
-  counter-example: an identifier written here in any case is read as a citation, so the malformed
-  spellings are described rather than shown.
+  wrong, which is the failure a resolution check exists to prevent.
+- **A rule here cannot spell its own counter-example.** The checks above scan the raw text of every
+  tracked Markdown file, and neither a backtick nor a table cell exempts anything: a malformed
+  identifier written to illustrate the rule *is* a malformed identifier, and a broken link written to
+  illustrate the link rule *is* a broken link. Describe the form that fails; never write it out. This
+  binds every document a check reads, not only this one — it failed the gate three times on one branch
+  before it was written down.
 - **A requirement citation carries the item's header, in an HTML comment, closed up to the
   identifier.** The header is verbatim and the comment is the only form —
   `SRS015<!-- One schema, all boundary value classes -->`. The identifier's own closing backtick and
