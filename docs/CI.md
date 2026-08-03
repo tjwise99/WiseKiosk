@@ -196,6 +196,12 @@ resolve, a citation to something that does not exist, an index that has drifted 
   `verification-justification`. Fenced code blocks are skipped; an identifier in inline code is a
   citation like any other. An identifier followed by `.yml` names an item's file rather than citing
   it: it must still resolve, and carries no header.
+- **An identifier is uppercase.** A lowercase or mixed-case spelling is reported as malformed rather
+  than resolved, and the same spelling inside an item's `text` is caught as the citation it is.
+  Matching only the canonical case would make every other case invisible to both checks instead of
+  wrong, which is the failure a resolution check exists to prevent. This rule cannot state its own
+  counter-example: an identifier written here in any case is read as a citation, so the malformed
+  spellings are described rather than shown.
 - **A requirement citation carries the item's header, in an HTML comment, closed up to the
   identifier.** The header is verbatim and the comment is the only form —
   `SRS015<!-- One schema, all boundary value classes -->`. The identifier's own closing backtick and

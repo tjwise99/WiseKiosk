@@ -22,7 +22,9 @@ import doorstop
 
 ROOT = Path(__file__).resolve().parent.parent
 
-UID = re.compile(r"\b(?:SYS|SRS|TST)\d{3}\b")
+# Case-insensitive: a mis-cased identifier defeats the rule exactly as an uppercase one does, and
+# matching only the canonical spelling would make it invisible rather than wrong.
+UID = re.compile(r"\b(?:SYS|SRS|TST)\d{3}\b", re.IGNORECASE)
 
 
 def cited():
