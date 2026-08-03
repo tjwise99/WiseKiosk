@@ -74,7 +74,9 @@ epoch-fixed creation time and SBOM support already wired. Rejected on fit rather
 image also carries a built frontend bundle, and `ko` has no multi-stage build: it ships a documented
 mechanism for bundling static assets into the image, but producing them is a step outside it. That
 splits one build across two tools, and a build a single maintainer has to hold in two halves is how a
-pipeline becomes unmaintainable.
+pipeline becomes unmaintainable. It also forfeits what the Consequences below rest on: with no
+Dockerfile there is no portable artifact to carry to another builder, so `ko` would be markedly harder
+to reverse out of than the option taken.
 
 **Buildah and Podman.** The closest contender, and the reason this decision is cheap to reverse: they
 consume the same Dockerfile, daemonless and rootless. Rejected on ecosystem rather than capability —
