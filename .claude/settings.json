@@ -5,7 +5,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "jq -Rs '{hookSpecificOutput:{hookEventName:\"SessionStart\",additionalContext:(\"CONTRIBUTING.md for this repository, injected at session start so its review checklist is in context before the change it governs is written.\\n\\n\" + .)}}' \"${CLAUDE_PROJECT_DIR:-.}/CONTRIBUTING.md\"",
+            "command": "f=\"${CLAUDE_PROJECT_DIR:-.}/CONTRIBUTING.md\"; out=$(jq -Rs '{hookSpecificOutput:{hookEventName:\"SessionStart\",additionalContext:(\"CONTRIBUTING.md for this repository, injected at session start so its review checklist is in context before the change it governs is written.\\n\\n\" + .)}}' \"$f\" 2>/dev/null) && printf '%s' \"$out\" || printf 'The session-start hook could not read CONTRIBUTING.md. Read it before changing anything in this repository.\\n'",
             "statusMessage": "Loading CONTRIBUTING.md"
           }
         ]
