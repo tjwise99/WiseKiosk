@@ -149,9 +149,30 @@ premise and the tree cannot drift out from under it.
 | Must pass | an `.md` added under an excluded silo (`.github/`) |
 | Must pass | a row whose rendered text and link target differ (`decisions/` → `decisions/README.md`) |
 
-The last two *Must fail* rows are the ones worth keeping: the first four all fail through the
-unclaimed-document path, and a check that only ever reported through one path would have passed them
-while asserting nothing else.
+The rows exercise five distinct reporting paths, not one: an unclaimed document, a row link that
+resolves to no tracked file, an empty cell, a malformed exclusions entry, and an index whose table
+shape has gone. A check reporting through a single path would pass most of these while asserting
+nothing else, so the spread is the point rather than the count.
+
+### Known rejections
+
+Legal Markdown the check refuses. Each was run against a frozen extraction and observed; all fail
+closed, so none can let a defect through, and each is a constraint on how `docs/README.md` may be
+written rather than a defect in the document.
+
+| Input | Reported as |
+|---|---|
+| GFM alignment delimiters in the separator row (`\|:---\|:---:\|---:\|`) | the delimiter read as a *Document* cell, which is not a backticked-path link |
+| a second Markdown table anywhere in the file | `a row has 2 cells, expected Document, Guarantees, Excludes` |
+| a fenced table example — a code fence is not skipped | `a row has 2 cells, …` |
+| the table indented one to three spaces, which still renders | `no index row parsed — the table's shape has moved` |
+| a *Document* cell whose link text carries no backticks | the cell read as not a backticked-path link |
+| an escaped pipe inside any cell | `a row has 4 cells, …` |
+
+The consequential one is the second: every `|`-leading line in `docs/README.md` is read as an index
+row, so the file may hold exactly one table and no fenced example containing one. `docs/CI.md` and
+ADR 0014 both say a *Document* cell *renders* as a path, where the check requires a Markdown link
+whose text is a backticked path — the prose is looser than the code.
 
 **What it does not catch.** The population comes from `git ls-files`, so a document that exists but
 has not been staged is invisible to it. CI checks out committed state and is unaffected; a local run

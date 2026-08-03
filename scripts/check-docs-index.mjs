@@ -75,8 +75,8 @@ for (const line of readFileSync(resolve(repoRoot, INDEX), "utf8").split("\n")) {
   else fileClaims.add(fromDocs(rendered));
 }
 
-// Both counts guard a silent parse failure, and they are sourced independently — the
-// working tree against the index file — so neither can go to zero with the other.
+// Independently sourced — the git index against the index file — so a parse that stops
+// matching cannot take both to zero at once. See ADR 0014.
 if (!rows) problems.push(`${INDEX}: no index row parsed — the table's shape has moved`);
 if (!tracked.size) problems.push("git ls-files reported no tracked Markdown file");
 
