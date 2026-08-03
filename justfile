@@ -51,7 +51,7 @@ check-adr-index:
     node scripts/check-adr-index.mjs
 
 [group('checks')]
-[doc('Every tracked document is claimed by a row in the documentation index or an excluded silo, every row links a tracked file, and no cell is empty')]
+[doc('Every tracked document outside a top-level dot-directory is claimed by a row in the documentation index, every row links a tracked file, and no cell is empty')]
 check-docs-index:
     node scripts/check-docs-index.mjs
 

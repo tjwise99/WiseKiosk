@@ -145,6 +145,7 @@ from under it.
 | Must fail | a row whose rendered path names no tracked document (`GHOST.md`) |
 | Must fail | a subtree row over a directory holding no tracked document (`ghost/`) |
 | Must fail | a row indexing a dot-directory, which holds machinery rather than documents |
+| Must fail | a dot-prefixed file at the repository root (`.HIDDEN.md`) — a dot-*file* is not a dot-*directory* |
 | Must pass | a new ADR under `docs/decisions/`, claimed by the `decisions/` subtree row without a row of its own |
 | Must pass | a second tracked `.md` added under `docs/architecture/` |
 | Must pass | an `.md` nested two levels under a subtree row (`docs/decisions/sub/X.md`) |
@@ -182,8 +183,10 @@ whose text is a backticked path — the prose is looser than the code.
 **A new top-level dot-directory is excluded the moment it exists**, with no edit anywhere: adding
 `.notes/NOTES.md` alone gives exit 0. This is the accepted trade recorded in ADR 0014 — it is what
 buys the absence of an exclusions list, since anything that is *not* a dot-directory cannot be
-excluded without changing this check. An earlier revision of this PR carried such a list, and every
-one-line edit to it turned out to be a way to hide a document.
+excluded without changing this check. The check names the machinery directories it skipped on every
+run, so a new one is on screen rather than inferred from a count. An earlier revision of this PR
+carried an exclusions list instead; two one-line edits to it turned out to hide a document, one of
+them needing no other change at all.
 
 The population comes from `git ls-files`, so a document that exists but has not been staged is
 invisible. CI checks out committed state and is unaffected; a local run before `git add` is not. This

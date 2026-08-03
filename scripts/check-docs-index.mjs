@@ -63,7 +63,7 @@ for (const line of readFileSync(resolve(repoRoot, INDEX), "utf8").split("\n")) {
   }
   claimed.add(claim);
 
-  if (claim.startsWith(".")) {
+  if (claim.startsWith(".") && claim.includes("/")) {
     problems.push(`${INDEX}: row '${rendered}' indexes a dot-directory, which is machinery`);
   }
 
@@ -83,11 +83,11 @@ for (const line of readFileSync(resolve(repoRoot, INDEX), "utf8").split("\n")) {
 if (!rows) problems.push(`${INDEX}: no index row parsed — the table's shape has moved`);
 if (!tracked.size) problems.push("git ls-files reported no tracked Markdown file");
 
-let machinery = 0;
+const machinery = new Set();
 for (const path of [...tracked].sort()) {
   if (path === INDEX) continue; // The index does not index itself.
-  if (path.startsWith(".")) {
-    machinery += 1; // A top-level dot-directory holds machinery, not documents. ADR 0014.
+  if (path.startsWith(".") && path.includes("/")) {
+    machinery.add(path.slice(0, path.indexOf("/") + 1)); // A top-level dot-directory holds machinery. ADR 0014.
     continue;
   }
   if (fileClaims.has(path)) continue;
@@ -100,6 +100,9 @@ if (problems.length) {
   for (const problem of problems) console.error("  " + problem);
   process.exit(1);
 }
+// Naming them is what makes ADR 0014's accepted trade reviewable: a directory appearing
+// here without an index row is the whole of what the rule lets through unremarked.
 console.log(
-  `every tracked document is claimed: ${rows} index row(s), ${tracked.size} document(s), ${machinery} under machinery directories.`,
+  `every tracked document is claimed: ${rows} index row(s), ${tracked.size} document(s).\n` +
+    `machinery, claimed by nothing: ${[...machinery].sort().join(" ") || "none"}`,
 );

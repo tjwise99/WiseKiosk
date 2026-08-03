@@ -72,12 +72,12 @@ described a check nobody ran.
 **A committed exclusions list** naming the silos nothing indexes, one `entry — what it serves` per
 line in the [`../../scripts/upstream-hosts.txt`](../../scripts/upstream-hosts.txt) form. This was
 built and carried through review before being removed, so the reasons are measured rather than
-predicted. Two entries — `.claude/` and `.github/` — were ever needed, and every one-line edit to
-that file was a way to hide a document: appending a silo over a directory whose row had just gone
-passed; appending one over a directory nobody had indexed yet passed with no row touched at all.
-Rules were added against each and the next spelling walked round them. The derived rule refuses all
-of it and deletes four rules and a file, and the list's supposed advantage — adding a silo without
-touching code — is precisely the property that made it an opt-out.
+predicted. Two entries — `.claude/` and `.github/` — were ever needed. Two one-line edits to that
+file hid a document: appending a silo over a directory whose row had just gone, and appending one
+over a directory nobody had indexed yet, which needed no row touched at all. Rules were added against
+the first; the second was found, documented, and closed only by deleting the mechanism. The derived
+rule refuses both and takes four rules and a file with it, and the list's supposed advantage — adding
+a silo without touching code — is precisely the property that made it an opt-out.
 
 **Excluding `architecture/` as a tooling silo**, on the index's own argument that a document
 explaining how code works belongs beside that code. Rejected: the LikeC4 model is the source the
@@ -92,10 +92,14 @@ the obligation the index has always stated and never enforced.
 The soft spot moves rather than vanishing, and it is narrower and differently shaped. **A new
 top-level dot-directory is excluded the moment it exists, with no edit anywhere** — measured:
 `.notes/NOTES.md` alone gives exit 0. The list would have demanded a visible line for that, so this
-is the one respect in which the derived rule is weaker, and it is accepted: creating a dot-directory
-at the repository root is a conspicuous structural change, where appending to a list was not. Closing
-it would mean asserting which dot-directories may exist, which is the inventory this decision exists
-to avoid.
+is the one respect in which the derived rule is weaker. Closing it would mean asserting which
+dot-directories may exist, which is the inventory this decision exists to avoid.
+
+What makes it reviewable is not the directory being noticeable — a dot-directory is by definition
+hidden from `ls` and from most file browsers, so it is conspicuous in the pull request that adds it
+and nowhere afterwards. It is that the check **names** the machinery directories it skipped on every
+run. A directory appearing in that line without a row in the index is the whole of what this rule
+lets through unremarked, and it is on screen every time the gate passes.
 
 The cost of having no list is that a silo which is *not* a dot-directory — vendored documentation, a
 `third_party/` tree — cannot be excluded without changing the check and superseding this ADR. That is
