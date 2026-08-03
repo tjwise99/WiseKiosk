@@ -36,8 +36,7 @@ grep — no toolchain needed): an advisory
 `just --list` is the gate roster: every check, with what it asserts beside the recipe that runs it.
 What each gate is allowed to let through, and why, is [`docs/CI.md`](docs/CI.md); the review
 fingerprint `check-reqs` can stamp is
-[`docs/requirements/README.md`](docs/requirements/README.md); filing a conforming ticket is
-[`file-ticket`](.claude/skills/file-ticket/SKILL.md).
+[`docs/requirements/README.md`](docs/requirements/README.md).
 
 ## Tickets, branches, and titles
 

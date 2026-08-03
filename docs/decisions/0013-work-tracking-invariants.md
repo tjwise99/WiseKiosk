@@ -102,9 +102,9 @@ unrelated one, and it refuses a merge rather than annotating an issue.
 - **The label set is load-bearing.** `module` was created and stock `enhancement` deleted. A new
   branch type requires a label of that name to exist before its template can apply it, or the picker
   silently drops it and the safe path produces an unbranchable ticket again.
-- **The write-time half is advisory by construction.** A `/file-ticket` skill carries the checklist
-  and the conforming `gh issue create` invocation, but an agent that does not invoke it is not
-  stopped by it. That is why the merge gate is the half with teeth, and the pairing is ADR 0006's own
+- **The write-time half is advisory by construction.** Filing tooling carries the checklist and the
+  conforming `gh issue create` invocation, but an author who does not reach for it is not stopped by
+  it. That is why the merge gate is the half with teeth, and the pairing is ADR 0006's own
   — an advisory `commit-msg` hook beside a required title check.
 - **Judgment stays judgment.** Whether a ticket should be rescoped or closed, which close-reason
   applies, whether a scope is correct, and whether a body's acceptance condition is any good are not
