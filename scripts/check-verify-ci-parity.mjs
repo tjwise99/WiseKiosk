@@ -19,10 +19,8 @@ const fail = (msg) => {
   process.exit(1);
 };
 
-// Each `just verify` check → every token proving the same work runs in CI, one per command the
-// recipe runs (docs/CI.md § Gate wiring). A token carries the command whole: a prefix leaves the
-// arguments it omits free to differ in CI, so the staleness path a command guards could narrow with
-// parity still green.
+// Each `just verify` check → one token per command its recipe runs, each carrying that command
+// whole. See docs/CI.md § Gate wiring.
 const CHECK_TOKENS = {
   "check-links": ["node scripts/check-links.mjs"],
   "check-eol": ["sh scripts/check-eol.sh"],
@@ -141,15 +139,17 @@ for (const [check, tokens] of Object.entries(CHECK_TOKENS)) {
   // agree that a recipe this could not read is correctly mapped.
   if (commands.length === 0) fail(`'${check}' has an empty recipe body, or this could not read it`);
 
+  // Whole-string against the recipe in both directions; a substring against the workflow above,
+  // where CI spells a command with arguments the recipe does not.
   for (const token of tokens) {
-    if (!commands.some((command) => command.includes(token))) {
-      fail(`'${check}' (token '${token}') names no command its recipe runs — the recipe changed, or the token is stale`);
+    if (!commands.includes(token)) {
+      fail(`'${check}' (token '${token}') is no command its recipe runs — the recipe changed, or the token is stale`);
     }
   }
 
   for (const command of commands) {
-    if (!tokens.some((token) => command.includes(token))) {
-      fail(`'${check}' runs '${command}' but no CHECK_TOKENS entry covers it — add one`);
+    if (!tokens.includes(command)) {
+      fail(`'${check}' runs '${command}' but no CHECK_TOKENS entry is that command — add one`);
     }
   }
 }

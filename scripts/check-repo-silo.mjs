@@ -114,9 +114,7 @@ if (entries.length && !actions) {
   problems.push(".github/dependabot.yml declares no 'github-actions' entry, so action pins go stale");
 }
 
-// A recipe is a list of commands; shell control flow is a script, and a script is siloed under
-// scripts/ like every other kind of tooling. Read from just's own dump so the shape is whatever just
-// resolves it to. See docs/CI.md § Repository shape.
+// No recipe carries a shebang, read from just's own dump. See docs/CI.md § Repository shape.
 const justDump = JSON.parse(
   execSync("just --dump --dump-format json", { cwd: repoRoot, encoding: "utf8" }),
 );

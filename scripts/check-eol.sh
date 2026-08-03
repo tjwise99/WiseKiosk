@@ -4,6 +4,13 @@
 # The three are distinguished: a failed search has judged nothing, and must not read as a clean tree.
 set -eu
 
+# `git grep` answers 1 both for "searched, found nothing" and for "there was nothing to search", so
+# the population is established first: over no tracked file, a clean result asserts nothing.
+if [ -z "$(git ls-files -- . | head -n 1)" ]; then
+    echo "no tracked file to search; nothing here is asserted." >&2
+    exit 1
+fi
+
 matches=$(git grep -lIP '\r$' -- .) && status=0 || status=$?
 
 case "$status" in

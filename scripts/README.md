@@ -453,13 +453,18 @@ is a sample, not a reference, and allowlisting a host to satisfy a code sample w
 register on the strength of an example. **The file list comes from `git ls-files`**, so a document that
 exists but has not been staged is invisible locally; CI checks out committed state and is unaffected.
 
-## `check-eol`
+## `check-eol.sh`
 
-`git grep -lIP '\r$' -- .`, inverted: the check fails if that finds anything.
+`git grep -lIP '\r$' -- .`, inverted: the check fails if that finds anything. `git grep` answers 1
+both for *searched, found nothing* and for *there was nothing to search*, and anything else when the
+search itself failed — so the three are separated, and the population is established before a clean
+result means anything.
 
 | Direction | Input |
 |---|---|
 | Must fail | a tracked file containing CRLF, in `.txt` and in `.md` |
+| Must fail | the search failing rather than finding nothing — run outside a repository, where git exits 128 |
+| Must fail | a repository with no tracked file, where git exits 1 over an empty pathspec |
 | Must pass | an all-LF tree |
 | Must pass | a binary file containing CR — excluded by `-I` |
 | Must pass | a genuinely untracked CRLF file |

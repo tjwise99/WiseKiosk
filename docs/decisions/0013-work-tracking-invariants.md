@@ -3,6 +3,13 @@
 **Status:** accepted
 **Decided:** 2026-08-02 (work-tracking invariants discussion, ticket #64 work-tracking invariants)
 
+> **Grounds restated, 2026-08-03 (#95 final documentation sweep).** The advisory half was argued from
+> a filing helper that carried the checklist and could go uninvoked. The documentation set names no
+> such tool, so that ground is not available to a reader of this repository. The consequence is
+> unchanged and rests on what holds for any filer: nothing at filing time can refuse a malformed
+> ticket, because GitHub cannot decline to create one and CI does not write. The decision, and the
+> merge-time gate it pairs with, stand as taken.
+
 ## Context
 
 [ADR 0006](0006-process-gates.md) specifies exactly one property of a ticket — that it is open and
