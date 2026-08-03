@@ -9,6 +9,12 @@ and decisions with a rejected alternative in [`docs/decisions/`](docs/decisions/
 at [`docs/README.md`](docs/README.md) is authoritative on which holds what. This file holds only the
 rules layered on top.
 
+**Read [`CONTRIBUTING.md`](CONTRIBUTING.md) at the start of any session that touches this repository.**
+It is not loaded into an agent's context automatically, and this file is; its review checklist carries
+obligations no gate decides, several of which describe defects introduced while authoring and invisible
+in a green run. Reading it only when a workflow happens to prompt for it means meeting the rule after
+the change it governs.
+
 **Not every obligation is a requirement.** A requirement obliges WiseKiosk itself. A convention a
 machine decides about the repository, and material CI produces, belong to
 [`docs/CI.md`](docs/CI.md); what a program an operator runs must do belongs to
@@ -32,13 +38,6 @@ mistake [ADR 0011](docs/decisions/0011-requirement-or-convention.md) exists to p
   function where deployed.
 - **Keep the docs standalone.** No reference points outside this repository. Every relative Markdown
   link resolves inside the repo (`just check-links`).
-
-## Before you add or change a check
-
-Walk the **Code** questions in [`CONTRIBUTING.md`](CONTRIBUTING.md)'s review checklist first, not at
-review time. Two of them describe defects introduced while authoring and invisible in a green run —
-a check that skips input outside the set it recognises, and a guard narrowed to stop rejecting legal
-input that the defect then walks through. Both have shipped here.
 
 ## Review independence
 
