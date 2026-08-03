@@ -162,10 +162,11 @@ a posture resting on this section. Until #77 fences this document, read it as in
   are bound to the commit rather than merely present: `.revision` is the commit the job published,
   decided here against the registry; and `.created` is that commit's timestamp, decided in the build
   job, which is the only place holding the artifact and the repository at once. A missing key, an
-  empty value, or either binding failing exits non-zero;
-  presence alone passes on a stale hardcoded value. A surface the check cannot read fails rather than
-  being skipped, and so does resolving fewer than the two surfaces there are: a run that inspected
-  nothing reports the same success as one with nothing to report. **What no check here decides:** `.description` and `.licenses` resolve from
+  empty value, or either binding failing exits non-zero; presence alone passes on a stale hardcoded
+  value. A surface the check cannot read fails rather than being skipped, and so does a surface the
+  publish workflow declares but the check never inspected — the set is read from that declaration
+  rather than restated here, so adding an annotation level extends the gate instead of escaping it.
+  **What no check here decides:** `.description` and `.licenses` resolve from
   repository metadata rather than from the commit, so either can change with no commit and nothing
   reports it. The emission is #54's.
 - **Base images are pinned** to a `@sha256:` digest rather than a floating tag, for every base and

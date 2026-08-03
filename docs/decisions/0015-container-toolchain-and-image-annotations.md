@@ -1,4 +1,4 @@
-# 0015 — Build with Docker Buildx, and publish an image carrying nine OCI metadata keys as config labels and manifest annotations
+# 0015 — Build with Docker Buildx; carry nine OCI keys as config labels and manifest annotations
 
 **Status:** accepted
 **Decided:** 2026-08-02 (#61 OCI image annotations)
@@ -60,7 +60,7 @@ claims only a matching package set, which a timestamp does not disturb. The reas
 is that the default decides otherwise, silently: a wall-clock stamp makes two builds of one commit
 differ, and forecloses a rebuild comparison before anyone has asked for one.
 
-**The annotations are checked, on both surfaces.** Labels land in the image config and annotations on
+**The nine keys are checked, on both surfaces.** Labels land in the image config and annotations on
 the manifest; these are different surfaces with different readers, the manifest being what signature
 and attestation consumers already read. A check reading one of them passes vacuously the day the build
 stops populating the other. Beyond presence and non-emptiness, two values are bound: `.revision`
