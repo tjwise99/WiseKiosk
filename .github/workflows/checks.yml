@@ -156,7 +156,7 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
-      - name: Branch named type_number-snake_name and linked to an open, type-labeled issue
+      - name: Branch named type_number-snake_name, its issue open, type-labeled, milestoned and parented to match the PR base
         env:
           HEAD_REF: ${{ github.head_ref }}
           PR_NUMBER: ${{ github.event.pull_request.number }}

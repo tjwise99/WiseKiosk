@@ -219,8 +219,8 @@ The trailing-comment rows are the ones that matter, and they need their control 
 step deleted outright **is** caught, which is what made the comment cases holes rather than a
 misreading of the design.
 
-Three cuts were needed and the first two each shipped a hole a row did not describe. Skipping any line
-that contained a quote closed the quote-free spelling and left `key: "value" # token` open. Tracking
+Two simpler spellings each leave a hole no row describes. Skipping any line
+that contains a quote closes the quote-free spelling and leaves `key: "value" # token` open. Tracking
 quote state closed that and left an *unbalanced* quote — an apostrophe in `it's` — opening a phantom
 scalar that swallowed the rest of the line, while newly rejecting a legal workflow whose escaped quote
 closed the tracker early. Both were found by review, neither by the seeding that prompted the fix.
@@ -422,10 +422,9 @@ it, because that ticket is closed.
 
 The symlink pair is the one that matters. `resolve()` and `existsSync()` both follow a symlink without
 reporting that they did, so a path whose *text* stays inside the repository said nothing about where it
-landed — the check's own invariant, defeated with no signal in either direction. It was found by a
-second pass in a fresh context, not by the first. The three-syntax rows are the same lesson from the
-other side: matching only Markdown's inline form left two other ways of writing a relative path
-entirely unread.
+landed — the check's own invariant, defeated with no signal in either direction. The three-syntax rows
+are the same lesson from the other side: matching only Markdown's inline form leaves two other ways of
+writing a relative path entirely unread.
 
 ### Known rejections
 

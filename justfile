@@ -5,7 +5,7 @@ default:
     @just --list
 
 [group('checks')]
-[doc('Every relative Markdown link resolves inside the repo')]
+[doc('Every relative Markdown link resolves inside the repo, every absolute URL names an allowlisted host, and every allowlist entry says what it serves')]
 check-links:
     node scripts/check-links.mjs
 
@@ -25,7 +25,7 @@ install-hooks:
     git config core.hooksPath .githooks
 
 [group('checks')]
-[doc('Requirements tree validates: refs resolve, no suspect/unreviewed/orphan items, methods consistent, no identifier cited in an item statement')]
+[doc('Requirements tree validates: refs resolve, no suspect/unreviewed/orphan items, methods consistent, headers non-empty and prefix-free, no identifier cited in an item statement')]
 check-reqs:
     docs/requirements/.venv/bin/python scripts/check-unreviewed.py
     docs/requirements/.venv/bin/python scripts/check-suspect-links.py
@@ -35,7 +35,7 @@ check-reqs:
     docs/requirements/.venv/bin/python scripts/check-headers.py
 
 [group('checks')]
-[doc('Every requirement identifier and ADR number cited in documentation or item prose resolves, and every requirement citation carries its item header')]
+[doc('Every requirement identifier and ADR number cited outside .claude/ resolves, and every requirement citation carries its item header')]
 check-citations:
     docs/requirements/.venv/bin/python scripts/check-citations.py
 
@@ -50,7 +50,7 @@ check-docs-index:
     node scripts/check-docs-index.mjs
 
 [group('checks')]
-[doc('No manifest at the repository root, no recipe is a shell script, github-actions is covered, and every other Dependabot entry resolves to a non-root directory holding its manifest')]
+[doc('No manifest or .venv/ at the repository root, no recipe is a shell script, github-actions is covered, and every other Dependabot entry resolves to a non-root directory holding its manifest')]
 check-repo-silo:
     node scripts/check-repo-silo.mjs
 
@@ -107,5 +107,5 @@ arch-dev:
     docs/architecture/node_modules/.bin/likec4 start docs/architecture/model
 
 [group('checks')]
-[doc('Run every check the PR gate runs')]
+[doc('Run every check the PR gate runs that has a local form; secret scanning and the PR-title check are CI-only')]
 verify: check-links check-eol check-branch check-reqs check-citations check-arch check-site check-adr-index check-docs-index check-repo-silo check-workflow-hardening check-verify-ci-parity

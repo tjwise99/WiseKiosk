@@ -47,6 +47,8 @@ writes.
 
 This mechanises the security review a solo project has no second reader to perform.
 
+Unbuilt; owned by #67 security and supply-chain CI gates.
+
 ## Lint and type checks
 
 Every source package's linters run as blocking checks. **No linter is advisory-only** — a lint gate
@@ -54,6 +56,8 @@ that reports without failing degrades to noise within a release.
 
 - Go: a seeded `golangci-lint` violation, the production invocation, non-zero exit asserted.
 - Frontend: a seeded `eslint` or `svelte-check` violation, non-zero exit asserted from each.
+
+Unbuilt; owned by #67 security and supply-chain CI gates.
 
 ## In-code prose
 
@@ -77,6 +81,8 @@ home and cited from the comment.
 the code is read through a narrator. A bound on added volume is the only form of that which a machine
 can decide; whether a specific comment earns its place is a review question, below.
 
+Unbuilt; owned by #59 comment-discipline gate.
+
 ## Dependency vulnerabilities
 
 Any resolved Go-module or npm dependency with a known vulnerability fails the pull request, **at any
@@ -92,6 +98,8 @@ present but never called need not fail. Without it the gate produces findings no
 a gate people learn to ignore is worse than none. The fixture calls the vulnerable symbol precisely
 because the gate is reachability-aware.
 
+Unbuilt; owned by #67 security and supply-chain CI gates.
+
 ## Image vulnerabilities
 
 The built container image is scanned, failing the build on any finding at any severity unless the
@@ -102,6 +110,8 @@ finding has a current register entry.
 
 This is what covers operating-system and base-layer packages. The source-level dependency gate never
 inspects them.
+
+Unbuilt; owned by #67 security and supply-chain CI gates.
 
 ## Secret scanning
 
@@ -199,6 +209,8 @@ past its review date fails, which puts every live exception in front of a person
 The gate asserts: every entry is complete and current; every finding suppressed in scan output has a
 matching entry; no entry matches a first-party finding; and no entry exists for an advisory no scan
 reports — so the register cannot accumulate rows for problems that no longer exist.
+
+Unbuilt; owned by #67 security and supply-chain CI gates.
 
 ## Documentation integrity
 
@@ -406,6 +418,8 @@ what runs where, and what each is allowed to let through, is here.
 from holding an upstream credential. It banned a normal practice, and forced the tier into a nested
 module that [ADR 0010](decisions/0010-runtime-materialised-gate-fixtures.md) independently found
 leaky. Holding it in a scheduled job, off the merge path, is the narrower answer.
+
+Unbuilt; owned by #99 upstream contract checks.
 
 ## Gate wiring
 
