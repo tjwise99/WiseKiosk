@@ -69,9 +69,15 @@ for (const check of Object.keys(CHECK_TOKENS)) {
 // Searched instead of the whole file: a token in a comment names no step that runs, and a token in
 // a step's `name:` describes one rather than invoking it. Either would satisfy a plain text search
 // while the step it stands for was deleted.
+// YAML ends a line at an unquoted ` #`, so a token can outlive the step it names in a trailing
+// comment. Only lines carrying no quote are stripped: a quoted '#' is content, and reading one as a
+// comment would reject a legal workflow.
+const stripTrailingComment = (line) => (/["']/.test(line) ? line : line.replace(/\s+#.*$/, ""));
+
 const runningText = workflowText
   .split("\n")
   .filter((line) => !/^\s*#/.test(line) && !/^\s*- name:/.test(line))
+  .map(stripTrailingComment)
   .join("\n");
 
 for (const [check, tokens] of Object.entries(CHECK_TOKENS)) {
