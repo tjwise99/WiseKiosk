@@ -192,6 +192,7 @@ fires rather than joining the silence.
 | A dump with no `modules` map | `just` stubbed to drop the key, where its absence would otherwise read as "no module declared" |
 | A dump with no `shebang` field | the same stub dropping it per recipe, where its absence would otherwise read as "not a script" |
 | Recipe widened past its token | `git diff --exit-code docs/architecture/ docs/ARCHITECTURE.md docs/CI.md` in the recipe, the workflow unchanged |
+| Recipe line prefixed `-` | `-node scripts/check-links.mjs`, which discards the command's failing status so the recipe passes where CI's identical command fails; `@-` and `-@` likewise |
 | A continuation with no line after it | a recipe body ending on a trailing `\` |
 | Recipe with no `CHECK_TOKENS` entry | a new name added to the `verify` recipe |
 | Stale `CHECK_TOKENS` entry | a mapped check removed from the `verify` recipe |
@@ -211,7 +212,8 @@ fires rather than joining the silence.
 | Commands reordered within a recipe | `check-reqs`'s first two commands swapped |
 | A command split across a `\` continuation | `check-links` written as `node \` then `scripts/check-links.mjs` |
 | A comment line inside a recipe body | `check-links` with a `#` line above its command |
-| A recipe line prefixed `@` or `-` | `@node scripts/check-links.mjs`, where the prefix suppresses the echo rather than naming a different command |
+| A recipe line prefixed `@` | `@node scripts/check-links.mjs`, where the prefix suppresses the echo rather than naming a different command |
+| `#!` below the first body line | a shell comment, which `just` runs rather than treating as a script body — only the first line opens one |
 | A recipe reached through `just <recipe>` | `check-arch`, whose commands come from `arch-export` |
 | CI spelling a command with an extra argument | `sh scripts/check-branch.sh "$HEAD_REF"`, where the recipe passes none |
 | A toolchain step | a step named `Install …`, which prepares a check rather than being one |

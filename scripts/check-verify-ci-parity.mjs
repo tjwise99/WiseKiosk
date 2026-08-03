@@ -102,19 +102,24 @@ const renderLine = (fragments, recipe) => {
 const bodyCommands = (recipe, name) => {
   const commands = [];
   let pending = "";
-  for (const fragments of recipe.body) {
+  for (const [index, fragments] of recipe.body.entries()) {
     const line = renderLine(fragments, name);
-    // `#!` opens a script body, which the shebang assertion owns; only a plain `#` is a comment.
-    if (!pending && line.startsWith("#") && !line.startsWith("#!")) continue;
+    // `#!` opens a script body, and only on the first line; anywhere else it is a shell comment.
+    if (!pending && line.startsWith("#") && !(index === 0 && line.startsWith("#!"))) continue;
     const joined = pending + line;
     if (joined.endsWith("\\")) {
       pending = `${joined.slice(0, -1).trimEnd()} `;
       continue;
     }
     pending = "";
-    // `@` and `-` prefix the recipe line, not the command: they suppress the echo and ignore a
-    // failing status. Stripped so a command's spelling is what CI has to run.
-    if (joined !== "") commands.push(joined.replace(/^[@-]+/, ""));
+    if (joined === "") continue;
+    // `@` suppresses the echo and is stripped; `-` discards the command's failing status, so the
+    // recipe passes where CI's identical command fails. Failing beats normalising it away.
+    const prefix = joined.match(/^[@-]+/)?.[0] ?? "";
+    if (prefix.includes("-")) {
+      fail(`'${name}' prefixes '${joined}' with '-', which ignores its failing status — the recipe would pass a check CI fails`);
+    }
+    commands.push(joined.replace(/^@+/, ""));
   }
   if (pending) fail(`'${name}' ends on a line continuation with no line after it`);
   return commands;
