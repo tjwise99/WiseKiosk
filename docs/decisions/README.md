@@ -13,6 +13,11 @@ Immutability protects the argument, not the pointers. Where a cited document is 
 content moves, an ADR's citations may be retargeted to wherever the claim now lives; its reasoning,
 decision, and rejected alternatives stay as written.
 
+A decision that widens or re-grounds without reversing carries a dated amendment block at its head,
+naming what changed and when, with the original argument left standing below it —
+[0009](0009-verification-justification-attribute.md) is the worked form. A decision reversed is
+superseded, never amended.
+
 | # | Decided | Decision |
 |---|---|---|
 | [0001](0001-backend-language-go.md) | 2026-07-21 | Backend in Go; the frontend/backend boundary contract is generated from one schema |
