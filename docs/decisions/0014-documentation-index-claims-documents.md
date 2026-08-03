@@ -43,8 +43,16 @@ and one rendering with a trailing slash (`decisions/`) claims every tracked Mark
 *"How a particular piece of code works is a fact about that code, not about the product."*
 
 **Exclusions are a committed list** in the form [`../../scripts/upstream-hosts.txt`](../../scripts/upstream-hosts.txt)
-already establishes: one `entry — what it serves` per line. It names silos, not documents, so it
-cannot become a per-document opt-out.
+already establishes: one `entry — what it serves` per line, naming directories rather than documents.
+An entry covering a path the index claims is refused, and so is one that excludes no tracked document,
+so the list cannot shadow an indexed document nor accumulate entries that have stopped meaning
+anything. It is not thereby tamper-proof: deleting a row and excluding its directory in the same
+change still hides a document, because no rule can tell that edit from a legitimate exclusion. What
+the check buys is that hiding a document takes two visible edits rather than one.
+
+**The index's rows are unique and real.** One rendered path carries one row — two rows for a document
+is two canonical homes, which is the property the index exists to state — and a row names a tracked
+document, or a directory holding one.
 
 The check also asserts that it parsed the table at all. A regex that silently stops matching would
 otherwise leave every document unclaimed, and a later refactor could collapse both sides together; the
@@ -70,10 +78,12 @@ silo exclusion would hide it. It gets a row.
 Adding a document to `docs/` fails until it is indexed; retiring one fails until its row goes. That is
 the obligation the index has always stated and never enforced.
 
-The exclusions list is the soft spot. A silo added to it is a document set nothing indexes, and only
-review sees it. That is accepted rather than solved — the alternative is a per-document exemption,
-which is the declaration shape rejected above. Holding it to silos, and requiring each entry to say
-what it serves, is what keeps it reviewable.
+The exclusions list remains the soft spot, narrowed rather than closed. A silo added to it is a
+document set nothing indexes; the check refuses the one-edit forms of that, and the two-edit form —
+row deleted, directory excluded — is left to review. That is accepted rather than solved: the
+alternative is a rule that decides which directories *ought* to be indexed, which is the judgement the
+list exists to record. Requiring each entry to say what it serves, and failing an entry that excludes
+nothing, is what keeps the list short enough to read.
 
 The check reads rendered table structure, so reformatting the index — changing its columns, or
 moving it off a Markdown table — breaks it. `check-adr-index.mjs` has carried the same exposure since

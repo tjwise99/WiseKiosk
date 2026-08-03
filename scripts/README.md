@@ -143,6 +143,12 @@ premise and the tree cannot drift out from under it.
 | Must fail | an exclusions entry naming no reason (`docs/scratch/`) |
 | Must fail | an exclusions entry naming a file rather than a silo (`docs/NOTES.md — …`) |
 | Must fail | the index reshaped so its rows are list items rather than table rows |
+| Must fail | an exclusion covering a directory the index claims (`docs/architecture/`) |
+| Must fail | an exclusion covering the whole documentation set (`docs/`) while its rows stand |
+| Must fail | an exclusion covering no tracked document (`docs/ghost/`) |
+| Must fail | two rows for one rendered path |
+| Must fail | a row whose rendered path names no tracked document (`GHOST.md`) |
+| Must fail | a subtree row over a directory holding no tracked document (`ghost/`) |
 | Must pass | a new ADR under `docs/decisions/`, claimed by the `decisions/` subtree row without a row of its own |
 | Must pass | a second tracked `.md` added under `docs/architecture/` |
 | Must pass | an `.md` nested two levels under a subtree row (`docs/decisions/sub/X.md`) |
@@ -174,9 +180,17 @@ row, so the file may hold exactly one table and no fenced example containing one
 ADR 0014 both say a *Document* cell *renders* as a path, where the check requires a Markdown link
 whose text is a backticked path — the prose is looser than the code.
 
-**What it does not catch.** The population comes from `git ls-files`, so a document that exists but
-has not been staged is invisible to it. CI checks out committed state and is unaffected; a local run
-before `git add` is not. This matches `check-links.mjs`, which draws its file list the same way.
+**What it does not catch.** Two things, both run and observed rather than reasoned about.
+
+Deleting a document's row **and** excluding its directory in the same change passes: with the row
+gone there is nothing left for the exclusion to shadow. Verified against a frozen extraction —
+appending `tools/ — x` alone gives exit 1, and appending it while deleting the `../tools/README.md`
+row gives exit 0. No rule can separate that edit from a legitimate exclusion, so it is review's, and
+it is why the exclusions list is kept short and each entry made to say what it serves.
+
+The population comes from `git ls-files`, so a document that exists but has not been staged is
+invisible. CI checks out committed state and is unaffected; a local run before `git add` is not. This
+matches `check-links.mjs`, which draws its file list the same way.
 
 ## `check-branch.sh`
 

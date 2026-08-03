@@ -43,6 +43,7 @@ for (const line of readFileSync(resolve(repoRoot, EXCLUSIONS), "utf8").split("\n
 
 const fileClaims = new Set();
 const subtreeClaims = [];
+const claimed = new Set();
 let rows = 0;
 
 for (const line of readFileSync(resolve(repoRoot, INDEX), "utf8").split("\n")) {
@@ -71,8 +72,32 @@ for (const line of readFileSync(resolve(repoRoot, INDEX), "utf8").split("\n")) {
     problems.push(`${INDEX}: row '${rendered}' links '${target}', which is not a tracked file`);
   }
 
-  if (rendered.endsWith("/")) subtreeClaims.push(fromDocs(rendered));
-  else fileClaims.add(fromDocs(rendered));
+  const claim = fromDocs(rendered);
+  if (claimed.has(claim)) {
+    problems.push(`${INDEX}: '${rendered}' has two rows — one fact, one canonical home`);
+  }
+  claimed.add(claim);
+
+  if (rendered.endsWith("/")) {
+    subtreeClaims.push(claim);
+    if (![...tracked].some((path) => path.startsWith(claim))) {
+      problems.push(`${INDEX}: row '${rendered}' claims a directory holding no tracked document`);
+    }
+  } else {
+    fileClaims.add(claim);
+    if (!tracked.has(claim)) problems.push(`${INDEX}: row '${rendered}' names no tracked document`);
+  }
+}
+
+// An exclusion the index reaches into is a per-document opt-out wearing a silo's name.
+for (const silo of silos) {
+  const shadowed = [...claimed].filter((claim) => claim.startsWith(silo));
+  if (shadowed.length) {
+    problems.push(`${EXCLUSIONS}: '${silo}' covers ${shadowed.join(", ")}, which ${INDEX} claims`);
+  }
+  if (![...tracked].some((path) => path.startsWith(silo))) {
+    problems.push(`${EXCLUSIONS}: '${silo}' excludes no tracked document`);
+  }
 }
 
 // Independently sourced — the git index against the index file — so a parse that stops

@@ -223,9 +223,12 @@ resolve, a citation to something that does not exist, an index that has drifted 
   ([ADR 0014](decisions/0014-documentation-index-claims-documents.md)). A row whose *Document* cell
   renders with a trailing slash claims the subtree beneath it, which is how `decisions/`,
   `requirements/`, `contracts/`, `architecture/` and `site/` are covered by one row each. Every row's
-  link resolves to a tracked file, and no *Guarantees* or *Excludes* cell is empty. The index does not
-  index itself. Scope is Markdown: the tree's items are claimed by the tree and gated by `check-reqs`,
-  and code is claimed by nothing here.
+  link resolves to a tracked file, one rendered path carries one row, a row names a tracked document
+  or a directory holding one, and no *Guarantees* or *Excludes* cell is empty. An exclusion covering a
+  path the index claims is refused, and so is one excluding no tracked document — a document can still
+  be hidden by deleting its row and excluding its directory together, which takes two visible edits
+  and is left to review. The index does not index itself. Scope is Markdown: the tree's items are
+  claimed by the tree and gated by `check-reqs`, and code is claimed by nothing here.
 - The LikeC4 architecture model validates: no undefined element, no unresolved relationship.
 - Spliced diagrams and generated architecture artifacts are byte-identical to a regeneration.
 - The documentation site builds under Sphinx with warnings-as-errors.
