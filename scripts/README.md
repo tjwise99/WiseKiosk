@@ -362,32 +362,32 @@ it, because that ticket is closed.
 
 | Case | Input |
 |---|---|
-| Link to a missing file | `[x](docs/GONE.md)` |
-| Link escaping the repository | `[x](../outside.md)` |
+| Link to a missing file | an inline link whose destination names no file |
+| Link escaping the repository | a destination climbing above the repository root with `../` |
 | Link leaving through a symlink | a tracked symlink to a file outside the repository, linked normally |
-| Host not on the allowlist | `[x](https://evil.example/a)` |
+| Host not on the allowlist | an inline link to a host absent from `upstream-hosts.txt` |
 | Bare URL, host not allowed | the same host written as running text |
 | Allowlist entry naming no service | a line in `upstream-hosts.txt` with no `—` description |
 | Unterminated code fence | a fence that never closes, which would blank the rest of the file |
-| HTML anchor to a missing file | `<a href="docs/GONE.md">` |
-| Reference definition to a missing file | `[x]: docs/GONE.md` |
+| HTML anchor to a missing file | a raw HTML anchor whose `href` names no file |
+| Reference definition to a missing file | a link-reference definition whose destination names no file |
 
 ### Must pass
 
 | Case | Input |
 |---|---|
-| Valid relative link | `[x](docs/A.md)` |
-| Link with an anchor | `[x](docs/A.md#s)` |
-| Pure in-page anchor | `[x](#s)` |
-| Another scheme | `[x](mailto:a@b.c)` |
+| Valid relative link | an inline link resolving to a tracked file |
+| Link with an anchor | the same destination carrying a heading fragment |
+| Pure in-page anchor | a destination that is a fragment and nothing else |
+| Another scheme | a `mailto:` destination |
 | Allowlisted host, as a link and as bare text | `https://github.com/o/r` both ways |
-| Image link | `![x](docs/A.md)` |
-| URL containing parentheses | `[x](https://github.com/o/r_(x))` |
-| Link title | `[x](docs/A.md "t")`, and with an anchor |
-| Angle-bracketed destination | `[x](<docs/A.md>)` |
+| Image link | the image form of a resolving destination |
+| URL containing parentheses | an allowlisted URL whose path carries a bracketed segment |
+| Link title | a resolving destination followed by a quoted title, with and without a fragment |
+| Angle-bracketed destination | the same destination wrapped in angle brackets |
 | Valid HTML anchor and reference definition | the same three syntaxes, resolving |
 | In-repo symlink | a symlink whose target is inside the repository |
-| Prose that resembles a definition | `The item [SRS001]: is discussed in docs/A.md` |
+| Prose that resembles a definition | a sentence opening with a bracketed label and a colon |
 
 The symlink pair is the one that matters. `resolve()` and `existsSync()` both follow a symlink without
 reporting that they did, so a path whose *text* stays inside the repository said nothing about where it
@@ -400,7 +400,7 @@ entirely unread.
 
 | Input | What happens |
 |---|---|
-| root-relative `[x](/docs/A.md)` | reported as escaping the repository, though the target exists |
+| a root-relative destination, leading with `/` | reported as escaping the repository, though the target exists |
 | a fence opened with a longer marker than the one that closes it | the mismatch is not tracked, so the region is misread |
 | a 4-space indented code block | not a fence, so its contents are scanned as live references |
 | an inline code span containing link syntax | the same |
@@ -409,6 +409,12 @@ entirely unread.
 The root-relative row is accepted rather than fixed: a document that must resolve standalone cannot
 use a path rooted at a server, so the rejection is right even though the message names the wrong
 reason.
+
+The inline-code-span row has a consequence for this file. **This section cannot show its own cases**:
+backticks do not exempt a link from the scan, so writing one out as an example makes it a real link
+that must resolve. The cases above are therefore described rather than quoted. The first draft quoted
+them, and `just verify` failed on this file — the same way the uppercase-identifier rule in
+[`../docs/CI.md`](../docs/CI.md) could not spell its own counter-example.
 
 ### What it does not catch
 
@@ -581,7 +587,7 @@ every placeholder edit is the most common act in a tree pass, and the CLI cannot
 
 | Direction | Input |
 |---|---|
-| Must fail | a dangling parent (`- SYS999:`) on an **active** item |
+| Must fail | a link naming a parent UID the tree does not hold, on an **active** item |
 | Must fail | a `TST` item activated — the pending-tier exception reports itself dead |
 | Must pass | the tree as it stands |
 
