@@ -226,8 +226,7 @@ resolve, a citation to something that does not exist, an index that has drifted 
   tracked Markdown file, and neither a backtick nor a table cell exempts anything: a malformed
   identifier written to illustrate the rule *is* a malformed identifier, and a broken link written to
   illustrate the link rule *is* a broken link. Describe the form that fails; never write it out. This
-  binds every document a check reads, not only this one — it failed the gate three times on one branch
-  before it was written down.
+  binds every document a check reads, not only this one.
 - **A requirement citation carries the item's header, in an HTML comment, closed up to the
   identifier.** The header is verbatim and the comment is the only form —
   `SRS015<!-- One schema, all boundary value classes -->`. The identifier's own closing backtick and

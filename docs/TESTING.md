@@ -51,11 +51,9 @@ path, which trains an author to ignore red. Only one of the three upstream sourc
 credential — OpenMeteo and themeparks.wiki are keyless, CheckWX is not, and the clock and compliments
 modules are local and fetch nothing — so this would have been a general solution to a case of one.
 
-The requirement that used to settle this is withdrawn and stays withdrawn: it forbade any CI workflow
-from holding an upstream credential, which banned a normal practice and forced the tier into a nested
-module that [ADR 0010](decisions/0010-runtime-materialised-gate-fixtures.md) independently found
-leaky — *"a nested module looked like the escape and is not one."* The scheduled run holds a
-credential, deliberately.
+The scheduled run holds a credential, deliberately. Confining it to a job off the merge path is the
+narrower answer to the nested module
+[ADR 0010](decisions/0010-runtime-materialised-gate-fixtures.md) found leaky.
 
 **Decided 2026-07-28 by the owner: no requirement.** Nothing WiseKiosk does can violate "an upstream
 still returns what we expect" — that obligation is on somebody else's API. The half that *is* ours,
