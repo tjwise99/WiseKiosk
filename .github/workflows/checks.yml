@@ -27,12 +27,7 @@ jobs:
         run: node scripts/check-links.mjs
 
       - name: No CRLF line endings in tracked text files
-        run: |
-          if git grep -lIP '\r$' -- .; then
-            echo "::error::CRLF line endings found in the files above; the repo is LF-only (.gitattributes)."
-            exit 1
-          fi
-          echo "No CRLF line endings."
+        run: sh scripts/check-eol.sh
 
       - name: The decisions directory and its index table agree
         run: node scripts/check-adr-index.mjs

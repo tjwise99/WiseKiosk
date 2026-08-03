@@ -439,7 +439,7 @@ exists but has not been staged is invisible locally; CI checks out committed sta
 
 ## `check-eol`
 
-Not a script: the recipe is `git grep -lIP '\r$' -- .`, and the recipe fails if that finds anything.
+`git grep -lIP '\r$' -- .`, inverted: the check fails if that finds anything.
 
 | Direction | Input |
 |---|---|

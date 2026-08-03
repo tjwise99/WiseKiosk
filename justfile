@@ -12,13 +12,7 @@ check-links:
 [group('checks')]
 [doc('No tracked text file has CRLF line endings')]
 check-eol:
-    #!/usr/bin/env bash
-    set -euo pipefail
-    if git grep -lIP '\r$' -- .; then
-        echo "CRLF found in the files above; the repo is LF-only." >&2
-        exit 1
-    fi
-    echo "No CRLF line endings."
+    sh scripts/check-eol.sh
 
 [group('checks')]
 [doc('Branch is named type_number-snake_name; its issue is open, type-labeled, milestoned, and parented to match the PR base; the PR records the linkage')]

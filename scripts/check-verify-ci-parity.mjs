@@ -25,7 +25,7 @@ const fail = (msg) => {
 // more than one command lists one token per command (docs/CI.md § Gate wiring).
 const CHECK_TOKENS = {
   "check-links": ["scripts/check-links.mjs"],
-  "check-eol": ["git grep -lIP '\\r$'"],
+  "check-eol": ["scripts/check-eol.sh"],
   "check-branch": ["scripts/check-branch.sh"],
   "check-reqs": [
     "scripts/check-unreviewed.py",
@@ -74,34 +74,46 @@ for (const check of Object.keys(CHECK_TOKENS)) {
   }
 }
 
-// A recipe's body, from its header line to the next unindented line. `just <recipe>` is expanded in
-// place, so a check that delegates is measured by the commands that ultimately run.
-const recipeBody = (name) => {
-  const lines = justfileText.split("\n");
-  const start = lines.findIndex((line) => line.startsWith(`${name}:`));
-  if (start === -1) fail(`no '${name}:' recipe found in justfile`);
-  const body = [];
-  for (const line of lines.slice(start + 1)) {
-    if (line.trim() === "") continue;
-    if (!/^\s/.test(line)) break;
-    body.push(line.trim());
+// Recipes are read from `just`'s own dump rather than parsed out of the justfile: dependencies,
+// bodies and line continuations are then whatever `just` says they are.
+const dump = JSON.parse(
+  execSync("just --dump --dump-format json", { cwd: repoRoot, encoding: "utf8" }),
+);
+
+const renderLine = (fragments, recipe) => {
+  if (!fragments.every((fragment) => typeof fragment === "string")) {
+    fail(`'${recipe}' interpolates a value into a command, which this cannot resolve to what runs`);
   }
-  return body;
+  return fragments.join("").trim();
 };
 
-const expand = (name, seen = new Set()) => {
-  if (seen.has(name)) fail(`recipe '${name}' delegates to itself`);
+// Dependencies and `just <recipe>` both reach another recipe's commands, so both are expanded.
+const commandsOf = (name, seen = new Set()) => {
+  if (seen.has(name)) fail(`recipe '${name}' depends on itself`);
   seen.add(name);
-  return recipeBody(name).flatMap((command) => {
-    const delegated = command.match(/^@?just (\S+)$/);
-    return delegated ? expand(delegated[1], new Set(seen)) : [command];
-  });
+  const recipe = dump.recipes[name];
+  if (!recipe) fail(`no '${name}' recipe in the justfile`);
+  // A shebang body is one shell script, whose lines are control flow rather than commands to map.
+  // Failing beats exempting: an exemption is an opt-out any recipe could take by adding a line.
+  if (recipe.shebang) fail(`'${name}' is a shell script, which this cannot map to CI commands — move it under scripts/`);
+
+  const reach = (target) => commandsOf(target, new Set(seen));
+
+  return [
+    ...recipe.dependencies.flatMap((dependency) => reach(dependency.recipe)),
+    ...recipe.body.flatMap((line) => {
+      const command = renderLine(line, name);
+      if (command === "") return [];
+      const delegated = command.match(/^@?just (\S+)$/);
+      return delegated ? reach(delegated[1]) : [command];
+    }),
+  ];
 };
 
 for (const [check, tokens] of Object.entries(CHECK_TOKENS)) {
-  const commands = expand(check);
-  // Asserted before the token loops: both of those pass vacuously over an empty parse, and would
-  // then agree that a recipe this cannot read is correctly mapped.
+  const commands = commandsOf(check);
+  // Asserted before the token loops, which both pass vacuously over an empty list and would then
+  // agree that a recipe this could not read is correctly mapped.
   if (commands.length === 0) fail(`'${check}' has an empty recipe body, or this could not read it`);
 
   for (const token of tokens) {
@@ -110,9 +122,6 @@ for (const [check, tokens] of Object.entries(CHECK_TOKENS)) {
     }
   }
 
-  // A `#!` recipe is one script rather than a list of commands: its lines are shell control flow,
-  // not work to be mapped one-for-one.
-  if (commands[0].startsWith("#!")) continue;
   for (const command of commands) {
     if (!tokens.some((token) => command.includes(token))) {
       fail(`'${check}' runs '${command}' but no CHECK_TOKENS entry covers it — add one`);
