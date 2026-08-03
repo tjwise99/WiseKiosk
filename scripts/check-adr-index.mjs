@@ -6,7 +6,7 @@
 // No dependencies: Node stdlib only, plain text scanning — matches
 // scripts/check-links.mjs's idiom.
 
-import { readFileSync, readdirSync } from "node:fs";
+import { readFileSync, readdirSync, statSync } from "node:fs";
 import { execSync } from "node:child_process";
 import { resolve } from "node:path";
 
@@ -23,6 +23,12 @@ for (const name of readdirSync(decisionsDir).sort()) {
     problems.push(`docs/decisions/${name} is not named NNNN-<slug>.md`);
     continue;
   }
+  // readdirSync reports names, not what they are: a directory or a dangling symlink named
+  // NNNN-<slug>.md otherwise counts as an ADR on the strength of its name alone.
+  if (!statSync(resolve(decisionsDir, name), { throwIfNoEntry: false })?.isFile()) {
+    problems.push(`docs/decisions/${name} is not a readable file`);
+    continue;
+  }
   if (files.has(match[1])) {
     problems.push(`number ${match[1]} is carried by two files: ${files.get(match[1])}, ${name}`);
   } else {
@@ -31,9 +37,21 @@ for (const name of readdirSync(decisionsDir).sort()) {
 }
 
 const indexText = readFileSync(resolve(decisionsDir, "README.md"), "utf8");
+
+// A destination may be angle-bracketed, carry a title, lead with ./ or end in an anchor; none of
+// that is part of the filename the row is claiming.
+const destination = (value) => {
+  let raw = value.trim();
+  const titled = raw.match(/^(\S+)\s+["'(]/);
+  if (titled) raw = titled[1];
+  if (raw.startsWith("<") && raw.endsWith(">")) raw = raw.slice(1, -1);
+  return raw.split("#")[0].replace(/^\.\//, "");
+};
+
 const rows = new Map();
 for (const match of indexText.matchAll(/^\|\s*\[(\d{4})\]\(([^)]+)\)\s*\|/gm)) {
-  const [, number, target] = match;
+  const [, number, rawTarget] = match;
+  const target = destination(rawTarget);
   if (rows.has(number)) {
     problems.push(`docs/decisions/README.md has two rows for number ${number}`);
   } else {

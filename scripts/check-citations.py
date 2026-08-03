@@ -18,6 +18,9 @@ ROOT = Path(__file__).resolve().parent.parent
 DECISIONS = ROOT / "docs" / "decisions"
 
 UID = re.compile(r"\b(?:SYS|SRS|TST)\d{3}\b")
+# Found case-insensitively so a mis-cased identifier is judged rather than skipped: matching only
+# the canonical spelling makes every other spelling invisible to the check rather than wrong.
+UID_ANY_CASE = re.compile(r"\b(?:SYS|SRS|TST)\d{3}\b", re.IGNORECASE)
 # A citation may wrap: one line break, and the blockquote marker continuing it, sit between `ADR`
 # and its number as readily as a space does.
 ADR = re.compile(r"\bADR[ -]?(?:\n[^\S\n]*>?[^\S\n]*)?(\d{4})\b")
@@ -115,9 +118,14 @@ def interrupting_comments(source, text):
 
 def check(source, text, item_headers, adrs, base=1):
     problems = []
-    for match in UID.finditer(text):
+    for match in UID_ANY_CASE.finditer(text):
         uid = match.group()
         line = base + text.count("\n", 0, match.start())
+        if uid != uid.upper():
+            problems.append(
+                f"{source}:{line}  {uid}  is not uppercase — an identifier is cited as {uid.upper()}"
+            )
+            continue
         if uid not in item_headers:
             problems.append(f"{source}:{line}  {uid}  names no item in the requirements tree")
             continue

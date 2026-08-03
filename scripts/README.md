@@ -12,6 +12,14 @@ it. That list is expensive to rebuild and worthless to guess at.
 **A check with no section here has no record.** That is a gap in this file, not a claim that the check
 is unverified — and not a claim that it is verified either.
 
+**This is a snapshot, and nothing fails when it goes stale.** Every check `just verify` runs has a
+section below. `just verify` grows — #67 adds signing, SBOM and scanning gates, #54 the container
+build, #59 the comment-discipline gate — and each new one arrives with no record and nothing to say
+so. **Nothing gates this file at all** — #77 gate CI.md against the workflow covers `CI.md`'s sections
+against the workflow's jobs, not this record against the checks, and it is itself unbuildable
+([`../docs/CI.md`](../docs/CI.md) § *What is not gated here* says why). So a complete-looking file is
+not a standing guarantee; it is a record of what somebody ran, on the day they ran it.
+
 ## Running a case
 
 Each case is a throwaway repository holding a single workflow file, so a case cannot pollute the tree it
@@ -35,6 +43,25 @@ case_run () { # $1 label   $2 expect (pass|fail)   $3 file contents
 **Confirm the seed applied before reading the result.** A seed that silently fails to land looks exactly
 like a working check. When seeding into the tree rather than a fixture, `git diff --quiet <path>` before
 running, and treat a clean diff as the case failing rather than passing.
+
+**Give the scratch repository a `git init`, and run the script from inside it.** Every `.mjs` check
+resolves its root with `git rev-parse --show-toplevel`, and `check-links.mjs`, `check-docs-index.mjs`
+and `check-workflow-hardening.mjs` build their file list with `git ls-files`. In a bare directory
+`rev-parse` climbs out to whatever repository encloses it — or fails — and `ls-files` returns nothing,
+so the check reads no files and prints success. That is the fail-open this file exists to catch,
+wearing the costume of a passing case. **Copy the script under test into the scratch tree**, not the
+other way round: the Python checks derive the tree they read from their own `__file__`.
+
+**Doorstop cases run against a copy of the tree, never the tree.** `sh scripts/validate-tree.sh` runs
+`doorstop --error-all`, which stamps a review fingerprint into any unstamped item — a mutation
+[`../CONTRIBUTING.md`](../CONTRIBUTING.md) says must never be cleared by re-running. A faithful copy is
+`git archive HEAD | tar -x -C <dir>` plus a symlink at `docs/requirements/.venv`; all seven tree checks
+pass on one unseeded, which is what makes it a fixture rather than an approximation. Afterwards,
+`git status --short docs/requirements/` on the real repository is the proof no case escaped.
+
+**Copy the script under test in fresh each time.** A fixture built from `git archive` carries the
+scripts as they were at `HEAD`, so a case run inside it exercises the *old* script and a fix appears
+to do nothing. This produced three false "unfixed" results before it was noticed.
 
 ## `check-workflow-hardening.mjs`
 
@@ -113,19 +140,78 @@ passes; only inside a flow mapping is the string read as a reference.
 
 ## `check-repo-silo.mjs`
 
-Covers only the `github-actions` entry assertion; the rest of the check predates this record.
+Covers all three assertions: the root listing, the Dependabot manifest resolution, and the
+`github-actions` entry.
 
-| Direction | Input |
+### Must fail
+
+| Case | Input |
 |---|---|
-| Must fail | the `github-actions` block deleted from `.github/dependabot.yml` |
-| Must pass | a `github-actions` entry whose `patterns:` is a block list rather than inline |
+| Manifest at the root | `package.json`, `go.mod`, `pyproject.toml` and `requirements.txt`, each at the repository root |
+| Environment directory at the root | `.venv/` |
+| Entry names a directory that does not exist | the `pip` entry pointed at `/nope` |
+| Entry's directory holds no manifest | the `pip` directory emptied of `requirements*.txt` |
+| Entry points at the root | `directory: "/"` on a non-`github-actions` entry |
+| Ecosystem with no manifest mapping | `package-ecosystem: cargo` |
+| Entry declares no directory | the `directory:` key removed |
+| No `github-actions` entry | the block deleted from `.github/dependabot.yml` |
+| The parser cannot read the file | `updates:` renamed, so nothing parses |
+
+### Must pass
+
+| Case | Input |
+|---|---|
+| Manifest below the root | `web/package.json` |
+| `requirements-dev.txt` satisfies `pip` | the real spelling, which is not `requirements.txt` |
+| Block-list patterns | a `github-actions` entry whose `patterns:` is a block list rather than inline |
+
+The renamed-`updates:` row is the one that matters. The check's own guard counts list items under
+`updates:` and compares that against what its entry split produced — deliberately sharing no
+assumption with the split, because a guard keyed on the same literal goes to zero alongside the thing
+it guards, and the two then agree that nothing is wrong. Renaming the key is what proves the guard
+fires rather than joining the silence.
 
 ## `check-verify-ci-parity.mjs`
 
-| Direction | Input |
+### Must fail
+
+| Case | Input |
 |---|---|
-| Must fail | a recipe in `just verify` whose script runs in no workflow step |
-| Must pass | the tree as it stands |
+| Recipe runs in no workflow step | a `just verify` check whose script no step invokes |
+| Recipe with no `CHECK_TOKENS` entry | a new name added to the `verify` recipe |
+| Stale `CHECK_TOKENS` entry | a mapped check removed from the `verify` recipe |
+| CI step matching nothing | a named step running neither a mapped check nor an allowlisted one |
+| Token surviving only in a step's `name:` | the command renamed, the old path left in the step title |
+| Token commented out inside a `run: \|` block | the command replaced by a whole-line comment |
+| Token surviving only in a **trailing** comment | the step deleted, its path left after a `#` on another step's line |
+| The same, on a line holding a quoted value | the path left after a `#` on a `key: "value"` line |
+| The same, after an unbalanced apostrophe | the path left after a `#` on a line whose value carries `it's` |
+| A comment covering an unmapped step | a step matching nothing, its body naming a mapped path only in a comment |
+
+### Must pass
+
+| Case | Input |
+|---|---|
+| The tree as it stands | — |
+| A toolchain step | a step named `Install …`, which prepares a check rather than being one |
+| An unnamed step | `- uses:` infrastructure with no `name:` |
+| A quoted `#` in a command | `run: … && echo "pin # it"` beside a real token |
+| An unquoted `#` with no leading space | `run: … --tag=#x`, which YAML does not read as a comment |
+
+The trailing-comment rows are the ones that matter, and they need their control to mean anything: a
+step deleted outright **is** caught, which is what made the comment cases holes rather than a
+misreading of the design.
+
+Three cuts were needed and the first two each shipped a hole a row did not describe. Skipping any line
+that contained a quote closed the quote-free spelling and left `key: "value" # token` open. Tracking
+quote state closed that and left an *unbalanced* quote — an apostrophe in `it's` — opening a phantom
+scalar that swallowed the rest of the line, while newly rejecting a legal workflow whose escaped quote
+closed the tracker early. Both were found by review, neither by the seeding that prompted the fix.
+
+What holds is YAML's own rule rather than a heuristic about quotes: **a quote is syntactic only where
+a scalar may begin** — after the indent, an optional `- `, and an optional `key:`. Anywhere else it is
+an ordinary character, so an apostrophe in prose opens nothing, and a `#` inside a genuinely quoted
+scalar stays content.
 
 ## `check-docs-index.mjs`
 
@@ -195,8 +281,30 @@ matches `check-links.mjs`, which draws its file list the same way.
 ## `check-branch.sh`
 
 Covers the ticket-metadata and epic-membership assertions
-([ADR 0013](../docs/decisions/0013-work-tracking-invariants.md)); the branch shape, issue resolution
-and recorded-linkage assertions predate this record.
+([ADR 0013](../docs/decisions/0013-work-tracking-invariants.md)), and the branch-shape, exemption and
+issue-resolution assertions below.
+
+The shape and exemption cases reach no network: the branch name is passed as `$1`, and both paths
+return before the first API call.
+
+| Direction | Input |
+|---|---|
+| Must fail | `nodashes` — no separator at all |
+| Must fail | `task-87-name` — a hyphen where the underscore belongs |
+| Must fail | `feature_87-name` — a type outside `task\|bug\|design\|module` |
+| Must fail | `task_0-name` and `task_087-name` — a zero, and a leading zero |
+| Must fail | `task_87-Name` — uppercase in the name |
+| Must fail | `task_87-name_`, `task_87--name`, `task_87-`, `task_-name` — malformed separators and empty parts |
+| Must pass | `main` — the mainline is not a work branch |
+| Must pass | `dependabot/npm_and_yarn/foo-1.2.3` — Dependabot names its own branches |
+| Must fail | a number naming a pull request rather than an issue |
+| Must fail | a number naming nothing in the repository |
+| Must fail | a number naming a closed issue |
+| Must pass | this branch, against its real open ticket |
+
+The pull-request row is the one that matters: GitHub draws issues and pull requests from one counter,
+so a branch named for a merged pull request resolves to a real object of the wrong kind, and the check
+has to reject it on kind rather than on existence.
 
 **A case here is not a fixture.** This check reads live GitHub state, so a case is a real throwaway
 issue mutated between runs, and the branch name is passed as `$1` rather than checked out. Read the
@@ -261,6 +369,363 @@ shape-conformance failure, and the membership comparison — has no live evidenc
 instance that motivated it (PR #79 into `design_18-closing_review`, whose ticket was never a
 sub-issue of the anchor) cannot serve as one: the gate exits at the open-issue check before reaching
 it, because that ticket is closed.
+
+## `check-links.mjs`
+
+### Must fail
+
+| Case | Input |
+|---|---|
+| Link to a missing file | an inline link whose destination names no file |
+| Link escaping the repository | a destination climbing above the repository root with `../` |
+| Link leaving through a symlink | a tracked symlink to a file outside the repository, linked normally |
+| Host not on the allowlist | an inline link to a host absent from `upstream-hosts.txt` |
+| Bare URL, host not allowed | the same host written as running text |
+| Allowlist entry naming no service | a line in `upstream-hosts.txt` with no `—` description |
+| Unterminated code fence | a fence that never closes, which would blank the rest of the file |
+| HTML anchor to a missing file | a raw HTML anchor whose `href` names no file |
+| Reference definition to a missing file | a link-reference definition whose destination names no file |
+
+### Must pass
+
+| Case | Input |
+|---|---|
+| Valid relative link | an inline link resolving to a tracked file |
+| Link with an anchor | the same destination carrying a heading fragment |
+| Pure in-page anchor | a destination that is a fragment and nothing else |
+| Another scheme | a `mailto:` destination |
+| Allowlisted host, as a link and as bare text | `https://github.com/o/r` both ways |
+| Image link | the image form of a resolving destination |
+| URL containing parentheses | an allowlisted URL whose path carries a bracketed segment |
+| Link title | a resolving destination followed by a quoted title, with and without a fragment |
+| Angle-bracketed destination | the same destination wrapped in angle brackets |
+| Valid HTML anchor and reference definition | the same three syntaxes, resolving |
+| In-repo symlink | a symlink whose target is inside the repository |
+| Prose that resembles a definition | a sentence opening with a bracketed label and a colon |
+
+The symlink pair is the one that matters. `resolve()` and `existsSync()` both follow a symlink without
+reporting that they did, so a path whose *text* stays inside the repository said nothing about where it
+landed — the check's own invariant, defeated with no signal in either direction. It was found by a
+second pass in a fresh context, not by the first. The three-syntax rows are the same lesson from the
+other side: matching only Markdown's inline form left two other ways of writing a relative path
+entirely unread.
+
+### Known rejections
+
+| Input | What happens |
+|---|---|
+| a root-relative destination, leading with `/` | reported as escaping the repository, though the target exists |
+| a fence opened with a longer marker than the one that closes it | the mismatch is not tracked, so the region is misread |
+| a 4-space indented code block | not a fence, so its contents are scanned as live references |
+| an inline code span containing link syntax | the same |
+| a blockquoted fence | the same |
+
+The root-relative row is accepted rather than fixed: a document that must resolve standalone cannot
+use a path rooted at a server, so the rejection is right even though the message names the wrong
+reason.
+
+The inline-code-span row has a consequence for this file. **This section cannot show its own cases**:
+backticks do not exempt a link from the scan, so writing one out as an example makes it a real link
+that must resolve. The cases above are therefore described rather than quoted. The first draft quoted
+them, and `just verify` failed on this file — the same way the uppercase-identifier rule in
+[`../docs/CI.md`](../docs/CI.md) could not spell its own counter-example.
+
+### What it does not catch
+
+**A link inside a fenced block, broken or off-allowlist, passes.** That is deliberate — a fenced block
+is a sample, not a reference, and allowlisting a host to satisfy a code sample would put it in the
+register on the strength of an example. **The file list comes from `git ls-files`**, so a document that
+exists but has not been staged is invisible locally; CI checks out committed state and is unaffected.
+
+## `check-eol`
+
+Not a script: the recipe is `git grep -lIP '\r$' -- .`, and the recipe fails if that finds anything.
+
+| Direction | Input |
+|---|---|
+| Must fail | a tracked file containing CRLF, in `.txt` and in `.md` |
+| Must pass | an all-LF tree |
+| Must pass | a binary file containing CR — excluded by `-I` |
+| Must pass | a genuinely untracked CRLF file |
+| Must pass | CR appearing mid-line, where the line still ends in LF |
+
+### What it does not catch
+
+**A file whose `.gitattributes` sets the `binary` attribute.** That attribute both exempts the file
+from CRLF→LF normalisation when it is added *and* makes `-I` skip it during the grep, so genuinely
+CRLF-terminated text commits and survives a fresh clone unseen. A plain `-text` does **not** do this;
+only the full `binary` macro. `.gitattributes` declares `binary` on the image, font and PDF globs —
+files that are not text, which is the attribute used as intended — so the reachable case is a *text*
+glob given the attribute. The owner ruled on 2026-08-02 not to gate that, so the honest statement of
+what holds is that **the LF invariant holds for files git treats as text, and `.gitattributes` decides
+which those are.**
+
+Worth keeping beside that: the check is not made redundant by git's own normalisation. A CRLF blob
+forced into history via `hash-object`/`update-index`, bypassing the add-time filter, is still caught
+after a fresh checkout.
+
+## `check-adr-index.mjs`
+
+### Must fail
+
+| Case | Input |
+|---|---|
+| ADR file with no row | a new `0003-gamma.md` |
+| Row naming no file | a row for `0003` with no such ADR |
+| Row linking the wrong filename | the row's target renamed |
+| Two files carrying one number | `0002-beta.md` beside `0002-dup.md` |
+| Two rows for one number | the row duplicated |
+| Numbering not contiguous from 0001 | a gap, and an ADR numbered `0000` |
+| File not named `NNNN-<slug>.md` | `notes.md`, and a five-digit `00010-x.md` |
+| A directory named like an ADR | `0002-notreal.md/` holding a file |
+| A dangling symlink named like an ADR | a link to a nonexistent target |
+
+### Must pass
+
+| Case | Input |
+|---|---|
+| The index as it stands | — |
+| A new ADR plus its row | both added together |
+| `TEMPLATE.md` and `README.md` | skipped by name |
+| A non-`.md` file, and a subdirectory | `notes.txt`, `assets/` |
+| A row target carrying a title, angle brackets, `./` or an `#anchor` | four spellings of the same filename |
+| A 4-space indented example row | not a table row, because it does not start with `\|` |
+| A row in a Markdown file outside `docs/decisions/` | only the index is read |
+
+The directory row is the one that matters: `readdirSync` reports *names*, so an entry counted as an ADR
+on the strength of its name alone needed only a matching row to be reported as fully agreeing. A
+`statSync().isFile()` closes it.
+
+### Known rejections
+
+A row inside a fenced code block is read as a real index row — there is no fence blanking — so
+`docs/decisions/README.md` may not carry a fenced example table. `name.endsWith(".md")` is
+case-sensitive, so an ADR named with an uppercase extension is invisible rather than rejected; no such
+file exists, and the naming rule the check enforces would reject one on sight if it were spelled
+`NNNN-<slug>.MD`.
+
+## `check-arch` — `splice-arch-diagrams.mjs`
+
+The recipe runs `likec4 validate`, `likec4 codegen`, this script, and then `git diff --exit-code`. The
+script fails on marker problems; staleness is caught by the diff.
+
+| Direction | Input |
+|---|---|
+| Must fail | no `arch-export` markers in `docs/ARCHITECTURE.md` |
+| Must fail | an odd number of markers — an unpaired begin or end |
+| Must fail | `end` before `begin` |
+| Must fail | a pair whose begin and end name different artifacts |
+| Must fail | a marker naming an artifact that does not exist |
+| Must fail | a marker path escaping `docs/architecture/` textually |
+| Must fail | a **symlink** artifact resolving outside `docs/architecture/` |
+| Must fail | an artifact containing a ``` fence marker |
+| Must pass | a well-formed pair; two distinct pairs; an artifact in a subdirectory |
+| Must pass | a second run — idempotent, md5 stable, reporting *already current* |
+| Must pass | an artifact containing backticks mid-line, which closes no fence |
+
+Two rows carry the weight. The symlink one: the escape guard tested the marker *text*, so a symlink
+under `docs/architecture/` satisfied it and still read from anywhere on the host — observed splicing a
+file from outside the repository into `ARCHITECTURE.md` with exit 0. The fence one: the body is wrapped
+in a ```` ```mermaid ```` fence, so a fence marker inside it closed that fence early and spliced the
+remainder into the document as running Markdown.
+
+Confirmed separately, because only a real run shows it: a hand edit inside a marker region is
+overwritten and the tree goes clean again, and a change to a generated artifact reaches the document,
+so `git diff --exit-code` is what catches staleness.
+
+**`likec4 validate` and `likec4 codegen` have no case here.** That is a gap, not a reasoned exemption:
+`check-site` seeds Sphinx's validator in the section below, so "it is a vendored toolchain's own
+validator" would not distinguish them. The justfile records why `validate` runs first — `codegen` alone
+does not fail on a broken model — so the two are not interchangeable and the staleness diff does not
+stand in for either. Seeding them wants an invalid LikeC4 model, which nobody has authored.
+
+## `check-site`
+
+The recipe runs `doorstop_to_needs.py` and then `sphinx-build -W`, so any warning fails the gate.
+
+| Direction | Input |
+|---|---|
+| Must fail | a toctree naming a document that does not exist |
+| Must fail | an unknown directive |
+| Must fail | a duplicate explicit label |
+| Must fail | an item whose link names a parent the tree does not hold — the generator emits a warning |
+| Must fail | malformed item YAML — the generator raises rather than warns |
+| Must pass | the tree as it stands |
+| Must pass | a `.yaml`-suffixed item — it reaches the generated pages rather than being dropped |
+
+The `.yaml` row closes the third of three raw item loaders. Two are in `scripts/`; this one is the
+generator, and leaving it would have meant the tree gates judging an item the published site silently
+omits, with warnings-as-errors unable to report a page nobody asked for.
+
+### What it does not catch
+
+Two things, both run and observed rather than reasoned about. **A broken MyST cross-reference does not
+fail the build**: `conf.py` sets `suppress_warnings = ["myst.xref_missing"]`, so the MyST forms — a
+bare anchor link, a reference-style link, a `<project:#target>` — are silently dropped. Sphinx's own
+`{ref}` role is *not* covered by that suppression and still fails under `-W`. **A new top-level
+document does not orphan-warn**, because `docs/site/index.md` carries `:glob:` toctrees that adopt it.
+Both are configuration choices rather than defects, but they mean this gate asserts *the site builds*,
+not *the site is internally consistent* — the link half of that belongs to `check-links.mjs`.
+
+
+## The requirements-tree checks
+
+All seven run against a copy of the tree, for the reason in § *Running a case*. Each passes on an
+unseeded copy, which is the must-pass row every table below shares and none repeats.
+
+### `check-unreviewed.py`
+
+| Direction | Input |
+|---|---|
+| Must fail | an item with its `reviewed:` line deleted |
+| Must fail | `reviewed: true` — Doorstop's declared-review placeholder, which YAML makes a bool |
+| Must fail | `reviewed:` present but empty |
+| Must fail | a `.yaml`-suffixed item with no fingerprint |
+
+The `.yaml` row is the one that matters: the loader is a hand-rolled glob, unlike its siblings which go
+through `doorstop.build()`, and Doorstop indexes a `.yaml` item that a `*.yml` glob never sees. An item
+this loader cannot read is exempt from the rule rather than judged by it.
+
+**Known gap.** `reviewed: "false"` — a quoted, non-empty string — passes, because the check tests only
+that the value is a non-empty string. Closing it means asserting what a stamp looks like, which pins
+Doorstop's internal encoding into our gate for a defect reachable only by deliberate hand-forgery, and
+whose item fails the next real validation on content mismatch anyway. Owner ruled 2026-08-02 to record
+rather than close it. Malformed item YAML raises a traceback rather than the tool's own diagnostic; it
+still exits non-zero, so it fails closed.
+
+### `check-suspect-links.py`
+
+| Direction | Input |
+|---|---|
+| Must fail | the parent of an inactive item mutated, so the child's stamp goes stale |
+| Must fail | an inactive item linking a parent UID the tree does not hold |
+| Must pass | a **`SYS`** item mutated — its `SRS` children are active, so nothing inactive went stale |
+
+The `SYS` row is the one that matters, and it is the easy case to record wrongly. This check covers
+only inactive items; every `TST` item is inactive and no other item is. Mutating a `SYS` parent
+therefore proves nothing about it — an active item's suspect links belong to `doorstop --error-all`.
+A first pass seeded exactly that and read the pass as evidence the check was broken.
+
+**Documented gap, not to be closed.** A `TST` item's *own* fingerprint is checked for presence, never
+correctness: inactive items are invisible to `doorstop --error-all`, and this check scopes itself to
+link staleness. So a stale stamp on a `TST` item's own text or attributes passes all three tree checks.
+This is #80's pending-population gap, and the owner ruled on 2026-07-30 not to gate it — a re-stamp on
+every placeholder edit is the most common act in a tree pass, and the CLI cannot reach an inactive item.
+
+### `validate-tree.sh`
+
+| Direction | Input |
+|---|---|
+| Must fail | a link naming a parent UID the tree does not hold, on an **active** item |
+| Must fail | a `TST` item activated — the pending-tier exception reports itself dead |
+| Must pass | the tree as it stands |
+
+The activation row is the wrapper's self-retirement: with an active `TST` item the exception is no
+longer needed, and rather than passing quietly it says so and tells the reader to delete the wrapper,
+restore the bare command and close #78. A guard that cannot notice it has become unnecessary is how a
+dead exception survives as a passing gate.
+
+An adversarial pass tried to make the exception mask a real defect and could not: the message
+`ERROR: TST: no items` does collide between *all items inactive* and *no items exist*, but in this
+tree's topology it never occurs without a distinct second `ERROR:` line from the active tiers.
+
+### `check-method-consistency.py`
+
+| Direction | Input |
+|---|---|
+| Must fail | a blanked `verification-justification` |
+| Must fail | a parent at `inspection` above children at `test` — overstating |
+| Must fail | a capitalised `Test` on a parent |
+| Must fail | a typo such as `tset` |
+| Must fail | the `verification-method` key deleted |
+| Must pass | a `normative: false` item carrying an empty method and no justification |
+
+The last three are one defect and it is the worst kind. An unrecognised value ranked as nothing, and
+the rule then *skipped* the item rather than judging it — so a single mis-typed character exempted an
+item from the check meant to judge it, while the run still reported the methods consistent across every
+parent. A check that silently declines to judge what it cannot parse reports the same success as one
+that judged everything.
+
+The same shape came back in the fix. The success line kept counting every item loaded while the rules
+had narrowed to the items that oblige something, so a blanked justification on a non-normative item
+printed a clean sentence over a population the run had not judged. The count now names the judged set.
+A review caught it; the seeding did not.
+
+### `check-text-citations.py`
+
+| Direction | Input |
+|---|---|
+| Must fail | an identifier in an item's `text` |
+| Must fail | a **lowercase** identifier in an item's `text` |
+| Must pass | an identifier in `rationale` |
+
+Lowercase was invisible rather than wrong until the regex was made case-insensitive. A mis-cased
+identifier defeats this rule exactly as an uppercase one does: the reader still needs a lookup, and a
+renumber still leaves the sentence pointing at whatever now occupies the number.
+
+### `check-headers.py`
+
+| Direction | Input |
+|---|---|
+| Must fail | an emptied header — which also trips the prefix-free rule, since an empty string prefixes every other header |
+| Must fail | a header containing `/`, outside the permitted set |
+| Must fail | a header containing an en dash |
+| Must fail | a header containing a **non-breaking space**, leading or mid-string |
+| Must pass | a header folded across two lines in the YAML block scalar |
+
+The non-breaking space is the row that matters, and the script's own docstring predicted it: *the
+permitted set is an allowlist, because a list of characters to reject fails open on the one nobody
+enumerated.* The allowlist was right; the normalisation in front of it was not. `str.split()` and
+`str.strip()` are both unicode-aware and folded U+00A0 into ordinary whitespace before the allowlist
+ever saw it — retiring exactly the character the allowlist existed to catch. The first fix replaced
+the split and left the strip, so a mid-string space was caught while a leading one still passed; both
+had to go. A zero-width space, not being whitespace to Python, was caught throughout.
+
+A *trailing* non-breaking space is unreachable rather than accepted: Doorstop strips it from the block
+scalar before the check reads the header. Confirmed by reading `item.header` directly, not inferred
+from the check passing.
+
+### `check-citations.py`
+
+| Direction | Input |
+|---|---|
+| Must fail | a citation naming no item |
+| Must fail | a citation carrying the wrong header for a real item |
+| Must fail | an `ADR` number naming no file |
+| Must fail | a **lowercase** identifier, cited or not |
+| Must fail | a mixed-case identifier |
+| Must pass | an identifier or ADR number inside a fenced code block |
+| Must pass | a word merely containing an identifier, such as `xsrs029y` |
+| Must pass | a correct uppercase citation with its verbatim header |
+
+Case is the row that matters. A lowercase citation with a fabricated header on a *real* item passed
+clean — the exact failure the check exists to catch, invisible rather than reported. The owner ruled on
+2026-08-02 that a mis-cased identifier is malformed, and
+[`../docs/CI.md`](../docs/CI.md) § *Documentation integrity* records the rule. That rule cannot state
+its own counter-example: an identifier written there in any case is read as a citation, so the
+malformed spellings are described rather than shown — the check caught the documentation of itself on
+the first run.
+
+**Documented divergence.** `CI.md` and the docstring both say a citation may wrap over *one* line
+break; the normaliser accepts any number, including a blank-line paragraph break inside the comment.
+Not a false-resolve — CommonMark reads it as one comment either way — but the documented limit and the
+implemented one disagree.
+
+## `check-commit-msg.sh`
+
+CI-only: the PR-title form has no local equivalent, since no PR title exists locally. Both modes take a
+message file, so both are exercised without any credential.
+
+| Direction | Input |
+|---|---|
+| Must fail | plain prose; a capitalised type; no colon; an empty scope; an uppercase scope; an empty subject; an unknown type |
+| Must pass | `fix: a thing`; `feat(ci): a thing`; `feat(ci)!: a thing` |
+| Must pass | `fixup! …` and `Merge branch 'x'` in default mode |
+| Must fail | those same two under `--pr-title` |
+
+The last pair is the one that matters: the allowances exist because a fixup or merge commit never
+survives the squash, but a PR title *becomes* the commit on `main`, so the same string must be accepted
+in one mode and rejected in the other.
 
 ## Confirming a gate in CI rather than locally
 

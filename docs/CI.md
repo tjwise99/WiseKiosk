@@ -187,7 +187,11 @@ reports — so the register cannot accumulate rows for problems that no longer e
 The documentation set is checked for the failures that make it untrustworthy: a link that does not
 resolve, a citation to something that does not exist, an index that has drifted from what it indexes.
 
-- Every relative Markdown link in every tracked file resolves inside the repository.
+- Every relative Markdown link in every tracked file resolves inside the repository — **and lands
+  there**: a destination whose path text stays inside but which reaches outside through a symlink
+  fails, because following the link is what the invariant is about. All three syntaxes carrying a
+  relative path are read: the inline form, a link-reference definition, and a raw HTML anchor's
+  `href`. A destination may be angle-bracketed or carry a title; neither is part of the path.
 - Every absolute `http` or `https` link in tracked documentation names a host on the committed
   upstream-documentation allowlist, and every allowlist entry names the tool or service it serves.
   This extends the link checker above rather than adding a second tool.
@@ -196,6 +200,16 @@ resolve, a citation to something that does not exist, an index that has drifted 
   `verification-justification`. Fenced code blocks are skipped; an identifier in inline code is a
   citation like any other. An identifier followed by `.yml` names an item's file rather than citing
   it: it must still resolve, and carries no header.
+- **An identifier is uppercase.** A lowercase or mixed-case spelling is reported as malformed rather
+  than resolved, and the same spelling inside an item's `text` is caught as the citation it is.
+  Matching only the canonical case would make every other case invisible to both checks instead of
+  wrong, which is the failure a resolution check exists to prevent.
+- **A rule here cannot spell its own counter-example.** The checks above scan the raw text of every
+  tracked Markdown file, and neither a backtick nor a table cell exempts anything: a malformed
+  identifier written to illustrate the rule *is* a malformed identifier, and a broken link written to
+  illustrate the link rule *is* a broken link. Describe the form that fails; never write it out. This
+  binds every document a check reads, not only this one — it failed the gate three times on one branch
+  before it was written down.
 - **A requirement citation carries the item's header, in an HTML comment, closed up to the
   identifier.** The header is verbatim and the comment is the only form —
   `SRS015<!-- One schema, all boundary value classes -->`. The identifier's own closing backtick and
@@ -214,7 +228,9 @@ resolve, a citation to something that does not exist, an index that has drifted 
   comment, the prose is correct, and Sphinx does not warn. A comment opening a line after a blank
   one is a block already, which is what an issue template's guidance comment is, and passes.
 - The `decisions/` directory and its index table agree — every ADR has a row, no gap or duplicate in
-  numbering, every row resolves to a real file.
+  numbering, every row resolves to a regular file. A directory listing reports names, so an entry
+  named like an ADR is counted as one until something states it; a directory or a dangling symlink
+  carrying the name is not an ADR.
 - **Every tracked Markdown file is claimed by a row in the documentation index**, unless it sits under
   a top-level dot-directory, which holds machinery rather than documents. Both sides are derived from
   the repository rather than read from an inventory: adding a document without indexing it fails,
@@ -231,7 +247,10 @@ resolve, a citation to something that does not exist, an index that has drifted 
   directory and must be indexed like any other document. Scope is Markdown: the tree's items are
   claimed by the tree and gated by `check-reqs`, and code is claimed by nothing here.
 - The LikeC4 architecture model validates: no undefined element, no unresolved relationship.
-- Spliced diagrams and generated architecture artifacts are byte-identical to a regeneration.
+- Spliced diagrams and generated architecture artifacts are byte-identical to a regeneration. A
+  marker's artifact resolves to a regular file inside `architecture/` — through any symlink, not
+  merely by its path text — and carries no fence marker of its own, which would close the generated
+  fence early and spill the remainder into the document as prose.
 - The documentation site builds under Sphinx with warnings-as-errors.
 
 **Considered and rejected:** a registry mapping each canonical document to the path globs it

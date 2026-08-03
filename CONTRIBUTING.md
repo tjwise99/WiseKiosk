@@ -130,10 +130,18 @@ questions.
    implementation and no second consumer?
 9. **Secrets.** Does any output path the change adds — a response body, a response header, a log
    line — carry a secret's value rather than its name?
+10. **Unjudged input.** Where the change adds or edits a check, what does it do with input outside
+    the set it recognises — a value absent from its lookup, a directory entry it never stats, a file
+    extension it does not glob? Skipping is the language's default and it is always wrong for a gate:
+    the check shrinks its own population and then reports success over what is left.
+11. **Narrowed guards.** Where the change narrows a check so it stops rejecting legal input, is the
+    narrowing itself reachable by the defect the check exists to catch? An exemption written to
+    prevent a false positive is the first place a bypass gets spelled, and the reasoning that
+    produces one reads as caution.
 
 **Requirements**
 
-10. **Module universals.** Where the change adds or edits a module's requirements, does any of them
+12. **Module universals.** Where the change adds or edits a module's requirements, does any of them
     state something already obliged of every module — failure rendering, secret delivery, caching,
     request rejection? A module's requirements carry what is true of that module and nothing else
     ([ADR 0012](docs/decisions/0012-module-requirements-in-tree.md)).

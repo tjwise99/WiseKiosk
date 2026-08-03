@@ -9,6 +9,12 @@ and decisions with a rejected alternative in [`docs/decisions/`](docs/decisions/
 at [`docs/README.md`](docs/README.md) is authoritative on which holds what. This file holds only the
 rules layered on top.
 
+**Read [`CONTRIBUTING.md`](CONTRIBUTING.md) at the start of any session that touches this repository.**
+It is not loaded into an agent's context automatically, and this file is; its review checklist carries
+obligations no gate decides, several of which describe defects introduced while authoring and invisible
+in a green run. Reading it only when a workflow happens to prompt for it means meeting the rule after
+the change it governs.
+
 **Not every obligation is a requirement.** A requirement obliges WiseKiosk itself. A convention a
 machine decides about the repository, and material CI produces, belong to
 [`docs/CI.md`](docs/CI.md); what a program an operator runs must do belongs to

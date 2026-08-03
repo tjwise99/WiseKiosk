@@ -109,6 +109,13 @@ Where a parent legitimately holds a residual obligation no child carries — a c
 comparing the children's bounds against something outside the system — it may sit below its
 children, and the `verification-justification` says why.
 
+**For a normative item the four method names are the whole permitted set, and a value outside it is
+a defect rather than an exemption.** An unrecognised spelling — a typo, a capitalised token, or the
+attribute missing — ranks nowhere in the decidability order, so a rule that merely skipped what it
+could not rank would excuse the item from the comparison and report the tree consistent. The empty
+method below is the one value outside the set that is not a defect, and it is reserved to items that
+oblige nothing.
+
 **A non-normative item (`normative: false`) obliges nothing**, so it carries an empty
 `verification-method` and no justification, and needs no children. It states orientation or scope
 whose falsifiable content is owned by other items, and is written in the indicative — a `shall` in a

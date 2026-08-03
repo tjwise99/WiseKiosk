@@ -36,7 +36,9 @@ def load():
     other silently."""
     unreviewed, unstamped = [], []
     for silo in ("sys", "srs", "tst"):
-        for path in sorted((TREE / silo).glob("*.yml")):
+        # Both suffixes: Doorstop indexes a .yaml item, and globbing only .yml would leave one
+        # unread by a check whose whole subject is items nobody has reviewed.
+        for path in sorted([*(TREE / silo).glob("*.yml"), *(TREE / silo).glob("*.yaml")]):
             if path.stem.startswith("."):
                 continue  # pathlib globs dotfiles: the silo's own .doorstop.yml is not an item
             item = yaml.safe_load(path.read_text()) or {}
