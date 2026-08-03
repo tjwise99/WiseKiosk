@@ -15,7 +15,10 @@ This project is **design-first**: nothing is implemented that has not been writt
   key, a failure behaviour, a threshold — is written down as a requirement before it is built.
 - A new module follows [`docs/contracts/module-contract.md`](docs/contracts/module-contract.md),
   which is the contract itself, and the test obligations in [`docs/TESTING.md`](docs/TESTING.md).
-- Do not build generality against a case that does not exist.
+- Do not build generality against a case that does not exist — no plugin system, no abstraction
+  without a second consumer, no transport chosen before the access pattern, no comment-enforced
+  invariants, no denylist secret handling, no non-tunable config keys, no controls that do not
+  function where deployed.
 
 ## Running the checks
 

@@ -153,6 +153,24 @@ a posture resting on this section. Until #77 fences this document, read it as in
 - **SBOM.** The SBOM for the published digest is retrievable and non-empty, validates against its SPDX
   or CycloneDX schema, and enumerates the Go main module and the base distribution. Regenerating from
   the same digest yields a matching package set. A release missing the asset fails.
+- **The image says where it came from.** Nine keys — `org.opencontainers.image.title`,
+  `.description`, `.url`, `.source`, `.version`, `.created`, `.revision`, `.licenses` and
+  `.documentation` — are present and non-empty **as labels on the image config and as annotations on
+  the manifest**, which are separate metadata with separate readers
+  ([ADR 0015](decisions/0015-container-toolchain-and-image-annotations.md)). Both are read: a check
+  reading one reports nothing about the other. No value is a `LABEL` line in the Dockerfile, and one
+  is bound rather than merely present: **`.revision` is the commit the job published**, which is what
+  a hardcoded value fails. A missing key, an empty value or that binding failing exits non-zero;
+  presence alone passes on a stale hardcoded value. The check covers the config-label surface and
+  every annotation level the publish workflow declares, reading that set from the declaration rather
+  than restating it here, so adding a level extends the gate instead of escaping it. A surface it
+  cannot read fails rather than being skipped; so does a declared level it never inspected; and so
+  does resolving no surface at all, since a run that inspected nothing reports the same success as
+  one with nothing to report.
+  **What no check here decides:** `.description` and `.licenses` resolve from
+  repository metadata rather than from the commit, so either can change with no commit and nothing
+  reports it. Nor is `.created` anything but the time the build ran: this project makes no
+  bit-identical-rebuild claim, so nothing here constrains it. The emission is #54's.
 - **Base images are pinned** to a `@sha256:` digest rather than a floating tag, for every base and
   stage in the Dockerfile.
 - **The code generators are pinned** to an exact version, so a toolchain bump cannot present as
