@@ -5,6 +5,17 @@
 write-scoped-token alternative supplies
 **Decided:** 2026-07-22 (process-gates design discussion, ticket #27)
 
+> **Amended 2026-08-03 by [0016](0016-maintained-tools-for-standard-artifacts.md).** The Decision's
+> *"entire gate path is plain sh + curl + jq — no toolchain"* no longer holds: `commitlint` replaces
+> `scripts/check-commit-msg.sh` and `scripts/conventional-commit.regex` at both the commit-message and
+> pull-request-title stages, and `pre-commit` replaces `.githooks/` as the local hook layer. The four
+> gates below stand unchanged, including the two-stage `fixup!`/`squash!` distinction, which 0016
+> requires `commitlint` to preserve by disabling its ignore defaults on the pull-request title. Gate 1's
+> branch shape and gates 2 and 4 remain authored in `scripts/check-branch.sh`: 0016's maintenance test
+> excludes the single-maintainer marketplace actions that are the only off-the-shelf option for them,
+> and the Enterprise-only finding recorded in the Context below was re-checked against the current
+> ruleset documentation and still holds.
+
 ## Context
 
 Nothing tied a pull request to a ticket or constrained branch and commit naming: a branch with any
