@@ -143,12 +143,13 @@ jobs:
           python -m venv docs/requirements/.venv
           docs/requirements/.venv/bin/pip install -r docs/requirements/requirements-dev.txt
 
-      - name: Architecture model validates and generated artifacts are neither stale nor orphaned
+      - name: Architecture model validates and generated artifacts are neither stale, orphaned, nor uncommitted
         run: |
           docs/architecture/node_modules/.bin/likec4 validate docs/architecture/model
           rm -rf docs/architecture/generated
           docs/architecture/node_modules/.bin/likec4 codegen mermaid docs/architecture/model -o docs/architecture/generated
           node scripts/splice-arch-diagrams.mjs
+          git add --intent-to-add -- docs/architecture/
           git diff --exit-code docs/architecture/ docs/ARCHITECTURE.md
 
       - name: Every requirement identifier tagged in the model resolves to an accepted item

@@ -24,7 +24,9 @@ docs/architecture/
 
 `generated/` is cleared before codegen, which writes files and never prunes them: an artifact left
 behind by a deleted view is byte-identical to what is committed, so the staleness diff cannot see one
-unless the export removes it first.
+unless the export removes it first. The mirror case — a view whose artifact was never committed — is
+untracked rather than changed, so the diff is taken after `git add --intent-to-add` to reach it.
+**Commit `model/`, `generated/` and `../ARCHITECTURE.md` in one change**; either half alone fails.
 
 ## Editing the model
 
