@@ -120,3 +120,6 @@ questions.
     state something already obliged of every module — failure rendering, secret delivery, caching,
     request rejection? A module's requirements carry what is true of that module and nothing else
     ([ADR 0012](docs/decisions/0012-module-requirements-in-tree.md)).
+14. **Named resources.** Does a requirement the change adds or edits name a file, endpoint, package
+    or tool rather than stating the property the software must have? A requirement naming one has
+    swallowed a design decision, which then cannot change without a specification change.

@@ -600,10 +600,21 @@ about the other half of the code path. It also caught the first attempt at this 
 LikeC4 rather than a legal spelling — a `#tag` is accepted at the head of an element body, not after
 its `description`.
 
-**Unrun**, and therefore unevidenced: a mis-cased identifier, a tag carrying something that is not an
-identifier at all, a tag on a retired item, a tag on a `proposed` item, and a tag declared but applied
-to nothing. Each has an arm in the check; none has been put through it. The tree holds no retired or
-proposed item to seed the middle two against without doctoring a copy.
+| Must fail | a model carrying no tag at all — every declaration and application stripped |
+
+The five arms above were run in the independent review of PR #113, each seeded into its own
+`git archive` extraction: an identifier naming no item, a mis-cased one, one declared and applied to
+nothing, one on a `proposed` item, and one on a retired item. A non-identifier tag was seeded from
+`origin/main`'s own `needs-srs`. All fire.
+
+The no-tag row is the guard, not an arm: a model carrying no tag resolves every tag it carries, so
+the check would report a sound link over an absent one. It is the same shape as the two guards over
+the export and the tree.
+
+Every degenerate input fails closed: an emptied model directory, a removed model directory, a removed
+requirements tree, and a model that does not parse. The removed-model case matters most — `likec4
+validate` exits **0** on a directory with no model in it, so the element guard is the only thing
+catching it.
 
 ## `check-site`
 

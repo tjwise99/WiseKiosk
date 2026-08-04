@@ -79,6 +79,14 @@ def main():
             for tag in body.get("tags") or []:
                 applied.setdefault(tag, []).append(f"{kind} {body.get('title') or key!r}")
 
+    # A model carrying no tag resolves every tag it carries. The link this asserts would be absent
+    # rather than sound, and the two read identically in a green run.
+    if not declared and not applied:
+        sys.exit(
+            "check-arch-trace: the model names no requirement, so the architecture → requirements "
+            "link is absent rather than holding"
+        )
+
     items = tree_items()
     if not items:
         sys.exit("check-arch-trace: the requirements tree loaded no item, so nothing here judged a tag")

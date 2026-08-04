@@ -44,9 +44,10 @@ Beyond Doorstop's native fields, every item carries four stored attributes
 | `verification-justification` | free text | What the item's verification settles and what it does not. Below `test`, what specifically blocks a mechanically-decidable check; at `test`, what the check leaves unproven. **Required on every item** |
 | `rationale` | free text | Why the requirement exists. **Required at the `SYS` tier**, optional below |
 
-**A requirement states the property and names no resources.** What the software must do belongs in
-the item; which file, endpoint, package or tool delivers it does not — a requirement naming one has
-swallowed a design decision, and the decision then cannot change without a specification change.
+**A requirement states the property and names no resources** — which file, endpoint, package or tool
+delivers it is not the item's. Nothing decides this mechanically, so it is question 14 on
+[`../../CONTRIBUTING.md`](../../CONTRIBUTING.md)'s review checklist, where every obligation that
+leaves no artifact is carried ([ADR 0011](../decisions/0011-requirement-or-convention.md)).
 
 **A `TST` item is a verification obligation, not a test function.** It states what must be proven,
 so several items may be discharged by one test and one item may need several. Counting `TST` items

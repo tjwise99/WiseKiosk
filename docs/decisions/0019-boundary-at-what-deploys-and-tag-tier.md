@@ -32,6 +32,15 @@ something with it.** Something outside the boundary that the system never commun
 external system, it is absent — being built by this project earns nothing. Scope of project and
 context of system are different sets, and the model draws the second.
 
+**An upstream data source is modelled individually, and only once the module that reads it has a need
+in the tree.** The corollary above does not reach this on its own: SYS004<!-- Upstream data reaches
+the display only through the backend --> is accepted and obliges precisely such an exchange, so
+"exchanges something with it" would admit an upstream element today. What defers it is that an
+upstream belongs to the module that reads it — [ADR 0012](0012-module-requirements-in-tree.md)
+decomposes a module need by *its upstream* — and no module need is written, so nothing yet names one.
+The Context level therefore carries no external system and gains one per upstream as each module's
+need lands.
+
 **A tag carries the Doorstop id of the requirement obliging the element or relationship it sits on, at
 the tier its level answers to.** The Context level answers to `SYS`; the tier at each level below is
 settled by the phase that models it. A tag binds where the obligation is observable at that level,
@@ -47,9 +56,18 @@ SRS005<!-- One validation implementation -->, and buying a second copy of it cos
 holding something that is not in the image and does not run on the display host, so "one published
 container image" would stop being what the system element means.
 
+**One aggregate external system for the upstreams**, as the committed scaffold carried. Rejected:
+configuration selects which of the shipped modules render and where, and never names an upstream, so
+the set is specification rather than deployment configuration and is bounded by the module roster in
+[`../../README.md`](../../README.md). An aggregate element also belongs to no module, so it can carry
+no module's identifier — which forecloses the binding the tag mechanism below exists for.
+
 **`SRS` at every level**, as ADR 0003 assumes. Rejected: at the Context level it forces a choice
 between attaching every `SRS` id to the single system element and picking an arbitrary few, and
-neither is a link a reader can trust. The tier is a property of the level, not of the mechanism.
+neither is a link a reader can trust. Binding `SRS` to a *relationship* does not escape that, which
+is the form this decision's own mechanism would invite: an edge already carries the `SYS` item
+obliging it, and tagging one edge across two tiers leaves a reader unable to tell which tier a tag
+answers to. The tier is a property of the level, not of the mechanism.
 
 **Tagging an element with every id it owes.** Rejected: true, and it carries no information — the
 system element owing all seven `SYS` items restates that the `SYS` tier is the tier about the system.
