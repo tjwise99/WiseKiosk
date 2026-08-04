@@ -88,11 +88,12 @@ repository-specific commands in `check-reqs`; and, in `check-arch`, both the mar
 mechanisms those last two use; neither owns the obligation, exactly as `git ls-files` does not own the
 documentation-index claim.
 
-**The empty-population guards are retired as a class.** Several authored checks fail when they find
-nothing to scan, on the principle that a check which read nothing must not report success —
-`check-workflow-hardening.mjs` on an empty `.github/workflows`, `check-eol.sh` on a tree with no tracked
-file, and the same script when `git grep` fails outright rather than matching nothing. **Owner ruling:
-an empty scan may report success.** None of these is carried into the adopted tools or asserted of them.
+**The empty-population guards *in the checks this decision adopts away* are retired as a class.** Those
+checks fail when they find nothing to scan, on the principle that a check which read nothing must not
+report success — `check-workflow-hardening.mjs` on an empty `.github/workflows`, `check-eol.sh` on a tree
+with no tracked file, and the same script when `git grep` fails outright rather than matching nothing.
+**Owner ruling, for those checks: an empty scan may report success.** None is carried into the adopted
+tools or asserted of them.
 Measurement incidentally shows `zizmor` exits 3 with `no inputs collected` on an empty tree, and
 `pre-commit` skips a hook whose file set is empty and reports success; neither behaviour is now an
 obligation, so neither constrains the implementation.
@@ -101,12 +102,20 @@ obligation, so neither constrains the implementation.
 **The ruling is bounded twice over.** It covers an *empty* population, not one silently *shrunk* — the
 unterminated-fence guard in `check-links.mjs`, which exists because a fence that never closes blanks the
 rest of the file, is a different failure and is left open below. And it reaches only the checks this
-decision adopts away. **Empty-population guards in checks that stay authored are untouched**, including
-the two of exactly this form: `check-repo-silo.mjs` failing when `just --dump` names no recipe, and
-`check-verify-ci-parity.mjs` failing when `verify`'s dependency list is empty. Both are the fix that
-closed #68's defect class — a guard keyed on the same literal as the thing it guards goes to zero
-alongside it and then reports agreement, and the form that works asserts the parse produced something at
-all. Nothing here licenses removing them.
+decision adopts away. **Every empty-population guard in a check that stays authored is untouched**, which
+is all of these:
+
+| Guard | Source |
+|---|---|
+| No ecosystem entry parsed from `.github/dependabot.yml` | `scripts/check-repo-silo.mjs` |
+| The justfile dump names no recipe | `scripts/check-repo-silo.mjs` |
+| `verify` depends on no check | `scripts/check-verify-ci-parity.mjs` |
+| A recipe body parsed to no commands | `scripts/check-verify-ci-parity.mjs` |
+| No `arch-export` marker found in `ARCHITECTURE.md` | `scripts/splice-arch-diagrams.mjs` |
+
+The first is the guard that closed #68's defect class — a guard keyed on the same literal as the thing it
+guards goes to zero alongside it and then reports agreement, and the form that works asserts the parse
+produced something at all. The rest apply that form. Nothing here licenses removing any of them.
 
 **Three further obligations are retired outright rather than reimplemented**, beside the
 empty-population guards above. Each is dropped as an
