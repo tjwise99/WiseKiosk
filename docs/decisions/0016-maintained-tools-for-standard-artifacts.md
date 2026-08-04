@@ -6,7 +6,8 @@
 
 ## Context
 
-Thirteen checks gate this repository and every one of them was written here. That was never a decision.
+Thirteen checks gate this repository — the twelve `check-*` recipes `just verify` runs, plus the
+CI-only pull-request-title check — and every one of them was written here. That was never a decision.
 The gate records argue at length about *which hand-rolled form* a check should take —
 [0005](0005-traceability-gating.md) on where evidence lives, [0006](0006-process-gates.md) on what the
 gate reads, [0014](0014-documentation-index-claims-documents.md) on whether a list may be
@@ -37,9 +38,9 @@ Four adoptions follow, and each replaces its authored check outright:
 | `commitlint` at both the commit-message and pull-request-title stages | `check-commit-msg.sh`, `conventional-commit.regex` | 40 |
 | `pre-commit` as the local hook layer | `.githooks/`, `check-eol.sh` | 33 |
 
-The nine remaining checks stay authored, because nothing else could perform them: the documentation-index
-claim check, verify/CI parity, the ADR index, the repository silo check, the four requirements-tree
-checks, and the architecture-diagram splice.
+The nine remaining checks stay authored, because nothing else could perform them — each reads a structure
+this repository invented: `check-branch`, `check-reqs`, `check-citations`, `check-adr-index`,
+`check-docs-index`, `check-repo-silo`, `check-verify-ci-parity`, `check-site` and `check-arch`.
 
 **Three repository conventions do not survive the trade**, and are retired rather than reimplemented:
 
