@@ -139,10 +139,13 @@ unregistered language whatever this record said.
   was written too early.
 - **Gate the set with a check.** Machine-decidable, and [0011](0011-requirement-or-convention.md)
   routes a machine-decidable convention to a check — which is why this was the drafted answer.
-  Rejected: a new authored language is a new file extension in a diff's file list, which is the
-  loudest thing a review sees, and [0016](0016-maintained-tools-for-standard-artifacts.md) had just
-  ruled that one residual obligation does not earn a gate of its own. The checklist question is what
-  0011 requires so the obligation is not a dead letter; a gate on top of it would be ceremony.
+  Rejected: a new authored language usually arrives as a new file extension in a diff's file list,
+  which is the loudest thing a review sees — the embedded case named in the Decision above is the
+  exception, and it is a residue rather than the population — and
+  [0016](0016-maintained-tools-for-standard-artifacts.md) had just ruled that one residual obligation
+  does not earn a gate of its own. That second leg is what carries the rejection. The checklist
+  question is what 0011 requires so the obligation is not a dead letter; a gate on top of it would be
+  ceremony.
 
 ## Consequences
 
