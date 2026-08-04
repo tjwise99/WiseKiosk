@@ -574,9 +574,10 @@ outlived the view with the gate green.
 Sphinx's validator in the section below, so "it is a vendored toolchain's own validator" would not
 distinguish them.
 
-`likec4 validate` has one now — see the invalid-model row under `check-arch-trace.py` below. It was
-run against the validator directly rather than through the recipe, so what is evidenced is that the
-binary exits non-zero on an unparseable model, not that `check-arch` reaches it.
+`likec4 validate` is covered by the invalid-model row under `check-arch-trace.py` below, but only
+partly: it was run against the validator directly rather than through the recipe, so what is
+evidenced is that the binary exits non-zero on an unparseable model, not that `check-arch` reaches
+it.
 
 ## `check-arch-trace.py`
 

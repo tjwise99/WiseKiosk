@@ -118,11 +118,11 @@ jobs:
     # into docs/ARCHITECTURE.md — then fails on any drift (`git diff
     # --exit-code`): the staleness gate that mirrors the repo's "CI fails on
     # stale generated code" rule for the architecture layer. Then the model's
-    # requirement tags are resolved against the Doorstop tree, and each gate is
-    # run against a seeded defect (ADR 0010). Doorstop is read through the
-    # requirements silo's venv and LikeC4 through the architecture silo's
-    # node_modules, each with the feature it serves. Browser-free: bundled WASM
-    # graphviz, no chromium. No secrets: pure model validation + codegen.
+    # requirement tags are resolved against the Doorstop tree. Doorstop is read
+    # through the requirements silo's venv and LikeC4 through the architecture
+    # silo's node_modules, each with the feature it serves. Browser-free:
+    # bundled WASM graphviz, no chromium. No secrets: pure model validation +
+    # codegen.
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
