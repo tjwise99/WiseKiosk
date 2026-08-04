@@ -143,9 +143,10 @@ unregistered language whatever this record said.
   which is the loudest thing a review sees — the embedded case named in the Decision above is the
   exception, and it is a residue rather than the population — and
   [0016](0016-maintained-tools-for-standard-artifacts.md) had just ruled that one residual obligation
-  does not earn a gate of its own. That second leg is what carries the rejection. The checklist
-  question is what 0011 requires so the obligation is not a dead letter; a gate on top of it would be
-  ceremony.
+  does not earn a gate of its own. The two work in sequence rather than in parallel — the first sizes
+  the case as a residue, which is the condition under which the second reaches it at all. The
+  checklist question is what 0011 requires so the obligation is not a dead letter; a gate on top of it
+  would be ceremony.
 
 ## Consequences
 
