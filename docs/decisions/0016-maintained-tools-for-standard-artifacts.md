@@ -102,8 +102,9 @@ obligation, so neither constrains the implementation.
 **The ruling is bounded twice over.** It covers an *empty* population, not one silently *shrunk* — the
 unterminated-fence guard in `check-links.mjs`, which exists because a fence that never closes blanks the
 rest of the file, is a different failure and is left open below. And it reaches only the checks this
-decision adopts away. **Every empty-population guard in a check that stays authored is untouched**, which
-is all of these:
+decision adopts away. **Every empty-population guard in a check that stays authored is untouched** — that
+sentence is the protection, and it holds for any such guard whenever it was written. Those in the tree
+when this was decided:
 
 | Guard | Source |
 |---|---|
