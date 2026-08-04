@@ -59,10 +59,12 @@ Two properties are enforced, both browser-free and both run in CI:
 
 Diagrams are produced by `likec4 codegen mermaid`, which GitHub renders inline — no image binaries, no
 headless browser. Image export (`export png`/`jpg`) *does* need a headless browser and is deliberately
-**not** part of any gate. No JSON model snapshot is committed either: `likec4 export json` exists for
-programmatic consumers, and nothing consumes it here yet — a future consumer (a check cross-checking
-element tags against the requirements tree is the obvious one) regenerates it on demand rather than
-reading a committed copy, whose internal ids are not deterministic across machines anyway.
+**not** part of any gate. No JSON model snapshot is committed either: `likec4 export json` is read on
+demand by [`../../scripts/check-arch-trace.py`](../../scripts/check-arch-trace.py), rather than from a
+committed copy whose internal ids are not deterministic across machines. A second consumer follows
+that shape, and validates the model first: `export json` exits zero on a model that does not parse
+and emits a degraded document, so a consumer that skips validation reads a broken model as an empty
+one.
 
 GitHub cannot transclude an external `.mmd` file into Markdown, so [`../ARCHITECTURE.md`](../ARCHITECTURE.md)
 carries an inline `mermaid` fence per diagram — **generated, not hand-maintained**: the final step of
