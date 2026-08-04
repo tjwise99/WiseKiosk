@@ -25,8 +25,12 @@ and Sphinx ([0004](0004-docs-site-sphinx-needs.md)) both require it, and CI inst
 whatever the check scripts are written in. Nothing obliges Node in the repository-checks layer at
 all — all seven `.mjs` scripts import only `node:fs`, `node:child_process` and `node:path`, and five
 carry a header comment recording that they deliberately scan plain text rather than reach for a
-parser, three of them naming the YAML parser they avoid. Consolidating on Python therefore adds no
-toolchain and removes one; consolidating on Node would keep both indefinitely.
+parser, three of them naming the YAML parser they avoid. Consolidating the checks on Python therefore
+adds no toolchain and takes Node out of that layer; consolidating them on Node would keep both there
+indefinitely. Node does not leave the repository either way — LikeC4
+([0003](0003-architecture-as-code-likec4.md)) and Vite
+([0018](0018-frontend-svelte-vite-static-spa.md)) make it unconditional as an invoked toolchain. The
+asymmetry is about which layer owes which interpreter, not about which language is present.
 
 Symmetrically, every one of the six Python check scripts imports `doorstop` or `yaml`, so the split
 at the time of this decision is exactly *reads the requirements tree* against *does not*. The Node
@@ -50,6 +54,13 @@ build will need are each that, and so is `docs/site/conf.py`, which is Python be
 configuration format is Python. The `justfile` is the same thing for `just`, which is why
 [`../CI.md`](../CI.md)'s no-shebang rule matters here: it is what keeps a recipe a list of commands
 rather than a shell script wearing a recipe's clothes.
+
+**A program embedded in a derived format is still an authored program**, and the rule above reaches
+it: a workflow `run:` block or a hook `entry:` carrying control flow is authored sh whatever file it
+sits in. Only the `justfile` leg of this has a check behind it; the rest is the reviewer's, under
+[`../../CONTRIBUTING.md`](../../CONTRIBUTING.md) review checklist item 12, and it is the one place
+where this decision's reason for refusing a gate — that a new language is a new file extension, the
+loudest thing in a diff — does not hold.
 
 Nothing above needs amending when a tool arrives with a format not yet seen here — which is the
 point, since [0016](0016-maintained-tools-for-standard-artifacts.md) adopts four such tools.
@@ -80,14 +91,17 @@ exemption:** `scripts/check-branch.sh` converts (#109 check-branch conversion); 
 and splice checks in Node convert (#110 Node check conversion); `scripts/check-verify-ci-parity.mjs`
 waits on #101 CI invoking just recipes directly, because that ticket may delete it (#111 parity-check
 conversion); and `scripts/validate-tree.sh` is **deleted rather than converted**, by #78 retire the
-pending-TST-tier exception, which removes the gate it implements.
+pending-TST-tier exception, which drops the wrapper and restores the bare `doorstop` call it stands
+in for. Tree validation is not what goes; the exception is.
 
-**#78 has no date, and that has a cost worth stating:** it fires when the first `TST` item activates,
-so until then sh remains an authored language in this tree for one 34-line file — a classifier arm
-and its fixtures, which is exactly the price the grandfathering alternative was rejected for paying.
-The disposition is deletion rather than conversion because converting a script that a dated ticket
-removes is the waste this decision's own sequencing avoids elsewhere; the cost is accepted, not
-overlooked. If #78 stalls, converting it is the remedy, and it needs no amendment here.
+**#78 is committed but unscheduled, and that has a cost worth stating:** it fires when the first
+`TST` item activates, so until then sh remains an authored language in this tree for one 34-line
+file — a classifier arm and its fixtures, which is exactly the price the grandfathering alternative
+was rejected for paying. The disposition is deletion rather than conversion because converting a
+script another ticket deletes is the waste this decision's own sequencing avoids elsewhere; the cost
+is accepted, not overlooked. The difference from grandfathering is that this ends, and #78 is where
+it is decided that it has not — if that ticket stalls, conversion is the remedy and this record needs
+no amendment for it.
 
 That list is a snapshot taken on the decision date, not a standing inventory — no check compares it
 against the tree, and the rule above is what governs anything written after it.
