@@ -581,40 +581,47 @@ it.
 
 ## `check-arch-trace.py`
 
-| Direction | Input |
-|---|---|
-| Must fail | a tag naming no item — a model declaring and applying a three-digit `SYS` identifier the tree does not hold |
-| Must fail | a model that does not parse — a `#tag` where the grammar wants `}` |
-| Must pass | the model as it stands |
-| Must pass | an accepted `SRS` identifier tagged on an **element** rather than a relationship |
+Exercised at `5c48ed8`, against `check-arch-trace.py` md5 `62e44de86ab097dfa0ee68084a1fb6f3` —
+recorded because a fixture built with `git archive` carries the script as it was at `HEAD`, so a case
+can silently exercise the old one. Asserting the md5 of the copy under test before running is what
+separates *the fix does not work* from *the fix was not in the tree you ran*.
 
-The invalid-model row is the one that matters. `likec4 export json` behaves like `codegen` and
-**succeeds on a broken model**, emitting a degraded document whose tags have silently gone missing —
-so a check reading the export without validating first sees a model that tags nothing, finds no
-unresolved identifier, and prints success. That is how the row was found: a malformed seed produced
+### Must fail
+
+| Case | Input |
+|---|---|
+| Identifier naming no item | a three-digit `SYS` identifier the tree does not hold, declared and applied |
+| Mis-cased identifier | the same identifier in lower case |
+| Declared, applied to nothing | a declaration with no `#` application anywhere |
+| Item not accepted | a tag on an item whose `status` is `proposed` |
+| Item retired | a tag on an item with `active: false` |
+| Tag that is not an identifier | `needs-srs`, taken from the model on `origin/main` |
+| No tag at all | every declaration and application stripped from the model |
+| Model that does not parse | a `#tag` where the grammar wants `}` |
+
+### Must pass
+
+| Case | Input |
+|---|---|
+| The model as it stands | — |
+| An accepted `SRS` identifier on an **element** rather than a relationship | the other half of the code path |
+| Every tag on elements, none on any relationship | a Container-level model of the shape #97 C4 phase 2 will produce |
+
+**The unparseable-model row is the one that matters.** `likec4 export json` behaves like `codegen`
+and **succeeds on a broken model**, emitting a degraded document whose tags have gone missing — so a
+check reading the export without validating first sees a model that tags nothing, finds no unresolved
+identifier, and prints success. It was found by a malformed seed, not by design: the seed produced
 `declared and applied to nothing` for three tags that were, in the real model, applied. Had the
 degradation dropped the declarations too, the run would have been green.
 
-The element row exists because the model tags only relationships, so every passing run says nothing
-about the other half of the code path. It also caught the first attempt at this case being invalid
-LikeC4 rather than a legal spelling — a `#tag` is accepted at the head of an element body, not after
-its `description`.
+**The no-tag row is a guard rather than an arm.** A model carrying no tag resolves every tag it
+carries, so an absent architecture → requirements link and a sound one read identically. It is the
+third of that shape in this check, beside the guards over the export and over the tree.
 
-| Must fail | a model carrying no tag at all — every declaration and application stripped |
-
-The five arms above were run in the independent review of PR #113, each seeded into its own
-`git archive` extraction: an identifier naming no item, a mis-cased one, one declared and applied to
-nothing, one on a `proposed` item, and one on a retired item. A non-identifier tag was seeded from
-`origin/main`'s own `needs-srs`. All fire.
-
-The no-tag row is the guard, not an arm: a model carrying no tag resolves every tag it carries, so
-the check would report a sound link over an absent one. It is the same shape as the two guards over
-the export and the tree.
-
-Every degenerate input fails closed: an emptied model directory, a removed model directory, a removed
-requirements tree, and a model that does not parse. The removed-model case matters most — `likec4
-validate` exits **0** on a directory with no model in it, so the element guard is the only thing
-catching it.
+**Every degenerate input fails closed**: an emptied model directory, a removed model directory, a
+removed requirements tree, and an unparseable model. The removed-directory case is the sharp one —
+`likec4 validate` exits **0** on a directory holding no model, so the element guard is the only thing
+that catches it, and a check trusting the validator's exit status alone would pass.
 
 ## `check-site`
 

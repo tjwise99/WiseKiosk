@@ -80,12 +80,10 @@ level #98 C4 phase 3; both nest additively — `container` children inside the `
 `component` children inside a container, a `view of <element>` per level in `views.likec4` — so
 neither restructures what is already here.
 
-**An element earns a place when something in the tree obliges it, not when it is foreseeable**, and
-only where the system exchanges something with it
-([ADR 0019](../decisions/0019-boundary-at-what-deploys-and-tag-tier.md)). An upstream data source
-belongs to the module that reads it, so it is modelled once that module has a need
-([ADR 0012](../decisions/0012-module-requirements-in-tree.md)); Component content waits on the code it
-describes.
+**An element earns a place where the system exchanges something with it, and an upstream once the
+module that reads it has a need** ([ADR 0019](../decisions/0019-boundary-at-what-deploys-and-tag-tier.md)).
+Component content waits on the code it describes, which is ADR 0003's rule against building a level
+before its second consumer exists rather than anything this level decides.
 
 **Source `link`s** wire the model to real code: once `backend/`/`frontend/` exist, a `link` property
 on a container or component points at the source implementing it. This is how the model stops being a

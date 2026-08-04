@@ -64,10 +64,11 @@ no module's identifier — which forecloses the binding the tag mechanism below 
 
 **`SRS` at every level**, as ADR 0003 assumes. Rejected: at the Context level it forces a choice
 between attaching every `SRS` id to the single system element and picking an arbitrary few, and
-neither is a link a reader can trust. Binding `SRS` to a *relationship* does not escape that, which
-is the form this decision's own mechanism would invite: an edge already carries the `SYS` item
-obliging it, and tagging one edge across two tiers leaves a reader unable to tell which tier a tag
-answers to. The tier is a property of the level, not of the mechanism.
+neither is a link a reader can trust. Binding `SRS` to a *relationship* does not escape it either,
+which is the form this decision's own mechanism would otherwise invite: an `SRS` item allocates to a
+container, so tagging an edge here with one names an obligation on something this level does not
+draw — the link points past the diagram carrying it, and nothing a reader of this level can see
+either confirms or contradicts it. The tier is a property of the level, not of the mechanism.
 
 **Tagging an element with every id it owes.** Rejected: true, and it carries no information — the
 system element owing all seven `SYS` items restates that the `SYS` tier is the tier about the system.

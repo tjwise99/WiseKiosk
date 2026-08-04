@@ -287,9 +287,10 @@ resolve, a citation to something that does not exist, an index that has drifted 
   and accepted, and is spelled canonically; every declared tag is applied to something. A tag
   carrying anything other than an identifier fails rather than being passed over — the model's tags
   carry requirement links ([ADR 0019](decisions/0019-boundary-at-what-deploys-and-tag-tier.md)), so
-  one carrying something else is a decision to take, not an exemption to add. What this leaves
-  unproven is whether the tagged element is the one that requirement obliges, and whether the tier
-  suits the level; both are read at review.
+  one carrying something else is a decision to take, not an exemption to add. A model naming no
+  requirement at all fails too: it resolves every tag it carries, so an absent link and a sound one
+  would read identically. What this leaves unproven is whether the tagged element is the one that
+  requirement obliges, and whether the tier suits the level; both are read at review.
 - The documentation site builds under Sphinx with warnings-as-errors.
 
 **Considered and rejected:** a registry mapping each canonical document to the path globs it

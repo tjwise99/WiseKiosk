@@ -31,10 +31,9 @@ are overwritten on the next export, and drift fails the staleness gate — see t
 **System context (C4 L1)** — the Operator who deploys and configures WiseKiosk, the Viewer it renders
 for, and the boundary between them, which is what deploys: the published image and what it serves
 ([ADR 0019](decisions/0019-boundary-at-what-deploys-and-tag-tier.md)). No external system
-appears at this level. An upstream data source belongs to the module that reads it, so it is modelled
-here once that module has a need in the tree
-([ADR 0012](decisions/0012-module-requirements-in-tree.md)); the desk validator and the provisioning
-tooling exchange nothing with the running system and are outside it.
+appears at this level: an upstream data source is modelled once the module that reads it has a need
+in the tree, and the desk validator and the provisioning tooling exchange nothing with the running
+system ([ADR 0019](decisions/0019-boundary-at-what-deploys-and-tag-tier.md)).
 
 <!-- arch-export:begin generated/index.mmd -->
 
