@@ -62,6 +62,10 @@ Enforced by the `process` CI check ([ADR 0006](docs/decisions/0006-process-gates
 - Keep the diff scoped to intended files only.
 - Verify via CI, not by trusting a local run.
 - Walk the review checklist below against the diff.
+- **Squash-merge, with the branch's commit messages concatenated into the body** —
+  `git log --reverse --format='--- %h %s%n%b' <base>..<head>`. The squash is what makes the PR title
+  the commit on `main`; without the bodies beneath it, the reasoning recorded per commit is
+  unreachable by `git log -S` on the line it explains.
 
 ## Review checklist
 
