@@ -82,12 +82,19 @@ repository-specific commands in `check-reqs`; and, in `check-arch`, both the mar
 mechanisms those last two use; neither owns the obligation, exactly as `git ls-files` does not own the
 documentation-index claim.
 
-**One obligation is preserved by measurement rather than by assumption.** `check-workflow-hardening.mjs`
-must fail when it discovers no workflow file at all, because a scan that finds nothing to inspect reports
-the same success as one with nothing to report. A parser subsumes the *unreadable-layout* half by
-construction, but an empty scan is a property of invocation, not of the tool — so it was seeded: against
-a tree with no workflows, `zizmor` exits 3 with `no inputs collected`. The obligation survives adoption,
-and the implementation asserts that exit rather than assuming it.
+**The empty-population guards are retired as a class.** Several authored checks fail when they find
+nothing to scan, on the principle that a check which read nothing must not report success —
+`check-workflow-hardening.mjs` on an empty `.github/workflows`, `check-eol.sh` on a tree with no tracked
+file, and the same script when `git grep` fails outright rather than matching nothing. **Owner ruling:
+an empty scan may report success.** None of these is carried into the adopted tools or asserted of them.
+Measurement incidentally shows `zizmor` exits 3 with `no inputs collected` on an empty tree, and
+`pre-commit` skips a hook whose file set is empty and reports success; neither behaviour is now an
+obligation, so neither constrains the implementation.
+**Cost:** a misconfigured invocation that silently scans nothing reports the same success as a clean run.
+
+This ruling covers an *empty* population. It does not reach a population silently *shrunk* — the
+unterminated-fence guard in `check-links.mjs`, which exists because a fence that never closes blanks the
+rest of the file, is a different failure and is left open below.
 
 **Three obligations are retired outright rather than reimplemented.** Each is dropped as an
 obligation, not demoted to an ungated convention: after this, nothing in the repository requires them
@@ -190,6 +197,12 @@ later.
 - Whether any adopted tool's fixtures conflict with [0010](0010-runtime-materialised-gate-fixtures.md),
   which forbids committing a vulnerable artifact in resolvable form.
 - Sequencing against #101 CI-invoking-just-recipes, which touches the same gate-wiring surface.
+- Whether an under-scan needs a guard, distinct from the empty scan the ruling above settles.
+  `check-links.mjs` guards an unterminated fence because it blanks the rest of the file; under CommonMark
+  such a fence runs to end of document, so `lychee` would extract no links past it and report clean.
+  `check-workflow-hardening.mjs` likewise fails a workflow declaring no `permissions:` block at all,
+  which the live measurement cannot confirm `zizmor` reports because both workflows declare one. Each is
+  one seeded fixture away from an answer.
 
 **Premise that would reopen this:** an adopted tool is abandoned, or changes its defaults so that it
 no longer covers the obligation it was adopted for; or a repository convention appears that the tool
