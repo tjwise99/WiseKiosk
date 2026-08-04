@@ -11,9 +11,8 @@ The frontend stack was in use before anything recorded why. [0001](0001-backend-
 by treating it as given — *"The frontend is settled: Svelte 5 + Vite, a static SPA"* — and reasons
 about the backend from there. [`../../README.md`](../../README.md) and
 [`../ARCHITECTURE.md`](../ARCHITECTURE.md) state it. [`../CI.md`](../CI.md) § *Module and framework
-structure* **gates** it: exactly one HTML entry whose mount element is empty, no server-entry chunk,
-no SSR target or adapter declared in the build configuration, and the emitted module graph a subset of
-a committed allowlist.
+structure* **gates** it, refusing among other things a declared SSR adapter — that section states what
+the gate asserts, and owns it.
 
 Its only rationale home was `docs/FOUNDATIONS.md` § 2, deleted with #69 tree rebuild. What that table
 carried and nothing else does is the premise that would reopen the decision. So the repository was
@@ -34,8 +33,9 @@ served as files by the Go backend. **No server-side rendering, no router, no met
 [`../CI.md`](../CI.md)'s static-bundle gate is the mechanical form of that sentence; this record is
 what it asserts against.
 
-TypeScript throughout, which is what [0017](0017-authored-language-set.md) admits for what ships:
-the configuration-validation engine of [0007](0007-config-validation-allocation.md) and the generated
+Components are authored in the Svelte component format and everything around them in TypeScript,
+which is what [0017](0017-authored-language-set.md) admits for what ships: the
+configuration-validation engine of [0007](0007-config-validation-allocation.md) and the generated
 boundary types of [0008](0008-boundary-contract-openapi-codegen.md) both live here. Vite is an
 invoked toolchain under that decision, not an authoring language.
 

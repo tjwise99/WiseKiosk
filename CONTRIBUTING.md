@@ -106,10 +106,9 @@ questions.
     narrowing itself reachable by the defect the check exists to catch? An exemption written to
     prevent a false positive is the first place a bypass gets spelled, and the reasoning that
     produces one reads as caution.
-12. **Languages.** Does the change author a file in a language outside the set
+12. **Languages.** Does the change author a program in a language outside the set
     [ADR 0017](docs/decisions/0017-authored-language-set.md) states — and if so, has that language
-    been through an ADR? A toolchain's own configuration file, in the format that toolchain requires,
-    is invoking it rather than authoring in it, and is not a new language.
+    been through an ADR?
 
 **Requirements**
 

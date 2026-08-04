@@ -9,10 +9,8 @@
 The product's languages were decided. Go is [0001](0001-backend-language-go.md); the frontend is
 [0018](0018-frontend-svelte-vite-static-spa.md); the boundary types are generated into both by
 [0008](0008-boundary-contract-openapi-codegen.md). The languages the *repository* is written in were
-never decided at all. Six arrived, four of them by nobody's choice: POSIX sh in the check scripts and
-the hooks, Node ESM in seven more check scripts, Python in the requirements and documentation-site
-tooling, and `just`, with YAML and the Dockerfile forced by the platforms that read them. The seventh
-was one contributor away.
+never decided at all. Programs are authored here in POSIX sh, in Node ESM and in Python, none of
+those by anyone's choice, and the next contributor could add a fourth without meeting an argument.
 
 Two things make an unbounded set expensive rather than merely untidy.
 
@@ -21,33 +19,43 @@ describes (#59 comment-discipline gate) decides which comments belong to a langu
 facility, which costs a classifier arm and a fixture suite per language, and its coverage registry
 fails on a language that has neither. A set nobody bounded is an obligation nobody can size.
 
-**A language that is not reachable where it runs is not available.** Git hooks run in a
-non-interactive shell. On the development host `/usr/bin/python3` is present there and an
-nvm-managed `node` is not, so a Node-authored check is structurally unreachable at the one moment the
-repository checks something before CI does.
+**One of the candidates is already owed and the other is not.** Python is unconditional here for
+reasons that have nothing to do with checks: Doorstop ([0002](0002-requirements-management-doorstop.md))
+and Sphinx ([0004](0004-docs-site-sphinx-needs.md)) both require it, and CI installs it for two jobs
+whatever the check scripts are written in. Nothing obliges Node in the repository-checks layer at
+all — all seven `.mjs` scripts import only `node:fs`, `node:child_process` and `node:path`, and five
+carry a header comment recording that they deliberately scan plain text rather than reach for a
+parser, three of them naming the YAML parser they avoid. Consolidating on Python therefore adds no
+toolchain and removes one; consolidating on Node would keep both indefinitely.
 
-What made the question answerable is that nothing in the repository-checks layer *requires* Node. All
-seven `.mjs` scripts import only `node:fs`, `node:child_process` and `node:path`; three carry a
-header comment recording that they deliberately scan plain text rather than reach for a parser.
-Symmetrically, every one of the six Python check scripts imports `doorstop` or `yaml`. The split at
-the time of this decision is therefore exactly *reads the requirements tree* against *does not* — the
-Node dependency is habit, and the Python one is the Doorstop silo.
+Symmetrically, every one of the six Python check scripts imports `doorstop` or `yaml`, so the split
+at the time of this decision is exactly *reads the requirements tree* against *does not*. The Node
+dependency is habit; the Python one is the Doorstop silo.
 
 ## Decision
 
-**Language follows the artifact's audience.**
+**Language follows the artifact's audience.** What this decides is the languages a contributor
+authors **programs** in.
 
 | Artifact | Authored in |
 |---|---|
-| What ships to a user or an operator — the kiosk, and the tools an operator runs | Go, TypeScript |
+| What ships to a user or an operator — the kiosk, and the tools an operator runs | Go, TypeScript, and the Svelte component format ([0018](0018-frontend-svelte-vite-static-spa.md)) |
 | What checks this repository | Python, standard library only |
 
-**Everything else present in the tree is derived, not enumerated.** A toolchain's own configuration
-file, in the format that toolchain requires, is part of invoking it rather than authoring in it. The
-workflow YAML, the Dockerfile, a `lychee` TOML and a `commitlint` configuration are all that, and so
-is `docs/site/conf.py`, which is Python because Sphinx's configuration format is Python. Nothing above
-needs amending when a tool arrives with a format not yet seen here — which is the point, since
-[0016](0016-maintained-tools-for-standard-artifacts.md) adopts four such tools.
+**Everything else present in the tree is derived, not enumerated.** A toolchain's own required input
+format — its configuration, its model, the items it stores — is part of invoking that toolchain
+rather than authoring in it. The workflow YAML, the Doorstop item files under `docs/requirements/`,
+the `.likec4` models, a `lychee` TOML, a `commitlint` configuration and the Dockerfile a container
+build will need are each that, and so is `docs/site/conf.py`, which is Python because Sphinx's
+configuration format is Python. The `justfile` is the same thing for `just`, which is why
+[`../CI.md`](../CI.md)'s no-shebang rule matters here: it is what keeps a recipe a list of commands
+rather than a shell script wearing a recipe's clothes.
+
+Nothing above needs amending when a tool arrives with a format not yet seen here — which is the
+point, since [0016](0016-maintained-tools-for-standard-artifacts.md) adopts four such tools.
+
+**Documentation, and the assets a documentation build serves, are not authored programs and this
+decision does not reach them.**
 
 **Node is an invoked toolchain and never an authoring language.** LikeC4
 ([0003](0003-architecture-as-code-likec4.md)) and Vite are invoked; so is whatever an adopted hook
@@ -59,20 +67,30 @@ assumed — had `.githooks/` as its entire population, and
 itself Python. A rule with no subject is not kept for the one file that predates it.
 
 **TypeScript is product-only.** Extending it to repository tooling would leave the runtime, the
-hook-reachability problem and the classifier arm exactly as they are, so the exclusion of JavaScript
-would become a rule about file extensions.
+toolchain and the classifier arm exactly as they are, so the exclusion of JavaScript would become a
+rule about file extensions.
 
 **Scripts that read the requirements tree run in the Doorstop silo venv and may use its libraries.**
 That is [`../CI.md`](../CI.md)'s tooling-siloed-with-the-feature rule reaching this decision, not a
 carve-out from it: the silo is what makes `doorstop` and `yaml` available, and it is why a check that
 reads the tree is a different artifact from one that reads the repository.
 
-**The artifacts that did not conform when this was decided each carry a ticket rather than an
-exemption:** `scripts/check-branch.sh` (#109 check-branch conversion), the four index, silo and
-splice checks in Node (#110 Node check conversion), and `scripts/check-verify-ci-parity.mjs`, which
-waits on #101 CI invoking just recipes directly because that ticket may delete it (#111 parity-check
-conversion). That list is a snapshot taken on the decision date, not a standing inventory — no check
-compares it against the tree, and the rule above is what governs anything written after it.
+**The artifacts that did not conform when this was decided each carry a disposition rather than an
+exemption:** `scripts/check-branch.sh` converts (#109 check-branch conversion); the four index, silo
+and splice checks in Node convert (#110 Node check conversion); `scripts/check-verify-ci-parity.mjs`
+waits on #101 CI invoking just recipes directly, because that ticket may delete it (#111 parity-check
+conversion); and `scripts/validate-tree.sh` is **deleted rather than converted**, by #78 retire the
+pending-TST-tier exception, which removes the gate it implements.
+
+**#78 has no date, and that has a cost worth stating:** it fires when the first `TST` item activates,
+so until then sh remains an authored language in this tree for one 34-line file — a classifier arm
+and its fixtures, which is exactly the price the grandfathering alternative was rejected for paying.
+The disposition is deletion rather than conversion because converting a script that a dated ticket
+removes is the waste this decision's own sequencing avoids elsewhere; the cost is accepted, not
+overlooked. If #78 stalls, converting it is the remedy, and it needs no amendment here.
+
+That list is a snapshot taken on the decision date, not a standing inventory — no check compares it
+against the tree, and the rule above is what governs anything written after it.
 
 **Nothing here is gated.** A language outside this set is a decision with a rejected alternative, so
 it arrives as an ADR amending or superseding this one, and the reviewer is the mechanism —
@@ -122,13 +140,15 @@ unregistered language whatever this record said.
   *plain sh + curl + jq — no toolchain* property, already amended by
   [0016](0016-maintained-tools-for-standard-artifacts.md) when `commitlint` and `pre-commit` were
   adopted, ends completely. What replaces it is a weaker but real property: the interpreter the gates
-  need is the one present wherever a hook runs.
+  need is one this repository already owes for its requirements tree and its documentation site.
 - **A check that wants logic already written in TypeScript must reimplement it in Python or shell out
   to the frontend toolchain.** No check does; a configuration-schema check that wanted to
   reuse the validation engine of [0007](0007-config-validation-allocation.md) would be the first, and
   it would be a real cost when it arrives.
-- **#59 comment-discipline gate's registry gets a finite population** — three authored languages, plus
-  the derived formats, each of which needs an arm or a recorded exclusion under that gate's own rule.
+- **#59 comment-discipline gate's registry gets a bounded population** — the authored languages above,
+  plus formats that arrive derived rather than chosen, each of which needs an arm or a recorded
+  exclusion under that gate's own rule. Bounded is the claim, not small: what the bound buys is that
+  the population changes only by an ADR.
 - **No requirement item states any of this.** The decision constrains the repository, and
   [0011](0011-requirement-or-convention.md) makes a repository constraint a check or a checklist
   question, never a tree item.
