@@ -40,7 +40,7 @@ const CHECK_TOKENS = {
     "docs/architecture/node_modules/.bin/likec4 codegen mermaid docs/architecture/model -o docs/architecture/generated",
     "node scripts/splice-arch-diagrams.mjs",
     "git add --intent-to-add -- docs/architecture/",
-    "git diff --exit-code docs/architecture/ docs/ARCHITECTURE.md",
+    "git diff --exit-code HEAD -- docs/architecture/ docs/ARCHITECTURE.md",
   ],
   "check-arch-trace": ["docs/requirements/.venv/bin/python scripts/check-arch-trace.py"],
   "check-site": [

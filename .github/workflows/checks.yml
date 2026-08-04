@@ -150,7 +150,7 @@ jobs:
           docs/architecture/node_modules/.bin/likec4 codegen mermaid docs/architecture/model -o docs/architecture/generated
           node scripts/splice-arch-diagrams.mjs
           git add --intent-to-add -- docs/architecture/
-          git diff --exit-code docs/architecture/ docs/ARCHITECTURE.md
+          git diff --exit-code HEAD -- docs/architecture/ docs/ARCHITECTURE.md
 
       - name: Every requirement identifier tagged in the model resolves to an accepted item
         run: docs/requirements/.venv/bin/python scripts/check-arch-trace.py

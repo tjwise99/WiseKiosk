@@ -98,14 +98,15 @@ arch-export:
     docs/architecture/node_modules/.bin/likec4 codegen mermaid docs/architecture/model -o docs/architecture/generated
     node scripts/splice-arch-diagrams.mjs
 
-# `add --intent-to-add` puts regenerated-but-untracked artifacts into the diff below, which otherwise
-# sees only tracked paths. It marks nothing when there are none, so a passing run leaves no index entry.
+# `add --intent-to-add` reaches regenerated artifacts that are untracked; the diff is taken against
+# HEAD because that same `git add` stages the deletion `arch-export` makes of an orphan, which an
+# index-relative diff then reads as agreement. Both are required and neither suffices alone.
 [group('checks')]
 [doc('Architecture model validates and its generated artifacts are neither stale, orphaned, nor uncommitted')]
 check-arch:
     just arch-export
     git add --intent-to-add -- docs/architecture/
-    git diff --exit-code docs/architecture/ docs/ARCHITECTURE.md
+    git diff --exit-code HEAD -- docs/architecture/ docs/ARCHITECTURE.md
 
 [group('checks')]
 [doc('Every requirement identifier tagged in the architecture model resolves to an accepted item')]

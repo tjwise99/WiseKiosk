@@ -560,29 +560,44 @@ Confirmed separately, because only a real run shows it: a hand edit inside a mar
 overwritten and the tree goes clean again, and a change to a generated artifact reaches the document,
 so `git diff --exit-code` is what catches staleness.
 
-| Must fail | a committed artifact no view produces — `generated/orphan.mmd` staged into the index, then the recipe run |
-| Must fail | a committed view whose artifact was never committed — a `view containers of wisekiosk` added and committed, `generated/containers.mmd` left untracked |
-| Must pass | a clean regenerate — `generated/` removed and rebuilt, md5 of `index.mmd` unchanged and the tree still clean |
-| Must pass | the unseeded tree — exit 0 leaving **zero** index entries, so the `--intent-to-add` marks nothing when nothing is untracked |
+### The three-line gate
 
-The two failing rows are mirror images, and neither was catchable before this branch. Each was run
-against two fixtures built identically from the same `git archive`, differing only in the recipe:
+| Direction | Input |
+|---|---|
+| Must fail | a committed artifact no view produces — `generated/orphan.mmd` committed, then its view deleted |
+| Must fail | a committed view whose artifact was never committed — `view containers of wisekiosk` committed, `generated/containers.mmd` left untracked |
+| Must fail | a committed artifact hand-edited away from what the model produces |
+| Must pass | the unseeded tree — exit 0, leaving **zero** index entries |
 
-- **Artifact with no view.** With the `rm -rf docs/architecture/generated` line removed from
-  `arch-export`, the seed exits **0**. `likec4 codegen` writes and never prunes, so an artifact whose
-  view was deleted stays byte-identical to what is committed and the staleness diff has nothing to
-  report. Deleting the `containers` view is what surfaced it.
-- **View with no artifact.** With the `git add --intent-to-add` line removed, the seed exits **0**.
-  A regenerated artifact nobody committed is *untracked*, and `git diff` reads tracked paths only —
-  so the view lands, the diagram never reaches `ARCHITECTURE.md`, and the gate is green.
+`arch-export`'s `rm -rf`, the `git add --intent-to-add`, and the `HEAD` in the diff are three parts of
+one mechanism, and **each was proven necessary by removing it and re-running every row**, on fixtures
+built identically from one `git archive` and differing only in the recipe:
 
-Both are the same defect class in opposite directions: the check silently shrinking its own
-population and then reporting success over what is left. The second was found by review rather than
-by authoring, after the first had been fixed.
+| Line removed | Row that then passes wrongly |
+|---|---|
+| `rm -rf docs/architecture/generated` | artifact with no view — codegen never prunes, so the orphan stays byte-identical to what is committed |
+| `git add --intent-to-add` | view with no artifact — a regenerated artifact nobody committed is untracked, and `git diff` reads tracked paths only |
+| `HEAD` in the diff | artifact with no view, **again** — `git add` with a pathspec stages the deletion `rm -rf` just made, and an index-relative diff reads worktree and index as agreeing |
 
-A caution the second case earned: `--intent-to-add` **persists in the index**, so a failing run
-leaves the artifact marked. Re-running the pre-fix recipe in that same tree then also exits 1, which
-reads as the hole not existing. Build each direction its own fixture.
+The third row is the one to remember. Adding `--intent-to-add` to close the second row silently
+re-opened the first, because the two lines act on the same index in opposite directions: one exists to
+create evidence of a deletion, the other erases it. It survived a full local `just verify`, six
+commits, and a green CI run — CI proves nothing here, because the repository tree holds no orphan, so
+the gate has nothing to miss. It was caught only by re-running the *original* finding's own
+reproduction against the fix, which is the practice this whole file exists to make routine.
+
+Two traps in seeding this, both hit:
+
+- **`--intent-to-add` persists in the index after a failing run.** Re-running the pre-fix recipe in
+  that same tree also exits 1, which reads as the hole never existing. Build each direction its own
+  fixture.
+- **Symlinking `node_modules/` into a fixture reds the gate**, because the trailing-slash ignore
+  pattern does not match a symlink, so `git add -N` marks it. Copy the directory, or assert
+  `git check-ignore` before trusting a result.
+
+Two live consequences of `git add -N` taking the whole silo rather than `generated/`: any untracked
+non-ignored file under `docs/architecture/` — a scratch note — fails the gate; and after a failing run
+`git stash` refuses with *"Entry … not uptodate"* until `git reset` clears the marker.
 
 **`likec4 codegen` has no case here.** That is a gap, not a reasoned exemption: `check-site` seeds
 Sphinx's validator in the section below, so "it is a vendored toolchain's own validator" would not
