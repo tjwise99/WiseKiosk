@@ -102,9 +102,12 @@ obligation, so neither constrains the implementation.
 **The ruling is bounded twice over.** It covers an *empty* population, not one silently *shrunk* — the
 unterminated-fence guard in `check-links.mjs`, which exists because a fence that never closes blanks the
 rest of the file, is a different failure and is left open below. And it reaches only the checks this
-decision adopts away. **Every empty-population guard in a check that stays authored is untouched** — that
-sentence is the protection, and it holds for any such guard whenever it was written. Those in the tree
-when this was decided:
+decision adopts away. **Every empty-population guard in a check that stays authored is untouched.** That
+sentence is the whole protection: it is universal, so it reaches guards this record never saw and guards
+written after it. The table below is **examples, not an inventory** — deliberately, because a
+hand-maintained list of code in an immutable document is the drift
+[0014](0014-documentation-index-claims-documents.md) refuses from the other direction, and no check
+compares this one against the tree. Including:
 
 | Guard | Source |
 |---|---|
