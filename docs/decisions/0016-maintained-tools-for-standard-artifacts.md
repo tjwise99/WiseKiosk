@@ -18,9 +18,9 @@ The exceptions show the question has an answer whenever it is actually asked, an
 them. `check-site` is a Sphinx build with warnings-as-errors, adopted by
 [0004](0004-docs-site-sphinx-needs.md). `check-arch` validates the model with `likec4 validate`,
 adopted by [0003](0003-architecture-as-code-likec4.md). `check-reqs` delegates tree integrity to
-`doorstop --error-all`, adopted by [0002](0002-requirements-management-doorstop.md) — and
-[`../CI.md`](../CI.md) says so in as many words: *"The requirements tier is covered by `doorstop
---error-all` and is deliberately not re-encoded here."* `secret-scan` is `gitleaks`. So the precedent
+`doorstop --error-all`, adopted by [0002](0002-requirements-management-doorstop.md) — a delegation
+[`../CI.md`](../CI.md) relies on explicitly when it scopes the dead-test gate away from the
+requirements tier. `secret-scan` is `gitleaks`. So the precedent
 exists and is four times recorded; it had simply never been generalised, and in its absence every new
 obligation defaulted to being authored.
 
@@ -59,19 +59,35 @@ pull-request-title invocation runs with them disabled. The pattern keeps the sin
 `conventional-commit.regex` holds today; whether one configuration can serve both stages, or one must
 `extends` the other, is left to the implementation.
 
-**The unit this rule sorts is an obligation, not a `just` recipe.** A recipe may run several commands
-asserting different things, and three of them carry both kinds: `check-reqs` delegates tree integrity
-to Doorstop while five of its six commands assert rules of this repository's own; `check-arch`
-delegates model validation to `likec4` while `splice-arch-diagrams.mjs` asserts this repository's
-`arch-export` marker format, with eight recorded must-fail rows of its own; and `check-links` is split
-by this very decision — its link resolution delegated, its two other obligations retired. Sorting by
-recipe would misfile all three, and a census taken that way has already been wrong twice in the
-drafting of this record.
+**Where a maintained tool owns an obligation but covers only part of it, the remainder is authored —
+and scoped explicitly to the uncovered part**, so the tool's coverage is never silently re-encoded
+beside it. `scripts/check-suspect-links.py` is the worked example: suspect links are Doorstop's
+concept, and `doorstop --error-all` decides them for every *active* item, so the authored script covers
+inactive items only. It exists because of a coverage gap, not because the obligation is this
+repository's.
 
-The obligations that stay authored are those asserting rules this repository invented: everything in
-`check-branch`, `check-citations`, `check-adr-index`, `check-docs-index`, `check-repo-silo` and
-`check-verify-ci-parity`, the five repository-specific commands in `check-reqs`, and the marker
-checking in `splice-arch-diagrams.mjs`.
+**The unit this rule sorts is an obligation, not a `just` recipe.** A recipe may run several commands
+asserting different things, and three of them carry more than one kind: `check-reqs` delegates tree
+integrity to Doorstop while five of its six commands assert rules of this repository's own; `check-arch`
+delegates model validation to `likec4` while `splice-arch-diagrams.mjs` asserts this repository's
+`arch-export` marker format and a following `git diff --exit-code` asserts that the generated artifacts
+are byte-identical to a regeneration; and `check-links` is split by this very decision — its link
+resolution delegated, its two other obligations retired. Sorting by recipe would misfile all three, and
+a census taken that way was wrong three times in the drafting of this record.
+
+The obligations that stay authored are everything in `check-branch`, `check-citations`,
+`check-adr-index`, `check-docs-index`, `check-repo-silo` and `check-verify-ci-parity`; the five
+repository-specific commands in `check-reqs`; and, in `check-arch`, both the marker checking in
+`splice-arch-diagrams.mjs` and the generated-artifact staleness comparison. `git` and `doorstop` are the
+mechanisms those last two use; neither owns the obligation, exactly as `git ls-files` does not own the
+documentation-index claim.
+
+**One obligation is preserved by measurement rather than by assumption.** `check-workflow-hardening.mjs`
+must fail when it discovers no workflow file at all, because a scan that finds nothing to inspect reports
+the same success as one with nothing to report. A parser subsumes the *unreadable-layout* half by
+construction, but an empty scan is a property of invocation, not of the tool — so it was seeded: against
+a tree with no workflows, `zizmor` exits 3 with `no inputs collected`. The obligation survives adoption,
+and the implementation asserts that exit rather than assuming it.
 
 **Three obligations are retired outright rather than reimplemented.** Each is dropped as an
 obligation, not demoted to an ungated convention: after this, nothing in the repository requires them
