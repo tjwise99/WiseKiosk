@@ -2,7 +2,8 @@
 
 **Status:** accepted; ticket-metadata obligations extended and the parent-ticket definition added by
 [0013](0013-work-tracking-invariants.md), whose read-only stance this ADR's rejected
-write-scoped-token alternative supplies
+write-scoped-token alternative supplies; gate path amended by
+[0016](0016-maintained-tools-for-standard-artifacts.md)
 **Decided:** 2026-07-22 (process-gates design discussion, ticket #27)
 
 > **Amended 2026-08-03 by [0016](0016-maintained-tools-for-standard-artifacts.md).** The Decision's
@@ -15,6 +16,13 @@ write-scoped-token alternative supplies
 > excludes the single-maintainer marketplace actions that are the only off-the-shelf option for them,
 > and the Enterprise-only finding recorded in the Context below was re-checked against the current
 > ruleset documentation and still holds.
+>
+> The property is stated twice below, and both statements are amended. Gate 3's *"advisory `commit-msg`
+> hook (plain sh + grep)"* becomes a `pre-commit` hook stage. Its *"Each pattern is defined once
+> (`scripts/*.regex`, POSIX ERE)"* survives as a property but not as that mechanism: 0016 retires
+> `conventional-commit.regex` into `commitlint`'s configuration, leaving `branch-shape.regex` as the
+> only file of that kind. The never-declared-twice requirement itself is unchanged and binds
+> `commitlint`'s two stages.
 
 ## Context
 

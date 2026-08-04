@@ -6,19 +6,23 @@
 
 ## Context
 
-Thirteen gates guard this repository — the twelve `check-*` recipes [`just verify`](../../justfile)
-runs, plus the CI-only pull-request-title check. Eleven of the thirteen were written here, and that
-was never a decision. The gate records argue at length about *which hand-rolled form* a check should
-take — [0005](0005-traceability-gating.md) on where evidence lives, [0006](0006-process-gates.md) on
-what the gate reads, [0014](0014-documentation-index-claims-documents.md) on whether a list may be
-hand-maintained — and never about whether to author one at all.
+Fourteen gates guard this repository — the twelve `check-*` recipes [`just verify`](../../justfile)
+runs, plus two that exist only in CI: the pull-request-title check and the `secret-scan` job. Nearly
+every obligation they assert was authored here, and that was never a decision. The gate records argue
+at length about *which hand-rolled form* a check should take — [0005](0005-traceability-gating.md) on
+where evidence lives, [0006](0006-process-gates.md) on what the gate reads,
+[0014](0014-documentation-index-claims-documents.md) on whether a list may be hand-maintained — and
+never about whether to author one at all.
 
-The other two show the question has an answer when it is asked. `check-site` is a Sphinx build with
-warnings-as-errors, adopted by [0004](0004-docs-site-sphinx-needs.md); `check-arch` is `likec4
-validate` plus a staleness comparison, adopted by [0003](0003-architecture-as-code-likec4.md). Both
-gates make their assertion entirely with a maintained tool. So the precedent exists and is twice
-recorded — it had simply never been generalised, and in its absence every new check defaulted to
-being authored.
+The exceptions show the question has an answer whenever it is actually asked, and there are four of
+them. `check-site` is a Sphinx build with warnings-as-errors, adopted by
+[0004](0004-docs-site-sphinx-needs.md). `check-arch` validates the model with `likec4 validate`,
+adopted by [0003](0003-architecture-as-code-likec4.md). `check-reqs` delegates tree integrity to
+`doorstop --error-all`, adopted by [0002](0002-requirements-management-doorstop.md) — and
+[`../CI.md`](../CI.md) says so in as many words: *"The requirements tier is covered by `doorstop
+--error-all` and is deliberately not re-encoded here."* `secret-scan` is `gitleaks`. So the precedent
+exists and is four times recorded; it had simply never been generalised, and in its absence every new
+obligation defaulted to being authored.
 
 In one place that default had gone visibly wrong: `check-workflow-hardening.mjs` scans workflow YAML
 as plain text with no parser to check action pinning and top-level write permissions — a hand-rolled
@@ -51,12 +55,23 @@ Four adoptions follow, each replacing its authored check outright:
 `squash!` are permitted at the commit-message stage because the squash discards them, and refused on
 the pull-request title because the squash makes that title the commit on `main`
 ([0006](0006-process-gates.md)). `commitlint`'s `defaultIgnores` *pass* such subjects, so the
-pull-request-title invocation runs with them disabled. Both stages read one configuration, so the
-pattern keeps the single definition `conventional-commit.regex` holds today.
+pull-request-title invocation runs with them disabled. The pattern keeps the single definition
+`conventional-commit.regex` holds today; whether one configuration can serve both stages, or one must
+`extends` the other, is left to the implementation.
 
-Seven gates stay authored, because each asserts a rule this repository invented: `check-branch`,
-`check-reqs`, `check-citations`, `check-adr-index`, `check-docs-index`, `check-repo-silo` and
-`check-verify-ci-parity`. `check-site` and `check-arch` are unchanged — they already delegate.
+**The unit this rule sorts is an obligation, not a `just` recipe.** A recipe may run several commands
+asserting different things, and three of them carry both kinds: `check-reqs` delegates tree integrity
+to Doorstop while five of its six commands assert rules of this repository's own; `check-arch`
+delegates model validation to `likec4` while `splice-arch-diagrams.mjs` asserts this repository's
+`arch-export` marker format, with eight recorded must-fail rows of its own; and `check-links` is split
+by this very decision — its link resolution delegated, its two other obligations retired. Sorting by
+recipe would misfile all three, and a census taken that way has already been wrong twice in the
+drafting of this record.
+
+The obligations that stay authored are those asserting rules this repository invented: everything in
+`check-branch`, `check-citations`, `check-adr-index`, `check-docs-index`, `check-repo-silo` and
+`check-verify-ci-parity`, the five repository-specific commands in `check-reqs`, and the marker
+checking in `splice-arch-diagrams.mjs`.
 
 **Three obligations are retired outright rather than reimplemented.** Each is dropped as an
 obligation, not demoted to an ungated convention: after this, nothing in the repository requires them
@@ -88,9 +103,11 @@ later.
   (`artipacked`, credential persistence on every checkout), and against seeded defects it caught the
   unpinned reference at High severity and both write-permission spellings.
 - **Adopt only where the tool is a strict superset, keeping a residue check for the remainder.** The
-  shape this decision was expected to take. Rejected because in each case the residue was an
-  obligation that did not survive being named — the three retirements above — and running a second
-  gate for an obligation that weak costs more than the obligation is worth.
+  shape this decision was expected to take. Rejected, but not uniformly: the version comment and the
+  host allowlist did not survive being named, while the repository-escape check did — its symlink row
+  records a real defect, and it is given up as a deliberate cost rather than because the obligation
+  was found empty. What decides the alternative is that a second gate carrying one residual obligation
+  costs more than any of the three is worth, not that all three were weak.
 - **`zizmor` at the default persona.** Rejected: it does not report top-level write grants at all,
   which would preserve most of `check-workflow-hardening.mjs` for a narrower reason than it was
   written for. `pedantic` was measured against the live workflows and produced **zero
@@ -123,7 +140,7 @@ later.
   residue usually should not survive either. An authored check accretes obligations nobody would
   choose deliberately, and adopting a tool is what forces each one to be named and defended.
 - **Seven `artipacked` findings become actionable** — every `actions/checkout` needs
-  `persist-credentials: false`. The authored check never reported them.
+  `persist-credentials: false`. The authored check never reports them.
 - **Practice adapts to the tool, not the reverse.** Two commit titles on `main` exceed `commitlint`'s
   default `header-max-length` of 100, the longest at 122. The default stands and titles get shorter;
   configuring the tool around existing practice would forfeit the reason for adopting it.
