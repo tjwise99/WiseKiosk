@@ -564,14 +564,16 @@ so `git diff --exit-code` is what catches staleness.
 
 | Direction | Input |
 |---|---|
-| Must fail | a committed artifact no view produces — `generated/orphan.mmd` committed, then its view deleted |
+| Must fail | a committed artifact no view produces — a view added, exported and its artifact committed, then the view deleted |
 | Must fail | a committed view whose artifact was never committed — `view containers of wisekiosk` committed, `generated/containers.mmd` left untracked |
 | Must fail | a committed artifact hand-edited away from what the model produces |
 | Must pass | the unseeded tree — exit 0, leaving **zero** index entries |
 
 `arch-export`'s `rm -rf`, the `git add --intent-to-add`, and the `HEAD` in the diff are three parts of
-one mechanism, and **each was proven necessary by removing it and re-running every row**, on fixtures
-built identically from one `git archive` and differing only in the recipe:
+one mechanism. **Each was proven necessary by removing it and re-running the row it protects**, on
+fixtures built identically and differing only in the recipe. The other cross-cells — each line
+removed against each row it does not protect — are sampled rather than confirmed: one was run and
+behaved, the rest were not:
 
 | Line removed | Row that then passes wrongly |
 |---|---|
@@ -597,7 +599,28 @@ Two traps in seeding this, both hit:
 
 Two live consequences of `git add -N` taking the whole silo rather than `generated/`: any untracked
 non-ignored file under `docs/architecture/` — a scratch note — fails the gate; and after a failing run
-`git stash` refuses with *"Entry … not uptodate"* until `git reset` clears the marker.
+`git stash` refuses with *"Entry … not uptodate"* until `git reset` clears the marker. Staged
+in-progress work under `docs/architecture/` also fails the gate, where an earlier form of the recipe
+passed it.
+
+#### What it does not catch: the index
+
+**The comparison is HEAD against the worktree, so the index is never a party to it**, and
+`arch-export` rewrites the worktree before the diff runs. Staged content that diverges from the
+worktree is therefore invisible — measured at exit 0 for a staged hand-edit of `generated/index.mmd`,
+a staged `git rm --cached` of it, and a staged tamper of `../docs/ARCHITECTURE.md`. A plain
+`git commit` lands the *index*, so each of those commits content the gate never read; the staged
+deletion produces a commit with no `generated/` at all.
+
+This is the same shape as the defect above, one level out: the earlier recipe compared worktree to
+index and was blind to HEAD, this one compares HEAD to the worktree and is blind to the index, and no
+form of it has compared all three. It is **a local false green only** — `actions/checkout` gives CI a
+tree whose index equals HEAD, so the divergent state cannot arise there, and all three instances fail
+on the next run against the committed tree. `git add -A` before `just verify` is the ordinary
+sequence that produces it.
+
+**Unprobed, and so unevidenced**: worktrees, submodules, `core.fileMode`, `autocrlf`, sparse
+checkout, and git older than 2.53.
 
 **`likec4 codegen` has no case here.** That is a gap, not a reasoned exemption: `check-site` seeds
 Sphinx's validator in the section below, so "it is a vendored toolchain's own validator" would not
