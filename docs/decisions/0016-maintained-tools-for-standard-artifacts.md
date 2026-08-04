@@ -98,11 +98,18 @@ Measurement incidentally shows `zizmor` exits 3 with `no inputs collected` on an
 obligation, so neither constrains the implementation.
 **Cost:** a misconfigured invocation that silently scans nothing reports the same success as a clean run.
 
-This ruling covers an *empty* population. It does not reach a population silently *shrunk* — the
+**The ruling is bounded twice over.** It covers an *empty* population, not one silently *shrunk* — the
 unterminated-fence guard in `check-links.mjs`, which exists because a fence that never closes blanks the
-rest of the file, is a different failure and is left open below.
+rest of the file, is a different failure and is left open below. And it reaches only the checks this
+decision adopts away. **Empty-population guards in checks that stay authored are untouched**, including
+the two of exactly this form: `check-repo-silo.mjs` failing when `just --dump` names no recipe, and
+`check-verify-ci-parity.mjs` failing when `verify`'s dependency list is empty. Both are the fix that
+closed #68's defect class — a guard keyed on the same literal as the thing it guards goes to zero
+alongside it and then reports agreement, and the form that works asserts the parse produced something at
+all. Nothing here licenses removing them.
 
-**Three obligations are retired outright rather than reimplemented.** Each is dropped as an
+**Three further obligations are retired outright rather than reimplemented**, beside the
+empty-population guards above. Each is dropped as an
 obligation, not demoted to an ungated convention: after this, nothing in the repository requires them
 and no document asks for them. What each retirement costs is stated here rather than discovered
 later.
