@@ -70,5 +70,6 @@ renderable browser-free.
   carried by the source `link`s added as code lands, and by review — not by a machine check.
 - **Traceability hook is reserved, not bound.** Element tags are the mechanism for carrying Doorstop
   `SRS` ids (architecture → requirements). Today's SRS items are placeholder and will be replaced by
-  the fresh requirements pass (issue #18), so no real ids are bound yet — see the `needs-srs` tag and
-  TODO in the model.
+  the fresh requirements pass (issue #18), so no real ids are bound yet. The tier an element's tag
+  names, and the binding itself, are
+  [ADR 0019](0019-boundary-at-what-deploys-and-tag-tier.md)'s.
