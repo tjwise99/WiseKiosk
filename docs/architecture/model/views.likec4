@@ -1,18 +1,11 @@
 // Views over the WiseKiosk model. Each view renders to a browser-free Mermaid
-// artifact (`just arch-export`). Add Component views here later — one
-// `view of <container>` per container whose components you model — without
-// touching the existing views.
+// artifact (`just arch-export`).
 
 views {
   // Named `index` so it is LikeC4's default landscape view — this avoids a
   // redundant auto-generated `index` view (and a stray artifact) alongside it.
   view index {
     title 'WiseKiosk — System Context (C4 L1)'
-    include *
-  }
-
-  view containers of wisekiosk {
-    title 'WiseKiosk — Containers (C4 L2)'
     include *
   }
 }

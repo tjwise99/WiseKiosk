@@ -560,11 +560,120 @@ Confirmed separately, because only a real run shows it: a hand edit inside a mar
 overwritten and the tree goes clean again, and a change to a generated artifact reaches the document,
 so `git diff --exit-code` is what catches staleness.
 
-**`likec4 validate` and `likec4 codegen` have no case here.** That is a gap, not a reasoned exemption:
-`check-site` seeds Sphinx's validator in the section below, so "it is a vendored toolchain's own
-validator" would not distinguish them. The justfile records why `validate` runs first — `codegen` alone
-does not fail on a broken model — so the two are not interchangeable and the staleness diff does not
-stand in for either. Seeding them wants an invalid LikeC4 model, which nobody has authored.
+### The three-line gate
+
+| Direction | Input |
+|---|---|
+| Must fail | a committed artifact no view produces — a view added, exported and its artifact committed, then the view deleted |
+| Must fail | a committed view whose artifact was never committed — `view containers of wisekiosk` committed, `generated/containers.mmd` left untracked |
+| Must fail | a committed artifact hand-edited away from what the model produces |
+| Must pass | the unseeded tree — exit 0, leaving **zero** index entries |
+
+`arch-export`'s `rm -rf`, the `git add --intent-to-add`, and the `HEAD` in the diff are three parts of
+one mechanism. **Each was proven necessary by removing it and re-running the row it protects**, on
+fixtures built identically and differing only in the recipe. The other cross-cells — each line
+removed against each row it does not protect — are sampled rather than confirmed: one was run and
+behaved, the rest were not:
+
+| Line removed | Row that then passes wrongly |
+|---|---|
+| `rm -rf docs/architecture/generated` | artifact with no view — codegen never prunes, so the orphan stays byte-identical to what is committed |
+| `git add --intent-to-add` | view with no artifact — a regenerated artifact nobody committed is untracked, and `git diff` reads tracked paths only |
+| `HEAD` in the diff | artifact with no view, **again** — `git add` with a pathspec stages the deletion `rm -rf` just made, and an index-relative diff reads worktree and index as agreeing |
+
+The third row is the one to remember. Adding `--intent-to-add` to close the second row silently
+re-opened the first, because the two lines act on the same index in opposite directions: one exists to
+create evidence of a deletion, the other erases it. It survived a full local `just verify`, six
+commits, and a green CI run — CI proves nothing here, because the repository tree holds no orphan, so
+the gate has nothing to miss. It was caught only by re-running the *original* finding's own
+reproduction against the fix, which is the practice this whole file exists to make routine.
+
+Two traps in seeding this, both hit:
+
+- **`--intent-to-add` persists in the index after a failing run.** Re-running the pre-fix recipe in
+  that same tree also exits 1, which reads as the hole never existing. Build each direction its own
+  fixture.
+- **Symlinking `node_modules/` into a fixture reds the gate**, because the trailing-slash ignore
+  pattern does not match a symlink, so `git add -N` marks it. Copy the directory, or assert
+  `git check-ignore` before trusting a result.
+
+Two live consequences of `git add -N` taking the whole silo rather than `generated/`: any untracked
+non-ignored file under `docs/architecture/` — a scratch note — fails the gate; and after a failing run
+`git stash` refuses with *"Entry … not uptodate"* until `git reset` clears the marker. Staged
+in-progress work under `docs/architecture/` also fails the gate, where an earlier form of the recipe
+passed it.
+
+#### What it does not catch: the index
+
+**The comparison is HEAD against the worktree, so the index is never a party to it**, and
+`arch-export` rewrites the worktree before the diff runs. Staged content that diverges from the
+worktree is therefore invisible — measured at exit 0 for a staged hand-edit of `generated/index.mmd`,
+a staged `git rm --cached` of it, and a staged tamper of `../docs/ARCHITECTURE.md`. A plain
+`git commit` lands the *index*, so each of those commits content the gate never read; the staged
+deletion produces a commit with no `generated/` at all.
+
+This is the same shape as the defect above, one level out: the earlier recipe compared worktree to
+index and was blind to HEAD, this one compares HEAD to the worktree and is blind to the index, and no
+form of it has compared all three. It is **a local false green only** — `actions/checkout` gives CI a
+tree whose index equals HEAD, so the divergent state cannot arise there, and all three instances fail
+on the next run against the committed tree. `git add -A` before `just verify` is the ordinary
+sequence that produces it.
+
+**Unprobed, and so unevidenced**: worktrees, submodules, `core.fileMode`, `autocrlf`, sparse
+checkout, and git older than 2.53.
+
+**`likec4 codegen` has no case here.** That is a gap, not a reasoned exemption: `check-site` seeds
+Sphinx's validator in the section below, so "it is a vendored toolchain's own validator" would not
+distinguish them.
+
+`likec4 validate` is covered by the invalid-model row under `check-arch-trace.py` below, but only
+partly: it was run against the validator directly rather than through the recipe, so what is
+evidenced is that the binary exits non-zero on an unparseable model, not that `check-arch` reaches
+it.
+
+## `check-arch-trace.py`
+
+Exercised at `5c48ed8`, against `check-arch-trace.py` md5 `62e44de86ab097dfa0ee68084a1fb6f3` —
+recorded because a fixture built with `git archive` carries the script as it was at `HEAD`, so a case
+can silently exercise the old one. Asserting the md5 of the copy under test before running is what
+separates *the fix does not work* from *the fix was not in the tree you ran*.
+
+### Must fail
+
+| Case | Input |
+|---|---|
+| Identifier naming no item | a three-digit `SYS` identifier the tree does not hold, declared and applied |
+| Mis-cased identifier | the same identifier in lower case |
+| Declared, applied to nothing | a declaration with no `#` application anywhere |
+| Item not accepted | a tag on an item whose `status` is `proposed` |
+| Item retired | a tag on an item with `active: false` |
+| Tag that is not an identifier | `needs-srs`, taken from the model on `origin/main` |
+| No tag at all | every declaration and application stripped from the model |
+| Model that does not parse | a `#tag` where the grammar wants `}` |
+
+### Must pass
+
+| Case | Input |
+|---|---|
+| The model as it stands | — |
+| An accepted `SRS` identifier on an **element** rather than a relationship | the other half of the code path |
+| Every tag on elements, none on any relationship | a Container-level model of the shape #97 C4 phase 2 will produce |
+
+**The unparseable-model row is the one that matters.** `likec4 export json` behaves like `codegen`
+and **succeeds on a broken model**, emitting a degraded document whose tags have gone missing — so a
+check reading the export without validating first sees a model that tags nothing, finds no unresolved
+identifier, and prints success. It was found by a malformed seed, not by design: the seed produced
+`declared and applied to nothing` for three tags that were, in the real model, applied. Had the
+degradation dropped the declarations too, the run would have been green.
+
+**The no-tag row is a guard rather than an arm.** A model carrying no tag resolves every tag it
+carries, so an absent architecture → requirements link and a sound one read identically. It is the
+third of that shape in this check, beside the guards over the export and over the tree.
+
+**Every degenerate input fails closed**: an emptied model directory, a removed model directory, a
+removed requirements tree, and an unparseable model. The removed-directory case is the sharp one —
+`likec4 validate` exits **0** on a directory holding no model, so the element guard is the only thing
+that catches it, and a check trusting the validator's exit status alone would pass.
 
 ## `check-site`
 

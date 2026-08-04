@@ -46,3 +46,8 @@ Thumbs.db
 
 # Agent worktrees
 .claude/worktrees/
+
+# Agent notes — machine-local tool traps and owner rulings that no tracked
+# document guarantees. The layering is CLAUDE.md's. (`*.local` above does not
+# reach this: it matches names ending in `.local`, not `.local.md`.)
+CLAUDE.local.md

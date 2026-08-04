@@ -44,6 +44,15 @@ Beyond Doorstop's native fields, every item carries four stored attributes
 | `verification-justification` | free text | What the item's verification settles and what it does not. Below `test`, what specifically blocks a mechanically-decidable check; at `test`, what the check leaves unproven. **Required on every item** |
 | `rationale` | free text | Why the requirement exists. **Required at the `SYS` tier**, optional below |
 
+**A requirement states the property and names no resources** — which file, endpoint, package or tool
+delivers it is not the item's. Nothing decides this mechanically, so it is question 14 on
+[`../../CONTRIBUTING.md`](../../CONTRIBUTING.md)'s review checklist, where every obligation that
+leaves no artifact is carried ([ADR 0011](../decisions/0011-requirement-or-convention.md)).
+
+**A `TST` item is a verification obligation, not a test function.** It states what must be proven,
+so several items may be discharged by one test and one item may need several. Counting `TST` items
+against test functions measures nothing.
+
 **`header` is machine-read, so it is constrained.** Prose cites an item by identifier and header
 together, the header carried verbatim inside an HTML comment
 ([`../CI.md`](../CI.md) § Documentation integrity), so header text is embedded into running Markdown.
@@ -260,6 +269,13 @@ Run all commands with the venv (`docs/requirements/.venv/bin/doorstop …`):
   both answer `no item with UID` while that item is pending. Stamping one takes a loop over
   `document._iter()`. Where a pending item's link goes suspect before activation, that loop is the
   only route.
+- **Validation stamps what it touches, so never run it on the tree you care about.** `doorstop`'s
+  validation pass re-blesses items as it goes, which means a diagnostic run silently re-stamps the
+  very items whose review state was in question. Copy the tree to a throwaway directory and validate
+  there.
+- **A glob for `*.yml` matches `.doorstop.yml`** as well as the item files, and a script that treats
+  the document's own configuration as an item reads garbage from it. Filter on the UID pattern rather
+  than the extension.
 - **Inactive items are not rewritten by Doorstop**, so write their parent links in dict form,
   `- UID: null` (the form Doorstop itself stamps); a plain-string link breaks the docs-site
   needs generator.

@@ -280,6 +280,19 @@ resolve, a citation to something that does not exist, an index that has drifted 
   marker's artifact resolves to a regular file inside `architecture/` — through any symlink, not
   merely by its path text — and carries no fence marker of its own, which would close the generated
   fence early and spill the remainder into the document as prose.
+- `architecture/generated/` holds every artifact the model produces and no other. The export clears
+  the directory before codegen, which never prunes, so an artifact left behind by a deleted view is
+  byte-identical to what is committed and the staleness diff alone cannot see one; and the diff is
+  taken after `git add --intent-to-add`, without which a regenerated artifact nobody committed is
+  untracked and so invisible to it — a view whose diagram never reaches the document, reported green.
+- Every requirement identifier tagged in the architecture model names an item that exists, is active
+  and accepted, and is spelled canonically; every declared tag is applied to something. A tag
+  carrying anything other than an identifier fails rather than being passed over — the model's tags
+  carry requirement links ([ADR 0019](decisions/0019-boundary-at-what-deploys-and-tag-tier.md)), so
+  one carrying something else is a decision to take, not an exemption to add. A model naming no
+  requirement at all fails too: it resolves every tag it carries, so an absent link and a sound one
+  would read identically. What this leaves unproven is whether the tagged element is the one that
+  requirement obliges, and whether the tier suits the level; both are read at review.
 - The documentation site builds under Sphinx with warnings-as-errors.
 
 **Considered and rejected:** a registry mapping each canonical document to the path globs it

@@ -1,14 +1,9 @@
-// WiseKiosk architecture model — C4 Context + Container.
+// WiseKiosk architecture model — C4 System Context (L1).
 //
-// This is the single source of truth for the architecture diagrams. It is
-// validated (`just check-arch`) and its rendered outputs are regenerated and
-// staleness-gated. Edit this file, then run `just arch-export`.
+// Single source of truth for the diagrams in ../ARCHITECTURE.md. Edit here, then
+// run `just arch-export` (ADR 0003).
 //
-// Extensibility (see README): Component and Code levels are ADDED LATER without
-// restructuring — `component` children nest inside a `container { ... }` block,
-// and a `link` property on any element points at the real source path
-// (backend/..., frontend/...) once that code exists. Nothing here needs to move
-// for that to happen.
+// Boundary, actors, external systems and the tag tier are ADR 0019's.
 
 specification {
   element person {
@@ -17,67 +12,36 @@ specification {
     }
   }
   element system
-  element container
-  element externalSystem {
-    style {
-      color muted
-    }
-  }
 
-  // Traceability hook (mechanism only — no real IDs bound yet).
-  //
-  // A LikeC4 tag is how an element carries its Doorstop SRS requirement id, e.g.
-  // a container that satisfies SRS042 would declare `tag SRS042` here and apply
-  // `#SRS042` on the element. That tag IS the architecture -> requirements link.
-  //
-  // TODO(#18): declare one tag per SRS id a container satisfies and apply it,
-  // replacing `#needs-srs`, which marks elements awaiting that binding.
-  tag needs-srs
+  // A tag carries the Doorstop id of the requirement obliging the tagged element
+  // or relationship; at this level that tier is SYS (ADR 0019).
+  tag SYS001
+  tag SYS002
+  tag SYS003
 }
 
 model {
   operator = person 'Operator' {
-    description 'Installs, configures (config.json) and views the WiseKiosk display.'
+    description 'Deploys WiseKiosk, authors its configuration and supplies its secrets.'
+  }
+
+  viewer = person 'Viewer' {
+    description 'Reads the display. Provides no input to the system.'
   }
 
   wisekiosk = system 'WiseKiosk' {
     description '''
-      Full-screen, config-driven smart-mirror display, shipped as one published
-      container image.
+      Full-screen, config-driven smart-mirror display. The boundary is what
+      deploys: the published container image and what it serves.
     '''
-
-    backend = container 'Go backend' {
-      #needs-srs
-      technology 'Go'
-      description '''
-        Stateless REST proxy with a TTL response cache; serves the built SPA as
-        static files. Config-blind (SRS011).
-      '''
-      // link: backend/    (add once the Go code exists — wires the model to source)
-    }
-
-    frontend = container 'Svelte SPA' {
-      #needs-srs
-      technology 'Svelte 5 + Vite'
-      description '''
-        Renders modules into regions of the page; payload types are generated
-        from the boundary schema, never hand-declared.
-      '''
-      // link: frontend/   (add once the Svelte code exists)
-    }
-
-    // The load-bearing structural constraint: one schema, both sides generated.
-    frontend -> backend 'Boundary contract: types generated from one schema' {
-      technology 'HTTP / JSON'
-    }
   }
 
-  publicApis = externalSystem 'Public APIs' {
-    description 'Third-party public data sources (e.g. weather) the backend proxies.'
+  operator -> wisekiosk 'Configures the deployment and supplies its secrets' {
+    #SYS003
   }
 
-  operator -> wisekiosk 'Views the mirror; provides config.json'
-  backend -> publicApis 'Proxies read-only, server-side, TTL-cached' {
-    technology 'HTTPS'
+  wisekiosk -> viewer 'Renders the configured modules, and legibly says when one failed' {
+    #SYS001
+    #SYS002
   }
 }
