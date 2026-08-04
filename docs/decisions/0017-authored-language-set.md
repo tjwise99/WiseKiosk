@@ -26,12 +26,12 @@ non-interactive shell. On the development host `/usr/bin/python3` is present the
 nvm-managed `node` is not, so a Node-authored check is structurally unreachable at the one moment the
 repository checks something before CI does.
 
-What made the question answerable now is that nothing in the repository-checks layer actually
-*requires* Node. All seven `.mjs` scripts import only `node:fs`, `node:child_process` and
-`node:path`; three carry a header comment recording that they deliberately scan plain text rather
-than reach for a parser. Symmetrically, every one of the six Python check scripts imports `doorstop`
-or `yaml`. The existing split is therefore already *reads the requirements tree* against *does not* —
-the Node dependency is habit, and the Python one is the Doorstop silo.
+What made the question answerable is that nothing in the repository-checks layer *requires* Node. All
+seven `.mjs` scripts import only `node:fs`, `node:child_process` and `node:path`; three carry a
+header comment recording that they deliberately scan plain text rather than reach for a parser.
+Symmetrically, every one of the six Python check scripts imports `doorstop` or `yaml`. The split at
+the time of this decision is therefore exactly *reads the requirements tree* against *does not* — the
+Node dependency is habit, and the Python one is the Doorstop silo.
 
 ## Decision
 
@@ -53,7 +53,7 @@ needs amending when a tool arrives with a format not yet seen here — which is 
 ([0003](0003-architecture-as-code-likec4.md)) and Vite are invoked; so is whatever an adopted hook
 provisions for itself. The distinction is who wrote the code being run.
 
-**POSIX sh authors nothing.** The rule it previously held — sh only where no interpreter can be
+**POSIX sh authors nothing.** The rule that admitted it — sh only where no interpreter can be
 assumed — had `.githooks/` as its entire population, and
 [0016](0016-maintained-tools-for-standard-artifacts.md) retires those for `pre-commit`, which is
 itself Python. A rule with no subject is not kept for the one file that predates it.
@@ -67,10 +67,12 @@ That is [`../CI.md`](../CI.md)'s tooling-siloed-with-the-feature rule reaching t
 carve-out from it: the silo is what makes `doorstop` and `yaml` available, and it is why a check that
 reads the tree is a different artifact from one that reads the repository.
 
-**Three artifacts do not conform, and each has a ticket rather than an exemption:**
-`scripts/check-branch.sh` (#109 check-branch conversion), the four index, silo and splice checks in
-Node (#110 Node check conversion), and `scripts/check-verify-ci-parity.mjs`, which waits on #101 CI
-invoking just recipes directly because that ticket may delete it (#111 parity-check conversion).
+**The artifacts that did not conform when this was decided each carry a ticket rather than an
+exemption:** `scripts/check-branch.sh` (#109 check-branch conversion), the four index, silo and
+splice checks in Node (#110 Node check conversion), and `scripts/check-verify-ci-parity.mjs`, which
+waits on #101 CI invoking just recipes directly because that ticket may delete it (#111 parity-check
+conversion). That list is a snapshot taken on the decision date, not a standing inventory — no check
+compares it against the tree, and the rule above is what governs anything written after it.
 
 **Nothing here is gated.** A language outside this set is a decision with a rejected alternative, so
 it arrives as an ADR amending or superseding this one, and the reviewer is the mechanism —
@@ -122,7 +124,7 @@ unregistered language whatever this record said.
   adopted, ends completely. What replaces it is a weaker but real property: the interpreter the gates
   need is the one present wherever a hook runs.
 - **A check that wants logic already written in TypeScript must reimplement it in Python or shell out
-  to the frontend toolchain.** Nothing today wants that; a configuration-schema check that wanted to
+  to the frontend toolchain.** No check does; a configuration-schema check that wanted to
   reuse the validation engine of [0007](0007-config-validation-allocation.md) would be the first, and
   it would be a real cost when it arrives.
 - **#59 comment-discipline gate's registry gets a finite population** — three authored languages, plus
