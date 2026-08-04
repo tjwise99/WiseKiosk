@@ -61,10 +61,16 @@ pull-request-title invocation runs with them disabled. The pattern keeps the sin
 
 **Where a maintained tool owns an obligation but covers only part of it, the remainder is authored —
 and scoped explicitly to the uncovered part**, so the tool's coverage is never silently re-encoded
-beside it. `scripts/check-suspect-links.py` is the worked example: suspect links are Doorstop's
-concept, and `doorstop --error-all` decides them for every *active* item, so the authored script covers
-inactive items only. It exists because of a coverage gap, not because the obligation is this
-repository's.
+beside it. **The gap is demonstrated, not asserted:** the tool is run against the case said to be
+uncovered, and the result recorded, because *"it only covers part of it"* is otherwise available to
+anyone who would rather keep their own script.
+
+`scripts/check-suspect-links.py` is the worked example, and it meets that standard: suspect links are
+Doorstop's concept, `doorstop --error-all` decides them for every *active* item, and the authored script
+covers inactive items only. The gap is **structural** — Doorstop cannot see an inactive item at all — so
+the uncovered part has a boundary a scope can be written against. That is what separates this from the
+residue rejected below: a residue check is a second gate kept beside a tool that already reaches the
+case, whereas this is the only thing reaching it.
 
 **The unit this rule sorts is an obligation, not a `just` recipe.** A recipe may run several commands
 asserting different things, and three of them carry more than one kind: `check-reqs` delegates tree
