@@ -219,6 +219,8 @@ later.
 
 **Premise that would reopen this:** an adopted tool is abandoned, or changes its defaults so that it
 no longer covers the obligation it was adopted for; or a repository convention appears that the tool
-cannot express and that survives the scrutiny the three retired ones did not. Absent either, do not
-relitigate — and note that the first is a per-tool reopening, not a reason to return to authoring
-generally.
+cannot express and that is worth a gate of its own. **That second bar is the one actually applied here,
+and it is higher than surviving scrutiny:** the repository-escape check did survive being named — its
+symlink row records a real defect — and was retired anyway, because one residual obligation does not earn
+a second gate beside an adopted tool. Absent either, do not relitigate — and note that the first is a
+per-tool reopening, not a reason to return to authoring generally.
