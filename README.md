@@ -40,7 +40,7 @@ Nothing is inherited from any prior mirror framework, and there is no compatibil
 ## Stack
 
 - **Backend:** Go — a thin, stateless REST proxy. See [ADR 0001](docs/decisions/0001-backend-language-go.md).
-- **Frontend:** Svelte 5 + Vite, a static SPA.
+- **Frontend:** Svelte 5 + Vite, a static SPA. See [ADR 0018](docs/decisions/0018-frontend-svelte-vite-static-spa.md).
 - **Boundary:** one schema, both sides generated from it — no hand-maintained parallel types.
 
 ## Documentation

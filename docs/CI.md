@@ -375,11 +375,13 @@ violate any of them, so they are checks here rather than obligations there.
   registered module lacking a fragment and no orphan fragment; each fragment file is the unique
   definition site of its property names; and no fragment property is reachable by reference from the
   boundary schema (#8).
-- **The frontend build emits a static bundle.** Exactly one HTML entry whose mount element is empty,
-  no server-entry chunk, no SSR target or adapter declared in the build configuration, and the npm
-  packages in the emitted module graph a subset of a committed allowlist manifest. The allowlist is
-  deliberate: a denylist of named routers and meta-frameworks fails open the first time someone
-  hand-rolls a hash router, and any new runtime dependency should fail until it is reviewed (#10).
+- **The frontend build emits a static bundle**
+  ([ADR 0018](decisions/0018-frontend-svelte-vite-static-spa.md)). Exactly one HTML entry whose
+  mount element is empty, no server-entry chunk, no SSR target or adapter declared in the build
+  configuration, and the npm packages in the emitted module graph a subset of a committed allowlist
+  manifest. The allowlist is deliberate: a denylist of named routers and meta-frameworks fails open
+  the first time someone hand-rolls a hash router, and any new runtime dependency should fail until
+  it is reviewed (#10).
 - **No backend code builds an upstream URL outside a module's shaping library.** The URL a module
   fetches is that module's to construct; shared framework code constructing one is shared code
   holding module knowledge (#9).
