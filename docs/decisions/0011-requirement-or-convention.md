@@ -136,6 +136,6 @@ asking *"is this fact stated in exactly one place?"* has something real to read 
 itself is not a check and gates nothing, which is the point: `CI.md` obliges every check the
 repository carries to run and block, and a checklist is not a check.
 
-**Reopen premise.** Revisit if the checklist stops being walked — if `/pr-ready` drops it, or reviews
+**Reopen premise.** Revisit if the checklist stops being walked — if [`CONTRIBUTING.md`](../../CONTRIBUTING.md)'s merge routine drops it, or reviews
 routinely skip it, the activation path this decision rests on is gone, and the obligations it holds
 are back to being dead letters that were at least visible in the tree.

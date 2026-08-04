@@ -8,6 +8,9 @@ record.
 
 The scope is facts *about WiseKiosk*. How a particular piece of code works is a fact about that code,
 not about the product — it has no home in this table and belongs beside the code it explains.
+An agent's tooling is a fact about whoever holds the tools, so **no document here names one**: not a
+skill, vendored or global, and not the command that invokes it. A document that reaches for one is
+describing its own author rather than the product, and states the obligation the tool carries instead.
 Rationale is the part that may not live in a source artifact;
 [`CONTRIBUTING.md`](../CONTRIBUTING.md)'s review checklist is where that is caught — whether a
 comment states mechanism rather than reason, and whether a citation restates what it cites.

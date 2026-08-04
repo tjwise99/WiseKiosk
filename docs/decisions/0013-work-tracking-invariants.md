@@ -3,6 +3,13 @@
 **Status:** accepted
 **Decided:** 2026-08-02 (work-tracking invariants discussion, ticket #64 work-tracking invariants)
 
+> **Grounds restated, 2026-08-03 (#95 final documentation sweep).** The advisory half was argued from
+> a filing helper that carried the checklist and could go uninvoked. The documentation set names no
+> such tool, so that ground is not available to a reader of this repository. The consequence is
+> unchanged and rests on what holds for any filer: nothing at filing time can refuse a malformed
+> ticket, because GitHub cannot decline to create one and CI does not write. The decision, and the
+> merge-time gate it pairs with, stand as taken.
+
 ## Context
 
 [ADR 0006](0006-process-gates.md) specifies exactly one property of a ticket — that it is open and
@@ -102,10 +109,10 @@ unrelated one, and it refuses a merge rather than annotating an issue.
 - **The label set is load-bearing.** `module` was created and stock `enhancement` deleted. A new
   branch type requires a label of that name to exist before its template can apply it, or the picker
   silently drops it and the safe path produces an unbranchable ticket again.
-- **The write-time half is advisory by construction.** A `/file-ticket` skill carries the checklist
-  and the conforming `gh issue create` invocation, but an agent that does not invoke it is not
-  stopped by it. That is why the merge gate is the half with teeth, and the pairing is ADR 0006's own
-  — an advisory `commit-msg` hook beside a required title check.
+- **The write-time half is advisory by construction.** Nothing at filing time refuses a malformed
+  ticket: GitHub cannot decline to create one, and CI does not write. That is why the merge gate is
+  the half with teeth, and the pairing is ADR 0006's own — an advisory `commit-msg` hook beside a
+  required title check.
 - **Judgment stays judgment.** Whether a ticket should be rescoped or closed, which close-reason
   applies, whether a scope is correct, and whether a body's acceptance condition is any good are not
   gated, and no gate should pretend to decide them.

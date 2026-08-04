@@ -140,8 +140,8 @@ passes; only inside a flow mapping is the string read as a reference.
 
 ## `check-repo-silo.mjs`
 
-Covers all three assertions: the root listing, the Dependabot manifest resolution, and the
-`github-actions` entry.
+Covers all four assertions: the root listing, the shebang-recipe ban, the Dependabot manifest
+resolution, and the `github-actions` entry.
 
 ### Must fail
 
@@ -149,6 +149,9 @@ Covers all three assertions: the root listing, the Dependabot manifest resolutio
 |---|---|
 | Manifest at the root | `package.json`, `go.mod`, `pyproject.toml` and `requirements.txt`, each at the repository root |
 | Environment directory at the root | `.venv/` |
+| Recipe carries a shebang | a `probe-recipe` whose body opens `#!/usr/bin/env bash`, grouped under `docs` and reachable from no gate — the assertion is over every recipe, not the ones `verify` runs |
+| The dump names no recipe | `just --dump` returning an empty recipe set, so the loop cannot judge anything |
+| A module hides a script recipe | `mod deploy` beside a `deploy.just` whose `push` recipe opens `#!` — the dump lists it under `modules`, not `recipes`, so the loop over recipes never sees it |
 | Entry names a directory that does not exist | the `pip` entry pointed at `/nope` |
 | Entry's directory holds no manifest | the `pip` directory emptied of `requirements*.txt` |
 | Entry points at the root | `directory: "/"` on a non-`github-actions` entry |
@@ -178,6 +181,19 @@ fires rather than joining the silence.
 | Case | Input |
 |---|---|
 | Recipe runs in no workflow step | a `just verify` check whose script no step invokes |
+| Token names no command its recipe runs | a recipe's command changed, `CHECK_TOKENS` and the workflow left untouched |
+| Command covered by no token | the `git diff --exit-code` line of `check-arch` with its token removed |
+| A dependency on the recipe's header line | `check-links: link-lint`, where `link-lint` runs a script no token covers |
+| Truncated token hiding a dropped argument | CI's staleness command shortened to `git diff --exit-code docs/architecture/`, dropping `docs/ARCHITECTURE.md` |
+| Shebang recipe on the gate path | a `verify` check whose body opens `#!`, which cannot be mapped to CI commands |
+| A command that does not resolve to text | a body line interpolating a variable, which names no fixed command |
+| `verify` depends on nothing | the dependency list emptied, so the loops below judge an empty set |
+| A module the dump does not fold in | `mod deploy`, whose recipes sit outside `recipes` and are read by nothing here |
+| A dump with no `modules` map | `just` stubbed to drop the key, where its absence would otherwise read as "no module declared" |
+| A dump with no `shebang` field | the same stub dropping it per recipe, where its absence would otherwise read as "not a script" |
+| Recipe widened past its token | `git diff --exit-code docs/architecture/ docs/ARCHITECTURE.md docs/CI.md` in the recipe, the workflow unchanged |
+| Recipe line prefixed `-` | `-node scripts/check-links.mjs`, which discards the command's failing status so the recipe passes where CI's identical command fails; `@-` and `-@` likewise |
+| A continuation with no line after it | a recipe body ending on a trailing `\` |
 | Recipe with no `CHECK_TOKENS` entry | a new name added to the `verify` recipe |
 | Stale `CHECK_TOKENS` entry | a mapped check removed from the `verify` recipe |
 | CI step matching nothing | a named step running neither a mapped check nor an allowlisted one |
@@ -193,6 +209,13 @@ fires rather than joining the silence.
 | Case | Input |
 |---|---|
 | The tree as it stands | — |
+| Commands reordered within a recipe | `check-reqs`'s first two commands swapped |
+| A command split across a `\` continuation | `check-links` written as `node \` then `scripts/check-links.mjs` |
+| A comment line inside a recipe body | `check-links` with a `#` line above its command |
+| A recipe line prefixed `@` | `@node scripts/check-links.mjs`, and `@ node …` with the whitespace `just` allows after the prefix — both suppress the echo rather than naming a different command |
+| `#!` below the first body line | a shell comment, which `just` runs rather than treating as a script body — only the first line opens one |
+| A recipe reached through `just <recipe>` | `check-arch`, whose commands come from `arch-export` |
+| CI spelling a command with an extra argument | `sh scripts/check-branch.sh "$HEAD_REF"`, where the recipe passes none |
 | A toolchain step | a step named `Install …`, which prepares a check rather than being one |
 | An unnamed step | `- uses:` infrastructure with no `name:` |
 | A quoted `#` in a command | `run: … && echo "pin # it"` beside a real token |
@@ -202,8 +225,8 @@ The trailing-comment rows are the ones that matter, and they need their control 
 step deleted outright **is** caught, which is what made the comment cases holes rather than a
 misreading of the design.
 
-Three cuts were needed and the first two each shipped a hole a row did not describe. Skipping any line
-that contained a quote closed the quote-free spelling and left `key: "value" # token` open. Tracking
+Two simpler spellings each leave a hole no row describes. Skipping any line
+that contains a quote closes the quote-free spelling and leaves `key: "value" # token` open. Tracking
 quote state closed that and left an *unbalanced* quote — an apostrophe in `it's` — opening a phantom
 scalar that swallowed the rest of the line, while newly rejecting a legal workflow whose escaped quote
 closed the tracker early. Both were found by review, neither by the seeding that prompted the fix.
@@ -405,10 +428,9 @@ it, because that ticket is closed.
 
 The symlink pair is the one that matters. `resolve()` and `existsSync()` both follow a symlink without
 reporting that they did, so a path whose *text* stays inside the repository said nothing about where it
-landed — the check's own invariant, defeated with no signal in either direction. It was found by a
-second pass in a fresh context, not by the first. The three-syntax rows are the same lesson from the
-other side: matching only Markdown's inline form left two other ways of writing a relative path
-entirely unread.
+landed — the check's own invariant, defeated with no signal in either direction. The three-syntax rows
+are the same lesson from the other side: matching only Markdown's inline form leaves two other ways of
+writing a relative path entirely unread.
 
 ### Known rejections
 
@@ -437,13 +459,18 @@ is a sample, not a reference, and allowlisting a host to satisfy a code sample w
 register on the strength of an example. **The file list comes from `git ls-files`**, so a document that
 exists but has not been staged is invisible locally; CI checks out committed state and is unaffected.
 
-## `check-eol`
+## `check-eol.sh`
 
-Not a script: the recipe is `git grep -lIP '\r$' -- .`, and the recipe fails if that finds anything.
+`git grep -lIP '\r$' -- .`, inverted: the check fails if that finds anything. `git grep` answers 1
+both for *searched, found nothing* and for *there was nothing to search*, and anything else when the
+search itself failed — so the three are separated, and the population is established before a clean
+result means anything.
 
 | Direction | Input |
 |---|---|
 | Must fail | a tracked file containing CRLF, in `.txt` and in `.md` |
+| Must fail | the search failing rather than finding nothing — run outside a repository, where git exits 128 |
+| Must fail | a repository with no tracked file, where git exits 1 over an empty pathspec |
 | Must pass | an all-LF tree |
 | Must pass | a binary file containing CR — excluded by `-I` |
 | Must pass | a genuinely untracked CRLF file |

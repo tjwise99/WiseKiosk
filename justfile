@@ -5,20 +5,14 @@ default:
     @just --list
 
 [group('checks')]
-[doc('Every relative Markdown link resolves inside the repo')]
+[doc('Every relative Markdown link resolves inside the repo, every absolute URL names an allowlisted host, and every allowlist entry says what it serves')]
 check-links:
     node scripts/check-links.mjs
 
 [group('checks')]
 [doc('No tracked text file has CRLF line endings')]
 check-eol:
-    #!/usr/bin/env bash
-    set -euo pipefail
-    if git grep -lIP '\r$' -- .; then
-        echo "CRLF found in the files above; the repo is LF-only." >&2
-        exit 1
-    fi
-    echo "No CRLF line endings."
+    sh scripts/check-eol.sh
 
 [group('checks')]
 [doc('Branch is named type_number-snake_name; its issue is open, type-labeled, milestoned, and parented to match the PR base; the PR records the linkage')]
@@ -31,7 +25,7 @@ install-hooks:
     git config core.hooksPath .githooks
 
 [group('checks')]
-[doc('Requirements tree validates: refs resolve, no suspect/unreviewed/orphan items, methods consistent, no identifier cited in an item statement')]
+[doc('Requirements tree validates: refs resolve, no suspect/unreviewed/orphan items, methods consistent, headers non-empty and prefix-free, no identifier cited in an item statement')]
 check-reqs:
     docs/requirements/.venv/bin/python scripts/check-unreviewed.py
     docs/requirements/.venv/bin/python scripts/check-suspect-links.py
@@ -41,7 +35,7 @@ check-reqs:
     docs/requirements/.venv/bin/python scripts/check-headers.py
 
 [group('checks')]
-[doc('Every requirement identifier and ADR number cited in documentation or item prose resolves, and every requirement citation carries its item header')]
+[doc('Every requirement identifier and ADR number cited outside .claude/ resolves, and every requirement citation carries its item header')]
 check-citations:
     docs/requirements/.venv/bin/python scripts/check-citations.py
 
@@ -56,7 +50,7 @@ check-docs-index:
     node scripts/check-docs-index.mjs
 
 [group('checks')]
-[doc('No manifest at the repository root, github-actions is covered, and every other Dependabot entry resolves to a non-root directory holding its manifest')]
+[doc('No manifest or .venv/ at the repository root, no recipe is a shell script, github-actions is covered, and every other Dependabot entry resolves to a non-root directory holding its manifest')]
 check-repo-silo:
     node scripts/check-repo-silo.mjs
 
@@ -66,7 +60,7 @@ check-workflow-hardening:
     node scripts/check-workflow-hardening.mjs
 
 [group('checks')]
-[doc('Every `just verify` check also runs in CI, and vice versa')]
+[doc('Every `just verify` check runs in CI, every CI step is one of them or a named exception, and every token names a command its recipe runs')]
 check-verify-ci-parity:
     node scripts/check-verify-ci-parity.mjs
 
@@ -113,5 +107,5 @@ arch-dev:
     docs/architecture/node_modules/.bin/likec4 start docs/architecture/model
 
 [group('checks')]
-[doc('Run every check the PR gate runs')]
+[doc('Run every check the PR gate runs that has a local form; secret scanning and the PR-title check are CI-only')]
 verify: check-links check-eol check-branch check-reqs check-citations check-arch check-site check-adr-index check-docs-index check-repo-silo check-workflow-hardening check-verify-ci-parity

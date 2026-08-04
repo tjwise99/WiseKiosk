@@ -23,16 +23,13 @@ jobs:
         with:
           node-version: 24
 
+      - uses: extractions/setup-just@53165ef7e734c5c07cb06b3c8e7b647c5aa16db3 # v4
+
       - name: Markdown links resolve inside the repo
         run: node scripts/check-links.mjs
 
       - name: No CRLF line endings in tracked text files
-        run: |
-          if git grep -lIP '\r$' -- .; then
-            echo "::error::CRLF line endings found in the files above; the repo is LF-only (.gitattributes)."
-            exit 1
-          fi
-          echo "No CRLF line endings."
+        run: sh scripts/check-eol.sh
 
       - name: The decisions directory and its index table agree
         run: node scripts/check-adr-index.mjs
@@ -40,13 +37,13 @@ jobs:
       - name: Every tracked document outside a dot-directory is claimed by the documentation index
         run: node scripts/check-docs-index.mjs
 
-      - name: No manifest at the repository root, and every Dependabot entry resolves to its manifest
+      - name: No manifest at the repository root, no recipe is a shell script, and every Dependabot entry resolves to its manifest
         run: node scripts/check-repo-silo.mjs
 
       - name: Every action is pinned to an immutable reference, and no workflow grants write at the top level
         run: node scripts/check-workflow-hardening.mjs
 
-      - name: Every `just verify` check runs in CI, and vice versa
+      - name: Every `just verify` check runs in CI, and every token names a command its recipe runs
         run: node scripts/check-verify-ci-parity.mjs
 
   requirements:
@@ -161,7 +158,7 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
-      - name: Branch named type_number-snake_name and linked to an open, type-labeled issue
+      - name: Branch named type_number-snake_name, its issue open, type-labeled, milestoned and parented to match the PR base
         env:
           HEAD_REF: ${{ github.head_ref }}
           PR_NUMBER: ${{ github.event.pull_request.number }}

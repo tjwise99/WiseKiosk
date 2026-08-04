@@ -47,6 +47,8 @@ writes.
 
 This mechanises the security review a solo project has no second reader to perform.
 
+Unbuilt; owned by #67 security and supply-chain CI gates.
+
 ## Lint and type checks
 
 Every source package's linters run as blocking checks. **No linter is advisory-only** — a lint gate
@@ -54,6 +56,8 @@ that reports without failing degrades to noise within a release.
 
 - Go: a seeded `golangci-lint` violation, the production invocation, non-zero exit asserted.
 - Frontend: a seeded `eslint` or `svelte-check` violation, non-zero exit asserted from each.
+
+Unbuilt; owned by #67 security and supply-chain CI gates.
 
 ## In-code prose
 
@@ -77,6 +81,8 @@ home and cited from the comment.
 the code is read through a narrator. A bound on added volume is the only form of that which a machine
 can decide; whether a specific comment earns its place is a review question, below.
 
+Unbuilt; owned by #59 comment-discipline gate.
+
 ## Dependency vulnerabilities
 
 Any resolved Go-module or npm dependency with a known vulnerability fails the pull request, **at any
@@ -92,6 +98,8 @@ present but never called need not fail. Without it the gate produces findings no
 a gate people learn to ignore is worse than none. The fixture calls the vulnerable symbol precisely
 because the gate is reachability-aware.
 
+Unbuilt; owned by #67 security and supply-chain CI gates.
+
 ## Image vulnerabilities
 
 The built container image is scanned, failing the build on any finding at any severity unless the
@@ -102,6 +110,8 @@ finding has a current register entry.
 
 This is what covers operating-system and base-layer packages. The source-level dependency gate never
 inspects them.
+
+Unbuilt; owned by #67 security and supply-chain CI gates.
 
 ## Secret scanning
 
@@ -200,6 +210,8 @@ The gate asserts: every entry is complete and current; every finding suppressed 
 matching entry; no entry matches a first-party finding; and no entry exists for an advisory no scan
 reports — so the register cannot accumulate rows for problems that no longer exist.
 
+Unbuilt; owned by #67 security and supply-chain CI gates.
+
 ## Documentation integrity
 
 The documentation set is checked for the failures that make it untrustworthy: a link that does not
@@ -226,8 +238,7 @@ resolve, a citation to something that does not exist, an index that has drifted 
   tracked Markdown file, and neither a backtick nor a table cell exempts anything: a malformed
   identifier written to illustrate the rule *is* a malformed identifier, and a broken link written to
   illustrate the link rule *is* a broken link. Describe the form that fails; never write it out. This
-  binds every document a check reads, not only this one — it failed the gate three times on one branch
-  before it was written down.
+  binds every document a check reads, not only this one.
 - **A requirement citation carries the item's header, in an HTML comment, closed up to the
   identifier.** The header is verbatim and the comment is the only form —
   `SRS015<!-- One schema, all boundary value classes -->`. The identifier's own closing backtick and
@@ -298,6 +309,10 @@ changed, which the citation resolver above decides without anyone declaring anyt
   material; both are build hygiene, and a smaller context is a faster and more predictable build.
   That the image carries no secret is the tree's, under
   SRS025<!-- No secret material in the published image --> (#54).
+- No `justfile` recipe carries a shebang. A recipe is a list of commands; shell control flow is a
+  script, and a script is siloed under `scripts/` where a case can be recorded against it, like every
+  other kind of tooling. Detected from `just`'s own dump rather than from the file's text, so the
+  shape is whatever `just` resolves it to.
 - A depth-1 listing of the repository root holds no `package.json`, `go.mod`, `pyproject.toml`,
   `requirements*.txt` or `.venv/` — tooling is siloed with the feature it serves — and every
   Dependabot entry that is not `github-actions` resolves to a non-root directory holding the matching
@@ -404,6 +419,8 @@ from holding an upstream credential. It banned a normal practice, and forced the
 module that [ADR 0010](decisions/0010-runtime-materialised-gate-fixtures.md) independently found
 leaky. Holding it in a scheduled job, off the merge path, is the narrower answer.
 
+Unbuilt; owned by #99 upstream contract checks.
+
 ## Gate wiring
 
 These assert that the regime is real rather than declared. Each states a property of machinery
@@ -411,10 +428,19 @@ already decided, which is what makes it a check and not a want.
 
 - Every check `just verify` depends on also runs in CI, and every named CI step is one of those
   checks or an enumerated CI-only exception. A recipe running more than one command lists one token
-  per command — mapping a recipe to a single token hides any command added to it later, which is how
-  a check once reached `just verify` without reaching CI. A token is sought only where a step runs
+  per command, and the tokens are held against the recipe body with `just <recipe>` expanded in
+  place: a token naming no command its recipe runs fails, and a command no token covers fails. A
+  `#!` recipe is one script rather than a list of commands, so its lines are not mapped
+  individually. A token is sought only where a step runs
   one: neither a comment nor a step's own `name:` satisfies it, or deleting a step and leaving its
-  name behind would pass.
+  name behind would pass. **What it compares is command text, not the ability to run it.** A command
+  naming a venv or `node_modules` executable is proved present in both places while the toolchain
+  providing it is installed per job, by steps this deliberately skips — so a check can be wired
+  identically in both and still be unable to execute in one. Nothing maps a check to the toolchain
+  its job installs. A tool a check *invokes internally* is further out of reach still: no gate here
+  reads a check's source, so a dependency written inside one is declared nowhere any of them look.
+  `just` is the live instance — two of these scripts read its dump. The justfile names `just` where a
+  recipe delegates to another, and nothing there says the scripts themselves require it.
 - Every committed test file falls under a configured runner's reach; a file excluded by skip, build
   tag, glob gap, or wrong directory fails. The requirements tier is covered by `doorstop --error-all`
   and is deliberately not re-encoded here. Unbuilt until a runner exists to detect anything: #82

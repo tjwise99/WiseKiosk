@@ -33,45 +33,10 @@ Once per clone, `just install-hooks` points git at the repo's hooks (`.githooks/
 grep — no toolchain needed): an advisory
 `commit-msg` check and a `pre-push` branch check, so the process gates fire before CI does.
 
-Current gates (they grow as code lands):
-
-- `just check-links` — every relative link in every tracked Markdown file resolves inside the repo.
-- `just check-eol`   — no tracked text file has CRLF line endings.
-- `just check-branch` — the branch is named `type_number-snake_name`, links an open issue labeled
-  with its type, and its default-base PR records the ticket linkage (plain sh + curl + jq, like
-  the hooks — no toolchain). That issue also carries a milestone and exactly one type label, and
-  its parent agrees with the PR's base: a sub-issue means a shared merge target, so a parent
-  implies an integration branch and an integration branch implies membership in its anchor
-  ([ADR 0013](docs/decisions/0013-work-tracking-invariants.md)). Filing a conforming ticket in the
-  first place is [`file-ticket`](.claude/skills/file-ticket/SKILL.md).
-- `just check-reqs`  — the Doorstop requirements tree validates: no item carries a review
-  fingerprint nobody wrote, a hand-declared `true` included; refs resolve; no
-  suspect/unreviewed/orphan items, with suspect links checked on the inactive items Doorstop
-  skips — orphan detection is not, so a pending item with no parent is reported by nothing;
-  one exception is tolerated while every `TST` item is still
-  pending, and it fails once it is no longer needed (#78); every item carries a
-  `verification-justification`, and no item claims a method its own children do not support.
-  **If it reports unreviewed items or links, do not clear that by re-running it.** Validating the
-  tree makes Doorstop stamp a fingerprint into anything unstamped, which is why that check runs
-  first and stops it. Read the item against its parent and run `doorstop review <uid>`.
-- `just check-citations` — every requirement ID and ADR number cited in the documentation set or in
-  an item's `rationale` or `verification-justification` names something that exists, and every
-  requirement citation carries that item's header verbatim beside it.
-- `just check-adr-index` — the `decisions/` directory and its index table agree: every ADR has a
-  row, every row a file, numbering contiguous from 0001.
-- `just check-repo-silo` — no manifest or `.venv/` at the repository root, a `github-actions`
-  Dependabot entry exists, and every entry that is not `github-actions` resolves to a non-root
-  directory holding its manifest.
-- `just check-workflow-hardening` — every action a workflow uses is pinned to an immutable reference
-  naming the version it is, and no workflow grants a write permission at the top level; a job that
-  needs one elevates in its own block. A layout the check cannot read fails rather than being
-  skipped.
-- `just check-arch`  — the LikeC4 architecture model validates and its generated artifacts are not
-  stale.
-- `just check-site`  — the documentation site builds clean with warnings-as-errors.
-- `just check-verify-ci-parity` — every command `just verify` runs also runs in CI, and every CI step
-  is one of those commands or a named CI-only exception. One token per command, so a command added
-  to a recipe and not to the workflow fails rather than passing unseen.
+`just --list` is the gate roster: every check, with what it asserts beside the recipe that runs it.
+What each gate is allowed to let through, and why, is [`docs/CI.md`](docs/CI.md); the review
+fingerprint `check-reqs` can stamp is
+[`docs/requirements/README.md`](docs/requirements/README.md).
 
 ## Tickets, branches, and titles
 
