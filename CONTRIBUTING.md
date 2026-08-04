@@ -106,10 +106,14 @@ questions.
     narrowing itself reachable by the defect the check exists to catch? An exemption written to
     prevent a false positive is the first place a bypass gets spelled, and the reasoning that
     produces one reads as caution.
+12. **Languages.** Does the change author a file in a language outside the set
+    [ADR 0017](docs/decisions/0017-authored-language-set.md) states — and if so, has that language
+    been through an ADR? A toolchain's own configuration file, in the format that toolchain requires,
+    is invoking it rather than authoring in it, and is not a new language.
 
 **Requirements**
 
-12. **Module universals.** Where the change adds or edits a module's requirements, does any of them
+13. **Module universals.** Where the change adds or edits a module's requirements, does any of them
     state something already obliged of every module — failure rendering, secret delivery, caching,
     request rejection? A module's requirements carry what is true of that module and nothing else
     ([ADR 0012](docs/decisions/0012-module-requirements-in-tree.md)).
