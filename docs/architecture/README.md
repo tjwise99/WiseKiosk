@@ -22,9 +22,9 @@ docs/architecture/
     index.mmd           System Context view (Mermaid)
 ```
 
-**A deleted view leaves its artifact behind.** `likec4 codegen` writes files and never prunes them,
-and the staleness gate compares only what is regenerated — an orphaned artifact is byte-identical to
-what is committed, so nothing fails. Delete the artifact in the same change that deletes the view.
+`generated/` is cleared before codegen, which writes files and never prunes them: an artifact left
+behind by a deleted view is byte-identical to what is committed, so the staleness diff cannot see one
+unless the export removes it first.
 
 ## Editing the model
 
@@ -99,7 +99,5 @@ it is `SYS`, bound where the obligation is observable at that level: on the rela
 system box, which owes every `SYS` item and so distinguishes none of them. The tier below is settled
 by the phase that models that level.
 
-**No check reads these tags.** `just check-arch` validates the model and diffs its generated outputs;
-nothing compares a tag against the requirements tree, so a tag naming a retired or misspelled id fails
-nothing. Review is the mechanism, and a cross-check is the obvious consumer for the JSON export
-described above.
+**`just check-arch-trace` resolves them against the tree** — what it asserts, and what it leaves to
+review, is [`../CI.md`](../CI.md) § Documentation integrity's.

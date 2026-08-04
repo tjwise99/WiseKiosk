@@ -60,10 +60,10 @@ system element owing all seven `SYS` items restates that the `SYS` tier is the t
 relationship; the provisioning tooling gains one if and when it acts on the running deployment.
 [`../../tools/README.md`](../../tools/README.md) remains where the desk-side story is told.
 
-**Nothing gates the tags.** `just check-arch` validates the model and diffs its generated outputs; no
-check compares a tag against the requirements tree, so a tag naming a retired or misspelled id fails
-nothing. Review is the mechanism, and a cross-check over `likec4 export json` is the obvious consumer
-if that stops being enough.
+**The tags are gated on resolution, not on judgement.** `check-arch-trace` reads the model through
+`likec4 export json` and fails a tag naming no item, a retired or unaccepted one, or a mis-cased
+identifier. Whether the tagged element is the one that requirement obliges, and whether the tier
+suits the level, are review's — which is the ordinary division here, not an exception for this gate.
 
 **ADR 0003 is corrected, not superseded.** Its reservation of tags as the architecture → requirements
 mechanism stands; only the assumption that the tier is always `SRS` falls.

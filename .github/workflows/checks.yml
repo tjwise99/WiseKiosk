@@ -117,9 +117,12 @@ jobs:
     # output — the artifacts under docs/architecture/ and the diagrams spliced
     # into docs/ARCHITECTURE.md — then fails on any drift (`git diff
     # --exit-code`): the staleness gate that mirrors the repo's "CI fails on
-    # stale generated code" rule for the architecture layer. The tool is siloed
-    # under docs/architecture/ with the feature it serves. Browser-free: bundled
-    # WASM graphviz, no chromium. No secrets: pure model validation + codegen.
+    # stale generated code" rule for the architecture layer. Then the model's
+    # requirement tags are resolved against the Doorstop tree, and each gate is
+    # run against a seeded defect (ADR 0010). Doorstop is read through the
+    # requirements silo's venv and LikeC4 through the architecture silo's
+    # node_modules, each with the feature it serves. Browser-free: bundled WASM
+    # graphviz, no chromium. No secrets: pure model validation + codegen.
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -128,15 +131,28 @@ jobs:
         with:
           node-version: 24
 
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.12"
+
       - name: Install LikeC4 into the silo (docs/architecture/), locked
         run: npm --prefix docs/architecture ci
 
-      - name: Architecture model validates and generated artifacts are not stale
+      - name: Install Doorstop into a local venv (siloed under docs/requirements/)
+        run: |
+          python -m venv docs/requirements/.venv
+          docs/requirements/.venv/bin/pip install -r docs/requirements/requirements-dev.txt
+
+      - name: Architecture model validates and generated artifacts are neither stale nor orphaned
         run: |
           docs/architecture/node_modules/.bin/likec4 validate docs/architecture/model
+          rm -rf docs/architecture/generated
           docs/architecture/node_modules/.bin/likec4 codegen mermaid docs/architecture/model -o docs/architecture/generated
           node scripts/splice-arch-diagrams.mjs
           git diff --exit-code docs/architecture/ docs/ARCHITECTURE.md
+
+      - name: Every requirement identifier tagged in the model resolves to an accepted item
+        run: docs/requirements/.venv/bin/python scripts/check-arch-trace.py
 
   process:
     # Process gates (ADR 0006): the branch is named type_number-snake_name and

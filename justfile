@@ -87,19 +87,27 @@ check-site:
 arch-install:
     npm --prefix docs/architecture ci
 
-# `validate` runs first: `codegen` alone does not fail on a broken model.
+# `validate` runs first: `codegen` alone does not fail on a broken model. `generated/` is cleared
+# before codegen, which never prunes: an artifact left by a deleted view is byte-identical to what
+# is committed, so the staleness diff below cannot otherwise see it.
 [group('docs')]
 [doc('Validate the architecture model and regenerate its browser-free artifacts')]
 arch-export:
     docs/architecture/node_modules/.bin/likec4 validate docs/architecture/model
+    rm -rf docs/architecture/generated
     docs/architecture/node_modules/.bin/likec4 codegen mermaid docs/architecture/model -o docs/architecture/generated
     node scripts/splice-arch-diagrams.mjs
 
 [group('checks')]
-[doc('Architecture model validates and its generated artifacts are not stale')]
+[doc('Architecture model validates and its generated artifacts are neither stale nor orphaned')]
 check-arch:
     just arch-export
     git diff --exit-code docs/architecture/ docs/ARCHITECTURE.md
+
+[group('checks')]
+[doc('Every requirement identifier tagged in the architecture model resolves to an accepted item')]
+check-arch-trace:
+    docs/requirements/.venv/bin/python scripts/check-arch-trace.py
 
 [group('docs')]
 [doc('Live-preview the architecture model in a local dev server (browser; not a gate)')]
@@ -108,4 +116,4 @@ arch-dev:
 
 [group('checks')]
 [doc('Run every check the PR gate runs that has a local form; secret scanning and the PR-title check are CI-only')]
-verify: check-links check-eol check-branch check-reqs check-citations check-arch check-site check-adr-index check-docs-index check-repo-silo check-workflow-hardening check-verify-ci-parity
+verify: check-links check-eol check-branch check-reqs check-citations check-arch check-arch-trace check-site check-adr-index check-docs-index check-repo-silo check-workflow-hardening check-verify-ci-parity

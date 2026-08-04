@@ -36,10 +36,12 @@ const CHECK_TOKENS = {
   "check-citations": ["docs/requirements/.venv/bin/python scripts/check-citations.py"],
   "check-arch": [
     "docs/architecture/node_modules/.bin/likec4 validate docs/architecture/model",
+    "rm -rf docs/architecture/generated",
     "docs/architecture/node_modules/.bin/likec4 codegen mermaid docs/architecture/model -o docs/architecture/generated",
     "node scripts/splice-arch-diagrams.mjs",
     "git diff --exit-code docs/architecture/ docs/ARCHITECTURE.md",
   ],
+  "check-arch-trace": ["docs/requirements/.venv/bin/python scripts/check-arch-trace.py"],
   "check-site": [
     "docs/site/.venv/bin/python docs/site/doorstop_to_needs.py",
     "docs/site/.venv/bin/sphinx-build -W -b html -c docs/site docs docs/site/_build/html",

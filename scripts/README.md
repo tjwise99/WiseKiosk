@@ -560,11 +560,49 @@ Confirmed separately, because only a real run shows it: a hand edit inside a mar
 overwritten and the tree goes clean again, and a change to a generated artifact reaches the document,
 so `git diff --exit-code` is what catches staleness.
 
-**`likec4 validate` and `likec4 codegen` have no case here.** That is a gap, not a reasoned exemption:
-`check-site` seeds Sphinx's validator in the section below, so "it is a vendored toolchain's own
-validator" would not distinguish them. The justfile records why `validate` runs first — `codegen` alone
-does not fail on a broken model — so the two are not interchangeable and the staleness diff does not
-stand in for either. Seeding them wants an invalid LikeC4 model, which nobody has authored.
+| Must fail | a committed artifact no view produces — `generated/orphan.mmd` staged into the index, then the recipe run |
+| Must pass | a clean regenerate — `generated/` removed and rebuilt, md5 of `index.mmd` unchanged and the tree still clean |
+
+The orphan row is the one that matters, and it needed the recipe changed to be catchable at all: with
+the `rm -rf docs/architecture/generated` line removed from `arch-export`, that same seed exits **0**.
+`likec4 codegen` writes and never prunes, so an artifact whose view was deleted stays byte-identical
+to what is committed and the staleness diff has nothing to report — the check silently shrank its own
+population. Deleting the `containers` view during #96 C4 phase 1 is what surfaced it; the artifact
+outlived the view with the gate green.
+
+**`likec4 codegen` has no case here.** That is a gap, not a reasoned exemption: `check-site` seeds
+Sphinx's validator in the section below, so "it is a vendored toolchain's own validator" would not
+distinguish them.
+
+`likec4 validate` has one now — see the invalid-model row under `check-arch-trace.py` below. It was
+run against the validator directly rather than through the recipe, so what is evidenced is that the
+binary exits non-zero on an unparseable model, not that `check-arch` reaches it.
+
+## `check-arch-trace.py`
+
+| Direction | Input |
+|---|---|
+| Must fail | a tag naming no item — a model declaring and applying a three-digit `SYS` identifier the tree does not hold |
+| Must fail | a model that does not parse — a `#tag` where the grammar wants `}` |
+| Must pass | the model as it stands |
+| Must pass | an accepted `SRS` identifier tagged on an **element** rather than a relationship |
+
+The invalid-model row is the one that matters. `likec4 export json` behaves like `codegen` and
+**succeeds on a broken model**, emitting a degraded document whose tags have silently gone missing —
+so a check reading the export without validating first sees a model that tags nothing, finds no
+unresolved identifier, and prints success. That is how the row was found: a malformed seed produced
+`declared and applied to nothing` for three tags that were, in the real model, applied. Had the
+degradation dropped the declarations too, the run would have been green.
+
+The element row exists because the model tags only relationships, so every passing run says nothing
+about the other half of the code path. It also caught the first attempt at this case being invalid
+LikeC4 rather than a legal spelling — a `#tag` is accepted at the head of an element body, not after
+its `description`.
+
+**Unrun**, and therefore unevidenced: a mis-cased identifier, a tag carrying something that is not an
+identifier at all, a tag on a retired item, a tag on a `proposed` item, and a tag declared but applied
+to nothing. Each has an arm in the check; none has been put through it. The tree holds no retired or
+proposed item to seed the middle two against without doctoring a copy.
 
 ## `check-site`
 
