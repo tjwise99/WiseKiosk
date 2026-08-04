@@ -89,8 +89,8 @@ SRS028<!-- Served responses declare their type, and forbid the browser inferring
 ## Frontend
 
 _To be documented as it is built._ Svelte 5 + Vite, a static single-page bundle served as static
-files ([ADR 0001](decisions/0001-backend-language-go.md); the frontend stack's own decision record is
-#60); each module's poll cadence is that module's own need, per
+files ([ADR 0018](decisions/0018-frontend-svelte-vite-static-spa.md)); each module's poll cadence is
+that module's own need, per
 [the module contract](contracts/module-contract.md). Normative shape:
 SRS002<!-- A module-scoped configuration error is reported at that module -->,
 SRS003<!-- A configuration change applies no later than the next page load -->,
