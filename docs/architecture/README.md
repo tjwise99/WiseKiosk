@@ -20,8 +20,11 @@ docs/architecture/
     views.likec4        the views rendered to diagrams
   generated/            regenerated artifacts — DO NOT hand-edit (staleness-gated)
     index.mmd           System Context view (Mermaid)
-    containers.mmd      Container view (Mermaid)
 ```
+
+**A deleted view leaves its artifact behind.** `likec4 codegen` writes files and never prunes them,
+and the staleness gate compares only what is regenerated — an orphaned artifact is byte-identical to
+what is committed, so nothing fails. Delete the artifact in the same change that deletes the view.
 
 ## Editing the model
 
@@ -57,9 +60,9 @@ Two properties are enforced, both browser-free and both run in CI:
 Diagrams are produced by `likec4 codegen mermaid`, which GitHub renders inline — no image binaries, no
 headless browser. Image export (`export png`/`jpg`) *does* need a headless browser and is deliberately
 **not** part of any gate. No JSON model snapshot is committed either: `likec4 export json` exists for
-programmatic consumers, and nothing consumes it here yet — a future consumer (e.g. a tag→SRS
-cross-check after issue #18) regenerates it on demand rather than reading a committed copy, whose
-internal ids are not deterministic across machines anyway.
+programmatic consumers, and nothing consumes it here yet — a future consumer (a check cross-checking
+element tags against the requirements tree is the obvious one) regenerates it on demand rather than
+reading a committed copy, whose internal ids are not deterministic across machines anyway.
 
 GitHub cannot transclude an external `.mmd` file into Markdown, so [`../ARCHITECTURE.md`](../ARCHITECTURE.md)
 carries an inline `mermaid` fence per diagram — **generated, not hand-maintained**: the final step of
@@ -68,30 +71,35 @@ rewrites the region between each `arch-export:begin/end <file>` marker pair from
 in `generated/`. Hand edits inside a marker region are overwritten on the next export and caught by
 the staleness gate; the prose around the markers is yours to edit.
 
-## Extending later — add, don't rework
+## What the model holds, and when an element earns a place
 
-The model is authored so **Component and Code levels arrive additively** — no restructuring:
+The model holds the System Context level. The Container level is #97 C4 phase 2 and the Component
+level #98 C4 phase 3; both nest additively — `container` children inside the `wisekiosk { … }` block,
+`component` children inside a container, a `view of <element>` per level in `views.likec4` — so
+neither restructures what is already here.
 
-- **Components** nest inside a container. When the Go backend gains internal parts, add
-  `component` children *inside* the existing `backend { … }` block and a `view of backend { … }` in
-  `views.likec4`. The existing Context and Container views are untouched.
-- **Source `link`s** wire the model to real code. Once `backend/`/`frontend/` exist, add a `link`
-  property to a container or component (the commented placeholders in `model/wisekiosk.likec4` show
-  where). This is how the model stops being a drawing and starts pointing at the code it describes.
+**An element earns a place when something in the tree obliges it, not when it is foreseeable**, and
+only where the system exchanges something with it
+([ADR 0019](../decisions/0019-boundary-at-what-deploys-and-tag-tier.md)). An upstream data source
+belongs to the module that reads it, so it is modelled once that module has a need
+([ADR 0012](../decisions/0012-module-requirements-in-tree.md)); Component content waits on the code it
+describes.
 
-Do not build Component/Code content before the code exists — that would be abstraction without a
-second consumer ([`CONTRIBUTING.md`](../../CONTRIBUTING.md)'s review checklist, generality). The
-hooks are reserved; that is enough.
+**Source `link`s** wire the model to real code: once `backend/`/`frontend/` exist, a `link` property
+on a container or component points at the source implementing it. This is how the model stops being a
+drawing and starts pointing at the code it describes, and it is checked at review
+([`CONTRIBUTING.md`](../../CONTRIBUTING.md)'s checklist, architecture links).
 
-## Traceability hook: architecture → requirements (mechanism only)
+## Traceability: architecture → requirements
 
-A LikeC4 **tag** is how an element carries the Doorstop `SRS` requirement id it satisfies — that tag
-*is* the architecture → requirements link. The mechanism is wired but **no real ids are bound yet**:
+A LikeC4 **tag** carries the Doorstop id of the requirement obliging the element or relationship it
+sits on — that tag *is* the architecture → requirements link, and the tier follows the level
+([ADR 0019](../decisions/0019-boundary-at-what-deploys-and-tag-tier.md)). At the Context level
+it is `SYS`, bound where the obligation is observable at that level: on the relationships, not on the
+system box, which owes every `SYS` item and so distinguishes none of them. The tier below is settled
+by the phase that models that level.
 
-- The two containers carry a placeholder `#needs-srs` tag (declared in the model's `specification`).
-- **TODO(#18):** declare one tag per `SRS` id a container satisfies (e.g.
-  `tag SRS009`<!-- Every source reachable through the backend, statelessly -->) and apply it
-  (`#SRS009`<!-- Every source reachable through the backend, statelessly -->) to that container,
-  replacing `#needs-srs`. The element→source `link`s that complete the trace are checked at review
-  ([`CONTRIBUTING.md`](../../CONTRIBUTING.md)'s checklist, architecture links) once the code they
-  point at exists.
+**No check reads these tags.** `just check-arch` validates the model and diffs its generated outputs;
+nothing compares a tag against the requirements tree, so a tag naming a retired or misspelled id fails
+nothing. Review is the mechanism, and a cross-check is the obvious consumer for the JSON export
+described above.

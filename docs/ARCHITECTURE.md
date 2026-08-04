@@ -21,14 +21,20 @@ tree](requirements/README.md) for the intended architecture until this section d
 one. The frontend's static-bundle shape is not a need: it is a repository check, in
 [`CI.md`](CI.md).
 
-The diagrams below are **generated from the validated [LikeC4 model](architecture/README.md)**, not
-drawn by hand — edit `docs/architecture/model/` and run `just arch-export`, which regenerates the
-Mermaid artifacts in [`docs/architecture/generated/`](architecture/generated/) and splices them
-between the marker comments below (`scripts/splice-arch-diagrams.mjs`). Hand edits inside a marker
-region are overwritten on the next export, and drift fails the staleness gate — see the
+The diagram below is **generated from the validated [LikeC4 model](architecture/README.md)**, not
+drawn by hand — edit `docs/architecture/model/` and run `just arch-export`, which regenerates every
+Mermaid artifact in [`docs/architecture/generated/`](architecture/generated/) and splices each
+between its marker comments (`scripts/splice-arch-diagrams.mjs`). Hand edits inside a marker region
+are overwritten on the next export, and drift fails the staleness gate — see the
 [architecture README](architecture/README.md) for the workflow.
 
-**System context (C4 L1)** — the Operator, the WiseKiosk system, and the public APIs it proxies:
+**System context (C4 L1)** — the Operator who deploys and configures WiseKiosk, the Viewer it renders
+for, and the boundary between them, which is what deploys: the published image and what it serves
+([ADR 0019](decisions/0019-boundary-at-what-deploys-and-tag-tier.md)). No external system
+appears at this level. An upstream data source belongs to the module that reads it, so it is modelled
+here once that module has a need in the tree
+([ADR 0012](decisions/0012-module-requirements-in-tree.md)); the desk validator and the provisioning
+tooling exchange nothing with the running system and are outside it.
 
 <!-- arch-export:begin generated/index.mmd -->
 
@@ -39,36 +45,17 @@ title: "WiseKiosk — System Context (C4 L1)"
 graph TB
   Operator@{ icon: "fa:user", shape: rounded, label: "Operator" }
   Wisekiosk@{ shape: rectangle, label: "WiseKiosk" }
-  PublicApis@{ shape: rectangle, label: "Public APIs" }
-  Operator -. "`Views the mirror; provides config.json`" .-> Wisekiosk
-  Wisekiosk -. "`Proxies read-only, server-side, 
-TTL-cached`" .-> PublicApis
+  Viewer@{ icon: "fa:user", shape: rounded, label: "Viewer" }
+  Operator -. "`Configures the deployment and supplies 
+its secrets`" .-> Wisekiosk
+  Wisekiosk -. "`Renders the configured modules, and 
+legibly says when one failed`" .-> Viewer
 ```
 
 <!-- arch-export:end generated/index.mmd -->
 
-**Containers (C4 L2)** — inside WiseKiosk: the Go backend and the Svelte SPA, the boundary contract
-between them (one schema, both sides generated), and the backend's outbound API calls:
-
-<!-- arch-export:begin generated/containers.mmd -->
-
-```mermaid
----
-title: "WiseKiosk — Containers (C4 L2)"
----
-graph TB
-  subgraph Wisekiosk["`WiseKiosk`"]
-    Wisekiosk.Frontend@{ shape: rectangle, label: "Svelte SPA" }
-    Wisekiosk.Backend@{ shape: rectangle, label: "Go backend" }
-  end
-  PublicApis@{ shape: rectangle, label: "Public APIs" }
-  Wisekiosk.Frontend -. "`Boundary contract: types generated from 
-one schema`" .-> Wisekiosk.Backend
-  Wisekiosk.Backend -. "`Proxies read-only, server-side, 
-TTL-cached`" .-> PublicApis
-```
-
-<!-- arch-export:end generated/containers.mmd -->
+The Container level (C4 L2) decomposes WiseKiosk into what runs inside it. It is modelled in #97 C4
+phase 2, and the sections below carry that shape as prose until it is.
 
 ## Backend
 
