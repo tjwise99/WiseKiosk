@@ -95,14 +95,14 @@ model {
         '''
       }
 
-      requestAdmission = component 'Request admission' {
+      requestValidation = component 'Request validation' {
         #SRS012
         #SRS013
         description '''
-          Judges a module route's request before any upstream call is made:
-          parameters against the pattern that route's entry declares, and a
-          rejection carrying a status distinct to its cause and a body the
-          frontend can render.
+          Checks a request's parameters against the pattern that route's entry
+          declares, before any upstream call is made, and builds the rejection
+          for one that does not conform: a status distinct to its cause, and a
+          body the frontend can render. It reads nothing about who is asking.
         '''
       }
 
@@ -121,8 +121,8 @@ model {
         #SRS011
         #SRS014
         description '''
-          Makes the outbound request an admitted route calls for, under that
-          route's timeout, response-size ceiling and request-rate bound, and
+          Makes the outbound request a route calls for, under that route's
+          timeout, response-size ceiling and request-rate bound, and
           resolves the source's secret as it goes. Reports a failure by its
           cause, and a secret by its name.
         '''
@@ -184,7 +184,7 @@ model {
     pageShell -> payloadClient 'Asks for the payload of each configured module'
     pageShell -> layout 'Hands over each configured module and its payload'
 
-    routeHandler -> requestAdmission 'Asks whether the request may proceed'
+    routeHandler -> requestValidation 'Asks whether the parameters conform'
     routeHandler -> responseCache 'Asks for a held answer, and stores what it gets'
     routeHandler -> upstreamClient 'Asks for a fresh response when nothing is held'
 

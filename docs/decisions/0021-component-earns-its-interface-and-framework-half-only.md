@@ -46,7 +46,7 @@ already a Svelte file, and *container* already needed disambiguating once.
 ## Decision
 
 **A component is a responsibility with a nameable interface** — what it exposes, and who calls it.
-This is Brown's own test, applied as an admission criterion rather than quoted, and it is what
+This is Brown's own test, applied as a test for what earns a place rather than quoted, and it is what
 decides the one candidate the module contract most loudly suggests: **the route registry is not a
 component.** The contract's "those values live in the entry and nowhere else" is a real and
 load-bearing commitment, but nothing calls the registry. It is data the other components read, built
@@ -71,7 +71,7 @@ would otherwise leave invisible, since the module half it reaches is undrawn.
 container is code a module author writes *that runs in that container*: part 1's shaping library in
 the backend, part 3's Svelte component in the frontend. Everything else is shared framework,
 parameterised per route by part 2's entry. Those six policy values are per-route **data**, and
-treating per-route configuration as per-module structure would make request admission, the response
+treating per-route configuration as per-module structure would make request validation, the response
 cache and the upstream client all module-owned and leave the framework half empty — against the
 contract's own dependency direction, under which framework code "is shared code from the moment it is
 written". Parts 4 and 5 earn no component either: the boundary-schema fragment belongs to the one
@@ -114,8 +114,8 @@ ADR 0020's reason for leaving the bundle-serving relationship untagged, reaching
 
 **The boundary-crossing relationships are re-declared at their component endpoints**, which is
 ADR 0020's declare-once rule applied here exactly as that decision applied it to phase 1's actor
-edges. The configuration and bundle exchanges terminate at static serving, each module payload at
-request admission, and the operator's secret supply at the upstream client.
+edges. The configuration and bundle exchanges terminate at static serving, each module payload at the
+route handler, and the operator's secret supply at the upstream client.
 
 ## Alternatives considered
 
@@ -164,7 +164,7 @@ operator-tunable -->, SRS012<!-- Request parameters validated against known-good
 patterns --> and SRS013<!-- Client-facing contract for rejected requests --> all "want a relationship
 to an upstream" that does not exist. Two are internal by their own text, rejecting a request "without
 issuing any upstream request" and "before making any upstream call", and they sit on request
-admission. The third is not an upstream's property either: a rate limit is one of the six per-route
+validation. The third is not an upstream's property either: a rate limit is one of the six per-route
 values the registration entry carries, and the seam above rules those to be data read by framework
 components — so it binds where its two neighbours in that entry, the timeout and the response-size
 ceiling, already do. It binds twice, because its distinguishing clause is "regardless of how many

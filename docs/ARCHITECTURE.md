@@ -114,14 +114,15 @@ SRS019<!-- The backend runs on both supported architectures -->,
 SRS028<!-- Served responses declare their type, and forbid the browser inferring one -->.
 
 **Components (C4 L3)** — the backend's framework half: a route handler owning the order things happen
-in, and beneath it what judges a request before any upstream call, what holds an answer, what goes
-out for a new one, and what serves files. A module's own half of this container is its shaping
-library, drawn when that module's need lands
-([ADR 0021](decisions/0021-component-earns-its-interface-and-framework-half-only.md)). The handler
+in, and beneath it what checks a request's parameters before any upstream call, what holds an answer,
+what goes out for a new one, and what serves files. Nothing here reads who is asking
+(SRS009<!-- Every source reachable through the backend, statelessly -->). A module's own half of this
+container is its shaping library, drawn when that module's need lands
+([ADR 0021](decisions/0021-component-earns-its-interface-and-framework-half-only.md)); the handler
 calls it twice — to build the upstream request and to parse the answer — so what is drawn here cannot
-serve a payload on its own. A route's
-parameter validation, its two cache TTLs, its rate limit, its outbound timeout and its maximum
-response size are one entry in a static registration list and live nowhere else
+serve a payload on its own. A route's parameter validation, its two cache TTLs, its rate limit, its
+outbound timeout and its maximum response size are one entry in a static registration list and live
+nowhere else
 ([the module contract](contracts/module-contract.md)); that entry is data these components read
 rather than a component of its own.
 
@@ -137,7 +138,7 @@ graph TB
   subgraph WisekioskBackend["`Backend`"]
     WisekioskBackend.StaticServing@{ shape: rectangle, label: "Static serving" }
     WisekioskBackend.RouteHandler@{ shape: rectangle, label: "Route handler" }
-    WisekioskBackend.RequestAdmission@{ shape: rectangle, label: "Request admission" }
+    WisekioskBackend.RequestValidation@{ shape: rectangle, label: "Request validation" }
     WisekioskBackend.ResponseCache@{ shape: rectangle, label: "Response cache" }
     WisekioskBackend.UpstreamClient@{ shape: rectangle, label: "Upstream client" }
   end
@@ -147,7 +148,7 @@ tree`" .-> WisekioskBackend.StaticServing
   WisekioskFrontend -. "`Fetches the configuration, served back 
 unparsed`" .-> WisekioskBackend.StaticServing
   WisekioskFrontend -. "`Fetches the payload for each module`" .-> WisekioskBackend.RouteHandler
-  WisekioskBackend.RouteHandler -. "`Asks whether the request may proceed`" .-> WisekioskBackend.RequestAdmission
+  WisekioskBackend.RouteHandler -. "`Asks whether the parameters conform`" .-> WisekioskBackend.RequestValidation
   WisekioskBackend.RouteHandler -. "`Asks for a held answer, and stores what 
 it gets`" .-> WisekioskBackend.ResponseCache
   WisekioskBackend.RouteHandler -. "`Asks for a fresh response when nothing 
