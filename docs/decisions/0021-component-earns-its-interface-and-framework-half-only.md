@@ -112,12 +112,14 @@ registration and no boundary-schema fragment". The trigger is #76 module-spec pr
 the first module need. This is scope recorded, not an omission, exactly as ADR 0019 records the
 upstream elements it defers.
 
-**SRS012 and SRS013 bind here, and ADR 0020 is discharged rather than corrected.** That decision
-parked SRS011, SRS012 and SRS013 as wanting "a relationship to an upstream" that does not exist.
-SRS011 still does — a *rate* of upstream requests is a property of that edge. The other two are
-internal by their own text, rejecting a request "without issuing any upstream request" and "before
-making any upstream call", and they sit on request admission. Its sentence said *yet*, and this is
-the level that answers it; nothing in ADR 0020 is amended.
+**Two parked items bind here, and ADR 0020 is discharged rather than corrected.** That decision
+parked SRS011<!-- Upstream request rate is bounded, and the bound is not operator-tunable -->,
+SRS012<!-- Request parameters validated against known-good per-source patterns --> and
+SRS013<!-- Client-facing contract for rejected requests --> together, as wanting "a relationship to
+an upstream" that does not exist. The first still does — a *rate* of upstream requests is a property
+of that edge. The other two are internal by their own text, rejecting a request "without issuing any
+upstream request" and "before making any upstream call", and they sit on request admission. That
+sentence said *yet*, and this is the level that answers it; nothing in ADR 0020 is amended.
 
 **`index.mmd` and `containers.mmd` are unchanged by the re-declaration.** LikeC4 aggregates a
 component-depth edge to the nearest ancestor a view does not expand, so the two levels above render
