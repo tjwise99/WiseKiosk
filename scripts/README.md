@@ -12,12 +12,24 @@ it. That list is expensive to rebuild and worthless to guess at.
 **A check with no section here has no record.** That is a gap in this file, not a claim that the check
 is unverified — and not a claim that it is verified either.
 
-**A check's success line reports what it measured, not the size of what it read.** A count taken from
-the input — files in the tree, elements in a model — is identical whether the check judged all of
-them or none, so it evidences nothing and cannot move when the thing it appears to describe breaks.
-Report the population judged, and the subjects it was judged over. `check-arch-trace.py` printed
-`len(elements)` and `len(relations)` until a model arrived carrying both a duplicated identifier and a
-deliberately untagged relationship, which made the same line wrong in two directions at once.
+**A check's success line says how much it checked, not how much exists.** Those are different numbers,
+and only the first is evidence. `check-arch-trace.py` used to print:
+
+```
+17 tag(s) over 5 element(s) and 6 relationship(s) resolve to accepted items.
+```
+
+The `5` and the `6` are just the size of the model. They read the same whether every element carries a
+requirement link or none of them does, so they say nothing about what was verified — and they would
+not move if the link broke. It prints this instead:
+
+```
+18 tag application(s) on 7 of 11 element(s) and relationship(s), naming 17 accepted item(s).
+```
+
+`7 of 11` is what was checked against what exists, so removing a link moves it. The rule is worth
+stating because nothing enforces it: a success line fails no build, so a wrong one survives every
+green run until somebody reads it.
 
 **This is a snapshot, and nothing fails when it goes stale.** Every check `just verify` runs has a
 section below. `just verify` grows — #67 adds signing, SBOM and scanning gates, #54 the container
