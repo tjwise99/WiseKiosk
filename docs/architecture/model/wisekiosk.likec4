@@ -25,7 +25,7 @@ specification {
   tag SYS003
   tag SRS001
   tag SRS003
-  tag SRS005
+  tag SRS004
   tag SRS006
   tag SRS009
   tag SRS010
@@ -55,6 +55,7 @@ model {
     backend = container 'Backend' {
       #SRS009
       #SRS022
+      #SRS028
       technology 'Go'
       icon tech:go
       description '''
@@ -66,7 +67,7 @@ model {
     }
 
     frontend = container 'Frontend' {
-      #SRS005
+      #SRS004
       #SRS017
       technology 'Svelte 5, static single-page bundle'
       icon tech:svelte
@@ -78,21 +79,28 @@ model {
     }
 
     backend -> frontend 'Serves the single-page bundle' {
-      #SRS028
       technology 'HTTP'
     }
 
-    frontend -> backend 'Fetches each module payload, and the configuration the backend serves unparsed' {
+    frontend -> backend 'Fetches the configuration, served back unparsed' {
       #SRS003
+      technology 'HTTP'
+    }
+
+    frontend -> backend 'Fetches the payload for each module' {
       #SRS010
       #SRS016
       technology 'HTTP / JSON'
     }
   }
 
-  operator -> backend 'Supplies each source secret, and the configuration the backend only serves' {
+  operator -> backend 'Supplies the secret for each source' {
     #SYS003
     #SRS006
+  }
+
+  operator -> backend 'Places the configuration into the served tree' {
+    #SYS003
     #SRS018
   }
 

@@ -46,8 +46,8 @@ graph TB
   Operator@{ icon: "fa:user", shape: rounded, label: "Operator" }
   Wisekiosk@{ shape: rectangle, label: "WiseKiosk" }
   Viewer@{ icon: "fa:user", shape: rounded, label: "Viewer" }
-  Operator -. "`Supplies each source secret, and the 
-configuration the backend only serves`" .-> Wisekiosk
+  Operator -. "`Configures the deployment and supplies 
+its secrets`" .-> Wisekiosk
   Wisekiosk -. "`Renders the configured modules, and 
 legibly says when one failed`" .-> Viewer
 ```
@@ -58,12 +58,15 @@ legibly says when one failed`" .-> Viewer
 frontend bundle executing in the browser on the display host. They share one origin, because the
 backend serves that bundle and the configuration file as static content it never interprets
 ([ADR 0020](decisions/0020-two-containers-one-origin-and-dual-tier-tags.md),
-[ADR 0007](decisions/0007-config-validation-allocation.md)). Both things that distinguish one
-deployment from another reach the backend's filesystem from outside the image — the secret for each
-source, which the backend reads, and the configuration, which it only serves — and the configuration
-reaches its consumer on a second hop, when the page fetches it. No upstream source appears here for
-the reason none appears above: an upstream belongs to the module that reads it, and no module need is
-written ([ADR 0019](decisions/0019-boundary-at-what-deploys-and-tag-tier.md)).
+[ADR 0007](decisions/0007-config-validation-allocation.md)). What parameterises a deployment
+(SYS003<!-- A deployment is parameterised from outside the image -->) reaches that filesystem as two
+separate supplies: the secret for each source, resolved per request
+(SRS006<!-- Unresolvable secret surfaces as that source's upstream failure -->), and the
+configuration, which the image does not carry
+(SRS018<!-- One generic published image -->) and which reaches its consumer on a second hop, when the
+page fetches it. No upstream source appears here for the reason none appears above: an upstream
+belongs to the module that reads it, and no module need is written
+([ADR 0019](decisions/0019-boundary-at-what-deploys-and-tag-tier.md)).
 
 <!-- arch-export:begin generated/containers.mmd -->
 
@@ -78,12 +81,13 @@ graph TB
     Wisekiosk.Frontend@{ shape: rectangle, label: "Frontend" }
   end
   Viewer@{ icon: "fa:user", shape: rounded, label: "Viewer" }
-  Operator -. "`Supplies each source secret, and the 
-configuration the backend only serves`" .-> Wisekiosk.Backend
+  Operator -. "`Supplies the secret for each source`" .-> Wisekiosk.Backend
+  Operator -. "`Places the configuration into the served 
+tree`" .-> Wisekiosk.Backend
   Wisekiosk.Backend -. "`Serves the single-page bundle`" .-> Wisekiosk.Frontend
-  Wisekiosk.Frontend -. "`Fetches each module payload, and the 
-configuration the backend serves 
+  Wisekiosk.Frontend -. "`Fetches the configuration, served back 
 unparsed`" .-> Wisekiosk.Backend
+  Wisekiosk.Frontend -. "`Fetches the payload for each module`" .-> Wisekiosk.Backend
   Wisekiosk.Frontend -. "`Renders the configured modules, and 
 legibly says when one failed`" .-> Viewer
 ```

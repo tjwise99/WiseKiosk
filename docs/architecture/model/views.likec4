@@ -1,5 +1,9 @@
 // Views over the WiseKiosk model. Each view renders to a browser-free Mermaid
 // artifact (`just arch-export`).
+//
+// A view renders parallel relationships as one edge unless it asks for them
+// separately; `multiple true` is that request, and a title overrides the label
+// of a merge left in place (ADR 0020).
 
 views {
   // Named `index` so it is LikeC4's default landscape view — this avoids a
@@ -7,10 +11,23 @@ views {
   view index {
     title 'WiseKiosk — System Context (C4 L1)'
     include *
+
+    // Naming a container here would draw it, so the merge stays and carries the
+    // label this level authors for it.
+    include operator -> wisekiosk with {
+      title 'Configures the deployment and supplies its secrets'
+    }
   }
 
   view containers of wisekiosk {
     title 'WiseKiosk — Containers (C4 L2)'
     include *
+
+    include operator -> backend with {
+      multiple true
+    }
+    include frontend -> backend with {
+      multiple true
+    }
   }
 }

@@ -53,13 +53,14 @@ the component forbidden to interpret them.
 relationships are therefore replaced by their container-depth decomposition rather than kept
 alongside it, which would assert one fact twice under two labels that can drift.
 
-**Where two relationships share endpoints they are authored as one, carrying a two-part label.** The
-view computation merges parallel relationships into a single edge labelled `[...]` in every renderer,
-so a decomposition that collides is invisible in exactly the artifact it was drawn for. The tree
-supports the merge rather than merely tolerating it:
-SYS003<!-- A deployment is parameterised from outside the image --> states the operator's two
-supplies as one obligation with two parts, and the entire content of
-SRS010<!-- The display page reaches no origin but the backend's --> is that one origin exists.
+**Where two relationships share endpoints, the view asks for them separately.** A view renders
+parallel relationships as one edge labelled `[...]`, losing every label, and that merge happens in
+the computed view rather than in a renderer — Mermaid, D2, PlantUML and the image export all show it.
+The view predicate `multiple true` is the request to render each separately, and a `title` overrides
+the label of a merge deliberately left in place. Both are used: the Container level asks for the
+operator's two supplies and the frontend's two fetches separately, and the Context level keeps one
+operator edge under the label that level authors, since naming a container in a view draws it and
+would cost the Context level its abstraction.
 
 **The Container level answers to `SRS`, and a relationship spanning the boundary carries both tiers.**
 An `SRS` item allocates to a container, which is what ADR 0019 gave as its reason for refusing that
@@ -67,12 +68,19 @@ tier at the Context level, and is the argument for it here. A relationship decla
 and a container is rendered at both levels, so it answers to both and carries the `SYS` item it
 discharges beside the `SRS` item specialising it.
 
-**A tag is applied where an accepted item obliges the thing it sits on.** Two consequences follow.
-Tags discriminate rather than inventory — the bar is against stamping an element with everything it
-owes, not against a count, so a merged edge carrying genuinely coupled obligations carries all of
-them. And an element or relationship no accepted item obliges carries none: the bundle-serving edge
-has no tag, because who serves the bundle is a decision under
-[ADR 0011](0011-requirement-or-convention.md) rather than a property of the running software.
+**A tag is applied where an accepted item obliges the thing it sits on, and nowhere else.** Three
+consequences follow. An item obliging every exchange an element has belongs on the element rather
+than on one of its edges — SRS028<!-- Served responses declare their type, and forbid the browser
+inferring one --> obliges every response the backend serves, so it sits on the backend. An element or
+relationship no accepted item obliges carries none: the bundle-serving edge has no tag, because who
+serves the bundle is a decision under [ADR 0011](0011-requirement-or-convention.md) rather than a
+property of the running software. And an item whose obligation reaches something the model does not
+draw is not a tag here — SRS005<!-- One validation implementation --> binds the page to the desk
+validator, which ADR 0019 keeps outside the boundary, so tagging the frontend with it points past the
+diagram in the way ADR 0019 rejects.
+
+Tags discriminate rather than inventory: the bar is against stamping an element with everything it
+owes, which distinguishes nothing, not against a count.
 
 ## Alternatives considered
 
@@ -80,9 +88,10 @@ has no tag, because who serves the bundle is a decision under
 strongest rival and the one the origin argument does *not* refute: it is single-origin, so
 SRS010<!-- The display page reaches no origin but the backend's --> survives it intact, and it is a
 common shape in self-hosted deployments. It is refused on delivery. Reaching it means either
-publishing several images and a compose file, which contradicts the one image
-SRS018<!-- One generic published image --> and [`../../README.md`](../../README.md) describe, or
-supervising a second process inside one container. Either buys a separation of concerns with no
+publishing several images and a compose file, against the single image
+[`../../README.md`](../../README.md) states the product ships — no requirement forbids a second
+image, so this leg rests on the product definition rather than on the tree — or supervising a second
+process inside one container. Either buys a separation of concerns with no
 consumer at one display on a LAN, and adds a configuration surface to a deployment whose operator is
 frequently not the author. **Premise that would reopen it:** WiseKiosk grows independently deployed
 pieces, at which point the proxy arrives with them. Nothing here stops an operator putting their own
@@ -126,12 +135,18 @@ it draws are one obligation.
 
 ## Consequences
 
-**Two requirements were baselined by this work.** SRS026<!-- The display says when the backend is
-gone --> and SRS028<!-- Served responses declare their type, and forbid the browser inferring one -->
-were `proposed`, and `check-arch-trace` refuses a tag on an unbaselined item. Binding a requirement
-to an element is the act of reading it and judging what it obliges, so the review happened here;
-both already met [ADR 0005](0005-traceability-gating.md)'s definition of acceptance, and `status`
-sits outside the `reviewed` attribute set, so no fingerprint moved.
+**Two requirements were baselined by this work, by the owner.** SRS026<!-- The display says when the
+backend is gone --> and SRS028<!-- Served responses declare their type, and forbid the browser
+inferring one --> were `proposed`, and `check-arch-trace` refuses a tag on an unbaselined item.
+Binding a requirement to an element is the act of reading it and judging what it obliges, so the
+review happened here: both items were put in front of the owner in full and accepted (owner,
+2026-08-04). That decision is the record — [ADR 0005](0005-traceability-gating.md) reserves
+acceptance to a human, and no property of an item can stand in for one. In particular the presence of
+a fingerprint, a rationale and a verification method cannot: every remaining `proposed` item has all
+three, so a criterion built from them would baseline the whole tree and leave `proposed` unreachable.
+The five untouched items were not read here and so were not accepted. `status` sits outside the
+`reviewed` attribute set, so no fingerprint moved — which is also why the tree carries no trace of
+the act, and this paragraph is where it is recorded.
 
 **The Context level renders the labels of the container-depth relationships**, since that is where
 they are declared. It shows the decomposition seen from further away rather than a wording of its

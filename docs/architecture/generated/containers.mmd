@@ -8,11 +8,12 @@ graph TB
     Wisekiosk.Frontend@{ shape: rectangle, label: "Frontend" }
   end
   Viewer@{ icon: "fa:user", shape: rounded, label: "Viewer" }
-  Operator -. "`Supplies each source secret, and the 
-configuration the backend only serves`" .-> Wisekiosk.Backend
+  Operator -. "`Supplies the secret for each source`" .-> Wisekiosk.Backend
+  Operator -. "`Places the configuration into the served 
+tree`" .-> Wisekiosk.Backend
   Wisekiosk.Backend -. "`Serves the single-page bundle`" .-> Wisekiosk.Frontend
-  Wisekiosk.Frontend -. "`Fetches each module payload, and the 
-configuration the backend serves 
+  Wisekiosk.Frontend -. "`Fetches the configuration, served back 
 unparsed`" .-> Wisekiosk.Backend
+  Wisekiosk.Frontend -. "`Fetches the payload for each module`" .-> Wisekiosk.Backend
   Wisekiosk.Frontend -. "`Renders the configured modules, and 
 legibly says when one failed`" .-> Viewer
