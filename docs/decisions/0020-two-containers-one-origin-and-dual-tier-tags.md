@@ -133,9 +133,9 @@ to an element is the act of reading it and judging what it obliges, so the revie
 both already met [ADR 0005](0005-traceability-gating.md)'s definition of acceptance, and `status`
 sits outside the `reviewed` attribute set, so no fingerprint moved.
 
-**The Context level's rendered labels now come from the container-depth relationships**, since that
-is where they are declared. The level's content is unchanged; its wording is the decomposition seen
-from further away.
+**The Context level renders the labels of the container-depth relationships**, since that is where
+they are declared. It shows the decomposition seen from further away rather than a wording of its
+own.
 
 **Some obligations have nowhere to bind yet.** SRS011<!-- Upstream request rate is bounded, and the
 bound is not operator-tunable -->, SRS012<!-- Request parameters validated against known-good
