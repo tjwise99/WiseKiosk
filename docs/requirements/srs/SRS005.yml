@@ -9,7 +9,7 @@ normative: true
 rationale: |
   A second engine enforces the schema slightly differently, and the divergence
   surfaces as a desk validator that accepts what the page rejects — the defect
-  class the single-definition rule exists to kill (ADR 0007).
+  class the single-definition rule exists to kill (ADR 0007 rev 1).
 ref: ''
 reviewed: nfFTpMuXNH-Czat7s8W4WFvZZ94r1UuE1GSy9cS9Va4=
 status: accepted

@@ -3,6 +3,11 @@
 **Status:** accepted
 **Decided:** 2026-07-23 (configuration requirements round #34; ticket #47; revised the same day from
 a backend-boot-gate draft after owner challenge)
+**Rev:** 1
+
+## Revisions
+
+- **rev 1** — 2026-08-05 — revision tracking begins; text as merged (#118 ADR revisions).
 
 ## Context
 

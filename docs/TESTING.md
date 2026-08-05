@@ -53,7 +53,7 @@ modules are local and fetch nothing — so this would have been a general soluti
 
 The scheduled run holds a credential, deliberately. Confining it to a job off the merge path is the
 narrower answer to the nested module
-[ADR 0010](decisions/0010-runtime-materialised-gate-fixtures.md) found leaky.
+[ADR 0010 rev 1](decisions/0010-runtime-materialised-gate-fixtures.md) found leaky.
 
 **Decided 2026-07-28 by the owner: no requirement.** Nothing WiseKiosk does can violate "an upstream
 still returns what we expect" — that obligation is on somebody else's API. The half that *is* ours,
@@ -63,19 +63,19 @@ already **SRS001<!-- A failed module shows why, and only that module -->**, and
 failure classes. A tree item here would restate it. What is left is machinery: recording a fixture
 is a procedure an author follows, and a scheduled credentialed job is a repository-facing check, so
 both sit in [`CI.md § Upstream contract checks`](CI.md#upstream-contract-checks)
-([ADR 0011](decisions/0011-requirement-or-convention.md)).
+([ADR 0011 rev 1](decisions/0011-requirement-or-convention.md)).
 
 ---
 
 ## The Boundary tier is generated, not hand-written
 
 The backend is Go and the frontend is TypeScript, so they share no types
-([ADR 0001](decisions/0001-backend-language-go.md)). The Boundary tier therefore is not a pair of
+([ADR 0001 rev 1](decisions/0001-backend-language-go.md)). The Boundary tier therefore is not a pair of
 hand-maintained type declarations checked for agreement by a test — it is **one schema, with both
 sides generated from it**. The tier's job in CI is to prove the generation is real and current:
 
 - Generation from the one schema by the codegen mechanism
-  ([ADR 0008](decisions/0008-boundary-contract-openapi-codegen.md)), the CI drift gate that fails on
+  ([ADR 0008 rev 1](decisions/0008-boundary-contract-openapi-codegen.md)), the CI drift gate that fails on
   committed output differing from a fresh regeneration, and version-pinning of the generators so
   regeneration is deterministic. Generation from one schema is
   **SRS015<!-- One schema, all boundary value classes -->** and the drift gate is verified under
@@ -88,7 +88,7 @@ sides generated from it**. The tier's job in CI is to prove the generation is re
   **SYS005<!-- Single-definition internal contract -->**.
 - That the frontend adds no second, runtime validator over proxied payloads, so agreement rests on
   the schema and the drift gate rather than a bundled re-check —
-  [ADR 0008](decisions/0008-boundary-contract-openapi-codegen.md). No requirement states this: it was
+  [ADR 0008 rev 1](decisions/0008-boundary-contract-openapi-codegen.md). No requirement states this: it was
   deleted as a prohibition against a case that does not exist, and the ADR carries the decision and
   the premise it rests on.
 
@@ -104,7 +104,7 @@ Gate on these — they name what must be proven. Not on a coverage number. Each 
 short form a test author needs, and cited to whatever governs it: an item in the
 [requirements tree](requirements/README.md) where the obligation is on the running software, and the
 module contract or [`../tools/README.md`](../tools/README.md) where it is not
-([ADR 0011](decisions/0011-requirement-or-convention.md)). What every one has is a home that can be
+([ADR 0011 rev 1](decisions/0011-requirement-or-convention.md)). What every one has is a home that can be
 checked against, rather than prose alone.
 
 - **Every value crossing the frontend/backend boundary is generated from one definition** →
@@ -154,7 +154,7 @@ construction. A high number buys confidence it has not earned.
 Report coverage. Read it to find untested areas. Gate on the standing obligations above. No gate
 fails a merge on a coverage percentage treated as a quality threshold; the coverage gate, where one
 exists, fails only on uncovered source that is neither exempted nor justified — coverage as
-traceability closure, gate 3 of [ADR 0005](decisions/0005-traceability-gating.md), never as a chosen
+traceability closure, gate 3 of [ADR 0005 rev 1](decisions/0005-traceability-gating.md), never as a chosen
 quality bar.
 
 ---
@@ -177,7 +177,7 @@ is a defect in the suite's architecture, not a neutral choice.
 ## Review cadence
 
 The test architecture is reviewed **whenever a module is added** and **whenever the boundary
-transport** (the OpenAPI schema / codegen mechanism, [ADR 0008](decisions/0008-boundary-contract-openapi-codegen.md))
+transport** (the OpenAPI schema / codegen mechanism, [ADR 0008 rev 1](decisions/0008-boundary-contract-openapi-codegen.md))
 **changes**. This is scheduled deliberately: removing or reshaping a test feels like a regression even
 when the test proves nothing, so without a scheduled review the suite silently becomes permanent
 architecture nobody revisits. Code gets that review by default; tests must be given it explicitly.

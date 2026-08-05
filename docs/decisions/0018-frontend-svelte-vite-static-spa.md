@@ -4,10 +4,15 @@
 **Decided:** 2026-08-04 (#60 authored-language set. The stack was in use from the bootstrap; the
 alternatives below were weighed on this date, and this record carries the date of the weighing rather
 than the date the stack was picked)
+**Rev:** 1
+
+## Revisions
+
+- **rev 1** — 2026-08-05 — revision tracking begins; text as merged (#118 ADR revisions).
 
 ## Context
 
-The frontend stack was in use before anything recorded why. [0001](0001-backend-language-go.md) opens
+The frontend stack was in use before anything recorded why. [ADR 0001 rev 1](0001-backend-language-go.md) opens
 by treating it as given — *"The frontend is settled: Svelte 5 + Vite, a static SPA"* — and reasons
 about the backend from there. [`../../README.md`](../../README.md) and
 [`../ARCHITECTURE.md`](../ARCHITECTURE.md) state it. [`../CI.md`](../CI.md) § *Module and framework
@@ -23,7 +28,7 @@ What the frontend has to be is narrow, and every alternative below is measured a
 is an unattended display on constrained hardware. It renders a fixed set of modules on one screen and
 **never navigates**. It has no crawler, no cold visitor and no share link, so first paint is a
 once-per-power-cycle event. Its configuration is a static file fetched from the same origin
-([0007](0007-config-validation-allocation.md)), not a form anyone submits. The bundle is served as
+([ADR 0007 rev 1](0007-config-validation-allocation.md)), not a form anyone submits. The bundle is served as
 static files by the Go backend that already serves the configuration.
 
 ## Decision
@@ -34,9 +39,9 @@ served as files by the Go backend. **No server-side rendering, no router, no met
 what it asserts against.
 
 Components are authored in the Svelte component format and everything around them in TypeScript,
-which is what [0017](0017-authored-language-set.md) admits for what ships: the
-configuration-validation engine of [0007](0007-config-validation-allocation.md) and the generated
-boundary types of [0008](0008-boundary-contract-openapi-codegen.md) both live here. Vite is an
+which is what [ADR 0017 rev 1](0017-authored-language-set.md) admits for what ships: the
+configuration-validation engine of [ADR 0007 rev 1](0007-config-validation-allocation.md) and the generated
+boundary types of [ADR 0008 rev 1](0008-boundary-contract-openapi-codegen.md) both live here. Vite is an
 invoked toolchain under that decision, not an authoring language.
 
 ## Alternatives considered
@@ -73,11 +78,11 @@ invoked toolchain under that decision, not an authoring language.
   product with a growing component surface.
 - **First paint waits for the bundle and the first fetch.** Acceptable for a display that boots once
   and runs for weeks, and it is exactly the trade that would be wrong for a page a person opens cold.
-- **The frontend owns configuration validation** ([0007](0007-config-validation-allocation.md)) and
-  consumes generated boundary types ([0008](0008-boundary-contract-openapi-codegen.md)), so the
+- **The frontend owns configuration validation** ([ADR 0007 rev 1](0007-config-validation-allocation.md)) and
+  consumes generated boundary types ([ADR 0008 rev 1](0008-boundary-contract-openapi-codegen.md)), so the
   TypeScript toolchain is unconditional here whatever else changes.
 - **No requirement item states any of this.** The stack constrains the repository rather than the
-  running software, which [0011](0011-requirement-or-convention.md) routes to a check —
+  running software, which [ADR 0011 rev 1](0011-requirement-or-convention.md) routes to a check —
   [`../CI.md`](../CI.md)'s, above.
 
 **Premise that would reopen this:** the product grows a genuinely interactive surface, of which **a

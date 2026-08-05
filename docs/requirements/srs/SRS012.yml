@@ -12,7 +12,7 @@ rationale: |
   (SYS004<!-- Upstream data reaches the display only through the backend -->). The client-facing
   form of a rejection is specified by SRS013<!-- Client-facing contract for rejected requests -->.
   What a given source's pattern is — a code format, an enumerated identifier set — is that module's
-  own obligation under ADR 0012, not this one's; naming examples here would put two modules'
+  own obligation under ADR 0012 rev 1, not this one's; naming examples here would put two modules'
   requirements in a framework item.
 ref: ''
 reviewed: FqVqw2WG_jnY2e6uJAoNZoDm7H9cCmXSejG5uBMviZg=

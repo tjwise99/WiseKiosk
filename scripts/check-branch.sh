@@ -1,8 +1,8 @@
 #!/bin/sh
-# The branch name must follow type_number-snake_name (ADR 0006): the shape is
+# The branch name must follow type_number-snake_name (ADR 0006 rev 1): the shape is
 # defined once in scripts/branch-shape.regex, shared with the pre-push hook;
 # the number resolves via the GitHub API to an open issue carrying a milestone
-# and exactly one type label, which is the branch type (ADR 0013). main and
+# and exactly one type label, which is the branch type (ADR 0013 rev 1). main and
 # dependabot/* are exempt. When an open PR exists, its Development field
 # (closingIssuesReferences) must link the branch's issue — any base; body
 # keywords only write the record against the default branch, so other bases
@@ -132,14 +132,14 @@ jq -e '.data.repository.issue | has("parent") and (.parent == null or (.parent.n
     fail "the GraphQL response carries no parent number for issue #$number — the membership check read nothing, and a check that reads nothing must not report success. A present key with a null value is how 'no parent' arrives; anything else means the query stopped naming what is read below"
 parent=$(jq -r '.data.repository.issue.parent.number // ""' "$tmp")
 if [ "$base_ref" = "$default_branch" ]; then
-    [ -z "$parent" ] || fail "issue #$number is a sub-issue of #$parent, but PR #$pr_number targets the default branch — sub-issue membership means a shared merge target, not topical grouping; the milestone is what groups (ADR 0013)"
+    [ -z "$parent" ] || fail "issue #$number is a sub-issue of #$parent, but PR #$pr_number targets the default branch — sub-issue membership means a shared merge target, not topical grouping; the milestone is what groups (ADR 0013 rev 1)"
     echo "Issue #$number has no parent, and PR #$pr_number targets the default branch."
 else
     printf '%s' "$base_ref" | grep -Eqf "$scripts_dir/branch-shape.regex" ||
-        fail "PR #$pr_number's base '$base_ref' is neither the default branch nor a conforming integration branch — an integration branch is a branch, so it links a ticket of its own (ADR 0006)"
+        fail "PR #$pr_number's base '$base_ref' is neither the default branch nor a conforming integration branch — an integration branch is a branch, so it links a ticket of its own (ADR 0006 rev 1)"
     anchor_rest=${base_ref#*_}
     anchor=${anchor_rest%%-*}
-    [ -n "$parent" ] || fail "PR #$pr_number targets integration branch '$base_ref' but issue #$number has no parent — a ticket whose PR targets an integration branch is a sub-issue of that branch's anchor #$anchor (ADR 0013)"
+    [ -n "$parent" ] || fail "PR #$pr_number targets integration branch '$base_ref' but issue #$number has no parent — a ticket whose PR targets an integration branch is a sub-issue of that branch's anchor #$anchor (ADR 0013 rev 1)"
     [ "$parent" = "$anchor" ] || fail "issue #$number is a sub-issue of #$parent, but PR #$pr_number targets '$base_ref', which is anchored at #$anchor — membership tracks the merge target"
     echo "Issue #$number is a sub-issue of #$anchor, which anchors base branch '$base_ref'."
 fi

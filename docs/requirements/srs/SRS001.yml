@@ -9,7 +9,7 @@ normative: true
 rationale: |
   The failure state is a framework universal while a success state is not: what a module displays
   differs per module and is that module's own need, but a module whose upstream is unavailable looks
-  the same whichever module it is (ADR 0012). So this is stated once, here, and not per module.
+  the same whichever module it is (ADR 0012 rev 1). So this is stated once, here, and not per module.
   Containment is the second half - four other regions going blank because one source is down is the
   disproportionate degradation SYS001<!-- Failure is legible and proportionate --> forbids. The
   shape of the payload that carries the failure is

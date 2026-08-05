@@ -8,7 +8,7 @@ links:
 normative: true
 rationale: |
   SYS003's<!-- A deployment is parameterised from outside the image --> obligation had no child
-  expressing it. The backend has no configuration concept (ADR 0007), which is a property of a
+  expressing it. The backend has no configuration concept (ADR 0007 rev 1), which is a property of a
   component holding no keys - it satisfied the need vacuously while the demand that every offered
   key actually works went unverified, and the gate stayed green over the gap. Stated as an
   observable difference rather than as "renders without error", because a dead knob - a key the

@@ -303,13 +303,13 @@ written rather than a defect in the document.
 
 The consequential one is the second: every `|`-leading line in `docs/README.md` is read as an index
 row, so the file may hold exactly one table and no fenced example containing one. `docs/CI.md` and
-ADR 0014 both say a *Document* cell *renders* as a path, where the check requires a Markdown link
+ADR 0014 rev 1 both say a *Document* cell *renders* as a path, where the check requires a Markdown link
 whose text is a backticked path — the prose is looser than the code.
 
 **What it does not catch.** Two things, both run and observed rather than reasoned about.
 
 **A new top-level dot-directory is excluded the moment it exists**, with no edit anywhere: adding
-`.notes/NOTES.md` alone gives exit 0. This is the accepted trade recorded in ADR 0014 — it is what
+`.notes/NOTES.md` alone gives exit 0. This is the accepted trade recorded in ADR 0014 rev 1 — it is what
 buys the absence of an exclusions list, since anything that is *not* a dot-directory cannot be
 excluded without changing this check. The check names the machinery directories it skipped on every
 run, so a new one is on screen rather than inferred from a count. An earlier revision of this PR
@@ -323,7 +323,7 @@ matches `check-links.mjs`, which draws its file list the same way.
 ## `check-branch.sh`
 
 Covers the ticket-metadata and epic-membership assertions
-([ADR 0013](../docs/decisions/0013-work-tracking-invariants.md)), and the branch-shape, exemption and
+([ADR 0013 rev 1](../docs/decisions/0013-work-tracking-invariants.md)), and the branch-shape, exemption and
 issue-resolution assertions below.
 
 The shape and exemption cases reach no network: the branch name is passed as `$1`, and both paths

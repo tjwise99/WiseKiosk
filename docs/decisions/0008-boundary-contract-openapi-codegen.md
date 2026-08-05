@@ -3,10 +3,15 @@
 **Status:** accepted
 **Decided:** 2026-07-23 (boundary-contract requirements round #37; the codegen-mechanism trade
 carried by #7). This ADR records the mechanism **decision**; the **build** is #7.
+**Rev:** 1
+
+## Revisions
+
+- **rev 1** — 2026-08-05 — revision tracking begins; text as merged (#118 ADR revisions).
 
 ## Context
 
-The Go backend and the TypeScript frontend share no types ([ADR 0001](0001-backend-language-go.md)),
+The Go backend and the TypeScript frontend share no types ([ADR 0001 rev 1](0001-backend-language-go.md)),
 which makes the boundary contract non-negotiable: **one schema, both sides generated from it**, CI
 failing on stale generated code. Round #37 elicited the requirements for that property
 (SYS005<!-- Single-definition internal contract -->;
@@ -61,7 +66,7 @@ and #7's acceptance — schema file present, both generators wired, drift gate g
   its home.
 - **Docsite:** `sphinxcontrib-openapi` renders the schema into the existing Sphinx site at build
   under warnings-as-errors — the same generated-not-authored, single-toolchain pattern as
-  doorstop→needs and likec4→mermaid ([ADR 0004](0004-docs-site-sphinx-needs.md)).
+  doorstop→needs and likec4→mermaid ([ADR 0004 rev 1](0004-docs-site-sphinx-needs.md)).
 
 ## Alternatives considered
 
@@ -91,11 +96,11 @@ and #7's acceptance — schema file present, both generators wired, drift gate g
 
 - **#7 becomes an implementation ticket**: the mechanism is settled; its build (schema file, wired
   generators, green drift gate) waits on #5's repo layout.
-- **Two pinned generators to keep current** — inherent to Go not sharing types (ADR 0001 paid for
+- **Two pinned generators to keep current** — inherent to Go not sharing types (ADR 0001 rev 1 paid for
   this knowingly), tracked like any pinned tool.
 - **Hand-authored OpenAPI YAML is verbose** — accepted for ~5 payloads; the 3.1 migration and, if it
   ever bites, an authoring layer remain open.
-- **The configuration schema stays a separate artifact**, TS-owned (ADR 0007), never crossing the
+- **The configuration schema stays a separate artifact**, TS-owned (ADR 0007 rev 1), never crossing the
   wire. When 3.1 lands, both schemas can share the JSON Schema 2020-12 dialect and docsite
   rendering — a shared *vocabulary*, not a merged schema (that would be abstraction without a second
   consumer).

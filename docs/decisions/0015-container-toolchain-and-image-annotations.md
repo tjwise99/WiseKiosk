@@ -2,6 +2,11 @@
 
 **Status:** accepted
 **Decided:** 2026-08-02 (#61 OCI image annotations)
+**Rev:** 1
+
+## Revisions
+
+- **rev 1** — 2026-08-05 — revision tracking begins; text as merged (#118 ADR revisions).
 
 ## Context
 
@@ -16,7 +21,7 @@ The tree constrains what the image carries and who it runs as —
 SRS018<!-- One generic published image --> and
 SRS025<!-- No secret material in the published image --> bar content,
 SRS020<!-- Non-root container user --> fixes the user — and says nothing about its metadata. Under
-[ADR 0011](0011-requirement-or-convention.md) it cannot: an annotation is baked by the publishing
+[ADR 0011 rev 1](0011-requirement-or-convention.md) it cannot: an annotation is baked by the publishing
 pipeline, and no behaviour of the running kiosk can violate one. So this is a repository-facing
 convention, checked, and no requirement item is written for it.
 
@@ -25,7 +30,7 @@ surfaces it lands on, and "generated rather than written by hand" are all shaped
 and its build-metadata action do — and **no decision record chose a container toolchain.** Four
 documents presume one without arguing for it: `../CI.md` names "every base and stage in the
 Dockerfile" and excludes the Docker build context by `.dockerignore`;
-[ADR 0010](0010-runtime-materialised-gate-fixtures.md) lists a `Dockerfile` among its throwaway
+[ADR 0010 rev 1](0010-runtime-materialised-gate-fixtures.md) lists a `Dockerfile` among its throwaway
 fixture manifests; [`../../scripts/README.md`](../../scripts/README.md) carries `docker://` action
 references as pin fixtures; and [`../../tools/README.md`](../../tools/README.md) goes furthest,
 naming Docker and Compose as what restarts a container whose process exits. The requirements tree

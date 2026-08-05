@@ -2,7 +2,7 @@
 """Every requirement identifier tagged in the architecture model resolves to an accepted item.
 
 The rule is `docs/CI.md` § Documentation integrity; the tag mechanism and the tier it carries are
-ADR 0019.
+ADR 0019 rev 1.
 
 Scope is resolution: a tag names an item that exists, is active and accepted, is spelled
 canonically, and is applied somewhere. Whether the tagged element is the one that requirement
@@ -32,7 +32,7 @@ def export():
     """The model as LikeC4 resolves it. Reading the `.likec4` source instead would judge a
     re-implementation of the parser rather than the parser's own answer.
 
-    `validate` runs first for the reason ADR 0003 records against `codegen`: `export json` also
+    `validate` runs first for the reason ADR 0003 rev 1 records against `codegen`: `export json` also
     succeeds on a broken model, emitting a degraded document whose tags have silently gone missing —
     which reads here as a model that tags nothing."""
     if not LIKEC4.exists():

@@ -16,7 +16,7 @@ text: |
   asserts the build passes. Lands with the codegen mechanism (#7). The check is
   repo-level (it spans both packages); this item cites the workflow wiring in its
   text because Doorstop references cannot reach a path under a dot-directory such
-  as .github/ (ADR 0002, ADR 0005).
+  as .github/ (ADR 0002 rev 1, ADR 0005 rev 1).
 verification-justification: |
   Settles that a seeded schema/code mismatch fails the drift check and that regeneration clears it.
   Leaves unproven drift the generators do not express - a schema change producing byte-identical

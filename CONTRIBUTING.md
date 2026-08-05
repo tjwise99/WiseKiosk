@@ -40,7 +40,7 @@ fingerprint `check-reqs` can stamp is
 
 ## Tickets, branches, and titles
 
-Enforced by the `process` CI check ([ADR 0006](docs/decisions/0006-process-gates.md)):
+Enforced by the `process` CI check ([ADR 0006 rev 1](docs/decisions/0006-process-gates.md)):
 
 - **Ticket first.** Open an issue from one of the templates before branching; the branch embeds
   its number.
@@ -70,7 +70,7 @@ Enforced by the `process` CI check ([ADR 0006](docs/decisions/0006-process-gates
 ## Review checklist
 
 Each question below is an obligation on the author that leaves no artifact, so no check decides it —
-the reviewer is the mechanism ([ADR 0011](docs/decisions/0011-requirement-or-convention.md)). The
+the reviewer is the mechanism ([ADR 0011 rev 1](docs/decisions/0011-requirement-or-convention.md)). The
 [pull-request template](.github/pull_request_template.md) points here; it does not repeat the
 questions.
 
@@ -111,7 +111,7 @@ questions.
     prevent a false positive is the first place a bypass gets spelled, and the reasoning that
     produces one reads as caution.
 12. **Languages.** Does the change author a program in a language outside the set
-    [ADR 0017](docs/decisions/0017-authored-language-set.md) states — and if so, has that language
+    [ADR 0017 rev 1](docs/decisions/0017-authored-language-set.md) states — and if so, has that language
     been through an ADR?
 
 **Requirements**
@@ -119,7 +119,7 @@ questions.
 13. **Module universals.** Where the change adds or edits a module's requirements, does any of them
     state something already obliged of every module — failure rendering, secret delivery, caching,
     request rejection? A module's requirements carry what is true of that module and nothing else
-    ([ADR 0012](docs/decisions/0012-module-requirements-in-tree.md)).
+    ([ADR 0012 rev 1](docs/decisions/0012-module-requirements-in-tree.md)).
 14. **Named resources.** Does a requirement the change adds or edits name a file, endpoint, package
     or tool rather than stating the property the software must have? A requirement naming one has
     swallowed a design decision, which then cannot change without a specification change.

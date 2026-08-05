@@ -1,7 +1,7 @@
 # Documentation site (Sphinx + MyST + sphinx-needs)
 
 Renders this repository's documentation: the prose files under `docs/` unchanged (no frontmatter, no
-in-source directives — see [ADR 0004](../decisions/0004-docs-site-sphinx-needs.md)), the repo-root
+in-source directives — see [ADR 0004 rev 1](../decisions/0004-docs-site-sphinx-needs.md)), the repo-root
 files (`README.md`, `CONTRIBUTING.md`, `SECURITY.md`) via thin include shims, and a
 generated, click-through view of the Doorstop requirements tree
 ([`../requirements/`](../requirements/README.md), [ADR
@@ -31,7 +31,7 @@ docs/site/
 ```
 
 `index.md`, `contributing.md`, and `security.md` are the only structural concession Sphinx demands
-(ADR 0004): each is a pure `{include}` of its repo-root counterpart, using MyST's `relative-docs`
+(ADR 0004 rev 1): each is a pure `{include}` of its repo-root counterpart, using MyST's `relative-docs`
 option to rewrite that file's root-relative links (e.g. `docs/ARCHITECTURE.md`) to resolve from
 inside the silo. The included file's own top heading becomes the page title — no hand-written prose
 duplicates it.
@@ -82,7 +82,7 @@ title and text carried across verbatim, parent links from Doorstop's `links`, st
 That item page is the definition every `id` link in the site resolves to, so a link's target always
 shows the requirement with both its parent and child links. Each document also gets one sheet page
 (`sys.md`/`srs.md`/`tst.md`) that pulls its type's items together with a `needextract` filter and
-reaches them via a glob toctree — structure, not presentation, so the ADR 0004 thin-transform
+reaches them via a glob toctree — structure, not presentation, so the ADR 0004 rev 1 thin-transform
 boundary holds.
 
 The transform is deliberately presentation-free otherwise — no styling, no reordering beyond a
@@ -102,7 +102,7 @@ hand-edited.
 A separate workflow, [`../../.github/workflows/pages.yml`](../../.github/workflows/pages.yml), builds
 this site and deploys it to GitHub Pages on push to `main`. It runs the same build commands as
 `check-site` and holds `pages: write` + `id-token: write` via OIDC — no stored credentials.
-`checks.yml` stays read-only (ADR 0004).
+`checks.yml` stays read-only (ADR 0004 rev 1).
 
 No document in this repository references the deployed site's URL: the repo stays self-contained and
 loses nothing if Pages disappears.

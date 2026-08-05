@@ -2,6 +2,11 @@
 
 **Status:** accepted
 **Decided:** 2026-07-22 (issue #21)
+**Rev:** 1
+
+## Revisions
+
+- **rev 1** — 2026-08-05 — revision tracking begins; text as merged (#118 ADR revisions).
 
 ## Context
 
@@ -38,7 +43,7 @@ the single documentation toolchain.
   This machinery is mature, maintained, and purpose-built for exactly the SYS→SRS→TST shape; on
   every alternative it would be bespoke code owned here forever.
 - **Doorstop stays canonical.** This does **not** supersede
-  [ADR 0002](0002-requirements-management-doorstop.md): the YAML items under
+  [ADR 0002 rev 1](0002-requirements-management-doorstop.md): the YAML items under
   `docs/requirements/` remain the requirements source and `doorstop --error-all` remains the gate.
   A **thin, presentation-free transform** generates need objects from the YAML at build time
   (generated, gitignored — never hand-authored); only Doorstop's HTML render is retired.
@@ -54,7 +59,7 @@ the single documentation toolchain.
   `pages: write` + `id-token: write` via OIDC — elevated *permissions*, still **no stored
   credentials**, so the secret-free-CI stance holds.
 - **Diagrams are not load-bearing in this choice.** The Mermaid splice
-  ([ADR 0003](0003-architecture-as-code-likec4.md)) keeps serving GitHub; how LikeC4 output enters
+  ([ADR 0003 rev 1](0003-architecture-as-code-likec4.md)) keeps serving GitHub; how LikeC4 output enters
   the site (rendered Mermaid, SVG export, or LikeC4's interactive build) is decided at
   implementation and forecloses nothing here.
 

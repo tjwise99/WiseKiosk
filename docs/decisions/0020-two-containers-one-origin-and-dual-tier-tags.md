@@ -2,21 +2,26 @@
 
 **Status:** accepted
 **Decided:** 2026-08-04 (C4 phase 2 design discussion, ticket #97 C4 phase 2 Container)
+**Rev:** 1
+
+## Revisions
+
+- **rev 1** — 2026-08-05 — revision tracking begins; text as merged (#118 ADR revisions).
 
 ## Context
 
-[ADR 0019](0019-boundary-at-what-deploys-and-tag-tier.md) settled the boundary and the Context level,
+[ADR 0019 rev 1](0019-boundary-at-what-deploys-and-tag-tier.md) settled the boundary and the Context level,
 and deliberately left the tier at each level below to the phase that models it. Authoring the
 Container level then surfaced two more questions, one of them older than this ticket.
 
-**Who serves the frontend bundle had never been argued.** [ADR 0001](0001-backend-language-go.md)
+**Who serves the frontend bundle had never been argued.** [ADR 0001 rev 1](0001-backend-language-go.md)
 lists static file serving among the backend's duties as a bootstrap given.
-[ADR 0018](0018-frontend-svelte-vite-static-spa.md) states "served as files by the Go backend" in its
+[ADR 0018 rev 1](0018-frontend-svelte-vite-static-spa.md) states "served as files by the Go backend" in its
 decision but weighs only frameworks against each other.
-[ADR 0007](0007-config-validation-allocation.md) reasons *from* it — "the page runs in a browser on
+[ADR 0007 rev 1](0007-config-validation-allocation.md) reasons *from* it — "the page runs in a browser on
 the display host, so config bytes reach it only over HTTP, from the origin that already serves the
 SPA bundle." Three records lean on the arrangement and none argues it, which is the shape
-[ADR 0015](0015-container-toolchain-and-image-annotations.md) caught with the container toolchain. A
+[ADR 0015 rev 1](0015-container-toolchain-and-image-annotations.md) caught with the container toolchain. A
 Container level draws that arrangement, so it either argues it or presumes it a fourth time.
 
 **Where a relationship is declared decides which levels can see it.** LikeC4 renders every level from
@@ -46,7 +51,7 @@ SRS010<!-- The display page reaches no origin but the backend's --> is enforced 
 one origin, and every arrangement that serves the page from somewhere else makes the page's own
 origin that other host and the backend a second one. Serving is not knowing: a static handler has no
 rewrite path and cannot tell the configuration from a script asset, so the config-blindness
-[ADR 0007](0007-config-validation-allocation.md) holds is preserved exactly by the bytes transiting
+[ADR 0007 rev 1](0007-config-validation-allocation.md) holds is preserved exactly by the bytes transiting
 the component forbidden to interpret them.
 
 **Each relationship is declared once, at its true endpoints.** The Context level's two actor
@@ -63,7 +68,7 @@ operator edge under the label that level authors, since naming a container in a 
 would cost the Context level its abstraction.
 
 **The Container level answers to `SRS`, and anything here also carries the `SYS` item it discharges
-observably at this level.** An `SRS` item allocates to a container, which is what ADR 0019 gave as
+observably at this level.** An `SRS` item allocates to a container, which is what ADR 0019 rev 1 gave as
 its reason for refusing that tier at the Context level, and is the argument for it here.
 
 The second clause is what makes the tier usable rather than a trap. Restricting `SYS` to
@@ -75,7 +80,7 @@ here. Both are discharged observably on one edge, the frontend fetching each mod
 the boundary contract itself; SRS010<!-- The display page reaches no origin but the backend's --> and
 SRS016<!-- Both sides consume the generated types --> are their children and sit there too.
 
-**This widens ADR 0019 rather than exercising it**, and that record carries a dated amendment saying
+**This widens ADR 0019 rev 1 rather than exercising it**, and that record carries a dated amendment saying
 so. Its rule was one tier per level; a relationship may now also carry a coarser item, where that
 item's obligation is visible in what this level draws. Its rejection of `SRS` at the Context level is
 untouched and is why the widening runs in one direction only: a coarser item names something a finer
@@ -89,11 +94,11 @@ consequences follow. An item obliging every exchange an element has belongs on t
 than on one of its edges — SRS028<!-- Served responses declare their type, and forbid the browser
 inferring one --> obliges every response the backend serves, so it sits on the backend. An element or
 relationship no accepted item obliges carries none: the bundle-serving edge has no tag, because who
-serves the bundle is a decision under [ADR 0011](0011-requirement-or-convention.md) rather than a
+serves the bundle is a decision under [ADR 0011 rev 1](0011-requirement-or-convention.md) rather than a
 property of the running software. And an item whose obligation reaches something **permanently**
 outside the model is not a tag here — SRS005<!-- One validation implementation --> binds the page to
-the desk validator, which ADR 0019 keeps outside the boundary for good, so tagging the frontend with
-it points past the diagram in the way ADR 0019 rejects. Permanence is what that turns on, not
+the desk validator, which ADR 0019 rev 1 keeps outside the boundary for good, so tagging the frontend with
+it points past the diagram in the way ADR 0019 rev 1 rejects. Permanence is what that turns on, not
 absence: an upstream is *deferred* rather than excluded, and the model gains one per upstream as each
 module's need lands, so SRS009<!-- Every source reachable through the backend, statelessly --> stays
 on the backend and gains the edges its obligation names when they arrive.
@@ -122,16 +127,16 @@ SRS010<!-- The display page reaches no origin but the backend's --> — and on d
 internet dependency in front of a display that runs unattended on a LAN, and files on a host
 [`../../README.md`](../../README.md) states WiseKiosk does not own.
 
-**One container, the image as the unit.** The literal reading of ADR 0019's boundary sentence, and it
+**One container, the image as the unit.** The literal reading of ADR 0019 rev 1's boundary sentence, and it
 erases what this level exists to draw: SYS005<!-- Single-definition internal contract --> has no
 boundary to be a contract across, SRS010<!-- The display page reaches no origin but the backend's -->
 has no page and no origin, and config-blindness has no second party to be blind to.
 
 **The configuration as a third element.** It would make config-blindness structural rather than
-something a label states. Rejected: a mounted file is not a running unit, and ADR 0019 already
+something a label states. Rejected: a mounted file is not a running unit, and ADR 0019 rev 1 already
 refused to invent an element — the aggregate "Public APIs" — to carry what a relationship can carry.
 
-**Deferring the operator's secret supply until a module needs a secret**, as ADR 0019 defers an
+**Deferring the operator's secret supply until a module needs a secret**, as ADR 0019 rev 1 defers an
 upstream. Rejected because what defers an upstream is individuation: an upstream belongs to the
 module that reads it and cannot be drawn honestly as one box, whereas
 SRS006<!-- Unresolvable secret surfaces as that source's upstream failure --> and
@@ -159,7 +164,7 @@ backend is gone --> and SRS028<!-- Served responses declare their type, and forb
 inferring one --> were `proposed`, and `check-arch-trace` refuses a tag on an unbaselined item.
 Binding a requirement to an element is the act of reading it and judging what it obliges, so the
 review happened here: both items were put in front of the owner in full and accepted (owner,
-2026-08-04). That decision is the record — [ADR 0005](0005-traceability-gating.md) reserves
+2026-08-04). That decision is the record — [ADR 0005 rev 1](0005-traceability-gating.md) reserves
 acceptance to a human, and no property of an item can stand in for one. In particular the presence of
 a fingerprint, a rationale and a verification method cannot: every `SYS` and `SRS` item still
 `proposed` carries all three, so a criterion built from them would baseline those too and leave
@@ -178,7 +183,7 @@ the committed one agree, because both are produced from the same override. It is
 declare-once rule above exists to prevent, displaced one layer up, and it is accepted because the
 alternatives are worse — naming a container at the Context level draws it, and `[...]` says nothing
 at all. **Nothing prompts a re-read of that title; a change to the operator's supplies requires one.**
-No review question carries that obligation, which [ADR 0011](0011-requirement-or-convention.md) would
+No review question carries that obligation, which [ADR 0011 rev 1](0011-requirement-or-convention.md) would
 route to [`../../CONTRIBUTING.md`](../../CONTRIBUTING.md)'s checklist: one override in one view does
 not earn a question every change is walked through. A second view taking a title is the point at
 which it does.
@@ -186,17 +191,17 @@ which it does.
 **Some obligations have nowhere to bind yet.** SRS011<!-- Upstream request rate is bounded, and the
 bound is not operator-tunable -->, SRS012<!-- Request parameters validated against known-good
 per-source patterns --> and SRS013<!-- Client-facing contract for rejected requests --> want a
-relationship to an upstream, and no upstream element exists until a module need does (ADR 0019).
+relationship to an upstream, and no upstream element exists until a module need does (ADR 0019 rev 1).
 
 **Neither container carries a `link`.** No source exists and the repository layout is #5 repo layout;
 the model gains one per container when it does.
 
-**ADR 0019 is exercised, not amended.** It delegated the tier below Context to the phase that models
+**ADR 0019 rev 1 is exercised, not amended.** It delegated the tier below Context to the phase that models
 that level, and this is that phase answering. Its rule that the tier is a property of the level
 stands — a relationship spanning two levels answers to two.
 
 **The Mermaid artifact is the poorer of the two renderings.** `codegen mermaid` drops element
 descriptions and the icons, which the PNG export keeps, and the descriptions are where each
 container's responsibility is written. Images stay outside every gate
-([ADR 0003](0003-architecture-as-code-likec4.md)); what the browser-free artifact cannot show is
+([ADR 0003 rev 1](0003-architecture-as-code-likec4.md)); what the browser-free artifact cannot show is
 carried by the prose in [`../ARCHITECTURE.md`](../ARCHITECTURE.md).

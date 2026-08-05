@@ -2,6 +2,11 @@
 
 **Status:** accepted
 **Decided:** 2026-08-02 (#90 documentation-index claim check)
+**Rev:** 1
+
+## Revisions
+
+- **rev 1** — 2026-08-05 — revision tracking begins; text as merged (#118 ADR revisions).
 
 ## Context
 
@@ -18,11 +23,11 @@ entered in `17565a1` with the tree rebuild: an intention written down and never 
 that publishes claims [`../../SECURITY.md`](../../SECURITY.md) rests on carried a section standing for
 machinery nobody had written.
 
-This is unrelated to [ADR 0005](0005-traceability-gating.md)'s retired gate 4, which
-[ADR 0011](0011-requirement-or-convention.md) closed on 2026-07-26 for having no possible subject.
+This is unrelated to [ADR 0005 rev 1](0005-traceability-gating.md)'s retired gate 4, which
+[ADR 0011 rev 1](0011-requirement-or-convention.md) closed on 2026-07-26 for having no possible subject.
 That gate asked an Inspection-method item to claim files; this decision does not reopen it, does not
 supersede anything, and puts no obligation back in the tree. Which document holds which fact is
-repository-facing under ADR 0011's test — no behaviour of the running kiosk can violate it — so it is
+repository-facing under ADR 0011 rev 1's test — no behaviour of the running kiosk can violate it — so it is
 a check, and this ADR records how that check decides.
 
 ## Decision

@@ -2,6 +2,7 @@
 
 **Status:** accepted
 **Decided:** 2026-07-24 (closing review pass of the requirements rewrite #18)
+**Rev:** 1
 
 > **Scope widened, 2026-07-25 (#69); grounds restated, 2026-07-28 (#69).** As first written the
 > attribute was required only below `test`, and the Context below argues that narrower case. **The
@@ -31,9 +32,13 @@
 > docs-site column is likewise not yet rendered — `docs/site/doorstop_to_needs.py` emits no
 > verification fields, and doing so needs a `needs_extra_options` declaration; tracked on #25.
 
+## Revisions
+
+- **rev 1** — 2026-08-05 — revision tracking begins; text as merged (#118 ADR revisions).
+
 ## Context
 
-[ADR 0005](0005-traceability-gating.md) gave every item a `verification-method` and routed the gates
+[ADR 0005 rev 1](0005-traceability-gating.md) gave every item a `verification-method` and routed the gates
 on it. What it never captured is *why* an item sits below `test`. At the close of #18 the tree holds
 236 items, 115 of them at `inspection`, `analysis`, or `demonstration` — that is not a rounding
 error, it is half the specification resting on human judgment with no record of what made human
@@ -65,7 +70,7 @@ records what that item's verification settles and what it does not:
 It is fenced by the review fingerprint alongside `verification-method` and `rationale`, so weakening
 a method cannot land without re-review.
 
-This partially supersedes ADR 0005's three-attribute set. 0005's method values, its four gates, its
+This partially supersedes ADR 0005 rev 1's three-attribute set. 0005's method values, its four gates, its
 derived-verification model, and its tree-as-backlog stance all stand unchanged.
 
 Two distinctions the attribute depends on:
@@ -79,7 +84,7 @@ Two distinctions the attribute depends on:
   is why that channel is in use at all. An item at `inspection` owes both.
 
 The gate asserting that every item carries a non-empty justification is
-`scripts/check-method-consistency.py`. The remaining gates it was to be built alongside — ADR 0005's
+`scripts/check-method-consistency.py`. The remaining gates it was to be built alongside — ADR 0005 rev 1's
 gates 2 and 3 — are still open under #25.
 
 ## Alternatives considered

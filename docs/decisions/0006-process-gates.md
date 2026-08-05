@@ -1,12 +1,13 @@
 # 0006 — Gate branch shape, ticket linkage, and PR titles in CI
 
 **Status:** accepted; ticket-metadata obligations extended and the parent-ticket definition added by
-[0013](0013-work-tracking-invariants.md), whose read-only stance this ADR's rejected
+[ADR 0013 rev 1](0013-work-tracking-invariants.md), whose read-only stance this ADR's rejected
 write-scoped-token alternative supplies; gate path amended by
-[0016](0016-maintained-tools-for-standard-artifacts.md)
+[ADR 0016 rev 1](0016-maintained-tools-for-standard-artifacts.md)
 **Decided:** 2026-07-22 (process-gates design discussion, ticket #27)
+**Rev:** 1
 
-> **Amended 2026-08-03 by [0016](0016-maintained-tools-for-standard-artifacts.md).** The Decision's
+> **Amended 2026-08-03 by [ADR 0016 rev 1](0016-maintained-tools-for-standard-artifacts.md).** The Decision's
 > *"entire gate path is plain sh + curl + jq — no toolchain"* no longer holds: `commitlint` replaces
 > `scripts/check-commit-msg.sh` and `scripts/conventional-commit.regex` at both the commit-message and
 > pull-request-title stages, and `pre-commit` replaces `.githooks/` as the local hook layer. The four
@@ -23,6 +24,10 @@ write-scoped-token alternative supplies; gate path amended by
 > `conventional-commit.regex` into `commitlint`'s configuration, leaving `branch-shape.regex` as the
 > only file of that kind. The never-declared-twice requirement itself is unchanged and binds
 > `commitlint`'s two stages.
+
+## Revisions
+
+- **rev 1** — 2026-08-05 — revision tracking begins; text as merged (#118 ADR revisions).
 
 ## Context
 
@@ -74,7 +79,7 @@ entire gate path is plain sh + curl + jq — no toolchain:
   keyword is the only scriptable writer, and only against the default base; the manual link is
   UI-only and confirmed live to satisfy the gate.
 - **This is a process/scheduling control, explicitly not a traceability channel.** Requirements
-  trace stays diff-derived per [ADR 0005](0005-traceability-gating.md); the branch↔issue link
+  trace stays diff-derived per [ADR 0005 rev 1](0005-traceability-gating.md); the branch↔issue link
   schedules work, it never evidences it.
 
 ## Alternatives considered
