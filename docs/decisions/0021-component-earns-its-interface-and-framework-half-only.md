@@ -102,7 +102,8 @@ desk validator, which is outside the boundary for good.
 **An item whose observable is composed carries a binding at each depth** — on the framework component
 determining it in part, and at container depth where the assembled whole determines it. Which
 container-depth subject takes the second is the item's to say, not a rule.
-SRS001<!-- A failed module shows why, and only that module --> and
+SRS001<!-- A failed module shows why, and only that module -->,
+SRS002<!-- A module-scoped configuration error is reported at that module --> and
 SRS026<!-- The display says when the backend is gone --> name what a Viewer sees, so theirs is the
 relationship that renders.
 SRS017<!-- Full-screen assembly at kiosk; reflow, not overlap, at narrower widths --> names a property
