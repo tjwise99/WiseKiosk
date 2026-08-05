@@ -87,9 +87,8 @@ model {
       routeHandler = component 'Route handler' {
         #SRS009
         description '''
-          Serves one route per upstream source, running the policy that
-          route's registration entry carries. Owns the order the other parts
-          run in, and calls the module's shaping functions to build the
+          Serves one route per upstream source. Owns the order the other
+          parts run in, and calls the module's shaping functions to build the
           upstream request and to parse what comes back — the point where
           this container's framework half reaches its module half.
         '''
@@ -152,8 +151,8 @@ model {
         #SRS002
         description '''
           Fetches the configuration on each page load and validates it against
-          the schema, reporting an error it can isolate at the module region it
-          belongs to.
+          the schema, reporting an error it can isolate as belonging to one
+          module rather than to the configuration as a whole.
         '''
       }
 
@@ -169,9 +168,9 @@ model {
       payloadClient = component 'Payload client' {
         #SRS026
         description '''
-          Fetches each configured module's payload and passes it to that
-          module's region. Distinguishes a backend that cannot be reached from
-          a module that failed, so the display says the former once.
+          Fetches each configured module's payload and hands back what it
+          gets. Distinguishes a backend that cannot be reached from a module
+          that failed, so the display says the former once.
         '''
       }
     }

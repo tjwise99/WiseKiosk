@@ -99,15 +99,19 @@ relationship, being a property of the whole page rather than of the component th
 SRS005<!-- One validation implementation --> stays untagged for ADR 0020's reason: it reaches the
 desk validator, which is outside the boundary for good.
 
-**An item whose observable is composed carries both bindings.**
-SRS001<!-- A failed module shows why, and only that module -->,
-SRS017<!-- Full-screen assembly at kiosk; reflow, not overlap, at narrower widths --> and
-SRS026<!-- The display says when the backend is gone --> each name something one framework component
-determines in part and the assembled page determines in whole, so each sits on the component and on
-the container-depth relationship that renders.
-SRS009<!-- Every source reachable through the backend, statelessly --> is the same shape read the
-other way: reachability by the endpoints the boundary contract defines is the route handler's, and
-holding no per-client state is true of every endpoint, so it sits on both. **Static serving carries no tag at all.** What it does
+**An item whose observable is composed carries a binding at each depth** — on the framework component
+determining it in part, and at container depth where the assembled whole determines it. Which
+container-depth subject takes the second is the item's to say, not a rule.
+SRS001<!-- A failed module shows why, and only that module --> and
+SRS026<!-- The display says when the backend is gone --> name what a Viewer sees, so theirs is the
+relationship that renders.
+SRS017<!-- Full-screen assembly at kiosk; reflow, not overlap, at narrower widths --> names a property
+of the assembled page rather than of what it shows anyone, so its second binding is the container
+element. SRS009<!-- Every source reachable through the backend, statelessly --> is the same shape read
+the other way: reachability by the endpoints the boundary contract defines is the route handler's, and
+holding no per-client or session state is true of every endpoint, so it sits on both.
+
+**Static serving carries no tag at all.** What it does
 is obliged of the backend generally or of the image, and who serves the bundle is a decision under
 [ADR 0011](0011-requirement-or-convention.md) rather than a property of the running software —
 ADR 0020's reason for leaving the bundle-serving relationship untagged, reaching its endpoint.
