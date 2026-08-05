@@ -12,6 +12,13 @@ it. That list is expensive to rebuild and worthless to guess at.
 **A check with no section here has no record.** That is a gap in this file, not a claim that the check
 is unverified — and not a claim that it is verified either.
 
+**A check's success line reports what it measured, not the size of what it read.** A count taken from
+the input — files in the tree, elements in a model — is identical whether the check judged all of
+them or none, so it evidences nothing and cannot move when the thing it appears to describe breaks.
+Report the population judged, and the subjects it was judged over. `check-arch-trace.py` printed
+`len(elements)` and `len(relations)` until a model arrived carrying both a duplicated identifier and a
+deliberately untagged relationship, which made the same line wrong in two directions at once.
+
 **This is a snapshot, and nothing fails when it goes stale.** Every check `just verify` runs has a
 section below. `just verify` grows — #67 adds signing, SBOM and scanning gates, #54 the container
 build, #59 the comment-discipline gate — and each new one arrives with no record and nothing to say
