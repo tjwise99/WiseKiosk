@@ -638,6 +638,11 @@ recorded because a fixture built with `git archive` carries the script as it was
 can silently exercise the old one. Asserting the md5 of the copy under test before running is what
 separates *the fix does not work* from *the fix was not in the tree you ran*.
 
+The counting rows below were exercised separately, at `080285c`, against md5
+`012e4cd6425770ec3ce01b5d1b111216`, each run twice: once against the script under test and once
+against the copy it replaced, because what those rows assert is that a number moves, and a number
+that never moved cannot be shown to move by a single run.
+
 ### Must fail
 
 | Case | Input |
@@ -658,6 +663,32 @@ separates *the fix does not work* from *the fix was not in the tree you ran*.
 | The model as it stands | — |
 | An accepted `SRS` identifier on an **element** rather than a relationship | the other half of the code path |
 | Every tag on elements, none on any relationship | a Container-level model of the shape #97 C4 phase 2 will produce |
+| One identifier applied to two subjects | SYS003<!-- A deployment is parameterised from outside the image --> tagging both operator relationships — applications exceed identifiers |
+| A relationship carrying no tag | the bundle-serving edge, which no accepted item obliges |
+
+### What the success line counts
+
+| Case | Input | Reported |
+|---|---|---|
+| Baseline | the model as it stands | 18 applications on 7 of 11 subjects, 17 items |
+| One of two applications of the same identifier removed | one SYS003<!-- A deployment is parameterised from outside the image --> application deleted, the identifier still applied once | 17 applications, **17 items** — the counts separate |
+| A subject loses every tag **and** their declarations | both tags stripped from the `Frontend` element | 16 applications on **6** of 11 subjects |
+
+The middle row is why the counts are separate rather than one number. The line previously reported
+`len(set(declared) | set(applied))`, so an identifier applied twice counted once; deleting one of the
+two applications left the reported figure unchanged, and the same run against the replaced script
+prints an identical line before and after the seed.
+
+The third row is the one a reader needs. Stripping a tag *without* its declaration fails on the
+declared-and-applied-to-nothing arm, so the fail-open shape is the one where the declaration goes
+too — and there the check is right to pass, because nothing it asserts is violated. What changed is
+that the line now says a subject stopped carrying links: the previous form reported
+`len(elements)` and `len(relations)`, which are properties of the model rather than results of the
+check, so they were identical before and after. **A count that cannot move is not evidence.**
+
+Nothing gates any of this — the success line is read by a person, and a wrong one fails no build,
+which is why it went unnoticed until a model carried both a duplicated identifier and a deliberately
+untagged relationship at the same time.
 
 **The unparseable-model row is the one that matters.** `likec4 export json` behaves like `codegen`
 and **succeeds on a broken model**, emitting a degraded document whose tags have gone missing — so a
