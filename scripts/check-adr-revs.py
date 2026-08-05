@@ -12,8 +12,8 @@ Three assertions, over the tracked file set:
   with it. The head is authoritative; the table is checked against it, never trusted.
 - Every `ADR NNNN` in prose is followed by `rev M`, and M is that ADR's current rev.
 - Every markdown link resolving to an ADR file is titled `ADR NNNN rev M` likewise. The link rule is
-  what the prose rule cannot reach: a citation spelled `[0016](0016-maintained-tools....md)` names no
-  ADR in prose at all.
+  what the prose rule cannot reach: a citation spelled `[NNNN](NNNN-slug.md)` names no ADR in prose
+  at all.
 
 That an ADR's rev was raised for a good reason, and that a citation pinning the current rev still
 means what the ADR says, is decided by nothing here.
@@ -101,9 +101,9 @@ def check_index(revs, problems):
 def exempt_lines(path, text):
     """Line numbers a citation may pin a stale rev on.
 
-    A *Revisions* line records what a rev did at the moment it did it — `superseded by ADR 0022
-    rev 1` is a statement about that moment, and holding it to current would rewrite it every time
-    ADR 0022 revs. An index row names its own document rather than citing it.
+    A *Revisions* line records what a rev did at the moment it did it — `superseded by ADR NNNN
+    rev M` is a statement about that moment, and holding it to current would rewrite it every time
+    the ADR it names revs. An index row names its own document rather than citing it.
 
     Both are scoped to `docs/decisions/`: nothing outside it earns either exemption, and inside it
     the *Revisions* exemption ends at the next section heading rather than running to end of file.

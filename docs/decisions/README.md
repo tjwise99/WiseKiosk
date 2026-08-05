@@ -15,10 +15,12 @@ judgement call.
 the choice was taken, not when the work merged. A rev that changes only how the decision is stated
 leaves it.
 
-**A citation pins a rev** — `ADR NNNN rev M`, never bare. Revving an ADR therefore reaches every
-document citing it, each of which is then updated or re-decided rather than left to age silently;
-`just check-adr-revs` is what makes that unavoidable. A *Revisions* line pins the rev it names
-deliberately, and is the one exemption.
+**A citation pins a rev** — `ADR NNNN rev M`, never bare, and a link to an ADR is titled the same
+way. Revving an ADR therefore reaches every document citing it, each of which is then updated or
+re-decided rather than left to age silently; `just check-adr-revs` is what makes that unavoidable. A
+*Revisions* line pins the rev it names deliberately, and is the one exemption. **Write an
+illustrative example with `NNNN`, never a live number** — nothing distinguishes an example from a
+citation, so a real number in one is held to that ADR's current rev and breaks when it revs.
 
 **Supersession is expressed through revving.** The replacing ADR lands alongside, and the replaced
 one takes a rev whose *Revisions* line records `superseded by ADR NNNN rev M` — wholly, with
