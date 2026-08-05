@@ -25,7 +25,7 @@ rationale: |
   TST001's<!-- Pending: upstream-failure error payload test -->, so a fifth one edits a check
   rather than this text.
 ref: ''
-reviewed: M84WclQdFjPCtvcoUkHt1W59_RMWhqAJN_NgTOsulps=
+reviewed: 73JifccTzMBu4kp1Pjzfqo3L6Y4OdVx73_creZgeYwQ=
 status: accepted
 text: |
   When a module's data request fails, the backend shall report the failure distinct to its cause, and

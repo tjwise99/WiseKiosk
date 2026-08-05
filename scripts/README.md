@@ -550,6 +550,58 @@ case-sensitive, so an ADR named with an uppercase extension is invisible rather 
 file exists, and the naming rule the check enforces would reject one on sight if it were spelled
 `NNNN-<slug>.MD`.
 
+## `check-adr-revs.py`
+
+Every case below was run on 2026-08-05 by seeding the working tree, running `python3
+scripts/check-adr-revs.py`, and restoring. The seeded state is described rather than committed — and
+described without spelling a live ADR number, which this check reads as a citation like any other.
+
+### Must fail
+
+| Case | Input |
+|---|---|
+| Prose citation with no rev | a pinned citation in `CONTRIBUTING.md` cut back to the bare form |
+| Prose citation pinning a stale rev | the same citation moved to a rev its ADR does not carry |
+| Link titled with a bare number | a titled link in `docs/CI.md` retitled to the number alone |
+| Link title naming a different ADR than it targets | the title's number changed, the target left |
+| Index rev column disagreeing with the ADR's head | one row's rev raised, its head left |
+| An ADR head with no `**Rev:** N` | the line deleted from one ADR |
+| Citation of a number no ADR carries | the same citation renumbered past the highest ADR |
+| The head format changed everywhere, so nothing parses | `**Rev:**` renamed in all twenty ADRs |
+| An ADR revved with one citation left behind | one ADR to rev 2, every citation but one moved |
+
+### Must pass
+
+| Case | Input |
+|---|---|
+| The tree as it stands | — |
+| An ADR revved with every citation moved with it | one ADR to rev 2: head, index row, and all 25 |
+| A *Revisions* line pinning a rev that is not current | a supersession line on that same rev-2 ADR |
+| An index row, which names its document rather than citing it | every row in the index table |
+
+The last two are the exemption, and the pair below them is the point: the *Revisions* line is left
+alone while an ordinary citation outside that section is not. The two rev-2 cases differ only in
+whether one citation moved — the same tree, one passing and one failing, which is what shows the
+exemption did not swallow the rule.
+
+The head-format case guards the shape that fails silently. A check keyed on `**Rev:**` for both the
+ADRs' revs and the citations' expected revs would find zero of each, agree they match, and report
+success over an empty population. `current_revs` therefore fails when it resolves no ADR at all,
+rather than returning an empty mapping every citation then trivially satisfies.
+
+### Known rejections
+
+An illustrative example spelling a live ADR number is rejected as a stale citation. That is correct,
+and it cost three fixes here: `docs/decisions/README.md`, this check's own docstring, and the first
+draft of the case tables above each named a real ADR while describing the citation form. Nothing
+distinguishes an example from a citation, and a check that tried would be exempting the spelling most
+likely to hide a bypass — the counter-example rule in [`../docs/CI.md`](../docs/CI.md) §
+*Documentation integrity* already binds this, one document up.
+
+A file whose bytes do not decode as UTF-8 is not scanned; it cannot carry a citation in the form the
+rule defines. Every such file is named on stderr rather than silently dropped, so the population the
+check reports over stays visible.
+
 ## `check-arch` — `splice-arch-diagrams.mjs`
 
 The recipe runs `likec4 validate`, `likec4 codegen`, this script, and then `git diff --exit-code`. The

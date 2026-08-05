@@ -15,7 +15,7 @@ rationale: |
   own obligation under ADR 0012 rev 1, not this one's; naming examples here would put two modules'
   requirements in a framework item.
 ref: ''
-reviewed: FqVqw2WG_jnY2e6uJAoNZoDm7H9cCmXSejG5uBMviZg=
+reviewed: _zku2oUvlFkvb2DEtje2CR7jRqvDpM-knCPeEQeQQ5s=
 status: accepted
 text: |
   The backend shall validate each request's parameters against the known-good

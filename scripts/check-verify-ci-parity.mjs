@@ -47,6 +47,7 @@ const CHECK_TOKENS = {
     "docs/site/.venv/bin/python docs/site/doorstop_to_needs.py",
     "docs/site/.venv/bin/sphinx-build -W -b html -c docs/site docs docs/site/_build/html",
   ],
+  "check-adr-revs": ["python3 scripts/check-adr-revs.py"],
   "check-adr-index": ["node scripts/check-adr-index.mjs"],
   "check-docs-index": ["node scripts/check-docs-index.mjs"],
   "check-repo-silo": ["node scripts/check-repo-silo.mjs"],

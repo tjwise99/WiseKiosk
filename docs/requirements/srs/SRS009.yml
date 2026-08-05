@@ -19,7 +19,7 @@ rationale: |
   on the request itself, is not per-client state: it may determine whether a request is served from
   cache, but not the payload a client receives.
 ref: ''
-reviewed: Ue7CeL-hE21iO02KgjhVHcYv-3xOWQOPA11OponM_rM=
+reviewed: nFYPCBeGmNUDWFVqmM6vqCUSz1QfYt-UjUoacetK-zA=
 status: accepted
 text: |
   Every supported external source shall be reachable through the backend, by the

@@ -250,7 +250,7 @@ resolve, a citation to something that does not exist, an index that has drifted 
   separating it. A number is only a handle: a renumber rewrites
   `links:` and leaves the sentence pointing at whatever now occupies it, still reading as correct.
   The header is what turns that drift into a mismatch a machine can see. An ADR number carries no
-  header — ADR numbers are immutable, so one cannot come to mean a different decision.
+  header: what pins an ADR citation is the rev beside it, checked below.
 - **A header in an HTML comment does not open a line that continues a paragraph.** CommonMark reads
   a line-initial `<!--` as an HTML block, which interrupts the paragraph and splits it in two on the
   rendered page while the source still reads as one. Nothing else reports it: the comment is a
@@ -260,6 +260,20 @@ resolve, a citation to something that does not exist, an index that has drifted 
   numbering, every row resolves to a regular file. A directory listing reports names, so an entry
   named like an ADR is counted as one until something states it; a directory or a dangling symlink
   carrying the name is not an ADR.
+- **Every citation of an ADR pins that ADR's current rev**, in prose as `ADR NNNN rev M` and in a
+  markdown link as its title. An ADR is a versioned document
+  ([`decisions/README.md`](decisions/README.md)), so revving one reaches every document citing it:
+  each is updated or re-decided in the same change rather than left asserting what the ADR no longer
+  says. The link rule is what the prose rule cannot reach — a citation spelled as a bare bracketed
+  number names no ADR in prose at all, and fifty of them existed when this landed. The ADR's own head
+  is authoritative for its rev and the index table's column is checked against it; an ADR declaring
+  no rev, or two, fails rather than being read as rev zero, and a run that resolves no ADR at all
+  fails on the ground that a parser returning nothing and a tree with no ADRs are indistinguishable.
+  **One exemption:** a *Revisions* line records what a rev did at the moment it did it, so the rev it
+  names is left as written. It is scoped to that section in `decisions/`, ends at the next heading,
+  and covers nothing else — the index row aside, which names its own document rather than citing it.
+  What this leaves unproven is whether a citation pinning the current rev still means what the ADR
+  says; that is read at review.
 - **Every tracked Markdown file is claimed by a row in the documentation index**, unless it sits under
   a top-level dot-directory, which holds machinery rather than documents. Both sides are derived from
   the repository rather than read from an inventory: adding a document without indexing it fails,

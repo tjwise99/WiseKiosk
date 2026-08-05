@@ -34,6 +34,9 @@ jobs:
       - name: The decisions directory and its index table agree
         run: node scripts/check-adr-index.mjs
 
+      - name: Every ADR citation pins that ADR's current rev
+        run: python3 scripts/check-adr-revs.py
+
       - name: Every tracked document outside a dot-directory is claimed by the documentation index
         run: node scripts/check-docs-index.mjs
 

@@ -4,7 +4,7 @@ header: |
   Pending: exactly one validation implementation, by import graph
 level: 1.14
 links:
-- SRS005: 4gGWUsl6Hf9TMN2e99Qavt2mohD1majt3LDKeG2RzZg=
+- SRS005: tDrg9QfP6gBh2L7CGgL0waNpQiNDciy9TwQjuAknmPc=
 normative: true
 rationale: |
   One engine imported by both call sites still enforces two rule sets if the callers pass different

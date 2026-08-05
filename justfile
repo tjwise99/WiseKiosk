@@ -45,6 +45,11 @@ check-adr-index:
     node scripts/check-adr-index.mjs
 
 [group('checks')]
+[doc('Every ADR citation pins that ADR current rev, in prose and in a link title; the index rev column matches each ADR own head')]
+check-adr-revs:
+    python3 scripts/check-adr-revs.py
+
+[group('checks')]
 [doc('Every tracked document outside a top-level dot-directory is claimed by a row in the documentation index, every row links a tracked file, and no cell is empty')]
 check-docs-index:
     node scripts/check-docs-index.mjs
@@ -120,4 +125,4 @@ arch-dev:
 
 [group('checks')]
 [doc('Run every check the PR gate runs that has a local form; secret scanning and the PR-title check are CI-only')]
-verify: check-links check-eol check-branch check-reqs check-citations check-arch check-arch-trace check-site check-adr-index check-docs-index check-repo-silo check-workflow-hardening check-verify-ci-parity
+verify: check-links check-eol check-branch check-reqs check-citations check-arch check-arch-trace check-site check-adr-index check-adr-revs check-docs-index check-repo-silo check-workflow-hardening check-verify-ci-parity
