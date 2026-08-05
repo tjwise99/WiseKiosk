@@ -3,6 +3,19 @@
 **Status:** accepted
 **Decided:** 2026-08-04 (C4 phase 1 design discussion, ticket #96 C4 phase 1 System Context)
 
+> **Tag tier widened, 2026-08-04 ([0020](0020-two-containers-one-origin-and-dual-tier-tags.md), #97
+> C4 phase 2).** The tier rule below reads as one tier per level. The Container level found two
+> accepted items that rule leaves homeless — SYS004<!-- Upstream data reaches the display only
+> through the backend --> and SYS005<!-- Single-definition internal contract --> name things inside
+> the boundary, so neither fits the Context level, and a strict one-tier-per-level reading bars them
+> from the level that does draw them.
+>
+> **An element or relationship therefore carries the tier its level answers to, and also any coarser
+> item it discharges observably at that level.** The widening runs in one direction only, which is
+> what the argument below already establishes: a coarser item names something a finer level can still
+> show, where a finer item names something the coarser level does not draw. The rejection of `SRS` at
+> the Context level stands exactly as written.
+
 ## Context
 
 [ADR 0003](0003-architecture-as-code-likec4.md) makes the LikeC4 model

@@ -12,6 +12,25 @@ it. That list is expensive to rebuild and worthless to guess at.
 **A check with no section here has no record.** That is a gap in this file, not a claim that the check
 is unverified — and not a claim that it is verified either.
 
+**A check's success line says how much it checked, not how much exists.** Those are different numbers,
+and only the first is evidence. `check-arch-trace.py` used to print:
+
+```
+17 tag(s) over 5 element(s) and 6 relationship(s) resolve to accepted items.
+```
+
+The `5` and the `6` are just the size of the model. They read the same whether every element carries a
+requirement link or none of them does, so they say nothing about what was verified — and they would
+not move if the link broke. It prints this instead:
+
+```
+18 tag application(s) on 7 of 11 element(s) and relationship(s), naming 17 accepted item(s).
+```
+
+`7 of 11` is what was checked against what exists, so removing a link moves it. The rule is worth
+stating because nothing enforces it: a success line fails no build, so a wrong one survives every
+green run until somebody reads it.
+
 **This is a snapshot, and nothing fails when it goes stale.** Every check `just verify` runs has a
 section below. `just verify` grows — #67 adds signing, SBOM and scanning gates, #54 the container
 build, #59 the comment-discipline gate — and each new one arrives with no record and nothing to say
@@ -638,6 +657,13 @@ recorded because a fixture built with `git archive` carries the script as it was
 can silently exercise the old one. Asserting the md5 of the copy under test before running is what
 separates *the fix does not work* from *the fix was not in the tree you ran*.
 
+The counting rows below were exercised against the script at `7883e3b`, md5
+`012e4cd6425770ec3ce01b5d1b111216`, and each was run a second time against the one it replaced —
+`04cea31`, md5 `62e44de86ab097dfa0ee68084a1fb6f3` — because what those rows assert is that a number
+moves, and a number that never moved cannot be shown to move by a single run. Both halves are pinned
+to a commit that contains them: a hash paired with a commit whose tree holds a different script tells
+a reader nothing about which half is wrong.
+
 ### Must fail
 
 | Case | Input |
@@ -658,6 +684,33 @@ separates *the fix does not work* from *the fix was not in the tree you ran*.
 | The model as it stands | — |
 | An accepted `SRS` identifier on an **element** rather than a relationship | the other half of the code path |
 | Every tag on elements, none on any relationship | a Container-level model of the shape #97 C4 phase 2 will produce |
+| One identifier applied to two subjects | SYS003<!-- A deployment is parameterised from outside the image --> tagging both operator relationships — applications exceed identifiers |
+| A relationship carrying no tag | the bundle-serving edge, which no accepted item obliges |
+
+### What the success line counts
+
+| Case | Input | Reported |
+|---|---|---|
+| Baseline | the model as it stands | 18 applications on 7 of 11 subjects, 17 items |
+| One of two applications of the same identifier removed | one SYS003<!-- A deployment is parameterised from outside the image --> application deleted, the identifier still applied once | 17 applications, **17 items** — the counts separate |
+| A subject loses every tag **and** their declarations | both tags stripped from the `Frontend` element | 16 applications on **6** of 11 subjects |
+
+The middle row is why the counts are separate rather than one number, and it is the row that carries
+the argument. The `04cea31` form reported `len(set(declared) | set(applied))`, so an identifier
+applied twice counted once: deleting one of the two applications left its line **byte-identical**
+before and after the seed. **A count that cannot move is not evidence.**
+
+The third row is narrower than the second, and the `04cea31` form is not blind to it — that line's
+leading count moves too, 17 to 15. What it cannot say is that a **subject** stopped carrying links,
+because the only subject figures it reported were `len(elements)` and `len(relations)`, which are
+properties of the model rather than results of the check and read `5` and `6` either way. Stripping a
+tag *without* its declaration is not this case at all: it fails on the declared-and-applied-to-nothing
+arm, on both scripts. The fail-open shape is the one where the declaration goes too, and there the
+check is right to pass, because nothing it asserts is violated.
+
+Nothing gates any of this — the success line is read by a person, and a wrong one fails no build,
+which is why it went unnoticed until a model carried both a duplicated identifier and a deliberately
+untagged relationship at the same time.
 
 **The unparseable-model row is the one that matters.** `likec4 export json` behaves like `codegen`
 and **succeeds on a broken model**, emitting a degraded document whose tags have gone missing — so a

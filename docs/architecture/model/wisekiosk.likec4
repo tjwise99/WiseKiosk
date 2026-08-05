@@ -1,9 +1,12 @@
-// WiseKiosk architecture model — C4 System Context (L1).
+// WiseKiosk architecture model — C4 System Context (L1) and Container (L2).
 //
 // Single source of truth for the diagrams in ../ARCHITECTURE.md. Edit here, then
 // run `just arch-export` (ADR 0003).
 //
-// Boundary, actors, external systems and the tag tier are ADR 0019's.
+// A tag parses only as the first entry of an element or relationship body.
+//
+// Boundary, actors and external systems are ADR 0019's; the containers, the one
+// origin they share and the tag tier here are ADR 0020's.
 
 specification {
   element person {
@@ -12,12 +15,27 @@ specification {
     }
   }
   element system
+  element container
 
-  // A tag carries the Doorstop id of the requirement obliging the tagged element
-  // or relationship; at this level that tier is SYS (ADR 0019).
+  // Each tag is a Doorstop identifier. Which item belongs on what, and at which
+  // tier, is ADR 0019 as amended by ADR 0020.
   tag SYS001
   tag SYS002
   tag SYS003
+  tag SYS004
+  tag SYS005
+  tag SRS001
+  tag SRS003
+  tag SRS004
+  tag SRS006
+  tag SRS009
+  tag SRS010
+  tag SRS016
+  tag SRS017
+  tag SRS018
+  tag SRS022
+  tag SRS026
+  tag SRS028
 }
 
 model {
@@ -34,14 +52,65 @@ model {
       Full-screen, config-driven smart-mirror display. The boundary is what
       deploys: the published container image and what it serves.
     '''
+
+    backend = container 'Backend' {
+      #SRS009
+      #SRS022
+      #SRS028
+      technology 'Go'
+      icon tech:go
+      description '''
+        Stateless HTTP proxy and static file server. Answers one route per
+        upstream source, shaping each response into the payload the boundary
+        schema defines, and serves the frontend bundle and the configuration
+        file as static content it never interprets.
+      '''
+    }
+
+    frontend = container 'Frontend' {
+      #SRS004
+      #SRS017
+      technology 'Svelte 5, static single-page bundle'
+      icon tech:svelte
+      description '''
+        Runs in the browser on the display host. Validates the configuration
+        before applying it, assembles the configured modules into one
+        full-screen layout, and renders each payload into its module region.
+      '''
+    }
+
+    backend -> frontend 'Serves the single-page bundle' {
+      technology 'HTTP'
+    }
+
+    frontend -> backend 'Fetches the configuration, served back unparsed' {
+      #SRS003
+      technology 'HTTP'
+    }
+
+    frontend -> backend 'Fetches the payload for each module' {
+      #SYS004
+      #SYS005
+      #SRS010
+      #SRS016
+      technology 'HTTP / JSON'
+    }
   }
 
-  operator -> wisekiosk 'Configures the deployment and supplies its secrets' {
+  operator -> backend 'Supplies the secret for each source' {
     #SYS003
+    #SRS006
   }
 
-  wisekiosk -> viewer 'Renders the configured modules, and legibly says when one failed' {
+  operator -> backend 'Places the configuration into the served tree' {
+    #SYS003
+    #SRS018
+  }
+
+  frontend -> viewer 'Renders the configured modules, and legibly says when one failed' {
     #SYS001
     #SYS002
+    #SRS001
+    #SRS026
   }
 }

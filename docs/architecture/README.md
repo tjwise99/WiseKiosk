@@ -20,6 +20,7 @@ docs/architecture/
     views.likec4        the views rendered to diagrams
   generated/            regenerated artifacts — DO NOT hand-edit (staleness-gated)
     index.mmd           System Context view (Mermaid)
+    containers.mmd      Container view (Mermaid)
 ```
 
 `generated/` is cleared before codegen, which writes files and never prunes them: an artifact left
@@ -77,10 +78,30 @@ the staleness gate; the prose around the markers is yours to edit.
 
 ## What the model holds, and when an element earns a place
 
-The model holds the System Context level. The Container level is #97 C4 phase 2 and the Component
-level #98 C4 phase 3; both nest additively — `container` children inside the `wisekiosk { … }` block,
-`component` children inside a container, a `view of <element>` per level in `views.likec4` — so
-neither restructures what is already here.
+The model holds the System Context and Container levels. The Component level is #98 C4 phase 3, and
+nests additively — `component` children inside a container, with a `view of <element>` in
+`views.likec4` — so it restructures nothing already here.
+
+**A relationship is declared once, at its true endpoints** ([ADR 0020](../decisions/0020-two-containers-one-origin-and-dual-tier-tags.md)).
+Each view renders from that one set, aggregating an edge to the nearest ancestor it does not expand,
+so an edge is never restated a level down.
+
+**Two relationships sharing endpoints render as one edge labelled `[...]`, losing both labels** — a
+merge in the computed view, so no codegen target escapes it. A view asks for them separately:
+
+```
+include frontend -> backend with {
+  multiple true
+}
+```
+
+A view that must stay coarse instead labels the merge, `with { title '…' }`, because naming a nested
+element in a view draws it — which is how the Context level keeps one operator edge without gaining a
+container. That title is not coupled to the merge it was written for: it survives the relationships
+underneath it changing, and no gate compares them.
+
+**Element and relationship bodies parse a tag only as their first entry**, before `technology`,
+`icon` or `description`.
 
 **An element earns a place where the system exchanges something with it, and an upstream once the
 module that reads it has a need** ([ADR 0019](../decisions/0019-boundary-at-what-deploys-and-tag-tier.md)).
@@ -98,8 +119,17 @@ A LikeC4 **tag** carries the Doorstop id of the requirement obliging the element
 sits on — that tag *is* the architecture → requirements link, and the tier follows the level
 ([ADR 0019](../decisions/0019-boundary-at-what-deploys-and-tag-tier.md)). At the Context level
 it is `SYS`, bound where the obligation is observable at that level: on the relationships, not on the
-system box, which owes every `SYS` item and so distinguishes none of them. The tier below is settled
-by the phase that models that level.
+system box, which owes every `SYS` item and so distinguishes none of them. The Container level
+answers to `SRS`, and anything at a level also carries the coarser item it discharges observably
+there ([ADR 0020](../decisions/0020-two-containers-one-origin-and-dual-tier-tags.md)). The tier below
+is settled by the phase that models that level.
+
+**A tag is applied where an accepted item obliges the thing it sits on** — so an element or edge no
+accepted item obliges carries none, and one carrying coupled obligations carries all of them. What is
+barred is stamping an element with everything it owes, which distinguishes nothing. An item obliging
+every exchange an element has goes on the element rather than one of its edges; an item whose
+obligation reaches something permanently outside the model is not a tag here at all, which is
+different from one whose subject is merely not modelled yet.
 
 **`just check-arch-trace` resolves them against the tree** — what it asserts, and what it leaves to
 review, is [`../CI.md`](../CI.md) § Documentation integrity's.

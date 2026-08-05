@@ -25,7 +25,7 @@ rationale: |
   reopen premise records why they went.
 ref: ''
 reviewed: Yvll4M49bWeIHfpnf2kR6mROO53JXoJRZy08O_BO1ro=
-status: proposed
+status: accepted
 text: |
   The backend shall declare a media type on every response it serves, and shall instruct the browser
   not to infer one.

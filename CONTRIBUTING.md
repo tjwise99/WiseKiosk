@@ -123,3 +123,17 @@ questions.
 14. **Named resources.** Does a requirement the change adds or edits name a file, endpoint, package
     or tool rather than stating the property the software must have? A requirement naming one has
     swallowed a design decision, which then cannot change without a specification change.
+
+**Checks**
+
+15. **Recorded cases.** Where the change adds or edits a check, does
+    [`scripts/README.md`](scripts/README.md) record what it was run against, in both directions — the
+    defect it must catch, and the legal input it must not reject? A check's own green run is not
+    evidence it works, which is why that record exists.
+16. **Defects the work surfaced.** Where the work exercised an existing check and found it **fails to
+    catch what it exists to catch, admits what it exists to reject, or reports a result its input
+    cannot support**, is that fixed here? A check is verified by whoever was placed to see it fail,
+    and deferring that to a ticket separates the fix from the only context in which the defect was
+    visible. You write the cases for a check as you write the check; a defect found in one is the
+    same obligation arriving late. The three clauses are the floor: below them this is a licence to
+    change anything nearby, which is the failure mode question 11 describes from the other side.

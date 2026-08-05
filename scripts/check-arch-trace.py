@@ -74,10 +74,15 @@ def main():
         sys.exit("check-arch-trace: the export names no element, so nothing here judged the model")
 
     applied = {}
+    # Subjects are counted separately from applications: one identifier may sit on several
+    # subjects and one subject may carry several identifiers, so neither count derives from
+    # the other, and neither derives from the size of the model.
+    tagged_subjects = set()
     for kind, group in (("element", elements), ("relationship", relations)):
         for key, body in group.items():
             for tag in body.get("tags") or []:
                 applied.setdefault(tag, []).append(f"{kind} {body.get('title') or key!r}")
+                tagged_subjects.add((kind, key))
 
     # A model carrying no tag resolves every tag it carries. The link this asserts would be absent
     # rather than sound, and the two read identically in a green run.
@@ -118,10 +123,13 @@ def main():
             print("  " + problem, file=sys.stderr)
         sys.exit(1)
 
-    tagged = len(set(declared) | set(applied))
+    identifiers = len(set(declared) | set(applied))
+    applications = sum(len(where) for where in applied.values())
+    subjects = len(elements) + len(relations)
     print(
-        f"architecture → requirements holds: {tagged} tag(s) over "
-        f"{len(elements)} element(s) and {len(relations)} relationship(s) resolve to accepted items."
+        f"architecture → requirements holds: {applications} tag application(s) on "
+        f"{len(tagged_subjects)} of {subjects} element(s) and relationship(s), "
+        f"naming {identifiers} accepted item(s)."
     )
 
 
