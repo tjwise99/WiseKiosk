@@ -3,6 +3,20 @@
 **Status:** accepted
 **Decided:** 2026-08-04 (C4 phase 2 design discussion, ticket #97 C4 phase 2 Container)
 
+> **Parking ground corrected, 2026-08-05 ([0021](0021-component-earns-its-interface-and-framework-half-only.md),
+> #98 C4 phase 3).** The Consequences below hold that
+> SRS011<!-- Upstream request rate is bounded, and the bound is not operator-tunable -->,
+> SRS012<!-- Request parameters validated against known-good per-source patterns --> and
+> SRS013<!-- Client-facing contract for rejected requests --> have nowhere to bind because all three
+> "want a relationship to an upstream". That ground is wrong about every item it names. Two reject a
+> request before any upstream call is made and never involve an upstream at all; the third names a
+> bound carried in a route's registration entry, which the Component level rules to be data read by
+> framework components rather than a property of an upstream edge.
+>
+> **All three bind at the Component level**, and the word *yet* qualified the timing rather than the
+> ground. Nothing else here changes: the two containers, the one origin, the declare-once rule and the
+> dual-tier tags stand exactly as argued below.
+
 ## Context
 
 [ADR 0019](0019-boundary-at-what-deploys-and-tag-tier.md) settled the boundary and the Context level,

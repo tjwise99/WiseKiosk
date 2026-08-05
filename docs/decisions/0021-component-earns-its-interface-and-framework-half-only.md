@@ -8,9 +8,23 @@
 [ADR 0003](0003-architecture-as-code-likec4.md) authored the model so the Component level "can be
 added later without restructuring", and [ADR 0019](0019-boundary-at-what-deploys-and-tag-tier.md) and
 [ADR 0020](0020-two-containers-one-origin-and-dual-tier-tags.md) settled the boundary, the containers
-and the tier a tag answers to. This is that addition, and it arrives before the code for the reason
-every design document here does: design precedes implementation
-([`../../CONTRIBUTING.md`](../../CONTRIBUTING.md)).
+and the tier a tag answers to. This is that addition.
+
+**It arrives before the code, and ADR 0003 gave a reason it should not.** That decision holds, in the
+same breath as the sentence above, that these levels "are not built now: no application code exists,
+so building them would be an abstraction with a single implementation and no second consumer", citing
+[`../../CONTRIBUTING.md`](../../CONTRIBUTING.md)'s generality question. The ground is unchanged — no
+source exists today either — so it is answered rather than outlived. That question asks whether an
+*interface or extension point* has a second consumer, because an abstraction built for one caller
+constrains the code that must satisfy it. A view constrains nothing: it is a description, it compiles
+to a picture, and deleting it changes no behaviour. Applying a generality rule to a drawing would bar
+every design document in this repository from preceding its implementation, which is the order
+`CONTRIBUTING.md` opens by requiring.
+
+**That clause is reversed, not re-grounded, so it is superseded rather than amended.** ADR 0003 ruled
+the levels would not be built and this builds them, which
+[`README.md`](README.md) routes to supersession; its status names the superseded clause, and the rest
+of that decision — LikeC4, the browser-free codegen, the staleness gate — stands untouched.
 
 **The levels above had a physical test and this one does not.** A system is what has its own owner; a
 container is an execution context, which is how ADR 0020 settled two containers behind one origin
@@ -40,6 +54,19 @@ into handlers at startup, and drawing it would put the source tree's shape on a 
 The commitment is recorded in the contract and in [`../ARCHITECTURE.md`](../ARCHITECTURE.md), which
 is where a fact about where policy is *written* belongs.
 
+**What executes that entry is a component, and it is the one the registry's absence obscured.** The
+same test that excludes the data admits the code reading it: a route handler answers
+`GET /api/<source>`, which is what SRS009<!-- Every source reachable through the backend,
+statelessly --> obliges and what the frontend's payload fetch terminates on. **Each container has
+exactly one such owner** — the route handler in the backend, the page shell in the frontend — and the
+remaining components are asked, never asking. Without one, a level has no subject for a relationship
+label and its parts appear to call each other, which is a sequence no document states.
+
+The backend's owner carries a second load the frontend's does not: it is where framework code calls
+the module's shaping functions, before the upstream request to build it and after to parse the
+answer. **So the framework half of the backend cannot serve a payload alone** — a fact this level
+would otherwise leave invisible, since the module half it reaches is undrawn.
+
 **The framework/module seam is the contract's, not this level's judgement.** A module's half of a
 container is code a module author writes *that runs in that container*: part 1's shaping library in
 the backend, part 3's Svelte component in the frontend. Everything else is shared framework,
@@ -49,7 +76,8 @@ cache and the upstream client all module-owned and leave the framework half empt
 contract's own dependency direction, under which framework code "is shared code from the moment it is
 written". Parts 4 and 5 earn no component either: the boundary-schema fragment belongs to the one
 schema, which [ADR 0008](0008-boundary-contract-openapi-codegen.md) gives to neither side, and the
-configuration-schema fragment composes into the one schema the frontend validates against.
+configuration-schema fragment composes into the one schema the frontend validates against. Part 6 is
+tests, which run nowhere in either container and are [`../TESTING.md`](../TESTING.md)'s.
 
 **Only the framework half is drawn.** [ADR 0012](0012-module-requirements-in-tree.md) makes a module
 a need, and the tree holds no module need, so nothing obliges a module component. This is ADR 0019's
@@ -57,14 +85,32 @@ ground for deferring an upstream element, reached one level down and by the same
 [`../../README.md`](../../README.md) names all five modules, and naming them is not what earns them a
 place.
 
-**A tag sits on the component the item obliges, and stays on the container where the item obliges the
-container.** SRS009<!-- Every source reachable through the backend, statelessly --> and
-SRS028<!-- Served responses declare their type, and forbid the browser inferring one --> oblige every
-endpoint and every response, so they stay where ADR 0020 put them.
-SRS010<!-- The display page reaches no origin but the backend's --> stays on the payload relationship,
-being a property of the whole page rather than of the component that fetches.
+**A tag sits where its obligation is observable**, which is ADR 0019's rule and not a new one. A
+component depth does not make the finer placement the right one.
+SRS008<!-- No secret value in any backend output --> and
+SRS028<!-- Served responses declare their type, and forbid the browser inferring one --> quantify over
+every output and every response, so they sit on the container.
+SRS018<!-- One generic published image --> obliges the image, which is neither component nor
+relationship, and stays where what is observable of it is — the configuration arriving from outside.
+SRS003<!-- A configuration change applies no later than the next page load --> is a timing property of
+an exchange that either endpoint can satisfy while the obligation fails, so it sits on that exchange
+alone. SRS010<!-- The display page reaches no origin but the backend's --> stays on the payload
+relationship, being a property of the whole page rather than of the component that fetches.
 SRS005<!-- One validation implementation --> stays untagged for ADR 0020's reason: it reaches the
 desk validator, which is outside the boundary for good.
+
+**An item whose observable is composed carries both bindings.**
+SRS001<!-- A failed module shows why, and only that module -->,
+SRS017<!-- Full-screen assembly at kiosk; reflow, not overlap, at narrower widths --> and
+SRS026<!-- The display says when the backend is gone --> each name something one framework component
+determines in part and the assembled page determines in whole, so each sits on the component and on
+the container-depth relationship that renders.
+SRS009<!-- Every source reachable through the backend, statelessly --> is the same shape read the
+other way: reachability by the endpoints the boundary contract defines is the route handler's, and
+holding no per-client state is true of every endpoint, so it sits on both. **Static serving carries no tag at all.** What it does
+is obliged of the backend generally or of the image, and who serves the bundle is a decision under
+[ADR 0011](0011-requirement-or-convention.md) rather than a property of the running software —
+ADR 0020's reason for leaving the bundle-serving relationship untagged, reaching its endpoint.
 
 **The boundary-crossing relationships are re-declared at their component endpoints**, which is
 ADR 0020's declare-once rule applied here exactly as that decision applied it to phase 1's actor
@@ -112,14 +158,21 @@ registration and no boundary-schema fragment". The trigger is #76 module-spec pr
 the first module need. This is scope recorded, not an omission, exactly as ADR 0019 records the
 upstream elements it defers.
 
-**Two parked items bind here, and ADR 0020 is discharged rather than corrected.** That decision
-parked SRS011<!-- Upstream request rate is bounded, and the bound is not operator-tunable -->,
-SRS012<!-- Request parameters validated against known-good per-source patterns --> and
-SRS013<!-- Client-facing contract for rejected requests --> together, as wanting "a relationship to
-an upstream" that does not exist. The first still does — a *rate* of upstream requests is a property
-of that edge. The other two are internal by their own text, rejecting a request "without issuing any
-upstream request" and "before making any upstream call", and they sit on request admission. That
-sentence said *yet*, and this is the level that answers it; nothing in ADR 0020 is amended.
+**All three of ADR 0020's parked items bind here, and its ground for parking them was wrong.** That
+decision held that SRS011<!-- Upstream request rate is bounded, and the bound is not
+operator-tunable -->, SRS012<!-- Request parameters validated against known-good per-source
+patterns --> and SRS013<!-- Client-facing contract for rejected requests --> all "want a relationship
+to an upstream" that does not exist. Two are internal by their own text, rejecting a request "without
+issuing any upstream request" and "before making any upstream call", and they sit on request
+admission. The third is not an upstream's property either: a rate limit is one of the six per-route
+values the registration entry carries, and the seam above rules those to be data read by framework
+components — so it binds where its two neighbours in that entry, the timeout and the response-size
+ceiling, already do. It binds twice, because its distinguishing clause is "regardless of how many
+clients it serves or how often they ask", and what decouples client rate from upstream rate is the
+response cache while what bounds the residual is the upstream client.
+
+This is a stated ground being found wrong rather than a deferral maturing, so ADR 0020 carries a
+dated amendment saying so. Its decision is untouched; only the paragraph parking those three is.
 
 **`index.mmd` and `containers.mmd` are unchanged by the re-declaration.** LikeC4 aggregates a
 component-depth edge to the nearest ancestor a view does not expand, so the two levels above render
@@ -143,3 +196,12 @@ gains one when the code it describes is written, which is the review obligation
 **The Mermaid artifact still drops the descriptions**, as ADR 0020 records, and at this level those
 descriptions are the whole responsibility statement. What the browser-free artifact cannot show is
 carried by the prose in [`../ARCHITECTURE.md`](../ARCHITECTURE.md).
+
+**No tag renders, so no tag reaches the staleness gate.** Moving every tag in this model from one
+element to another leaves each `.mmd` artifact and `../ARCHITECTURE.md` byte-identical, and
+`check-arch` compares exactly those. `check-arch-trace` reads the model rather than the artifact, but
+its scope is resolution — that an identifier names an accepted item — which a tag on the wrong element
+satisfies completely. The architecture → requirements link is therefore held by review alone, and by
+nothing else in the repository. ADR 0019 states this as the ordinary division between a gate and a
+reviewer; it is recorded here as a property of the artifact, because a level that multiplies the
+elements a tag can sit on multiplies the placements no check can see.

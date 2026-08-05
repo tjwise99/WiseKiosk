@@ -113,10 +113,13 @@ SRS016<!-- Both sides consume the generated types -->,
 SRS019<!-- The backend runs on both supported architectures -->,
 SRS028<!-- Served responses declare their type, and forbid the browser inferring one -->.
 
-**Components (C4 L3)** — the backend's framework half: what serves files, what judges a request
-before any upstream call, what holds an answer, and what goes out for a new one. A module's own half
-of this container is its shaping library, drawn when that module's need lands
-([ADR 0021](decisions/0021-component-earns-its-interface-and-framework-half-only.md)). A route's
+**Components (C4 L3)** — the backend's framework half: a route handler owning the order things happen
+in, and beneath it what judges a request before any upstream call, what holds an answer, what goes
+out for a new one, and what serves files. A module's own half of this container is its shaping
+library, drawn when that module's need lands
+([ADR 0021](decisions/0021-component-earns-its-interface-and-framework-half-only.md)). The handler
+calls it twice — to build the upstream request and to parse the answer — so what is drawn here cannot
+serve a payload on its own. A route's
 parameter validation, its two cache TTLs, its rate limit, its outbound timeout and its maximum
 response size are one entry in a static registration list and live nowhere else
 ([the module contract](contracts/module-contract.md)); that entry is data these components read
@@ -133,6 +136,7 @@ graph TB
   WisekioskFrontend@{ shape: rectangle, label: "Frontend" }
   subgraph WisekioskBackend["`Backend`"]
     WisekioskBackend.StaticServing@{ shape: rectangle, label: "Static serving" }
+    WisekioskBackend.RouteHandler@{ shape: rectangle, label: "Route handler" }
     WisekioskBackend.RequestAdmission@{ shape: rectangle, label: "Request admission" }
     WisekioskBackend.ResponseCache@{ shape: rectangle, label: "Response cache" }
     WisekioskBackend.UpstreamClient@{ shape: rectangle, label: "Upstream client" }
@@ -142,11 +146,12 @@ tree`" .-> WisekioskBackend.StaticServing
   Operator -. "`Supplies the secret for each source`" .-> WisekioskBackend.UpstreamClient
   WisekioskFrontend -. "`Fetches the configuration, served back 
 unparsed`" .-> WisekioskBackend.StaticServing
-  WisekioskFrontend -. "`Fetches the payload for each module`" .-> WisekioskBackend.RequestAdmission
-  WisekioskBackend.RequestAdmission -. "`Answers an admitted request from cache 
-where it can`" .-> WisekioskBackend.ResponseCache
-  WisekioskBackend.ResponseCache -. "`Fetches on a miss, and holds what comes 
-back`" .-> WisekioskBackend.UpstreamClient
+  WisekioskFrontend -. "`Fetches the payload for each module`" .-> WisekioskBackend.RouteHandler
+  WisekioskBackend.RouteHandler -. "`Asks whether the request may proceed`" .-> WisekioskBackend.RequestAdmission
+  WisekioskBackend.RouteHandler -. "`Asks for a held answer, and stores what 
+it gets`" .-> WisekioskBackend.ResponseCache
+  WisekioskBackend.RouteHandler -. "`Asks for a fresh response when nothing 
+is held`" .-> WisekioskBackend.UpstreamClient
   WisekioskBackend.StaticServing -. "`Serves the single-page bundle`" .-> WisekioskFrontend
 ```
 
@@ -170,9 +175,11 @@ SRS026<!-- The display says when the backend is gone -->,
 SRS027<!-- The display page holds no device capability it does not use -->; configuration
 validation is frontend-owned per [ADR 0007](decisions/0007-config-validation-allocation.md).
 
-**Components (C4 L3)** — the frontend's framework half: a shell that renders before any configuration
-is applied, the load-and-validate step, the assembly of configured modules into their regions, and
-the fetch of each module's payload. A module's own half of this container is its Svelte component,
+**Components (C4 L3)** — the frontend's framework half: a page shell owning the order things happen
+in, which renders before any configuration is applied, and beneath it the load-and-validate step, the
+fetch of each module's payload, and the assembly of configured modules into their regions. Assembly
+places what it is handed and fetches nothing, which is the discipline the module contract puts on a
+module component applied one level up. A module's own half of this container is its Svelte component,
 drawn when that module's need lands
 ([ADR 0021](decisions/0021-component-earns-its-interface-and-framework-half-only.md)) — which is why
 the edge to the Viewer leaves this container rather than a region within it.
@@ -192,10 +199,11 @@ graph TB
   end
   Viewer@{ icon: "fa:user", shape: rounded, label: "Viewer" }
   WisekioskBackend@{ shape: rectangle, label: "Backend" }
-  WisekioskFrontend.PageShell -. "`Applies the configuration once it 
-validates`" .-> WisekioskFrontend.Configuration
-  WisekioskFrontend.Configuration -. "`Names the modules and their regions`" .-> WisekioskFrontend.Layout
-  WisekioskFrontend.Layout -. "`Requests the payload for each placed 
+  WisekioskFrontend.PageShell -. "`Asks for the configuration, and applies 
+it once it validates`" .-> WisekioskFrontend.Configuration
+  WisekioskFrontend.PageShell -. "`Hands over each configured module and 
+its payload`" .-> WisekioskFrontend.Layout
+  WisekioskFrontend.PageShell -. "`Asks for the payload of each configured 
 module`" .-> WisekioskFrontend.PayloadClient
   WisekioskFrontend.Configuration -. "`Fetches the configuration, served back 
 unparsed`" .-> WisekioskBackend

@@ -40,10 +40,9 @@ views {
     title 'WiseKiosk Frontend — Components (C4 L3)'
     include *
 
-    // What this container exists to do terminates at the Viewer, and that
-    // relationship is declared on the container: its endpoint here is the
-    // module component, which ADR 0021 leaves undrawn. `include *` reaches
-    // neither, so the level would otherwise render without its purpose.
+    // `include *` draws this container's children and what they relate to, not
+    // what the container itself relates to. Naming the Viewer draws it and the
+    // edge to it (ADR 0021).
     include viewer
   }
 }

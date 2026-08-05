@@ -63,6 +63,7 @@ model {
     '''
 
     backend = container 'Backend' {
+      #SRS008
       #SRS009
       #SRS022
       #SRS028
@@ -76,12 +77,21 @@ model {
       '''
 
       staticServing = component 'Static serving' {
-        #SRS003
-        #SRS018
         description '''
           Serves the frontend bundle and the configuration file as bytes,
           interpreting neither. The configuration is not in the image and is
           read from the served tree on each request for it.
+        '''
+      }
+
+      routeHandler = component 'Route handler' {
+        #SRS009
+        description '''
+          Serves one route per upstream source, running the policy that
+          route's registration entry carries. Owns the order the other parts
+          run in, and calls the module's shaping functions to build the
+          upstream request and to parse what comes back — the point where
+          this container's framework half reaches its module half.
         '''
       }
 
@@ -97,6 +107,7 @@ model {
       }
 
       responseCache = component 'Response cache' {
+        #SRS011
         description '''
           Holds a route's last success and last failure, each for the interval
           that route's entry sets, so a display refresh no faster than the
@@ -107,7 +118,6 @@ model {
       upstreamClient = component 'Upstream client' {
         #SRS001
         #SRS006
-        #SRS008
         #SRS011
         #SRS014
         description '''
@@ -120,6 +130,7 @@ model {
     }
 
     frontend = container 'Frontend' {
+      #SRS017
       technology 'Svelte 5, static single-page bundle'
       icon tech:svelte
       description '''
@@ -139,7 +150,6 @@ model {
 
       configuration = component 'Configuration load and validation' {
         #SRS002
-        #SRS003
         description '''
           Fetches the configuration on each page load and validates it against
           the schema, reporting an error it can isolate at the module region it
@@ -170,19 +180,20 @@ model {
       technology 'HTTP'
     }
 
-    pageShell -> configuration 'Applies the configuration once it validates'
-    configuration -> layout 'Names the modules and their regions'
-    layout -> payloadClient 'Requests the payload for each placed module'
+    pageShell -> configuration 'Asks for the configuration, and applies it once it validates'
+    pageShell -> payloadClient 'Asks for the payload of each configured module'
+    pageShell -> layout 'Hands over each configured module and its payload'
 
-    requestAdmission -> responseCache 'Answers an admitted request from cache where it can'
-    responseCache -> upstreamClient 'Fetches on a miss, and holds what comes back'
+    routeHandler -> requestAdmission 'Asks whether the request may proceed'
+    routeHandler -> responseCache 'Asks for a held answer, and stores what it gets'
+    routeHandler -> upstreamClient 'Asks for a fresh response when nothing is held'
 
     configuration -> staticServing 'Fetches the configuration, served back unparsed' {
       #SRS003
       technology 'HTTP'
     }
 
-    payloadClient -> requestAdmission 'Fetches the payload for each module' {
+    payloadClient -> routeHandler 'Fetches the payload for each module' {
       #SYS004
       #SYS005
       #SRS010
@@ -193,7 +204,6 @@ model {
 
   operator -> upstreamClient 'Supplies the secret for each source' {
     #SYS003
-    #SRS006
   }
 
   operator -> staticServing 'Places the configuration into the served tree' {
