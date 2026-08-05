@@ -84,9 +84,21 @@ nests additively — `component` children inside a container, with a `view of <e
 
 **A relationship is declared once, at its true endpoints** ([ADR 0020](../decisions/0020-two-containers-one-origin-and-dual-tier-tags.md)).
 Each view renders from that one set, aggregating an edge to the nearest ancestor it does not expand,
-so an edge is never restated a level down. Two relationships sharing endpoints are merged by the view
-computation into one edge labelled `[...]`, which is why a decomposition that collides is authored as
-one relationship with a two-part label.
+so an edge is never restated a level down.
+
+**Two relationships sharing endpoints render as one edge labelled `[...]`, losing both labels** — a
+merge in the computed view, so no codegen target escapes it. A view asks for them separately:
+
+```
+include frontend -> backend with {
+  multiple true
+}
+```
+
+A view that must stay coarse instead labels the merge, `with { title '…' }`, because naming a nested
+element in a view draws it — which is how the Context level keeps one operator edge without gaining a
+container. That title is not coupled to the merge it was written for: it survives the relationships
+underneath it changing, and no gate compares them.
 
 **Element and relationship bodies parse a tag only as their first entry**, before `technology`,
 `icon` or `description`.
@@ -114,7 +126,10 @@ is settled by the phase that models that level.
 
 **A tag is applied where an accepted item obliges the thing it sits on** — so an element or edge no
 accepted item obliges carries none, and one carrying coupled obligations carries all of them. What is
-barred is stamping an element with everything it owes, which distinguishes nothing.
+barred is stamping an element with everything it owes, which distinguishes nothing. An item obliging
+every exchange an element has goes on the element rather than one of its edges; an item whose
+obligation reaches something permanently outside the model is not a tag here at all, which is
+different from one whose subject is merely not modelled yet.
 
 **`just check-arch-trace` resolves them against the tree** — what it asserts, and what it leaves to
 review, is [`../CI.md`](../CI.md) § Documentation integrity's.

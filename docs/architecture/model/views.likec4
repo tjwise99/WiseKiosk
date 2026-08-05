@@ -12,8 +12,8 @@ views {
     title 'WiseKiosk — System Context (C4 L1)'
     include *
 
-    // Naming a container here would draw it, so the merge stays and carries the
-    // label this level authors for it.
+    // Naming a container here would draw it, so this level labels the merge
+    // rather than splitting it. The title is independent of what it merges.
     include operator -> wisekiosk with {
       title 'Configures the deployment and supplies its secrets'
     }

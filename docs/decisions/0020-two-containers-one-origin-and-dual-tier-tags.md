@@ -90,10 +90,13 @@ than on one of its edges — SRS028<!-- Served responses declare their type, and
 inferring one --> obliges every response the backend serves, so it sits on the backend. An element or
 relationship no accepted item obliges carries none: the bundle-serving edge has no tag, because who
 serves the bundle is a decision under [ADR 0011](0011-requirement-or-convention.md) rather than a
-property of the running software. And an item whose obligation reaches something the model does not
-draw is not a tag here — SRS005<!-- One validation implementation --> binds the page to the desk
-validator, which ADR 0019 keeps outside the boundary, so tagging the frontend with it points past the
-diagram in the way ADR 0019 rejects.
+property of the running software. And an item whose obligation reaches something **permanently**
+outside the model is not a tag here — SRS005<!-- One validation implementation --> binds the page to
+the desk validator, which ADR 0019 keeps outside the boundary for good, so tagging the frontend with
+it points past the diagram in the way ADR 0019 rejects. Permanence is what that turns on, not
+absence: an upstream is *deferred* rather than excluded, and the model gains one per upstream as each
+module's need lands, so SRS009<!-- Every source reachable through the backend, statelessly --> stays
+on the backend and gains the edges its obligation names when they arrive.
 
 Tags discriminate rather than inventory: the bar is against stamping an element with everything it
 owes, which distinguishes nothing, not against a count.
@@ -166,8 +169,15 @@ The five untouched items were not read here and so were not accepted. `status` s
 the act, and this paragraph is where it is recorded.
 
 **The Context level renders the labels of the container-depth relationships**, since that is where
-they are declared. It shows the decomposition seen from further away rather than a wording of its
-own.
+they are declared — except the operator edge, which the view labels itself.
+
+**That label is the one thing here not coupled to what it describes.** A view title overrides a
+merged connection whether or not a merge remains, so the relationships beneath it can change, or
+reduce to one, while it goes on reading as before. No gate compares them: the generated artifact and
+the committed one agree, because both are produced from the same override. It is the drift the
+declare-once rule above exists to prevent, displaced one layer up, and it is accepted because the
+alternatives are worse — naming a container at the Context level draws it, and `[...]` says nothing
+at all. A change to the operator's supplies is a prompt to re-read that title.
 
 **Some obligations have nowhere to bind yet.** SRS011<!-- Upstream request rate is bounded, and the
 bound is not operator-tunable -->, SRS012<!-- Request parameters validated against known-good
