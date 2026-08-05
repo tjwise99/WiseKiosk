@@ -30,4 +30,20 @@ views {
       multiple true
     }
   }
+
+  view backendComponents of wisekiosk.backend {
+    title 'WiseKiosk Backend — Components (C4 L3)'
+    include *
+  }
+
+  view frontendComponents of wisekiosk.frontend {
+    title 'WiseKiosk Frontend — Components (C4 L3)'
+    include *
+
+    // What this container exists to do terminates at the Viewer, and that
+    // relationship is declared on the container: its endpoint here is the
+    // module component, which ADR 0021 leaves undrawn. `include *` reaches
+    // neither, so the level would otherwise render without its purpose.
+    include viewer
+  }
 }

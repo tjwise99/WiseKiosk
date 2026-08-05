@@ -1,0 +1,23 @@
+---
+title: "WiseKiosk Backend — Components (C4 L3)"
+---
+graph TB
+  Operator@{ icon: "fa:user", shape: rounded, label: "Operator" }
+  WisekioskFrontend@{ shape: rectangle, label: "Frontend" }
+  subgraph WisekioskBackend["`Backend`"]
+    WisekioskBackend.StaticServing@{ shape: rectangle, label: "Static serving" }
+    WisekioskBackend.RequestAdmission@{ shape: rectangle, label: "Request admission" }
+    WisekioskBackend.ResponseCache@{ shape: rectangle, label: "Response cache" }
+    WisekioskBackend.UpstreamClient@{ shape: rectangle, label: "Upstream client" }
+  end
+  Operator -. "`Places the configuration into the served 
+tree`" .-> WisekioskBackend.StaticServing
+  Operator -. "`Supplies the secret for each source`" .-> WisekioskBackend.UpstreamClient
+  WisekioskFrontend -. "`Fetches the configuration, served back 
+unparsed`" .-> WisekioskBackend.StaticServing
+  WisekioskFrontend -. "`Fetches the payload for each module`" .-> WisekioskBackend.RequestAdmission
+  WisekioskBackend.RequestAdmission -. "`Answers an admitted request from cache 
+where it can`" .-> WisekioskBackend.ResponseCache
+  WisekioskBackend.ResponseCache -. "`Fetches on a miss, and holds what comes 
+back`" .-> WisekioskBackend.UpstreamClient
+  WisekioskBackend.StaticServing -. "`Serves the single-page bundle`" .-> WisekioskFrontend

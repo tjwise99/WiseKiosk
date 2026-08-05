@@ -1,0 +1,22 @@
+---
+title: "WiseKiosk Frontend — Components (C4 L3)"
+---
+graph TB
+  subgraph WisekioskFrontend["`Frontend`"]
+    WisekioskFrontend.PageShell@{ shape: rectangle, label: "Page shell" }
+    WisekioskFrontend.Configuration@{ shape: rectangle, label: "Configuration load and validation" }
+    WisekioskFrontend.Layout@{ shape: rectangle, label: "Layout assembly" }
+    WisekioskFrontend.PayloadClient@{ shape: rectangle, label: "Payload client" }
+  end
+  Viewer@{ icon: "fa:user", shape: rounded, label: "Viewer" }
+  WisekioskBackend@{ shape: rectangle, label: "Backend" }
+  WisekioskFrontend.PageShell -. "`Applies the configuration once it 
+validates`" .-> WisekioskFrontend.Configuration
+  WisekioskFrontend.Configuration -. "`Names the modules and their regions`" .-> WisekioskFrontend.Layout
+  WisekioskFrontend.Layout -. "`Requests the payload for each placed 
+module`" .-> WisekioskFrontend.PayloadClient
+  WisekioskFrontend.Configuration -. "`Fetches the configuration, served back 
+unparsed`" .-> WisekioskBackend
+  WisekioskFrontend.PayloadClient -. "`Fetches the payload for each module`" .-> WisekioskBackend
+  WisekioskFrontend -. "`Renders the configured modules, and 
+legibly says when one failed`" .-> Viewer
