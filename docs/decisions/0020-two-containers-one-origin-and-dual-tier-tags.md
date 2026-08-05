@@ -177,7 +177,11 @@ reduce to one, while it goes on reading as before. No gate compares them: the ge
 the committed one agree, because both are produced from the same override. It is the drift the
 declare-once rule above exists to prevent, displaced one layer up, and it is accepted because the
 alternatives are worse — naming a container at the Context level draws it, and `[...]` says nothing
-at all. A change to the operator's supplies is a prompt to re-read that title.
+at all. **Nothing prompts a re-read of that title; a change to the operator's supplies requires one.**
+No review question carries that obligation, which [ADR 0011](0011-requirement-or-convention.md) would
+route to [`../../CONTRIBUTING.md`](../../CONTRIBUTING.md)'s checklist: one override in one view does
+not earn a question every change is walked through. A second view taking a title is the point at
+which it does.
 
 **Some obligations have nowhere to bind yet.** SRS011<!-- Upstream request rate is bounded, and the
 bound is not operator-tunable -->, SRS012<!-- Request parameters validated against known-good
