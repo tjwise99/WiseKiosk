@@ -96,8 +96,8 @@ internet dependency in front of a display that runs unattended on a LAN, and fil
 
 **One container, the image as the unit.** The literal reading of ADR 0019's boundary sentence, and it
 erases what this level exists to draw: SYS005<!-- Single-definition internal contract --> has no
-boundary to be a contract across, SRS010 has no page and no origin, and config-blindness has no
-second party to be blind to.
+boundary to be a contract across, SRS010<!-- The display page reaches no origin but the backend's -->
+has no page and no origin, and config-blindness has no second party to be blind to.
 
 **The configuration as a third element.** It would make config-blindness structural rather than
 something a label states. Rejected: a mounted file is not a running unit, and ADR 0019 already
@@ -110,8 +110,8 @@ SRS006<!-- Unresolvable secret surfaces as that source's upstream failure --> an
 SRS007<!-- Configuration schema offers no secret-bearing key --> specify one delivery mechanism
 generically today, and the first module that uses a secret adds an upstream element and a route
 without changing that relationship. Drawing the configuration and omitting the secrets would also
-leave the level answering SYS003 wrongly rather than partially, in the direction that invites a
-credential into the configuration file.
+leave the level answering SYS003<!-- A deployment is parameterised from outside the image --> wrongly
+rather than partially, in the direction that invites a credential into the configuration file.
 
 **Keeping every decomposed relationship and accepting `[...]`.** The model would stay maximally
 decomposed and each tag precisely bound. Rejected because the committed artifact — what a reader
@@ -119,8 +119,9 @@ meets on the repository and the documentation site — would say less than befor
 and the model is authored to be read.
 
 **`SRS` alone, dropping the `SYS` binding.** The tidier rule, and the tier becomes a strict property
-of declaration depth. Rejected: SYS003 is the requirement naming configuration *and* secrets as the
-two things arriving from outside the image, and the model would then record nowhere why the supplies
+of declaration depth. Rejected: SYS003<!-- A deployment is parameterised from outside the image --> is
+the requirement naming configuration *and* secrets as the two things arriving from outside the image,
+and the model would then record nowhere why the supplies
 it draws are one obligation.
 
 ## Consequences
