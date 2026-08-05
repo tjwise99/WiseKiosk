@@ -18,7 +18,7 @@ rationale: |
   an orchestrator are mechanism, and are #72's.
 ref: ''
 reviewed: J23XsIdVZ_-23ju6VwTnghbQfTzfROKs6brnxwJW-8A=
-status: proposed
+status: accepted
 text: |
   When the backend is unreachable, the display shall say so rather than showing each module as
   separately unavailable, and shall name the corrective action available to the operator, distinct
