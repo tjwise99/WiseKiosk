@@ -18,11 +18,14 @@ specification {
   element container
 
   // A tag carries the Doorstop id of the requirement obliging the tagged element
-  // or relationship. The Context level answers to SYS and the Container level to
-  // SRS; a relationship spanning both carries one of each (ADR 0019, ADR 0020).
+  // or relationship, at the tier its level answers to — SYS at Context, SRS at
+  // Container — plus any SYS item the thing tagged discharges observably at this
+  // level (ADR 0019, ADR 0020).
   tag SYS001
   tag SYS002
   tag SYS003
+  tag SYS004
+  tag SYS005
   tag SRS001
   tag SRS003
   tag SRS004
@@ -88,6 +91,8 @@ model {
     }
 
     frontend -> backend 'Fetches the payload for each module' {
+      #SYS004
+      #SYS005
       #SRS010
       #SRS016
       technology 'HTTP / JSON'

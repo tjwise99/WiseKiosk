@@ -108,9 +108,9 @@ sits on — that tag *is* the architecture → requirements link, and the tier f
 ([ADR 0019](../decisions/0019-boundary-at-what-deploys-and-tag-tier.md)). At the Context level
 it is `SYS`, bound where the obligation is observable at that level: on the relationships, not on the
 system box, which owes every `SYS` item and so distinguishes none of them. The Container level
-answers to `SRS`, and a relationship spanning the boundary carries both tiers
-([ADR 0020](../decisions/0020-two-containers-one-origin-and-dual-tier-tags.md)). The tier below is
-settled by the phase that models that level.
+answers to `SRS`, and anything at a level also carries the coarser item it discharges observably
+there ([ADR 0020](../decisions/0020-two-containers-one-origin-and-dual-tier-tags.md)). The tier below
+is settled by the phase that models that level.
 
 **A tag is applied where an accepted item obliges the thing it sits on** — so an element or edge no
 accepted item obliges carries none, and one carrying coupled obligations carries all of them. What is

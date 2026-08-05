@@ -62,11 +62,27 @@ operator's two supplies and the frontend's two fetches separately, and the Conte
 operator edge under the label that level authors, since naming a container in a view draws it and
 would cost the Context level its abstraction.
 
-**The Container level answers to `SRS`, and a relationship spanning the boundary carries both tiers.**
-An `SRS` item allocates to a container, which is what ADR 0019 gave as its reason for refusing that
-tier at the Context level, and is the argument for it here. A relationship declared between an actor
-and a container is rendered at both levels, so it answers to both and carries the `SYS` item it
-discharges beside the `SRS` item specialising it.
+**The Container level answers to `SRS`, and anything here also carries the `SYS` item it discharges
+observably at this level.** An `SRS` item allocates to a container, which is what ADR 0019 gave as
+its reason for refusing that tier at the Context level, and is the argument for it here.
+
+The second clause is what makes the tier usable rather than a trap. Restricting `SYS` to
+relationships that cross the boundary — the shape the actor edges suggest, since those are the ones
+rendered at both levels — leaves SYS004<!-- Upstream data reaches the display only through the
+backend --> and SYS005<!-- Single-definition internal contract --> with no home at any level: both
+name things inside the boundary, so neither fits the Context level, and the restriction bars them
+here. Both are discharged observably on one edge, the frontend fetching each module payload, which is
+the boundary contract itself; SRS010<!-- The display page reaches no origin but the backend's --> and
+SRS016<!-- Both sides consume the generated types --> are their children and sit there too.
+
+**This widens ADR 0019 rather than exercising it**, and that record carries a dated amendment saying
+so. Its rule was one tier per level; a relationship may now also carry a coarser item, where that
+item's obligation is visible in what this level draws. Its rejection of `SRS` at the Context level is
+untouched and is why the widening runs in one direction only: a coarser item names something a finer
+level can still show, where a finer item names something the coarser level does not draw. The
+aggregate an actor edge renders at the Context level is not a counter-example — the relationship's
+endpoints are an actor and a container, so its `SRS` tags sit on a container-depth relationship, and
+the Context view is a projection of it rather than a place a tag was applied.
 
 **A tag is applied where an accepted item obliges the thing it sits on, and nowhere else.** Three
 consequences follow. An item obliging every exchange an element has belongs on the element rather
