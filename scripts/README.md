@@ -645,10 +645,12 @@ recorded because a fixture built with `git archive` carries the script as it was
 can silently exercise the old one. Asserting the md5 of the copy under test before running is what
 separates *the fix does not work* from *the fix was not in the tree you ran*.
 
-The counting rows below were exercised separately, at `080285c`, against md5
-`012e4cd6425770ec3ce01b5d1b111216`, each run twice: once against the script under test and once
-against the copy it replaced, because what those rows assert is that a number moves, and a number
-that never moved cannot be shown to move by a single run.
+The counting rows below were exercised against the script at `7883e3b`, md5
+`012e4cd6425770ec3ce01b5d1b111216`, and each was run a second time against the one it replaced —
+`04cea31`, md5 `62e44de86ab097dfa0ee68084a1fb6f3` — because what those rows assert is that a number
+moves, and a number that never moved cannot be shown to move by a single run. Both halves are pinned
+to a commit that contains them: a hash paired with a commit whose tree holds a different script tells
+a reader nothing about which half is wrong.
 
 ### Must fail
 
@@ -681,17 +683,18 @@ that never moved cannot be shown to move by a single run.
 | One of two applications of the same identifier removed | one SYS003<!-- A deployment is parameterised from outside the image --> application deleted, the identifier still applied once | 17 applications, **17 items** — the counts separate |
 | A subject loses every tag **and** their declarations | both tags stripped from the `Frontend` element | 16 applications on **6** of 11 subjects |
 
-The middle row is why the counts are separate rather than one number. The line previously reported
-`len(set(declared) | set(applied))`, so an identifier applied twice counted once; deleting one of the
-two applications left the reported figure unchanged, and the same run against the replaced script
-prints an identical line before and after the seed.
+The middle row is why the counts are separate rather than one number, and it is the row that carries
+the argument. The `04cea31` form reported `len(set(declared) | set(applied))`, so an identifier
+applied twice counted once: deleting one of the two applications left its line **byte-identical**
+before and after the seed. **A count that cannot move is not evidence.**
 
-The third row is the one a reader needs. Stripping a tag *without* its declaration fails on the
-declared-and-applied-to-nothing arm, so the fail-open shape is the one where the declaration goes
-too — and there the check is right to pass, because nothing it asserts is violated. What changed is
-that the line now says a subject stopped carrying links: the previous form reported
-`len(elements)` and `len(relations)`, which are properties of the model rather than results of the
-check, so they were identical before and after. **A count that cannot move is not evidence.**
+The third row is narrower than the second, and the `04cea31` form is not blind to it — that line's
+leading count moves too, 17 to 15. What it cannot say is that a **subject** stopped carrying links,
+because the only subject figures it reported were `len(elements)` and `len(relations)`, which are
+properties of the model rather than results of the check and read `5` and `6` either way. Stripping a
+tag *without* its declaration is not this case at all: it fails on the declared-and-applied-to-nothing
+arm, on both scripts. The fail-open shape is the one where the declaration goes too, and there the
+check is right to pass, because nothing it asserts is violated.
 
 Nothing gates any of this — the success line is read by a person, and a wrong one fails no build,
 which is why it went unnoticed until a model carried both a duplicated identifier and a deliberately
