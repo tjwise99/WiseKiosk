@@ -99,9 +99,11 @@ model {
         #SRS013
         description '''
           Checks a request's parameters against the pattern that route's entry
-          declares, before any upstream call is made, and builds the rejection
-          for one that does not conform: a status distinct to its cause, and a
-          body the frontend can render. It reads nothing about who is asking.
+          declares, before any upstream call is made, so the backend issues
+          only the upstream requests its configuration calls for. Builds the
+          rejection for one that does not conform: a status distinct to its
+          cause, and a body the frontend can render. It reads nothing about
+          who is asking.
         '''
       }
 

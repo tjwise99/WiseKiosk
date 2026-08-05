@@ -116,7 +116,10 @@ SRS028<!-- Served responses declare their type, and forbid the browser inferring
 **Components (C4 L3)** — the backend's framework half: a route handler owning the order things happen
 in, and beneath it what checks a request's parameters before any upstream call, what holds an answer,
 what goes out for a new one, and what serves files. Nothing here reads who is asking
-(SRS009<!-- Every source reachable through the backend, statelessly -->). A module's own half of this
+(SRS009<!-- Every source reachable through the backend, statelessly -->), which is why the parameter
+check exists: it holds the set of upstream requests the backend can be made to issue to the set its
+configuration calls for
+(SYS004<!-- Upstream data reaches the display only through the backend -->), whoever is asking. A module's own half of this
 container is its shaping library, drawn when that module's need lands
 ([ADR 0021](decisions/0021-component-earns-its-interface-and-framework-half-only.md)); the handler
 calls it twice — to build the upstream request and to parse the answer — so what is drawn here cannot
