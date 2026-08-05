@@ -158,8 +158,9 @@ Binding a requirement to an element is the act of reading it and judging what it
 review happened here: both items were put in front of the owner in full and accepted (owner,
 2026-08-04). That decision is the record — [ADR 0005](0005-traceability-gating.md) reserves
 acceptance to a human, and no property of an item can stand in for one. In particular the presence of
-a fingerprint, a rationale and a verification method cannot: every remaining `proposed` item has all
-three, so a criterion built from them would baseline the whole tree and leave `proposed` unreachable.
+a fingerprint, a rationale and a verification method cannot: every `SYS` and `SRS` item still
+`proposed` carries all three, so a criterion built from them would baseline those too and leave
+`proposed` unreachable.
 The five untouched items were not read here and so were not accepted. `status` sits outside the
 `reviewed` attribute set, so no fingerprint moved — which is also why the tree carries no trace of
 the act, and this paragraph is where it is recorded.

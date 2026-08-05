@@ -17,10 +17,8 @@ specification {
   element system
   element container
 
-  // A tag carries the Doorstop id of the requirement obliging the tagged element
-  // or relationship, at the tier its level answers to — SYS at Context, SRS at
-  // Container — plus any SYS item the thing tagged discharges observably at this
-  // level (ADR 0019, ADR 0020).
+  // Each tag is a Doorstop identifier. Which item belongs on what, and at which
+  // tier, is ADR 0019 as amended by ADR 0020.
   tag SYS001
   tag SYS002
   tag SYS003
