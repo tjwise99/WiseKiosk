@@ -19,8 +19,10 @@ docs/architecture/
     wisekiosk.likec4    specification + model (elements, relationships)
     views.likec4        the views rendered to diagrams
   generated/            regenerated artifacts — DO NOT hand-edit (staleness-gated)
-    index.mmd           System Context view (Mermaid)
-    containers.mmd      Container view (Mermaid)
+    index.mmd                 System Context view (Mermaid)
+    containers.mmd            Container view (Mermaid)
+    backendComponents.mmd     Backend Component view (Mermaid)
+    frontendComponents.mmd    Frontend Component view (Mermaid)
 ```
 
 `generated/` is cleared before codegen, which writes files and never prunes them: an artifact left
@@ -78,9 +80,8 @@ the staleness gate; the prose around the markers is yours to edit.
 
 ## What the model holds, and when an element earns a place
 
-The model holds the System Context and Container levels. The Component level is #98 C4 phase 3, and
-nests additively — `component` children inside a container, with a `view of <element>` in
-`views.likec4` — so it restructures nothing already here.
+The model holds the System Context, Container and Component levels — `component` children nest inside
+a container, and each container has a `view of` it in `views.likec4`.
 
 **A relationship is declared once, at its true endpoints** ([ADR 0020](../decisions/0020-two-containers-one-origin-and-dual-tier-tags.md)).
 Each view renders from that one set, aggregating an edge to the nearest ancestor it does not expand,
@@ -105,8 +106,11 @@ underneath it changing, and no gate compares them.
 
 **An element earns a place where the system exchanges something with it, and an upstream once the
 module that reads it has a need** ([ADR 0019](../decisions/0019-boundary-at-what-deploys-and-tag-tier.md)).
-Component content waits on the code it describes, which is ADR 0003's rule against building a level
-before its second consumer exists rather than anything this level decides.
+
+**A component earns a place by its interface — what it exposes, and who calls it — and each container
+holds only its framework half** ([ADR 0021](../decisions/0021-component-earns-its-interface-and-framework-half-only.md)).
+A module's half of a container is the code a module author writes that runs there, and it arrives per
+module as that module's need lands, on ADR 0019's ground for deferring an upstream.
 
 **Source `link`s** wire the model to real code: once `backend/`/`frontend/` exist, a `link` property
 on a container or component points at the source implementing it. This is how the model stops being a
@@ -121,8 +125,10 @@ sits on — that tag *is* the architecture → requirements link, and the tier f
 it is `SYS`, bound where the obligation is observable at that level: on the relationships, not on the
 system box, which owes every `SYS` item and so distinguishes none of them. The Container level
 answers to `SRS`, and anything at a level also carries the coarser item it discharges observably
-there ([ADR 0020](../decisions/0020-two-containers-one-origin-and-dual-tier-tags.md)). The tier below
-is settled by the phase that models that level.
+there ([ADR 0020](../decisions/0020-two-containers-one-origin-and-dual-tier-tags.md)). The Component
+level answers to `SRS` as well, an item sitting on the component it obliges and staying on the
+container where it obliges the container
+([ADR 0021](../decisions/0021-component-earns-its-interface-and-framework-half-only.md)).
 
 **A tag is applied where an accepted item obliges the thing it sits on** — so an element or edge no
 accepted item obliges carries none, and one carrying coupled obligations carries all of them. What is

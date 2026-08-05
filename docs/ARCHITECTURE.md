@@ -94,9 +94,8 @@ legibly says when one failed`" .-> Viewer
 
 <!-- arch-export:end generated/containers.mmd -->
 
-The Component level (C4 L3) is #98 C4 phase 3, and the sections below carry that shape as prose until
-it is modelled. Neither container carries a `link` to the source implementing it: no code exists, and
-the repository layout is #5.
+The Component level (C4 L3) is drawn per container, in the two sections below. No element carries a
+`link` to the source implementing it: no code exists, and the repository layout is #5.
 
 ## Backend
 
@@ -113,6 +112,45 @@ SRS013<!-- Client-facing contract for rejected requests -->,
 SRS016<!-- Both sides consume the generated types -->,
 SRS019<!-- The backend runs on both supported architectures -->,
 SRS028<!-- Served responses declare their type, and forbid the browser inferring one -->.
+
+**Components (C4 L3)** — the backend's framework half: what serves files, what judges a request
+before any upstream call, what holds an answer, and what goes out for a new one. A module's own half
+of this container is its shaping library, drawn when that module's need lands
+([ADR 0021](decisions/0021-component-earns-its-interface-and-framework-half-only.md)). A route's
+parameter validation, its two cache TTLs, its rate limit, its outbound timeout and its maximum
+response size are one entry in a static registration list and live nowhere else
+([the module contract](contracts/module-contract.md)); that entry is data these components read
+rather than a component of its own.
+
+<!-- arch-export:begin generated/backendComponents.mmd -->
+
+```mermaid
+---
+title: "WiseKiosk Backend — Components (C4 L3)"
+---
+graph TB
+  Operator@{ icon: "fa:user", shape: rounded, label: "Operator" }
+  WisekioskFrontend@{ shape: rectangle, label: "Frontend" }
+  subgraph WisekioskBackend["`Backend`"]
+    WisekioskBackend.StaticServing@{ shape: rectangle, label: "Static serving" }
+    WisekioskBackend.RequestAdmission@{ shape: rectangle, label: "Request admission" }
+    WisekioskBackend.ResponseCache@{ shape: rectangle, label: "Response cache" }
+    WisekioskBackend.UpstreamClient@{ shape: rectangle, label: "Upstream client" }
+  end
+  Operator -. "`Places the configuration into the served 
+tree`" .-> WisekioskBackend.StaticServing
+  Operator -. "`Supplies the secret for each source`" .-> WisekioskBackend.UpstreamClient
+  WisekioskFrontend -. "`Fetches the configuration, served back 
+unparsed`" .-> WisekioskBackend.StaticServing
+  WisekioskFrontend -. "`Fetches the payload for each module`" .-> WisekioskBackend.RequestAdmission
+  WisekioskBackend.RequestAdmission -. "`Answers an admitted request from cache 
+where it can`" .-> WisekioskBackend.ResponseCache
+  WisekioskBackend.ResponseCache -. "`Fetches on a miss, and holds what comes 
+back`" .-> WisekioskBackend.UpstreamClient
+  WisekioskBackend.StaticServing -. "`Serves the single-page bundle`" .-> WisekioskFrontend
+```
+
+<!-- arch-export:end generated/backendComponents.mmd -->
 
 ## Frontend
 
@@ -131,6 +169,42 @@ SRS024<!-- Every offered configuration key is exercised at a non-default value -
 SRS026<!-- The display says when the backend is gone -->,
 SRS027<!-- The display page holds no device capability it does not use -->; configuration
 validation is frontend-owned per [ADR 0007](decisions/0007-config-validation-allocation.md).
+
+**Components (C4 L3)** — the frontend's framework half: a shell that renders before any configuration
+is applied, the load-and-validate step, the assembly of configured modules into their regions, and
+the fetch of each module's payload. A module's own half of this container is its Svelte component,
+drawn when that module's need lands
+([ADR 0021](decisions/0021-component-earns-its-interface-and-framework-half-only.md)) — which is why
+the edge to the Viewer leaves this container rather than a region within it.
+
+<!-- arch-export:begin generated/frontendComponents.mmd -->
+
+```mermaid
+---
+title: "WiseKiosk Frontend — Components (C4 L3)"
+---
+graph TB
+  subgraph WisekioskFrontend["`Frontend`"]
+    WisekioskFrontend.PageShell@{ shape: rectangle, label: "Page shell" }
+    WisekioskFrontend.Configuration@{ shape: rectangle, label: "Configuration load and validation" }
+    WisekioskFrontend.Layout@{ shape: rectangle, label: "Layout assembly" }
+    WisekioskFrontend.PayloadClient@{ shape: rectangle, label: "Payload client" }
+  end
+  Viewer@{ icon: "fa:user", shape: rounded, label: "Viewer" }
+  WisekioskBackend@{ shape: rectangle, label: "Backend" }
+  WisekioskFrontend.PageShell -. "`Applies the configuration once it 
+validates`" .-> WisekioskFrontend.Configuration
+  WisekioskFrontend.Configuration -. "`Names the modules and their regions`" .-> WisekioskFrontend.Layout
+  WisekioskFrontend.Layout -. "`Requests the payload for each placed 
+module`" .-> WisekioskFrontend.PayloadClient
+  WisekioskFrontend.Configuration -. "`Fetches the configuration, served back 
+unparsed`" .-> WisekioskBackend
+  WisekioskFrontend.PayloadClient -. "`Fetches the payload for each module`" .-> WisekioskBackend
+  WisekioskFrontend -. "`Renders the configured modules, and 
+legibly says when one failed`" .-> Viewer
+```
+
+<!-- arch-export:end generated/frontendComponents.mmd -->
 
 ## The boundary contract
 
