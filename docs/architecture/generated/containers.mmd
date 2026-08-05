@@ -1,0 +1,18 @@
+---
+title: "WiseKiosk — Containers (C4 L2)"
+---
+graph TB
+  Operator@{ icon: "fa:user", shape: rounded, label: "Operator" }
+  subgraph Wisekiosk["`WiseKiosk`"]
+    Wisekiosk.Backend@{ shape: rectangle, label: "Backend" }
+    Wisekiosk.Frontend@{ shape: rectangle, label: "Frontend" }
+  end
+  Viewer@{ icon: "fa:user", shape: rounded, label: "Viewer" }
+  Operator -. "`Supplies each source secret, and the 
+configuration the backend only serves`" .-> Wisekiosk.Backend
+  Wisekiosk.Backend -. "`Serves the single-page bundle`" .-> Wisekiosk.Frontend
+  Wisekiosk.Frontend -. "`Fetches each module payload, and the 
+configuration the backend serves 
+unparsed`" .-> Wisekiosk.Backend
+  Wisekiosk.Frontend -. "`Renders the configured modules, and 
+legibly says when one failed`" .-> Viewer

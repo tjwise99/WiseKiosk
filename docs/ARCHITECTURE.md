@@ -12,8 +12,9 @@ How the pieces of WiseKiosk actually fit together — the living structural desc
 ## System shape
 
 One published container image serving a full-screen, config-driven smart-mirror display. A Go
-backend proxies a handful of public APIs and serves the built frontend; a Svelte SPA renders modules
-into regions of the page. See the [README](../README.md) for the product definition, and
+backend proxies a handful of public APIs and serves the built frontend
+([ADR 0020](decisions/0020-two-containers-one-origin-and-dual-tier-tags.md)); a Svelte SPA renders
+modules into regions of the page. See the [README](../README.md) for the product definition, and
 SYS002<!-- The configured layout renders whole -->,
 SYS004<!-- Upstream data reaches the display only through the backend --> and
 SYS005<!-- Single-definition internal contract --> with their SRS children in the [requirements
@@ -45,16 +46,53 @@ graph TB
   Operator@{ icon: "fa:user", shape: rounded, label: "Operator" }
   Wisekiosk@{ shape: rectangle, label: "WiseKiosk" }
   Viewer@{ icon: "fa:user", shape: rounded, label: "Viewer" }
-  Operator -. "`Configures the deployment and supplies 
-its secrets`" .-> Wisekiosk
+  Operator -. "`Supplies each source secret, and the 
+configuration the backend only serves`" .-> Wisekiosk
   Wisekiosk -. "`Renders the configured modules, and 
 legibly says when one failed`" .-> Viewer
 ```
 
 <!-- arch-export:end generated/index.mmd -->
 
-The Container level (C4 L2) decomposes WiseKiosk into what runs inside it. It is modelled in #97 C4
-phase 2, and the sections below carry that shape as prose until it is.
+**Containers (C4 L2)** — what runs inside the boundary. Two things run: the backend process, and the
+frontend bundle executing in the browser on the display host. They share one origin, because the
+backend serves that bundle and the configuration file as static content it never interprets
+([ADR 0020](decisions/0020-two-containers-one-origin-and-dual-tier-tags.md),
+[ADR 0007](decisions/0007-config-validation-allocation.md)). Both things that distinguish one
+deployment from another reach the backend's filesystem from outside the image — the secret for each
+source, which the backend reads, and the configuration, which it only serves — and the configuration
+reaches its consumer on a second hop, when the page fetches it. No upstream source appears here for
+the reason none appears above: an upstream belongs to the module that reads it, and no module need is
+written ([ADR 0019](decisions/0019-boundary-at-what-deploys-and-tag-tier.md)).
+
+<!-- arch-export:begin generated/containers.mmd -->
+
+```mermaid
+---
+title: "WiseKiosk — Containers (C4 L2)"
+---
+graph TB
+  Operator@{ icon: "fa:user", shape: rounded, label: "Operator" }
+  subgraph Wisekiosk["`WiseKiosk`"]
+    Wisekiosk.Backend@{ shape: rectangle, label: "Backend" }
+    Wisekiosk.Frontend@{ shape: rectangle, label: "Frontend" }
+  end
+  Viewer@{ icon: "fa:user", shape: rounded, label: "Viewer" }
+  Operator -. "`Supplies each source secret, and the 
+configuration the backend only serves`" .-> Wisekiosk.Backend
+  Wisekiosk.Backend -. "`Serves the single-page bundle`" .-> Wisekiosk.Frontend
+  Wisekiosk.Frontend -. "`Fetches each module payload, and the 
+configuration the backend serves 
+unparsed`" .-> Wisekiosk.Backend
+  Wisekiosk.Frontend -. "`Renders the configured modules, and 
+legibly says when one failed`" .-> Viewer
+```
+
+<!-- arch-export:end generated/containers.mmd -->
+
+The Component level (C4 L3) is #98 C4 phase 3, and the sections below carry that shape as prose until
+it is modelled. Neither container carries a `link` to the source implementing it: no code exists, and
+the repository layout is #5.
 
 ## Backend
 

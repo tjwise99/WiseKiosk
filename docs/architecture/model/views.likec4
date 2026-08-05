@@ -8,4 +8,9 @@ views {
     title 'WiseKiosk — System Context (C4 L1)'
     include *
   }
+
+  view containers of wisekiosk {
+    title 'WiseKiosk — Containers (C4 L2)'
+    include *
+  }
 }
