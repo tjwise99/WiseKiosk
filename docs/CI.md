@@ -268,7 +268,11 @@ resolve, a citation to something that does not exist, an index that has drifted 
   ([`decisions/README.md`](decisions/README.md)), so revving one reaches every document citing it:
   each is updated or re-decided in the same change rather than left asserting a claim the ADR's
   current rev does not make. The link rule is what the prose rule cannot reach — a citation spelled
-  as a bare bracketed number names no ADR in prose at all. **A citation spelled any other way is
+  as a bare bracketed number names no ADR in prose at all. **It is anchored on the link's target, not
+  its title**: a title is arbitrary text and may carry brackets, so a title-shaped pattern is what a
+  link to an ADR escapes through. A link whose title cannot be resolved back to its opening bracket
+  fails rather than being passed over, which makes a link to an ADR wrapped across two lines an
+  error — legal Markdown this rejects, in exchange for a reader that cannot be stepped around. **A citation spelled any other way is
   reported as malformed rather than passed over.** What the check matches is deliberately wider than
   what it accepts — separator, case, plural and digit count are all recognised so that each can be
   *rejected*, and a reference-style link or a raw `<a href>` at an ADR is reported as a form carrying

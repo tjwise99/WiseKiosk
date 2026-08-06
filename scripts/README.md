@@ -576,6 +576,8 @@ described without spelling a live ADR number, which this check reads as a citati
 | **A plural, a hyphen, or the wrong case** | `ADRs NNNN and NNNN`, `ADR-NNNN`, and the lowercase spelling |
 | **An underscore, a hash, a doubled space, too few digits** | four more separators and widths on one line |
 | **A reference-style link or a raw `<a href>` to an ADR** | each appended to `docs/TESTING.md` |
+| **A link to an ADR whose title carries brackets** | a bracketed phrase inside the title, over an ADR target |
+| **A link to an ADR wrapped across two lines** | the opening bracket on the line above |
 | The head format changed everywhere, so nothing parses | `**Rev:**` renamed in all twenty ADRs |
 | **The prose citation spelling drifted, so none is recognised** | `CITATION` altered not to match |
 | **The link spelling drifted, so none is recognised** | `LINK` altered not to match |
@@ -606,6 +608,20 @@ The same narrowing applies to the index row, which drops only the leading self-l
 **The two rev-2 cases are the pair that matters**: same tree, differing only in whether one citation
 moved, one passing and one failing. Without both, "the exemption works" and "the exemption is narrow"
 are indistinguishable.
+
+**The link reader is anchored on the target, not the title.** Titled-pattern matching missed a link
+whose title carried a bracketed phrase: the title pattern cannot cross a closing bracket, so the link
+was never matched at all and passed with exit 0 — precisely the defect the link rule was added for, and the empty-population guard could not see it
+because the other links kept the count non-zero. Walking back from the closing bracket to its match
+also surfaced **two live citations in `docs/site/` that no reader had ever seen**: their titles were
+wrapped across a line break, so the prose reader saw no number beside `ADR` and the title reader saw
+no opening bracket. Both were unpinned and both were counted by nothing. The tree's citation count
+went from 227 to 229 on this fix alone.
+
+**The legal input this rejects:** a link to an ADR wrapped across two lines. That is valid Markdown
+and it now fails, because a title the reader cannot resolve must not be passed over. The two
+instances were rewrapped; the cost is an authoring constraint, and it buys a reader with no shape a
+citation can be spelled around.
 
 **The matcher is wider than the accepted form on purpose.** Its first version recognised exactly the
 spellings it accepted plus three near-misses, so `ADR_NNNN`, `ADR #NNNN`, a doubled space and a

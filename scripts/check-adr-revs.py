@@ -45,7 +45,9 @@ INDEX_ROW = re.compile(r"^(\| *\[\d{4}\]\([^)]+\) *\|)(.*)$")
 CITATION = re.compile(r"\bADRs?[ _#\-]{0,3}(\d{1,4})\b(?: +rev +(\d+))?", re.I)
 CANONICAL = re.compile(r"^ADR \d{4}(?: rev \d+)?$")
 
-LINK = re.compile(r"\[([^\]]*)\]\(([^)\s]+)[^)]*\)")
+# Anchored on the target, never on the title: a title is arbitrary text and may carry brackets, so a
+# title-shaped pattern is what a link to an ADR escapes through.
+TARGET = re.compile(r"\]\(([^)\s]+)[^)]*\)")
 LINK_TITLE = re.compile(r"^ADR ?(\d{4}) +rev +(\d+)$")
 # Forms this cannot hold to a rev; each is reported if it targets an ADR.
 REF_DEF = re.compile(r"^\[[^\]]+\]:\s*(\S+)")
@@ -69,6 +71,32 @@ def tracked():
         ["git", "ls-files", "-z"], cwd=ROOT, capture_output=True, check=True
     ).stdout
     return [ROOT / name.decode() for name in listing.split(b"\0") if name]
+
+
+def adr_links(line):
+    """Every link on the line whose target is an ADR file, as (title, span, filename).
+
+    The title is recovered by walking back from the closing `]` to its matching `[`, counting
+    nesting, so a bracketed title is read rather than missed. A title that cannot be resolved yields
+    `None` and is reported: an unreadable link to an ADR must fail, not be passed over.
+    """
+    for match in TARGET.finditer(line):
+        name = match.group(1).split("#")[0].split("/")[-1]
+        if not ADR_FILE.match(name):
+            continue
+        depth, start = 0, None
+        for index in range(match.start(), -1, -1):
+            if line[index] == "]":
+                depth += 1
+            elif line[index] == "[":
+                depth -= 1
+                if depth == 0:
+                    start = index
+                    break
+        if start is None:
+            yield None, range(0), name
+        else:
+            yield line[start + 1 : match.start()], range(start + 1, match.start()), name
 
 
 def changelog_revs(text):
@@ -189,14 +217,16 @@ def check_citations(revs, problems):
         where = str(path.relative_to(ROOT))
         for number, line, historical in readable(path, text):
             titles = []
-            for link in LINK.finditer(line):
-                title, target = link.group(1), link.group(2)
-                name = target.split("#")[0].split("/")[-1]
+            for title, span, name in adr_links(line):
                 match = ADR_FILE.match(name)
-                if not match:
-                    continue
-                titles.append(range(link.start(1), link.end(1)))
+                titles.append(span)
                 judged["link"] += 1
+                if title is None:
+                    problems.append(
+                        f"{where}:{number}: link to {name} has no title this can read — "
+                        f"expected `[ADR {match.group(1)} rev N](...)`"
+                    )
+                    continue
                 titled = LINK_TITLE.match(title.strip())
                 if not titled:
                     problems.append(
