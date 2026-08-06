@@ -86,10 +86,10 @@ gates 2 and 3 — are open under #25 traceability gates.
   blocker" cannot tell a justification paragraph from the surrounding prose without parsing English.
   It also breaks the one-fact-one-home rule the corpus was reconciled against under #42, held today
   by [`CI.md`](../CI.md)'s documentation-integrity gates, inside the very tree that states it.
-- **State it in the `TST` item's `text`.** Rejected: non-`test` items span all three tiers, and the
-  `SYS` tier — where `analysis` and `inspection` concentrate, and where there is no parent to
-  inherit an argument from — would stay uncovered entirely. It also puts a claim about verification
-  method inside a field reserved for the obligation.
+- **State it in the `TST` item's `text`.** Rejected: the non-`test` items then spanned all three
+  tiers, and the `SYS` tier — where `analysis` and `inspection` concentrated, and where there is no
+  parent to inherit an argument from — would have stayed uncovered entirely. It also puts a claim
+  about verification method inside a field reserved for the obligation.
 - **Add the attribute but leave it outside the review fingerprint.** Cheaper, and measurably so:
   populating a fenced attribute across the 115 items then below `test` cost 115 re-reviews plus 76
   suspect-link clears, cascading from the 34 items with baselined children. Rejected anyway — an

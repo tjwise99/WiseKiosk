@@ -164,8 +164,8 @@ jobs:
     # reaches main under squash-merge — is a Conventional Commit. Runs the exact
     # scripts the local recipes run (`just check-branch`; the commit-msg hook's
     # validator, here with --pr-title, dropping the fixup!/squash!/merge
-    # allowances that never reach main), reading each pattern from its single
-    # definition in scripts/*.regex. The branch check also gates the recorded
+    # allowances that never reach main), reading their patterns from
+    # scripts/*.regex. The branch check also gates the recorded
     # PR↔ticket linkage: the PR's Development field (closingIssuesReferences)
     # must link the branch's issue on every base, so the ticket closes when the
     # PR merges into the default branch.
