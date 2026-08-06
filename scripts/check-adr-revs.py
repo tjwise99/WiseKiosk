@@ -142,10 +142,11 @@ def check_index(revs, problems):
 def readable(path, text):
     """The text of each line to judge, with the two exemptions applied.
 
-    A **changelog line** records what a rev did at the moment it did it, so the rev it names is left
-    as written. The exemption is the line's shape, not its neighbourhood: an ordinary sentence in a
-    *Revisions* section is judged like any other, which is what stops the section being the place a
-    stale citation is parked.
+    A **changelog line**, and any indented line continuing it, records what a rev did at the moment
+    it did it — so a citation there is exempt from being *current*, and from nothing else. It must
+    still be spelled canonically and still carry a rev; only the comparison against the ADR's head is
+    dropped. An ordinary sentence in a *Revisions* section is a continuation of nothing and is judged
+    like any other line, which is what stops the section being the place a stale citation is parked.
 
     An **index row** names its own document in its leading self-link, whose title is a bare number by
     construction. Only that link is dropped; the row's *Decision* cell is free prose and is judged.
@@ -155,17 +156,19 @@ def readable(path, text):
         heading = SECTION.match(line)
         if heading:
             in_revisions, in_entry = heading.group(1) == "Revisions", False
-            yield number, line
+            yield number, line, False
             continue
         if in_revisions and path.parent == DECISIONS:
             if CHANGELOG.match(line):
                 in_entry = True
+                yield number, line, True
                 continue
             if in_entry and CONTINUATION.match(line):
+                yield number, line, True
                 continue
             in_entry = False
         row = INDEX_ROW.match(line) if path == INDEX else None
-        yield number, row.group(2) if row else line
+        yield number, row.group(2) if row else line, False
 
 
 def check_citations(revs, problems):
@@ -183,14 +186,15 @@ def check_citations(revs, problems):
             continue
 
         where = str(path.relative_to(ROOT))
-        for number, line in readable(path, text):
+        for number, line, historical in readable(path, text):
             titles = []
-            for title, target in LINK.findall(line):
+            for link in LINK.finditer(line):
+                title, target = link.group(1), link.group(2)
                 name = target.split("#")[0].split("/")[-1]
                 match = ADR_FILE.match(name)
                 if not match:
                     continue
-                titles.append(title)
+                titles.append(range(link.start(1), link.end(1)))
                 judged["link"] += 1
                 titled = LINK_TITLE.match(title.strip())
                 if not titled:
@@ -204,7 +208,8 @@ def check_citations(revs, problems):
                     )
                 else:
                     problems.extend(
-                        judge(revs, where, number, titled.group(1), titled.group(2), title)
+                        judge(revs, where, number, titled.group(1), titled.group(2), title,
+                              historical)
                     )
 
             for form, pattern in (("reference-style link", REF_DEF), ("raw <a href>", RAW_HREF)):
@@ -218,7 +223,10 @@ def check_citations(revs, problems):
 
             for match in CITATION.finditer(line):
                 # A title already judged above; judging it again would report one defect twice.
-                if any(match.group(0) in title for title in titles):
+                # By position, not by text: a bare `ADR NNNN` is a substring of the title
+                # `ADR NNNN rev M`, so a textual test suppresses the unpinned citation beside a
+                # correctly titled link — a defect reported as none.
+                if any(match.start() in span for span in titles):
                     continue
                 judged["prose"] += 1
                 spelling = match.group(0).split(" rev ")[0]
@@ -229,7 +237,8 @@ def check_citations(revs, problems):
                     )
                     continue
                 problems.extend(
-                    judge(revs, where, number, match.group(1), match.group(2), line.strip())
+                    judge(revs, where, number, match.group(1), match.group(2), line.strip(),
+                          historical)
                 )
 
     if unreadable:
@@ -248,12 +257,19 @@ def check_citations(revs, problems):
     return sum(judged.values())
 
 
-def judge(revs, where, number, cited, pinned, context):
-    """One citation against the ADR it names."""
+def judge(revs, where, number, cited, pinned, context, historical=False):
+    """One citation against the ADR it names.
+
+    `historical` drops the comparison against the ADR's current rev, and drops nothing else: a
+    changelog entry may name a rev that has moved on, but not an ADR that does not exist and not a
+    citation carrying no rev at all.
+    """
     if cited not in revs:
         return [f"{where}:{number}: cites ADR {cited}, which is not an ADR — {context}"]
     if not pinned:
         return [f"{where}:{number}: cites ADR {cited} without a rev — {context}"]
+    if historical:
+        return []
     if int(pinned) != revs[cited]:
         return [f"{where}:{number}: pins ADR {cited} rev {pinned}, current is rev {revs[cited]}"]
     return []

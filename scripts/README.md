@@ -565,6 +565,9 @@ described without spelling a live ADR number, which this check reads as a citati
 | Link titled with a bare number | a titled link in `docs/CI.md` retitled to the number alone |
 | Link title naming a different ADR than it targets | the title's number changed, the target left |
 | **Ordinary prose inside a *Revisions* section** | a sentence carrying an unpinned citation and a bare-titled link, one line below a legal changelog line |
+| **The same, indented so it continues the changelog line** | the exemption drops staleness, not form |
+| **A changelog continuation naming a number no ADR carries** | a rev that has moved is exempt; an ADR that does not exist is not |
+| **An unpinned citation beside a correctly titled link** | both on one line, naming the same ADR |
 | **A stale citation in an index row's *Decision* cell** | a supersession note written into the free-prose column |
 | Index rev column disagreeing with the ADR's head | one row's rev raised, its head left |
 | An ADR head with no `**Rev:** N` | the line deleted from one ADR |
@@ -584,18 +587,30 @@ described without spelling a live ADR number, which this check reads as a citati
 | The tree as it stands | — |
 | An ADR revved with everything moved with it | one ADR to rev 2: head, index row, a new changelog line, and all its citations |
 | A changelog line pinning a rev that is not current | a supersession line on that same rev-2 ADR |
+| An indented continuation of one, pinning a stale rev | the wrapped form of the same line |
 | An index row's leading self-link | every row in the index table |
 
-**The exemption is a line shape, not a region.** The first version of this check exempted the whole
-*Revisions* section, and an ordinary citation placed inside it — prose and link both — passed with
-exit 0 while the identical text one line outside failed. That is the fifth must-fail row, and it is
-the case CONTRIBUTING question 11 describes: the exemption was written to stop a false positive on
-changelog lines and became the place a stale citation could be parked. The same narrowing applies to
-the index row, which now drops only the leading self-link rather than the whole row.
+**The exemption was narrowed twice, and the second time is the instructive one.** It began as the
+whole *Revisions* section: an ordinary citation placed inside it passed with exit 0 while the
+identical text one line outside failed. Narrowing it to the changelog line's *shape* moved the hole
+rather than closing it — a citation on an indented continuation was still exempt, and a continuation
+is ordinary prose. What closed it was narrowing the exemption's **effect** instead of its extent: a
+changelog citation is exempt from being *current* and from nothing else, so it must still name a real
+ADR and still carry a rev. Two narrowings of extent, one of effect; only the last one held. This is
+CONTRIBUTING question 11 twice over — the exemption was written to stop a false positive and was
+twice the place a bypass could be spelled.
+
+The same narrowing applies to the index row, which drops only the leading self-link.
 
 **The two rev-2 cases are the pair that matters**: same tree, differing only in whether one citation
 moved, one passing and one failing. Without both, "the exemption works" and "the exemption is narrow"
 are indistinguishable.
+
+**Deduplicating by text suppressed a real defect.** A prose citation falling inside a link title is
+skipped so one defect is not reported twice — but `ADR NNNN` is a substring of the title
+`ADR NNNN rev M`, so an unpinned citation beside a correctly titled link was silently dropped. The
+test is now the match's position against the title's span. A cosmetic fix produced a fail-open, which
+is why the must-fail table carries a row for it.
 
 **The empty-population guards are per reader, not over the total.** A single count of everything
 judged hid the prose reader going to zero, because fifty link citations kept the total non-zero and

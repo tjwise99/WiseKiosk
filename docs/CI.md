@@ -278,10 +278,12 @@ resolve, a citation to something that does not exist, an index that has drifted 
   rev zero. **Two empty-population guards, one per reader:** a run resolving no ADR at all fails, and
   so does one judging no prose citation or no link citation, because the tree exercises both and
   either falling to zero means that reader stopped seeing them while the other kept the run green.
-  **One exemption, and it is a line shape rather than a region:** a changelog line records what a rev
-  did at the moment it did it, so the rev it names is left as written. Ordinary prose inside a
-  *Revisions* section is judged like anything else — the exemption cannot become the place a stale
-  citation is parked. An index row's leading self-link is dropped for the same reason and no further:
+  **One exemption, and it drops staleness alone:** a changelog line, and any indented line continuing
+  it, records what a rev did at the moment it did it — so a citation there is not held to the ADR's
+  current rev. It is held to everything else. It must name an ADR that exists and must carry a rev;
+  only the comparison is dropped, so an unpinned citation or a bare-titled link inside a *Revisions*
+  section fails exactly as it would anywhere. Ordinary prose in that section continues nothing and is
+  judged outright. An index row's leading self-link is dropped for the same reason and no further:
   the row's *Decision* cell is free prose and is judged.
   What this leaves unproven is whether a citation pinning the current rev still means what the ADR
   says; that is read at review.
