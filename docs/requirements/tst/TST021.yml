@@ -10,7 +10,7 @@ rationale: |
   Stated as a test rather than an inspection because set equality against a committed artifact is
   mechanically decidable, which is the method the obligation can bear. An earlier form deferred the
   form to "repo check or review checklist" when the schema lands; a review checklist was never
-  available to it, since ADR 0011 routes an author obligation leaving no artifact out of the tree, so
+  available to it, since ADR 0011 rev 1 routes an author obligation leaving no artifact out of the tree, so
   no TST item can resolve to one.
 ref: ''
 reviewed: kRP-H3gVVEImzYhXQhHOuEPTED_Gvn-0VP6nO-MYFvE=

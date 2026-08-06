@@ -2,6 +2,11 @@
 
 **Status:** accepted
 **Decided:** 2026-07-26 (`SRS` pass of the tree rebuild #69)
+**Rev:** 1
+
+## Revisions
+
+- **rev 1** — 2026-08-05 — revision tracking begins; text as merged (#118 ADR revisions).
 
 ## Context
 
@@ -45,7 +50,7 @@ adding a lint would stay a specification change and the specification would stil
 convention existed, one tier down. Only a destination outside the tree delivers the check edit. The
 need that would otherwise carry them goes too: it obliged the repository rather than the software, and
 it would be a hat over its own thirteen children — the enumerates-its-own-children tell that
-[ADR 0012](0012-module-requirements-in-tree.md) names.
+[ADR 0012 rev 1](0012-module-requirements-in-tree.md) names.
 
 **A judgement obligation moved to the checklist gains an activation path.** This is not a soft
 deletion. An `inspection` item nobody is prompted to perform is a dead letter — that absence is what
@@ -58,7 +63,7 @@ duration, a sampling interval, a tolerance, or a build mode has swallowed its ow
 threshold then cannot be tuned without a specification change. Where an item's text begins
 *"Verification shall…"*, it is announcing this.
 
-**This narrows [ADR 0005](0005-traceability-gating.md).** Its traceability claim is over **the
+**This narrows [ADR 0005 rev 1](0005-traceability-gating.md).** Its traceability claim is over **the
 product**. *No work exists without a requirement authorizing it* is true of work on WiseKiosk; it is
 not true of the repository's own housekeeping, and arguably never was. Three consequences for 0005's
 four gates:

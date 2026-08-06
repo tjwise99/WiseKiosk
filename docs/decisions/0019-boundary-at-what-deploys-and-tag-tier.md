@@ -2,8 +2,9 @@
 
 **Status:** accepted
 **Decided:** 2026-08-04 (C4 phase 1 design discussion, ticket #96 C4 phase 1 System Context)
+**Rev:** 1
 
-> **Tag tier widened, 2026-08-04 ([0020](0020-two-containers-one-origin-and-dual-tier-tags.md), #97
+> **Tag tier widened, 2026-08-04 ([ADR 0020 rev 1](0020-two-containers-one-origin-and-dual-tier-tags.md), #97
 > C4 phase 2).** The tier rule below reads as one tier per level. The Container level found two
 > accepted items that rule leaves homeless — SYS004<!-- Upstream data reaches the display only
 > through the backend --> and SYS005<!-- Single-definition internal contract --> name things inside
@@ -16,22 +17,26 @@
 > show, where a finer item names something the coarser level does not draw. The rejection of `SRS` at
 > the Context level stands exactly as written.
 
+## Revisions
+
+- **rev 1** — 2026-08-05 — revision tracking begins; text as merged (#118 ADR revisions).
+
 ## Context
 
-[ADR 0003](0003-architecture-as-code-likec4.md) makes the LikeC4 model
+[ADR 0003 rev 1](0003-architecture-as-code-likec4.md) makes the LikeC4 model
 ([`../architecture/README.md`](../architecture/README.md)) the single source of truth for the
 architecture, but leaves two questions to be answered per element, which means they are answered
 differently each time.
 
 **Which side of the boundary something falls on.** The project builds things that never enter the
 published image: the configuration validator that runs at a desk
-([ADR 0007](0007-config-validation-allocation.md)) and the provisioning tooling shipped with the
+([ADR 0007 rev 1](0007-config-validation-allocation.md)) and the provisioning tooling shipped with the
 release artifact set (#71 release artifact set). Each is a fresh argument without a criterion, and
 each reaches a different answer depending on whether "the system" is taken to mean what runs or what
 the project owns.
 
 **Which requirement tier an element's tag names.** The tag is the architecture → requirements link,
-and ADR 0003 states its tier as `SRS` unconditionally. That does not survive contact with the Context
+and ADR 0003 rev 1 states its tier as `SRS` unconditionally. That does not survive contact with the Context
 level, where the only element inside the boundary is the system itself and every `SRS` item allocates
 below it.
 
@@ -49,7 +54,7 @@ context of system are different sets, and the model draws the second.
 in the tree.** The corollary above does not reach this on its own: SYS004<!-- Upstream data reaches
 the display only through the backend --> is accepted and obliges precisely such an exchange, so
 "exchanges something with it" would admit an upstream element today. What defers it is that an
-upstream belongs to the module that reads it — [ADR 0012](0012-module-requirements-in-tree.md)
+upstream belongs to the module that reads it — [ADR 0012 rev 1](0012-module-requirements-in-tree.md)
 decomposes a module need by *its upstream* — and no module need is written, so nothing yet names one.
 The Context level therefore carries no external system and gains one per upstream as each module's
 need lands.
@@ -63,7 +68,7 @@ owes every `SYS` item, so tagging it distinguishes none of them.
 ## Alternatives considered
 
 **Boundary at what the project authors and ships**, putting the desk validator inside. It would make
-ADR 0007's invariant — one TypeScript engine, two build targets, so page and desk validation cannot
+ADR 0007 rev 1's invariant — one TypeScript engine, two build targets, so page and desk validation cannot
 disagree — visible in the model. Rejected: that invariant is already held by
 SRS005<!-- One validation implementation -->, and buying a second copy of it costs a Container level
 holding something that is not in the image and does not run on the display host, so "one published
@@ -75,7 +80,7 @@ the set is specification rather than deployment configuration and is bounded by 
 [`../../README.md`](../../README.md). An aggregate element also belongs to no module, so it can carry
 no module's identifier — which forecloses the binding the tag mechanism below exists for.
 
-**`SRS` at every level**, as ADR 0003 assumes. Rejected: at the Context level it forces a choice
+**`SRS` at every level**, as ADR 0003 rev 1 assumes. Rejected: at the Context level it forces a choice
 between attaching every `SRS` id to the single system element and picking an arbitrary few, and
 neither is a link a reader can trust. Binding `SRS` to a *relationship* does not escape it either,
 which is the form this decision's own mechanism would otherwise invite: an `SRS` item allocates to a
@@ -97,5 +102,5 @@ relationship; the provisioning tooling gains one if and when it acts on the runn
 identifier. Whether the tagged element is the one that requirement obliges, and whether the tier
 suits the level, are review's — which is the ordinary division here, not an exception for this gate.
 
-**ADR 0003 is corrected, not superseded.** Its reservation of tags as the architecture → requirements
+**ADR 0003 rev 1 is corrected, not superseded.** Its reservation of tags as the architecture → requirements
 mechanism stands; only the assumption that the tier is always `SRS` falls.

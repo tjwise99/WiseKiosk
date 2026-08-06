@@ -5,7 +5,7 @@ A header is no longer only a label. A citation carries it verbatim into an HTML 
 running prose, so header text is embedded into contexts with metacharacters of their own — the
 surrounding Markdown, the comment itself, and the citation checker's normalisation. The constraint
 is a property of the specification rather than of the repository, so it is stated in
-`docs/requirements/README.md` and runs with the tree's own integrity checks (ADR 0011).
+`docs/requirements/README.md` and runs with the tree's own integrity checks (ADR 0011 rev 1).
 
 The permitted set is an allowlist: a list of characters to reject fails open on the one nobody
 enumerated.

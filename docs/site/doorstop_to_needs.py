@@ -1,14 +1,14 @@
 #!/usr/bin/env python3
 """Doorstop YAML -> sphinx-needs MyST transform.
 
-Reads docs/requirements/{sys,srs,tst}/*.yml (canonical, ADR 0002) and emits,
+Reads docs/requirements/{sys,srs,tst}/*.yml (canonical, ADR 0002 rev 1) and emits,
 per item, one page under docs/site/generated/items/ holding its sphinx-needs
 directive (the definition every id link resolves to), plus one sheet page per
 document (sys.md/srs.md/tst.md) that pulls all items of that type together
 via `needextract` and toctrees the item pages in by glob.
 
 Presentation-free beyond a stable sort by id and the toctree/needextract
-structure needed to make every generated page reachable (ADR 0004: the
+structure needed to make every generated page reachable (ADR 0004 rev 1: the
 transform copies fields and wires structure, it does not decide how needs
 look — that stays in docs/site/traceability.md).
 

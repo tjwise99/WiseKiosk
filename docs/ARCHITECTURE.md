@@ -13,7 +13,7 @@ How the pieces of WiseKiosk actually fit together — the living structural desc
 
 One published container image serving a full-screen, config-driven smart-mirror display. A Go
 backend proxies a handful of public APIs and serves the built frontend
-([ADR 0020](decisions/0020-two-containers-one-origin-and-dual-tier-tags.md)); a Svelte SPA renders
+([ADR 0020 rev 1](decisions/0020-two-containers-one-origin-and-dual-tier-tags.md)); a Svelte SPA renders
 modules into regions of the page. See the [README](../README.md) for the product definition, and
 SYS002<!-- The configured layout renders whole -->,
 SYS004<!-- Upstream data reaches the display only through the backend --> and
@@ -31,10 +31,10 @@ are overwritten on the next export, and drift fails the staleness gate — see t
 
 **System context (C4 L1)** — the Operator who deploys and configures WiseKiosk, the Viewer it renders
 for, and the boundary between them, which is what deploys: the published image and what it serves
-([ADR 0019](decisions/0019-boundary-at-what-deploys-and-tag-tier.md)). No external system
+([ADR 0019 rev 1](decisions/0019-boundary-at-what-deploys-and-tag-tier.md)). No external system
 appears at this level: an upstream data source is modelled once the module that reads it has a need
 in the tree, and the desk validator and the provisioning tooling exchange nothing with the running
-system ([ADR 0019](decisions/0019-boundary-at-what-deploys-and-tag-tier.md)).
+system ([ADR 0019 rev 1](decisions/0019-boundary-at-what-deploys-and-tag-tier.md)).
 
 <!-- arch-export:begin generated/index.mmd -->
 
@@ -57,8 +57,8 @@ legibly says when one failed`" .-> Viewer
 **Containers (C4 L2)** — what runs inside the boundary. Two things run: the backend process, and the
 frontend bundle executing in the browser on the display host. They share one origin, because the
 backend serves that bundle and the configuration file as static content it never interprets
-([ADR 0020](decisions/0020-two-containers-one-origin-and-dual-tier-tags.md),
-[ADR 0007](decisions/0007-config-validation-allocation.md)). What parameterises a deployment
+([ADR 0020 rev 1](decisions/0020-two-containers-one-origin-and-dual-tier-tags.md),
+[ADR 0007 rev 1](decisions/0007-config-validation-allocation.md)). What parameterises a deployment
 (SYS003<!-- A deployment is parameterised from outside the image -->) reaches that filesystem as two
 separate supplies: the secret for each source, resolved per request
 (SRS006<!-- Unresolvable secret surfaces as that source's upstream failure -->), and the
@@ -66,7 +66,7 @@ configuration, which the image does not carry
 (SRS018<!-- One generic published image -->) and which reaches its consumer on a second hop, when the
 page fetches it. No upstream source appears here for the reason none appears above: an upstream
 belongs to the module that reads it, and no module need is written
-([ADR 0019](decisions/0019-boundary-at-what-deploys-and-tag-tier.md)).
+([ADR 0019 rev 1](decisions/0019-boundary-at-what-deploys-and-tag-tier.md)).
 
 <!-- arch-export:begin generated/containers.mmd -->
 
@@ -101,8 +101,8 @@ the repository layout is #5.
 ## Backend
 
 _To be documented as it is built._ Language and boundary-contract decision:
-[ADR 0001](decisions/0001-backend-language-go.md); the backend's config-blindness is
-[ADR 0007](decisions/0007-config-validation-allocation.md)'s. Normative shape:
+[ADR 0001 rev 1](decisions/0001-backend-language-go.md); the backend's config-blindness is
+[ADR 0007 rev 1](decisions/0007-config-validation-allocation.md)'s. Normative shape:
 SRS001<!-- A failed module shows why, and only that module -->,
 SRS006<!-- Unresolvable secret surfaces as that source's upstream failure -->,
 SRS008<!-- No secret value in any backend output -->,
@@ -117,7 +117,7 @@ SRS028<!-- Served responses declare their type, and forbid the browser inferring
 ## Frontend
 
 _To be documented as it is built._ Svelte 5 + Vite, a static single-page bundle served as static
-files ([ADR 0018](decisions/0018-frontend-svelte-vite-static-spa.md)); each module's poll cadence is
+files ([ADR 0018 rev 1](decisions/0018-frontend-svelte-vite-static-spa.md)); each module's poll cadence is
 that module's own need, per
 [the module contract](contracts/module-contract.md). Normative shape:
 SRS002<!-- A module-scoped configuration error is reported at that module -->,
@@ -130,15 +130,15 @@ SRS021<!-- Frontend runs on a Pi Zero-class browser host -->,
 SRS024<!-- Every offered configuration key is exercised at a non-default value -->,
 SRS026<!-- The display says when the backend is gone -->,
 SRS027<!-- The display page holds no device capability it does not use -->; configuration
-validation is frontend-owned per [ADR 0007](decisions/0007-config-validation-allocation.md).
+validation is frontend-owned per [ADR 0007 rev 1](decisions/0007-config-validation-allocation.md).
 
 ## The boundary contract
 
 One schema definition, both sides generated from it — the load-bearing structural constraint of the
 whole system (SYS005<!-- Single-definition internal contract -->,
 SRS015<!-- One schema, all boundary value classes -->–SRS016<!-- Both sides consume the generated types -->,
-[ADR 0001](decisions/0001-backend-language-go.md)). The codegen mechanism is
-[ADR 0008](decisions/0008-boundary-contract-openapi-codegen.md): a single hand-authored OpenAPI
+[ADR 0001 rev 1](decisions/0001-backend-language-go.md)). The codegen mechanism is
+[ADR 0008 rev 1](decisions/0008-boundary-contract-openapi-codegen.md): a single hand-authored OpenAPI
 schema (3.0.3, with 3.1 the stated migration target), owned by neither package, with Go types
 generated by `oapi-codegen` and TypeScript types by `openapi-typescript`, kept honest by a CI drift
 gate that regenerates both
@@ -152,7 +152,7 @@ documented here once it is built (#7, after the repo layout in #5)._
 ## Config and secrets
 
 _To be documented as it is built._ The backend is config-blind, per
-[ADR 0007](decisions/0007-config-validation-allocation.md), which also states byte-for-byte delivery
+[ADR 0007 rev 1](decisions/0007-config-validation-allocation.md), which also states byte-for-byte delivery
 to the page; the configuration is a static file bind-mounted into the served tree
 (SRS018<!-- One generic published image -->), validated by the frontend at apply time
 (SRS002<!-- A module-scoped configuration error is reported at that module -->) and by the

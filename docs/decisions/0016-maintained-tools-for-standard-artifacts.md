@@ -3,6 +3,12 @@
 **Status:** accepted
 **Decided:** 2026-08-03 (#103 authored-vs-adopted check trade, measured against the cases recorded in
 [`../../scripts/README.md`](../../scripts/README.md))
+**Rev:** 2
+
+## Revisions
+
+- **rev 2** — 2026-08-05 — drops a ground that rested on merged ADR text being unrewritable; the tool adoptions are unchanged (#118 ADR revisions).
+- **rev 1** — 2026-08-05 — revision tracking begins; text as merged (#118 ADR revisions).
 
 ## Context
 
@@ -10,16 +16,16 @@ This repository is guarded by the `check-*` recipes [`just verify`](../../justfi
 that exist only in CI: the pull-request-title check and the `secret-scan` job. There were fourteen
 when this was decided; the roster is `just --list`, and no count written here is compared against it. Nearly
 every obligation they assert was authored here, and that was never a decision. The gate records argue
-at length about *which hand-rolled form* a check should take — [0005](0005-traceability-gating.md) on
-where evidence lives, [0006](0006-process-gates.md) on what the gate reads,
-[0014](0014-documentation-index-claims-documents.md) on whether a list may be hand-maintained — and
+at length about *which hand-rolled form* a check should take — [ADR 0005 rev 1](0005-traceability-gating.md) on
+where evidence lives, [ADR 0006 rev 1](0006-process-gates.md) on what the gate reads,
+[ADR 0014 rev 1](0014-documentation-index-claims-documents.md) on whether a list may be hand-maintained — and
 never about whether to author one at all.
 
 The exceptions show the question has an answer whenever it is actually asked, and there are four of
 them. `check-site` is a Sphinx build with warnings-as-errors, adopted by
-[0004](0004-docs-site-sphinx-needs.md). `check-arch` validates the model with `likec4 validate`,
-adopted by [0003](0003-architecture-as-code-likec4.md). `check-reqs` delegates tree integrity to
-`doorstop --error-all`, adopted by [0002](0002-requirements-management-doorstop.md) — a delegation
+[ADR 0004 rev 1](0004-docs-site-sphinx-needs.md). `check-arch` validates the model with `likec4 validate`,
+adopted by [ADR 0003 rev 1](0003-architecture-as-code-likec4.md). `check-reqs` delegates tree integrity to
+`doorstop --error-all`, adopted by [ADR 0002 rev 1](0002-requirements-management-doorstop.md) — a delegation
 [`../CI.md`](../CI.md) relies on explicitly when it scopes the dead-test gate away from the
 requirements tier. `secret-scan` is `gitleaks`. So the precedent
 exists and is four times recorded; it had simply never been generalised, and in its absence every new
@@ -55,7 +61,7 @@ Four adoptions follow, each replacing its authored check outright:
 **`commitlint` must preserve the two-stage distinction the authored check carries.** `fixup!` and
 `squash!` are permitted at the commit-message stage because the squash discards them, and refused on
 the pull-request title because the squash makes that title the commit on `main`
-([0006](0006-process-gates.md)). `commitlint`'s `defaultIgnores` *pass* such subjects, so the
+([ADR 0006 rev 1](0006-process-gates.md)). `commitlint`'s `defaultIgnores` *pass* such subjects, so the
 pull-request-title invocation runs with them disabled. The pattern keeps the single definition
 `conventional-commit.regex` holds today; whether one configuration can serve both stages, or one must
 `extends` the other, is left to the implementation.
@@ -107,7 +113,7 @@ decision adopts away. **Every empty-population guard in a check that stays autho
 sentence is the whole protection: it is universal, so it reaches guards this record never saw and guards
 written after it. The table below is **examples, not an inventory** — deliberately, because a
 hand-maintained list of code in an immutable document is the drift
-[0014](0014-documentation-index-claims-documents.md) refuses from the other direction, and no check
+[ADR 0014 rev 1](0014-documentation-index-claims-documents.md) refuses from the other direction, and no check
 compares this one against the tree. Including:
 
 | Guard | Source |
@@ -175,7 +181,7 @@ later.
   `allowed_merge_methods`, `dismiss_stale_reviews_on_push`, `require_code_owner_review`,
   `require_last_push_approval`, `required_approving_review_count`,
   `required_review_thread_resolution` and `required_reviewers`, and nothing for a linked issue.
-  Branch-name enforcement remains a ruleset metadata restriction, which [0006](0006-process-gates.md)
+  Branch-name enforcement remains a ruleset metadata restriction, which [ADR 0006 rev 1](0006-process-gates.md)
   already rejected as Enterprise-only. What remains are single-maintainer marketplace actions, which
   the maintenance test excludes.
 - **`conventional-pre-commit` for commit messages instead of `commitlint`.** Rejected: CI gates the
@@ -194,10 +200,9 @@ later.
 - **Practice adapts to the tool, not the reverse.** Two commit titles on `main` exceed `commitlint`'s
   default `header-max-length` of 100, the longest at 122. The default stands and titles get shorter;
   configuring the tool around existing practice would forfeit the reason for adopting it.
-- **[0006](0006-process-gates.md) is amended, not superseded.** Its decision states the gate path is
+- **[ADR 0006 rev 1](0006-process-gates.md) is corrected, not superseded.** Its decision states the gate path is
   *plain sh + curl + jq — no toolchain*; `commitlint` and `pre-commit` reverse that property while
-  leaving its four gates standing. The amendment block is added in the same change as this record,
-  because an ADR cannot be rewritten by a later implementation ticket.
+  leaving its four gates standing. The correction is written in the same change as this record.
 - **Four surfaces are rewritten when each implementation lands**, not here: [`../CI.md`](../CI.md)
   §§ *Action pins and workflow privilege*, *Documentation integrity* and *Repository shape*;
   [`../../CONTRIBUTING.md`](../../CONTRIBUTING.md)'s hook-installation instruction; the `justfile`
@@ -221,7 +226,7 @@ later.
 - How `commitlint` and `pre-commit` are pinned. Neither is an action, so neither is covered by
   [`../CI.md`](../CI.md) § *Action pins*; `zizmor`, `actionlint` and `lychee` have official container
   images and are pinned as their digests.
-- Whether any adopted tool's fixtures conflict with [0010](0010-runtime-materialised-gate-fixtures.md),
+- Whether any adopted tool's fixtures conflict with [ADR 0010 rev 1](0010-runtime-materialised-gate-fixtures.md),
   which forbids committing a vulnerable artifact in resolvable form.
 - Sequencing against #101 CI-invoking-just-recipes, which touches the same gate-wiring surface.
 - Whether an under-scan needs a guard, distinct from the empty scan the ruling above settles.

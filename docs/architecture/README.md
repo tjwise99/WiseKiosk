@@ -3,7 +3,7 @@
 The checkable, versioned model of WiseKiosk's architecture. It is the **single source of truth** for
 the diagrams in [`../ARCHITECTURE.md`](../ARCHITECTURE.md) — those are generated from this model, never
 drawn by hand. Why LikeC4 and not D2/Mermaid/Structurizr/PlantUML: see
-[ADR 0003](../decisions/0003-architecture-as-code-likec4.md).
+[ADR 0003 rev 1](../decisions/0003-architecture-as-code-likec4.md).
 
 This tooling is **dev-only and siloed here** (per [`CI.md`](../CI.md)'s repository-shape gate): its
 `package.json`, lockfile, and `node_modules/` live in this directory; nothing depends on it at app
@@ -82,7 +82,7 @@ The model holds the System Context and Container levels. The Component level is 
 nests additively — `component` children inside a container, with a `view of <element>` in
 `views.likec4` — so it restructures nothing already here.
 
-**A relationship is declared once, at its true endpoints** ([ADR 0020](../decisions/0020-two-containers-one-origin-and-dual-tier-tags.md)).
+**A relationship is declared once, at its true endpoints** ([ADR 0020 rev 1](../decisions/0020-two-containers-one-origin-and-dual-tier-tags.md)).
 Each view renders from that one set, aggregating an edge to the nearest ancestor it does not expand,
 so an edge is never restated a level down.
 
@@ -104,8 +104,8 @@ underneath it changing, and no gate compares them.
 `icon` or `description`.
 
 **An element earns a place where the system exchanges something with it, and an upstream once the
-module that reads it has a need** ([ADR 0019](../decisions/0019-boundary-at-what-deploys-and-tag-tier.md)).
-Component content waits on the code it describes, which is ADR 0003's rule against building a level
+module that reads it has a need** ([ADR 0019 rev 1](../decisions/0019-boundary-at-what-deploys-and-tag-tier.md)).
+Component content waits on the code it describes, which is ADR 0003 rev 1's rule against building a level
 before its second consumer exists rather than anything this level decides.
 
 **Source `link`s** wire the model to real code: once `backend/`/`frontend/` exist, a `link` property
@@ -117,11 +117,11 @@ drawing and starts pointing at the code it describes, and it is checked at revie
 
 A LikeC4 **tag** carries the Doorstop id of the requirement obliging the element or relationship it
 sits on — that tag *is* the architecture → requirements link, and the tier follows the level
-([ADR 0019](../decisions/0019-boundary-at-what-deploys-and-tag-tier.md)). At the Context level
+([ADR 0019 rev 1](../decisions/0019-boundary-at-what-deploys-and-tag-tier.md)). At the Context level
 it is `SYS`, bound where the obligation is observable at that level: on the relationships, not on the
 system box, which owes every `SYS` item and so distinguishes none of them. The Container level
 answers to `SRS`, and anything at a level also carries the coarser item it discharges observably
-there ([ADR 0020](../decisions/0020-two-containers-one-origin-and-dual-tier-tags.md)). The tier below
+there ([ADR 0020 rev 1](../decisions/0020-two-containers-one-origin-and-dual-tier-tags.md)). The tier below
 is settled by the phase that models that level.
 
 **A tag is applied where an accepted item obliges the thing it sits on** — so an element or edge no

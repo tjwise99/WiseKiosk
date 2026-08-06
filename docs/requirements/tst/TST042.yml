@@ -4,7 +4,7 @@ header: |
   Pending: two clients, one request, one answer
 level: 66
 links:
-- SRS009: 9PH-xV1W9tspjeCq39r-s1I8TmOzZVWU5sQinie8tPk=
+- SRS009: 6NRuFB4OYpcLiIrh8KBfChLRZujp4Hr_6BuWMHY5RsI=
 normative: true
 rationale: |
   SRS023's<!-- The backend establishes no client identity and gates no route on one --> three

@@ -1,7 +1,12 @@
 # 0002 — Requirements tracking and V&V with Doorstop
 
-**Status:** accepted; Test-method linkage mechanism superseded by [0005](0005-traceability-gating.md)
+**Status:** accepted; Test-method linkage mechanism superseded by [ADR 0005 rev 1](0005-traceability-gating.md)
 **Decided:** 2026-07-21 (requirements-system spike, issue #14)
+**Rev:** 1
+
+## Revisions
+
+- **rev 1** — 2026-08-05 — revision tracking begins; text as merged (#118 ADR revisions).
 
 ## Context
 

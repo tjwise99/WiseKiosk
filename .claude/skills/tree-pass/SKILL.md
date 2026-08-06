@@ -144,7 +144,7 @@ active-only and both answer `no item with UID`. Stamping a pending item means a 
 | Uncommitted feature | a GitHub issue, with the reopen path written into it |
 | A lint rule or threshold | tool configuration, described in `docs/CI.md` |
 
-The last three rows are [ADR 0011](../../../docs/decisions/0011-requirement-or-convention.md)'s
+The last three rows are [ADR 0011 rev 1](../../../docs/decisions/0011-requirement-or-convention.md)'s
 routing. Two traps in applying it:
 
 - **A convention does not demote to the verification tier.** That tier is inside the tree, where a
@@ -152,11 +152,11 @@ routing. Two traps in applying it:
   keeps it a specification change, which is the thing demoting it was meant to avoid. It leaves the
   tree entirely.
 - **A rule with no activation path is a dead letter.** Before routing anything to the review
-  checklist, name who is prompted to apply it and when. ADR 0011 deletes `inspection` items on
+  checklist, name who is prompted to apply it and when. ADR 0011 rev 1 deletes `inspection` items on
   exactly this ground; an authoring rule parked where nobody walks it fails the same test.
 
 Every item must carry a `verification-justification` — below `test`, what blocks a mechanical check;
-at `test`, what the check leaves unproven ([ADR 0009](../../../docs/decisions/0009-verification-justification-attribute.md)).
+at `test`, what the check leaves unproven ([ADR 0009 rev 1](../../../docs/decisions/0009-verification-justification-attribute.md)).
 
 ## Recording — in the repository, never in a ticket
 
@@ -175,7 +175,7 @@ repository.
 
 The middle row is the one that gets skipped, and it is the reason decisions leaked into a ticket in
 the first place: a surviving item carries its reasoning forever, **a deleted one leaves nothing**
-([ADR 0011](../../../docs/decisions/0011-requirement-or-convention.md)). So the commit that deletes
+([ADR 0011 rev 1](../../../docs/decisions/0011-requirement-or-convention.md)). So the commit that deletes
 an item states what went, why, what covers the obligation now, and anything knowingly given up. That
 is findable from the absence, which is the hard direction:
 

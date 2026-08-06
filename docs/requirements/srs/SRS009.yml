@@ -12,14 +12,14 @@ rationale: |
   this requirement governs the transport — that every source is reachable and that reaching it is
   stateless — not the shape's definition, nor how many endpoints a source needs, nor what they are
   called. Fixing a route template here would declare the interface a second time, which is the
-  defect ADR 0008 exists to prevent, and would forbid a module that needs two calls for no reason
+  defect ADR 0008 rev 1 exists to prevent, and would forbid a module that needs two calls for no reason
   anyone stated. Statelessness is stated as an observable so it can be tested rather than asserted.
   The shared response cache
   (SRS011<!-- Upstream request rate is bounded, and the bound is not operator-tunable -->), keyed
   on the request itself, is not per-client state: it may determine whether a request is served from
   cache, but not the payload a client receives.
 ref: ''
-reviewed: Ue7CeL-hE21iO02KgjhVHcYv-3xOWQOPA11OponM_rM=
+reviewed: nFYPCBeGmNUDWFVqmM6vqCUSz1QfYt-UjUoacetK-zA=
 status: accepted
 text: |
   Every supported external source shall be reachable through the backend, by the

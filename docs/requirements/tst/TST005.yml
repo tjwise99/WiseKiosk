@@ -4,7 +4,7 @@ header: |
   Pending: a module-scoped configuration error lands at that module
 level: 1.5
 links:
-- SRS002: P9qsChVJOYk34Pj1_835_7zbUaDofY4AFqQ7pBZ-1vc=
+- SRS002: HwXwzS2y6jTT2-_3hjYMh5fBYYT0tuxZT6p3BsdkWJA=
 normative: true
 rationale: |
   Both fixtures run the one validation entry point, because the branch this asserts is a property of

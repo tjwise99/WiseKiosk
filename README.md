@@ -39,8 +39,8 @@ Nothing is inherited from any prior mirror framework, and there is no compatibil
 
 ## Stack
 
-- **Backend:** Go — a thin, stateless REST proxy. See [ADR 0001](docs/decisions/0001-backend-language-go.md).
-- **Frontend:** Svelte 5 + Vite, a static SPA. See [ADR 0018](docs/decisions/0018-frontend-svelte-vite-static-spa.md).
+- **Backend:** Go — a thin, stateless REST proxy. See [ADR 0001 rev 1](docs/decisions/0001-backend-language-go.md).
+- **Frontend:** Svelte 5 + Vite, a static SPA. See [ADR 0018 rev 1](docs/decisions/0018-frontend-svelte-vite-static-spa.md).
 - **Boundary:** one schema, both sides generated from it — no hand-maintained parallel types.
 
 ## Documentation
@@ -54,8 +54,8 @@ explain, orient, and cite rather than oblige.
 - [`docs/README.md`](docs/README.md) — the documentation index: which document guarantees which kind
   of fact, and what each one excludes. Read this before adding to any document.
 - [`docs/requirements/`](docs/requirements/README.md) — the specification, and how the tree is gated
-  ([ADR 0002](docs/decisions/0002-requirements-management-doorstop.md),
-  [ADR 0005](docs/decisions/0005-traceability-gating.md)).
+  ([ADR 0002 rev 1](docs/decisions/0002-requirements-management-doorstop.md),
+  [ADR 0005 rev 1](docs/decisions/0005-traceability-gating.md)).
 - [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) — the living description of the system as built
   (a skeleton until code lands).
 - [`docs/TESTING.md`](docs/TESTING.md) — the test architecture, written as a specification before any

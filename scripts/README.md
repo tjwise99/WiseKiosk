@@ -303,13 +303,13 @@ written rather than a defect in the document.
 
 The consequential one is the second: every `|`-leading line in `docs/README.md` is read as an index
 row, so the file may hold exactly one table and no fenced example containing one. `docs/CI.md` and
-ADR 0014 both say a *Document* cell *renders* as a path, where the check requires a Markdown link
+ADR 0014 rev 1 both say a *Document* cell *renders* as a path, where the check requires a Markdown link
 whose text is a backticked path — the prose is looser than the code.
 
 **What it does not catch.** Two things, both run and observed rather than reasoned about.
 
 **A new top-level dot-directory is excluded the moment it exists**, with no edit anywhere: adding
-`.notes/NOTES.md` alone gives exit 0. This is the accepted trade recorded in ADR 0014 — it is what
+`.notes/NOTES.md` alone gives exit 0. This is the accepted trade recorded in ADR 0014 rev 1 — it is what
 buys the absence of an exclusions list, since anything that is *not* a dot-directory cannot be
 excluded without changing this check. The check names the machinery directories it skipped on every
 run, so a new one is on screen rather than inferred from a count. An earlier revision of this PR
@@ -323,7 +323,7 @@ matches `check-links.mjs`, which draws its file list the same way.
 ## `check-branch.sh`
 
 Covers the ticket-metadata and epic-membership assertions
-([ADR 0013](../docs/decisions/0013-work-tracking-invariants.md)), and the branch-shape, exemption and
+([ADR 0013 rev 2](../docs/decisions/0013-work-tracking-invariants.md)), and the branch-shape, exemption and
 issue-resolution assertions below.
 
 The shape and exemption cases reach no network: the branch name is passed as `$1`, and both paths
@@ -549,6 +549,115 @@ A row inside a fenced code block is read as a real index row — there is no fen
 case-sensitive, so an ADR named with an uppercase extension is invisible rather than rejected; no such
 file exists, and the naming rule the check enforces would reject one on sight if it were spelled
 `NNNN-<slug>.MD`.
+
+## `check-adr-revs.py`
+
+Every case below was run on 2026-08-05 by seeding the working tree, running `python3
+scripts/check-adr-revs.py`, and restoring. The seeded state is described rather than committed — and
+described without spelling a live ADR number, which this check reads as a citation like any other.
+
+### Must fail
+
+| Case | Input |
+|---|---|
+| Prose citation with no rev | a pinned citation in `CONTRIBUTING.md` cut back to the bare form |
+| Prose citation pinning a stale rev | the same citation moved to a rev its ADR does not carry |
+| Link titled with a bare number | a titled link in `docs/CI.md` retitled to the number alone |
+| Link title naming a different ADR than it targets | the title's number changed, the target left |
+| **Ordinary prose inside a *Revisions* section** | a sentence carrying an unpinned citation and a bare-titled link, one line below a legal changelog line |
+| **The same, indented so it continues the changelog line** | the exemption drops staleness, not form |
+| **A changelog continuation naming a number no ADR carries** | a rev that has moved is exempt; an ADR that does not exist is not |
+| **An unpinned citation beside a correctly titled link** | both on one line, naming the same ADR |
+| **A stale citation in an index row's *Decision* cell** | a supersession note written into the free-prose column |
+| Index rev column disagreeing with the ADR's head | one row's rev raised, its head left |
+| An ADR head with no `**Rev:** N` | the line deleted from one ADR |
+| **An ADR revved with no changelog line for the new rev** | head and index row to rev 2, every citation moved, *Revisions* untouched |
+| Citation of a number no ADR carries | the same citation renumbered past the highest ADR |
+| **A plural, a hyphen, or the wrong case** | `ADRs NNNN and NNNN`, `ADR-NNNN`, and the lowercase spelling |
+| **An underscore, a hash, a doubled space, too few digits** | four more separators and widths on one line |
+| **A reference-style link or a raw `<a href>` to an ADR** | each appended to `docs/TESTING.md` |
+| **A link to an ADR whose title carries brackets** | a bracketed phrase inside the title, over an ADR target |
+| **A link to an ADR wrapped across two lines** | the opening bracket on the line above |
+| The head format changed everywhere, so nothing parses | `**Rev:**` renamed in all twenty ADRs |
+| **The prose citation spelling drifted, so none is recognised** | `CITATION` altered not to match |
+| **The link spelling drifted, so none is recognised** | `TARGET` altered not to match |
+| An ADR revved with one citation left behind | one ADR to rev 2, every citation but one moved |
+
+### Must pass
+
+| Case | Input |
+|---|---|
+| The tree as it stands | — |
+| An ADR revved with everything moved with it | one ADR to rev 2: head, index row, a new changelog line, and all its citations |
+| A changelog line pinning a rev that is not current | a supersession line on that same rev-2 ADR |
+| An indented continuation of one, pinning a stale rev | the wrapped form of the same line |
+| An index row's leading self-link | every row in the index table |
+
+**The exemption was narrowed twice, and the second time is the instructive one.** It began as the
+whole *Revisions* section: an ordinary citation placed inside it passed with exit 0 while the
+identical text one line outside failed. Narrowing it to the changelog line's *shape* moved the hole
+rather than closing it — a citation on an indented continuation was still exempt, and a continuation
+is ordinary prose. What closed it was narrowing the exemption's **effect** instead of its extent: a
+changelog citation is exempt from being *current* and from nothing else, so it must still name a real
+ADR and still carry a rev. Two narrowings of extent, one of effect; only the last one held. This is
+CONTRIBUTING question 11 twice over — the exemption was written to stop a false positive and was
+twice the place a bypass could be spelled.
+
+The same narrowing applies to the index row, which drops only the leading self-link.
+
+**The two rev-2 cases are the pair that matters**: same tree, differing only in whether one citation
+moved, one passing and one failing. Without both, "the exemption works" and "the exemption is narrow"
+are indistinguishable.
+
+**The link reader is anchored on the target, not the title.** Titled-pattern matching missed a link
+whose title carried a bracketed phrase: the title pattern cannot cross a closing bracket, so the link
+was never matched at all and passed with exit 0 — precisely the defect the link rule was added for, and the empty-population guard could not see it
+because the other links kept the count non-zero. Walking back from the closing bracket to its match
+also surfaced **two live citations in `docs/site/` that no reader had ever seen**: their titles were
+wrapped across a line break, so the prose reader saw no number beside `ADR` and the title reader saw
+no opening bracket. Both were unpinned and both were counted by nothing. The tree's citation count
+went from 227 to 229 on this fix alone.
+
+**The legal input this rejects:** a link to an ADR wrapped across two lines, and a link whose title
+carries an escaped closing bracket. Both are valid Markdown and both now fail, because a title the
+reader cannot resolve must not be passed over. The two wrapped instances in `docs/site/` were
+rewrapped; no escaped-bracket title exists. The cost is an authoring constraint, and it buys a reader
+with no shape a citation can be spelled around.
+
+**The matcher is wider than the accepted form on purpose.** Its first version recognised exactly the
+spellings it accepted plus three near-misses, so `ADR_NNNN`, `ADR #NNNN`, a doubled space and a
+two-digit number all passed silently — and the hash form is what muscle memory produces in a
+repository where every other reference is a ticket number. Recognising a spelling is what lets the
+check *reject* it; a spelling it does not match leaves the population instead. What stays outside is
+prose naming an ADR without its number, which nothing here decides.
+
+**Deduplicating by text suppressed a real defect.** A prose citation falling inside a link title is
+skipped so one defect is not reported twice — but `ADR NNNN` is a substring of the title
+`ADR NNNN rev M`, so an unpinned citation beside a correctly titled link was silently dropped. The
+test is now the match's position against the title's span. A cosmetic fix produced a fail-open, which
+is why the must-fail table carries a row for it.
+
+**The empty-population guards are per reader, not over the total.** A single count of everything
+judged hid the prose reader going to zero, because fifty link citations kept the total non-zero and
+the run green. Three guards now: no ADR resolved, no prose citation judged, no link citation judged.
+Each was seeded by altering the pattern it depends on; each fails.
+
+### Known rejections
+
+An illustrative example spelling a live ADR number is rejected as a stale citation. That is correct,
+and it cost three fixes here: `docs/decisions/README.md`, this check's own docstring, and the first
+draft of the case tables above each named a real ADR while describing the citation form. Nothing
+distinguishes an example from a citation, and a check that tried would be exempting the spelling most
+likely to hide a bypass — the counter-example rule in [`../docs/CI.md`](../docs/CI.md) §
+*Documentation integrity* already binds this, one document up.
+
+A file whose bytes do not decode as UTF-8 is not scanned; it cannot carry a citation in the form the
+rule defines. Every such file is named on stderr rather than silently dropped, so the population the
+check reports over stays visible.
+
+The rev pins a version, not an identity. A citation written on a branch across a freeing and a
+re-taking of the same number merges green, because at merge time the number resolves and the rev
+matches. Nothing here decides it; `../docs/CI.md` § *Documentation integrity* names it.
 
 ## `check-arch` — `splice-arch-diagrams.mjs`
 
