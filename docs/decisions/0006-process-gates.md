@@ -1,32 +1,18 @@
 # 0006 — Gate branch shape, ticket linkage, and PR titles in CI
 
 **Status:** accepted; ticket-metadata obligations extended and the parent-ticket definition added by
-[ADR 0013 rev 2](0013-work-tracking-invariants.md), whose read-only stance this ADR's rejected
-write-scoped-token alternative supplies; gate path amended by
-[ADR 0016 rev 2](0016-maintained-tools-for-standard-artifacts.md)
+[ADR 0013 rev 3](0013-work-tracking-invariants.md), whose read-only stance this ADR's rejected
+write-scoped-token alternative supplies; gate path corrected by
+[ADR 0016 rev 3](0016-maintained-tools-for-standard-artifacts.md)
 **Decided:** 2026-07-22 (process-gates design discussion, ticket #27)
-**Rev:** 1
-
-> **Amended 2026-08-03 by [ADR 0016 rev 2](0016-maintained-tools-for-standard-artifacts.md).** The Decision's
-> *"entire gate path is plain sh + curl + jq — no toolchain"* no longer holds: `commitlint` replaces
-> `scripts/check-commit-msg.sh` and `scripts/conventional-commit.regex` at both the commit-message and
-> pull-request-title stages, and `pre-commit` replaces `.githooks/` as the local hook layer. The four
-> gates below stand unchanged, including the two-stage `fixup!`/`squash!` distinction, which 0016
-> requires `commitlint` to preserve by disabling its ignore defaults on the pull-request title. Gate 1's
-> branch shape and gates 2 and 4 remain authored in `scripts/check-branch.sh`: 0016's maintenance test
-> excludes the single-maintainer marketplace actions that are the only off-the-shelf option for them,
-> and the Enterprise-only finding recorded in the Context below was re-checked against the current
-> ruleset documentation and still holds.
->
-> The property is stated twice below, and both statements are amended. Gate 3's *"advisory `commit-msg`
-> hook (plain sh + grep)"* becomes a `pre-commit` hook stage. Its *"Each pattern is defined once
-> (`scripts/*.regex`, POSIX ERE)"* survives as a property but not as that mechanism: 0016 retires
-> `conventional-commit.regex` into `commitlint`'s configuration, leaving `branch-shape.regex` as the
-> only file of that kind. The never-declared-twice requirement itself is unchanged and binds
-> `commitlint`'s two stages.
+**Rev:** 2
 
 ## Revisions
 
+- **rev 2** — 2026-08-06 — drops the claim that the gate path is toolchain-free, recording that
+  property under *Alternatives considered* as given up, and states gate 3's single-declaration
+  property without the file glob that carried it; the four gates are unchanged (#126 absorb
+  amendment blocks).
 - **rev 1** — 2026-08-05 — revision tracking begins; text as merged (#118 ADR revisions).
 
 ## Context
@@ -41,8 +27,7 @@ repo and run where the repo runs.
 ## Decision
 
 Four gates, enforced by a `process` CI job on `pull_request` (to become a required check) and
-mirrored locally by `just check-branch` and the advisory hooks `just install-hooks` installs. The
-entire gate path is plain sh + curl + jq — no toolchain:
+mirrored locally by `just check-branch` and the advisory hooks `just install-hooks` installs:
 
 1. **Branch shape.** Branches are named `type_number-snake_name` — `type` one of `task`, `bug`,
    `design`, `module`; `number` a GitHub issue number; `snake_name` lowercase snake_case. The full
@@ -63,10 +48,10 @@ entire gate path is plain sh + curl + jq — no toolchain:
   cannot drift: a `bug_…` branch links a bug-report ticket, a `design_…` branch a design-decision
   ticket, and a new template implies a new branch type in the same change.
 - **CI gates only what survives the squash.** Branch commit messages are discarded at merge; an
-  advisory `commit-msg` hook (plain sh + grep) applies the same pattern locally, additionally
-  passing `fixup!`/`squash!`-prefixed and merge messages, which never reach `main`. Each pattern
-  is defined once (`scripts/*.regex`, POSIX ERE) and read by the hooks and the sh gate scripts
-  alike — never declared twice.
+  advisory `commit-msg` hook applies the same pattern locally, additionally passing
+  `fixup!`/`squash!`-prefixed and merge messages, which never reach `main`. Each pattern is
+  declared once and read by every stage that enforces it — a stage carrying its own copy of a
+  pattern is what lets the two drift apart.
 - **Gate 4 constrains GitHub's recorded state, not prose.** The record is the PR's Development
   field (`closingIssuesReferences`): link the issue there, or let a body keyword (`Closes #N`)
   write the same record — the gate checks the record pre-merge as a required-check constraint, on
@@ -100,6 +85,15 @@ entire gate path is plain sh + curl + jq — no toolchain:
   `closingIssuesReferences`. The gate reads the recorded state, not the text.
 - **CI creating the linkage itself via a write-scoped token.** Rejected: gates verify, they do not
   mutate, and CI stays read-only.
+- **A gate path with no toolchain** — *plain sh + curl + jq — no toolchain*, the property this record
+  was decided under. Rejected under
+  [ADR 0016 rev 3](0016-maintained-tools-for-standard-artifacts.md): the Conventional-Commit
+  convention is a public one rather than a rule of this repository's own, so it is delegated to a
+  maintained tool and the local hook layer follows it there. What the property bought was a
+  contributor needing nothing installed to run the gates; what it cost was an authored parser for a
+  convention that already has a maintained implementation.
+  [ADR 0017 rev 2](0017-authored-language-set.md) ends what remains of it, moving the authored gates
+  to Python.
 
 ## Consequences
 
