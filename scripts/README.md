@@ -574,6 +574,7 @@ described without spelling a live ADR number, which this check reads as a citati
 | **An ADR revved with no changelog line for the new rev** | head and index row to rev 2, every citation moved, *Revisions* untouched |
 | Citation of a number no ADR carries | the same citation renumbered past the highest ADR |
 | **A plural, a hyphen, or the wrong case** | `ADRs NNNN and NNNN`, `ADR-NNNN`, and the lowercase spelling |
+| **An underscore, a hash, a doubled space, too few digits** | four more separators and widths on one line |
 | **A reference-style link or a raw `<a href>` to an ADR** | each appended to `docs/TESTING.md` |
 | The head format changed everywhere, so nothing parses | `**Rev:**` renamed in all twenty ADRs |
 | **The prose citation spelling drifted, so none is recognised** | `CITATION` altered not to match |
@@ -605,6 +606,13 @@ The same narrowing applies to the index row, which drops only the leading self-l
 **The two rev-2 cases are the pair that matters**: same tree, differing only in whether one citation
 moved, one passing and one failing. Without both, "the exemption works" and "the exemption is narrow"
 are indistinguishable.
+
+**The matcher is wider than the accepted form on purpose.** Its first version recognised exactly the
+spellings it accepted plus three near-misses, so `ADR_NNNN`, `ADR #NNNN`, a doubled space and a
+two-digit number all passed silently — and the hash form is what muscle memory produces in a
+repository where every other reference is a ticket number. Recognising a spelling is what lets the
+check *reject* it; a spelling it does not match leaves the population instead. What stays outside is
+prose naming an ADR without its number, which nothing here decides.
 
 **Deduplicating by text suppressed a real defect.** A prose citation falling inside a link title is
 skipped so one defect is not reported twice — but `ADR NNNN` is a substring of the title

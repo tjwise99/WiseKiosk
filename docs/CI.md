@@ -268,10 +268,13 @@ resolve, a citation to something that does not exist, an index that has drifted 
   ([`decisions/README.md`](decisions/README.md)), so revving one reaches every document citing it:
   each is updated or re-decided in the same change rather than left asserting a claim the ADR's
   current rev does not make. The link rule is what the prose rule cannot reach — a citation spelled
-  as a bare bracketed number names no ADR in prose at all. **A citation spelled any other way — a
-  plural, a hyphen, the wrong case, a reference-style link, a raw `<a href>` — is reported as
-  malformed rather than passed over**: the set the check recognises is the set it can hold to a rev,
-  so a spelling outside it must fail rather than shrink the population it then reports success over.
+  as a bare bracketed number names no ADR in prose at all. **A citation spelled any other way is
+  reported as malformed rather than passed over.** What the check matches is deliberately wider than
+  what it accepts — separator, case, plural and digit count are all recognised so that each can be
+  *rejected*, and a reference-style link or a raw `<a href>` at an ADR is reported as a form carrying
+  no rev. A citation the matcher does not reach shrinks the population and is then reported success
+  over, so the width is the point rather than the accepted spellings, which are one. **What stays
+  outside it**: prose naming an ADR without its number. Nothing decides that here.
   The ADR's own head is authoritative for its rev, the index table's column is checked against it,
   and its *Revisions* section carries one changelog line per rev from 1 — so a rev cannot be taken
   without recording what changed. An ADR declaring no rev, or two, fails rather than being read as

@@ -161,7 +161,7 @@ unregistered language whatever this record said.
   the original, in both directions, because a conversion that is verified by inspection is a rewrite
   with a clean-looking diff.
 - **`check-branch` loses `curl` and `jq` for `urllib` and `json`.** [ADR 0006 rev 1](0006-process-gates.md)'s
-  *plain sh + curl + jq — no toolchain* property, already amended by
+  *plain sh + curl + jq — no toolchain* property, already corrected by
   [ADR 0016 rev 2](0016-maintained-tools-for-standard-artifacts.md) when `commitlint` and `pre-commit` were
   adopted, ends completely. What replaces it is a weaker but real property: the interpreter the gates
   need is one this repository already owes for its requirements tree and its documentation site.

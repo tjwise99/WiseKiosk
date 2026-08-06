@@ -39,9 +39,10 @@ ADR_FILE = re.compile(r"^(\d{4})-[a-z0-9-]+\.md$")
 HEAD_REV = re.compile(r"^\*\*Rev:\*\* *(\d+) *$", re.M)
 INDEX_ROW = re.compile(r"^(\| *\[\d{4}\]\([^)]+\) *\|)(.*)$")
 
-# Any spelling that reaches for an ADR by number. Canonical form is checked against the match text,
-# so a plural, a hyphen or the wrong case is reported rather than missed.
-CITATION = re.compile(r"\bADRs?[ \-]?(\d{4})\b(?: +rev +(\d+))?", re.I)
+# Any spelling that reaches for an ADR by number, deliberately wider than the one form accepted:
+# separator, case, plural and digit count are all matched so they can be *reported*. Canonical form
+# is then checked against the match text, so everything this recognises and does not accept fails.
+CITATION = re.compile(r"\bADRs?[ _#\-]{0,3}(\d{1,4})\b(?: +rev +(\d+))?", re.I)
 CANONICAL = re.compile(r"^ADR \d{4}(?: rev \d+)?$")
 
 LINK = re.compile(r"\[([^\]]*)\]\(([^)\s]+)[^)]*\)")
@@ -233,7 +234,7 @@ def check_citations(revs, problems):
                 if not CANONICAL.match(match.group(0)):
                     problems.append(
                         f"{where}:{number}: {spelling!r} is not a citation this can pin — "
-                        f"write `ADR {match.group(1)} rev N`"
+                        f"write `ADR {match.group(1).zfill(4)} rev N`"
                     )
                     continue
                 problems.extend(
