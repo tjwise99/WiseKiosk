@@ -263,9 +263,9 @@ resolve, a citation to something that does not exist, an index that has drifted 
 - **Every citation of an ADR pins that ADR's current rev**, in prose as `ADR NNNN rev M` and in a
   markdown link as its title. An ADR is a versioned document
   ([`decisions/README.md`](decisions/README.md)), so revving one reaches every document citing it:
-  each is updated or re-decided in the same change rather than left asserting what the ADR no longer
-  says. The link rule is what the prose rule cannot reach — a citation spelled as a bare bracketed
-  number names no ADR in prose at all, and fifty of them existed when this landed. The ADR's own head
+  each is updated or re-decided in the same change rather than left asserting a claim the ADR's
+  current rev does not make. The link rule is what the prose rule cannot reach — a citation spelled as a bare bracketed
+  number names no ADR in prose at all. The ADR's own head
   is authoritative for its rev and the index table's column is checked against it; an ADR declaring
   no rev, or two, fails rather than being read as rev zero, and a run that resolves no ADR at all
   fails on the ground that a parser returning nothing and a tree with no ADRs are indistinguishable.

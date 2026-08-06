@@ -3,8 +3,8 @@
 
 An ADR is a versioned document (`docs/decisions/README.md`): merged text is revisable, and a
 correction is a new rev. A citation names the rev it was written against, so revving an ADR reaches
-every document citing it — each is then updated or re-decided rather than left asserting something
-the ADR no longer says.
+every document citing it — each is then updated or re-decided rather than left asserting a claim the
+ADR's current rev does not make.
 
 Three assertions, over the tracked file set:
 
