@@ -580,7 +580,7 @@ described without spelling a live ADR number, which this check reads as a citati
 | **A link to an ADR wrapped across two lines** | the opening bracket on the line above |
 | The head format changed everywhere, so nothing parses | `**Rev:**` renamed in all twenty ADRs |
 | **The prose citation spelling drifted, so none is recognised** | `CITATION` altered not to match |
-| **The link spelling drifted, so none is recognised** | `LINK` altered not to match |
+| **The link spelling drifted, so none is recognised** | `TARGET` altered not to match |
 | An ADR revved with one citation left behind | one ADR to rev 2, every citation but one moved |
 
 ### Must pass
@@ -618,10 +618,11 @@ wrapped across a line break, so the prose reader saw no number beside `ADR` and 
 no opening bracket. Both were unpinned and both were counted by nothing. The tree's citation count
 went from 227 to 229 on this fix alone.
 
-**The legal input this rejects:** a link to an ADR wrapped across two lines. That is valid Markdown
-and it now fails, because a title the reader cannot resolve must not be passed over. The two
-instances were rewrapped; the cost is an authoring constraint, and it buys a reader with no shape a
-citation can be spelled around.
+**The legal input this rejects:** a link to an ADR wrapped across two lines, and a link whose title
+carries an escaped closing bracket. Both are valid Markdown and both now fail, because a title the
+reader cannot resolve must not be passed over. The two wrapped instances in `docs/site/` were
+rewrapped; no escaped-bracket title exists. The cost is an authoring constraint, and it buys a reader
+with no shape a citation can be spelled around.
 
 **The matcher is wider than the accepted form on purpose.** Its first version recognised exactly the
 spellings it accepted plus three near-misses, so `ADR_NNNN`, `ADR #NNNN`, a doubled space and a
