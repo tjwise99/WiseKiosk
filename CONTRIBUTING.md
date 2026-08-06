@@ -111,7 +111,7 @@ questions.
     prevent a false positive is the first place a bypass gets spelled, and the reasoning that
     produces one reads as caution.
 12. **Languages.** Does the change author a program in a language outside the set
-    [ADR 0017 rev 1](docs/decisions/0017-authored-language-set.md) states — and if so, has that language
+    [ADR 0017 rev 2](docs/decisions/0017-authored-language-set.md) states — and if so, has that language
     been through an ADR?
 
 **Requirements**

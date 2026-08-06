@@ -1,6 +1,7 @@
 # Architecture decision records
 
 **Rev:** 1
+
 An ADR captures a decision **with a rejected alternative** — the "why not the other way" is the whole
 point of writing one down. A decision with no real alternative considered is a changelog entry and
 belongs in a commit message, not here. New ADR: copy [`TEMPLATE.md`](TEMPLATE.md), take the lowest
@@ -44,11 +45,11 @@ amended, so a number in git history need not mean what it means here.
 | [0010](0010-runtime-materialised-gate-fixtures.md) | 1 | 2026-07-24 | Negative gate fixtures are committed as data and materialised into a temp tree at run time; no vulnerable artifact is ever committed in resolvable form |
 | [0011](0011-requirement-or-convention.md) | 1 | 2026-07-26 | A requirement obliges the running software; a repository convention is a check if a machine decides it and a review-checklist question if not; rules the pass establishes are recorded as ADRs |
 | [0012](0012-module-requirements-in-tree.md) | 1 | 2026-07-26 | A module is a need: one `SYS` per module in the same tree, decomposed into what is specific to it; no generic module need, no separate Doorstop document |
-| [0013](0013-work-tracking-invariants.md) | 1 | 2026-08-02 | Ticket metadata is gated at merge, read-only: a milestone and exactly one type label; a sub-issue means a shared merge target, not topical grouping |
+| [0013](0013-work-tracking-invariants.md) | 2 | 2026-08-02 | Ticket metadata is gated at merge, read-only: a milestone and exactly one type label; a sub-issue means a shared merge target, not topical grouping |
 | [0014](0014-documentation-index-claims-documents.md) | 1 | 2026-08-02 | A tracked document is claimed by a row in the documentation index or a committed silo exclusion; the claimable set is derived from `git ls-files`, never a hand-maintained inventory |
 | [0015](0015-container-toolchain-and-image-annotations.md) | 1 | 2026-08-02 | Image built with Docker Buildx; nine OCI keys carried as config labels and manifest annotations, none hardcoded in the Dockerfile, `.revision` bound to the published commit |
-| [0016](0016-maintained-tools-for-standard-artifacts.md) | 1 | 2026-08-03 | A check is authored where the obligation it asserts is this repository's own rule, and delegated to a maintained tool where it is a public convention; zizmor, actionlint, lychee, commitlint and pre-commit replace four authored checks, and three obligations are retired |
-| [0017](0017-authored-language-set.md) | 1 | 2026-08-04 | Authored language follows the artifact's audience: Go and TypeScript for what ships, Python (standard library only) for what checks the repository; sh and JavaScript author nothing, and a toolchain's own configuration format is invoking rather than authoring |
+| [0016](0016-maintained-tools-for-standard-artifacts.md) | 2 | 2026-08-03 | A check is authored where the obligation it asserts is this repository's own rule, and delegated to a maintained tool where it is a public convention; zizmor, actionlint, lychee, commitlint and pre-commit replace four authored checks, and three obligations are retired |
+| [0017](0017-authored-language-set.md) | 2 | 2026-08-04 | Authored language follows the artifact's audience: Go and TypeScript for what ships, Python (standard library only) for what checks the repository; sh and JavaScript author nothing, and a toolchain's own configuration format is invoking rather than authoring |
 | [0018](0018-frontend-svelte-vite-static-spa.md) | 1 | 2026-08-04 | Frontend is Svelte 5 + Vite, emitted as a static single-page bundle and served as files by the Go backend; no server-side rendering, no router, no meta-framework |
 | [0019](0019-boundary-at-what-deploys-and-tag-tier.md) | 1 | 2026-08-04 | The architecture boundary is what deploys; an element appears only where the system exchanges something with it, and its tag names the obliging requirement at the tier its level answers to |
 | [0020](0020-two-containers-one-origin-and-dual-tier-tags.md) | 1 | 2026-08-04 | Two containers behind one origin, the backend serving the bundle and the configuration; each relationship declared once at its true endpoints, and a boundary-spanning one tagged at both tiers |

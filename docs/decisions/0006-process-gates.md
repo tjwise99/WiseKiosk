@@ -1,13 +1,13 @@
 # 0006 — Gate branch shape, ticket linkage, and PR titles in CI
 
 **Status:** accepted; ticket-metadata obligations extended and the parent-ticket definition added by
-[ADR 0013 rev 1](0013-work-tracking-invariants.md), whose read-only stance this ADR's rejected
+[ADR 0013 rev 2](0013-work-tracking-invariants.md), whose read-only stance this ADR's rejected
 write-scoped-token alternative supplies; gate path amended by
-[ADR 0016 rev 1](0016-maintained-tools-for-standard-artifacts.md)
+[ADR 0016 rev 2](0016-maintained-tools-for-standard-artifacts.md)
 **Decided:** 2026-07-22 (process-gates design discussion, ticket #27)
 **Rev:** 1
 
-> **Amended 2026-08-03 by [ADR 0016 rev 1](0016-maintained-tools-for-standard-artifacts.md).** The Decision's
+> **Amended 2026-08-03 by [ADR 0016 rev 2](0016-maintained-tools-for-standard-artifacts.md).** The Decision's
 > *"entire gate path is plain sh + curl + jq — no toolchain"* no longer holds: `commitlint` replaces
 > `scripts/check-commit-msg.sh` and `scripts/conventional-commit.regex` at both the commit-message and
 > pull-request-title stages, and `pre-commit` replaces `.githooks/` as the local hook layer. The four

@@ -3,10 +3,11 @@
 **Status:** accepted
 **Decided:** 2026-08-03 (#103 authored-vs-adopted check trade, measured against the cases recorded in
 [`../../scripts/README.md`](../../scripts/README.md))
-**Rev:** 1
+**Rev:** 2
 
 ## Revisions
 
+- **rev 2** — 2026-08-05 — drops a ground that rested on merged ADR text being unrewritable; the tool adoptions are unchanged (#118 ADR revisions).
 - **rev 1** — 2026-08-05 — revision tracking begins; text as merged (#118 ADR revisions).
 
 ## Context
@@ -199,10 +200,9 @@ later.
 - **Practice adapts to the tool, not the reverse.** Two commit titles on `main` exceed `commitlint`'s
   default `header-max-length` of 100, the longest at 122. The default stands and titles get shorter;
   configuring the tool around existing practice would forfeit the reason for adopting it.
-- **[ADR 0006 rev 1](0006-process-gates.md) is amended, not superseded.** Its decision states the gate path is
+- **[ADR 0006 rev 1](0006-process-gates.md) is corrected, not superseded.** Its decision states the gate path is
   *plain sh + curl + jq — no toolchain*; `commitlint` and `pre-commit` reverse that property while
-  leaving its four gates standing. The amendment block is added in the same change as this record,
-  because an ADR cannot be rewritten by a later implementation ticket.
+  leaving its four gates standing. The correction is written in the same change as this record.
 - **Four surfaces are rewritten when each implementation lands**, not here: [`../CI.md`](../CI.md)
   §§ *Action pins and workflow privilege*, *Documentation integrity* and *Repository shape*;
   [`../../CONTRIBUTING.md`](../../CONTRIBUTING.md)'s hook-installation instruction; the `justfile`

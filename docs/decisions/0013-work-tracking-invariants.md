@@ -2,7 +2,7 @@
 
 **Status:** accepted
 **Decided:** 2026-08-02 (work-tracking invariants discussion, ticket #64 work-tracking invariants)
-**Rev:** 1
+**Rev:** 2
 
 > **Grounds restated, 2026-08-03 (#95 final documentation sweep).** The advisory half was argued from
 > a filing helper that carried the checklist and could go uninvoked. The documentation set names no
@@ -13,6 +13,7 @@
 
 ## Revisions
 
+- **rev 2** — 2026-08-05 — corrects a ground that named the retired amendment mechanism; the CI-mutation stance is unchanged (#118 ADR revisions).
 - **rev 1** — 2026-08-05 — revision tracking begins; text as merged (#118 ADR revisions).
 
 ## Context
@@ -79,7 +80,7 @@ unrelated one, and it refuses a merge rather than annotating an issue.
 - **Detect-and-flag on `issues:` events** — an Action labelling `orphan`/`needs-triage`, which is
   what #64 work-tracking invariants proposed. Rejected: it needs `issues: write`, and ADR 0006 rev 1
   rejected CI mutation on the ground that gates verify rather than mutate. That stance is **held
-  here, not amended**. The underlying argument is narrower than its wording — what it forbids is CI
+  here, not revisited**. The underlying argument is narrower than its wording — what it forbids is CI
   writing the evidence a gate then reads, which a flagger does not do — but the owner chose to keep
   the broad line rather than carve it. The flagger also would not have been construction-time
   enforcement in any case, only earlier detection.

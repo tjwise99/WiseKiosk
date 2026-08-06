@@ -250,7 +250,10 @@ resolve, a citation to something that does not exist, an index that has drifted 
   separating it. A number is only a handle: a renumber rewrites
   `links:` and leaves the sentence pointing at whatever now occupies it, still reading as correct.
   The header is what turns that drift into a mismatch a machine can see. An ADR number carries no
-  header: what pins an ADR citation is the rev beside it, checked below.
+  header, and the rev beside it pins the version rather than the identity: numbers are reusable, so
+  what holds is that the check below fails the instant a number is freed, and every citation of it
+  must move in the same change. A citation written on a branch across a freeing and a re-taking of
+  the same number is the case that leaves — nothing here decides it.
 - **A header in an HTML comment does not open a line that continues a paragraph.** CommonMark reads
   a line-initial `<!--` as an HTML block, which interrupts the paragraph and splits it in two on the
   rendered page while the source still reads as one. Nothing else reports it: the comment is a
@@ -264,14 +267,22 @@ resolve, a citation to something that does not exist, an index that has drifted 
   markdown link as its title. An ADR is a versioned document
   ([`decisions/README.md`](decisions/README.md)), so revving one reaches every document citing it:
   each is updated or re-decided in the same change rather than left asserting a claim the ADR's
-  current rev does not make. The link rule is what the prose rule cannot reach — a citation spelled as a bare bracketed
-  number names no ADR in prose at all. The ADR's own head
-  is authoritative for its rev and the index table's column is checked against it; an ADR declaring
-  no rev, or two, fails rather than being read as rev zero, and a run that resolves no ADR at all
-  fails on the ground that a parser returning nothing and a tree with no ADRs are indistinguishable.
-  **One exemption:** a *Revisions* line records what a rev did at the moment it did it, so the rev it
-  names is left as written. It is scoped to that section in `decisions/`, ends at the next heading,
-  and covers nothing else — the index row aside, which names its own document rather than citing it.
+  current rev does not make. The link rule is what the prose rule cannot reach — a citation spelled
+  as a bare bracketed number names no ADR in prose at all. **A citation spelled any other way — a
+  plural, a hyphen, the wrong case, a reference-style link, a raw `<a href>` — is reported as
+  malformed rather than passed over**: the set the check recognises is the set it can hold to a rev,
+  so a spelling outside it must fail rather than shrink the population it then reports success over.
+  The ADR's own head is authoritative for its rev, the index table's column is checked against it,
+  and its *Revisions* section carries one changelog line per rev from 1 — so a rev cannot be taken
+  without recording what changed. An ADR declaring no rev, or two, fails rather than being read as
+  rev zero. **Two empty-population guards, one per reader:** a run resolving no ADR at all fails, and
+  so does one judging no prose citation or no link citation, because the tree exercises both and
+  either falling to zero means that reader stopped seeing them while the other kept the run green.
+  **One exemption, and it is a line shape rather than a region:** a changelog line records what a rev
+  did at the moment it did it, so the rev it names is left as written. Ordinary prose inside a
+  *Revisions* section is judged like anything else — the exemption cannot become the place a stale
+  citation is parked. An index row's leading self-link is dropped for the same reason and no further:
+  the row's *Decision* cell is free prose and is judged.
   What this leaves unproven is whether a citation pinning the current rev still means what the ADR
   says; that is read at review.
 - **Every tracked Markdown file is claimed by a row in the documentation index**, unless it sits under
@@ -326,7 +337,7 @@ changed, which the citation resolver above decides without anyone declaring anyt
   behind. A second type label makes the branch type ambiguous, and an unmilestoned ticket is absent
   from the phase axis that carries the definition of done. This is detected at merge, on the change
   whose ticket is wrong, rather than at filing: GitHub cannot refuse to create a malformed issue, and
-  CI does not write ([ADR 0013 rev 1](decisions/0013-work-tracking-invariants.md)).
+  CI does not write ([ADR 0013 rev 2](decisions/0013-work-tracking-invariants.md)).
 - A pull request's base and its issue's parent agree. A parent implies a non-default base; an
   integration branch implies membership in the ticket anchoring it; and a non-default base that is
   not itself a conforming branch fails rather than skips, because an anchor the check cannot resolve
@@ -494,7 +505,7 @@ citing an identifier restates it. The pull-request template points there.
 merge; only the tree can say the system is wrong.
 
 **How work is tracked, beyond the ticket a branch names.** Three things were weighed and deliberately
-left ungated ([ADR 0013 rev 1](decisions/0013-work-tracking-invariants.md)). Ordering lives in GitHub's
+left ungated ([ADR 0013 rev 2](decisions/0013-work-tracking-invariants.md)). Ordering lives in GitHub's
 native dependency edges and never in a `⛔ Blocked by:` line in a body: the practice is adopted, but a
 literal-string ban flags the very documents that forbid the line, and is respelled for free — what
 enforces it is that there is no second place to write ordering. Whether a ticket should be rescoped

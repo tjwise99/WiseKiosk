@@ -2,11 +2,12 @@
 
 **Status:** accepted
 **Decided:** 2026-08-04 (#60 authored-language set, taken after
-[ADR 0016 rev 1](0016-maintained-tools-for-standard-artifacts.md) settled which authored checks survive at all)
-**Rev:** 1
+[ADR 0016 rev 2](0016-maintained-tools-for-standard-artifacts.md) settled which authored checks survive at all)
+**Rev:** 2
 
 ## Revisions
 
+- **rev 2** — 2026-08-05 — names revving rather than amendment as the route a later decision takes; the language set is unchanged (#118 ADR revisions).
 - **rev 1** — 2026-08-05 — revision tracking begins; text as merged (#118 ADR revisions).
 
 ## Context
@@ -67,8 +68,8 @@ sits in. Only the `justfile` leg of this has a check behind it; the rest is the 
 where this decision's reason for refusing a gate — that a new language is a new file extension, the
 loudest thing in a diff — does not hold.
 
-Nothing above needs amending when a tool arrives with a format not yet seen here — which is the
-point, since [ADR 0016 rev 1](0016-maintained-tools-for-standard-artifacts.md) adopts four such tools.
+Nothing above needs revising when a tool arrives with a format not yet seen here — which is the
+point, since [ADR 0016 rev 2](0016-maintained-tools-for-standard-artifacts.md) adopts four such tools.
 
 **Documentation, and the assets a documentation build serves, are not authored programs and this
 decision does not reach them.**
@@ -79,7 +80,7 @@ provisions for itself. The distinction is who wrote the code being run.
 
 **POSIX sh authors nothing.** The rule that admitted it — sh only where no interpreter can be
 assumed — had `.githooks/` as its entire population, and
-[ADR 0016 rev 1](0016-maintained-tools-for-standard-artifacts.md) retires those for `pre-commit`, which is
+[ADR 0016 rev 2](0016-maintained-tools-for-standard-artifacts.md) retires those for `pre-commit`, which is
 itself Python. A rule with no subject is not kept for the one file that predates it.
 
 **TypeScript is product-only.** Extending it to repository tooling would leave the runtime, the
@@ -106,13 +107,13 @@ was rejected for paying. The disposition is deletion rather than conversion beca
 script another ticket deletes is the waste this decision's own sequencing avoids elsewhere; the cost
 is accepted, not overlooked. The difference from grandfathering is that this ends, and #78 is where
 it is decided that it has not — if that ticket stalls, conversion is the remedy and this record needs
-no amendment for it.
+no rev for it.
 
 That list is a snapshot taken on the decision date, not a standing inventory — no check compares it
 against the tree, and the rule above is what governs anything written after it.
 
 **Nothing here is gated.** A language outside this set is a decision with a rejected alternative, so
-it arrives as an ADR amending or superseding this one, and the reviewer is the mechanism —
+it arrives as a rev of this record or an ADR superseding it, and the reviewer is the mechanism —
 [`../../CONTRIBUTING.md`](../../CONTRIBUTING.md) review checklist item 12, added with this record.
 #59 comment-discipline gate's coverage registry is **not** this decision's enforcement: it exists so
 that gate cannot go silently blind on a language it has no arm for, and it would fail-closed on an
@@ -138,16 +139,16 @@ unregistered language whatever this record said.
   the same test only because it is about *libraries a silo provides*, not about a second authoring
   language.
 - **Enumerate every permitted format instead of deriving them.** Rejected: an enumeration would need
-  amending the first time an adopted tool brings a configuration format, and
-  [ADR 0016 rev 1](0016-maintained-tools-for-standard-artifacts.md) adopts four tools that bring TOML and a
-  JavaScript-or-JSON-or-YAML configuration between them. An ADR amended one ticket after it is written
+  revising the first time an adopted tool brings a configuration format, and
+  [ADR 0016 rev 2](0016-maintained-tools-for-standard-artifacts.md) adopts four tools that bring TOML and a
+  JavaScript-or-JSON-or-YAML configuration between them. An ADR revved one ticket after it is written
   was written too early.
 - **Gate the set with a check.** Machine-decidable, and [ADR 0011 rev 1](0011-requirement-or-convention.md)
   routes a machine-decidable convention to a check — which is why this was the drafted answer.
   Rejected: a new authored language usually arrives as a new file extension in a diff's file list,
   which is the loudest thing a review sees — the embedded case named in the Decision above is the
   exception, and it is a residue rather than the population — and
-  [ADR 0016 rev 1](0016-maintained-tools-for-standard-artifacts.md) had just ruled that one residual obligation
+  [ADR 0016 rev 2](0016-maintained-tools-for-standard-artifacts.md) had just ruled that one residual obligation
   does not earn a gate of its own. The two work in sequence rather than in parallel — the first sizes
   the case as a residue, which is the condition under which the second reaches it at all. The
   checklist question is what 0011 requires so the obligation is not a dead letter; a gate on top of it
@@ -161,7 +162,7 @@ unregistered language whatever this record said.
   with a clean-looking diff.
 - **`check-branch` loses `curl` and `jq` for `urllib` and `json`.** [ADR 0006 rev 1](0006-process-gates.md)'s
   *plain sh + curl + jq — no toolchain* property, already amended by
-  [ADR 0016 rev 1](0016-maintained-tools-for-standard-artifacts.md) when `commitlint` and `pre-commit` were
+  [ADR 0016 rev 2](0016-maintained-tools-for-standard-artifacts.md) when `commitlint` and `pre-commit` were
   adopted, ends completely. What replaces it is a weaker but real property: the interpreter the gates
   need is one this repository already owes for its requirements tree and its documentation site.
 - **A check that wants logic already written in TypeScript must reimplement it in Python or shell out
@@ -179,7 +180,7 @@ unregistered language whatever this record said.
   beside the dependency question it most resembles. Inserting it there would renumber the questions
   below it, and [ADR 0002 rev 1](0002-requirements-management-doorstop.md),
   [ADR 0003 rev 1](0003-architecture-as-code-likec4.md) and
-  [ADR 0016 rev 1](0016-maintained-tools-for-standard-artifacts.md) each cite one by number with nothing gating
+  [ADR 0016 rev 2](0016-maintained-tools-for-standard-artifacts.md) each cite one by number with nothing gating
   the citation.
 
 **Premise that would reopen this:** an artifact appears that neither audience covers — something that

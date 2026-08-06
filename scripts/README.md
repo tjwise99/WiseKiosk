@@ -323,7 +323,7 @@ matches `check-links.mjs`, which draws its file list the same way.
 ## `check-branch.sh`
 
 Covers the ticket-metadata and epic-membership assertions
-([ADR 0013 rev 1](../docs/decisions/0013-work-tracking-invariants.md)), and the branch-shape, exemption and
+([ADR 0013 rev 2](../docs/decisions/0013-work-tracking-invariants.md)), and the branch-shape, exemption and
 issue-resolution assertions below.
 
 The shape and exemption cases reach no network: the branch name is passed as `$1`, and both paths
@@ -564,10 +564,17 @@ described without spelling a live ADR number, which this check reads as a citati
 | Prose citation pinning a stale rev | the same citation moved to a rev its ADR does not carry |
 | Link titled with a bare number | a titled link in `docs/CI.md` retitled to the number alone |
 | Link title naming a different ADR than it targets | the title's number changed, the target left |
+| **Ordinary prose inside a *Revisions* section** | a sentence carrying an unpinned citation and a bare-titled link, one line below a legal changelog line |
+| **A stale citation in an index row's *Decision* cell** | a supersession note written into the free-prose column |
 | Index rev column disagreeing with the ADR's head | one row's rev raised, its head left |
 | An ADR head with no `**Rev:** N` | the line deleted from one ADR |
+| **An ADR revved with no changelog line for the new rev** | head and index row to rev 2, every citation moved, *Revisions* untouched |
 | Citation of a number no ADR carries | the same citation renumbered past the highest ADR |
+| **A plural, a hyphen, or the wrong case** | `ADRs NNNN and NNNN`, `ADR-NNNN`, and the lowercase spelling |
+| **A reference-style link or a raw `<a href>` to an ADR** | each appended to `docs/TESTING.md` |
 | The head format changed everywhere, so nothing parses | `**Rev:**` renamed in all twenty ADRs |
+| **The prose citation spelling drifted, so none is recognised** | `CITATION` altered not to match |
+| **The link spelling drifted, so none is recognised** | `LINK` altered not to match |
 | An ADR revved with one citation left behind | one ADR to rev 2, every citation but one moved |
 
 ### Must pass
@@ -575,19 +582,25 @@ described without spelling a live ADR number, which this check reads as a citati
 | Case | Input |
 |---|---|
 | The tree as it stands | — |
-| An ADR revved with every citation moved with it | one ADR to rev 2: head, index row, and all 25 |
-| A *Revisions* line pinning a rev that is not current | a supersession line on that same rev-2 ADR |
-| An index row, which names its document rather than citing it | every row in the index table |
+| An ADR revved with everything moved with it | one ADR to rev 2: head, index row, a new changelog line, and all its citations |
+| A changelog line pinning a rev that is not current | a supersession line on that same rev-2 ADR |
+| An index row's leading self-link | every row in the index table |
 
-The last two are the exemption, and the pair below them is the point: the *Revisions* line is left
-alone while an ordinary citation outside that section is not. The two rev-2 cases differ only in
-whether one citation moved — the same tree, one passing and one failing, which is what shows the
-exemption did not swallow the rule.
+**The exemption is a line shape, not a region.** The first version of this check exempted the whole
+*Revisions* section, and an ordinary citation placed inside it — prose and link both — passed with
+exit 0 while the identical text one line outside failed. That is the fifth must-fail row, and it is
+the case CONTRIBUTING question 11 describes: the exemption was written to stop a false positive on
+changelog lines and became the place a stale citation could be parked. The same narrowing applies to
+the index row, which now drops only the leading self-link rather than the whole row.
 
-The head-format case guards the shape that fails silently. A check keyed on `**Rev:**` for both the
-ADRs' revs and the citations' expected revs would find zero of each, agree they match, and report
-success over an empty population. `current_revs` therefore fails when it resolves no ADR at all,
-rather than returning an empty mapping every citation then trivially satisfies.
+**The two rev-2 cases are the pair that matters**: same tree, differing only in whether one citation
+moved, one passing and one failing. Without both, "the exemption works" and "the exemption is narrow"
+are indistinguishable.
+
+**The empty-population guards are per reader, not over the total.** A single count of everything
+judged hid the prose reader going to zero, because fifty link citations kept the total non-zero and
+the run green. Three guards now: no ADR resolved, no prose citation judged, no link citation judged.
+Each was seeded by altering the pattern it depends on; each fails.
 
 ### Known rejections
 
@@ -601,6 +614,10 @@ likely to hide a bypass — the counter-example rule in [`../docs/CI.md`](../doc
 A file whose bytes do not decode as UTF-8 is not scanned; it cannot carry a citation in the form the
 rule defines. Every such file is named on stderr rather than silently dropped, so the population the
 check reports over stays visible.
+
+The rev pins a version, not an identity. A citation written on a branch across a freeing and a
+re-taking of the same number merges green, because at merge time the number resolves and the rev
+matches. Nothing here decides it; `../docs/CI.md` § *Documentation integrity* names it.
 
 ## `check-arch` — `splice-arch-diagrams.mjs`
 

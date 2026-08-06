@@ -23,7 +23,7 @@ so a ticket filed wrong is not lost, only expensive. What follows is how to not 
 ## What the gate will demand
 
 From [`docs/CI.md` § *Repository shape*](../../../docs/CI.md#repository-shape) and
-[ADR 0013 rev 1](../../../docs/decisions/0013-work-tracking-invariants.md), decided against the ticket
+[ADR 0013 rev 2](../../../docs/decisions/0013-work-tracking-invariants.md), decided against the ticket
 whose branch is being cut:
 
 - **open** — it cannot be closed when the branch is worked;
