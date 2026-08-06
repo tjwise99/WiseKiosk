@@ -40,7 +40,7 @@ fingerprint `check-reqs` can stamp is
 
 ## Tickets, branches, and titles
 
-Enforced by the `process` CI check ([ADR 0006 rev 1](docs/decisions/0006-process-gates.md)):
+Enforced by the `process` CI check ([ADR 0006 rev 2](docs/decisions/0006-process-gates.md)):
 
 - **Ticket first.** Open an issue from one of the templates before branching; the branch embeds
   its number.
