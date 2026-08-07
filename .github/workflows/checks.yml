@@ -159,16 +159,16 @@ jobs:
         run: docs/requirements/.venv/bin/python scripts/check-arch-trace.py
 
   process:
-    # Process gates (ADR 0006 rev 1): the branch is named type_number-snake_name and
+    # Process gates (ADR 0006 rev 2): the branch is named type_number-snake_name and
     # links an open issue labeled with its type; the PR title — the commit that
     # reaches main under squash-merge — is a Conventional Commit. Runs the exact
     # scripts the local recipes run (`just check-branch`; the commit-msg hook's
     # validator, here with --pr-title, dropping the fixup!/squash!/merge
-    # allowances that never reach main): plain sh + curl + jq over the
-    # single-definition patterns in scripts/*.regex — no toolchain. The branch
-    # check also gates the recorded PR↔ticket linkage: the PR's Development
-    # field (closingIssuesReferences) must link the branch's issue on every
-    # base, so the ticket closes when the PR merges into the default branch.
+    # allowances that never reach main), reading their patterns from
+    # scripts/*.regex. The branch check also gates the recorded PR↔ticket
+    # linkage: the PR's Development field (closingIssuesReferences) must link
+    # the branch's issue on every base, so the ticket closes when the PR merges
+    # into the default branch.
     # head_ref and the PR title are attacker-controlled, so they
     # enter run steps only via env mapping, never inline. GITHUB_TOKEN is the
     # GitHub-provided read-only token (API rate limits, GraphQL read), not a

@@ -348,7 +348,7 @@ changed, which the citation resolver above decides without anyone declaring anyt
   behind. A second type label makes the branch type ambiguous, and an unmilestoned ticket is absent
   from the phase axis that carries the definition of done. This is detected at merge, on the change
   whose ticket is wrong, rather than at filing: GitHub cannot refuse to create a malformed issue, and
-  CI does not write ([ADR 0013 rev 2](decisions/0013-work-tracking-invariants.md)).
+  CI does not write ([ADR 0013 rev 3](decisions/0013-work-tracking-invariants.md)).
 - A pull request's base and its issue's parent agree. A parent implies a non-default base; an
   integration branch implies membership in the ticket anchoring it; and a non-default base that is
   not itself a conforming branch fails rather than skips, because an anchor the check cannot resolve
@@ -516,7 +516,7 @@ citing an identifier restates it. The pull-request template points there.
 merge; only the tree can say the system is wrong.
 
 **How work is tracked, beyond the ticket a branch names.** Three things were weighed and deliberately
-left ungated ([ADR 0013 rev 2](decisions/0013-work-tracking-invariants.md)). Ordering lives in GitHub's
+left ungated ([ADR 0013 rev 3](decisions/0013-work-tracking-invariants.md)). Ordering lives in GitHub's
 native dependency edges and never in a `⛔ Blocked by:` line in a body: the practice is adopted, but a
 literal-string ban flags the very documents that forbid the line, and is respelled for free — what
 enforces it is that there is no second place to write ordering. Whether a ticket should be rescoped

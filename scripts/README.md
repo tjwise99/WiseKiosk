@@ -323,7 +323,7 @@ matches `check-links.mjs`, which draws its file list the same way.
 ## `check-branch.sh`
 
 Covers the ticket-metadata and epic-membership assertions
-([ADR 0013 rev 2](../docs/decisions/0013-work-tracking-invariants.md)), and the branch-shape, exemption and
+([ADR 0013 rev 3](../docs/decisions/0013-work-tracking-invariants.md)), and the branch-shape, exemption and
 issue-resolution assertions below.
 
 The shape and exemption cases reach no network: the branch name is passed as `$1`, and both paths
