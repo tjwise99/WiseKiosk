@@ -1,0 +1,16 @@
+active: false
+derived: false
+header: |
+  Pending: mirror reserve erosion test
+level: 68
+links:
+- SRS031: null
+normative: true
+rationale: ''
+ref: ''
+status: proposed
+text: |
+  Pending: compute the largest contiguous unoccupied region from rendered geometry across configurations chosen to load the display - the module roster at its fullest, and repeated instances of a module an operator may add - asserting the region spans at least the required fraction of display width and of display height in each. Lands with the frontend skeleton (#10); activated and given a references entry then.
+verification-justification: |
+  Settles that the reserve is a property of the product rather than of one fixture, over the configurations most likely to erode it. Leaves unproven that the chosen configurations bound the space an operator can express; the floor itself is a decision the check holds rather than a result it produces.
+verification-method: test

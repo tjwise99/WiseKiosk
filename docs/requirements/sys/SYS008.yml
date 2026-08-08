@@ -1,0 +1,31 @@
+active: true
+derived: false
+header: |
+  The unlit surface is a mirror
+level: 13
+links: []
+normative: true
+rationale: |
+  Behind a half-silvered surface an unlit pixel is a mirror, so the part of the display carrying
+  nothing is not spare capacity - it is the product. A display that fills its surface with content is
+  a different product wearing the same hardware, and nothing else in the tree would notice: every
+  module could render wholly, legibly and within its region while the mirror was gone.
+  This is why the want is a need of its own rather than a decomposition of the layout need. Those two
+  are satisfiable together and independently, and the layout need's own rationale scopes it to
+  no-overlap, no-clipping and no-scrollbars - a want about content, where this is a want about
+  content's absence.
+  The obligation is stated over the surface the software controls rather than over the glass, which
+  WiseKiosk does not supply. What the mounting, the room and the viewer's height make of that surface
+  is the operator's, in the same way the kiosk host is (#132 layout need decomposition).
+ref: ''
+status: accepted
+text: |
+  The display shall leave a contiguous part of its surface unlit, large enough that a viewer at the
+  distance it is installed for sees their own reflection in it.
+verification-justification: |
+  Settled by its children: that surface carrying no content is held at minimum emission, and that no
+  configuration reduces the largest contiguous region so held below the span a reflection needs. What no check reaches is whether the region is
+  aimed at anybody - a reserve of the right size, mounted at the wrong height, returns a reflection of
+  the ceiling. Mounting is the operator's, so the residue is outside the boundary rather than unproven
+  inside it.
+verification-method: test

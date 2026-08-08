@@ -1,0 +1,16 @@
+active: false
+derived: false
+header: |
+  Pending: relative text size and resolution invariance test
+level: 70
+links:
+- SRS033: null
+normative: true
+rationale: ''
+ref: ''
+status: proposed
+text: |
+  Pending: render at more than one resolution and read each text element's size as a fraction of viewport height, asserting every element clears the floor at each. Lands with the frontend skeleton (#10); activated and given a references entry then.
+verification-justification: |
+  Settles that every text element clears the floor at each resolution rendered, which is what a size fixed in device pixels fails as resolution rises. The obligation quantifies over every resolution the display supports while the check renders a sample of them, so a design that first drops below the floor at an unsampled resolution passes. Nor does the check settle where the floor belongs: it is calibrated against reported legibility at the distances the display is watched from, and recalibrating it is a change to this check rather than to the requirement.
+verification-method: test

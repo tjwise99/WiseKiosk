@@ -1,0 +1,27 @@
+active: true
+derived: false
+header: |
+  Unoccupied surface is held at minimum emission
+level: 33
+links:
+- SYS008: null
+normative: true
+rationale: |
+  The mirror is made of absence, so anything drawn where content is not is drawn at the mirror's
+  expense. This forecloses the devices a designer reaches for first on a dark interface - a panel
+  behind a block of text, a card, a fill marking a region's bounds, a scrim to lift a glyph off its
+  background. Each is emitted light, so each brightens the ground rather than darkening it, and pays
+  for a legibility gain that does not arrive with mirror that does not come back.
+ref: ''
+status: accepted
+text: |
+  Every part of the display not occupied by content it presents shall be held at the display's
+  minimum emission.
+verification-justification: |
+  Asserted by rendering a fixture configuration and reading the rendered value over the surface the
+  content does not occupy. Two steps sit outside that assertion. What the page renders is not what the
+  panel emits - backlight, gamma, colour profile and any tone mapping lie between them, and a
+  half-silvered surface attenuates the result again - so the check settles the value the software
+  chose, not the light that leaves the glass. And what a viewer sees there is the reflected room,
+  which the software neither supplies nor controls.
+verification-method: test

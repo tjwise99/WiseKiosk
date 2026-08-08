@@ -1,0 +1,29 @@
+active: true
+derived: false
+header: |
+  Text holds a minimum size against the display, at every resolution
+level: 36
+links:
+- SYS002: null
+normative: true
+rationale: |
+  Wholly visible and readable are not the same property, and the display can satisfy the first while
+  failing the second: a module rendered entirely on screen, unclipped and unoverlapped, is not visible
+  to a person standing where the display is watched if its text is too small to resolve there.
+  Size is stated against the display's own height rather than in device pixels because that is what
+  survives the panel changing. A fixed pixel size is a different physical size on every panel, and
+  halves on one of twice the resolution, so a guarantee expressed that way is not a guarantee about
+  anything a viewer experiences. The fraction also carries the viewing distance the product is built
+  for without fixing a distance in the specification.
+ref: ''
+status: accepted
+text: |
+  Text the display presents to be read shall occupy at least a minimum fraction of the display's
+  height, at every resolution the display supports.
+verification-justification: |
+  Asserted by rendering at more than one resolution and reading each text element's size as a
+  fraction of the viewport, which is what a size fixed in device pixels fails at the second one. What the check does not
+  settle is where the floor belongs: it is calibrated against reported legibility at the distances
+  the product is watched from, and it is held with the check so that recalibrating it is not a change
+  to this obligation.
+verification-method: test

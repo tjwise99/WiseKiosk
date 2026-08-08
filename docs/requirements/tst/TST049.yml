@@ -1,0 +1,16 @@
+active: false
+derived: false
+header: |
+  Pending: edge inset clearance test
+level: 71
+links:
+- SRS034: null
+normative: true
+rationale: ''
+ref: ''
+status: proposed
+text: |
+  Pending: read rendered geometry against the viewport, asserting no content enters the outer band on any edge, over configurations chosen to load the display rather than a single fixture. Lands with the frontend skeleton (#10); activated and given a references entry then.
+verification-justification: |
+  Settles that content keeps clear of a band the software cannot observe being masked. Leaves unproven that the band clears the mask actually fitted - the frame and the television are the operator's, so the figure is calibrated against a deployment known to present its content whole.
+verification-method: test

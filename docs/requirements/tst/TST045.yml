@@ -1,0 +1,16 @@
+active: false
+derived: false
+header: |
+  Pending: unlit surface emission test
+level: 67
+links:
+- SRS030: null
+normative: true
+rationale: ''
+ref: ''
+status: proposed
+text: |
+  Pending: render a fixture configuration and read the rendered value across the surface its content does not occupy, asserting every unoccupied region sits at the display's minimum. Lands with the frontend skeleton (#10); activated and given a references entry then.
+verification-justification: |
+  Settles that the page draws no fill, panel or scrim outside its content, which is the whole of the software's contribution to the reserve. Leaves unproven what a viewer sees there, which is the reflected room and outside the boundary.
+verification-method: test

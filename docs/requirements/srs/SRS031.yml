@@ -1,0 +1,36 @@
+active: true
+derived: false
+header: |
+  No configuration erodes the reserve
+level: 34
+links:
+- SYS008: null
+normative: true
+rationale: |
+  A reserve that exists in one configuration and not another is not a property of the product, and
+  the erosion is silent: content added a module at a time takes the mirror gradually, each step
+  looking like the last, until the want the display was built for is gone with nothing having failed.
+  The obligation is therefore stated over every configuration the display accepts rather than over a
+  fixture, because the failing case is the one an operator assembles later. It is the configured
+  volume of content that consumes the reserve rather than the size of the viewport, so a check that
+  varied only the viewport would report on a case that is not the one at risk.
+ref: ''
+status: accepted
+text: |
+  Under every configuration the display accepts, the largest contiguous region of the display held at
+  minimum emission shall span at least a minimum fraction of the display's width and a minimum
+  fraction of its height.
+verification-justification: |
+  Asserted by computing the largest contiguous region carrying no content from rendered geometry,
+  over configurations chosen to load the display rather than a single fixture. The check therefore
+  decides a region carrying no content where this item obliges a region at minimum emission; the two
+  coincide only while SRS030<!-- Unoccupied surface is held at minimum emission --> holds, so a
+  violation of that item would leave this check passing an obligation that has failed. Three further
+  bounds. The
+  chosen configurations are not proven to bound the space an operator can express, so the check
+  samples that space rather than closing it. Geometry is measured as element boxes, so a box that is
+  largely empty counts as occupied and the computed region is a lower bound on the region a viewer
+  actually gets - conservative in one direction, and silent about a layout whose boxes are compact
+  while its lit pixels are not. And the fraction itself is a decision about how much of a person the
+  product returns; it is held with the check so that revisiting it is not a change to this obligation.
+verification-method: test
