@@ -18,11 +18,17 @@ rationale: |
   parent need's own justification raises. It is chosen because "not against an edge" names no
   quantity a check can read, while an offset from centre does, and because the operator can hang the
   panel to suit the reserve more easily than the software can guess where they hung it.
+  The tolerance is wide by intent rather than by concession. The layout is asymmetric and will remain
+  so (owner, 2026-08-08): the columns either side of the reserve carry different content at different
+  widths, so the region they leave between them is offset from the display's centre in every layout
+  the product will have. A tolerance tightened toward zero would therefore reject the design rather
+  than catch a defect, and anyone narrowing it is changing what the display may look like, not
+  hardening a check.
   Where the panel hangs and how tall the viewer is are the operator's, in the same way the kiosk host
   is. Where the region sits on the panel is not, and was the half of that residue an earlier draft of
   the parent wrongly disclaimed.
 ref: ''
-reviewed: Vwht-TkkGCWNK2PIBGm0ykuVJn8_IA9goX0k7bbQXn4=
+reviewed: ZRkaloqtB8fb7pBmdnGuk67o9x3lQHqrM6gFhHUnLak=
 status: accepted
 text: |
   The largest contiguous region of the display held at minimum emission shall be centred on the
