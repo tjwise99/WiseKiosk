@@ -45,7 +45,7 @@ Beyond Doorstop's native fields, every item carries four stored attributes
 | `rationale` | free text | Why the requirement exists. **Required at the `SYS` tier**, optional below |
 
 **A requirement states the property and names no resources** — which file, endpoint, package or tool
-delivers it is not the item's. Nothing decides this mechanically, so it is question 14 on
+delivers it is not the item's. Nothing decides this mechanically, so it is question 15 on
 [`../../CONTRIBUTING.md`](../../CONTRIBUTING.md)'s review checklist, where every obligation that
 leaves no artifact is carried ([ADR 0011 rev 1](../decisions/0011-requirement-or-convention.md)).
 
