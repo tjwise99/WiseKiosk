@@ -133,9 +133,20 @@ container where it obliges the container
 **A tag is applied where an accepted item obliges the thing it sits on** — so an element or edge no
 accepted item obliges carries none, and one carrying coupled obligations carries all of them. What is
 barred is stamping an element with everything it owes, which distinguishes nothing. An item obliging
-every exchange an element has goes on the element rather than one of its edges; an item whose
-obligation reaches something permanently outside the model is not a tag here at all, which is
-different from one whose subject is merely not modelled yet.
+every exchange an element has goes on the element rather than one of its edges.
+
+**Every accepted, active `SYS` or `SRS` item binds somewhere, and a subject the model does not draw is
+a level to add rather than an absence to accept**
+([ADR 0022 rev 1](../decisions/0022-every-accepted-requirement-binds.md)). There is no exemption
+record, and **an obligation reaching something *permanently* outside the model is not a way out of
+this**: ADR 0020 rev 1 admits that case, the tree holds no item of that shape, and a fresh one is
+the premise that reopens
+ADR 0022 rev 1 — argued as a decision, never left standing as an untagged item. The same holds for a
+subject not drawn yet: that is the level to add.
+
+The `TST` tier is outside the rule, a verification item saying how an obligation is settled rather
+than what the software owes — so a `TST` identifier is not a tag in this model, and one applied would
+resolve against the tree while naming nothing the element owes.
 
 **`just check-arch-trace` resolves them against the tree** — what it asserts, and what it leaves to
 review, is [`../CI.md`](../CI.md) § Documentation integrity's.

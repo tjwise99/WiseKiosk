@@ -54,6 +54,7 @@ amended, so a number in git history need not mean what it means here.
 | [0019](0019-boundary-at-what-deploys-and-tag-tier.md) | 1 | 2026-08-04 | The architecture boundary is what deploys; an element appears only where the system exchanges something with it, and its tag names the obliging requirement at the tier its level answers to |
 | [0020](0020-two-containers-one-origin-and-dual-tier-tags.md) | 1 | 2026-08-04 | Two containers behind one origin, the backend serving the bundle and the configuration; each relationship declared once at its true endpoints, and a boundary-spanning one tagged at both tiers |
 | [0021](0021-component-earns-its-interface-and-framework-half-only.md) | 1 | 2026-08-05 | A component is a responsibility with a nameable interface, so the route registry is not one; the framework/module seam is the module contract's, and only the framework half is drawn until module needs exist |
+| [0022](0022-every-accepted-requirement-binds.md) | 1 | 2026-08-08 | Every accepted requirement binds somewhere in the architecture model; where one cannot, the model grows to draw what it obliges rather than an exemption being recorded |
 
 ## Revisions
 

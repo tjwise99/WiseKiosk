@@ -97,26 +97,32 @@ legibly says when one failed`" .-> Viewer
 The Component level (C4 L3) is drawn per container, in the two container sections below. No element
 carries a `link` to the source implementing it: no code exists, and the repository layout is #5.
 
-Several sections below name a **normative shape** — the obligations that shape that part of the
-system, read out of the [requirements tree](requirements/README.md). **A normative shape is a reading
-aid into the tree, not the model's tag set, and the two are not expected to agree in either
-direction.**
+Several sections below list the **requirements that shape** that part of the system, read out of the
+[requirements tree](requirements/README.md). **Such a list is a reading aid into the tree, not the
+model's tag set, and the two are not expected to agree in either direction.**
 
-Listed and untagged, for three reasons that are not the same one.
-SRS005<!-- One validation implementation --> reaches the desk validator, which is outside the
-boundary for good, so tagging anything with it points past the diagram. An item still `proposed`
-cannot be tagged at all, since `check-arch-trace` resolves a tag only to an accepted item. And an
-item can oblige something no element in this model stands for: the published image is neither
+**Every accepted, active `SYS` or `SRS` item binds somewhere in this model, and where one cannot, the
+model grows to draw what it obliges**
+([ADR 0022 rev 1](decisions/0022-every-accepted-requirement-binds.md)). There is no exemption record:
+an item bound nowhere is a level this model has not drawn yet, not a case to register. An item still
+`proposed` is outside the rule rather than exempt from it, since `check-arch-trace` resolves a tag only
+to an accepted item; a retired item is out for the same reason it obliges nothing, and retirement is
+`active: false` with `status` left alone, so *accepted* does not imply *active*. The `TST` tier is
+outside it too: a verification item says how an obligation is settled, not what the software owes.
+
+**Which items are unbound is the check's answer, not this document's.** The second direction of
+`check-arch-trace` enumerates them (#122 close check-arch-trace's second direction); a list written
+here would be a point-in-time inventory nothing compares to the tree, which is the failure the
+paragraph below describes in the other direction. What is worth stating is the *kind* of absence
+rather than the roster. An obligation on the published image is one such kind: the image is neither
 container nor component, so SRS020<!-- Non-root container user --> and
-SRS025<!-- No secret material in the published image --> below carry no tag. That third case turns on
-the obligation having an observable the model draws, not on its subject —
+SRS025<!-- No secret material in the published image --> bind when the Deployment level draws it
+(#123 C4 phase 4 Deployment). What distinguishes such an item from one that simply has not been bound
+is that the
+obligation has no observable this model draws, rather than the subject being unusual —
 SRS018<!-- One generic published image --> obliges the same image and does bind, on the configuration
 arriving from outside, because that is where what it obliges is observable
 ([ADR 0021 rev 1](decisions/0021-component-earns-its-interface-and-framework-half-only.md)).
-Permanence separates it from the first
-([ADR 0020 rev 1](decisions/0020-two-containers-one-origin-and-dual-tier-tags.md)): a subject not
-drawn yet may be drawn later, where the desk validator will not be. Whether such an item owes a
-recorded reason, and what to call the case, is #121's to decide and not this paragraph's.
 
 Tagged and unlisted: a tag sits where its obligation is observable
 ([ADR 0021 rev 1](decisions/0021-component-earns-its-interface-and-framework-half-only.md)), which is
@@ -129,7 +135,7 @@ the tree, and the model as the record of where an obligation is observable.
 
 _To be documented as it is built._ Language and boundary-contract decision:
 [ADR 0001 rev 1](decisions/0001-backend-language-go.md); the backend's config-blindness is
-[ADR 0007 rev 2](decisions/0007-config-validation-allocation.md)'s. Normative shape:
+[ADR 0007 rev 2](decisions/0007-config-validation-allocation.md)'s. Requirements that shape this:
 SRS001<!-- A failed module shows why, and only that module -->,
 SRS006<!-- Unresolvable secret surfaces as that source's upstream failure -->,
 SRS008<!-- No secret value in any backend output -->,
@@ -194,7 +200,7 @@ is held`" .-> WisekioskBackend.UpstreamClient
 _To be documented as it is built._ Svelte 5 + Vite, a static single-page bundle served as static
 files ([ADR 0018 rev 1](decisions/0018-frontend-svelte-vite-static-spa.md)); each module's poll cadence is
 that module's own need, per
-[the module contract](contracts/module-contract.md). Normative shape:
+[the module contract](contracts/module-contract.md). Requirements that shape this:
 SRS002<!-- A module-scoped configuration error is reported at that module -->,
 SRS003<!-- A configuration change applies no later than the next page load -->,
 SRS010<!-- The display page reaches no origin but the backend's -->,
@@ -280,8 +286,8 @@ bare `<NAME>` environment variable (SRS007<!-- Configuration schema offers no se
 
 ## Deployment
 
-_To be documented as it is built._ Container image, bind-mounted config, `_FILE` secrets. Normative
-shape: SRS018<!-- One generic published image -->,
+_To be documented as it is built._ Container image, bind-mounted config, `_FILE` secrets.
+Requirements that shape this: SRS018<!-- One generic published image -->,
 SRS025<!-- No secret material in the published image -->,
 SRS022<!-- A bounded running footprint -->, SRS020<!-- Non-root container user -->. The health
 signal and the restart policy are properties of what ships rather than of the running system, and
