@@ -45,7 +45,7 @@ Beyond Doorstop's native fields, every item carries four stored attributes
 | `rationale` | free text | Why the requirement exists. **Required at the `SYS` tier**, optional below |
 
 **A requirement states the property and names no resources** — which file, endpoint, package or tool
-delivers it is not the item's. Nothing decides this mechanically, so it is question 14 on
+delivers it is not the item's. Nothing decides this mechanically, so it is question 15, *Named resources*, on
 [`../../CONTRIBUTING.md`](../../CONTRIBUTING.md)'s review checklist, where every obligation that
 leaves no artifact is carried ([ADR 0011 rev 1](../decisions/0011-requirement-or-convention.md)).
 
@@ -171,6 +171,27 @@ activated in the same change that writes its first child. Elsewhere `active: fal
 retirement (ADR 0005 rev 1); an item carrying a pending note is awaiting decomposition or its verifying
 artifact, not retired.
 
+### Retirement
+
+A retired item keeps its ID and its file — an ID is permanent, and the item is the record of an
+obligation that existed. It is `active: false`, its `rationale` states the ground on which the
+obligation fell and names the ticket that withdrew it, and its `text` is rewritten to read as a
+record rather than a demand. A `TST` item marks it in the header as `Retired:`, where a pending one
+carries `Pending:`; a `SYS` or `SRS` item carries no prefix, because that convention is the `TST`
+tier's alone.
+
+An **active** child left linked to a retired parent fails the gate: Doorstop reports `no item with
+UID` for the parent it can no longer resolve, and exits non-zero whether or not `--error-all` is
+passed. An unresolvable *child* reference from an active parent is only a warning, and the asymmetry
+is the point — a missing parent breaks the trace, a missing child is a decomposition not yet
+written. An **inactive** child
+is invisible to it, and that is the case needing the discipline — a child of a retired item is retired
+in the same change or re-parented in it, whichever its own content supports.
+
+Rewriting the parent's `text` and `rationale`, which the paragraph above requires, is what moves the
+parent's fingerprint, and every link stamped against it goes suspect. Flipping `active` moves nothing:
+it is not among the values the stamp hashes.
+
 **Activation is a review act.** Doorstop skips inactive items entirely, so a `reviewed` stamp on a
 pending item carries no authority and edits to a pending item's own text are invisible to the gate.
 One half of that is now mechanical: `check-suspect-links.py` fails when a pending item's *parent*
@@ -269,6 +290,12 @@ Run all commands with the venv (`docs/requirements/.venv/bin/doorstop …`):
   both answer `no item with UID` while that item is pending. Stamping one takes a loop over
   `document._iter()`. Where a pending item's link goes suspect before activation, that loop is the
   only route.
+- **`Item.clear()` writes a null stamp when the *parent* is also inactive**, which unstamps the link
+  rather than re-stamping it — `_get_parent_uid_and_item` resolves through the active-only lookup and
+  yields an unknown item, whose stamp is empty. The loop above reaches the child but not the parent,
+  so assign `link.stamp = parent.stamp()` from the item found through `document._iter()` and save.
+  `check-unreviewed.py` catches the null, so this fails loudly rather than silently; retiring a
+  parent whose child is pending is when it arises.
 - **Validation stamps what it touches, so never run it on the tree you care about.** `doorstop`'s
   validation pass re-blesses items as it goes, which means a diagnostic run silently re-stamps the
   very items whose review state was in question. Copy the tree to a throwaway directory and validate

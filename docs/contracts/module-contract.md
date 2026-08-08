@@ -38,9 +38,8 @@ Parts 1, 2 and 5 apply to upstream-backed modules only. Parts 3, 4 and 6 apply t
    boundary schema rather than one declared by hand
    ([ADR 0008 rev 1](../decisions/0008-boundary-contract-openapi-codegen.md)).
 4. **A configuration-schema fragment.** Declares what this module accepts, composed into the one
-   configuration schema and enforced by the single validation implementation — at apply time in the
-   page and by the standalone desk validator, per
-   [ADR 0007 rev 1](../decisions/0007-config-validation-allocation.md). The fragment does not cross the
+   configuration schema and enforced at apply time in the page, which is where validation runs, per
+   [ADR 0007 rev 2](../decisions/0007-config-validation-allocation.md). The fragment does not cross the
    frontend/backend boundary.
 5. **A boundary-schema fragment.** Declares the payload this module returns across the boundary, as a
    named component in the one boundary schema — a section of that schema rather than a file of its own,
@@ -82,8 +81,8 @@ and the review trigger.
 
 1. Write the shaping library as pure functions, with its unit tests against a captured upstream
    response.
-2. Add the configuration-schema fragment and check an example configuration with the standalone
-   validator.
+2. Add the configuration-schema fragment and check an example configuration by loading it in the
+   page.
 3. Add the registration entry, carrying all six of that route's policies — parameter validation,
    success TTL, negative TTL, rate limit, outbound timeout, maximum response size.
 4. Add the module's payload to the boundary schema as a named component; the generated type the

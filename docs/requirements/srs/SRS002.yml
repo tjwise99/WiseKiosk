@@ -11,9 +11,9 @@ rationale: |
   Partial recovery converts a configuration error into silent degradation —
   the blank or wrong module the operator cannot diagnose. Phrased against
   "apply", not "page load", so a future live-apply path validates the same way
-  without a rewrite (ADR 0007 rev 1); page load is today's only apply point.
+  without a rewrite (ADR 0007 rev 2); page load is today's only apply point.
 ref: ''
-reviewed: mId6c3tiCZaL7pOLoS5kgo4RNcbY51UZJ67kzo7Wpnk=
+reviewed: cFbP8Hi0Hstb_6FQDYA4cScWOEz5oJugyhVcIN1aX-I=
 status: accepted
 text: |
   A configuration error that can be isolated to a single module shall be reported at that module's

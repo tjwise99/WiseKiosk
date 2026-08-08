@@ -7,16 +7,16 @@ links:
 - SYS003: x73sA6VMR9aDga-PqTW6L49gj-iwZdgTOg5xG8VhAwM=
 normative: true
 rationale: |
-  Owner decision 2026-07-23 (ADR 0007 rev 1): page load is the guaranteed floor,
+  Owner decision 2026-07-23 (ADR 0007 rev 2): page load is the guaranteed floor,
   phrased as "no later than" so a future live-apply path (e.g. a remote
   configuration editor) is not designed out. No container restart, rebuild, or
   redeploy stands between an edit and the display. The freshness guarantee is
   frontend-owned: the page fetches the configuration bypassing HTTP caches
   (cache: 'no-store' or equivalent), because the conventional fix — a no-cache
-  header on the config path — is exactly the config-aware code path ADR 0007 rev 1
+  header on the config path — is exactly the config-aware code path ADR 0007 rev 2
   forbids.
 ref: ''
-reviewed: VF1HNOr1ezTeYkmpZvSokFjmCs_LnGbqCZYEZ98rrfI=
+reviewed: G2sSpxLRaZgsMtzWNJGOhzFAJgEcJvXNT2LvFGN2JCM=
 status: accepted
 text: |
   A modified configuration shall take effect no later than the next load of

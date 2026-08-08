@@ -600,7 +600,7 @@ rather than closing it — a citation on an indented continuation was still exem
 is ordinary prose. What closed it was narrowing the exemption's **effect** instead of its extent: a
 changelog citation is exempt from being *current* and from nothing else, so it must still name a real
 ADR and still carry a rev. Two narrowings of extent, one of effect; only the last one held. This is
-CONTRIBUTING question 11 twice over — the exemption was written to stop a false positive and was
+CONTRIBUTING question 11, *Narrowed guards*, twice over — the exemption was written to stop a false positive and was
 twice the place a bypass could be spelled.
 
 The same narrowing applies to the index row, which drops only the leading self-link.

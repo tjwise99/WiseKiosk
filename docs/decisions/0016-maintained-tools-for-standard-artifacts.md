@@ -177,8 +177,8 @@ later.
   own failure message recommends it. That is a genuine least-privilege disagreement, not a tool error.
   Rejected as unnecessary: neither workflow uses `read-all` — both declare explicit `permissions:
   contents: read` — so the case is hypothetical, and a suppression written against a hypothetical is
-  where a bypass gets spelled ([`../../CONTRIBUTING.md`](../../CONTRIBUTING.md) review checklist item
-  11).
+  where a bypass gets spelled ([`../../CONTRIBUTING.md`](../../CONTRIBUTING.md) review checklist item 11,
+  *Narrowed guards*).
 - **A third-party action for the ticket-linkage obligations in `check-branch`.** Rejected under the
   maintenance test above. GitHub offers no native rule: the `pull_request` ruleset rule takes
   `allowed_merge_methods`, `dismiss_stale_reviews_on_push`, `require_code_owner_review`,
