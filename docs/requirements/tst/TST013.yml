@@ -12,7 +12,7 @@ rationale: |
   the callers passed different options, or a differently configured instance; the import-graph
   assertion could not see that, so it proved a shared dependency rather than a shared verdict.
 ref: ''
-reviewed: -kas5bkxaDVVl4iTQVsw1kI_37P4zrNNSxp_w36N78M=
+reviewed: -hQJzslw3N3jclIGOlinnfVYupJ6i1wnJZj02v7pGno=
 status: proposed
 text: |
   Retired, unwritten, with the requirement it verified. It would have run a fixture corpus - valid,

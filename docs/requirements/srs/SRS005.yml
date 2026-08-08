@@ -14,7 +14,7 @@ rationale: |
   schema has one enforcer by construction, so nothing the software does can violate this item.
   What survives is the rejection of a second engine, which is ADR 0007 rev 2's to hold.
 ref: ''
-reviewed: FE9vfihgSH34yWr8VYfum6JjwFufWgTfJ8ZrR-bKcFY=
+reviewed: WIBwzzG4HfiUhYcGH--ulnnOEjmXsoPFdOr7wCpZsAE=
 status: accepted
 text: |
   The configuration schema's rules shall be enforced by exactly one

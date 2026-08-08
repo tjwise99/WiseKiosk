@@ -171,6 +171,19 @@ activated in the same change that writes its first child. Elsewhere `active: fal
 retirement (ADR 0005 rev 1); an item carrying a pending note is awaiting decomposition or its verifying
 artifact, not retired.
 
+### Retirement
+
+A retired item keeps its ID and its file — an ID is permanent, and the item is the record of an
+obligation that existed. It is `active: false`, its `rationale` states the ground on which the
+obligation fell and names the ticket that withdrew it, and its `text` is rewritten to read as a
+record rather than a demand. A `TST` item marks it in the header as `Retired:`, where a pending one
+carries `Pending:`; a `SYS` or `SRS` item carries no prefix, because that convention is the `TST`
+tier's alone.
+
+Retiring a parent leaves its children unverified rather than orphaned — Doorstop evaluates neither —
+so a child of a retired item is retired in the same change or re-parented in it. Both edits move
+fingerprints: the parent's own, and every link stamped against it.
+
 **Activation is a review act.** Doorstop skips inactive items entirely, so a `reviewed` stamp on a
 pending item carries no authority and edits to a pending item's own text are invisible to the gate.
 One half of that is now mechanical: `check-suspect-links.py` fails when a pending item's *parent*

@@ -58,10 +58,13 @@ owner challenged it; it fell; the allocation below is what remains when it does.
   which cannot execute Python. With validation allocated to the page the language question answers
   itself, and Go fails the same test — it was only ever a candidate while the backend was a
   consumer.
-- **Both sides validate.** Two engines over one schema drift, and the divergence surfaces as a
-  validator that accepts what the page rejects — the defect class the single-definition rule
-  exists to kill — a second implementation built without a second need
-  ([`CONTRIBUTING.md`](../../CONTRIBUTING.md)'s review checklist, generality).
+- **Both sides validate.** Two engines over one schema drift, and the divergence surfaces as one
+  accepting what the other rejects. **The schema's rules are enforced by exactly one implementation**,
+  and that holds against any second enforcer, not only a backend one: a desk tool, a container
+  entrypoint, a generator checking its own output. A second one is proposed by reopening this
+  decision, and there is no other route — the case is not the single-implementation-no-second-consumer
+  shape [`CONTRIBUTING.md`](../../CONTRIBUTING.md)'s generality question asks about, so that question
+  does not reach it.
 - **Entrypoint check** (frontend-owned, plus the engine packaged again and run at container start).
   Catches a bad deploy while the operator is still at the terminal, but ships Node in the image,
   reintroduces hard-exit for the unattended case, and buys a second build target for a gap the page
