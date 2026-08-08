@@ -58,7 +58,7 @@ legibly says when one failed`" .-> Viewer
 frontend bundle executing in the browser on the display host. They share one origin, because the
 backend serves that bundle and the configuration file as static content it never interprets
 ([ADR 0020 rev 1](decisions/0020-two-containers-one-origin-and-dual-tier-tags.md),
-[ADR 0007 rev 1](decisions/0007-config-validation-allocation.md)). What parameterises a deployment
+[ADR 0007 rev 2](decisions/0007-config-validation-allocation.md)). What parameterises a deployment
 (SYS003<!-- A deployment is parameterised from outside the image -->) reaches that filesystem as two
 separate supplies: the secret for each source, resolved per request
 (SRS006<!-- Unresolvable secret surfaces as that source's upstream failure -->), and the
@@ -102,7 +102,7 @@ the repository layout is #5.
 
 _To be documented as it is built._ Language and boundary-contract decision:
 [ADR 0001 rev 1](decisions/0001-backend-language-go.md); the backend's config-blindness is
-[ADR 0007 rev 1](decisions/0007-config-validation-allocation.md)'s. Normative shape:
+[ADR 0007 rev 2](decisions/0007-config-validation-allocation.md)'s. Normative shape:
 SRS001<!-- A failed module shows why, and only that module -->,
 SRS006<!-- Unresolvable secret surfaces as that source's upstream failure -->,
 SRS008<!-- No secret value in any backend output -->,
@@ -129,7 +129,7 @@ SRS021<!-- Frontend runs on a Pi Zero-class browser host -->,
 SRS024<!-- Every offered configuration key is exercised at a non-default value -->,
 SRS026<!-- The display says when the backend is gone -->,
 SRS027<!-- The display page holds no device capability it does not use -->; configuration
-validation is frontend-owned per [ADR 0007 rev 1](decisions/0007-config-validation-allocation.md).
+validation is frontend-owned per [ADR 0007 rev 2](decisions/0007-config-validation-allocation.md).
 
 ## The boundary contract
 
@@ -151,7 +151,7 @@ documented here once it is built (#7, after the repo layout in #5)._
 ## Config and secrets
 
 _To be documented as it is built._ The backend is config-blind, per
-[ADR 0007 rev 1](decisions/0007-config-validation-allocation.md), which also states byte-for-byte delivery
+[ADR 0007 rev 2](decisions/0007-config-validation-allocation.md), which also states byte-for-byte delivery
 to the page; the configuration is a static file bind-mounted into the served tree
 (SRS018<!-- One generic published image -->), validated by the frontend at apply time and nowhere
 else (SRS002<!-- A module-scoped configuration error is reported at that module -->). A secret

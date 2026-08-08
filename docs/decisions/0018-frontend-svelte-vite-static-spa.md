@@ -28,7 +28,7 @@ What the frontend has to be is narrow, and every alternative below is measured a
 is an unattended display on constrained hardware. It renders a fixed set of modules on one screen and
 **never navigates**. It has no crawler, no cold visitor and no share link, so first paint is a
 once-per-power-cycle event. Its configuration is a static file fetched from the same origin
-([ADR 0007 rev 1](0007-config-validation-allocation.md)), not a form anyone submits. The bundle is served as
+([ADR 0007 rev 2](0007-config-validation-allocation.md)), not a form anyone submits. The bundle is served as
 static files by the Go backend that already serves the configuration.
 
 ## Decision
@@ -40,7 +40,7 @@ what it asserts against.
 
 Components are authored in the Svelte component format and everything around them in TypeScript,
 which is what [ADR 0017 rev 2](0017-authored-language-set.md) admits for what ships: the
-configuration-validation engine of [ADR 0007 rev 1](0007-config-validation-allocation.md) and the generated
+configuration-validation engine of [ADR 0007 rev 2](0007-config-validation-allocation.md) and the generated
 boundary types of [ADR 0008 rev 1](0008-boundary-contract-openapi-codegen.md) both live here. Vite is an
 invoked toolchain under that decision, not an authoring language.
 
@@ -78,7 +78,7 @@ invoked toolchain under that decision, not an authoring language.
   product with a growing component surface.
 - **First paint waits for the bundle and the first fetch.** Acceptable for a display that boots once
   and runs for weeks, and it is exactly the trade that would be wrong for a page a person opens cold.
-- **The frontend owns configuration validation** ([ADR 0007 rev 1](0007-config-validation-allocation.md)) and
+- **The frontend owns configuration validation** ([ADR 0007 rev 2](0007-config-validation-allocation.md)) and
   consumes generated boundary types ([ADR 0008 rev 1](0008-boundary-contract-openapi-codegen.md)), so the
   TypeScript toolchain is unconditional here whatever else changes.
 - **No requirement item states any of this.** The stack constrains the repository rather than the

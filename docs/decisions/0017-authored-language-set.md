@@ -167,7 +167,7 @@ unregistered language whatever this record said.
   need is one this repository already owes for its requirements tree and its documentation site.
 - **A check that wants logic already written in TypeScript must reimplement it in Python or shell out
   to the frontend toolchain.** No check does; a configuration-schema check that wanted to
-  reuse the validation engine of [ADR 0007 rev 1](0007-config-validation-allocation.md) would be the first, and
+  reuse the validation engine of [ADR 0007 rev 2](0007-config-validation-allocation.md) would be the first, and
   it would be a real cost when it arrives.
 - **#59 comment-discipline gate's registry gets a bounded population** — the authored languages above,
   plus formats that arrive derived rather than chosen, each of which needs an arm or a recorded

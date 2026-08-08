@@ -100,7 +100,7 @@ and #7's acceptance — schema file present, both generators wired, drift gate g
   this knowingly), tracked like any pinned tool.
 - **Hand-authored OpenAPI YAML is verbose** — accepted for ~5 payloads; the 3.1 migration and, if it
   ever bites, an authoring layer remain open.
-- **The configuration schema stays a separate artifact**, TS-owned (ADR 0007 rev 1), never crossing the
+- **The configuration schema stays a separate artifact**, TS-owned (ADR 0007 rev 2), never crossing the
   wire. When 3.1 lands, both schemas can share the JSON Schema 2020-12 dialect and docsite
   rendering — a shared *vocabulary*, not a merged schema (that would be abstraction without a second
   consumer).
