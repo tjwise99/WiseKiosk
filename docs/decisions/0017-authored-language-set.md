@@ -3,10 +3,13 @@
 **Status:** accepted
 **Decided:** 2026-08-04 (#60 authored-language set, taken after
 [ADR 0016 rev 3](0016-maintained-tools-for-standard-artifacts.md) settled which authored checks survive at all)
-**Rev:** 2
+**Rev:** 3
 
 ## Revisions
 
+- **rev 3** — 2026-08-08 — drops the append-only placement constraint on the review checklist: a
+  citation carries the question's name beside its number, so a renumber no longer strands one. The
+  language set is unchanged (#129 retire the desk configuration validator).
 - **rev 2** — 2026-08-05 — names revving rather than amendment as the route a later decision takes; the language set is unchanged (#118 ADR revisions).
 - **rev 1** — 2026-08-05 — revision tracking begins; text as merged (#118 ADR revisions).
 
@@ -64,7 +67,7 @@ rather than a shell script wearing a recipe's clothes.
 **A program embedded in a derived format is still an authored program**, and the rule above reaches
 it: a workflow `run:` block or a hook `entry:` carrying control flow is authored sh whatever file it
 sits in. Only the `justfile` leg of this has a check behind it; the rest is the reviewer's, under
-[`../../CONTRIBUTING.md`](../../CONTRIBUTING.md) review checklist item 12, and it is the one place
+[`../../CONTRIBUTING.md`](../../CONTRIBUTING.md) review checklist item 12, *Languages*, and it is the one place
 where this decision's reason for refusing a gate — that a new language is a new file extension, the
 loudest thing in a diff — does not hold.
 
@@ -114,7 +117,7 @@ against the tree, and the rule above is what governs anything written after it.
 
 **Nothing here is gated.** A language outside this set is a decision with a rejected alternative, so
 it arrives as a rev of this record or an ADR superseding it, and the reviewer is the mechanism —
-[`../../CONTRIBUTING.md`](../../CONTRIBUTING.md) review checklist item 12, added with this record.
+[`../../CONTRIBUTING.md`](../../CONTRIBUTING.md) review checklist item 12, *Languages*, added with this record.
 #59 comment-discipline gate's coverage registry is **not** this decision's enforcement: it exists so
 that gate cannot go silently blind on a language it has no arm for, and it would fail-closed on an
 unregistered language whatever this record said.
@@ -167,7 +170,7 @@ unregistered language whatever this record said.
   need is one this repository already owes for its requirements tree and its documentation site.
 - **A check that wants logic already written in TypeScript must reimplement it in Python or shell out
   to the frontend toolchain.** No check does; a configuration-schema check that wanted to
-  reuse the validation engine of [ADR 0007 rev 1](0007-config-validation-allocation.md) would be the first, and
+  reuse the validation engine of [ADR 0007 rev 2](0007-config-validation-allocation.md) would be the first, and
   it would be a real cost when it arrives.
 - **#59 comment-discipline gate's registry gets a bounded population** — the authored languages above,
   plus formats that arrive derived rather than chosen, each of which needs an arm or a recorded
@@ -176,12 +179,14 @@ unregistered language whatever this record said.
 - **No requirement item states any of this.** The decision constrains the repository, and
   [ADR 0011 rev 1](0011-requirement-or-convention.md) makes a repository constraint a check or a checklist
   question, never a tree item.
-- **The review checklist gains a twelfth question**, appended to its *Code* section rather than placed
-  beside the dependency question it most resembles. Inserting it there would renumber the questions
-  below it, and [ADR 0002 rev 1](0002-requirements-management-doorstop.md),
+- **The review checklist gains a question, *Languages***, appended to its *Code* section rather than
+  placed beside the dependency question it most resembles. Inserting it there would have renumbered
+  the questions below it, against [ADR 0002 rev 1](0002-requirements-management-doorstop.md),
   [ADR 0003 rev 1](0003-architecture-as-code-likec4.md) and
-  [ADR 0016 rev 3](0016-maintained-tools-for-standard-artifacts.md) each cite one by number with nothing gating
-  the citation.
+  [ADR 0016 rev 3](0016-maintained-tools-for-standard-artifacts.md), which cite one by number with
+  nothing gating the citation. That constraint does not bind a later change:
+  [`../../CONTRIBUTING.md`](../../CONTRIBUTING.md) requires a citation to carry the question's name
+  beside its number, so a renumbered citation still names what it meant.
 
 **Premise that would reopen this:** an artifact appears that neither audience covers — something that
 must run where neither Python nor a shipped toolchain is reachable — or Python stops being

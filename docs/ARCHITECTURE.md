@@ -33,8 +33,8 @@ are overwritten on the next export, and drift fails the staleness gate — see t
 for, and the boundary between them, which is what deploys: the published image and what it serves
 ([ADR 0019 rev 1](decisions/0019-boundary-at-what-deploys-and-tag-tier.md)). No external system
 appears at this level: an upstream data source is modelled once the module that reads it has a need
-in the tree, and the desk validator and the provisioning tooling exchange nothing with the running
-system ([ADR 0019 rev 1](decisions/0019-boundary-at-what-deploys-and-tag-tier.md)).
+in the tree, and the provisioning tooling exchanges nothing with the running system
+([ADR 0019 rev 1](decisions/0019-boundary-at-what-deploys-and-tag-tier.md)).
 
 <!-- arch-export:begin generated/index.mmd -->
 
@@ -58,7 +58,7 @@ legibly says when one failed`" .-> Viewer
 frontend bundle executing in the browser on the display host. They share one origin, because the
 backend serves that bundle and the configuration file as static content it never interprets
 ([ADR 0020 rev 1](decisions/0020-two-containers-one-origin-and-dual-tier-tags.md),
-[ADR 0007 rev 1](decisions/0007-config-validation-allocation.md)). What parameterises a deployment
+[ADR 0007 rev 2](decisions/0007-config-validation-allocation.md)). What parameterises a deployment
 (SYS003<!-- A deployment is parameterised from outside the image -->) reaches that filesystem as two
 separate supplies: the secret for each source, resolved per request
 (SRS006<!-- Unresolvable secret surfaces as that source's upstream failure -->), and the
@@ -129,7 +129,7 @@ the tree, and the model as the record of where an obligation is observable.
 
 _To be documented as it is built._ Language and boundary-contract decision:
 [ADR 0001 rev 1](decisions/0001-backend-language-go.md); the backend's config-blindness is
-[ADR 0007 rev 1](decisions/0007-config-validation-allocation.md)'s. Normative shape:
+[ADR 0007 rev 2](decisions/0007-config-validation-allocation.md)'s. Normative shape:
 SRS001<!-- A failed module shows why, and only that module -->,
 SRS006<!-- Unresolvable secret surfaces as that source's upstream failure -->,
 SRS008<!-- No secret value in any backend output -->,
@@ -197,7 +197,6 @@ that module's own need, per
 [the module contract](contracts/module-contract.md). Normative shape:
 SRS002<!-- A module-scoped configuration error is reported at that module -->,
 SRS003<!-- A configuration change applies no later than the next page load -->,
-SRS005<!-- One validation implementation -->,
 SRS010<!-- The display page reaches no origin but the backend's -->,
 SRS016<!-- Both sides consume the generated types -->,
 SRS017<!-- Full-screen assembly at kiosk; reflow, not overlap, at narrower widths -->,
@@ -205,7 +204,7 @@ SRS021<!-- Frontend runs on a Pi Zero-class browser host -->,
 SRS024<!-- Every offered configuration key is exercised at a non-default value -->,
 SRS026<!-- The display says when the backend is gone -->,
 SRS027<!-- The display page holds no device capability it does not use -->; configuration
-validation is frontend-owned per [ADR 0007 rev 1](decisions/0007-config-validation-allocation.md).
+validation is frontend-owned per [ADR 0007 rev 2](decisions/0007-config-validation-allocation.md).
 
 **Components (C4 L3)** — the frontend's framework half: a page shell owning the order things happen
 in, which renders before any configuration is applied, and beneath it the load-and-validate step, the
@@ -270,14 +269,14 @@ documented here once it is built (#7, after the repo layout in #5)._
 ## Config and secrets
 
 _To be documented as it is built._ The backend is config-blind, per
-[ADR 0007 rev 1](decisions/0007-config-validation-allocation.md), which also states byte-for-byte delivery
+[ADR 0007 rev 2](decisions/0007-config-validation-allocation.md), which also states byte-for-byte delivery
 to the page; the configuration is a static file bind-mounted into the served tree
-(SRS018<!-- One generic published image -->), validated by the frontend at apply time
-(SRS002<!-- A module-scoped configuration error is reported at that module -->) and by the
-standalone desk validator ([`../tools/README.md`](../tools/README.md)) through one implementation
-(SRS005<!-- One validation implementation -->). A secret reaches the backend only as the file named
-by `<NAME>_FILE` — never through configuration, and never through a bare `<NAME>` environment
-variable (SRS007<!-- Configuration schema offers no secret-bearing key -->).
+(SRS018<!-- One generic published image -->), validated in the page and nowhere else
+([ADR 0007 rev 2](decisions/0007-config-validation-allocation.md)) at apply time, where a
+module-scoped error is reported at that module
+(SRS002<!-- A module-scoped configuration error is reported at that module -->). A secret reaches the
+backend only as the file named by `<NAME>_FILE` — never through configuration, and never through a
+bare `<NAME>` environment variable (SRS007<!-- Configuration schema offers no secret-bearing key -->).
 
 ## Deployment
 

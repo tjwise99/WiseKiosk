@@ -33,7 +33,7 @@ Container level then surfaced two more questions, one of them older than this ti
 lists static file serving among the backend's duties as a bootstrap given.
 [ADR 0018 rev 1](0018-frontend-svelte-vite-static-spa.md) states "served as files by the Go backend" in its
 decision but weighs only frameworks against each other.
-[ADR 0007 rev 1](0007-config-validation-allocation.md) reasons *from* it — "the page runs in a browser on
+[ADR 0007 rev 2](0007-config-validation-allocation.md) reasons *from* it — "the page runs in a browser on
 the display host, so config bytes reach it only over HTTP, from the origin that already serves the
 SPA bundle." Three records lean on the arrangement and none argues it, which is the shape
 [ADR 0015 rev 1](0015-container-toolchain-and-image-annotations.md) caught with the container toolchain. A
@@ -66,7 +66,7 @@ SRS010<!-- The display page reaches no origin but the backend's --> is enforced 
 one origin, and every arrangement that serves the page from somewhere else makes the page's own
 origin that other host and the backend a second one. Serving is not knowing: a static handler has no
 rewrite path and cannot tell the configuration from a script asset, so the config-blindness
-[ADR 0007 rev 1](0007-config-validation-allocation.md) holds is preserved exactly by the bytes transiting
+[ADR 0007 rev 2](0007-config-validation-allocation.md) holds is preserved exactly by the bytes transiting
 the component forbidden to interpret them.
 
 **Each relationship is declared once, at its true endpoints.** The Context level's two actor

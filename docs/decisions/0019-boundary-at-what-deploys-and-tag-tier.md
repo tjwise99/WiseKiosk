@@ -30,7 +30,7 @@ differently each time.
 
 **Which side of the boundary something falls on.** The project builds things that never enter the
 published image: the configuration validator that runs at a desk
-([ADR 0007 rev 1](0007-config-validation-allocation.md)) and the provisioning tooling shipped with the
+([ADR 0007 rev 2](0007-config-validation-allocation.md)) and the provisioning tooling shipped with the
 release artifact set (#71 release artifact set). Each is a fresh argument without a criterion, and
 each reaches a different answer depending on whether "the system" is taken to mean what runs or what
 the project owns.
@@ -68,7 +68,7 @@ owes every `SYS` item, so tagging it distinguishes none of them.
 ## Alternatives considered
 
 **Boundary at what the project authors and ships**, putting the desk validator inside. It would make
-ADR 0007 rev 1's invariant — one TypeScript engine, two build targets, so page and desk validation cannot
+ADR 0007 rev 2's invariant — one TypeScript engine, two build targets, so page and desk validation cannot
 disagree — visible in the model. Rejected: that invariant is already held by
 SRS005<!-- One validation implementation -->, and buying a second copy of it costs a Container level
 holding something that is not in the image and does not run on the display host, so "one published

@@ -38,7 +38,7 @@ requirements it serves, not at the repo root; it is dev tooling only, no applica
   project of this size needs, for capability it will not use soon.
 - **OpenFastTrace** — a mature trace tool, but JVM-based. Rejected: it drags a Java toolchain into a
   Go + Svelte repo whose minimal, native-toolchain-free dependency footprint
-  ([`CONTRIBUTING.md`](../../CONTRIBUTING.md), review checklist item 7) actively resists exactly
+  ([`CONTRIBUTING.md`](../../CONTRIBUTING.md), review checklist item 7, *Dependencies*) actively resists exactly
   that. Doorstop's Python is a
   lighter, more idiomatic addition.
 - **A homegrown Markdown register + validator script** — a table of IDs plus a `check-reqs.mjs` in

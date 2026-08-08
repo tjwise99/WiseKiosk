@@ -74,6 +74,11 @@ the reviewer is the mechanism ([ADR 0011 rev 1](docs/decisions/0011-requirement-
 [pull-request template](.github/pull_request_template.md) points here; it does not repeat the
 questions.
 
+**Cite a question by number *and* name** — `question 8, *Generality*`. The numbers shift whenever one
+is inserted rather than appended, and a bare number then resolves silently to whatever now occupies
+it, in documents no sweep reliably reaches: a citation whose number wrapped across a line break
+already escaped one. The name is what a reader can still resolve when the number has moved.
+
 **Documentation**
 
 1. **Formalised prose.** Where the change turns a prose obligation into a requirement, does the prose
@@ -111,29 +116,39 @@ questions.
     prevent a false positive is the first place a bypass gets spelled, and the reasoning that
     produces one reads as caution.
 12. **Languages.** Does the change author a program in a language outside the set
-    [ADR 0017 rev 2](docs/decisions/0017-authored-language-set.md) states — and if so, has that language
+    [ADR 0017 rev 3](docs/decisions/0017-authored-language-set.md) states — and if so, has that language
     been through an ADR?
+13. **Second enforcer.** Does the change add a second place that enforces a rule an ADR allocated to
+    one — today, the configuration schema, validated in the page alone
+    ([ADR 0007 rev 2](docs/decisions/0007-config-validation-allocation.md))? A second enforcer drifts
+    from the first, and the divergence surfaces as one accepting what the other rejects. That instance
+    is an example and not the subject: nothing enumerates the ADRs allocating a rule to one place, so
+    a list here would be wrong as soon as another one does. This is the mirror of question 8,
+    *Generality*, rather than a case of it — that one asks about a single implementation serving no
+    second consumer, this one about a second implementation of one rule, and a change can pass either
+    while failing the other.
 
 **Requirements**
 
-13. **Module universals.** Where the change adds or edits a module's requirements, does any of them
+14. **Module universals.** Where the change adds or edits a module's requirements, does any of them
     state something already obliged of every module — failure rendering, secret delivery, caching,
     request rejection? A module's requirements carry what is true of that module and nothing else
     ([ADR 0012 rev 1](docs/decisions/0012-module-requirements-in-tree.md)).
-14. **Named resources.** Does a requirement the change adds or edits name a file, endpoint, package
+15. **Named resources.** Does a requirement the change adds or edits name a file, endpoint, package
     or tool rather than stating the property the software must have? A requirement naming one has
     swallowed a design decision, which then cannot change without a specification change.
 
 **Checks**
 
-15. **Recorded cases.** Where the change adds or edits a check, does
+16. **Recorded cases.** Where the change adds or edits a check, does
     [`scripts/README.md`](scripts/README.md) record what it was run against, in both directions — the
     defect it must catch, and the legal input it must not reject? A check's own green run is not
     evidence it works, which is why that record exists.
-16. **Defects the work surfaced.** Where the work exercised an existing check and found it **fails to
+17. **Defects the work surfaced.** Where the work exercised an existing check and found it **fails to
     catch what it exists to catch, admits what it exists to reject, or reports a result its input
     cannot support**, is that fixed here? A check is verified by whoever was placed to see it fail,
     and deferring that to a ticket separates the fix from the only context in which the defect was
     visible. You write the cases for a check as you write the check; a defect found in one is the
     same obligation arriving late. The three clauses are the floor: below them this is a licence to
-    change anything nearby, which is the failure mode question 11 describes from the other side.
+    change anything nearby, which is the failure mode question 11, *Narrowed guards*, describes from the
+    other side.
