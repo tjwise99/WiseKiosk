@@ -94,8 +94,8 @@ legibly says when one failed`" .-> Viewer
 
 <!-- arch-export:end generated/containers.mmd -->
 
-The Component level (C4 L3) is drawn per container, in the two container sections below. No element carries a
-`link` to the source implementing it: no code exists, and the repository layout is #5.
+The Component level (C4 L3) is drawn per container, in the two container sections below. No element
+carries a `link` to the source implementing it: no code exists, and the repository layout is #5.
 
 Several sections below name a **normative shape** — the obligations that shape that part of the
 system, read out of the [requirements tree](requirements/README.md). **A normative shape is a reading
