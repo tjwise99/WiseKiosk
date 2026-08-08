@@ -27,6 +27,7 @@ specification {
   tag SYS003
   tag SYS004
   tag SYS005
+  tag SYS006
   tag SRS001
   tag SRS002
   tag SRS003
@@ -42,6 +43,8 @@ specification {
   tag SRS016
   tag SRS017
   tag SRS018
+  tag SRS019
+  tag SRS021
   tag SRS022
   tag SRS026
   tag SRS028
@@ -63,8 +66,12 @@ model {
     '''
 
     backend = container 'Backend' {
+      #SYS006
+      #SRS006
       #SRS008
       #SRS009
+      #SRS014
+      #SRS019
       #SRS022
       #SRS028
       technology 'Go'
@@ -132,6 +139,7 @@ model {
 
     frontend = container 'Frontend' {
       #SRS017
+      #SRS021
       technology 'Svelte 5, static single-page bundle'
       icon tech:svelte
       description '''
@@ -177,6 +185,10 @@ model {
       }
     }
 
+    // Drawn server->client, against the configuration and payload edges beside
+    // it, and terminating on a container rather than a component: the bundle is
+    // not fetched by the frontend, it becomes the frontend, so no component
+    // exists to originate it.
     staticServing -> frontend 'Serves the single-page bundle' {
       technology 'HTTP'
     }
@@ -198,6 +210,7 @@ model {
       #SYS004
       #SYS005
       #SRS010
+      #SRS013
       #SRS016
       technology 'HTTP / JSON'
     }
