@@ -115,8 +115,8 @@ arriving from outside, because that is where what it obliges is observable
 ([ADR 0021 rev 1](decisions/0021-component-earns-its-interface-and-framework-half-only.md)).
 Permanence separates it from the first
 ([ADR 0020 rev 1](decisions/0020-two-containers-one-origin-and-dual-tier-tags.md)): a subject not
-drawn yet is deferred, where the desk validator is excluded. Whether an item in the deferred case
-owes a recorded reason is #121's to decide, not this paragraph's.
+drawn yet may be drawn later, where the desk validator will not be. Whether such an item owes a
+recorded reason, and what to call the case, is #121's to decide and not this paragraph's.
 
 Tagged and unlisted: a tag sits where its obligation is observable
 ([ADR 0021 rev 1](decisions/0021-component-earns-its-interface-and-framework-half-only.md)), which is
