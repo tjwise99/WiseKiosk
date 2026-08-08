@@ -1,25 +1,44 @@
 active: true
 derived: false
 header: |
-  The configured layout renders whole
+  The configured layout renders whole and reads
 level: 2
 links: []
 normative: true
 rationale: |
   The product is a display; a module that is present but clipped, overlapped or scrolled out of view
-  has failed silently. "Wholly visible" absorbs no-overlap, no-clipping and no-scrollbars as one
-  property rather than three observables — none of them is a separate want. "The display it was
+  has failed silently, and so has one rendered too small or too dim to read from where the display
+  hangs. "Wholly visible and legible" absorbs no-overlap, no-clipping, no-scrollbars and readability
+  as one property rather than four observables — none of them is a separate want. "The display it was
   configured for" carries the kiosk-primary, desktop-secondary distinction without fixing viewports
   in the need;
   SRS017<!-- Full-screen assembly at kiosk; reflow, not overlap, at narrower widths --> owns those.
+  "From where that display is watched" carries the viewing distance the same way, without fixing one.
   Phone widths are deliberately not a requirement.
+  The obligation is scoped to a configuration the display is built to lay out, in the same shape as
+  the declared-minimum-host need: an obligation over every configuration expressible cannot be
+  discharged, because a single module may be instanced without limit. Past that bound nothing here is
+  claimed and the display renders degraded, which is the signal an operator needs (owner,
+  2026-08-08). The bound is the volume the verification loads, held with the checks rather than
+  fixed here.
+
+  This need previously scoped itself to the three geometric observables and disclaimed readability, on
+  the ground that visual judgement is not verification. That was a statement about what the tree then
+  contained rather than about what a check can decide, and it was wrong: text size as a fraction of the
+  display's height, and the emission a glyph is rendered at, are both settled by a machine reading a
+  rendered page. A module can occupy its region perfectly and still be invisible to the person the
+  display was hung for, which is one want failing, not two.
 ref: ''
-reviewed: 7SUfOJEsZezu9KnDJgQyhRHtIyI0db2eT2uOxRUfXtc=
+reviewed: ysymlBgUP5CHpYCMU-e2yKVptdT0SF3uqkDPcJPJbqc=
 status: accepted
 text: |
-  Every configured module shall be wholly visible on the display it was configured for.
+  For a configuration the display is built to lay out, every configured module shall be wholly
+  visible and legible on the display it was configured for, from where that display is watched.
 verification-justification: |
-  Geometry is decidable: a rendered layout is measured against the viewport it declares. What the check
-  does not settle is whether a legible layout is a good one — visual judgement is not verification, and
-  no gate claims it.
+  Settled by its children, and all of it decidable: a rendered layout measured against the viewport it
+  declares, text size read as a fraction of the display's height, emission read per element, and content
+  measured against an inset the viewport cannot see being masked. Two things no child reaches. What a
+  viewer actually sees behind any glyph is the reflected room, which the software neither supplies nor
+  controls. And whether the result is a good layout rather than a legible one is a judgement no gate
+  claims. Legibility is not on that list: its children carry it.
 verification-method: test

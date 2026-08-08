@@ -1,0 +1,30 @@
+active: true
+derived: false
+header: |
+  Readable content is carried at full emission
+level: 35
+links:
+- SYS002: ysymlBgUP5CHpYCMU-e2yKVptdT0SF3uqkDPcJPJbqc=
+normative: true
+rationale: |
+  The ground behind any glyph is the reflected room, so the display's contrast against it is neither
+  known nor controlled: the same character is crisp over a dark cabinet and gone over a lit counter,
+  and the software cannot tell which is behind it. It also cannot darken either one - the surface adds
+  light and subtracts none - so emission is the whole of what it controls, and a reduced-emission
+  glyph is not a quieter one but one that disappears sooner, in conditions nobody can predict.
+  Stating the obligation over emission rather than over a ratio against a background is what keeps it
+  honest. A ratio computed against the rendered background is computed against the absence of one,
+  and would report the same result whether the display were readable or unreadable.
+ref: ''
+reviewed: a8k55NXKpLmPfr_S2h4hBKSTCOPoaZOWLtZSVhxh4b0=
+status: accepted
+text: |
+  Text the display presents to be read shall be rendered at the display's maximum emission.
+verification-justification: |
+  Asserted by reading the rendered value of every text element the page presents for reading. That is
+  the value the software chose rather than the light the panel emits - backlight, gamma, colour profile
+  and the half-silvered surface all lie between the two, and none of them is asserted. Nor does the
+  check settle legibility itself, which depends on what the room reflects behind each
+  glyph - outside the boundary, as the host is. It bounds the software's contribution rather than
+  proving the outcome.
+verification-method: test

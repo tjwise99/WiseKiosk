@@ -1,0 +1,61 @@
+active: true
+derived: false
+header: |
+  The reserve spans what a reflection needs
+level: 34
+links:
+- SYS008: YxEAYQhU6L_UOXxUnTvjphF9VcMfu8AuYsmmXcev2ys=
+normative: true
+rationale: |
+  Erosion is silent: content added a module at a time takes the mirror gradually, each step looking
+  like the last, until the want the display was built for is gone with nothing having failed. Naming
+  a span is what makes the loss observable at the step it happens rather than only in retrospect.
+  The item states the end state and not how a layout reaches it. Taking the region before content is
+  placed, and laying content around it, is the strategy that produces this property and belongs here
+  rather than in the obligation - an order of construction cannot be falsified from a rendered page,
+  where the span can be measured off one directly.
+  An earlier draft carried a second clause forbidding content inside the region. It was not
+  redundant: this item obliges a region at minimum emission, and an element rendered at minimum
+  emission is not excluded by that, so the clause did exclude a case the first does not. It was
+  dropped because the case it excluded satisfies the want - on a half-silvered surface an element
+  rendered at minimum emission is itself mirror - so the clause forbade a layout meeting the need.
+  Its check could not have caught anything either, having selected the region by carrying no content
+  before asserting it carried none, but that was a defect of the check's construction rather than a
+  consequence of the text.
+  "The largest" rather than "a" is what keeps this item and the placement item talking about the same
+  region. Under an existential reading a wide shallow strip could satisfy placement while a squarer
+  region elsewhere satisfied the span, both children green and the parent's single-region want
+  discharged by neither.
+  Four numbers decide whether this obligation and its neighbours can hold together: the two fractions
+  here, the text-size floor, the edge inset, and the centring tolerance. They live in four separate
+  checks and are not independent - a centred reserve pushes content outward, the inset forbids the
+  outer band, and the size floor sets how wide a row of text must be. Tightening one can make another
+  unreachable with no check objecting, so they are calibrated as a set against the content the
+  product actually carries, and a change to any of them is re-checked against the others.
+  A configuration dense enough that content will not fit around the reserve is met with no rendered
+  failure state, and that is a ruling rather than an omission (owner, 2026-08-08): the degraded
+  display is itself the signal the operator needs, and rendering a message to announce that the
+  display will look wrong is a second and worse way of saying what is already visible. Nor is it a
+  failure in the sense the legibility-of-failure need carries - nothing has failed, a choice has been
+  made badly.
+ref: ''
+reviewed: S5LjJZLIqLuGy5UTkxxjrdmEd6H6uecqz4pQIvRdMj4=
+status: accepted
+text: |
+  The largest contiguous region of the display held at minimum emission shall span at least a minimum
+  fraction of the display's width and a minimum fraction of its height.
+verification-justification: |
+  Asserted by computing the largest contiguous region carrying no content from rendered geometry and
+  comparing its two spans against the floor, over configurations chosen to load the display. Three
+  bounds. The check decides a region carrying no content where this item obliges a region at minimum
+  emission; the two coincide only while
+  SRS030<!-- Unoccupied surface is held at minimum emission --> holds, so a violation of that item
+  would leave this check passing an obligation that has failed. It runs the other way too: an element
+  rendered at minimum emission satisfies this item and is counted as content by the check, so a
+  layout meeting the obligation can fail the assertion. Geometry is measured as element
+  boxes, so a box that is largely empty counts as occupied and the computed region is a lower bound
+  on the region a viewer actually gets - conservative in one direction, and silent about a layout
+  whose boxes are compact while its lit pixels are not. And the two fractions are a decision about
+  how much of a person the product returns; they are held with the check so that revisiting them is
+  not a change to this obligation.
+verification-method: test

@@ -1,0 +1,39 @@
+active: true
+derived: false
+header: |
+  The surface carrying no content is a mirror
+level: 13
+links: []
+normative: true
+rationale: |
+  Behind a half-silvered surface a pixel at minimum emission is a mirror - unlit, in the only sense
+  that matters here - so the part of the display carrying nothing is not spare capacity, it is the
+  product. A display that fills its surface with content is a different product wearing the same
+  hardware, and nothing else in the tree would notice: every module could render wholly, legibly and
+  within its region while the mirror was gone.
+  This is why the want is a need of its own rather than a decomposition of the layout need. The two
+  are satisfiable together and independently in both directions - a display can fill every pixel and
+  still lay out perfectly, or reserve half its surface and clip a module - which is the test that
+  decides a need from a decomposition. The layout need is a want about content; this is a want about
+  content's absence.
+  The obligation is stated over the surface the software controls rather than over the glass, which
+  WiseKiosk does not supply. What the mounting, the room and the viewer's height make of that surface
+  is the operator's, in the same way the kiosk host is (#132 layout need decomposition).
+  Only the second clause is scoped. Holding unoccupied surface at minimum emission costs nothing and
+  holds at any density; a reserve of a stated size cannot survive content added without limit, so it
+  is bounded the way the declared-minimum-host need bounds its own claim.
+ref: ''
+reviewed: YxEAYQhU6L_UOXxUnTvjphF9VcMfu8AuYsmmXcev2ys=
+status: accepted
+text: |
+  Wherever the display carries no content it shall be held at minimum emission, and, for a
+  configuration the display is built to lay out, a contiguous part of what is so held shall be placed
+  and large enough to return the reflection of a viewer at the distance the display is installed for.
+verification-justification: |
+  Settled by its children: that surface carrying no content is held at minimum emission, that the
+  largest contiguous region so held spans what a reflection needs in both dimensions, and that the
+  same region sits where a viewer facing the display is returned rather than banked against an edge. What no check reaches is the
+  height the panel is hung at - a reserve of the right size, in the right place on the surface, still
+  returns a reflection of the ceiling if the panel is mounted too high. Mounting is the operator's;
+  where the region sits on the surface is not, and is obliged.
+verification-method: test

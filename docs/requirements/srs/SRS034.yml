@@ -1,0 +1,29 @@
+active: true
+derived: false
+header: |
+  Content keeps clear of the display edge
+level: 37
+links:
+- SYS002: ysymlBgUP5CHpYCMU-e2yKVptdT0SF3uqkDPcJPJbqc=
+normative: true
+rationale: |
+  A panel set in a frame, or driven by a television that overscans, does not present its own edge to
+  anybody: some outer band of it is behind trim or off the tube, and the browser reports every pixel
+  of that band as visible. So the property the layout need states cannot be established by the
+  viewport alone - the one measurement available is the one that cannot see the mask.
+  Holding content clear of the edge is what the software can do about a mask it cannot observe, and
+  it also bounds the case where content grows into the space another module occupies: a region
+  accumulating content reaches the inset before it reaches its neighbour, which turns a collision
+  into an exceeded bound.
+ref: ''
+reviewed: cEoJm0ML9gRBn0qhViSXPSxdL6Km5FZq-EKhcqVSnnk=
+status: accepted
+text: |
+  Content the display renders shall lie within an inset from every edge of the display, stated as a
+  fraction of the display's height.
+verification-justification: |
+  Asserted by reading rendered geometry against the viewport and confirming no content enters the
+  outer band. What the check does not settle is whether the inset clears the mask actually fitted -
+  the frame and the television are the operator's, so the figure is calibrated against a deployment
+  known to present its content whole, and is held with the check rather than here.
+verification-method: test

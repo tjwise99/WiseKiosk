@@ -315,7 +315,7 @@ Run all commands with the venv (`docs/requirements/.venv/bin/doorstop …`):
   owner already fixed. `--error-all` cannot see this; grep the relevant items' rationales first. A
   clause that reverses a recorded decision is a finding: either the decision is reopened with its
   own review, or the clause does not land. (A phone-width `shall` slipped this way in the #38 round,
-  against a scope decision recorded in `SYS002`<!-- The configured layout renders whole --> —
+  against a scope decision recorded in `SYS002`<!-- The configured layout renders whole and reads --> —
   caught only by independent review.)
 - **Traceability is item-level; individual clauses are not checked.** An item that links two parents
   satisfies the orphan gate at item granularity, yet a single clause inside its `text` can be

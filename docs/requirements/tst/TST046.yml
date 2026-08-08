@@ -1,0 +1,29 @@
+active: false
+derived: false
+header: |
+  Pending: reserve span test
+level: 68
+links:
+- SRS031: 8-q6bG8DtQydxJ0BLG-JtU5s916T6phWs5zY5fO711w=
+normative: true
+rationale: ''
+ref: ''
+reviewed: Box8vL3Y9TeKKlVKmFicm11a_bALrXb8-I5akF9BdSQ=
+status: proposed
+text: |
+  Pending: compute the largest contiguous region carrying no content from rendered geometry across
+  configurations chosen to load the display - the module roster at its fullest, and repeated
+  instances of a module an operator may add - asserting in each that the region's width is at least
+  the required fraction of the display's width and its height at least the required fraction of the
+  display's height. Lands with the frontend skeleton (#10); activated and given a references entry
+  then.
+verification-justification: |
+  Settles that a region large enough to return a reflection survives the configurations loaded, in
+  both dimensions rather than in area, which is what a wide shallow strip would otherwise pass.
+  Leaves unproven that the chosen configurations bound the space an operator can express - the space
+  is not bounded by the roster being fixed, since one module may be instanced repeatedly - so the
+  check samples it rather than closing it. It also selects by area and then tests two linear spans,
+  so a display carrying both a wide shallow strip and an adequate squarer region fails on the strip
+  though a region meeting the want exists - fail-closed, and deliberate. It also inherits the parent's measurement bound: element
+  boxes stand in for lit pixels, so the region computed is a lower bound on the one a viewer gets.
+verification-method: test

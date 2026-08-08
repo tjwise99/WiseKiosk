@@ -4,23 +4,23 @@ header: |
   Full-screen assembly at kiosk; reflow, not overlap, at narrower widths
 level: 1.41
 links:
-- SYS002: 7SUfOJEsZezu9KnDJgQyhRHtIyI0db2eT2uOxRUfXtc=
+- SYS002: ysymlBgUP5CHpYCMU-e2yKVptdT0SF3uqkDPcJPJbqc=
 normative: true
 rationale: |
-  Decomposes SYS002's<!-- The configured layout renders whole --> kiosk-primary, desktop-secondary
+  Decomposes SYS002's<!-- The configured layout renders whole and reads --> kiosk-primary, desktop-secondary
   distinction into the concrete viewport-driven render obligations its rationale anticipates, which
   fixes no viewports itself. The deployed display is a 16:9 television, so 1920×1080 landscape is
   the canonical kiosk test viewport; relative units carry the same layout to 4K without a second
   viewport. 1280×800 and 1440×900 are the desktop window sizes the secondary use case must render
   sensibly at. Phone widths are deliberately not a requirement
-  (SYS002<!-- The configured layout renders whole -->; owner decision 2026-07-22) — if wanted
+  (SYS002<!-- The configured layout renders whole and reads -->; owner decision 2026-07-22) — if wanted
   later, support arrives as its own reviewed system need, not a clause here. What is owed is a
   reflowing layout, not a responsive-design programme, and the viewport figures are
   TST035's<!-- Pending: viewport-driven layout render test --> so tuning one does not touch the
   specification. Verified by viewport-driven render tests (Playwright-class) asserting the
   structural properties at each size; the residual aesthetic judgement stays human.
 ref: ''
-reviewed: SV0yIhagVDhRzbYJnNuNZe1QQFJXReqwXlvv8BVVVyg=
+reviewed: osBw48Y05zAu8uBTckauRE2_-M6hBFmWOWWhGfPBfWA=
 status: accepted
 text: |
   The display page shall assemble the modules named in the configuration, each
@@ -30,7 +30,10 @@ text: |
   narrower ones.
 verification-justification: |
   Asserted by rendering a fixture configuration at three viewports and reading the resulting
-  geometry and region set. What no check settles is whether the layout is legible to a person across
-  a room - overlap and clipping are decidable, readability at distance is the property the kiosk
-  actually needs and no assertion reaches it.
+  geometry and region set. Overlap and clipping are decidable; whether a person across the room can
+  read what they enclose is not settled here, and is not this item's to settle -
+  SRS033<!-- Text holds a minimum size against the display, at every resolution --> carries the software's
+  contribution to it, as SRS032<!-- Readable content is carried at full emission --> carries the
+  other half - a minimum size and a full emission, neither a proof that anyone can read the result. What the kiosk
+  actually needs is not thereby settled; it is carried by items rather than by none.
 verification-method: test

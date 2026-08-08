@@ -4,11 +4,11 @@ header: |
   Pending: viewport-driven layout render test
 level: 1.41
 links:
-- SRS017: 4dzupU9oAnkcoFRN5Xkb7WP8KGs_1A0Bs7ScAIrkqhw=
+- SRS017: cH_LOGPoyW9fQUrQlyn5doXFWDZRE57Y4O88pY9nrI4=
 normative: true
 rationale: ''
 ref: ''
-reviewed: bU1R8CCXOekLbTbIVSduY_hC-aFQroQcNDLOJsxSxzE=
+reviewed: tFX0NXJWbiZ5jtmDHu9Jx9OTZfOxtFr4srtErIQz1y8=
 status: proposed
 text: |
   Pending: viewport-driven render test asserting a bijection between the modules the fixture
@@ -20,6 +20,6 @@ text: |
   given a references entry then.
 verification-justification: |
   Settles that every configured module is present, in its assigned region, with no overlap or
-  clipping at three viewports. Leaves unproven legibility across a room, which is the property a
-  kiosk actually needs and which no geometric assertion reaches.
+  clipping at three viewports. Leaves legibility across a room unproven, which no geometric assertion
+  reaches - it is obliged and checked separately rather than here.
 verification-method: test

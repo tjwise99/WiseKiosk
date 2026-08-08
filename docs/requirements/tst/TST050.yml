@@ -1,0 +1,25 @@
+active: false
+derived: false
+header: |
+  Pending: reserve centring test
+level: 72
+links:
+- SRS035: U-i7r0ph7ch4J2R-IHGQEAYd3lXBkvpM-LOohqcvxRY=
+normative: true
+rationale: ''
+ref: ''
+reviewed: KxApzzqNfG8zOg5Qi3L1wjjn58Jkx7YNuVORIDvE4F8=
+status: proposed
+text: |
+  Pending: compute the centre of the largest contiguous region carrying no content from rendered
+  geometry and assert its offset from the display's centre is within tolerance in each dimension,
+  across configurations chosen to load the display - the module roster at its fullest, and repeated
+  instances of a module an operator may add. Lands with the frontend skeleton (#10); activated and
+  given a references entry then.
+verification-justification: |
+  Settles that the reserve is where a viewer facing the display would be returned, rather than banked
+  against an edge. The tolerance it compares against is wide deliberately - the layout is asymmetric
+  by design, so the reserve is offset in every configuration - and narrowing it rejects the design
+  rather than catching a defect. Leaves unproven that any particular viewer is in front of it, which depends on the
+  height the panel is hung at and is the operator's.
+verification-method: test

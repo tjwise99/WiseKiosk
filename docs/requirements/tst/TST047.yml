@@ -1,0 +1,17 @@
+active: false
+derived: false
+header: |
+  Pending: content emission level test
+level: 69
+links:
+- SRS032: tzNKQ3MYJaYrQqqF_39sBjNB9WDB3e8LYSkIxoGfao4=
+normative: true
+rationale: ''
+ref: ''
+reviewed: EMOSNKlyaid-FZY0kFKVwAjRD96VfQ5PF4HYk_vHaQE=
+status: proposed
+text: |
+  Pending: read the rendered value of every text element the page presents for reading, asserting each sits at the display's maximum rather than a reduced level. Lands with the frontend skeleton (#10); activated and given a references entry then.
+verification-justification: |
+  Settles the one variable the software owns. Leaves unproven legibility itself, which depends on what the room reflects behind each glyph - a computed ratio against the rendered background would report the same value whether the display were readable or not, which is why the assertion is over the value the page renders. That value is not the light the panel emits either; backlight, gamma, colour profile and the half-silvered surface all lie between them and none is asserted.
+verification-method: test
