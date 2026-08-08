@@ -121,15 +121,36 @@ of the assembled page rather than of what it shows anyone", while its parent
 SYS002<!-- The configured layout renders whole --> sits on that relationship. Read as a contradiction
 twice, so the distinction is recorded here.
 
-The two oblige different things. SRS017<!-- Full-screen assembly at kiosk; reflow, not overlap, at
-narrower widths --> obliges the **geometry of the assembled page** — no overlapping regions, no
-clipped content, reflow rather than horizontal scrolling — every clause of which is decidable with
-nobody watching. SYS002<!-- The configured layout renders whole --> obliges that **a Viewer can see
-their configured modules on the display in front of them**, which is what that relationship is. The
-parent is
-viewer-facing and the child is the mechanism delivering it; ADR 0021 rev 1 rules that the child is not
-about what the page shows anyone, and says nothing that bars the parent from being. Under
-ADR 0020 rev 1 a `SYS` item sits where it is discharged observably at that level, and this one is.
+The contradiction only bites if the two are co-extensive. SYS002<!-- The configured layout renders
+whole --> has exactly one child — the only need in the tree that does — and if that child carried the
+whole want, splitting them across two subjects would assert a difference in where they are observable
+that nothing supports.
+
+**They are not co-extensive: SYS002<!-- The configured layout renders whole --> is
+under-decomposed** (owner, 2026-08-08).
+SRS017<!-- Full-screen assembly at kiosk; reflow, not overlap, at narrower widths --> covers the
+geometry half — regions that do not overlap, content that is not clipped, reflow rather than
+horizontal scrolling. What the parent obliges beyond that is how the assembled display **reads to the
+person in front of it**, and the tree carries no item for it: *legible* appears in the tree only about
+failure, under SYS001<!-- Failure is legible and proportionate -->, and both records in this pair name
+readability as the property the kiosk actually needs and no check reaches. Those absent obligations are
+viewer-facing by their nature. **The parent therefore sits on the render relationship because that is
+where its decomposition will land, not as a coarser copy of the child**, and the child sits on what
+assembles the page. The under-decomposition is an observation this record makes and does not act on;
+it is carried as open.
+
+**A ground that reads well and is wrong, recorded because two readers reached it.** Not *the child is
+decidable geometry while the parent is what a person sees*. SYS002's<!-- The configured layout renders
+whole --> own `rationale` absorbs no-overlap, no-clipping and no-scrollbars "as one property rather
+than three observables", and its `verification-justification` opens "Geometry is decidable" — so the
+parent is geometry too, and measurable too. The axis is what each obliges, not whether anyone has to
+watch.
+
+ADR 0021 rev 1 is also narrower than it looks here: it chose between two container-depth subjects for
+SRS017's<!-- Full-screen assembly at kiosk; reflow, not overlap, at narrower widths --> *second*
+binding and said nothing about where the parent sits. Under ADR 0020 rev 1 that is
+settled by where the item is discharged observably at the level, and for this one it is the
+relationship that renders.
 
 ## Alternatives considered
 
