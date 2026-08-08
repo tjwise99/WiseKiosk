@@ -33,6 +33,11 @@ import yaml
 
 TREE = Path(__file__).resolve().parent.parent / "docs" / "requirements"
 
+# The tiers the tree is required to hold. Doorstop finds its documents by walking for `.doorstop.yml`,
+# so this reads every silo it finds and additionally requires these three: a hard-coded list alone
+# skips a fourth tier in silence, and discovery alone treats a deleted tier as nothing to check.
+REQUIRED_SILOS = ("sys", "srs", "tst")
+
 
 def unstamped_value(value):
     """A fingerprint is the digest string Doorstop writes. `true` is its manually-confirmed
@@ -45,8 +50,10 @@ def load():
     """Parse every item. YAML, not regex: a link is either a bare string (never stamped) or a
     single-key mapping whose value is the stamp or None, and a pattern reading one form drops the
     other silently."""
-    unreviewed, unstamped, seen = [], [], 0
-    for silo in ("sys", "srs", "tst"):
+    unreviewed, unstamped, counts = [], [], {}
+    for config in sorted(TREE.glob("*/.doorstop.yml")):
+        silo = config.parent.name
+        counts[silo] = 0
         # Both suffixes: Doorstop indexes a .yaml item, and globbing only .yml would leave one
         # unread by a check whose whole subject is items nobody has reviewed.
         for path in sorted([*(TREE / silo).glob("*.yml"), *(TREE / silo).glob("*.yaml")]):
@@ -54,7 +61,7 @@ def load():
                 continue  # pathlib globs dotfiles: the silo's own .doorstop.yml is not an item
             item = yaml.safe_load(path.read_text()) or {}
             uid = path.stem
-            seen += 1
+            counts[silo] += 1
             item_unreviewed = unstamped_value(item.get("reviewed"))
             if item_unreviewed:
                 unreviewed.append(uid)
@@ -65,19 +72,26 @@ def load():
                 # may be present without any review having produced it.
                 if unstamped_value(stamp) or item_unreviewed:
                     unstamped.append(f"{uid} -> {parent}")
-    return unreviewed, unstamped, seen
+    return unreviewed, unstamped, counts
 
 
 def main():
-    unreviewed, unstamped, seen = load()
+    unreviewed, unstamped, counts = load()
 
-    # A loader that reads nothing reports no violations, which is indistinguishable from a clean
-    # tree. Assert it read something at all rather than asserting a count this check would have to
-    # keep in step with the tree.
-    if not seen:
+    # A silo that yields nothing reports no violations, which is indistinguishable from a silo whose
+    # every item is reviewed. Asserted per silo rather than over the tree, because two of three
+    # reading fine hides the third; and as "read something" rather than a count, which would have to
+    # be kept in step with the tree by hand.
+    empty = sorted(s for s, n in counts.items() if not n)
+    absent = [s for s in REQUIRED_SILOS if s not in counts]
+    if empty or absent:
+        for silo in absent:
+            print(f"docs/requirements/{silo}/ holds no document — missing, renamed, or deleted.", file=sys.stderr)
+        for silo in empty:
+            print(f"docs/requirements/{silo}/ yielded no item — this check read none of it.", file=sys.stderr)
         print(
-            "No items were read from docs/requirements — a silo is missing, renamed, or empty."
-            "\nThis check found no unreviewed item because it found no item.",
+            "\nA tier that yields nothing produces no finding, which reads exactly like a tier whose"
+            "\nevery item is reviewed.",
             file=sys.stderr,
         )
         return 1

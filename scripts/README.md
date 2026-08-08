@@ -880,8 +880,12 @@ unseeded copy, which is the must-pass row every table below shares and none repe
 | Must fail | `reviewed:` present but empty |
 | Must fail | a `.yaml`-suffixed item with no fingerprint |
 | Must fail | an item with no `reviewed:` whose link carries the parent's real stamp, copied by hand |
-| Must fail | every silo directory removed |
-| Must fail | the silos present but holding no item |
+| Must fail | one silo directory removed, the other two intact |
+| Must fail | one silo renamed |
+| Must fail | one silo emptied of its items |
+| Must fail | every silo removed |
+| Must fail | a fourth tier present with its `.doorstop.yml` and no items |
+| Must pass | a fourth tier present holding one reviewed item |
 
 The pasted-stamp row is a **report** case, not a verdict case, and the distinction is the point. A
 stamp is a digest of the parent's content, so a copy is byte-identical to one `doorstop clear` earned
@@ -900,11 +904,21 @@ stamps the link and leaves `reviewed: null`, which is the first half of the clea
 would have accused a contributor halfway through following it.
 
 
-The two degenerate rows are the fail-open this file's own preamble names: a loader that reads nothing
+The degenerate rows are the fail-open this file's own preamble names: a loader that reads nothing
 finds no violations and prints success, and nothing about that run looks different from a clean tree.
-The guard asserts the loader read *something*, not a count — a count would have to be kept in step
-with the tree by hand, and a guard keyed on the same number as the thing it guards goes to zero
-alongside it and agrees that nothing is wrong.
+Two things make the guard bite. It asserts **per silo**, because a tree-wide "read something" is
+satisfied by two tiers out of three and hides the third — one `git mv` away, and `validate-tree.sh`
+does not catch it either, since Doorstop loads the renamed document and stamps it on the same run.
+And it asserts *read something* rather than a count, which would have to be kept in step with the
+tree by hand; a guard keyed on the same number as the thing it guards falls to zero alongside it and
+then agrees nothing is wrong. The invariant is the tree's own —
+[`../docs/requirements/README.md`](../docs/requirements/README.md): *"A document can never be empty
+— 'no items' is a gate error."*
+
+The last two rows are why the silos are discovered rather than assumed. `load()` used a hard-coded
+list of three where Doorstop finds its documents by walking for `.doorstop.yml`, so a fourth tier
+would have been skipped in silence by the check that runs first. It now reads every silo it finds and
+additionally requires the three the tree is built on.
 
 **Known gap, second.** Any non-empty `reviewed:` string switches this rule off, so a pasted link stamp
 on an item carrying `reviewed: notadigest` reports nothing here. That state fails Doorstop's own
