@@ -179,11 +179,11 @@ unregistered language whatever this record said.
 - **No requirement item states any of this.** The decision constrains the repository, and
   [ADR 0011 rev 1](0011-requirement-or-convention.md) makes a repository constraint a check or a checklist
   question, never a tree item.
-- **The review checklist gains a twelfth question**, appended to its *Code* section rather than placed
-  beside the dependency question it most resembles. Inserting it there would have renumbered the
-  questions below it, against [ADR 0002 rev 1](0002-requirements-management-doorstop.md),
+- **The review checklist gains a question, *Languages***, appended to its *Code* section rather than
+  placed beside the dependency question it most resembles. Inserting it there would have renumbered
+  the questions below it, against [ADR 0002 rev 1](0002-requirements-management-doorstop.md),
   [ADR 0003 rev 1](0003-architecture-as-code-likec4.md) and
-  [ADR 0016 rev 3](0016-maintained-tools-for-standard-artifacts.md), which cited one by number with
+  [ADR 0016 rev 3](0016-maintained-tools-for-standard-artifacts.md), which cite one by number with
   nothing gating the citation. That constraint does not bind a later change:
   [`../../CONTRIBUTING.md`](../../CONTRIBUTING.md) requires a citation to carry the question's name
   beside its number, so a renumbered citation still names what it meant.
