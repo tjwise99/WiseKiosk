@@ -121,13 +121,9 @@ checked against, rather than prose alone.
   defers to this section for what they prove.
 - **Every config schema rejects a realistic malformed input, in a test** →
   SRS002<!-- A module-scoped configuration error is reported at that module --> (a config error
-  isolatable to one module is reported there and never silently worked around) and
-  SRS005<!-- One validation implementation --> (the schema's rules are enforced by one
-  implementation, so an unknown key is rejected and named). The operator is not the author, so
-  validation failing correctly and legibly is a product feature, and it is tested as one.
-- **The standalone validator is exercised against known-good and known-bad configs** →
-  [`../tools/README.md`](../tools/README.md), run in CI. The validator failing to reject a malformed
-  config is a tooling bug, not a testing gap.
+  isolatable to one module is reported there and never silently worked around). The operator is not
+  the author, so validation failing correctly and legibly is a product feature, and it is tested as
+  one.
 - **Repo-wide checks live at repo level** — see [Where a check belongs](#where-a-check-belongs),
   below.
 - **A verification item's fit against its parent is re-read when the item is activated.** Every `TST`

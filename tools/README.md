@@ -12,31 +12,17 @@ edit here, not a specification change.
 **None of it is built yet.** Each tool names its ticket. That is how this project records scoped work
 ([ADR 0005 rev 1](../docs/decisions/0005-traceability-gating.md)).
 
-## The configuration validator
-
-Owned by #8, alongside the schema it checks against.
-
-Checks a configuration file against the configuration schema without starting the application. It
-reports every validation error in operator language — what is wrong, where, and what to change — and
-exits non-zero for an invalid configuration, zero for a valid one.
-
-*Asserted by* a CLI test: a known-good configuration accepted with exit zero, a known-bad one rejected
-with a non-zero exit and operator-language errors, neither starting the application.
-
-**One obligation here does stay in the tree.** The validator and the page's own validation must run
-the same implementation, so a configuration cannot pass one and fail the other. That constrains
-WiseKiosk, not the tool, and it is stated by `SRS005`<!-- One validation implementation --> under
-[ADR 0007 rev 1](../docs/decisions/0007-config-validation-allocation.md).
-
 ## The configuration generator
 
 Owned by #70.
 
-Produces, from a template or from prompted input, a configuration that the validator accepts without
+Produces, from a template or from prompted input, a configuration the display page applies without
 manual edits.
 
-*Asserted by* a test that runs generator output through the validator and requires it to pass
-unedited.
+*Asserted by* a test that loads generator output in the page and requires it to render the
+configured display, with no validation report. Validation runs in the browser and nowhere else
+([ADR 0007 rev 2](../docs/decisions/0007-config-validation-allocation.md)), so what the page does
+with a configuration is the only account of whether it is acceptable.
 
 ## Bring-up
 

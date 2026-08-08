@@ -33,8 +33,8 @@ are overwritten on the next export, and drift fails the staleness gate — see t
 for, and the boundary between them, which is what deploys: the published image and what it serves
 ([ADR 0019 rev 1](decisions/0019-boundary-at-what-deploys-and-tag-tier.md)). No external system
 appears at this level: an upstream data source is modelled once the module that reads it has a need
-in the tree, and the desk validator and the provisioning tooling exchange nothing with the running
-system ([ADR 0019 rev 1](decisions/0019-boundary-at-what-deploys-and-tag-tier.md)).
+in the tree, and the provisioning tooling exchanges nothing with the running system
+([ADR 0019 rev 1](decisions/0019-boundary-at-what-deploys-and-tag-tier.md)).
 
 <!-- arch-export:begin generated/index.mmd -->
 
@@ -122,7 +122,6 @@ that module's own need, per
 [the module contract](contracts/module-contract.md). Normative shape:
 SRS002<!-- A module-scoped configuration error is reported at that module -->,
 SRS003<!-- A configuration change applies no later than the next page load -->,
-SRS005<!-- One validation implementation -->,
 SRS010<!-- The display page reaches no origin but the backend's -->,
 SRS016<!-- Both sides consume the generated types -->,
 SRS017<!-- Full-screen assembly at kiosk; reflow, not overlap, at narrower widths -->,
@@ -154,10 +153,9 @@ documented here once it is built (#7, after the repo layout in #5)._
 _To be documented as it is built._ The backend is config-blind, per
 [ADR 0007 rev 1](decisions/0007-config-validation-allocation.md), which also states byte-for-byte delivery
 to the page; the configuration is a static file bind-mounted into the served tree
-(SRS018<!-- One generic published image -->), validated by the frontend at apply time
-(SRS002<!-- A module-scoped configuration error is reported at that module -->) and by the
-standalone desk validator ([`../tools/README.md`](../tools/README.md)) through one implementation
-(SRS005<!-- One validation implementation -->). A secret reaches the backend only as the file named
+(SRS018<!-- One generic published image -->), validated by the frontend at apply time and nowhere
+else (SRS002<!-- A module-scoped configuration error is reported at that module -->). A secret
+reaches the backend only as the file named
 by `<NAME>_FILE` — never through configuration, and never through a bare `<NAME>` environment
 variable (SRS007<!-- Configuration schema offers no secret-bearing key -->).
 
