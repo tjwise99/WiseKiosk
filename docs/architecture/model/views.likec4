@@ -30,4 +30,19 @@ views {
       multiple true
     }
   }
+
+  view backendComponents of wisekiosk.backend {
+    title 'WiseKiosk Backend — Components (C4 L3)'
+    include *
+  }
+
+  view frontendComponents of wisekiosk.frontend {
+    title 'WiseKiosk Frontend — Components (C4 L3)'
+    include *
+
+    // `include *` draws this container's children and what they relate to, not
+    // what the container itself relates to. Naming the Viewer draws it and the
+    // edge to it (ADR 0021 rev 1).
+    include viewer
+  }
 }
