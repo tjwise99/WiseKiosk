@@ -42,7 +42,7 @@ views {
 
     // `include *` draws this container's children and what they relate to, not
     // what the container itself relates to. Naming the Viewer draws it and the
-    // edge to it (ADR 0021).
+    // edge to it (ADR 0021 rev 1).
     include viewer
   }
 }

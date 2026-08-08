@@ -121,7 +121,7 @@ check exists: it holds the set of upstream requests the backend can be made to i
 configuration calls for
 (SYS004<!-- Upstream data reaches the display only through the backend -->), whoever is asking. A module's own half of this
 container is its shaping library, drawn when that module's need lands
-([ADR 0021](decisions/0021-component-earns-its-interface-and-framework-half-only.md)); the handler
+([ADR 0021 rev 1](decisions/0021-component-earns-its-interface-and-framework-half-only.md)); the handler
 calls it twice — to build the upstream request and to parse the answer — so what is drawn here cannot
 serve a payload on its own. A route's parameter validation, its two cache TTLs, its rate limit, its
 outbound timeout and its maximum response size are one entry in a static registration list and live
@@ -185,7 +185,7 @@ fetch of each module's payload, and the assembly of configured modules into thei
 places what it is handed and fetches nothing, which is the discipline the module contract puts on a
 module component applied one level up. A module's own half of this container is its Svelte component,
 drawn when that module's need lands
-([ADR 0021](decisions/0021-component-earns-its-interface-and-framework-half-only.md)) — which is why
+([ADR 0021 rev 1](decisions/0021-component-earns-its-interface-and-framework-half-only.md)) — which is why
 the edge to the Viewer leaves this container rather than a region within it.
 
 <!-- arch-export:begin generated/frontendComponents.mmd -->

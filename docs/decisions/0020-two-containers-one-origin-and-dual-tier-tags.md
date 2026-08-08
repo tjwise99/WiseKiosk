@@ -4,11 +4,8 @@
 **Decided:** 2026-08-04 (C4 phase 2 design discussion, ticket #97 C4 phase 2 Container)
 **Rev:** 1
 
-## Revisions
-
-- **rev 1** — 2026-08-05 — revision tracking begins; text as merged (#118 ADR revisions).
-
-> **Parking ground corrected, 2026-08-05 ([0021](0021-component-earns-its-interface-and-framework-half-only.md),
+> **Parking ground corrected, 2026-08-05
+> ([ADR 0021 rev 1](0021-component-earns-its-interface-and-framework-half-only.md),
 > #98 C4 phase 3).** The Consequences below hold that
 > SRS011<!-- Upstream request rate is bounded, and the bound is not operator-tunable -->,
 > SRS012<!-- Request parameters validated against known-good per-source patterns --> and
@@ -21,6 +18,10 @@
 > **All three bind at the Component level**, and the word *yet* qualified the timing rather than the
 > ground. Nothing else here changes: the two containers, the one origin, the declare-once rule and the
 > dual-tier tags stand exactly as argued below.
+
+## Revisions
+
+- **rev 1** — 2026-08-05 — revision tracking begins; text as merged (#118 ADR revisions).
 
 ## Context
 
