@@ -130,14 +130,12 @@ that nothing supports.
 under-decomposed** (owner, 2026-08-08).
 SRS017<!-- Full-screen assembly at kiosk; reflow, not overlap, at narrower widths --> covers the
 geometry half — regions that do not overlap, content that is not clipped, reflow rather than
-horizontal scrolling. What the parent obliges beyond that is how the assembled display **reads to the
-person in front of it**, and the tree carries no item for it: *legible* appears in the tree only about
-failure, under SYS001<!-- Failure is legible and proportionate -->, and both records in this pair name
-readability as the property the kiosk actually needs and no check reaches. Those absent obligations are
-viewer-facing by their nature. **The parent therefore sits on the render relationship because that is
-where its decomposition will land, not as a coarser copy of the child**, and the child sits on what
-assembles the page. The under-decomposition is an observation this record makes and does not act on;
-it is carried as open.
+horizontal scrolling. What the parent obliges beyond that is how the assembled display reads to the
+person in front of it, and those obligations are viewer-facing by their nature. **The parent therefore
+sits on the render relationship because that is where its decomposition will land, rather than as a
+coarser copy of the child**, and the child sits on what assembles the page. What that decomposition
+contains is #132 under-decomposition of the layout need's to settle, not this record's — and a ruling
+there that the parent is *not* under-decomposed reopens this placement.
 
 **A ground that reads well and is wrong, recorded because two readers reached it.** Not *the child is
 decidable geometry while the parent is what a person sees*. SYS002's<!-- The configured layout renders
