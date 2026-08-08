@@ -94,8 +94,36 @@ legibly says when one failed`" .-> Viewer
 
 <!-- arch-export:end generated/containers.mmd -->
 
-The Component level (C4 L3) is drawn per container, in the two sections below. No element carries a
-`link` to the source implementing it: no code exists, and the repository layout is #5.
+The Component level (C4 L3) is drawn per container, in the two container sections below. No element
+carries a `link` to the source implementing it: no code exists, and the repository layout is #5.
+
+Several sections below name a **normative shape** — the obligations that shape that part of the
+system, read out of the [requirements tree](requirements/README.md). **A normative shape is a reading
+aid into the tree, not the model's tag set, and the two are not expected to agree in either
+direction.**
+
+Listed and untagged, for three reasons that are not the same one.
+SRS005<!-- One validation implementation --> reaches the desk validator, which is outside the
+boundary for good, so tagging anything with it points past the diagram. An item still `proposed`
+cannot be tagged at all, since `check-arch-trace` resolves a tag only to an accepted item. And an
+item can oblige something no element in this model stands for: the published image is neither
+container nor component, so SRS020<!-- Non-root container user --> and
+SRS025<!-- No secret material in the published image --> below carry no tag. That third case turns on
+the obligation having an observable the model draws, not on its subject —
+SRS018<!-- One generic published image --> obliges the same image and does bind, on the configuration
+arriving from outside, because that is where what it obliges is observable
+([ADR 0021 rev 1](decisions/0021-component-earns-its-interface-and-framework-half-only.md)).
+Permanence separates it from the first
+([ADR 0020 rev 1](decisions/0020-two-containers-one-origin-and-dual-tier-tags.md)): a subject not
+drawn yet may be drawn later, where the desk validator will not be. Whether such an item owes a
+recorded reason, and what to call the case, is #121's to decide and not this paragraph's.
+
+Tagged and unlisted: a tag sits where its obligation is observable
+([ADR 0021 rev 1](decisions/0021-component-earns-its-interface-and-framework-half-only.md)), which is
+often a component or an edge rather than the part a list is written under, and a list is not
+rewritten when a binding lands — that would make it a second inventory of the model, kept in step by
+nothing. Nothing compares the two, so neither is evidence about the other: read a list as a way into
+the tree, and the model as the record of where an obligation is observable.
 
 ## Backend
 
@@ -186,7 +214,11 @@ places what it is handed and fetches nothing, which is the discipline the module
 module component applied one level up. A module's own half of this container is its Svelte component,
 drawn when that module's need lands
 ([ADR 0021 rev 1](decisions/0021-component-earns-its-interface-and-framework-half-only.md)) — which is why
-the edge to the Viewer leaves this container rather than a region within it.
+the edge to the Viewer leaves this container rather than a region within it. The bundle that becomes
+this container arrives on the one edge drawn server-to-client, which terminates on the container
+rather than on a child because no component exists to fetch what has yet to run; `include *` does not
+reach it, so this view alone omits where the bundle comes from, and the Backend's view above is where
+it is drawn.
 
 <!-- arch-export:begin generated/frontendComponents.mmd -->
 
