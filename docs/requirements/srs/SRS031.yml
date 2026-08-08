@@ -4,7 +4,7 @@ header: |
   The reserve spans what a reflection needs
 level: 34
 links:
-- SYS008: YxEAYQhU6L_UOXxUnTvjphF9VcMfu8AuYsmmXcev2ys=
+- SYS008: XVGi9appskHMbERYuZI17IK8c0FWwsvz1xL_cGiqB-4=
 normative: true
 rationale: |
   Erosion is silent: content added a module at a time takes the mirror gradually, each step looking
@@ -26,7 +26,7 @@ rationale: |
   region. Under an existential reading a wide shallow strip could satisfy placement while a squarer
   region elsewhere satisfied the span, both children green and the parent's single-region want
   discharged by neither.
-  Four numbers decide whether this obligation and its neighbours can hold together: the two fractions
+  Five numbers decide whether this obligation and its neighbours can hold together: the two fractions
   here, the text-size floor, the edge inset, and the centring tolerance. They live in four separate
   checks and are not independent - a centred reserve pushes content outward, the inset forbids the
   outer band, and the size floor sets how wide a row of text must be. Tightening one can make another
@@ -39,7 +39,7 @@ rationale: |
   failure in the sense the legibility-of-failure need carries - nothing has failed, a choice has been
   made badly.
 ref: ''
-reviewed: S5LjJZLIqLuGy5UTkxxjrdmEd6H6uecqz4pQIvRdMj4=
+reviewed: XqYtpGJv8NpD1JDHHoD6XDNy1CFog4opApuegLOzGSs=
 status: accepted
 text: |
   The largest contiguous region of the display held at minimum emission shall span at least a minimum
