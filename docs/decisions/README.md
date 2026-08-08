@@ -39,7 +39,7 @@ amended, so a number in git history need not mean what it means here.
 | [0004](0004-docs-site-sphinx-needs.md) | 1 | 2026-07-22 | Documentation site built with Sphinx + MyST + sphinx-needs; traceability rendered by sphinx-needs, deployed to GitHub Pages |
 | [0005](0005-traceability-gating.md) | 1 | 2026-07-22 | All work traces to the requirements tree via four in-repo gates; per-test attribution, derived verification status, tree as backlog |
 | [0006](0006-process-gates.md) | 2 | 2026-07-22 | Process gates: branches named type_number-snake_name, typed by ticket template and linked to an open issue; Conventional-Commit PR titles |
-| [0007](0007-config-validation-allocation.md) | 1 | 2026-07-23 | Config validation is frontend-owned: one TS engine runs in the page and as the desk CLI; the backend is config-blind |
+| [0007](0007-config-validation-allocation.md) | 2 | 2026-08-07 | Config validation is frontend-owned: one TS engine runs in the page, which is its only consumer; the backend is config-blind |
 | [0008](0008-boundary-contract-openapi-codegen.md) | 1 | 2026-07-23 | Boundary contract: one OpenAPI schema (3.0.3 now, 3.1 later), Go + TypeScript types generated from it, CI drift-gated; frontend types-only |
 | [0009](0009-verification-justification-attribute.md) | 2 | 2026-07-24 | Every item stores a `verification-justification` naming what its verification settles and what it does not; fingerprint-fenced |
 | [0010](0010-runtime-materialised-gate-fixtures.md) | 1 | 2026-07-24 | Negative gate fixtures are committed as data and materialised into a temp tree at run time; no vulnerable artifact is ever committed in resolvable form |
