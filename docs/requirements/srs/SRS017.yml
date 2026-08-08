@@ -4,7 +4,7 @@ header: |
   Full-screen assembly at kiosk; reflow, not overlap, at narrower widths
 level: 1.41
 links:
-- SYS002: sqJ04zt95SlbjrNYRIWAtKDSMy6UrDt0cbX6tX6AVPg=
+- SYS002: ysymlBgUP5CHpYCMU-e2yKVptdT0SF3uqkDPcJPJbqc=
 normative: true
 rationale: |
   Decomposes SYS002's<!-- The configured layout renders whole and reads --> kiosk-primary, desktop-secondary
@@ -20,7 +20,7 @@ rationale: |
   specification. Verified by viewport-driven render tests (Playwright-class) asserting the
   structural properties at each size; the residual aesthetic judgement stays human.
 ref: ''
-reviewed: BE7y4pUHywqg2teHGFvxiu28OvQ9H2UzscJt6pNcjbg=
+reviewed: osBw48Y05zAu8uBTckauRE2_-M6hBFmWOWWhGfPBfWA=
 status: accepted
 text: |
   The display page shall assemble the modules named in the configuration, each
@@ -35,5 +35,5 @@ verification-justification: |
   SRS033<!-- Text holds a minimum size against the display, at every resolution --> carries the software's
   contribution to it, as SRS032<!-- Readable content is carried at full emission --> carries the
   other half - a minimum size and a full emission, neither a proof that anyone can read the result. What the kiosk
-  actually needs is not thereby settled; it is no longer left to no item at all.
+  actually needs is not thereby settled; it is carried by items rather than by none.
 verification-method: test

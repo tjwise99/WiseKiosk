@@ -29,7 +29,7 @@ rationale: |
   rendered page. A module can occupy its region perfectly and still be invisible to the person the
   display was hung for, which is one want failing, not two.
 ref: ''
-reviewed: sqJ04zt95SlbjrNYRIWAtKDSMy6UrDt0cbX6tX6AVPg=
+reviewed: ysymlBgUP5CHpYCMU-e2yKVptdT0SF3uqkDPcJPJbqc=
 status: accepted
 text: |
   For a configuration the display is built to lay out, every configured module shall be wholly
@@ -40,5 +40,5 @@ verification-justification: |
   measured against an inset the viewport cannot see being masked. Two things no child reaches. What a
   viewer actually sees behind any glyph is the reflected room, which the software neither supplies nor
   controls. And whether the result is a good layout rather than a legible one is a judgement no gate
-  claims — the difference from the earlier scope is that legibility is no longer on that list.
+  claims. Legibility is not on that list: its children carry it.
 verification-method: test
