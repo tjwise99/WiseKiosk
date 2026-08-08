@@ -45,7 +45,7 @@ Beyond Doorstop's native fields, every item carries four stored attributes
 | `rationale` | free text | Why the requirement exists. **Required at the `SYS` tier**, optional below |
 
 **A requirement states the property and names no resources** — which file, endpoint, package or tool
-delivers it is not the item's. Nothing decides this mechanically, so it is question 15 on
+delivers it is not the item's. Nothing decides this mechanically, so it is question 15, *Named resources*, on
 [`../../CONTRIBUTING.md`](../../CONTRIBUTING.md)'s review checklist, where every obligation that
 leaves no artifact is carried ([ADR 0011 rev 1](../decisions/0011-requirement-or-convention.md)).
 
@@ -181,7 +181,10 @@ carries `Pending:`; a `SYS` or `SRS` item carries no prefix, because that conven
 tier's alone.
 
 An **active** child left linked to a retired parent fails the gate: Doorstop reports `no item with
-UID` for the parent it can no longer resolve, and `--error-all` makes that fatal. An **inactive** child
+UID` for the parent it can no longer resolve, and exits non-zero whether or not `--error-all` is
+passed. An unresolvable *child* reference from an active parent is only a warning, and the asymmetry
+is the point — a missing parent breaks the trace, a missing child is a decomposition not yet
+written. An **inactive** child
 is invisible to it, and that is the case needing the discipline — a child of a retired item is retired
 in the same change or re-parented in it, whichever its own content supports.
 

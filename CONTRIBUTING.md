@@ -74,6 +74,11 @@ the reviewer is the mechanism ([ADR 0011 rev 1](docs/decisions/0011-requirement-
 [pull-request template](.github/pull_request_template.md) points here; it does not repeat the
 questions.
 
+**Cite a question by number *and* name** — `question 8, *Generality*`. The numbers shift whenever one
+is inserted rather than appended, and a bare number then resolves silently to whatever now occupies
+it, in documents no sweep reliably reaches: a citation whose number wrapped across a line break
+already escaped one. The name is what a reader can still resolve when the number has moved.
+
 **Documentation**
 
 1. **Formalised prose.** Where the change turns a prose obligation into a requirement, does the prose
@@ -111,15 +116,17 @@ questions.
     prevent a false positive is the first place a bypass gets spelled, and the reasoning that
     produces one reads as caution.
 12. **Languages.** Does the change author a program in a language outside the set
-    [ADR 0017 rev 2](docs/decisions/0017-authored-language-set.md) states — and if so, has that language
+    [ADR 0017 rev 3](docs/decisions/0017-authored-language-set.md) states — and if so, has that language
     been through an ADR?
 13. **Second enforcer.** Does the change add a second place that enforces a rule an ADR allocated to
-    one — the configuration schema, validated in the page alone
-    ([ADR 0007 rev 2](docs/decisions/0007-config-validation-allocation.md)), or any successor to it? A
-    second enforcer drifts from the first, and the divergence surfaces as one accepting what the other
-    rejects. This is the mirror of question 8, not a case of it: that question asks about one
-    implementation serving no second consumer, where this asks about a second implementation of one
-    rule, and a change can pass either while failing the other.
+    one — today, the configuration schema, validated in the page alone
+    ([ADR 0007 rev 2](docs/decisions/0007-config-validation-allocation.md))? A second enforcer drifts
+    from the first, and the divergence surfaces as one accepting what the other rejects. That instance
+    is an example and not the subject: nothing enumerates the ADRs allocating a rule to one place, so
+    a list here would be wrong as soon as another one does. This is the mirror of question 8,
+    *Generality*, rather than a case of it — that one asks about a single implementation serving no
+    second consumer, this one about a second implementation of one rule, and a change can pass either
+    while failing the other.
 
 **Requirements**
 
@@ -143,4 +150,5 @@ questions.
     and deferring that to a ticket separates the fix from the only context in which the defect was
     visible. You write the cases for a check as you write the check; a defect found in one is the
     same obligation arriving late. The three clauses are the floor: below them this is a licence to
-    change anything nearby, which is the failure mode question 11 describes from the other side.
+    change anything nearby, which is the failure mode question 11, *Narrowed guards*, describes from the
+    other side.
