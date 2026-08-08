@@ -4,7 +4,7 @@ header: |
   No configuration erodes the reserve
 level: 34
 links:
-- SYS008: null
+- SYS008: pw5X-u0X-_uflzAPPULqK-8fXQarzNNcVlOwKKUaY50=
 normative: true
 rationale: |
   A reserve that exists in one configuration and not another is not a property of the product, and
@@ -15,6 +15,7 @@ rationale: |
   volume of content that consumes the reserve rather than the size of the viewport, so a check that
   varied only the viewport would report on a case that is not the one at risk.
 ref: ''
+reviewed: M0x3O-zAJVL_FDzfCIsCQ-ypXy_Qi9LkMew-Ta8YR5o=
 status: accepted
 text: |
   Under every configuration the display accepts, the largest contiguous region of the display held at

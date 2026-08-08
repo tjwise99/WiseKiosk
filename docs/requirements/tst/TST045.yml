@@ -4,10 +4,11 @@ header: |
   Pending: unlit surface emission test
 level: 67
 links:
-- SRS030: null
+- SRS030: imzBg9K5wGDp7zPavdaT-1AGnhiq7pzR4hgkMRkyeK8=
 normative: true
 rationale: ''
 ref: ''
+reviewed: F1XrLbPSR94WBgwFjaBVS0AiUPlYrxImw9AD2u2K7g0=
 status: proposed
 text: |
   Pending: render a fixture configuration and read the rendered value across the surface its content does not occupy, asserting every unoccupied region sits at the display's minimum. Lands with the frontend skeleton (#10); activated and given a references entry then.

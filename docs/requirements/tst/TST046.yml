@@ -4,10 +4,11 @@ header: |
   Pending: mirror reserve erosion test
 level: 68
 links:
-- SRS031: null
+- SRS031: 4wXSJzkXv01tT5RThZIqXrS2K9M0UlVV7uXJwTt_2pk=
 normative: true
 rationale: ''
 ref: ''
+reviewed: ZBfRheA4DuRZiX7XL2INadHDPcnypyONGJQ0xI7c1n0=
 status: proposed
 text: |
   Pending: compute the largest contiguous unoccupied region from rendered geometry across configurations chosen to load the display - the module roster at its fullest, and repeated instances of a module an operator may add - asserting the region spans at least the required fraction of display width and of display height in each. Lands with the frontend skeleton (#10); activated and given a references entry then.

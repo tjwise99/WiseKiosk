@@ -4,7 +4,7 @@ header: |
   Content keeps clear of the display edge
 level: 37
 links:
-- SYS002: null
+- SYS002: oTNC-KqLdjVDQCa9igmCGrY2JIGCJo5rxwfjQR_CY7I=
 normative: true
 rationale: |
   A panel set in a frame, or driven by a television that overscans, does not present its own edge to
@@ -16,6 +16,7 @@ rationale: |
   accumulating content reaches the inset before it reaches its neighbour, which turns a collision
   into an exceeded bound.
 ref: ''
+reviewed: cEoJm0ML9gRBn0qhViSXPSxdL6Km5FZq-EKhcqVSnnk=
 status: accepted
 text: |
   Content the display renders shall lie within an inset from every edge of the display, stated as a

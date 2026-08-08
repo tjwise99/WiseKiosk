@@ -4,10 +4,11 @@ header: |
   Pending: relative text size and resolution invariance test
 level: 70
 links:
-- SRS033: null
+- SRS033: fCjiFcMb6kCwQKKX3nXnFz9kEbVwGdllVpOqArOAWoM=
 normative: true
 rationale: ''
 ref: ''
+reviewed: xYZz064GMd5-eQLRuulYQP_IxsPuy34hI0tzIB4R0K4=
 status: proposed
 text: |
   Pending: render at more than one resolution and read each text element's size as a fraction of viewport height, asserting every element clears the floor at each. Lands with the frontend skeleton (#10); activated and given a references entry then.

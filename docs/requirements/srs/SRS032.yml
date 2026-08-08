@@ -4,7 +4,7 @@ header: |
   Readable content is carried at full emission
 level: 35
 links:
-- SYS002: null
+- SYS002: oTNC-KqLdjVDQCa9igmCGrY2JIGCJo5rxwfjQR_CY7I=
 normative: true
 rationale: |
   The ground behind any glyph is the reflected room, so the display's contrast against it is neither
@@ -16,6 +16,7 @@ rationale: |
   honest. A ratio computed against the rendered background is computed against the absence of one,
   and would report the same result whether the display were readable or unreadable.
 ref: ''
+reviewed: a8k55NXKpLmPfr_S2h4hBKSTCOPoaZOWLtZSVhxh4b0=
 status: accepted
 text: |
   Text the display presents to be read shall be rendered at the display's maximum emission.

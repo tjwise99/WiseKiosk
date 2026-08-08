@@ -4,7 +4,7 @@ header: |
   Unoccupied surface is held at minimum emission
 level: 33
 links:
-- SYS008: null
+- SYS008: pw5X-u0X-_uflzAPPULqK-8fXQarzNNcVlOwKKUaY50=
 normative: true
 rationale: |
   The mirror is made of absence, so anything drawn where content is not is drawn at the mirror's
@@ -13,6 +13,7 @@ rationale: |
   background. Each is emitted light, so each brightens the ground rather than darkening it, and pays
   for a legibility gain that does not arrive with mirror that does not come back.
 ref: ''
+reviewed: CidIm6MuamsFOjfrVVs9uXvIKGi3TT_4bPggjTulfOo=
 status: accepted
 text: |
   Every part of the display not occupied by content it presents shall be held at the display's
