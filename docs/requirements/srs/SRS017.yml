@@ -4,7 +4,7 @@ header: |
   Full-screen assembly at kiosk; reflow, not overlap, at narrower widths
 level: 1.41
 links:
-- SYS002: Q4jG9jZqTQahBOyjhDEgGILnIt_is66XyWbMixsJW4M=
+- SYS002: 5q3dEqVI_lWSI3n6-A6cYFpQlXaeqdoNQqfU1pYCKDE=
 normative: true
 rationale: |
   Decomposes SYS002's<!-- The configured layout renders whole and reads --> kiosk-primary, desktop-secondary

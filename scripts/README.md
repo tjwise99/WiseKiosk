@@ -880,24 +880,29 @@ unseeded copy, which is the must-pass row every table below shares and none repe
 | Must fail | `reviewed:` present but empty |
 | Must fail | a `.yaml`-suffixed item with no fingerprint |
 | Must fail | an item with no `reviewed:` whose link carries the parent's real stamp, copied by hand |
-| Must pass | a new item with no `reviewed:` and `- UID: null` — the honest authoring state |
-| Must pass | a reviewed item whose link stamp is `null` — `review` run, `clear` not yet |
 
-The hand-copied row came from a real change rather than an imagined one: three items on PR #133 were
-authored with a parent's live fingerprint pasted into their `links:`, and the gate reported seven
-unreviewed links where the tree held ten. A stamp is a digest of the parent's content, so a copied one
-is byte-identical to an earned one and no test of the value can tell them apart. What the check reads
-instead is the pairing — `doorstop review` writes an item's own fingerprint, `doorstop clear` writes
-its links' stamps, and an item whose own review is unwritten cannot have reached a state where its
-links are stamped.
+The pasted-stamp row is a **report** case, not a verdict case, and the distinction is the point. A
+stamp is a digest of the parent's content, so a copy is byte-identical to one `doorstop clear` earned
+and nothing reading the tree can tell them apart. Such an item still fails, on the rule about its own
+missing fingerprint — what it defeated was the count. Three items authored that way on PR #133 left
+the gate reporting seven unreviewed links where the tree held ten, and the three it dropped were
+exactly the pasted ones. Re-run against that reproduction, the current check names all three and the
+pre-change one names none; both exit 1.
 
-**What that leaves open.** The check catches the sequence hand-copying naturally produces — author,
-paste, never review. Pasting the link stamp and *then* running `doorstop review` on the item passes,
-because the item's own fingerprint is then genuinely computed; what went unreviewed is the link alone.
-Closing that needs evidence the tree does not carry, since both values are then correct for their
-content. The two `Must pass` rows are why the rule is stated as a pairing and not as "an unreviewed
-item may hold no stamp": a null stamp on an unreviewed item is how every honestly-authored item starts,
-and flagging it would reject the normal path to catch the abnormal one.
+So a link is counted unreviewed when its own stamp is absent, and also when the item holding it is —
+nobody has reviewed an item carrying no review, so nobody has reviewed its links either, whatever
+they carry. An earlier attempt read the same pairing as evidence of forgery and accused the author of
+writing the stamp by hand. That premise is false: `doorstop clear` on an item with no `reviewed:`
+stamps the link and leaves `reviewed: null`, which is the first half of the clear-then-review order
+[`../docs/requirements/README.md`](../docs/requirements/README.md) documents as the remedy. The check
+would have accused a contributor halfway through following it.
+
+**Known gap, second.** Any non-empty `reviewed:` string switches this rule off, so a pasted link stamp
+on an item carrying `reviewed: notadigest` reports nothing here. That state fails Doorstop's own
+validation as `unreviewed changes` further down `check-reqs`, so it is covered — by a different gate,
+three commands later, not by this one. And a pasted stamp on a genuinely reviewed item is invisible
+everywhere: both digests are then correct for their content, and the tree holds no evidence that the
+link's review never happened.
 
 The `.yaml` row is the one that matters: the loader is a hand-rolled glob, unlike its siblings which go
 through `doorstop.build()`, and Doorstop indexes a `.yaml` item that a `*.yml` glob never sees. An item

@@ -20,9 +20,7 @@ rationale: |
   2026-08-08), so there is nothing here to declare of the kind the declared-minimum-host need can
   declare - that need chooses which hosts to support, where this one does not choose the
   configuration. A deployment dense enough to defeat this obligation defeats it visibly, and the
-  degraded display is the signal; nothing is rendered to announce it. Verification samples the
-  configurations an operator would plausibly assemble, as it does for every other obligation stated
-  over an unbounded input.
+  degraded display is the signal; nothing is rendered to announce it.
 
   This need previously scoped itself to the three geometric observables and disclaimed readability, on
   the ground that visual judgement is not verification. That was a statement about what the tree then
@@ -31,7 +29,7 @@ rationale: |
   rendered page. A module can occupy its region perfectly and still be invisible to the person the
   display was hung for, which is one want failing, not two.
 ref: ''
-reviewed: Q4jG9jZqTQahBOyjhDEgGILnIt_is66XyWbMixsJW4M=
+reviewed: 5q3dEqVI_lWSI3n6-A6cYFpQlXaeqdoNQqfU1pYCKDE=
 status: accepted
 text: |
   Every configured module shall be wholly visible and legible on the display it was

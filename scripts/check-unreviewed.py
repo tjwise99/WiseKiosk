@@ -14,12 +14,16 @@ hand: Doorstop reads it as "matching, hash to follow" and fills the hash in unpr
 So this runs first and fails, and `check-reqs` stops before Doorstop can stamp anything. Clearing it
 is `doorstop review <uid>` — the same act, performed deliberately.
 
-A missing stamp is not the only way to record a review nobody performed. A stamp is a digest of the
-parent's content, so it can be copied from the parent's own `reviewed` value by hand, and the result
-is indistinguishable from one `doorstop clear` earned. What gives it away is the company it keeps:
-`review` writes the item's own fingerprint and `clear` writes its links' stamps, so an item whose own
-review is unwritten cannot have reached a state where its links are stamped. Committed, that pairing
-says the stamp was authored rather than produced.
+A stamp is a digest of the parent's content, so it can be copied from the parent's own `reviewed`
+value by hand and no test of the value tells the copy from one `doorstop clear` earned. That is not
+a bypass — such an item carries no fingerprint of its own, so the gate still fails — but it is an
+undercount: three items authored that way on PR #133 left the gate reporting seven unreviewed links
+where the tree held ten, and the three it dropped were the ones whose stamps were pasted.
+
+So a link is counted unreviewed when its own stamp is absent, and also when the item holding it is.
+Nobody has reviewed an item that carries no review, and it follows that nobody has reviewed the
+link either, whatever value the link carries. What that does not do is tell a pasted stamp from an
+earned one, which nothing reading the tree can do.
 """
 
 import sys
@@ -41,7 +45,7 @@ def load():
     """Parse every item. YAML, not regex: a link is either a bare string (never stamped) or a
     single-key mapping whose value is the stamp or None, and a pattern reading one form drops the
     other silently."""
-    unreviewed, unstamped, authored = [], [], []
+    unreviewed, unstamped = [], []
     for silo in ("sys", "srs", "tst"):
         # Both suffixes: Doorstop indexes a .yaml item, and globbing only .yml would leave one
         # unread by a check whose whole subject is items nobody has reviewed.
@@ -56,28 +60,15 @@ def load():
             for link in item.get("links") or []:
                 parent = next(iter(link)) if isinstance(link, dict) else link
                 stamp = link[parent] if isinstance(link, dict) else None
-                if unstamped_value(stamp):
+                # An unreviewed item's links are unreviewed whatever they carry: the stamp
+                # may be present without any review having produced it.
+                if unstamped_value(stamp) or item_unreviewed:
                     unstamped.append(f"{uid} -> {parent}")
-                elif item_unreviewed:
-                    authored.append(f"{uid} -> {parent}")
-    return unreviewed, unstamped, authored
+    return unreviewed, unstamped
 
 
 def main():
-    unreviewed, unstamped, authored = load()
-
-    if authored:
-        print(f"{len(authored)} link stamp(s) no review produced:", file=sys.stderr)
-        for line in authored:
-            print(f"  {line}", file=sys.stderr)
-        print(
-            "\nThe item carries no review fingerprint of its own, so nothing has reviewed it, yet its"
-            "\nlink to the parent is stamped. `doorstop review` writes the first and `doorstop clear`"
-            "\nthe second, and neither reaches this state alone — the stamp was written by hand, and a"
-            "\ncopied digest is indistinguishable from an earned one everywhere but here. Remove the"
-            "\nvalue, read the item against its parent, then stamp both.",
-            file=sys.stderr,
-        )
+    unreviewed, unstamped = load()
 
     if unreviewed:
         print(f"{len(unreviewed)} item(s) carry no review fingerprint:", file=sys.stderr)
@@ -91,7 +82,7 @@ def main():
         for line in unstamped:
             print(f"  {line}", file=sys.stderr)
 
-    if unreviewed or unstamped or authored:
+    if unreviewed or unstamped:
         print(
             "\nDoorstop would stamp every one of these on its next run, recording a review nobody"
             "\nperformed. Read the item against its parent and run `doorstop review <uid>`, or"
