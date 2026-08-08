@@ -101,20 +101,23 @@ Several sections below list the **requirements that shape** that part of the sys
 [requirements tree](requirements/README.md). **Such a list is a reading aid into the tree, not the
 model's tag set, and the two are not expected to agree in either direction.**
 
-**Every accepted item binds somewhere in this model, and where one cannot, the model grows to draw
-what it obliges** ([ADR 0022 rev 1](decisions/0022-every-accepted-requirement-binds.md)). There is no
-exemption record: an item bound nowhere is a level this model has not drawn yet, not a case to
-register. An item still `proposed` is outside the rule rather than exempt from it, since
-`check-arch-trace` resolves a tag only to an accepted item and a `proposed` item cannot be tagged at
-all.
+**Every accepted, active `SYS` or `SRS` item binds somewhere in this model, and where one cannot, the
+model grows to draw what it obliges**
+([ADR 0022 rev 1](decisions/0022-every-accepted-requirement-binds.md)). There is no exemption record:
+an item bound nowhere is a level this model has not drawn yet, not a case to register. An item still
+`proposed` is outside the rule rather than exempt from it, since `check-arch-trace` resolves a tag only
+to an accepted item; a retired item is out for the same reason it obliges nothing, and retirement is
+`active: false` with `status` left alone, so *accepted* does not imply *active*. The `TST` tier is
+outside it too: a verification item says how an obligation is settled, not what the software owes.
 
-Three accepted items are unbound as this document stands, for two different reasons.
-SRS020<!-- Non-root container user --> and
+**Which items are unbound is the check's answer, not this document's.** The second direction of
+`check-arch-trace` enumerates them (#122 close check-arch-trace's second direction); a list written
+here would be a point-in-time inventory nothing compares to the tree, which is the failure the
+paragraph below describes in the other direction. What is worth stating is the *kind* of absence, and
+today it has one instance: SRS020<!-- Non-root container user --> and
 SRS025<!-- No secret material in the published image --> oblige the published image, which is neither
 container nor component, and they bind when the Deployment level draws it (#123 C4 phase 4
-Deployment). SRS005<!-- One validation implementation --> obliges an implementation shared with the
-desk validator, and retires with that tool rather than binding (#129 retire the desk configuration
-validator). What distinguishes the first two from an item that simply has not been bound is that the
+Deployment). What distinguishes such an item from one that simply has not been bound is that the
 obligation has no observable this model draws, rather than the subject being unusual —
 SRS018<!-- One generic published image --> obliges the same image and does bind, on the configuration
 arriving from outside, because that is where what it obliges is observable

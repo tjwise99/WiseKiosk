@@ -41,15 +41,21 @@ whether such an item owes a recorded reason, and what to call the case.
 
 ## Decision
 
-**Every accepted, active item in the requirements tree binds to at least one element or relationship
-in the architecture model. Where an item can bind nowhere, the model grows to draw what it obliges —
-the rule does not bend, and there is no exemption record.**
+**Every accepted, active `SYS` or `SRS` item binds to at least one element or relationship in the
+architecture model. Where an item can bind nowhere, the model grows to draw what it obliges — the rule
+does not bend, and there is no exemption record.**
 
-**The population is `accepted` and `active`, and that is a property of the tag mechanism rather than a
-convenience.** `check-arch-trace` resolves a tag only to an accepted item, so a `proposed` item cannot
-be tagged; a rule reaching it would be unsatisfiable. A retired item obliges nothing. The consequence
-is stated below rather than left to be discovered: **acceptance now carries an allocation
-obligation.**
+**The population is the obliging tiers, `accepted` and `active`, and each of those three words is
+load-bearing rather than a convenience.** `check-arch-trace` resolves a tag only to an accepted item,
+so a `proposed` item cannot be tagged and a rule reaching it would be unsatisfiable. A retired item
+obliges nothing — and retirement here is `active: false` with `status` untouched
+([ADR 0005 rev 1](0005-traceability-gating.md)), so a retired item stays `accepted` and the second
+word does not imply the third. **`TST` is out of the population**, which the tree's third document
+makes worth saying: a verification item states how an obligation is settled, not an obligation on the
+running software, so it allocates to nothing in a model of what runs. `check-arch-trace`'s identifier
+pattern admits `TST` because it judges resolution rather than allocation; this rule does not inherit
+that reach. The consequence is stated below rather than left to be discovered: **acceptance now
+carries an allocation obligation.**
 
 **This adds completeness to discrimination and changes neither the tier rules nor the placement
 rules.** Where a tag sits is still ADR 0019 rev 1's — the tier its level answers to, plus any coarser
@@ -66,6 +72,13 @@ ADR 0021 rev 1's own move on SRS018<!-- One generic published image --> rather t
 it: an obligation on an artifact the model does not draw, bound where what it obliges is observable.
 It discriminates, because the operator's *other* supply is where a secret does travel, and this is the
 item saying the two cannot be one.
+
+The strongest counter is that its first clause obliges the configuration *schema's key set*, and its
+`verification-justification` settles that against a committed allowlist rather than against anything a
+delivery shows. **That objection mistakes verification for observability: a tag records where an
+obligation is observable, not where it is settled.** The distinction is recorded because it is the
+general answer rather than this item's detail — without it, the next close call is argued from an
+item's `verification-justification` and this trade is walked again.
 
 **SRS015<!-- One schema, all boundary value classes --> binds on the payload relationship**, where its
 parent SYS005<!-- Single-definition internal contract --> and its only sibling
@@ -166,13 +179,15 @@ prevent.
 
 **Acceptance carries an allocation obligation.** Baselining an item is already the act of reading it
 and judging what it obliges (ADR 0020 rev 1); it now also requires deciding where that obligation is
-observable, or that the model must grow first. Five items are `proposed` today and each acquires this
-when accepted.
+observable, or that the model must grow first. Five `SYS` and `SRS` items are `proposed` today and
+each acquires this when accepted; the `TST` tier acquires nothing, being outside the population.
 
 **The completeness check lands red, deliberately.** #122 close check-arch-trace's second direction
 enumerates accepted items bound nowhere and fails when that set is non-empty; on landing it fails on
-SRS020<!-- Non-root container user --> and SRS025<!-- No secret material in the published image -->,
-and #123 C4 phase 4 Deployment turns it green. The defect case therefore needs no fixture — it is the
+SRS020<!-- Non-root container user --> and SRS025<!-- No secret material in the published image -->
+once #129 retire the desk configuration validator has landed and this branch has taken `main` — until
+then SRS005<!-- One validation implementation --> is a third — and #123 C4 phase 4 Deployment turns it
+green. The defect case therefore needs no fixture — it is the
 tree's real state, which is better evidence than a seed. The legal direction still needs one, and
 [ADR 0010 rev 1](0010-runtime-materialised-gate-fixtures.md) is the mechanism. That this branch merges
 to `main` once, at the end, is what makes a red intermediate state affordable.
@@ -188,12 +203,24 @@ module box.
 inventing an element that earns no place under ADR 0021 rev 1's interface test. At that point the
 exemption record is back on the table, argued against a real case rather than an anticipated one.
 
-**The payload relationship now carries six tags**, making it the most heavily tagged subject in the
-model — they are not enumerated here, because a list of them kept in step by nothing is the second
-inventory [`../ARCHITECTURE.md`](../ARCHITECTURE.md) argues against. ADR 0020 rev 1's bar is against stamping an
-element with everything it owes rather than against a count, and each of the six names a distinct
-obligation on that exchange, so it holds. It is recorded because the next addition to that
-relationship is the one that should be argued rather than assumed.
+**The second pressure is cheaper than the first, and no gate sees it.** Inventing an element is the
+visible way to satisfy a rule that cannot be satisfied honestly; the cheap way is a plausible-but-wrong
+tag on an element that already exists. `check-arch-trace`'s scope is resolution, and ADR 0021 rev 1
+states the consequence directly — whether the tagged element is the one that requirement obliges is
+"held by review alone, and by nothing else in the repository". An exemption record would have surfaced
+that same situation as a written entry someone reads; this rule surfaces it as a green check. It is
+carried by review, through [`../../CONTRIBUTING.md`](../../CONTRIBUTING.md)'s checklist, and it is
+named here rather than left for the first person to find it — a rule that creates two pressures and
+answers one has not been thought through.
+
+**Two subjects now carry six tags** — the payload relationship and the render relationship, the latter
+by this record's own SRS004<!-- Page renders a legible error state for every configuration failure
+class --> binding. Neither is the most heavily tagged: the Backend container has carried eight since
+before this branch. They are not enumerated here, because a list of them kept in step by nothing is
+the second inventory [`../ARCHITECTURE.md`](../ARCHITECTURE.md) argues against. ADR 0020 rev 1's bar is
+against stamping an element with everything it owes rather than against a count, and each tag on both
+subjects names a distinct obligation, so both hold. It is recorded because a count climbing is the
+signal to argue the next addition rather than assume it.
 
 **ADR 0021 rev 1 carries one sentence this branch has already outrun**, and it is not corrected here.
 Its Consequences say SRS013<!-- Client-facing contract for rejected requests --> "sits on request
@@ -201,6 +228,16 @@ validation"; #120 gave that item a second binding on the payload relationship, w
 composed-observable rule authorises. Correcting it means revving that record, which under
 [`README.md`](README.md) moves every citation of it in the tree — for text #124 merge the three C4
 ADRs deletes. It is that ticket's to absorb.
+
+**So is every ground resting on SRS005<!-- One validation implementation -->.** This record rules that
+item retired, and three C4 decisions lean on it —
+[ADR 0019 rev 1](0019-boundary-at-what-deploys-and-tag-tier.md) as an invariant already held,
+[ADR 0020 rev 1](0020-two-containers-one-origin-and-dual-tier-tags.md) as its example of an obligation
+reaching permanently outside the model, and
+[ADR 0021 rev 1](0021-component-earns-its-interface-and-framework-half-only.md) resting on 0020's
+reason. #129 retire the desk configuration validator sweeps the citations; what #124 merge the three
+C4 ADRs must absorb is that the *argument* those passages make no longer has its example. Recorded
+here because this register is where that ticket will look.
 
 **This record takes 0022, and #124 merge the three C4 ADRs will renumber it.** That slice merges
 ADR 0019 rev 1, ADR 0020 rev 1 and ADR 0021 rev 1 into one document and returns two numbers to the
