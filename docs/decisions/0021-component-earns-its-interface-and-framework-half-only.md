@@ -29,11 +29,11 @@ every design document in this repository from preceding its implementation, whic
 **That clause is reversed, not re-grounded, so it is superseded rather than amended.** ADR 0003 rev 1
 ruled the Component level would not be built and this builds it, which [`README.md`](README.md)
 routes to supersession — recorded by revving the record superseded, not by a note on this one. That
-rev is left to #124 settle the C4 ADR set, which merges this record into
-[ADR 0019 rev 1](0019-boundary-at-what-deploys-and-tag-tier.md)'s successor and frees this number:
-written here, the citation that rev would carry names a record that ceases to exist. The rest of that
-decision — LikeC4, the browser-free codegen, the staleness gate, and the deferral of the Code level —
-stands untouched.
+rev is left to #124 settle the C4 ADR set: written on this branch, the citation it would carry names
+a record that ceases to exist, because that ticket merges this record into
+[ADR 0019 rev 1](0019-boundary-at-what-deploys-and-tag-tier.md) at a later rev and frees this number.
+The rest of that decision — LikeC4, the browser-free codegen, the staleness gate — stands untouched.
+The Code level is not built here, and this record does not decide it.
 
 **The levels above had a physical test and this one does not.** A system is what has its own owner; a
 container is an execution context, which is how ADR 0020 rev 1 settled two containers behind one origin
