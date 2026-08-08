@@ -20,14 +20,14 @@ rationale: |
   WiseKiosk does not supply. What the mounting, the room and the viewer's height make of that surface
   is the operator's, in the same way the kiosk host is (#132 layout need decomposition).
 ref: ''
-reviewed: p6Uqck5YX-cD-g6pFhefWhSgNH7kojGb0aueX9oWYws=
+reviewed: -vewfoxPPYvGInpPfg-a0FQgJ4BjsA1RwJkZhd1fdY0=
 status: accepted
 text: |
   Wherever the display carries no content it shall be held at minimum emission, and a contiguous part
   of what is so held shall be placed and large enough to return the reflection of a viewer at the
   distance the display is installed for.
 verification-justification: |
-  Settled by its children: that surface carrying no content is held at minimum emission, that a
+  Settled by its children: that surface carrying no content is held at minimum emission, that the
   largest contiguous region so held spans what a reflection needs in both dimensions, and that the
   same region sits where a viewer facing the display is returned rather than banked against an edge. What no check reaches is the
   height the panel is hung at - a reserve of the right size, in the right place on the surface, still

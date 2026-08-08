@@ -4,7 +4,7 @@ header: |
   The reserve spans what a reflection needs
 level: 34
 links:
-- SYS008: p6Uqck5YX-cD-g6pFhefWhSgNH7kojGb0aueX9oWYws=
+- SYS008: -vewfoxPPYvGInpPfg-a0FQgJ4BjsA1RwJkZhd1fdY0=
 normative: true
 rationale: |
   Erosion is silent: content added a module at a time takes the mirror gradually, each step looking
@@ -13,8 +13,15 @@ rationale: |
   The item states the end state and not how a layout reaches it. Taking the region before content is
   placed, and laying content around it, is the strategy that produces this property and belongs here
   rather than in the obligation - an order of construction cannot be falsified from a rendered page,
-  where the span can be measured off one directly. An earlier draft obliged the ordering as a second
-  clause and, being entailed by the first, it gave its check nothing to decide.
+  where the span can be measured off one directly.
+  An earlier draft carried a second clause forbidding content inside the region. It was not
+  redundant: this item obliges a region at minimum emission, and an element rendered at minimum
+  emission is not excluded by that, so the clause did exclude a case the first does not. It was
+  dropped because the case it excluded satisfies the want - on a half-silvered surface an element
+  rendered at minimum emission is itself mirror - so the clause forbade a layout meeting the need.
+  Its check could not have caught anything either, having selected the region by carrying no content
+  before asserting it carried none, but that was a defect of the check's construction rather than a
+  consequence of the text.
   "The largest" rather than "a" is what keeps this item and the placement item talking about the same
   region. Under an existential reading a wide shallow strip could satisfy placement while a squarer
   region elsewhere satisfied the span, both children green and the parent's single-region want
@@ -26,7 +33,7 @@ rationale: |
   failure in the sense the legibility-of-failure need carries - nothing has failed, a choice has been
   made badly.
 ref: ''
-reviewed: ZFbscCuGTGV40m7FuDthjO0T8ssJkBC8uFupCVDbB2U=
+reviewed: uWb2pYoGyyq_Vk0nxxrscoZ4O8PaKgM5X4q9YuKdE5w=
 status: accepted
 text: |
   The largest contiguous region of the display held at minimum emission shall span at least a minimum
@@ -37,7 +44,9 @@ verification-justification: |
   bounds. The check decides a region carrying no content where this item obliges a region at minimum
   emission; the two coincide only while
   SRS030<!-- Unoccupied surface is held at minimum emission --> holds, so a violation of that item
-  would leave this check passing an obligation that has failed. Geometry is measured as element
+  would leave this check passing an obligation that has failed. It runs the other way too: an element
+  rendered at minimum emission satisfies this item and is counted as content by the check, so a
+  layout meeting the obligation can fail the assertion. Geometry is measured as element
   boxes, so a box that is largely empty counts as occupied and the computed region is a lower bound
   on the region a viewer actually gets - conservative in one direction, and silent about a layout
   whose boxes are compact while its lit pixels are not. And the two fractions are a decision about
