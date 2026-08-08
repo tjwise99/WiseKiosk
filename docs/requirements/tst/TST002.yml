@@ -4,7 +4,7 @@ header: |
   Pending: module error-state render test
 level: 1.2
 links:
-- SRS001: m-nuuZThZFcCrW0gOLLrS7iZuJ3ps1GEVUNjGLIVYyQ=
+- SRS001: -9X5xMOerjt_ZJFMFkP0jxcio9DoqFoElllIOrdv0OE=
 normative: true
 rationale: |
   Driven from the registered module set, because an error state is rendered by each module's own

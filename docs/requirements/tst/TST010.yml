@@ -4,7 +4,7 @@ header: |
   Pending: configuration failure-class render test
 level: 1.13
 links:
-- SRS004: 4wNFcQO40WlzDjaLpakN4eECPe-d366npNbq_oSqI7E=
+- SRS004: _dk6-OiExOSPMhVG59QnIq9lPbOuV-YH7igsuLByqCk=
 normative: true
 rationale: |
   Scoped to naming the failure. What the state must say beyond that is

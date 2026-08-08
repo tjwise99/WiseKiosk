@@ -8,7 +8,7 @@ links:
 normative: true
 rationale: |
   SYS003's<!-- A deployment is parameterised from outside the image --> obligation had no child
-  expressing it. The backend has no configuration concept (ADR 0007), which is a property of a
+  expressing it. The backend has no configuration concept (ADR 0007 rev 1), which is a property of a
   component holding no keys - it satisfied the need vacuously while the demand that every offered
   key actually works went unverified, and the gate stayed green over the gap. Stated as an
   observable difference rather than as "renders without error", because a dead knob - a key the
@@ -20,7 +20,7 @@ rationale: |
   statement of what is offered: a key added there is covered the moment it exists, where a list
   would drift silently.
 ref: ''
-reviewed: gv_IboZdDVf2n-Jw_L5_5oryDnVDSRlL0ZTASbc9vKM=
+reviewed: e9a4_Rb4v78HOzIFUK7kSjUxn6UhIcZXTyp6nIRi_uw=
 status: proposed
 text: |
   Every key the configuration schema offers shall produce an observable difference in the rendered

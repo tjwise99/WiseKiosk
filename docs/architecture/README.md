@@ -3,7 +3,7 @@
 The checkable, versioned model of WiseKiosk's architecture. It is the **single source of truth** for
 the diagrams in [`../ARCHITECTURE.md`](../ARCHITECTURE.md) — those are generated from this model, never
 drawn by hand. Why LikeC4 and not D2/Mermaid/Structurizr/PlantUML: see
-[ADR 0003](../decisions/0003-architecture-as-code-likec4.md).
+[ADR 0003 rev 1](../decisions/0003-architecture-as-code-likec4.md).
 
 This tooling is **dev-only and siloed here** (per [`CI.md`](../CI.md)'s repository-shape gate): its
 `package.json`, lockfile, and `node_modules/` live in this directory; nothing depends on it at app
@@ -83,7 +83,7 @@ the staleness gate; the prose around the markers is yours to edit.
 The model holds the System Context, Container and Component levels — `component` children nest inside
 a container, and each container has a `view of` it in `views.likec4`.
 
-**A relationship is declared once, at its true endpoints** ([ADR 0020](../decisions/0020-two-containers-one-origin-and-dual-tier-tags.md)).
+**A relationship is declared once, at its true endpoints** ([ADR 0020 rev 1](../decisions/0020-two-containers-one-origin-and-dual-tier-tags.md)).
 Each view renders from that one set, aggregating an edge to the nearest ancestor it does not expand,
 so an edge is never restated a level down.
 
@@ -105,12 +105,12 @@ underneath it changing, and no gate compares them.
 `icon` or `description`.
 
 **An element earns a place where the system exchanges something with it, and an upstream once the
-module that reads it has a need** ([ADR 0019](../decisions/0019-boundary-at-what-deploys-and-tag-tier.md)).
+module that reads it has a need** ([ADR 0019 rev 1](../decisions/0019-boundary-at-what-deploys-and-tag-tier.md)).
 
 **A component earns a place by its interface — what it exposes, and who calls it — and each container
-holds only its framework half** ([ADR 0021](../decisions/0021-component-earns-its-interface-and-framework-half-only.md)).
+holds only its framework half** ([ADR 0021 rev 1](../decisions/0021-component-earns-its-interface-and-framework-half-only.md)).
 A module's half of a container is the code a module author writes that runs there, and it arrives per
-module as that module's need lands, on ADR 0019's ground for deferring an upstream.
+module as that module's need lands, on ADR 0019 rev 1's ground for deferring an upstream.
 
 **Source `link`s** wire the model to real code: once `backend/`/`frontend/` exist, a `link` property
 on a container or component points at the source implementing it. This is how the model stops being a
@@ -121,14 +121,14 @@ drawing and starts pointing at the code it describes, and it is checked at revie
 
 A LikeC4 **tag** carries the Doorstop id of the requirement obliging the element or relationship it
 sits on — that tag *is* the architecture → requirements link, and the tier follows the level
-([ADR 0019](../decisions/0019-boundary-at-what-deploys-and-tag-tier.md)). At the Context level
+([ADR 0019 rev 1](../decisions/0019-boundary-at-what-deploys-and-tag-tier.md)). At the Context level
 it is `SYS`, bound where the obligation is observable at that level: on the relationships, not on the
 system box, which owes every `SYS` item and so distinguishes none of them. The Container level
 answers to `SRS`, and anything at a level also carries the coarser item it discharges observably
-there ([ADR 0020](../decisions/0020-two-containers-one-origin-and-dual-tier-tags.md)). The Component
+there ([ADR 0020 rev 1](../decisions/0020-two-containers-one-origin-and-dual-tier-tags.md)). The Component
 level answers to `SRS` as well, an item sitting on the component it obliges and staying on the
 container where it obliges the container
-([ADR 0021](../decisions/0021-component-earns-its-interface-and-framework-half-only.md)).
+([ADR 0021 rev 1](../decisions/0021-component-earns-its-interface-and-framework-half-only.md)).
 
 **A tag is applied where an accepted item obliges the thing it sits on** — so an element or edge no
 accepted item obliges carries none, and one carrying coupled obligations carries all of them. What is

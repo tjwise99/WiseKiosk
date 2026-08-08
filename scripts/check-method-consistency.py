@@ -10,7 +10,7 @@ The two directions are not symmetric. Overstating is never excusable. Understati
 parent holds a residual obligation no child carries — so it is permitted only with a written
 verification-justification, which is the argument for why the residue exists.
 
-That attribute is also required on its own, on every item, per ADR 0009: below `test`, what blocks a
+That attribute is also required on its own, on every item, per ADR 0009 rev 2: below `test`, what blocks a
 mechanical check; at `test`, what the check leaves unproven. Absence is the failure the method rule
 cannot see — an item with no justification satisfies the rule by having nothing to argue.
 """
@@ -82,7 +82,7 @@ def main():
             if tier:
                 print(f"  {prefix} ({len(tier)}): {' '.join(tier)}", file=sys.stderr)
         print(
-            "\nEvery item states what its verification settles and what it does not (ADR 0009):"
+            "\nEvery item states what its verification settles and what it does not (ADR 0009 rev 2):"
             "\nbelow `test`, what blocks a mechanical check; at `test`, what the check leaves"
             "\nunproven.",
             file=sys.stderr,

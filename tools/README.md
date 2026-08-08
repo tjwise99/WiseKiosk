@@ -6,11 +6,11 @@ What ships alongside WiseKiosk to make a deployment easier to stand up, and what
 an operator runs from a clone of this repository — they are not part of the running system, and a
 deployment that never uses them is still a correct deployment. The product's obligations live in
 [`../docs/requirements/`](../docs/requirements/README.md)
-([ADR 0011](../docs/decisions/0011-requirement-or-convention.md)). Adding or retiring a tool is an
+([ADR 0011 rev 1](../docs/decisions/0011-requirement-or-convention.md)). Adding or retiring a tool is an
 edit here, not a specification change.
 
 **None of it is built yet.** Each tool names its ticket. That is how this project records scoped work
-([ADR 0005](../docs/decisions/0005-traceability-gating.md)).
+([ADR 0005 rev 1](../docs/decisions/0005-traceability-gating.md)).
 
 ## The configuration validator
 
@@ -26,7 +26,7 @@ with a non-zero exit and operator-language errors, neither starting the applicat
 **One obligation here does stay in the tree.** The validator and the page's own validation must run
 the same implementation, so a configuration cannot pass one and fail the other. That constrains
 WiseKiosk, not the tool, and it is stated by `SRS005`<!-- One validation implementation --> under
-[ADR 0007](../docs/decisions/0007-config-validation-allocation.md).
+[ADR 0007 rev 1](../docs/decisions/0007-config-validation-allocation.md).
 
 ## The configuration generator
 

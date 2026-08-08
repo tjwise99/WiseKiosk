@@ -2,6 +2,11 @@
 
 **Status:** accepted; deferral of the Component and Code levels superseded by [0021](0021-component-earns-its-interface-and-framework-half-only.md)
 **Decided:** 2026-07-22 (issue #15)
+**Rev:** 1
+
+## Revisions
+
+- **rev 1** — 2026-08-05 — revision tracking begins; text as merged (#118 ADR revisions).
 
 ## Context
 
@@ -72,4 +77,4 @@ renderable browser-free.
   ids (architecture → requirements). The SRS items this was decided against were placeholder, pending
   the requirements pass in issue #18, so this decision bound none of them. Which tier an element's tag
   names, and the binding itself, are
-  [ADR 0019](0019-boundary-at-what-deploys-and-tag-tier.md)'s.
+  [ADR 0019 rev 1](0019-boundary-at-what-deploys-and-tag-tier.md)'s.

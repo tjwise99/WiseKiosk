@@ -5,12 +5,12 @@ What CI does for this repository, and what it refuses to let through.
 **None of this is a requirement.** A requirement obliges the running software, and every gate below
 constrains the repository instead — its source hygiene, its dependencies, its documentation, its own
 wiring. The product's obligations live in [`requirements/`](requirements/README.md) and are failed
-against there ([ADR 0011](decisions/0011-requirement-or-convention.md)). Adding or retiring a gate is
+against there ([ADR 0011 rev 1](decisions/0011-requirement-or-convention.md)). Adding or retiring a gate is
 an edit here and a change to the check, not a specification change.
 
 **Most of what follows is not built yet.** The gates are described in the tense they will run in;
 where a gate is unbuilt its ticket is named. That is how this project records scoped work
-([ADR 0005](decisions/0005-traceability-gating.md)).
+([ADR 0005 rev 1](decisions/0005-traceability-gating.md)).
 
 ## What CI provides
 
@@ -167,7 +167,7 @@ a posture resting on this section. Until #77 fences this document, read it as in
   `.description`, `.url`, `.source`, `.version`, `.created`, `.revision`, `.licenses` and
   `.documentation` — are present and non-empty **as labels on the image config and as annotations on
   the manifest**, which are separate metadata with separate readers
-  ([ADR 0015](decisions/0015-container-toolchain-and-image-annotations.md)). Both are read: a check
+  ([ADR 0015 rev 1](decisions/0015-container-toolchain-and-image-annotations.md)). Both are read: a check
   reading one reports nothing about the other. No value is a `LABEL` line in the Dockerfile, and one
   is bound rather than merely present: **`.revision` is the commit the job published**, which is what
   a hardcoded value fails. A missing key, an empty value or that binding failing exits non-zero;
@@ -250,7 +250,10 @@ resolve, a citation to something that does not exist, an index that has drifted 
   separating it. A number is only a handle: a renumber rewrites
   `links:` and leaves the sentence pointing at whatever now occupies it, still reading as correct.
   The header is what turns that drift into a mismatch a machine can see. An ADR number carries no
-  header — ADR numbers are immutable, so one cannot come to mean a different decision.
+  header, and the rev beside it pins the version rather than the identity: numbers are reusable, so
+  what holds is that the check below fails the instant a number is freed, and every citation of it
+  must move in the same change. A citation written on a branch across a freeing and a re-taking of
+  the same number is the case that leaves — nothing here decides it.
 - **A header in an HTML comment does not open a line that continues a paragraph.** CommonMark reads
   a line-initial `<!--` as an HTML block, which interrupts the paragraph and splits it in two on the
   rendered page while the source still reads as one. Nothing else reports it: the comment is a
@@ -260,18 +263,51 @@ resolve, a citation to something that does not exist, an index that has drifted 
   numbering, every row resolves to a regular file. A directory listing reports names, so an entry
   named like an ADR is counted as one until something states it; a directory or a dangling symlink
   carrying the name is not an ADR.
+- **Every citation of an ADR pins that ADR's current rev**, in prose as `ADR NNNN rev M` and in a
+  markdown link as its title. An ADR is a versioned document
+  ([`decisions/README.md`](decisions/README.md)), so revving one reaches every document citing it:
+  each is updated or re-decided in the same change rather than left asserting a claim the ADR's
+  current rev does not make. The link rule is what the prose rule cannot reach — a citation spelled
+  as a bare bracketed number names no ADR in prose at all. **It is anchored on the link's target, not
+  its title**: a title is arbitrary text and may carry brackets, so a title-shaped pattern is what a
+  link to an ADR escapes through. A link whose title cannot be resolved back to its opening bracket
+  fails rather than being passed over, which makes a link to an ADR wrapped across two lines an
+  error — legal Markdown this rejects, in exchange for a reader that cannot be stepped around.
+  **The prose reader recognises more than it accepts, so that each spelling can be rejected rather
+  than passed over**: `ADR` or `ADRs`, any case, up to three of space, underscore, hash or hyphen,
+  then one to four digits. Only `ADR NNNN rev M` is accepted; everything else that set reaches is
+  reported. A reference-style link or a raw `<a href>` at an ADR is reported as a form carrying no
+  rev. That set is stated here literally rather than as a universal because a citation the reader
+  does not reach leaves the population and is then reported success over — so what the set *is* is
+  the reviewable claim, and a separator outside it is a gap to close rather than a rule already
+  broken.
+  The ADR's own head is authoritative for its rev, the index table's column is checked against it,
+  and its *Revisions* section carries one changelog line per rev from 1 — so a rev cannot be taken
+  without recording what changed. An ADR declaring no rev, or two, fails rather than being read as
+  rev zero. **Two empty-population guards, one per reader:** a run resolving no ADR at all fails, and
+  so does one judging no prose citation or no link citation, because the tree exercises both and
+  either falling to zero means that reader stopped seeing them while the other kept the run green.
+  **One exemption, and it drops staleness alone:** a changelog line, and any indented line continuing
+  it, records what a rev did at the moment it did it — so a citation there is not held to the ADR's
+  current rev. It is held to everything else. It must name an ADR that exists and must carry a rev;
+  only the comparison is dropped, so an unpinned citation or a bare-titled link inside a *Revisions*
+  section fails exactly as it would anywhere. Ordinary prose in that section continues nothing and is
+  judged outright. An index row's leading self-link is dropped for the same reason and no further:
+  the row's *Decision* cell is free prose and is judged.
+  What this leaves unproven is whether a citation pinning the current rev still means what the ADR
+  says; that is read at review.
 - **Every tracked Markdown file is claimed by a row in the documentation index**, unless it sits under
   a top-level dot-directory, which holds machinery rather than documents. Both sides are derived from
   the repository rather than read from an inventory: adding a document without indexing it fails,
   retiring one fails until its row goes, and there is no exclusions list to append to — excluding
   anything that is not machinery by that rule takes a change to the check itself
-  ([ADR 0014](decisions/0014-documentation-index-claims-documents.md)). A row whose *Document* cell
+  ([ADR 0014 rev 1](decisions/0014-documentation-index-claims-documents.md)). A row whose *Document* cell
   renders with a trailing slash claims the subtree beneath it, which is how `decisions/`,
   `requirements/`, `contracts/`, `architecture/` and `site/` are covered by one row each. Every row's
   link resolves to a tracked file, one rendered path carries one row, a row names a tracked document
   or a directory holding one, no row indexes a dot-directory, and no *Guarantees* or *Excludes* cell
   is empty. The index does not index itself. A new top-level dot-directory is excluded the moment it
-  exists, with no edit anywhere — the trade ADR 0014 records, which is why the check names the
+  exists, with no edit anywhere — the trade ADR 0014 rev 1 records, which is why the check names the
   machinery directories it skipped on every run. A dot-prefixed file at the repository root is not a
   directory and must be indexed like any other document. Scope is Markdown: the tree's items are
   claimed by the tree and gated by `check-reqs`, and code is claimed by nothing here.
@@ -288,7 +324,7 @@ resolve, a citation to something that does not exist, an index that has drifted 
 - Every requirement identifier tagged in the architecture model names an item that exists, is active
   and accepted, and is spelled canonically; every declared tag is applied to something. A tag
   carrying anything other than an identifier fails rather than being passed over — the model's tags
-  carry requirement links ([ADR 0019](decisions/0019-boundary-at-what-deploys-and-tag-tier.md)), so
+  carry requirement links ([ADR 0019 rev 1](decisions/0019-boundary-at-what-deploys-and-tag-tier.md)), so
   one carrying something else is a decision to take, not an exemption to add. A model naming no
   requirement at all fails too: it resolves every tag it carries, so an absent link and a sound one
   would read identically. What this leaves unproven is whether the tagged element is the one that
@@ -312,7 +348,7 @@ changed, which the citation resolver above decides without anyone declaring anyt
   behind. A second type label makes the branch type ambiguous, and an unmilestoned ticket is absent
   from the phase axis that carries the definition of done. This is detected at merge, on the change
   whose ticket is wrong, rather than at filing: GitHub cannot refuse to create a malformed issue, and
-  CI does not write ([ADR 0013](decisions/0013-work-tracking-invariants.md)).
+  CI does not write ([ADR 0013 rev 3](decisions/0013-work-tracking-invariants.md)).
 - A pull request's base and its issue's parent agree. A parent implies a non-default base; an
   integration branch implies membership in the ticket anchoring it; and a non-default base that is
   not itself a conforming branch fails rather than skips, because an anchor the check cannot resolve
@@ -363,7 +399,7 @@ top-level blocks are what a check can see, and they are what the rule above cons
 
 These keep a module self-contained and the shared framework ignorant of it. They were verification
 items in the tree until the extensibility need above them dissolved — its children were architecture
-([ADR 0012](decisions/0012-module-requirements-in-tree.md)) — and nothing the running kiosk does can
+([ADR 0012 rev 1](decisions/0012-module-requirements-in-tree.md)) — and nothing the running kiosk does can
 violate any of them, so they are checks here rather than obligations there.
 
 - **Shared framework code names no module.** No shared framework source names any module outside the
@@ -389,7 +425,7 @@ violate any of them, so they are checks here rather than obligations there.
   definition site of its property names; and no fragment property is reachable by reference from the
   boundary schema (#8).
 - **The frontend build emits a static bundle**
-  ([ADR 0018](decisions/0018-frontend-svelte-vite-static-spa.md)). Exactly one HTML entry whose
+  ([ADR 0018 rev 1](decisions/0018-frontend-svelte-vite-static-spa.md)). Exactly one HTML entry whose
   mount element is empty, no server-entry chunk, no SSR target or adapter declared in the build
   configuration, and the npm packages in the emitted module graph a subset of a committed allowlist
   manifest. The allowlist is deliberate: a denylist of named routers and meta-frameworks fails open
@@ -431,7 +467,7 @@ what runs where, and what each is allowed to let through, is here.
 
 **Why a credential is allowed here at all.** A withdrawn requirement once forbade any CI workflow
 from holding an upstream credential. It banned a normal practice, and forced the tier into a nested
-module that [ADR 0010](decisions/0010-runtime-materialised-gate-fixtures.md) independently found
+module that [ADR 0010 rev 1](decisions/0010-runtime-materialised-gate-fixtures.md) independently found
 leaky. Holding it in a scheduled job, off the merge path, is the narrower answer.
 
 Unbuilt; owned by #99 upstream contract checks.
@@ -480,7 +516,7 @@ citing an identifier restates it. The pull-request template points there.
 merge; only the tree can say the system is wrong.
 
 **How work is tracked, beyond the ticket a branch names.** Three things were weighed and deliberately
-left ungated ([ADR 0013](decisions/0013-work-tracking-invariants.md)). Ordering lives in GitHub's
+left ungated ([ADR 0013 rev 3](decisions/0013-work-tracking-invariants.md)). Ordering lives in GitHub's
 native dependency edges and never in a `⛔ Blocked by:` line in a body: the practice is adopted, but a
 literal-string ban flags the very documents that forbid the line, and is respelled for free — what
 enforces it is that there is no second place to write ordering. Whether a ticket should be rescoped

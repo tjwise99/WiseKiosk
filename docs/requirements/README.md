@@ -7,7 +7,7 @@ testable software requirements and then into verification items, and **fails CI*
 change leaves a downstream item unreviewed, an item orphaned, or a verification reference unresolved.
 
 Why this exists and why Doorstop specifically:
-[ADR 0002](../decisions/0002-requirements-management-doorstop.md).
+[ADR 0002 rev 1](../decisions/0002-requirements-management-doorstop.md).
 
 ## The three documents
 
@@ -21,7 +21,7 @@ A V-model tree — needs on the left, verification on the right:
 
 A module is a need: each carries one `SYS` item for its user-facing want, decomposed into `SRS` items
 stating only what is specific to that module. Obligations true of every module stay on the framework
-needs and are not restated ([ADR 0012](../decisions/0012-module-requirements-in-tree.md)).
+needs and are not restated ([ADR 0012 rev 1](../decisions/0012-module-requirements-in-tree.md)).
 
 Each item is one YAML file named for its ID (`SYS001.yml`, `SRS001.yml`, `TST001.yml`). IDs are the
 prefix plus a zero-padded 3-digit number. **An ID is permanent** — once assigned it is never reused
@@ -34,8 +34,8 @@ or renumbered, so external references to it stay valid.
 ## Item attributes
 
 Beyond Doorstop's native fields, every item carries four stored attributes
-([ADR 0005](../decisions/0005-traceability-gating.md),
-[ADR 0009](../decisions/0009-verification-justification-attribute.md)):
+([ADR 0005 rev 1](../decisions/0005-traceability-gating.md),
+[ADR 0009 rev 2](../decisions/0009-verification-justification-attribute.md)):
 
 | Attribute | Values | Meaning |
 |---|---|---|
@@ -47,7 +47,7 @@ Beyond Doorstop's native fields, every item carries four stored attributes
 **A requirement states the property and names no resources** — which file, endpoint, package or tool
 delivers it is not the item's. Nothing decides this mechanically, so it is question 14 on
 [`../../CONTRIBUTING.md`](../../CONTRIBUTING.md)'s review checklist, where every obligation that
-leaves no artifact is carried ([ADR 0011](../decisions/0011-requirement-or-convention.md)).
+leaves no artifact is carried ([ADR 0011 rev 1](../decisions/0011-requirement-or-convention.md)).
 
 **A `TST` item is a verification obligation, not a test function.** It states what must be proven,
 so several items may be discharged by one test and one item may need several. Counting `TST` items
@@ -77,7 +77,7 @@ set equality against a recorded list has not decided that the list is right.
 fingerprint (editing them re-flags review), as are the item's **parent links** — `Item.review()`
 stamps the sorted parent UIDs along with the content, so re-parenting an item unreviews it. `status` is
 not fenced, because a state transition is not a content change. Verified/implemented
-is **derived by tooling from evidence, never stored** (ADR 0005).
+is **derived by tooling from evidence, never stored** (ADR 0005 rev 1).
 
 **An item's `text` names no other item.** The obligation must be readable on its own —
 ISO/IEC/IEEE 29148's *complete* and *singular* characteristics — and an identifier inside it defeats
@@ -168,7 +168,7 @@ The same idiom extends upward while the tree is being built out: a `SYS` or `SRS
 decomposition round has not yet arrived is committed **`active: false`** with its full content and
 attributes. The strict gate errors on any *active* parent with no child links, so an item is
 activated in the same change that writes its first child. Elsewhere `active: false` means
-retirement (ADR 0005); an item carrying a pending note is awaiting decomposition or its verifying
+retirement (ADR 0005 rev 1); an item carrying a pending note is awaiting decomposition or its verifying
 artifact, not retired.
 
 **Activation is a review act.** Doorstop skips inactive items entirely, so a `reviewed` stamp on a
@@ -231,7 +231,7 @@ says what they mean. `check-verify-ci-parity` asserts the recipe-to-CI correspon
 a time, so a command added to the recipe and not to CI fails rather than passing unseen.
 
 The browsable, click-through traceability view of this tree (needtables, link graphs, matrices) is
-built by the documentation site silo, [`../site/README.md`](../site/README.md) (ADR 0004); this
+built by the documentation site silo, [`../site/README.md`](../site/README.md) (ADR 0004 rev 1); this
 directory is the requirements' canonical source and gate, not its presentation.
 
 ## Adding or changing requirements
@@ -244,7 +244,7 @@ Run all commands with the venv (`docs/requirements/.venv/bin/doorstop …`):
   `SYS` parent and every `TST` a `SRS` parent, or the gate flags an orphan.
 - **Point a `TST` at its check:** add a `references` list entry `{path: <repo-relative-file>, type:
   file}`. The path must resolve to a real tracked file. **Doorstop cannot reference a file under a
-  dot-directory** (e.g. anything in `.github/`) — see ADR 0002; cite such wiring in the item's `text`
+  dot-directory** (e.g. anything in `.github/`) — see ADR 0002 rev 1; cite such wiring in the item's `text`
   instead.
 - **After editing a parent,** its children go suspect. Re-read each child, then run
   `doorstop clear <UID>` followed by `doorstop review <UID>` — `clear` updates the stored parent

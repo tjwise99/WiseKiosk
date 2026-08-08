@@ -2,6 +2,11 @@
 
 **Status:** accepted
 **Decided:** 2026-07-26 (`SRS` pass of the tree rebuild #69)
+**Rev:** 1
+
+## Revisions
+
+- **rev 1** — 2026-08-05 — revision tracking begins; text as merged (#118 ADR revisions).
 
 ## Context
 
@@ -39,7 +44,7 @@ No gate can decide this. Doorstop cannot see that a module need restates
 unmachineable obligation in this project is carried: as a question on
 [`CONTRIBUTING.md`](../../CONTRIBUTING.md)'s review checklist, reached from the pull-request
 template. An authoring rule with no activation path is the dead letter
-[ADR 0011](0011-requirement-or-convention.md) deletes items for being.
+[ADR 0011 rev 1](0011-requirement-or-convention.md) deletes items for being.
 
 **There is no generic module need.** *"The system shall provide a set of configurable, enablable
 modules"* would be a hat over its own children — the enumerates-its-own-children tell. Its
@@ -61,15 +66,15 @@ spent its length removing.
 **Modules outside the requirements tree entirely, specified by the module contract and per-module
 prose.** Rejected: a module's obligations are obligations on the running software — what it fetches,
 what it renders, how it fails — which is exactly what
-[ADR 0011](0011-requirement-or-convention.md) puts in the tree. Leaving them to prose would place
-product behaviour outside the traceability claim [ADR 0005](0005-traceability-gating.md) makes over
+[ADR 0011 rev 1](0011-requirement-or-convention.md) puts in the tree. Leaving them to prose would place
+product behaviour outside the traceability claim [ADR 0005 rev 1](0005-traceability-gating.md) makes over
 the product. Repository conventions leave the tree under that same rule; module behaviour is not one
 of them.
 
 ## Consequences
 
 **The tree grows with content, bounded by the module roster.** Adding a module adds a need and its
-decomposition. That is the work, recorded where work is recorded — [ADR 0005](0005-traceability-gating.md)
+decomposition. That is the work, recorded where work is recorded — [ADR 0005 rev 1](0005-traceability-gating.md)
 already treats the tree as the backlog, so a module's unwritten items are its scope rather than an
 omission. The count is not open-ended: the roster is a product decision stated in
 [`../../README.md`](../../README.md), so the need tier is the framework needs plus one per module on

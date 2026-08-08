@@ -2,6 +2,11 @@
 
 **Status:** accepted
 **Decided:** 2026-07-24 (closing review pass of the requirements rewrite #18)
+**Rev:** 1
+
+## Revisions
+
+- **rev 1** — 2026-08-05 — revision tracking begins; text as merged (#118 ADR revisions).
 
 ## Context
 
@@ -47,7 +52,7 @@ Three properties follow, and they are the point:
   differently-configured scanner would prove nothing.
 
 The meta-gate and `scripts/gate-fixtures/` are both outside dot-directories — the limit
-[ADR 0002](0002-requirements-management-doorstop.md) records.
+[ADR 0002 rev 1](0002-requirements-management-doorstop.md) records.
 
 A fixture materialised at run time is not an exclusion under the whole-tree discovery gate, so the
 pattern cannot be mistaken for what that gate bans and "corrected" into real source.

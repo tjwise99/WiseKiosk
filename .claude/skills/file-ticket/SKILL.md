@@ -23,7 +23,7 @@ so a ticket filed wrong is not lost, only expensive. What follows is how to not 
 ## What the gate will demand
 
 From [`docs/CI.md` § *Repository shape*](../../../docs/CI.md#repository-shape) and
-[ADR 0013](../../../docs/decisions/0013-work-tracking-invariants.md), decided against the ticket
+[ADR 0013 rev 3](../../../docs/decisions/0013-work-tracking-invariants.md), decided against the ticket
 whose branch is being cut:
 
 - **open** — it cannot be closed when the branch is worked;
@@ -35,7 +35,7 @@ whose branch is being cut:
 ## Type, template and branch are one choice
 
 Picking the type picks the template and the branch prefix. They cannot diverge; a branch's type names
-the template its ticket was opened from ([ADR 0006](../../../docs/decisions/0006-process-gates.md)).
+the template its ticket was opened from ([ADR 0006 rev 2](../../../docs/decisions/0006-process-gates.md)).
 
 | Type | Template | Branch |
 |---|---|---|

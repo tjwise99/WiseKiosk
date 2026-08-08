@@ -1,10 +1,15 @@
 # 0005 — Trace all work to the requirements tree with in-repo gates
 
 **Status:** accepted; stored-attribute set superseded by
-[0009](0009-verification-justification-attribute.md); traceability scope narrowed and gate 4 retired
-by [0011](0011-requirement-or-convention.md)
+[ADR 0009 rev 2](0009-verification-justification-attribute.md); traceability scope narrowed and gate 4 retired
+by [ADR 0011 rev 1](0011-requirement-or-convention.md)
 **Decided:** 2026-07-22 (traceability-gating design discussion; implementation ticket #25, under the
 requirements rewrite #18)
+**Rev:** 1
+
+## Revisions
+
+- **rev 1** — 2026-08-05 — revision tracking begins; text as merged (#118 ADR revisions).
 
 ## Context
 
@@ -23,7 +28,7 @@ Every requirement carries a `verification-method` attribute (`test` | `inspectio
 `demonstration`); gates route on the method. `rationale` is required at the `SYS` tier, where there
 is no parent to inherit from; lower items may carry one but are not gated on it.
 
-This partially supersedes [ADR 0002](0002-requirements-management-doorstop.md): per-test in-code
+This partially supersedes [ADR 0002 rev 1](0002-requirements-management-doorstop.md): per-test in-code
 attribution replaces `TST` `references` to verifying files as the evidence channel for Test-method
 items. Doorstop `references` remain the channel for inspection, analysis, and demonstration
 artifacts; 0002's adoption of Doorstop, the tree shape, and `check-reqs` stand unchanged.
@@ -68,7 +73,7 @@ nothing by design, gated by review.
   from the diff against the tree — a PR-body ID either restates that or contradicts it, and in a
   contradiction the diff is the truth. PR metadata lives outside the checked zone: no scanner reads
   it, no page renders it, nothing fails when it rots. Issues remain as scheduling views over the
-  backlog; branch shape is process-gated by [ADR 0006](0006-process-gates.md) but stays outside the
+  backlog; branch shape is process-gated by [ADR 0006 rev 2](0006-process-gates.md) but stays outside the
   traceability evidence channel — the rejection here stands.
   The partition also obliges gate 4's claim mechanism to reach files Doorstop references cannot —
   paths under dot-directories, a limit 0002 records — so that claim check is scanner-side or those
