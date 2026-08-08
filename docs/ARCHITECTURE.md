@@ -113,11 +113,12 @@ outside it too: a verification item says how an obligation is settled, not what 
 **Which items are unbound is the check's answer, not this document's.** The second direction of
 `check-arch-trace` enumerates them (#122 close check-arch-trace's second direction); a list written
 here would be a point-in-time inventory nothing compares to the tree, which is the failure the
-paragraph below describes in the other direction. What is worth stating is the *kind* of absence, and
-today it has one instance: SRS020<!-- Non-root container user --> and
-SRS025<!-- No secret material in the published image --> oblige the published image, which is neither
-container nor component, and they bind when the Deployment level draws it (#123 C4 phase 4
-Deployment). What distinguishes such an item from one that simply has not been bound is that the
+paragraph below describes in the other direction. What is worth stating is the *kind* of absence
+rather than the roster. An obligation on the published image is one such kind: the image is neither
+container nor component, so SRS020<!-- Non-root container user --> and
+SRS025<!-- No secret material in the published image --> bind when the Deployment level draws it
+(#123 C4 phase 4 Deployment). What distinguishes such an item from one that simply has not been bound
+is that the
 obligation has no observable this model draws, rather than the subject being unusual —
 SRS018<!-- One generic published image --> obliges the same image and does bind, on the configuration
 arriving from outside, because that is where what it obliges is observable

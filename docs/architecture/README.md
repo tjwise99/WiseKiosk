@@ -137,5 +137,12 @@ every exchange an element has goes on the element rather than one of its edges; 
 obligation reaches something permanently outside the model is not a tag here at all, which is
 different from one whose subject is merely not modelled yet.
 
+**Every accepted, active `SYS` or `SRS` item binds somewhere, and a subject the model does not draw is
+a level to add rather than an absence to accept**
+([ADR 0022 rev 1](../decisions/0022-every-accepted-requirement-binds.md)). There is no exemption
+record; the `TST` tier is outside the rule, a verification item saying how an obligation is settled
+rather than what the software owes. What reopens it is an item whose subject cannot be drawn without
+inventing an element that earns no place.
+
 **`just check-arch-trace` resolves them against the tree** — what it asserts, and what it leaves to
 review, is [`../CI.md`](../CI.md) § Documentation integrity's.

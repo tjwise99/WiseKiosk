@@ -228,9 +228,12 @@ tag on an element that already exists. `check-arch-trace`'s scope is resolution,
 states the consequence directly — whether the tagged element is the one that requirement obliges is
 "held by review alone, and by nothing else in the repository". An exemption record would have surfaced
 that same situation as a written entry someone reads; this rule surfaces it as a green check. It is
-carried by review, through [`../../CONTRIBUTING.md`](../../CONTRIBUTING.md)'s checklist, and it is
-named here rather than left for the first person to find it — a rule that creates two pressures and
-answers one has not been thought through.
+held by review alone, which is ADR 0021 rev 1's position on this link rather than a new one — and
+**no question in [`../../CONTRIBUTING.md`](../../CONTRIBUTING.md)'s checklist asks it**, so review
+here means a reader who happens to look rather than one who is prompted. That gap is named rather
+than left for the first person to find it; a rule creating two pressures and answering one has not
+been thought through. Closing it is a checklist edit, and it is not made here because renumbering the
+checklist would break the question numbers [`../CI.md`](../CI.md) and open tickets cite.
 
 **Two subjects now carry six tags** — the payload relationship and the render relationship, the latter
 by this record's own SRS004<!-- Page renders a legible error state for every configuration failure
