@@ -4,7 +4,7 @@ header: |
   Pending: secret rotation-without-restart test
 level: 1.25
 links:
-- SRS006: y0yjXKaWSy9hAaa5tP2xkn_viFEJPSyLTJzfBmtHXVE=
+- SRS006: JxiHw1gLMgVhOl6lwIx5q3IteUyerEAbhXfRhoPZdK0=
 normative: true
 rationale: ''
 ref: ''

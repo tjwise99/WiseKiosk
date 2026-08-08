@@ -16,7 +16,7 @@ rationale: |
   header on the config path — is exactly the config-aware code path ADR 0007 rev 2
   forbids.
 ref: ''
-reviewed: VF1HNOr1ezTeYkmpZvSokFjmCs_LnGbqCZYEZ98rrfI=
+reviewed: G2sSpxLRaZgsMtzWNJGOhzFAJgEcJvXNT2LvFGN2JCM=
 status: accepted
 text: |
   A modified configuration shall take effect no later than the next load of

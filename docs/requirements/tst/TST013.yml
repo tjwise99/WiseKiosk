@@ -4,7 +4,7 @@ header: |
   Retired: exactly one validation implementation, by import graph
 level: 1.14
 links:
-- SRS005: tDrg9QfP6gBh2L7CGgL0waNpQiNDciy9TwQjuAknmPc=
+- SRS005: 9IX7EbtRmxgPsuiLHwJeJQFOuJn2u2oxcbAy-8Z2R-Q=
 normative: true
 rationale: |
   Retired (#129) with the requirement it verified, whose only other validation entry point was the

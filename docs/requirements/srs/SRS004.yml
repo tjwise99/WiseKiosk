@@ -13,7 +13,7 @@ rationale: |
   unparseable file must be as legible as an invalid one. Scoped to "no valid configuration applied"
   so a future live-apply path keeps the freedom to hold last-good on a bad reload.
 ref: ''
-reviewed: dcG1P2PoaK7n7rI6GqtHhPyUcIa5rIrhGlA07uucD_0=
+reviewed: 2uqMlxQg1UPLJF8b1zazh1sB8le6lexjVqWRVAduEcU=
 status: accepted
 text: |
   When no configuration can be applied - the file absent, unfetchable,

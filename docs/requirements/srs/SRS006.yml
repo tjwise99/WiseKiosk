@@ -14,7 +14,7 @@ rationale: |
   (SYS001<!-- Failure is legible and proportionate -->) — the debuggable outcome chosen on #35 over
   failing to boot.
 ref: ''
-reviewed: 9HZ9nIo3nrWrdVM8ZxVzSSVGdUUr49xnZDOTSSAmCow=
+reviewed: B78jDg5_WxJNlXCKuiGCItX2zI9uKTm3Uk2BI-tD6b8=
 status: accepted
 text: |
   The backend shall resolve a secret when handling a request for the

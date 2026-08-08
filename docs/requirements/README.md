@@ -269,6 +269,12 @@ Run all commands with the venv (`docs/requirements/.venv/bin/doorstop …`):
   both answer `no item with UID` while that item is pending. Stamping one takes a loop over
   `document._iter()`. Where a pending item's link goes suspect before activation, that loop is the
   only route.
+- **`Item.clear()` writes a null stamp when the *parent* is also inactive**, which unstamps the link
+  rather than re-stamping it — `_get_parent_uid_and_item` resolves through the active-only lookup and
+  yields an unknown item, whose stamp is empty. The loop above reaches the child but not the parent,
+  so assign `link.stamp = parent.stamp()` from the item found through `document._iter()` and save.
+  `check-unreviewed.py` catches the null, so this fails loudly rather than silently; retiring a
+  parent whose child is pending is when it arises.
 - **Validation stamps what it touches, so never run it on the tree you care about.** `doorstop`'s
   validation pass re-blesses items as it goes, which means a diagnostic run silently re-stamps the
   very items whose review state was in question. Copy the tree to a throwaway directory and validate
