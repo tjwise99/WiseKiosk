@@ -33,6 +33,7 @@ specification {
   tag SRS003
   tag SRS004
   tag SRS006
+  tag SRS007
   tag SRS008
   tag SRS009
   tag SRS010
@@ -40,6 +41,7 @@ specification {
   tag SRS012
   tag SRS013
   tag SRS014
+  tag SRS015
   tag SRS016
   tag SRS017
   tag SRS018
@@ -208,6 +210,7 @@ model {
       #SYS005
       #SRS010
       #SRS013
+      #SRS015
       #SRS016
       technology 'HTTP / JSON'
     }
@@ -219,6 +222,7 @@ model {
 
   operator -> staticServing 'Places the configuration into the served tree' {
     #SYS003
+    #SRS007
     #SRS018
   }
 
@@ -227,6 +231,7 @@ model {
     #SYS002
     #SRS001
     #SRS002
+    #SRS004
     #SRS026
   }
 }
