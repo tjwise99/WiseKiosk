@@ -4,7 +4,7 @@ header: |
   No configuration erodes the reserve
 level: 34
 links:
-- SYS008: fcclFlAscgLgYpJmsG9AOsJVOpRt8EbYinY1ew9o5Jw=
+- SYS008: driOH9lNcSbRvXy2FbZB_xW_FkCOjO1wulyL30q8iXk=
 normative: true
 rationale: |
   A reserve that exists in one configuration and not another is not a property of the product, and
@@ -14,8 +14,16 @@ rationale: |
   fixture, because the failing case is the one an operator assembles later. It is the configured
   volume of content that consumes the reserve rather than the size of the viewport, so a check that
   varied only the viewport would report on a case that is not the one at risk.
+
+  A configuration dense enough to erode the reserve is met with no rendered failure state, and that
+  is deliberate (owner, 2026-08-08): the degraded display is itself the signal the operator needs,
+  and rendering a message to announce that the display will look wrong is a second and worse way of
+  saying what is already visible. Nor is it a failure in the sense the legibility-of-failure need
+  carries - nothing has failed, a choice has been made badly. So this item obliges the layout rather
+  than a runtime response, and the check loads it with configurations an operator would plausibly
+  assemble rather than proving the property against every configuration expressible.
 ref: ''
-reviewed: M0x3O-zAJVL_FDzfCIsCQ-ypXy_Qi9LkMew-Ta8YR5o=
+reviewed: nfM2A5J3i0m0r8msA6wNCPJMU6kFuAI2HrvOz7MsRKk=
 status: accepted
 text: |
   Under every configuration the display accepts, the largest contiguous region of the display held at

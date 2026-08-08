@@ -1,12 +1,13 @@
 active: true
 derived: false
 header: |
-  The unlit surface is a mirror
+  The surface carrying no content is a mirror
 level: 13
 links: []
 normative: true
 rationale: |
-  Behind a half-silvered surface an unlit pixel is a mirror, so the part of the display carrying
+  Behind a half-silvered surface a pixel at minimum emission is a mirror - unlit, in the only sense
+  that matters here - so the part of the display carrying
   nothing is not spare capacity - it is the product. A display that fills its surface with content is
   a different product wearing the same hardware, and nothing else in the tree would notice: every
   module could render wholly, legibly and within its region while the mirror was gone.
@@ -18,11 +19,12 @@ rationale: |
   WiseKiosk does not supply. What the mounting, the room and the viewer's height make of that surface
   is the operator's, in the same way the kiosk host is (#132 layout need decomposition).
 ref: ''
-reviewed: fcclFlAscgLgYpJmsG9AOsJVOpRt8EbYinY1ew9o5Jw=
+reviewed: driOH9lNcSbRvXy2FbZB_xW_FkCOjO1wulyL30q8iXk=
 status: accepted
 text: |
-  The display shall leave a contiguous part of its surface unlit, large enough that a viewer at the
-  distance it is installed for sees their own reflection in it.
+  Wherever the display carries no content it shall be held at minimum emission, and what is so held
+  shall be contiguous, placed and large enough to return the reflection of a viewer at the distance
+  the display is installed for.
 verification-justification: |
   Settled by its children: that surface carrying no content is held at minimum emission, that no
   configuration reduces the largest contiguous region so held below the span a reflection needs, and
