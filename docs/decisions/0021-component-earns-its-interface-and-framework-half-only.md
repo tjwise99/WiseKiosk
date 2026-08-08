@@ -2,6 +2,11 @@
 
 **Status:** accepted
 **Decided:** 2026-08-05 (C4 phase 3 design discussion, ticket #98 C4 phase 3 Component)
+**Rev:** 1
+
+## Revisions
+
+- **rev 1** — 2026-08-05 — first written (#98 C4 phase 3 Component).
 
 ## Context
 
@@ -21,10 +26,13 @@ to a picture, and deleting it changes no behaviour. Applying a generality rule t
 every design document in this repository from preceding its implementation, which is the order
 `CONTRIBUTING.md` opens by requiring.
 
-**That clause is reversed, not re-grounded, so it is superseded rather than amended.** ADR 0003 ruled
-the levels would not be built and this builds them, which
-[`README.md`](README.md) routes to supersession; its status names the superseded clause, and the rest
-of that decision — LikeC4, the browser-free codegen, the staleness gate — stands untouched.
+**That clause is reversed, not re-grounded, so it is superseded rather than amended.** ADR 0003 rev 1
+ruled the levels would not be built and this builds them, which [`README.md`](README.md) routes to
+supersession — recorded by revving the record superseded, not by a note on this one. That rev is left
+to #124 settle the C4 ADR set, which merges this record into
+[ADR 0019 rev 1](0019-boundary-at-what-deploys-and-tag-tier.md) and frees this number: written now,
+the citation ADR 0003 rev 1 would carry names a record that ceases to exist. The rest of that
+decision — LikeC4, the browser-free codegen, the staleness gate — stands untouched.
 
 **The levels above had a physical test and this one does not.** A system is what has its own owner; a
 container is an execution context, which is how ADR 0020 settled two containers behind one origin

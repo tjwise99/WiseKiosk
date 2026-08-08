@@ -1,6 +1,6 @@
 # 0003 — Model the architecture as code with LikeC4
 
-**Status:** accepted; deferral of the Component and Code levels superseded by [0021](0021-component-earns-its-interface-and-framework-half-only.md)
+**Status:** accepted
 **Decided:** 2026-07-22 (issue #15)
 **Rev:** 1
 
