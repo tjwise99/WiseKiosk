@@ -139,8 +139,8 @@ every exchange an element has goes on the element rather than one of its edges.
 a level to add rather than an absence to accept**
 ([ADR 0022 rev 1](../decisions/0022-every-accepted-requirement-binds.md)). There is no exemption
 record, and **an obligation reaching something *permanently* outside the model is not a way out of
-this**: ADR 0020 rev 1 admits that case, its only instance leaves the tree with the desk validator
-(#129 retire the desk configuration validator), and a fresh one is the premise that reopens
+this**: ADR 0020 rev 1 admits that case, the tree holds no item of that shape, and a fresh one is
+the premise that reopens
 ADR 0022 rev 1 — argued as a decision, never left standing as an untagged item. The same holds for a
 subject not drawn yet: that is the level to add.
 

@@ -110,7 +110,7 @@ report in operator language without a valid configuration
 floor is a page reload rather than a redeploy, and the page is reachable over HTTP from any device on
 the network — so a desk-side tool has no pre-deploy gap left to fill, and an obligation that one
 implementation be shared between the page and a tool that does not exist obliges nothing. That is
-[ADR 0007 rev 1](0007-config-validation-allocation.md)'s own argument against the backend boot gate,
+[ADR 0007 rev 2](0007-config-validation-allocation.md)'s own argument against the backend boot gate,
 reaching the surviving half of the same instinct.
 
 ### The layout pair is not in conflict
@@ -206,9 +206,8 @@ each acquires this when accepted; the `TST` tier acquires nothing, being outside
 **The completeness check lands red, deliberately.** #122 close check-arch-trace's second direction
 enumerates accepted items bound nowhere and fails when that set is non-empty; on landing it fails on
 SRS020<!-- Non-root container user --> and SRS025<!-- No secret material in the published image -->
-once #129 retire the desk configuration validator has landed and this branch has taken `main` — until
-then SRS005<!-- One validation implementation --> is a third — and #123 C4 phase 4 Deployment turns it
-green. The defect case therefore needs no fixture — it is the
+— the set the retirement of SRS005<!-- One validation implementation --> leaves behind — and
+#123 C4 phase 4 Deployment turns it green. The defect case therefore needs no fixture — it is the
 tree's real state, which is better evidence than a seed. The legal direction still needs one, and
 [ADR 0010 rev 1](0010-runtime-materialised-gate-fixtures.md) is the mechanism. That this branch merges
 to `main` once, at the end, is what makes a red intermediate state affordable.
