@@ -1,27 +1,29 @@
 active: false
 derived: false
 header: |
-  Pending: exactly one validation implementation, by import graph
+  Retired: exactly one validation implementation, by import graph
 level: 1.14
 links:
 - SRS005: tDrg9QfP6gBh2L7CGgL0waNpQiNDciy9TwQjuAknmPc=
 normative: true
 rationale: |
-  One engine imported by both call sites still enforces two rule sets if the callers pass different
-  options, or a differently configured instance. The import-graph assertion cannot see that, so it
-  proves a shared dependency rather than a shared verdict.
+  Retired (#129) with the requirement it verified, whose only other validation entry point was the
+  desk validator. One engine imported by both call sites would still have enforced two rule sets if
+  the callers passed different options, or a differently configured instance; the import-graph
+  assertion could not see that, so it proved a shared dependency rather than a shared verdict.
 ref: ''
 reviewed: -kas5bkxaDVVl4iTQVsw1kI_37P4zrNNSxp_w36N78M=
 status: proposed
 text: |
-  Pending: test running a fixture corpus - valid, unknown key, wrong type, missing required, and an
-  error inside a module fragment - through both the page's validation entry point and the standalone
-  desk validator, asserting identical verdicts and identical reported error sets for every fixture; and
-  asserting exactly one source file imports the schema-validation engine, that both paths resolve to
-  that file in the import graph, and that no other file imports the engine directly. The import graph
-  is a cheap structural guard; agreement is what the requirement obliges. Lands with the validator.
+  Retired, unwritten, with the requirement it verified. It would have run a fixture corpus - valid,
+  unknown key, wrong type, missing required, and an error inside a module fragment - through both the
+  page's validation entry point and the standalone desk validator, asserting identical verdicts and
+  identical reported error sets for every fixture; and asserted that exactly one source file imports
+  the schema-validation engine, that both paths resolve to that file in the import graph, and that no
+  other file imports the engine directly. There is one validation entry point and nothing left to
+  compare it against.
 verification-justification: |
-  Settles that both validation entry points return identical verdicts and error sets across the
-  corpus. Leaves unproven agreement outside it; five fixtures agreeing is evidence of one
-  implementation rather than proof.
+  Would have settled that both validation entry points return identical verdicts and error sets
+  across the corpus, leaving unproven agreement outside it - five fixtures agreeing is evidence of
+  one implementation rather than proof. Nothing is settled or left unproven by a retired item.
 verification-method: test

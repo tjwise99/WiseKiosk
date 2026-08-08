@@ -1,4 +1,4 @@
-active: true
+active: false
 derived: false
 header: |
   One validation implementation
@@ -7,9 +7,12 @@ links:
 - SYS003: x73sA6VMR9aDga-PqTW6L49gj-iwZdgTOg5xG8VhAwM=
 normative: true
 rationale: |
-  A second engine enforces the schema slightly differently, and the divergence
-  surfaces as a desk validator that accepts what the page rejects — the defect
-  class the single-definition rule exists to kill (ADR 0007 rev 1).
+  Retired (#129) with the desk validator it constrained. A second engine enforces the schema
+  slightly differently, and the divergence surfaces as a validator that accepts what the page
+  rejects — the defect class the single-definition rule exists to kill. That defect needs two
+  consumers to exist. With validation running in the page and nowhere else (ADR 0007 rev 2) the
+  schema has one enforcer by construction, so nothing the software does can violate this item.
+  What survives is the rejection of a second engine, which is ADR 0007 rev 2's to hold.
 ref: ''
 reviewed: FE9vfihgSH34yWr8VYfum6JjwFufWgTfJ8ZrR-bKcFY=
 status: accepted
