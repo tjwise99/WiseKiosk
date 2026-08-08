@@ -100,7 +100,7 @@ implementation be shared between the page and a tool that does not exist obliges
 [ADR 0007 rev 1](0007-config-validation-allocation.md)'s own argument against the backend boot gate,
 reaching the surviving half of the same instinct.
 
-### SYS002 and SRS017 are not in conflict
+### The layout pair is not in conflict
 
 ADR 0021 rev 1 binds SRS017<!-- Full-screen assembly at kiosk; reflow, not overlap, at narrower
 widths --> to the Frontend container rather than the render relationship, because it "names a property
@@ -108,10 +108,12 @@ of the assembled page rather than of what it shows anyone", while its parent
 SYS002<!-- The configured layout renders whole --> sits on that relationship. Read as a contradiction
 twice, so the distinction is recorded here.
 
-The two oblige different things. SRS017 obliges the **geometry of the assembled page** — no
-overlapping regions, no clipped content, reflow rather than horizontal scrolling — every clause of
-which is decidable with nobody watching. SYS002 obliges that **a Viewer can see their configured
-modules on the display in front of them**, which is what that relationship is. The parent is
+The two oblige different things. SRS017<!-- Full-screen assembly at kiosk; reflow, not overlap, at
+narrower widths --> obliges the **geometry of the assembled page** — no overlapping regions, no
+clipped content, reflow rather than horizontal scrolling — every clause of which is decidable with
+nobody watching. SYS002<!-- The configured layout renders whole --> obliges that **a Viewer can see
+their configured modules on the display in front of them**, which is what that relationship is. The
+parent is
 viewer-facing and the child is the mechanism delivering it; ADR 0021 rev 1 rules that the child is not
 about what the page shows anyone, and says nothing that bars the parent from being. Under
 ADR 0020 rev 1 a `SYS` item sits where it is discharged observably at that level, and this one is.
@@ -122,10 +124,13 @@ ADR 0020 rev 1 a `SYS` item sits where it is discharged observably at that level
 strongest rival, this ticket's lead option, and what #122 close check-arch-trace's second direction
 was scoped to build. Rejected on its population. The candidate vocabulary was *enabling system*,
 *design-time artifact*, *deployment artifact* and *deferred*; walking the five items emptied three of
-those four. SRS007 and SRS015 bind, so *design-time artifact* has no member. *Deferred* has none and
+those four. SRS007<!-- Configuration schema offers no secret-bearing key --> and
+SRS015<!-- One schema, all boundary value classes --> bind, so *design-time artifact* has no member.
+*Deferred* has none and
 arguably never could — the module and upstream deferrals ADR 0019 rev 1 and ADR 0021 rev 1 record are
 deferred **elements**, not unbound requirements, and no accepted item is unbound because a module
-component is undrawn. SRS005 retires, so *enabling system* has none. What remained was two items that
+component is undrawn. SRS005<!-- One validation implementation --> retires, so *enabling system* has
+none. What remained was two items that
 bind the moment the Deployment level lands, and none of the five `proposed` items looks unbindable
 either.
 
@@ -183,8 +188,9 @@ module box.
 inventing an element that earns no place under ADR 0021 rev 1's interface test. At that point the
 exemption record is back on the table, argued against a real case rather than an anticipated one.
 
-**The payload relationship now carries six tags** — SYS004, SYS005, SRS010, SRS013, SRS015 and SRS016
-— making it the most heavily tagged subject in the model. ADR 0020 rev 1's bar is against stamping an
+**The payload relationship now carries six tags**, making it the most heavily tagged subject in the
+model — they are not enumerated here, because a list of them kept in step by nothing is the second
+inventory [`../ARCHITECTURE.md`](../ARCHITECTURE.md) argues against. ADR 0020 rev 1's bar is against stamping an
 element with everything it owes rather than against a count, and each of the six names a distinct
 obligation on that exchange, so it holds. It is recorded because the next addition to that
 relationship is the one that should be argued rather than assumed.
