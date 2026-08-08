@@ -135,7 +135,9 @@ person in front of it, and those obligations are viewer-facing by their nature. 
 sits on the render relationship because that is where its decomposition will land, rather than as a
 coarser copy of the child**, and the child sits on what assembles the page. What that decomposition
 contains is #132 under-decomposition of the layout need's to settle, not this record's — and a ruling
-there that the parent is *not* under-decomposed reopens this placement.
+there that the parent is *not* under-decomposed reopens this placement. Reopening it means arguing a
+different subject, not removing the binding: this record forbids leaving the item unbound, and the
+container beside its own child is the coarser copy the paragraph above rejects.
 
 **A ground that reads well and is wrong, recorded because two readers reached it.** Not *the child is
 decidable geometry while the parent is what a person sees*. SYS002's<!-- The configured layout renders
@@ -232,8 +234,10 @@ held by review alone, which is ADR 0021 rev 1's position on this link rather tha
 **no question in [`../../CONTRIBUTING.md`](../../CONTRIBUTING.md)'s checklist asks it**, so review
 here means a reader who happens to look rather than one who is prompted. That gap is named rather
 than left for the first person to find it; a rule creating two pressures and answering one has not
-been thought through. Closing it is a checklist edit, and it is not made here because renumbering the
-checklist would break the question numbers [`../CI.md`](../CI.md) and open tickets cite.
+been thought through. Closing it is a checklist edit, and it is not made here because inserting a
+question renumbers the ones below it, and [`../requirements/README.md`](../requirements/README.md),
+[`../../scripts/README.md`](../../scripts/README.md),
+[`../../CONTRIBUTING.md`](../../CONTRIBUTING.md) itself and open tickets all cite question numbers.
 
 **Two subjects now carry six tags** — the payload relationship and the render relationship, the latter
 by this record's own SRS004<!-- Page renders a legible error state for every configuration failure
