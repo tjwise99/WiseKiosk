@@ -15,10 +15,14 @@ rationale: |
   SRS017<!-- Full-screen assembly at kiosk; reflow, not overlap, at narrower widths --> owns those.
   "From where that display is watched" carries the viewing distance the same way, without fixing one.
   Phone widths are deliberately not a requirement.
-  The obligation is scoped to a configuration the display is built to lay out: an obligation over
-  every configuration expressible cannot be discharged, because a single module may be instanced
-  without limit. Past that bound nothing here is claimed and the display renders degraded, which is
-  the signal an operator needs (owner, 2026-08-08).
+  The obligation carries no configuration bound, and the absence is a decision. How many modules a
+  deployment names, and how they are arranged, are the operator's rather than the product's (owner,
+  2026-08-08), so there is nothing here to declare of the kind the declared-minimum-host need can
+  declare - that need chooses which hosts to support, where this one does not choose the
+  configuration. A deployment dense enough to defeat this obligation defeats it visibly, and the
+  degraded display is the signal; nothing is rendered to announce it. Verification samples the
+  configurations an operator would plausibly assemble, as it does for every other obligation stated
+  over an unbounded input.
 
   This need previously scoped itself to the three geometric observables and disclaimed readability, on
   the ground that visual judgement is not verification. That was a statement about what the tree then
@@ -27,11 +31,11 @@ rationale: |
   rendered page. A module can occupy its region perfectly and still be invisible to the person the
   display was hung for, which is one want failing, not two.
 ref: ''
-reviewed: PlSjFH4xZA1G0BAj8r5IyQAw1ZI43ovYVM-4-yIoh0g=
+reviewed: Q4jG9jZqTQahBOyjhDEgGILnIt_is66XyWbMixsJW4M=
 status: accepted
 text: |
-  For a configuration the display is built to lay out, every configured module shall be wholly
-  visible and legible on the display it was configured for, from where that display is watched.
+  Every configured module shall be wholly visible and legible on the display it was
+  configured for, from where that display is watched.
 verification-justification: |
   Settled by its children, and all of it decidable: a rendered layout measured against the viewport it
   declares, text size read as a fraction of the display's height, emission read per element, and content
