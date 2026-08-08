@@ -18,15 +18,16 @@ rationale: |
   WiseKiosk does not supply. What the mounting, the room and the viewer's height make of that surface
   is the operator's, in the same way the kiosk host is (#132 layout need decomposition).
 ref: ''
-reviewed: pw5X-u0X-_uflzAPPULqK-8fXQarzNNcVlOwKKUaY50=
+reviewed: fcclFlAscgLgYpJmsG9AOsJVOpRt8EbYinY1ew9o5Jw=
 status: accepted
 text: |
   The display shall leave a contiguous part of its surface unlit, large enough that a viewer at the
   distance it is installed for sees their own reflection in it.
 verification-justification: |
-  Settled by its children: that surface carrying no content is held at minimum emission, and that no
-  configuration reduces the largest contiguous region so held below the span a reflection needs. What no check reaches is whether the region is
-  aimed at anybody - a reserve of the right size, mounted at the wrong height, returns a reflection of
-  the ceiling. Mounting is the operator's, so the residue is outside the boundary rather than unproven
-  inside it.
+  Settled by its children: that surface carrying no content is held at minimum emission, that no
+  configuration reduces the largest contiguous region so held below the span a reflection needs, and
+  that the region sits where a viewer facing the display is returned rather than banked against an
+  edge. What no check reaches is the height the panel is hung at - a reserve of the right size, in the
+  right place on the surface, still returns a reflection of the ceiling if the panel is mounted too
+  high. Mounting is the operator's; where the region sits on the surface is not, and is obliged.
 verification-method: test

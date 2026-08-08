@@ -1,0 +1,32 @@
+active: true
+derived: false
+header: |
+  The reserve sits where a viewer is reflected
+level: 38
+links:
+- SYS008: fcclFlAscgLgYpJmsG9AOsJVOpRt8EbYinY1ew9o5Jw=
+normative: true
+rationale: |
+  Extent and persistence do not locate anything. A layout that scatters its content into a
+  checkerboard, or that banks every module down one side and leaves a strip along the top edge,
+  satisfies both of those and returns a reflection of the ceiling with the panel mounted perfectly.
+  The obligation is separable from them in both directions - a correctly placed reserve can still
+  erode as content is configured, and a reserve that survives every configuration can sit in the
+  wrong place - so it is its own item rather than a clause bolted onto either.
+  Where the panel hangs and how tall the viewer is are the operator's, in the same way the kiosk host
+  is. Where the region sits on the panel is not, and was the half of that residue an earlier draft of
+  the parent wrongly disclaimed.
+ref: ''
+reviewed: u4KJdWDFcdNHo5af7SQxBbhZ082n1ClD9p2SyUC7KtM=
+status: accepted
+text: |
+  The contiguous region of the display held at minimum emission shall be centred on the display, to
+  within a stated tolerance in each dimension.
+verification-justification: |
+  Asserted by reading the region's centre against the display's from rendered geometry, in both
+  dimensions. The tolerance is a decision about how far the reserve may drift before a viewer is
+  cropped out of it, and is held with the check so that revisiting it is not a change to this
+  obligation. What no check settles is whether the panel is hung at a height that puts a person in
+  front of that region; mounting is the operator's, and is the part of placement genuinely outside
+  the boundary.
+verification-method: test
