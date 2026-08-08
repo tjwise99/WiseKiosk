@@ -1,21 +1,27 @@
 active: false
 derived: false
 header: |
-  Pending: mirror reserve erosion test
+  Pending: reserve span test
 level: 68
 links:
-- SRS031: dcFiQ5oyiH_aBf8iUlZeHILvYjsUFvoL_yGeuIBXEJM=
+- SRS031: qiR2stuJZbrccjlx-cByJ8uzABJRVDJKH4ZYnHWpiYE=
 normative: true
 rationale: ''
 ref: ''
-reviewed: NQlBMR_rVdUCi_MSNQdJubhX_tCRdkubB_PacWzHRT4=
+reviewed: NKprha3Gw668M1gSI4MsMDmG4ueBRqwETZCHGQITvM8=
 status: proposed
 text: |
-  Pending: compute a contiguous region carrying no content from rendered geometry across
+  Pending: compute the largest contiguous region carrying no content from rendered geometry across
   configurations chosen to load the display - the module roster at its fullest, and repeated
-  instances of a module an operator may add - asserting in each that the region spans at least the
-  required fraction of display width and of display height, and that no configured content is laid
-  inside it. Lands with the frontend skeleton (#10); activated and given a references entry then.
+  instances of a module an operator may add - asserting in each that the region's width is at least
+  the required fraction of the display's width and its height at least the required fraction of the
+  display's height. Lands with the frontend skeleton (#10); activated and given a references entry
+  then.
 verification-justification: |
-  Settles that the reserve is a property of the product rather than of one fixture, over the configurations most likely to erode it. Leaves unproven that the chosen configurations bound the space an operator can express; the floor itself is a decision the check holds rather than a result it produces.
+  Settles that a region large enough to return a reflection survives the configurations loaded, in
+  both dimensions rather than in area, which is what a wide shallow strip would otherwise pass.
+  Leaves unproven that the chosen configurations bound the space an operator can express - the space
+  is not bounded by the roster being fixed, since one module may be instanced repeatedly - so the
+  check samples it rather than closing it. It also inherits the parent's measurement bound: element
+  boxes stand in for lit pixels, so the region computed is a lower bound on the one a viewer gets.
 verification-method: test

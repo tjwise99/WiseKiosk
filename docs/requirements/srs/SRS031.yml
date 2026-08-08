@@ -1,23 +1,24 @@
 active: true
 derived: false
 header: |
-  The reserve is taken first, and content laid around it
+  The reserve spans what a reflection needs
 level: 34
 links:
-- SYS008: EzRvyFcrLJTbeQVTE829rysIoqaknMd6VTNv7UaLwCQ=
+- SYS008: p6Uqck5YX-cD-g6pFhefWhSgNH7kojGb0aueX9oWYws=
 normative: true
 rationale: |
   Erosion is silent: content added a module at a time takes the mirror gradually, each step looking
-  like the last, until the want the display was built for is gone with nothing having failed. What
-  prevents that is not a rule about configurations but an order of construction - the region is taken
-  before content is placed, so content is laid around it rather than into it.
-  An earlier draft obliged the property "under every configuration the display accepts", which was
-  more than anyone intends to verify and more than the product promises. Configured volume is not
-  bounded by the module roster being fixed at five: a single module may be instanced many times, and
-  the deployed kiosk instances one of them six times. So a universal quantifier over configurations
-  is a claim that cannot be discharged, and stating it would have put this item in conflict with the
-  layout obligations - a reserve pushes content outward, the edge inset forbids the outer band, and a
-  text-size floor sits under whatever ring remains.
+  like the last, until the want the display was built for is gone with nothing having failed. Naming
+  a span is what makes the loss observable at the step it happens rather than only in retrospect.
+  The item states the end state and not how a layout reaches it. Taking the region before content is
+  placed, and laying content around it, is the strategy that produces this property and belongs here
+  rather than in the obligation - an order of construction cannot be falsified from a rendered page,
+  where the span can be measured off one directly. An earlier draft obliged the ordering as a second
+  clause and, being entailed by the first, it gave its check nothing to decide.
+  "The largest" rather than "a" is what keeps this item and the placement item talking about the same
+  region. Under an existential reading a wide shallow strip could satisfy placement while a squarer
+  region elsewhere satisfied the span, both children green and the parent's single-region want
+  discharged by neither.
   A configuration dense enough that content will not fit around the reserve is met with no rendered
   failure state, and that is a ruling rather than an omission (owner, 2026-08-08): the degraded
   display is itself the signal the operator needs, and rendering a message to announce that the
@@ -25,17 +26,16 @@ rationale: |
   failure in the sense the legibility-of-failure need carries - nothing has failed, a choice has been
   made badly.
 ref: ''
-reviewed: VUecQApbUcDYV-REAIm-oBQgtD-76qLxcadkDAJIMsA=
+reviewed: ZFbscCuGTGV40m7FuDthjO0T8ssJkBC8uFupCVDbB2U=
 status: accepted
 text: |
-  The display shall hold a contiguous region at minimum emission spanning at least a minimum fraction
-  of its width and a minimum fraction of its height, and shall lay no configured content into that
-  region.
+  The largest contiguous region of the display held at minimum emission shall span at least a minimum
+  fraction of the display's width and a minimum fraction of its height.
 verification-justification: |
-  Asserted by computing a contiguous region carrying no content from rendered geometry and comparing
-  its two spans against the floor, over configurations chosen to load the display. Three bounds. The
-  check decides a region carrying no content where this item obliges a region at minimum emission;
-  the two coincide only while
+  Asserted by computing the largest contiguous region carrying no content from rendered geometry and
+  comparing its two spans against the floor, over configurations chosen to load the display. Three
+  bounds. The check decides a region carrying no content where this item obliges a region at minimum
+  emission; the two coincide only while
   SRS030<!-- Unoccupied surface is held at minimum emission --> holds, so a violation of that item
   would leave this check passing an obligation that has failed. Geometry is measured as element
   boxes, so a box that is largely empty counts as occupied and the computed region is a lower bound
