@@ -153,12 +153,12 @@ documented here once it is built (#7, after the repo layout in #5)._
 _To be documented as it is built._ The backend is config-blind, per
 [ADR 0007 rev 2](decisions/0007-config-validation-allocation.md), which also states byte-for-byte delivery
 to the page; the configuration is a static file bind-mounted into the served tree
-(SRS018<!-- One generic published image -->), validated in the page and nowhere else — the same ADR —
-at apply time, where a module-scoped error is reported at that module
-(SRS002<!-- A module-scoped configuration error is reported at that module -->). A secret
-reaches the backend only as the file named
-by `<NAME>_FILE` — never through configuration, and never through a bare `<NAME>` environment
-variable (SRS007<!-- Configuration schema offers no secret-bearing key -->).
+(SRS018<!-- One generic published image -->), validated in the page and nowhere else
+([ADR 0007 rev 2](decisions/0007-config-validation-allocation.md)) at apply time, where a
+module-scoped error is reported at that module
+(SRS002<!-- A module-scoped configuration error is reported at that module -->). A secret reaches the
+backend only as the file named by `<NAME>_FILE` — never through configuration, and never through a
+bare `<NAME>` environment variable (SRS007<!-- Configuration schema offers no secret-bearing key -->).
 
 ## Deployment
 

@@ -38,8 +38,12 @@ owner challenged it; it fell; the allocation below is what remains when it does.
   has no rewrite path.
 - **One TypeScript validation engine, in the page.** It runs at load and gates rendering: an invalid
   configuration is never applied, and the page shell — which requires no valid configuration to
-  load — renders the full validation report in operator language instead. The page is the only
-  consumer, so the schema's rules have one enforcer by construction.
+  load — renders the full validation report in operator language instead.
+- **The schema's rules are enforced by exactly one implementation.** This binds against any second
+  enforcer, not only a backend one — a desk tool, a container entrypoint, a generator checking its
+  own output, a consumer this decision did not foresee. It is a prohibition rather than a count of
+  today's consumers, so it does not lapse when a second consumer arrives; the only legitimate route
+  to a second enforcer is reopening this decision.
 - **The backend is config-blind.** No config file, no parse, no endpoint, no code path that knows
   the configuration exists. The healthcheck is process liveness only; config validity is signalled
   by the display itself.
@@ -59,12 +63,9 @@ owner challenged it; it fell; the allocation below is what remains when it does.
   itself, and Go fails the same test — it was only ever a candidate while the backend was a
   consumer.
 - **Both sides validate.** Two engines over one schema drift, and the divergence surfaces as one
-  accepting what the other rejects. **The schema's rules are enforced by exactly one implementation**,
-  and that holds against any second enforcer, not only a backend one: a desk tool, a container
-  entrypoint, a generator checking its own output. A second one is proposed by reopening this
-  decision, and there is no other route — the case is not the single-implementation-no-second-consumer
-  shape [`CONTRIBUTING.md`](../../CONTRIBUTING.md)'s generality question asks about, so that question
-  does not reach it.
+  accepting what the other rejects. Rejected under the single-implementation rule the decision above
+  states: a backend engine is a second enforcer like any other, and carries the drift the rule exists
+  to forbid.
 - **Entrypoint check** (frontend-owned, plus the engine packaged again and run at container start).
   Catches a bad deploy while the operator is still at the terminal, but ships Node in the image,
   reintroduces hard-exit for the unattended case, and buys a second build target for a gap the page

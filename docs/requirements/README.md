@@ -180,9 +180,14 @@ record rather than a demand. A `TST` item marks it in the header as `Retired:`, 
 carries `Pending:`; a `SYS` or `SRS` item carries no prefix, because that convention is the `TST`
 tier's alone.
 
-Retiring a parent leaves its children unverified rather than orphaned — Doorstop evaluates neither —
-so a child of a retired item is retired in the same change or re-parented in it. Both edits move
-fingerprints: the parent's own, and every link stamped against it.
+An **active** child left linked to a retired parent fails the gate: Doorstop reports `no item with
+UID` for the parent it can no longer resolve, and `--error-all` makes that fatal. An **inactive** child
+is invisible to it, and that is the case needing the discipline — a child of a retired item is retired
+in the same change or re-parented in it, whichever its own content supports.
+
+Rewriting the parent's `text` and `rationale`, which the paragraph above requires, is what moves the
+parent's fingerprint, and every link stamped against it goes suspect. Flipping `active` moves nothing:
+it is not among the values the stamp hashes.
 
 **Activation is a review act.** Doorstop skips inactive items entirely, so a `reviewed` stamp on a
 pending item carries no authority and edits to a pending item's own text are invisible to the gate.
