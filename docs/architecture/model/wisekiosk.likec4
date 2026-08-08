@@ -185,10 +185,7 @@ model {
       }
     }
 
-    // Drawn server->client, against the configuration and payload edges beside
-    // it, and terminating on a container rather than a component: the bundle is
-    // not fetched by the frontend, it becomes the frontend, so no component
-    // exists to originate it.
+    // Server->client, and terminating on a container (../ARCHITECTURE.md § Frontend).
     staticServing -> frontend 'Serves the single-page bundle' {
       technology 'HTTP'
     }

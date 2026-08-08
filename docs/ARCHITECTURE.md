@@ -97,15 +97,18 @@ legibly says when one failed`" .-> Viewer
 The Component level (C4 L3) is drawn per container, in the two sections below. No element carries a
 `link` to the source implementing it: no code exists, and the repository layout is #5.
 
-Each section below names that container's **normative shape** — the obligations that shape it, read
-out of the [requirements tree](requirements/README.md). **That is not the model's tag set, and the
-two are not expected to agree.** An item shapes a container without being taggable on one:
-SRS005<!-- One validation implementation --> reaches the desk validator, which is outside the
-boundary for good, so tagging anything with it points past the diagram
-([ADR 0020 rev 1](decisions/0020-two-containers-one-origin-and-dual-tier-tags.md)), and an item still
-`proposed` cannot be tagged at all, since `check-arch-trace` resolves a tag only to an accepted item.
-Read the other way, a tag sits at the depth its obligation is observable at, which is often finer
-than a container. Neither list is an inventory of the other, and nothing compares them.
+Several sections below name a **normative shape** — the obligations that shape that part of the
+system, read out of the [requirements tree](requirements/README.md). **A normative shape is a reading
+aid into the tree, not the model's tag set, and the two are not expected to agree in either
+direction.** Listed and untaggable: SRS005<!-- One validation implementation --> reaches the desk
+validator, which is outside the boundary for good, so tagging anything with it points past the
+diagram ([ADR 0020 rev 1](decisions/0020-two-containers-one-origin-and-dual-tier-tags.md)), and an
+item still `proposed` cannot be tagged at all, since `check-arch-trace` resolves a tag only to an
+accepted item. Tagged and unlisted: a tag sits where its obligation is observable
+([ADR 0021 rev 1](decisions/0021-component-earns-its-interface-and-framework-half-only.md)), which is
+often a component or an edge rather than the container a list is written under, and a list is not
+rewritten when a binding lands. Nothing compares the two, so neither is evidence about the other —
+read a list as a way into the tree and the model as the record of where an obligation is observable.
 
 ## Backend
 
@@ -199,7 +202,7 @@ drawn when that module's need lands
 the edge to the Viewer leaves this container rather than a region within it. The bundle that becomes
 this container arrives on the one edge drawn server-to-client, which terminates on the container
 rather than on a child because no component exists to fetch what has yet to run; `include *` does not
-reach it, so this view alone omits where the bundle comes from, and the backend's view below is where
+reach it, so this view alone omits where the bundle comes from, and the Backend's view above is where
 it is drawn.
 
 <!-- arch-export:begin generated/frontendComponents.mmd -->
