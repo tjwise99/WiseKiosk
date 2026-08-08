@@ -100,15 +100,26 @@ The Component level (C4 L3) is drawn per container, in the two sections below. N
 Several sections below name a **normative shape** — the obligations that shape that part of the
 system, read out of the [requirements tree](requirements/README.md). **A normative shape is a reading
 aid into the tree, not the model's tag set, and the two are not expected to agree in either
-direction.** Listed and untaggable: SRS005<!-- One validation implementation --> reaches the desk
-validator, which is outside the boundary for good, so tagging anything with it points past the
-diagram ([ADR 0020 rev 1](decisions/0020-two-containers-one-origin-and-dual-tier-tags.md)), and an
-item still `proposed` cannot be tagged at all, since `check-arch-trace` resolves a tag only to an
-accepted item. Tagged and unlisted: a tag sits where its obligation is observable
+direction.**
+
+Listed and untagged, for three reasons that are not the same one.
+SRS005<!-- One validation implementation --> reaches the desk validator, which is outside the
+boundary for good, so tagging anything with it points past the diagram. An item still `proposed`
+cannot be tagged at all, since `check-arch-trace` resolves a tag only to an accepted item. And an
+item the model draws no subject for has nothing to sit on — the published image is neither container
+nor component, which is why SRS020<!-- Non-root container user --> and
+SRS025<!-- No secret material in the published image --> below carry no tag. Permanence separates
+that third case from the first
+([ADR 0020 rev 1](decisions/0020-two-containers-one-origin-and-dual-tier-tags.md)): a subject not
+drawn yet is deferred, where the desk validator is excluded. Whether the deferred case owes a
+recorded reason is #121.
+
+Tagged and unlisted: a tag sits where its obligation is observable
 ([ADR 0021 rev 1](decisions/0021-component-earns-its-interface-and-framework-half-only.md)), which is
-often a component or an edge rather than the container a list is written under, and a list is not
-rewritten when a binding lands. Nothing compares the two, so neither is evidence about the other —
-read a list as a way into the tree and the model as the record of where an obligation is observable.
+often a component or an edge rather than the part a list is written under, and a list is not
+rewritten when a binding lands — that would make it a second inventory of the model, kept in step by
+nothing. Nothing compares the two, so neither is evidence about the other: read a list as a way into
+the tree, and the model as the record of where an obligation is observable.
 
 ## Backend
 

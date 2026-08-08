@@ -1,7 +1,7 @@
 // WiseKiosk architecture model — C4 System Context (L1), Container (L2) and
 // Component (L3).
 //
-// Single source of truth for the diagrams in ../ARCHITECTURE.md. Edit here, then
+// Single source of truth for the diagrams in ../../ARCHITECTURE.md. Edit here, then
 // run `just arch-export` (ADR 0003 rev 1).
 //
 // A tag parses only as the first entry of an element or relationship body.
@@ -185,7 +185,7 @@ model {
       }
     }
 
-    // Server->client, and terminating on a container (../ARCHITECTURE.md § Frontend).
+    // Deliberately server->client, terminating on a container (../../ARCHITECTURE.md § Frontend).
     staticServing -> frontend 'Serves the single-page bundle' {
       technology 'HTTP'
     }
