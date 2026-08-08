@@ -94,7 +94,7 @@ legibly says when one failed`" .-> Viewer
 
 <!-- arch-export:end generated/containers.mmd -->
 
-The Component level (C4 L3) is drawn per container, in the two sections below. No element carries a
+The Component level (C4 L3) is drawn per container, in the two container sections below. No element carries a
 `link` to the source implementing it: no code exists, and the repository layout is #5.
 
 Several sections below name a **normative shape** — the obligations that shape that part of the
@@ -106,13 +106,17 @@ Listed and untagged, for three reasons that are not the same one.
 SRS005<!-- One validation implementation --> reaches the desk validator, which is outside the
 boundary for good, so tagging anything with it points past the diagram. An item still `proposed`
 cannot be tagged at all, since `check-arch-trace` resolves a tag only to an accepted item. And an
-item the model draws no subject for has nothing to sit on — the published image is neither container
-nor component, which is why SRS020<!-- Non-root container user --> and
-SRS025<!-- No secret material in the published image --> below carry no tag. Permanence separates
-that third case from the first
+item can oblige something no element in this model stands for: the published image is neither
+container nor component, so SRS020<!-- Non-root container user --> and
+SRS025<!-- No secret material in the published image --> below carry no tag. That third case turns on
+the obligation having an observable the model draws, not on its subject —
+SRS018<!-- One generic published image --> obliges the same image and does bind, on the configuration
+arriving from outside, because that is where what it obliges is observable
+([ADR 0021 rev 1](decisions/0021-component-earns-its-interface-and-framework-half-only.md)).
+Permanence separates it from the first
 ([ADR 0020 rev 1](decisions/0020-two-containers-one-origin-and-dual-tier-tags.md)): a subject not
-drawn yet is deferred, where the desk validator is excluded. Whether the deferred case owes a
-recorded reason is #121.
+drawn yet is deferred, where the desk validator is excluded. Whether an item in the deferred case
+owes a recorded reason is #121's to decide, not this paragraph's.
 
 Tagged and unlisted: a tag sits where its obligation is observable
 ([ADR 0021 rev 1](decisions/0021-component-earns-its-interface-and-framework-half-only.md)), which is
