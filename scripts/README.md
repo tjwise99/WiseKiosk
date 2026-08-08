@@ -880,6 +880,8 @@ unseeded copy, which is the must-pass row every table below shares and none repe
 | Must fail | `reviewed:` present but empty |
 | Must fail | a `.yaml`-suffixed item with no fingerprint |
 | Must fail | an item with no `reviewed:` whose link carries the parent's real stamp, copied by hand |
+| Must fail | every silo directory removed |
+| Must fail | the silos present but holding no item |
 
 The pasted-stamp row is a **report** case, not a verdict case, and the distinction is the point. A
 stamp is a digest of the parent's content, so a copy is byte-identical to one `doorstop clear` earned
@@ -896,6 +898,13 @@ writing the stamp by hand. That premise is false: `doorstop clear` on an item wi
 stamps the link and leaves `reviewed: null`, which is the first half of the clear-then-review order
 [`../docs/requirements/README.md`](../docs/requirements/README.md) documents as the remedy. The check
 would have accused a contributor halfway through following it.
+
+
+The two degenerate rows are the fail-open this file's own preamble names: a loader that reads nothing
+finds no violations and prints success, and nothing about that run looks different from a clean tree.
+The guard asserts the loader read *something*, not a count — a count would have to be kept in step
+with the tree by hand, and a guard keyed on the same number as the thing it guards goes to zero
+alongside it and agrees that nothing is wrong.
 
 **Known gap, second.** Any non-empty `reviewed:` string switches this rule off, so a pasted link stamp
 on an item carrying `reviewed: notadigest` reports nothing here. That state fails Doorstop's own

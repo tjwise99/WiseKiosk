@@ -45,7 +45,7 @@ def load():
     """Parse every item. YAML, not regex: a link is either a bare string (never stamped) or a
     single-key mapping whose value is the stamp or None, and a pattern reading one form drops the
     other silently."""
-    unreviewed, unstamped = [], []
+    unreviewed, unstamped, seen = [], [], 0
     for silo in ("sys", "srs", "tst"):
         # Both suffixes: Doorstop indexes a .yaml item, and globbing only .yml would leave one
         # unread by a check whose whole subject is items nobody has reviewed.
@@ -54,6 +54,7 @@ def load():
                 continue  # pathlib globs dotfiles: the silo's own .doorstop.yml is not an item
             item = yaml.safe_load(path.read_text()) or {}
             uid = path.stem
+            seen += 1
             item_unreviewed = unstamped_value(item.get("reviewed"))
             if item_unreviewed:
                 unreviewed.append(uid)
@@ -64,11 +65,22 @@ def load():
                 # may be present without any review having produced it.
                 if unstamped_value(stamp) or item_unreviewed:
                     unstamped.append(f"{uid} -> {parent}")
-    return unreviewed, unstamped
+    return unreviewed, unstamped, seen
 
 
 def main():
-    unreviewed, unstamped = load()
+    unreviewed, unstamped, seen = load()
+
+    # A loader that reads nothing reports no violations, which is indistinguishable from a clean
+    # tree. Assert it read something at all rather than asserting a count this check would have to
+    # keep in step with the tree.
+    if not seen:
+        print(
+            "No items were read from docs/requirements — a silo is missing, renamed, or empty."
+            "\nThis check found no unreviewed item because it found no item.",
+            file=sys.stderr,
+        )
+        return 1
 
     if unreviewed:
         print(f"{len(unreviewed)} item(s) carry no review fingerprint:", file=sys.stderr)
