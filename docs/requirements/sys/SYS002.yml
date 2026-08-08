@@ -15,6 +15,12 @@ rationale: |
   SRS017<!-- Full-screen assembly at kiosk; reflow, not overlap, at narrower widths --> owns those.
   "From where that display is watched" carries the viewing distance the same way, without fixing one.
   Phone widths are deliberately not a requirement.
+  The obligation is scoped to a configuration the display is built to lay out, in the same shape as
+  the declared-minimum-host need: an obligation over every configuration expressible cannot be
+  discharged, because a single module may be instanced without limit. Past that bound nothing here is
+  claimed and the display renders degraded, which is the signal an operator needs (owner,
+  2026-08-08). The bound is the volume the verification loads, held with the checks rather than
+  fixed here.
 
   This need previously scoped itself to the three geometric observables and disclaimed readability, on
   the ground that visual judgement is not verification. That was a statement about what the tree then
@@ -23,11 +29,11 @@ rationale: |
   rendered page. A module can occupy its region perfectly and still be invisible to the person the
   display was hung for, which is one want failing, not two.
 ref: ''
-reviewed: oTNC-KqLdjVDQCa9igmCGrY2JIGCJo5rxwfjQR_CY7I=
+reviewed: sqJ04zt95SlbjrNYRIWAtKDSMy6UrDt0cbX6tX6AVPg=
 status: accepted
 text: |
-  Every configured module shall be wholly visible and legible on the display it was
-  configured for, from where that display is watched.
+  For a configuration the display is built to lay out, every configured module shall be wholly
+  visible and legible on the display it was configured for, from where that display is watched.
 verification-justification: |
   Settled by its children, and all of it decidable: a rendered layout measured against the viewport it
   declares, text size read as a fraction of the display's height, emission read per element, and content

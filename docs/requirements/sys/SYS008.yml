@@ -19,13 +19,16 @@ rationale: |
   The obligation is stated over the surface the software controls rather than over the glass, which
   WiseKiosk does not supply. What the mounting, the room and the viewer's height make of that surface
   is the operator's, in the same way the kiosk host is (#132 layout need decomposition).
+  Only the second clause is scoped. Holding unoccupied surface at minimum emission costs nothing and
+  holds at any density; a reserve of a stated size cannot survive content added without limit, so it
+  is bounded the way the declared-minimum-host need bounds its own claim.
 ref: ''
-reviewed: -vewfoxPPYvGInpPfg-a0FQgJ4BjsA1RwJkZhd1fdY0=
+reviewed: YxEAYQhU6L_UOXxUnTvjphF9VcMfu8AuYsmmXcev2ys=
 status: accepted
 text: |
-  Wherever the display carries no content it shall be held at minimum emission, and a contiguous part
-  of what is so held shall be placed and large enough to return the reflection of a viewer at the
-  distance the display is installed for.
+  Wherever the display carries no content it shall be held at minimum emission, and, for a
+  configuration the display is built to lay out, a contiguous part of what is so held shall be placed
+  and large enough to return the reflection of a viewer at the distance the display is installed for.
 verification-justification: |
   Settled by its children: that surface carrying no content is held at minimum emission, that the
   largest contiguous region so held spans what a reflection needs in both dimensions, and that the
