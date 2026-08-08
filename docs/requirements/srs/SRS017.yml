@@ -20,7 +20,7 @@ rationale: |
   specification. Verified by viewport-driven render tests (Playwright-class) asserting the
   structural properties at each size; the residual aesthetic judgement stays human.
 ref: ''
-reviewed: vQlCteb22Uzh1Bzal39L65aEnZhyhjUJeqougcpGWG0=
+reviewed: Va1hq4Rq26AqrLDRgyVINA545EQLnAqimhjHzKLh90A=
 status: accepted
 text: |
   The display page shall assemble the modules named in the configuration, each
@@ -32,6 +32,7 @@ verification-justification: |
   Asserted by rendering a fixture configuration at three viewports and reading the resulting
   geometry and region set. Overlap and clipping are decidable; whether a person across the room can
   read what they enclose is not settled here, and is not this item's to settle -
-  SRS033<!-- Text holds a minimum size against the display, at every resolution --> carries it, so the
-  property the kiosk actually needs is obliged rather than noted as out of reach.
+  SRS033<!-- Text holds a minimum size against the display, at every resolution --> carries the software's
+  contribution to it, so the property the kiosk actually needs is obliged rather than noted as out of
+  reach.
 verification-method: test

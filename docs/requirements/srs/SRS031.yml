@@ -1,45 +1,46 @@
 active: true
 derived: false
 header: |
-  No configuration erodes the reserve
+  The reserve is taken first, and content laid around it
 level: 34
 links:
-- SYS008: driOH9lNcSbRvXy2FbZB_xW_FkCOjO1wulyL30q8iXk=
+- SYS008: EzRvyFcrLJTbeQVTE829rysIoqaknMd6VTNv7UaLwCQ=
 normative: true
 rationale: |
-  A reserve that exists in one configuration and not another is not a property of the product, and
-  the erosion is silent: content added a module at a time takes the mirror gradually, each step
-  looking like the last, until the want the display was built for is gone with nothing having failed.
-  The obligation is therefore stated over every configuration the display accepts rather than over a
-  fixture, because the failing case is the one an operator assembles later. It is the configured
-  volume of content that consumes the reserve rather than the size of the viewport, so a check that
-  varied only the viewport would report on a case that is not the one at risk.
-
-  A configuration dense enough to erode the reserve is met with no rendered failure state, and that
-  is deliberate (owner, 2026-08-08): the degraded display is itself the signal the operator needs,
-  and rendering a message to announce that the display will look wrong is a second and worse way of
-  saying what is already visible. Nor is it a failure in the sense the legibility-of-failure need
-  carries - nothing has failed, a choice has been made badly. So this item obliges the layout rather
-  than a runtime response, and the check loads it with configurations an operator would plausibly
-  assemble rather than proving the property against every configuration expressible.
+  Erosion is silent: content added a module at a time takes the mirror gradually, each step looking
+  like the last, until the want the display was built for is gone with nothing having failed. What
+  prevents that is not a rule about configurations but an order of construction - the region is taken
+  before content is placed, so content is laid around it rather than into it.
+  An earlier draft obliged the property "under every configuration the display accepts", which was
+  more than anyone intends to verify and more than the product promises. Configured volume is not
+  bounded by the module roster being fixed at five: a single module may be instanced many times, and
+  the deployed kiosk instances one of them six times. So a universal quantifier over configurations
+  is a claim that cannot be discharged, and stating it would have put this item in conflict with the
+  layout obligations - a reserve pushes content outward, the edge inset forbids the outer band, and a
+  text-size floor sits under whatever ring remains.
+  A configuration dense enough that content will not fit around the reserve is met with no rendered
+  failure state, and that is a ruling rather than an omission (owner, 2026-08-08): the degraded
+  display is itself the signal the operator needs, and rendering a message to announce that the
+  display will look wrong is a second and worse way of saying what is already visible. Nor is it a
+  failure in the sense the legibility-of-failure need carries - nothing has failed, a choice has been
+  made badly.
 ref: ''
-reviewed: nfM2A5J3i0m0r8msA6wNCPJMU6kFuAI2HrvOz7MsRKk=
+reviewed: VUecQApbUcDYV-REAIm-oBQgtD-76qLxcadkDAJIMsA=
 status: accepted
 text: |
-  Under every configuration the display accepts, the largest contiguous region of the display held at
-  minimum emission shall span at least a minimum fraction of the display's width and a minimum
-  fraction of its height.
+  The display shall hold a contiguous region at minimum emission spanning at least a minimum fraction
+  of its width and a minimum fraction of its height, and shall lay no configured content into that
+  region.
 verification-justification: |
-  Asserted by computing the largest contiguous region carrying no content from rendered geometry,
-  over configurations chosen to load the display rather than a single fixture. The check therefore
-  decides a region carrying no content where this item obliges a region at minimum emission; the two
-  coincide only while SRS030<!-- Unoccupied surface is held at minimum emission --> holds, so a
-  violation of that item would leave this check passing an obligation that has failed. Three further
-  bounds. The
-  chosen configurations are not proven to bound the space an operator can express, so the check
-  samples that space rather than closing it. Geometry is measured as element boxes, so a box that is
-  largely empty counts as occupied and the computed region is a lower bound on the region a viewer
-  actually gets - conservative in one direction, and silent about a layout whose boxes are compact
-  while its lit pixels are not. And the fraction itself is a decision about how much of a person the
-  product returns; it is held with the check so that revisiting it is not a change to this obligation.
+  Asserted by computing a contiguous region carrying no content from rendered geometry and comparing
+  its two spans against the floor, over configurations chosen to load the display. Three bounds. The
+  check decides a region carrying no content where this item obliges a region at minimum emission;
+  the two coincide only while
+  SRS030<!-- Unoccupied surface is held at minimum emission --> holds, so a violation of that item
+  would leave this check passing an obligation that has failed. Geometry is measured as element
+  boxes, so a box that is largely empty counts as occupied and the computed region is a lower bound
+  on the region a viewer actually gets - conservative in one direction, and silent about a layout
+  whose boxes are compact while its lit pixels are not. And the two fractions are a decision about
+  how much of a person the product returns; they are held with the check so that revisiting them is
+  not a change to this obligation.
 verification-method: test

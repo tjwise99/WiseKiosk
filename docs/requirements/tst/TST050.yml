@@ -4,17 +4,18 @@ header: |
   Pending: reserve centring test
 level: 72
 links:
-- SRS035: pWzHwCfbZK5Xy7eUsbbI533-1KO5TAYmZVK8CDF8MR4=
+- SRS035: DJDZGtvfqZWrWwoEerKsga6Os9KSqzJ5VEJXhc2N-WA=
 normative: true
 rationale: ''
 ref: ''
-reviewed: xPN1ANgIS_h5ha9IN7Phrz1PRYUY9DSQXTsmoeFtDSA=
+reviewed: f-LZ_buytI-dYZrxh8jN9zTuaQhr5sa52NKq8zFzVy0=
 status: proposed
 text: |
   Pending: compute the centre of the largest contiguous region carrying no content from rendered
   geometry and assert its offset from the display's centre is within tolerance in each dimension,
-  over the same loaded configurations the extent assertion uses. Lands with the frontend skeleton
-  (#10); activated and given a references entry then.
+  across configurations chosen to load the display - the module roster at its fullest, and repeated
+  instances of a module an operator may add. Lands with the frontend skeleton (#10); activated and
+  given a references entry then.
 verification-justification: |
   Settles that the reserve is where a viewer facing the display would be returned, rather than banked
   against an edge. Leaves unproven that any particular viewer is in front of it, which depends on the
