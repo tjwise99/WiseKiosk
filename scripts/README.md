@@ -920,6 +920,20 @@ list of three where Doorstop finds its documents by walking for `.doorstop.yml`,
 would have been skipped in silence by the check that runs first. It now reads every silo it finds and
 additionally requires the three the tree is built on.
 
+**Known gap, third — a nested document is invisible, and Doorstop stamps it.** Silos are discovered
+with `TREE.glob("*/.doorstop.yml")`, which matches one path segment, where Doorstop walks
+recursively. A document at `docs/requirements/srs/modules/` is therefore read by Doorstop and not by
+this check: seeded with an item carrying no `reviewed:`, the check exits 0 saying every item and
+every link carries a fingerprint, and `doorstop --error-all` then writes a fingerprint into that item
+— green gate, item stamped, nobody looked. That is the failure this check exists to prevent,
+surviving one directory deeper than the guard reaches.
+
+Recorded rather than closed because it needs a nested document to reach, the tree has none, and
+nothing in [ADR 0012 rev 1](../docs/decisions/0012-module-requirements-in-tree.md)'s per-module
+structure implies one. Closing it is two lines rather than one: `rglob` for the configs, **and** the
+item glob, which reads `TREE / silo` and stops being the document's path the moment a document is
+nested.
+
 **Known gap, second.** Any non-empty `reviewed:` string switches this rule off, so a pasted link stamp
 on an item carrying `reviewed: notadigest` reports nothing here. That state fails Doorstop's own
 validation as `unreviewed changes` further down `check-reqs`, so it is covered — by a different gate,
