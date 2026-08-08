@@ -879,6 +879,25 @@ unseeded copy, which is the must-pass row every table below shares and none repe
 | Must fail | `reviewed: true` — Doorstop's declared-review placeholder, which YAML makes a bool |
 | Must fail | `reviewed:` present but empty |
 | Must fail | a `.yaml`-suffixed item with no fingerprint |
+| Must fail | an item with no `reviewed:` whose link carries the parent's real stamp, copied by hand |
+| Must pass | a new item with no `reviewed:` and `- UID: null` — the honest authoring state |
+| Must pass | a reviewed item whose link stamp is `null` — `review` run, `clear` not yet |
+
+The hand-copied row came from a real change rather than an imagined one: three items on PR #133 were
+authored with a parent's live fingerprint pasted into their `links:`, and the gate reported seven
+unreviewed links where the tree held ten. A stamp is a digest of the parent's content, so a copied one
+is byte-identical to an earned one and no test of the value can tell them apart. What the check reads
+instead is the pairing — `doorstop review` writes an item's own fingerprint, `doorstop clear` writes
+its links' stamps, and an item whose own review is unwritten cannot have reached a state where its
+links are stamped.
+
+**What that leaves open.** The check catches the sequence hand-copying naturally produces — author,
+paste, never review. Pasting the link stamp and *then* running `doorstop review` on the item passes,
+because the item's own fingerprint is then genuinely computed; what went unreviewed is the link alone.
+Closing that needs evidence the tree does not carry, since both values are then correct for their
+content. The two `Must pass` rows are why the rule is stated as a pairing and not as "an unreviewed
+item may hold no stamp": a null stamp on an unreviewed item is how every honestly-authored item starts,
+and flagging it would reject the normal path to catch the abnormal one.
 
 The `.yaml` row is the one that matters: the loader is a hand-rolled glob, unlike its siblings which go
 through `doorstop.build()`, and Doorstop indexes a `.yaml` item that a `*.yml` glob never sees. An item
