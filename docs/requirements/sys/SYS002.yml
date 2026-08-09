@@ -7,41 +7,24 @@ links: []
 normative: true
 rationale: |
   The product is a display; a module the page has hidden part of has failed silently, and so has one
-  too small or too dim to read from where the display hangs. The scope is what the software renders
-  rather than what the configuration composes. The page defines the display's regions and their
-  geometry; the operator names which region each module goes in and nothing more (owner,
-  2026-08-08). So the region set not overlapping is the page's, while how much is asked of any one
-  region is the configuration's and the upstream's. What the page decides about content too large for
-  the region it was given is that it overflows rather than being clipped, scrolled or scaled away
-  (owner, 2026-08-08) - and that, with the region set it lays out, is what "none of its content
-  hidden by the page's own layout" obliges. "The surface the display actually presents" is not the
-  viewport, which reports
-  every pixel as visible whether or not a frame or an overscanning television hides its outer band;
-  holding content clear of that band is the page's, because the mask is nobody's to observe. "The
-  display it was configured for" carries the kiosk-primary, desktop-secondary distinction without
-  fixing viewports;
-  SRS017<!-- Full-screen assembly at kiosk; reflow, no horizontal scroll, at narrower widths --> owns
-  those, and "from where that display is watched" carries viewing distance the same way. Phone widths
-  are deliberately not a requirement.
+  too small or too dim to read from where the display hangs. Both are wants about what the software
+  renders rather than what the configuration composes: the page defines the display's regions and the
+  operator names which region each module goes in and nothing more (owner, 2026-08-08), so the region
+  set is the page's while how much any one region is asked to hold is not. Phone widths are
+  deliberately not a requirement.
   The legibility clause is stated over text rather than over modules, because that is the population
-  its children oblige and a narrower clause would leave part of them tracing to nothing. It reaches
-  text a module did not put there - a failure message, say - which is intended: a type scale and an
-  emission floor are what make any glyph readable at distance, whatever put it on the screen.
-  SYS001<!-- Failure is legible and proportionate --> obliges a failure to say why and to stay in
-  proportion, which is a different sense of the word and is not doubled here.
-  Three earlier claims are retracted here. The text obliged every module to be "wholly visible",
-  which the page cannot promise: how much content a region is asked to hold follows from the
-  configuration and from what upstream returned, and past some volume it does not fit. It was then
-  briefly replaced by containment, which the overflow ruling makes false: content too large for its
-  region leaves that region by design. And readability was treated as beyond verification: disclaimed
-  outright in SRS017's<!-- Full-screen assembly at kiosk; reflow, no horizontal scroll, at narrower widths -->
-  justification, and presupposed rather than obliged in this item's, which disclaimed only whether a
-  legible layout is a good one. That described what the tree then held rather than what a check can
-  decide:
-  text size as a fraction of display height, and the emission a glyph is rendered at, are both
-  settled by a machine reading a rendered page.
+  its children oblige. It reaches text a module did not put there - a failure message, say - which is
+  intended: a type scale and an emission floor make any glyph readable at distance, whatever put it
+  on the screen. SYS001<!-- Failure is legible and proportionate --> obliges a failure to say why and
+  to stay in proportion, a different sense of the word and not doubled here.
+  Two retractions. "Wholly visible" is not something the page can promise: how much content a region
+  is asked to hold follows from the configuration and from what upstream returned, and past some
+  volume it does not fit. And readability was treated as beyond verification, which described what
+  the tree then held rather than what a check can decide - text size as a fraction of display height
+  and the emission a glyph is rendered at are both read from a rendered page. The judgement
+  obligation that appeared to have no home was not one.
 ref: ''
-reviewed: 7W7RU-cHbiG5qwkYx8MatYQ7ty7M2LQ7MzOPCw-HDyE=
+reviewed: ToFVbPFp9IatUvVWKKn-3S83c7ebsKajo1MUVxVHdbE=
 status: accepted
 text: |
   Every configured module shall render on the display it was configured for, laid out within the
@@ -54,11 +37,11 @@ verification-justification: |
   as a fraction of the display's height, and emission per element. Four things none of them settles,
   and the item claims none of them. What a viewer actually sees behind any glyph is the reflected
   room, which the software neither supplies nor controls. Content overflowing a region near the edge
-  crosses that inset, which
-  SRS034<!-- The laid-out regions keep clear of the display edge --> states and nothing here
-  contradicts. Overflow may also extend the document past the viewport, putting content behind a
-  scroll a kiosk has no way to perform - hiding, in this item's own sense, and permitted because the
+  crosses the inset SRS034<!-- The laid-out regions keep clear of the display edge --> states, and
+  may extend the document past the viewport, putting content behind a scroll a kiosk has no way to
+  perform - hiding, in this item's own sense, and permitted in both directions because the
   alternative is discarding the content instead. The size floor is read at sampled resolutions rather
-  than at every one the display supports. And whether the configuration leaves a display worth looking at, and whether the result
-  is a good layout rather than a legible one, are the operator's and a judgement no gate claims.
+  than at every one the display supports. And whether the configuration leaves a display worth
+  looking at, and whether the result is a good layout rather than a legible one, are the operator's
+  and a judgement no gate claims.
 verification-method: test

@@ -4,7 +4,7 @@ header: |
   Full-screen assembly at kiosk; reflow, no horizontal scroll, at narrower widths
 level: 1.41
 links:
-- SYS002: 7W7RU-cHbiG5qwkYx8MatYQ7ty7M2LQ7MzOPCw-HDyE=
+- SYS002: ToFVbPFp9IatUvVWKKn-3S83c7ebsKajo1MUVxVHdbE=
 normative: true
 rationale: |
   Decomposes SYS002's<!-- Each module renders in full, and reads --> kiosk-primary,
