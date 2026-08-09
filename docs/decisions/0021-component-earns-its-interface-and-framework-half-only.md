@@ -115,7 +115,7 @@ SRS001<!-- A failed module shows why, and only that module -->,
 SRS002<!-- A module-scoped configuration error is reported at that module --> and
 SRS026<!-- The display says when the backend is gone --> name what a Viewer sees, so theirs is the
 relationship that renders.
-SRS017<!-- Full-screen assembly at kiosk; reflow, not overlap, at narrower widths --> names a property
+SRS017<!-- Full-screen assembly at kiosk; reflow, no horizontal scroll, at narrower widths --> names a property
 of the assembled page rather than of what it shows anyone, so its second binding is the container
 element. SRS009<!-- Every source reachable through the backend, statelessly --> is the same shape read
 the other way: reachability by the endpoints the boundary contract defines is the route handler's, and

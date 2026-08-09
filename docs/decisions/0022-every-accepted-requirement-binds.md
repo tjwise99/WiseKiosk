@@ -115,20 +115,21 @@ reaching the surviving half of the same instinct.
 
 ### The layout pair is not in conflict
 
-ADR 0021 rev 1 binds SRS017<!-- Full-screen assembly at kiosk; reflow, not overlap, at narrower
-widths --> to the Frontend container rather than the render relationship, because it "names a property
-of the assembled page rather than of what it shows anyone", while its parent
-SYS002<!-- The configured layout renders whole --> sits on that relationship. Read as a contradiction
-twice, so the distinction is recorded here.
+ADR 0021 rev 1 binds SRS017<!-- Full-screen assembly at kiosk; reflow, no horizontal scroll, at
+narrower widths --> to the Frontend container rather than the render relationship, because it "names
+a property of the assembled page rather than of what it shows anyone", while its parent
+SYS002<!-- The display's rendering keeps nothing from a viewer --> sits on that relationship. Read as
+a contradiction twice, so the distinction is recorded here.
 
-The contradiction only bites if the two are co-extensive. SYS002<!-- The configured layout renders
-whole --> has exactly one child — the only need in the tree that does — and if that child carried the
-whole want, splitting them across two subjects would assert a difference in where they are observable
+The contradiction only bites if the two are co-extensive.
+SYS002<!-- The display's rendering keeps nothing from a viewer --> has exactly one child — the only
+need in the tree that does — and if that child carried the whole want, splitting them across two
+subjects would assert a difference in where they are observable
 that nothing supports.
 
-**They are not co-extensive: SYS002<!-- The configured layout renders whole --> is
+**They are not co-extensive: SYS002<!-- The display's rendering keeps nothing from a viewer --> is
 under-decomposed** (owner, 2026-08-08).
-SRS017<!-- Full-screen assembly at kiosk; reflow, not overlap, at narrower widths --> covers the
+SRS017<!-- Full-screen assembly at kiosk; reflow, no horizontal scroll, at narrower widths --> covers the
 geometry half — regions that do not overlap, content that is not clipped, reflow rather than
 horizontal scrolling. What the parent obliges beyond that is how the assembled display reads to the
 person in front of it, and those obligations are viewer-facing by their nature. **The parent therefore
@@ -140,14 +141,15 @@ different subject, not removing the binding: this record forbids leaving the ite
 container beside its own child is the coarser copy the paragraph above rejects.
 
 **A ground that reads well and is wrong, recorded because two readers reached it.** Not *the child is
-decidable geometry while the parent is what a person sees*. SYS002's<!-- The configured layout renders
-whole --> own `rationale` absorbs no-overlap, no-clipping and no-scrollbars "as one property rather
-than three observables", and its `verification-justification` opens "Geometry is decidable" — so the
+decidable geometry while the parent is what a person sees*.
+SYS002's<!-- The display's rendering keeps nothing from a viewer --> own `rationale` absorbs
+no-overlap, no-clipping and no-scrollbars "as one property rather than three observables", and its
+`verification-justification` opens "Geometry is decidable" — so the
 parent is geometry too, and measurable too. The axis is what each obliges, not whether anyone has to
 watch.
 
 ADR 0021 rev 1 is also narrower than it looks here: it chose between two container-depth subjects for
-SRS017's<!-- Full-screen assembly at kiosk; reflow, not overlap, at narrower widths --> *second*
+SRS017's<!-- Full-screen assembly at kiosk; reflow, no horizontal scroll, at narrower widths --> *second*
 binding and said nothing about where the parent sits. Under ADR 0020 rev 1 that is
 settled by where the item is discharged observably at the level, and for this one it is the
 relationship that renders.
