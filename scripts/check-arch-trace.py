@@ -2,7 +2,7 @@
 """Every requirement identifier tagged in the architecture model resolves to an accepted item.
 
 The rule is `docs/CI.md` § Documentation integrity; the tag mechanism and the tier it carries are
-ADR 0019 rev 1.
+ADR 0019 rev 2.
 
 Scope is resolution: a tag names an item that exists, is active and accepted, is spelled
 canonically, and is applied somewhere. Whether the tagged element is the one that requirement
