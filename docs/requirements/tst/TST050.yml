@@ -1,0 +1,26 @@
+active: false
+derived: false
+header: |
+  Pending: configured edge band depth test
+level: 68
+links:
+- SRS035: 2iXRNuVJY9t-CfAQMLsAeRHHDoD256LV_ZIsgxoVNJE=
+normative: true
+rationale: ''
+ref: ''
+reviewed: p03Eshiiz4HDDjRIAGV2pOM6bfo7ZerPSR-dbCrfS-8=
+status: proposed
+text: |
+  Pending: render a fixture configuration declaring the edge band at more than one depth and read
+  each laid-out region against the viewport, asserting the band the regions keep clear of tracks the
+  declared depth; then render with the depth undeclared, asserting the regions reach the display's
+  own edge. Seeded both ways deliberately: a depth the page must honour, and its absence, which the
+  page must not fill with a figure of its own. Lands with the frontend skeleton (#10); activated and
+  given a references entry then.
+verification-justification: |
+  Settles that the depth is read from configuration and that none is assumed when it is absent, which
+  a compiled-in figure fails in both directions. Leaves unproven that a declared depth clears the mask
+  actually fitted, which is a fact about the frame or the television and outside the system; and
+  whether an operator who declares nothing has no bezel, which no reading of a rendered page
+  distinguishes from an operator who did not think about it.
+verification-method: test

@@ -12,21 +12,23 @@ rationale: |
   of that band as visible. So the property the layout need states cannot be established by the
   viewport alone - the one measurement available is the one that cannot see the mask.
   Holding the layout clear of the edge is what the software can do about a mask it cannot observe.
+  How deep the band runs is not this item's but the deployment's, since the mask is:
+  SRS035<!-- The masked edge band is the deployment's to declare --> carries that.
   It is stated over the regions the page lays out rather than over everything it renders, because
   content too large for its region overflows that region (owner, 2026-08-08) and can therefore cross
-  any inset. How far it overflows follows from the region the operator gave it and the data upstream
+  any band. How far it overflows follows from the region the operator gave it and the data upstream
   returned, neither of which the page chooses; where it puts the regions, it does.
 ref: ''
-reviewed: gdeGdT5kggZKn8R3KFqnXj9m4qRHhfoHUnQ3HrSPdw4=
+reviewed: Lzz0vLH9ttPRwz8466D7IbK8yyBSVABOZqfPsRdALOc=
 status: accepted
 text: |
   No region the display page lays out shall enter a band along any edge of the display, the band's
   depth stated as a fraction of the display's height.
 verification-justification: |
-  Asserted by reading each laid-out region against the viewport and confirming none enters the outer
-  band. Two things it does not settle. Whether the inset clears the mask actually fitted - the frame
-  and the television are the operator's, so the figure is calibrated against a deployment known to
-  present its content whole, and is held with the check rather than here. And whether what the
-  regions hold stays inside them, which it does not by design: content overflowing a region near the
-  edge crosses the inset, and nothing here or anywhere claims otherwise.
+  Asserted by reading each laid-out region against the viewport and confirming none enters the band
+  the fixture declares. Two things it does not settle. Whether that depth clears the mask actually
+  fitted - the frame and the television are the operator's, and no assertion over a rendered page
+  reaches a bezel. And whether what the regions hold stays inside them, which it does not by design:
+  content overflowing a region near the edge crosses the band, and nothing here or anywhere claims
+  otherwise.
 verification-method: test
