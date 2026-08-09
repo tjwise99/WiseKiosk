@@ -6,26 +6,22 @@ level: 2
 links: []
 normative: true
 rationale: |
-  The product is a display; a module that is present but clipped, overlapped or scrolled out of view
-  has failed silently, and so has one rendered too small or too dim to read from where the display
-  hangs. "Wholly visible and legible" absorbs no-overlap, no-clipping, no-scrollbars and readability
-  as one property rather than four observables — none of them is a separate want. "The display it was
-  configured for" carries the kiosk-primary, desktop-secondary distinction without fixing viewports
-  in the need;
-  SRS017<!-- Full-screen assembly at kiosk; reflow, not overlap, at narrower widths --> owns those.
-  "From where that display is watched" carries the viewing distance the same way, without fixing one.
-  Phone widths are deliberately not a requirement.
-  There is no configuration bound, and the absence is a decision: how many modules a deployment names
-  is the operator's rather than the product's (owner, 2026-08-08), and a deployment dense enough to
-  defeat this defeats it visibly.
-  An earlier scope covered the three geometric observables alone and disclaimed readability, on the
-  ground that visual judgement is not verification. That described what the tree then held rather than
-  what a check can decide: text size as a fraction of display height, and the emission a glyph is
-  rendered at, are both settled by a machine reading a rendered page. A module can occupy its region
-  perfectly and still be invisible to the person the display was hung for, which is one want failing,
-  not two.
+  The product is a display; a module present but clipped, overlapped or scrolled out of view has
+  failed silently, and so has one too small or too dim to read from where the display hangs. "Wholly
+  visible and legible" absorbs no-overlap, no-clipping, no-scrollbars and readability as one property
+  rather than four observables. "The display it was configured for" carries the kiosk-primary,
+  desktop-secondary distinction without fixing viewports;
+  SRS017<!-- Full-screen assembly at kiosk; reflow, not overlap, at narrower widths --> owns those,
+  and "from where that display is watched" carries viewing distance the same way. Phone widths are
+  deliberately not a requirement.
+  There is no configuration bound: how many modules a deployment names is the operator's (owner,
+  2026-08-08), and a deployment dense enough to defeat this defeats it visibly.
+  An earlier scope covered the three geometric observables alone and disclaimed readability as visual
+  judgement. That described what the tree then held rather than what a check can decide: text size as
+  a fraction of display height, and the emission a glyph is rendered at, are both settled by a machine
+  reading a rendered page.
 ref: ''
-reviewed: VMRt6V9IP6p_nfGPWthqJ3vhrsDxegSoLxo6Av2mQ1k=
+reviewed: HRAcizwL7FVS6vyQR0HHP_zs532nmBvnuJ4zNVsHjX8=
 status: accepted
 text: |
   Every configured module shall be wholly visible and legible on the display it was

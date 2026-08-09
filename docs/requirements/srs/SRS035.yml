@@ -4,34 +4,28 @@ header: |
   The reserve sits where a viewer is reflected
 level: 38
 links:
-- SYS008: yDPug9SYCBgbwHf9O9BLWWL3QAwl-drSHv-TZBgJJoU=
+- SYS008: AIuMYg7wHcfKr7RHldDawSRFk9RFv2Bb_t_vqiXoTfE=
 normative: true
 rationale: |
-  Extent locates nothing. A layout that banks every module down one side and leaves a strip along the
-  top edge satisfies the span obligation and returns a reflection of the ceiling with the panel
-  mounted perfectly. The two are separable in both directions, so this is its own item.
+  Extent locates nothing: a layout banking every module down one side and leaving a strip along the
+  top satisfies the span obligation and returns a reflection of the ceiling. The two are separable in
+  both directions, so this is its own item.
   Centring is stronger than the want, which is only that the region not be banked against an edge,
-  and it forecloses a reserve set low to suit a panel hung high. It is chosen because an offset from
-  centre names a quantity a check can read where "not against an edge" does not, and because an
-  operator can hang the panel to suit the reserve more easily than the software can guess where they
-  hung it.
-  The tolerance is wide by intent. The layout is asymmetric and will remain so (owner, 2026-08-08) -
-  the columns either side carry different content at different widths - so tightening it toward zero
-  rejects the design rather than catching a defect.
-  Where the panel hangs is the operator's; where the region sits on it is not.
+  and it forecloses a reserve set low for a panel hung high. It is chosen because an offset from
+  centre names a quantity a check can read where "not against an edge" does not.
+  The tolerance is wide by intent: the layout is asymmetric and will remain so (owner, 2026-08-08),
+  so tightening it toward zero rejects the design rather than catching a defect. Where the panel hangs
+  is the operator's; where the region sits on it is not.
 ref: ''
-reviewed: kfx-9h2TBOIqKVJ6Fsk9ZW2s8k4dojANXLF48tlAg5k=
+reviewed: 4KaEiFwHK5Fp8SAxhPllvlo-3omRRALhCYibg405B7U=
 status: accepted
 text: |
   The largest contiguous region of the display held at minimum emission shall be centred on the
   display, to within a stated tolerance in each dimension.
 verification-justification: |
   Asserted by reading the region's centre against the display's from rendered geometry, in both
-  dimensions. As with the span assertion, the check finds a region carrying no content where this
-  item obliges a region at minimum emission, and the two coincide only while
-  SRS030<!-- Unoccupied surface is held at minimum emission --> holds. The tolerance is a decision
-  about how far the reserve may drift before a viewer is cropped out of it, and is held with the
-  check so that revisiting it is not a change to this obligation. What no check settles is whether
-  the panel is hung at a height that puts a person in front of that region; mounting is the
-  operator's, and is the part of placement genuinely outside the boundary.
+  dimensions, and it inherits the span assertion's divergence between a region carrying no content
+  and one at minimum emission. The tolerance is a decision about how far the reserve may drift before
+  a viewer is cropped from it, held with the check. Whether the panel is hung at a height that puts a
+  person in front of the region is the operator's.
 verification-method: test

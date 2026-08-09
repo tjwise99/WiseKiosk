@@ -7,18 +7,15 @@ links: []
 normative: true
 rationale: |
   Behind a half-silvered surface a pixel at minimum emission is a mirror, so the part of the display
-  carrying nothing is not spare capacity, it is the product. A display that fills its surface with
-  content is a different product on the same hardware, and nothing else in the tree would notice:
-  every module could render wholly, legibly and in its region while the mirror was gone.
-  That is why this is a need rather than a decomposition of the layout need. The two are satisfiable
-  independently in both directions - a display can fill every pixel and still lay out perfectly, or
-  reserve half its surface and clip a module. The layout need is a want about content; this is a want
-  about content's absence.
-  It is stated over the surface the software controls rather than over the glass, which WiseKiosk does
-  not supply, and it carries no configuration bound: how much a deployment carries is the operator's
-  (owner, 2026-08-08), and a deployment that takes the mirror takes it visibly.
+  carrying nothing is the product rather than spare capacity. A display filling its surface with
+  content is a different product on the same hardware, and nothing else in the tree would notice.
+  That is why this is a need rather than a decomposition of the layout need: the two are satisfiable
+  independently in both directions. The layout need is a want about content; this is a want about
+  content's absence.
+  It carries no configuration bound, because how much a deployment carries is the operator's (owner,
+  2026-08-08), and a deployment that takes the mirror takes it visibly.
 ref: ''
-reviewed: yDPug9SYCBgbwHf9O9BLWWL3QAwl-drSHv-TZBgJJoU=
+reviewed: AIuMYg7wHcfKr7RHldDawSRFk9RFv2Bb_t_vqiXoTfE=
 status: accepted
 text: |
   Wherever the display carries no content it shall be held at minimum emission, and a contiguous part
