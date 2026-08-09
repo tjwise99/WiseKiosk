@@ -16,13 +16,15 @@ docs/architecture/
   package.json          pins `likec4` (the repo's first npm manifest); dev-only
   package-lock.json     committed lockfile — `npm ci` installs exactly this
   model/
-    wisekiosk.likec4    specification + model (elements, relationships)
+    wisekiosk.likec4    specification + logical model (elements, relationships)
+    deployment.likec4   the deployment model (nodes, instances, artifacts)
     views.likec4        the views rendered to diagrams
   generated/            regenerated artifacts — DO NOT hand-edit (staleness-gated)
     index.mmd                 System Context view (Mermaid)
     containers.mmd            Container view (Mermaid)
     backendComponents.mmd     Backend Component view (Mermaid)
     frontendComponents.mmd    Frontend Component view (Mermaid)
+    deployment.mmd            Deployment view (Mermaid)
 ```
 
 `generated/` is cleared before codegen, which writes files and never prunes them: an artifact left
@@ -81,7 +83,11 @@ the staleness gate; the prose around the markers is yours to edit.
 ## What the model holds, and when an element earns a place
 
 The model holds the System Context, Container and Component levels — `component` children nest inside
-a container, and each container has a `view of` it in `views.likec4`.
+a container, and each container has a `view of` it in `views.likec4` — and, separately from all three,
+a deployment model of the hosts that run them, the processes on those hosts and the files placed
+beside them ([ADR 0023 rev 1](../decisions/0023-deployment-level-and-the-published-image.md)). A
+deployment node holds an `instanceOf` a container rather than a copy of it, so the two models name one
+set of containers; a `deployment view` renders them.
 
 **A relationship is declared once, at its true endpoints** ([ADR 0020 rev 1](../decisions/0020-two-containers-one-origin-and-dual-tier-tags.md)).
 Each view renders from that one set, aggregating an edge to the nearest ancestor it does not expand,
