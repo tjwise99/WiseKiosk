@@ -1,0 +1,27 @@
+active: false
+derived: false
+header: |
+  Pending: region overflow render test
+level: 73
+links:
+- SRS031: ph2eZ6zSvcd5yzfKWArF7gSsJNmd8n90iVM6pzpqcr8=
+normative: true
+rationale: ''
+ref: ''
+reviewed: 5IjNqG4QPvKMj5aR7tEJnmQ-2RRAu7hGuw8RPWDjeU8=
+status: proposed
+text: |
+  Pending: render a fixture whose content exceeds the region it is given, at the kiosk viewport
+  (1920x1080) and at the desktop viewports (1280x800 and 1440x900), asserting at each that the
+  content is neither clipped nor reachable only by scrolling nor scaled below the size it renders at
+  when it fits, and that its box exceeds the region's. Seeded both ways: content that overflows,
+  which must be reported as overflowing, and content that fits its region, which must not. Lands with
+  the frontend skeleton (#10); activated and given a references entry then.
+verification-justification: |
+  Settles that content too large for its region overflows rather than being hidden, at three
+  viewports. Its fixture is separate from the layout check's deliberately: overflowing content may
+  cross a neighbouring region and may extend the document past the viewport, which the requirement
+  permits, so one fixture asserting both would fail on a page behaving exactly as obliged. What that
+  costs is the colliding case itself - the layout is shown disjoint and unscrolled, and content is
+  shown kept, but never the two together, because the requirement says they need not hold together.
+verification-method: test

@@ -11,46 +11,29 @@ rationale: |
   desktop-secondary distinction, fixing no viewports itself: the figures are
   TST035's<!-- Pending: viewport-driven layout render test --> so tuning one does not touch the
   specification. What is owed is a reflowing layout, not a responsive-design programme. Phone widths
-  are deliberately not a requirement (owner decision 2026-07-22) — if wanted later, support arrives
+  are deliberately not a requirement (owner decision 2026-07-22) - if wanted later, support arrives
   as its own reviewed system need, not a clause here.
   The region set is the page's, so its disjointness is obliged here, and at every viewport rather
   than the kiosk alone: a layout that overlaps only when narrowed is the case a reflow obligation
   exists to catch. A configuration cannot express a geometry, so two modules can never be told to sit
   on top of one another - overlapping regions are a page defect rather than an operator's choice.
-  Content too large for the region it was given overflows (owner, 2026-08-08). Clipping and scrolling
-  hide content the operator asked for; scaling to fit drives type below the floor
-  SRS033<!-- Text holds a minimum size against the display, at every resolution --> sets, so the
-  display would stay whole by becoming unreadable. Overflow is the only one of the four that hides
-  nothing and reads at distance, and it makes a region given too little space visibly wrong rather
-  than quietly lossy.
-  A configuration dense enough to overflow badly gets no rendered failure state (owner, 2026-08-08):
-  the degraded display is the signal an operator needs. Nothing has failed, so it is not the case
-  SYS001<!-- Failure is legible and proportionate --> carries, and no configuration is rejected, so
-  the allocation of configuration validation is untouched.
-  Where overflow collides with disjointness or the no-horizontal-scroll bound, the text says content
-  is kept rather than leaving it to a check. Both bounds are therefore obligations on what the page
-  lays out, not on what content does to it afterwards.
+  These bounds are on what the page lays out, not on what content does to it afterwards.
+  SRS031<!-- Content too large for its region overflows --> carries that, and what it permits -
+  content crossing a region, or leaving the display - is not a breach of the bounds stated here.
 ref: ''
-reviewed: NcOrnMBYwyOdtA2pbAH-pk3PgVZyn7MJY01cpCfDvRY=
+reviewed: OI2ZEQOUvqc5zYDtNqASI3TgBru5jQucyw1AFtOujcs=
 status: accepted
 text: |
-  The display page shall lay out its regions across a single full-screen display so that no two
-  overlap at any viewport it supports, and so that the set reflows without horizontal scrolling as
-  the viewport narrows; and shall assemble into each region the modules the configuration names
-  there. Content exceeding the region it was given shall overflow that region's bounds rather than be
-  clipped, scrolled or scaled to fit, at any viewport, and where overflow and either the disjointness
-  or the no-horizontal-scroll bound cannot both hold, the content is kept.
+  The display page shall lay out its regions across a single full-screen display, no two overlapping
+  and the set reflowing without horizontal scrolling, at any viewport it supports; and shall assemble
+  into each region the modules the configuration names there.
 verification-justification: |
   Asserted by rendering at three viewports and reading the laid-out regions against each other and
-  against the viewport, then reading each module's content against the region it was given - over a
-  fixture whose content exceeds its region, so the overflowing case is measured rather than assumed.
-  Disjointness, horizontal overflow, and whether content was clipped, scrolled or scaled are all
-  decidable from rendered geometry and scroll extents.
-  The precedence clause is what the check cannot fully reach. It can show the page keeps content in
-  the colliding case, and it cannot enumerate the configurations that produce a collision, because
-  how much any region is asked to hold follows from the configuration and from what upstream
-  returned. So the assertion is that the layout is disjoint and does not scroll sideways, and that
-  content is kept where it collides with either - not that no configuration collides.
+  against the viewport, and each module's rendered place against the region the configuration named
+  for it. Disjointness and horizontal overflow are both decidable from rendered geometry and scroll
+  extents.
+  The obligation covers every viewport the page supports while the check samples three, so a layout
+  that first overlaps at a fourth passes.
   Whether a person across the room can read the result is not settled here and is not this item's to
   settle: of the software's two contributions to that,
   SRS033<!-- Text holds a minimum size against the display, at every resolution --> carries the type

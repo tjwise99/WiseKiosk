@@ -1,0 +1,46 @@
+active: true
+derived: false
+header: |
+  Content too large for its region overflows
+level: 39
+links:
+- SYS002: ToFVbPFp9IatUvVWKKn-3S83c7ebsKajo1MUVxVHdbE=
+normative: true
+rationale: |
+  What the page decides about content too large for the region it was given is that it overflows
+  (owner, 2026-08-08). Clipping and scrolling hide content the operator asked for; scaling to fit
+  drives type below the floor
+  SRS033<!-- Text holds a minimum size against the display, at every resolution --> sets, so the
+  display would stay whole by becoming unreadable. Overflow is the only one of the four that hides
+  nothing and reads at distance, and it makes a region given too little space visibly wrong rather
+  than quietly lossy.
+  The final clause is a precedence, stated as an effect rather than against the bounds it overrides.
+  Overflowing content may cross a neighbouring region and may extend the document past the display's
+  edge; both are permitted, because the alternative in each case is discarding content, and keeping
+  it is the want this item is built on. Ruling it here rather than leaving it to a check is what
+  stops the layout bounds in
+  SRS017<!-- Full-screen assembly at kiosk; reflow, no horizontal scroll, at narrower widths --> from
+  being read as constraints on content once it has been laid out.
+  A configuration dense enough to overflow badly gets no rendered failure state (owner, 2026-08-08):
+  the degraded display is the signal an operator needs, and announcing that it will look wrong says
+  what is already visible. Nothing has failed, so it is not the case
+  SYS001<!-- Failure is legible and proportionate --> carries, and no configuration is rejected, so
+  the allocation of configuration validation is untouched.
+ref: ''
+reviewed: GiUkuvIQo-m1a19UBi5c5bWyB0CDT70XP2mSOAhKabU=
+status: accepted
+text: |
+  Content exceeding the region it was given shall overflow that region's bounds rather than be
+  clipped, scrolled or scaled to fit, at any viewport, even where overflowing carries it across
+  another region or past the display's edge.
+verification-justification: |
+  Asserted over a fixture whose content exceeds the region it is given, at three viewports, reading
+  that content's box against the region's. Whether it was clipped, scrolled or scaled is decidable
+  from rendered geometry and scroll extents, and its box exceeding the region's is what tells
+  overflow from a fit.
+  Two things the check does not reach. It cannot enumerate the configurations that produce a
+  collision, because how much any region is asked to hold follows from the configuration and from
+  what upstream returned - so what is asserted is that content is kept where it collides, not that no
+  configuration collides. And the obligation covers every viewport the page supports while the check
+  samples three, so a layout that first clips at a fourth passes.
+verification-method: test
