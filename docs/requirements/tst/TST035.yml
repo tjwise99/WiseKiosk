@@ -8,16 +8,17 @@ links:
 normative: true
 rationale: ''
 ref: ''
-reviewed: UBYmhRZ7RL289Up_-uS00vMHYAF6JSCErNfPka51LuI=
+reviewed: DZzyWDXBJMSdnGacfCH8hx8-InNhQFmA2JJoy-jrrlg=
 status: proposed
 text: |
   Pending: viewport-driven render test asserting a bijection between the modules the fixture
   configuration names and the regions present in the DOM, with the module set read from the parsed
   fixture rather than a hand-written list; asserting the laid-out regions are pairwise disjoint and
   the document does not scroll horizontally, at the kiosk viewport (1920x1080) and at the desktop
-  viewports (1280x800 and 1440x900); and asserting, over a fixture whose content exceeds the region
-  it is given, that the content is neither clipped nor reachable only by scrolling nor scaled below
-  the size it renders at when it fits, and that its box exceeds the region's. Lands with the frontend
+  viewports (1280x800 and 1440x900); and asserting at each of those three, over a fixture whose
+  content exceeds the region it is given, that the content is neither clipped nor reachable only by
+  scrolling nor scaled below the size it renders at when it fits, and that its box exceeds the
+  region's. Lands with the frontend
   skeleton (#10); activated and given a references entry then.
 verification-justification: |
   Settles that every configured module is present, that the regions the page lays out do not overlap

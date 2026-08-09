@@ -4,7 +4,7 @@ A config-driven smart-mirror display. A full-screen browser page renders a fixed
 — `clock`, `compliments`, `OpenMeteo` weather, `AviationWeather` (CheckWX METAR/TAF), and
 `DisneyWaitTimes` (themeparks.wiki) — from a handful of public APIs, running unattended on a display
 behind one-way glass. What that glass returns where the display carries nothing is the point rather
-than a side effect: the page emits only where a module has content, and keeps a part of the surface
+than a side effect: the page emits only through what it presents, and keeps a part of the surface
 free of any region at all, so the mirror is not what happens to be left over
 (SYS008<!-- The surface carrying no content is a mirror -->). The page defines the display's regions;
 the configuration names which one each module goes in

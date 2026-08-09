@@ -1,7 +1,7 @@
 active: true
 derived: false
 header: |
-  The page emits only where a module presents content
+  The page emits only through the content it presents
 level: 33
 links:
 - SYS008: ouhMzhj5lp6pwr8iqxsRVAUoCmzwHZSZvY93pAx9r5Q=
@@ -19,28 +19,35 @@ rationale: |
   shadow is not - and a fill marking a region's bounds, the device this rationale names, is exactly a
   border. Emission is the quantity the want is about, so emission is what the text says: a page that
   lights a pixel owes a module's content behind it, whatever draws it.
-  Content a module presents is excluded because that is the display doing its job. What that permits
-  is a module rendering something large and bright - a full-bleed image - which takes the mirror as
-  surely as a scrim does and is not forbidden here. That is a module's design rather than the page's
-  chrome, and no item in this tree obliges it; the tree is silent, and this rationale says so rather
-  than the check pretending otherwise.
+  The exemption is the text and imagery the page presents, and it is stated over the page rather than
+  over a module because not all of it belongs to one. A configuration that cannot be applied leaves
+  no modules at all, and
+  SRS004<!-- Page renders a legible error state for every configuration failure class --> obliges a
+  legible error state anyway; the backend-unreachable state is page-wide by construction. Scoping the
+  exemption to a module's content would have forbidden both - the page owing a message and forbidden
+  to light it.
+  Text and imagery rather than "content", because a scrim is content to whoever added it. A border,
+  an outline and a shadow are neither, so they are caught wherever they appear. What this still
+  permits is a large bright image, which takes the mirror as surely as a scrim does; that is a
+  module's design rather than the page's chrome, no item in this tree obliges it, and this rationale
+  says so rather than a check pretending otherwise.
 ref: ''
-reviewed: TiZrpCTYfPATPX91QbNAu1gYewOyDIdOh7s5rHw8Rzg=
+reviewed: Fmy5nJDGXP3zrRoQgeR4qWWb7CY2TJoSD6TIL_-1RqQ=
 status: accepted
 text: |
-  The display page shall emit above the display's minimum emission only where it renders content a
-  module presents.
+  The display page shall emit above the display's minimum emission only through the text and imagery
+  it presents.
 verification-justification: |
   Asserted by reading every emitting surface of every element the page draws - ground, border,
-  outline and shadow, the page's own root among them - and requiring each above the minimum to belong
-  to a module's rendered content. The population is every element rather than a sampled area, so an
-  element added to the page is an element the check reads, and it is every way an element emits
-  rather than one of them. Three steps sit outside the assertion. What the page renders is not what
+  outline and shadow, the page's own root among them - and requiring each above the minimum to be
+  rendered text or imagery. The population is every element rather than a sampled area, so an element
+  added to the page is an element the check reads, and it is every way an element emits rather than
+  one of them. Three steps sit outside the assertion. What the page renders is not what
   the panel emits - backlight, gamma, colour profile and any tone mapping lie between them, and a
   half-silvered surface attenuates the result again - so the check settles the value the software
   chose, not the light that leaves the glass. What a viewer sees in the unlit surface is the
-  reflected room, which the software neither supplies nor controls. And how much a module's own
-  content emits is outside the exemption's reach by construction: a module rendering a large bright
-  image satisfies this and takes the mirror, which the rationale records as unobliged rather than the
-  check reporting green over.
+  reflected room, which the software neither supplies nor controls. And how much the exempt content
+  itself emits is outside the assertion by construction: a large bright image satisfies this and
+  takes the mirror, which the rationale records as unobliged rather than the check reporting green
+  over it.
 verification-method: test

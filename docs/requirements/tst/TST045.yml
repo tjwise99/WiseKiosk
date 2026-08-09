@@ -1,24 +1,26 @@
 active: false
 derived: false
 header: |
-  Pending: element ground emission test
+  Pending: emitting-surface test
 level: 67
 links:
-- SRS030: 5hjvQh3-93YZS9ISXpEmzzFRnCdEu9aAulWjVux48l0=
+- SRS030: NU_zE3DwePrEbpu_tYYSfOHRxlEzQ_PGnKk0FIkzoT8=
 normative: true
 rationale: ''
 ref: ''
-reviewed: BPyqQq-PRa9NR4E1xawz0yM-0N85hN-v4S8VwbtLdMw=
+reviewed: YarTEvXifylfhnh8WeaGQOmeGUpZN_MZlEh522rHgRY=
 status: proposed
 text: |
-  Pending: render a fixture configuration and read the rendered ground of every element the page
-  draws, its root among them, asserting each sits at the display's minimum. Lands with the frontend
-  skeleton (#10); activated and given a references entry then.
+  Pending: render a fixture configuration and read every emitting surface of every element the page
+  draws - ground, border, outline and shadow, its root among them - asserting each sits at the
+  display's minimum except where it is rendered text or imagery. Lands with the frontend skeleton
+  (#10); activated and given a references entry then.
 verification-justification: |
-  Settles that the page draws no panel, card, fill or scrim anywhere, whatever the configuration -
-  the population is every element rendered, so an element added is an element read, and there is no
-  sampled area for a lit ground to hide in. Leaves unproven what a viewer sees there, which is the
-  reflected room and outside the system; what the panel emits, since backlight, gamma and the
-  half-silvered surface all lie past the value read; and any emission an element makes through its
-  content rather than its ground, which a module presenting an image legitimately does.
+  Settles that the page draws no panel, card, fill, scrim, border, outline or shadow that emits,
+  whatever the configuration - the population is every element rendered and every surface it emits
+  from, so neither an element added nor a decoration drawn some other way escapes the reading. Leaves
+  unproven what a viewer sees in the unlit surface, which is the reflected room and outside the
+  system; what the panel emits, since backlight, gamma and the half-silvered surface all lie past the
+  value read; and how much the exempt text and imagery themselves emit, which a large bright image
+  takes the mirror with while satisfying this.
 verification-method: test
