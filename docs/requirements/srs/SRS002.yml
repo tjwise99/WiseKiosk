@@ -12,12 +12,15 @@ rationale: |
   the blank or wrong module the operator cannot diagnose. Phrased against
   "apply", not "page load", so a future live-apply path validates the same way
   without a rewrite (ADR 0007 rev 2); page load is today's only apply point.
+  Stated over the module's own place rather than its region, since a region may carry several
+  modules and reporting "at the region" would not say which of them the error belongs to.
 ref: ''
-reviewed: cFbP8Hi0Hstb_6FQDYA4cScWOEz5oJugyhVcIN1aX-I=
+reviewed: -U7kmDPXBBdouh9jAgI-cylogagQ9BXAyzNJOTDNfOc=
 status: accepted
 text: |
   A configuration error that can be isolated to a single module shall be reported at that module's
-  region, naming what is wrong and what to change, and shall never be silently worked around.
+  own place on the display, naming what is wrong and what to change, and shall never be silently
+  worked around.
 verification-justification: |
   Asserted by driving a fixture whose only error sits inside one module's fragment and reading the
   rendered page. What the check does not settle is whether the correction it names is the right
