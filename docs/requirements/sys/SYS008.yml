@@ -12,20 +12,21 @@ rationale: |
   That is why this is a need rather than a decomposition of the layout need: the two are satisfiable
   independently in both directions. The layout need is a want about content; this is a want about
   content's absence.
-  It carries no configuration bound, because how much a deployment carries is the operator's (owner,
-  2026-08-08), and a deployment that takes the mirror takes it visibly.
+  How much surface carries nothing, and where it sits, is the configuration's: the operator assigns
+  every region (owner, 2026-08-08). So extent and placement are not obliged here. An earlier text
+  obliged a contiguous part of the surface to be large and well-placed enough to return a viewer's
+  reflection, which is a promise about an arrangement the product does not choose. What the software
+  owes is the one thing it does choose - to add no light where it presents nothing - and that is the
+  whole of the want, which is why one decomposition discharges it.
 ref: ''
-reviewed: AIuMYg7wHcfKr7RHldDawSRFk9RFv2Bb_t_vqiXoTfE=
+reviewed: w6xbseCw8jR2kzU-MTFocJ5g4q44MVQLMOZbkPL3-Uc=
 status: accepted
 text: |
-  Wherever the display carries no content it shall be held at minimum emission, and a contiguous part
-  of what is so held shall be placed and large enough to return the reflection of a viewer at the
-  distance the display is installed for.
+  Wherever the display carries no content it shall be held at minimum emission.
 verification-justification: |
-  Settled by its children: that surface carrying no content is held at minimum emission, that the
-  largest contiguous region so held spans what a reflection needs in both dimensions, and that the
-  same region sits where a viewer facing the display is returned rather than banked against an edge. What no check reaches is the
-  height the panel is hung at - a reserve of the right size, in the right place on the surface, still
-  returns a reflection of the ceiling if the panel is mounted too high. Mounting is the operator's;
-  where the region sits on the surface is not, and is obliged.
+  Settled by its child: the value rendered over the surface content does not occupy. Three things it
+  does not reach. The value the page renders is not the light the panel emits - backlight, gamma,
+  colour profile and the half-silvered surface all lie between them. What a viewer sees there is the
+  reflected room, which the software neither supplies nor controls. And whether enough surface is
+  left to return a reflection at all follows from the configuration rather than from the software.
 verification-method: test

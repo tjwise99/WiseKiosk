@@ -4,16 +4,16 @@ header: |
   Unoccupied surface is held at minimum emission
 level: 33
 links:
-- SYS008: AIuMYg7wHcfKr7RHldDawSRFk9RFv2Bb_t_vqiXoTfE=
+- SYS008: w6xbseCw8jR2kzU-MTFocJ5g4q44MVQLMOZbkPL3-Uc=
 normative: true
 rationale: |
   The mirror is made of absence, so anything drawn where content is not is drawn at the mirror's
   expense. This forecloses the devices a designer reaches for first on a dark interface - a panel
   behind a block of text, a card, a fill marking a region's bounds, a scrim to lift a glyph off its
-  background. Each is emitted light, so each brightens the ground rather than darkening it, and pays
-  for a legibility gain that does not arrive with mirror that does not come back.
+  background. Each is emitted light, so each brightens the ground rather than darkening it, spending
+  mirror that does not come back on a legibility gain that does not arrive.
 ref: ''
-reviewed: CidIm6MuamsFOjfrVVs9uXvIKGi3TT_4bPggjTulfOo=
+reviewed: yVFPzqnUz-5ucXpn6EVq3OqbiAMzakJWXyfe1UzlgrU=
 status: accepted
 text: |
   Every part of the display not occupied by content it presents shall be held at the display's
