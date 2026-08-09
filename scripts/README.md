@@ -858,6 +858,13 @@ binds only what somebody deliberately tagged on it — the same contract as a lo
 inheritance existed, drawing the Deployment level would have silently satisfied the completeness rule
 for every item already bound to the container it instantiates.
 
+**That is a premise this check rests on and does not test.** It is a property of LikeC4's export, not
+of anything here, and nothing fails if it changes: a version that propagated a logical element's tags
+to its instances would leave every run green while the completeness rule went hollow for every item
+bound to a container somebody instantiates. The row above is a snapshot of the export's behaviour on
+the pinned version, so re-run it when that pin moves. Recorded because the failure is silent in both
+directions — no diagnostic, no count that moves, and a rule that reports itself satisfied.
+
 **The relationship row asserts a seed, and the seed is the part that was wrong first.** Its earlier
 form moved the tags off the three *top-level* relationships and left the two nested ones carrying
 seven applications between them, so `relations` still contributed and the no-relationship-tags path
