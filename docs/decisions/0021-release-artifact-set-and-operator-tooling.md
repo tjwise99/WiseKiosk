@@ -61,7 +61,8 @@ documented procedure a stable retrieval URL, and they are what makes the asset-s
 [`../CI.md`](../CI.md) something a check can decide rather than a description of a release form the
 project does not produce.
 
-**No operator tooling program ships**, and the release carries an example configuration file instead.
+**No operator tooling program ships as part of a release**, and the release carries an example
+configuration file instead.
 A generator that checked its own output would be the second enforcer
 [ADR 0007 rev 2](0007-config-validation-allocation.md) forbids by name; one that did not check it would
 not answer the difficulty it exists for, which is authoring a configuration without knowing what the
@@ -134,16 +135,22 @@ minimal base does not, and the check then needs a self-check path in the backend
 continuously deployed and the release is not, so the two drift by construction. Accepted: the remedy is
 versioning the site, and this is the record that the exposure was chosen rather than overlooked.
 
-**The tooling document dissolves.** Its content was an obligation on programs an operator runs, and no
-such program remains. What it held splits by
-[ADR 0011 rev 1](0011-requirement-or-convention.md)'s rule: every assertion about a check to
-[`../CI.md`](../CI.md), and the deployment obligations to
-[`../DEPLOYMENT.md`](../DEPLOYMENT.md), which claims deploying rather than tooling.
+**The tooling document dissolves**, and only half of that follows from an existing rule. Every
+assertion about a check goes to [`../CI.md`](../CI.md), which is
+[ADR 0011 rev 1](0011-requirement-or-convention.md)'s. The remainder does not: that record's table is
+closed over the requirements tree, `CI.md` and the review checklist, and an obligation on what ships
+beside the image is none of the three. It goes to [`../DEPLOYMENT.md`](../DEPLOYMENT.md), which claims
+deploying rather than tooling — **an allocation taken here rather than inherited**, and the gap it
+fills predates this record, since the tooling document sat outside that table too.
 
-**#70 configuration generator has nothing left to ship.** The reasoning that retired the desk
-configuration validator reaches it — the page renders the report, the apply floor is a page reload,
-and a generator cannot check its own output. That ticket rules on itself; this record notes that the
-argument arrived.
+**#70 configuration generator loses its delivery channel, not its ticket.** What is decided here is
+what a release carries, and a tooling program is barred from it; whether a generator should exist at
+all is that ticket's to rule. The argument against one does reach it — the page renders the report,
+the apply floor is a page reload, and a generator cannot check its own output without becoming the
+second enforcer [ADR 0007 rev 2](0007-config-validation-allocation.md) forbids — and it is the same
+argument that retired the desk configuration validator. Its obligation left with the tooling document
+and returns rewritten if that ticket rules the generator survives, since what the document stated was
+a program this record bars from the release.
 
 **How secrets reach a deployment is not decided here.**
 SYS003<!-- A deployment is parameterised from outside the image --> obliges them to come from the

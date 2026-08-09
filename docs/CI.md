@@ -212,7 +212,15 @@ What each of these obligations *is*, and why, is [`DEPLOYMENT.md`](DEPLOYMENT.md
   if the sequence completes without a serving deployment — so documentation that omits a step fails
   here rather than at somebody's first deployment. The procedure's verification step is inside that
   sequence: a procedure whose digest check does not run, or does not fail on a digest that fails
-  verification, fails the check.
+  verification, fails the check. No human is in the loop at any point.
+- **The example configuration is one the page accepts.** It is loaded in the page and asserted to
+  render the configured display with no validation report. Asserting that the tag carries the file
+  decides its presence and nothing about its content, and the bring-up check above passes over a bad
+  one: validation runs in the page rather than the backend
+  ([ADR 0007 rev 2](decisions/0007-config-validation-allocation.md)), so a stale example still serves.
+  A schema change that leaves the example behind fails here or nowhere — and the example is what the
+  documented procedure tells an operator to copy, so it is the first configuration most deployments
+  ever run.
 - **The committed recipe carries a restart policy.** A scripted check over the recipe, failing if the
   policy is absent. **It gates that one key deliberately and no others**: the key is the residue of a
   requirement deleted on #69 tree rebuild, not the beginning of a recipe linter. Every other value in
@@ -227,10 +235,13 @@ What each of these obligations *is*, and why, is [`DEPLOYMENT.md`](DEPLOYMENT.md
   and removes it; runs digest B with byte-identical mount arguments and asserts it is healthy, serving
   the same configuration, and reporting a changed version — with no builder invoked at any point.
 
-**Unbuilt, and two of them have no implementation ticket.** The recipe and health-signal checks are
-#54 container build and publish's. The bring-up and image-swap checks run against what that ticket
-publishes, and #71 release artifact set decided what they assert while shipping no code, so nothing
-currently builds them. Stated rather than left to be inferred from an owner line that would be wrong.
+**Unbuilt, and three of them have no implementation ticket.** The recipe and health-signal checks are
+#54 container build and publish's. The bring-up, example-configuration and image-swap checks run
+against what that ticket publishes, and #71 release artifact set decided what they assert while
+shipping no code, so no ticket builds them. That departs from naming a ticket per unbuilt gate
+([ADR 0005 rev 1](decisions/0005-traceability-gating.md)), deliberately: an owner line naming a ticket
+that does not own the work reads as scoped when it is not, and a ticket filed to satisfy the
+convention would be a placeholder nobody chose.
 
 ## The exception register
 
