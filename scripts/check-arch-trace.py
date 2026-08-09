@@ -5,7 +5,7 @@ Tags → tree: every requirement identifier tagged in the model resolves to an a
 tags: every accepted, active item in an obliging tier is tagged somewhere in the model.
 
 The rules are `docs/CI.md` § Documentation integrity; the tag mechanism and the tier it carries are
-ADR 0019 rev 1, and the completeness obligation is ADR 0022 rev 1.
+ADR 0019 rev 2, and the completeness obligation is ADR 0022 rev 1.
 
 A tag counts on four subject kinds: the logical model's elements and relationships, and the
 deployment model's, which the export keeps separate. A tag on a **view** is not read — a view is a

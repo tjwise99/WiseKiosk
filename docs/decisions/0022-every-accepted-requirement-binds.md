@@ -15,7 +15,7 @@ routed the duty elsewhere in one sentence: "Design allocation, where wanted, bel
 architecture model, not the gate system." The model then built a mechanism that answers a different
 question.
 
-[ADR 0019 rev 1](0019-boundary-at-what-deploys-and-tag-tier.md),
+[ADR 0019 rev 2](0019-boundary-at-what-deploys-and-tag-tier.md),
 [ADR 0020 rev 1](0020-two-containers-one-origin-and-dual-tier-tags.md) and
 [ADR 0021 rev 1](0021-component-earns-its-interface-and-framework-half-only.md) argue at length about
 **which** element a tag belongs on — *tags discriminate rather than inventory*; *stamping an element
@@ -58,7 +58,7 @@ that reach. The consequence is stated below rather than left to be discovered: *
 carries an allocation obligation.**
 
 **This adds completeness to discrimination and changes neither the tier rules nor the placement
-rules.** Where a tag sits is still ADR 0019 rev 1's — the tier its level answers to, plus any coarser
+rules.** Where a tag sits is still ADR 0019 rev 2's — the tier its level answers to, plus any coarser
 item discharged observably there (ADR 0020 rev 1), bound where the obligation is observable, at each
 depth where an observable is composed (ADR 0021 rev 1). This record says only that the set of items
 bound nowhere is empty.
@@ -161,7 +161,7 @@ was scoped to build. Rejected on its population. The candidate vocabulary was *e
 those four. SRS007<!-- Configuration schema offers no secret-bearing key --> and
 SRS015<!-- One schema, all boundary value classes --> bind, so *design-time artifact* has no member.
 *Deferred* has none and
-arguably never could — the module and upstream deferrals ADR 0019 rev 1 and ADR 0021 rev 1 record are
+arguably never could — the module and upstream deferrals ADR 0019 rev 2 and ADR 0021 rev 1 record are
 deferred **elements**, not unbound requirements, and no accepted item is unbound because a module
 component is undrawn. SRS005<!-- One validation implementation --> retires, so *enabling system* has
 none. What remained was two items that
@@ -173,7 +173,7 @@ argument is the owner's: **the gap is an artefact of a specification that has no
 modules, not a permanent class of unbindable requirement**, and building a mechanism around
 scaffolding is how scaffolding becomes load-bearing. Against it stands the honest cost — an escape
 hatch is the pressure valve that lets a reviewer record *this obliges something the model should not
-draw* instead of drawing it badly, which is a real risk given how hard ADR 0019 rev 1 and
+draw* instead of drawing it badly, which is a real risk given how hard ADR 0019 rev 2 and
 ADR 0021 rev 1 worked to refuse inventing an element. That risk is answered by the reopen premise
 below rather than dismissed. The hatch never built cannot rot into an allowlist, which was that
 ticket's own first-named trap and [`../../CONTRIBUTING.md`](../../CONTRIBUTING.md)'s review question
@@ -216,7 +216,7 @@ to `main` once, at the end, is what makes a red intermediate state affordable.
 nothing draws is now a reason to extend the model. That pressure is bounded — the rule requires each
 item to bind to *something*, not to have an element of its own, and existing elements and
 relationships absorb almost everything — but it is real, and it is the opposite of the direction
-ADR 0019 rev 1 and ADR 0021 rev 1 push when they refuse an aggregate external system and a placeholder
+ADR 0019 rev 2 and ADR 0021 rev 1 push when they refuse an aggregate external system and a placeholder
 module box.
 
 **Premise that would reopen this:** an accepted item whose subject the model cannot draw without
@@ -256,7 +256,7 @@ ADRs deletes. It is that ticket's to absorb.
 
 **So is every ground resting on SRS005<!-- One validation implementation -->.** This record rules that
 item retired, and three C4 decisions lean on it —
-[ADR 0019 rev 1](0019-boundary-at-what-deploys-and-tag-tier.md) as an invariant already held,
+[ADR 0019 rev 2](0019-boundary-at-what-deploys-and-tag-tier.md) as an invariant already held,
 [ADR 0020 rev 1](0020-two-containers-one-origin-and-dual-tier-tags.md) as its example of an obligation
 reaching permanently outside the model, and
 [ADR 0021 rev 1](0021-component-earns-its-interface-and-framework-half-only.md) resting on 0020's
@@ -265,6 +265,6 @@ C4 ADRs must absorb is that the *argument* those passages make no longer has its
 here because this register is where that ticket will look.
 
 **This record takes 0022, and #124 merge the three C4 ADRs will renumber it.** That slice merges
-ADR 0019 rev 1, ADR 0020 rev 1 and ADR 0021 rev 1 into one document and returns two numbers to the
+ADR 0019 rev 2, ADR 0020 rev 1 and ADR 0021 rev 1 into one document and returns two numbers to the
 pool, which leaves this one stranded above a gap against the contiguity rule
 [`README.md`](README.md) states.
