@@ -4,7 +4,7 @@ header: |
   Text holds a minimum size against the display, at every resolution
 level: 36
 links:
-- SYS002: QG4tuI7Quh1X7Al-9h-E7TITSd0jlKe2CBaFpqgEMxY=
+- SYS002: 6ke7ibP5v8qlaCLCBH4AN5gC-ynA2tyvaAbl7RZxqFM=
 normative: true
 rationale: |
   Rendering everything and reading at distance are not the same property, and the display can satisfy

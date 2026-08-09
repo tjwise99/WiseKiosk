@@ -8,12 +8,14 @@ normative: true
 rationale: |
   The product is a display; a module the page has hidden part of has failed silently, and so has one
   too small or too dim to read from where the display hangs. The scope is what the software renders
-  rather than what the configuration composes: the operator assigns every region (owner,
-  2026-08-08), so whether two regions overlap, and how densely the surface is filled, follow from the
-  configuration. What the page decides is whether any of what it was given reaches the glass -
-  content too large for its region overflows rather than being clipped, scrolled or scaled away
-  (owner, 2026-08-08) - and that is what "none of its content hidden by the page's own layout"
-  obliges. "The surface the display actually presents" is not the viewport, which reports
+  rather than what the configuration composes. The page defines the display's regions and their
+  geometry; the operator names which region each module goes in and nothing more (owner,
+  2026-08-08). So the region set not overlapping is the page's, while how much is asked of any one
+  region is the configuration's and the upstream's. What the page decides about content too large for
+  the region it was given is that it overflows rather than being clipped, scrolled or scaled away
+  (owner, 2026-08-08) - and that, with the region set it lays out, is what "none of its content
+  hidden by the page's own layout" obliges. "The surface the display actually presents" is not the
+  viewport, which reports
   every pixel as visible whether or not a frame or an overscanning television hides its outer band;
   holding content clear of that band is the page's, because the mask is nobody's to observe. "The
   display it was configured for" carries the kiosk-primary, desktop-secondary distinction without
@@ -28,14 +30,15 @@ rationale: |
   SYS001<!-- Failure is legible and proportionate --> obliges a failure to say why and to stay in
   proportion, which is a different sense of the word and is not doubled here.
   Three earlier claims are retracted here. The text obliged every module to be "wholly visible",
-  which reads as a promise about the assembled layout - no overlap among regions the product does not
-  choose. It was then briefly replaced by containment, which the overflow ruling makes false: content
-  too large for its region leaves that region by design. And an earlier scope disclaimed readability
+  which the page cannot promise: how much content a region is asked to hold follows from the
+  configuration and from what upstream returned, and past some volume it does not fit. It was then
+  briefly replaced by containment, which the overflow ruling makes false: content too large for its
+  region leaves that region by design. And an earlier scope disclaimed readability
   as visual judgement, which described what the tree then held rather than what a check can decide:
   text size as a fraction of display height, and the emission a glyph is rendered at, are both
   settled by a machine reading a rendered page.
 ref: ''
-reviewed: QG4tuI7Quh1X7Al-9h-E7TITSd0jlKe2CBaFpqgEMxY=
+reviewed: 6ke7ibP5v8qlaCLCBH4AN5gC-ynA2tyvaAbl7RZxqFM=
 status: accepted
 text: |
   Every configured module shall render on the display it was configured for, laid out within the
@@ -43,11 +46,14 @@ text: |
   layout; and text the display presents to be read shall be legible from where that display is
   watched.
 verification-justification: |
-  Settled by its children, and all of it decidable: each module's rendered box read against the
-  region it was assigned, text size read as a fraction of the display's height, emission read per
-  element, and content measured against an inset the viewport cannot see being masked. Three things
-  no child reaches. What a viewer actually sees behind any glyph is the reflected room, which the
-  software neither supplies nor controls. Whether the configuration assigns regions that overlap, or
-  leaves a display worth looking at, is the operator's. And whether the result is a good layout
-  rather than a legible one is a judgement no gate claims.
+  Its children read a rendered page: the laid-out regions against each other and against an inset the
+  viewport cannot see being masked, each module's content against the region it was given, text size
+  as a fraction of the display's height, and emission per element. Four things none of them settles,
+  and the item claims none of them. What a viewer actually sees behind any glyph is the reflected
+  room, which the software neither supplies nor controls. Content overflowing a region near the edge
+  crosses that inset, which
+  SRS034<!-- The laid-out regions keep clear of the display edge --> states and nothing here
+  contradicts. The size floor is read at sampled resolutions rather than at every one the display
+  supports. And whether the configuration leaves a display worth looking at, and whether the result
+  is a good layout rather than a legible one, are the operator's and a judgement no gate claims.
 verification-method: test

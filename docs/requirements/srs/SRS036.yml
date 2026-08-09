@@ -1,0 +1,36 @@
+active: true
+derived: false
+header: |
+  No region is laid out within the mirror reserve
+level: 38
+links:
+- SYS008: VPfvnggRFZk-lw_hS19tLa7dy6YEIx6HnnAFt0GPdyo=
+normative: true
+rationale: |
+  The reserve survives because nothing can be put in it, not because nothing happens to be. The page
+  owns the region set and the configuration names a region per module, so a reserve the page declines
+  to cover is one no configuration can address - erosion by adding modules cannot reach it, which is
+  the failure this obligation exists against.
+  Stated over the regions the page lays out rather than over the surface that ends up empty. The
+  emergent form was tried and withdrawn: a display covered but for its mandated edge inset leaves a
+  thin band whose bounding box is the whole display, so any measure of the largest empty region's
+  extent scores full marks on a display returning no reflection.
+  The extent and placement are the check's, so calibrating how much of a person the display returns
+  is not a specification change. They are not independent of the edge inset or the region set's own
+  geometry, which is why one check reads them together.
+ref: ''
+reviewed: 8z9ZgrKPDx1tyCLXS86XZ0bDORdOmJ7NKlwxFFV5q8w=
+status: accepted
+text: |
+  The display page shall lay out no region intersecting a contiguous area of the display of stated
+  extent, placed to return the reflection of a viewer facing the display.
+verification-justification: |
+  Asserted by reading every laid-out region's geometry against the reserve area, over configurations
+  chosen to load the display - the module roster at its fullest, and repeated instances of a module
+  an operator may add - since the region set may itself depend on which regions are occupied. Three
+  bounds. Content overflowing an adjacent region may cross into the reserve, which the overflow
+  ruling permits, so the check settles that no region is placed there rather than that no pixel
+  enters it. Whether the panel is hung so that a viewer stands before the reserve is the operator's,
+  as mounting is. And that the reserve returns a recognisable reflection at all is a fact about
+  half-silvered glass and the room, which no assertion over a rendered page reaches.
+verification-method: test

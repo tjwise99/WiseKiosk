@@ -1,22 +1,24 @@
 active: false
 derived: false
 header: |
-  Pending: unlit surface emission test
+  Pending: element ground emission test
 level: 67
 links:
-- SRS030: NPXBFVg7ZiFOqAxOI6XsjPyAQR2JUm4Cm0tlYvx_HUQ=
+- SRS030: exUN5w-rW0eUpGQad90tsQH-8ZZn5TAEXNbnlJLK9Qo=
 normative: true
 rationale: ''
 ref: ''
-reviewed: eaUeH_JNvseacaAhW91ao9JYkBpTebyIYOFzAZRi_X0=
+reviewed: BPyqQq-PRa9NR4E1xawz0yM-0N85hN-v4S8VwbtLdMw=
 status: proposed
 text: |
-  Pending: render a fixture configuration and read the rendered value across the surface its content
-  does not occupy, asserting every unoccupied region sits at the display's minimum. Lands with the
-  frontend skeleton (#10); activated and given a references entry then.
+  Pending: render a fixture configuration and read the rendered ground of every element the page
+  draws, its root among them, asserting each sits at the display's minimum. Lands with the frontend
+  skeleton (#10); activated and given a references entry then.
 verification-justification: |
-  Settles that the page draws no fill, panel or scrim outside its content, which is the whole of the
-  software's contribution to the mirror. Leaves unproven what a viewer sees there, which is the
-  reflected room and outside the system, and how much surface is left unoccupied at all, which
-  follows from the configuration.
+  Settles that the page draws no panel, card, fill or scrim anywhere, whatever the configuration -
+  the population is every element rendered, so an element added is an element read, and there is no
+  sampled area for a lit ground to hide in. Leaves unproven what a viewer sees there, which is the
+  reflected room and outside the system; what the panel emits, since backlight, gamma and the
+  half-silvered surface all lie past the value read; and any emission an element makes through its
+  content rather than its ground, which a module presenting an image legitimately does.
 verification-method: test

@@ -12,26 +12,35 @@ rationale: |
   That is why this is a need rather than a decomposition of the layout need: the two are satisfiable
   independently in both directions. The layout need is a want about content; this is a want about
   content's absence.
-  How much surface carries nothing, and where it sits, is the configuration's: the operator assigns
-  every region (owner, 2026-08-08). So extent and placement are not obliged here. An earlier text
-  obliged a contiguous part of the surface to be large and well-placed enough to return a viewer's
-  reflection, which is a promise about an arrangement the product does not choose. What the software
-  owes is the one thing it does choose - to add no light where it presents nothing - and that is the
-  whole of the want, which is why one decomposition discharges it.
-  Making the mirror a guarantee instead was considered and declined (owner, 2026-08-08). It would
-  take a configuration key naming the reserve, and a rule for content assigned into it - and that
-  rule contradicts the ruling that a configuration too dense to lay out renders no failure state. So
-  a deployment may fill its display and lose the mirror, with nothing failing, and the degraded
-  display is the signal as it is everywhere else the operator's arrangement decides the outcome.
+  The reserve is the page's because the region set is. A configuration names a region per module and
+  cannot express a geometry (owner, 2026-08-08), so the page reserves the mirror by laying out no
+  region there: no position an operator can write addresses it. That is a property of what the page
+  draws, decidable from a rendered page, and it needs no configuration key and no rule for content
+  assigned into the reserve, because nothing can be assigned into it.
+  An earlier revision of this item obliged the reserve as an emergent measurement - the largest
+  contiguous minimum-emission region spanning some fraction of the display - and that is withdrawn
+  rather than restated. The metric does not measure the want: on a display whose content covers all
+  but the mandated edge inset, the free surface is a thin band whose bounding box is the whole
+  display, so it scores full marks while returning no reflection at all. What replaces it obliges the
+  layout rather than the leftovers.
+  A second retraction, recorded because it was written here as settled. This item briefly declined
+  the reserve altogether, on the ground that guaranteeing it would need a configuration key and a
+  failure behaviour for content assigned into it. That rested on the operator placing content by
+  geometry, which the configuration does not let them do. The cost was never there.
 ref: ''
-reviewed: zthnGnTLkZrmv4PBDUD0TzDGn5ninBwSVffseTNWXOw=
+reviewed: VPfvnggRFZk-lw_hS19tLa7dy6YEIx6HnnAFt0GPdyo=
 status: accepted
 text: |
-  Wherever the display carries no content it shall be held at minimum emission.
+  Wherever the display carries no content it shall be held at minimum emission, and the page shall
+  lay out no region within a contiguous part of the surface large enough and placed to return the
+  reflection of a viewer at the distance the display is installed for.
 verification-justification: |
-  Settled by its child: the value rendered over the surface content does not occupy. Three things it
-  does not reach. The value the page renders is not the light the panel emits - backlight, gamma,
-  colour profile and the half-silvered surface all lie between them. What a viewer sees there is the
-  reflected room, which the software neither supplies nor controls. And whether enough surface is
-  left to return a reflection at all follows from the configuration rather than from the software.
+  Settled by its children: the rendered ground of every element the page draws, and the laid-out
+  regions read against the area the reserve occupies. Three things neither reaches. The value the
+  page renders is not the light the panel emits - backlight, gamma, colour profile and the
+  half-silvered surface all lie between them. What a viewer sees in the reserve is the reflected
+  room, which the software neither supplies nor controls. And content overflowing a neighbouring
+  region may cross into the reserve, which the overflow ruling permits and no check here contradicts:
+  what is obliged is that the page places no region there, not that the reserve stays empty of every
+  pixel under every configuration.
 verification-method: test

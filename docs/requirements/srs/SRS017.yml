@@ -4,7 +4,7 @@ header: |
   Full-screen assembly at kiosk; reflow, no horizontal scroll, at narrower widths
 level: 1.41
 links:
-- SYS002: QG4tuI7Quh1X7Al-9h-E7TITSd0jlKe2CBaFpqgEMxY=
+- SYS002: 6ke7ibP5v8qlaCLCBH4AN5gC-ynA2tyvaAbl7RZxqFM=
 normative: true
 rationale: |
   Decomposes SYS002's<!-- Each module renders in full, and reads --> kiosk-primary,
@@ -18,37 +18,46 @@ rationale: |
   reflowing layout, not a responsive-design programme, and the viewport figures are
   TST035's<!-- Pending: viewport-driven layout render test --> so tuning one does not touch the
   specification.
-  An earlier text obliged the assembled layout to exhibit no overlapping regions. That is not the
-  page's to promise while the configuration assigns the regions: two regions told to overlap are
-  rendered overlapping, faithfully.
-  What the page does decide is what becomes of content too large for the region it was given, and the
-  ruling is that it overflows (owner, 2026-08-08). Clipping and scrolling were the alternatives, and
-  both hide content the operator asked for; scaling to fit was the third, and it drives type below
-  the floor SRS033<!-- Text holds a minimum size against the display, at every resolution --> sets,
-  so the display would stay whole by becoming unreadable. Overflow is the only one of the four that
-  hides nothing and reads at distance, and it makes a region given too little space visibly wrong
-  rather than quietly lossy.
+  The region set is the page's, so its disjointness is obliged here. A configuration names a region
+  per module and cannot express a geometry, so two modules can never be told to sit on top of one
+  another - what can put them there is a page that laid its own regions overlapping, which is a
+  defect rather than an operator's choice.
+  What the page decides about content too large for the region it was given is that it overflows
+  (owner, 2026-08-08). Clipping and scrolling were the alternatives, and both hide content the
+  operator asked for; scaling to fit was the third, and it drives type below the floor
+  SRS033<!-- Text holds a minimum size against the display, at every resolution --> sets, so the
+  display would stay whole by becoming unreadable. Overflow is the only one of the four that hides
+  nothing and reads at distance, and it makes a region given too little space visibly wrong rather
+  than quietly lossy.
+  Overflow and the two bounds around it collide, and the text says which gives way rather than
+  leaving it to a check. Overflowing content may cross into a neighbouring region and may extend the
+  document past the viewport's edge; both are permitted, because the alternative in each case is
+  hiding content, and keeping content is the want the whole item is built on. Disjointness and
+  no-horizontal-scroll are therefore obligations on what the page lays out, not on what content does
+  to it afterwards.
 ref: ''
-reviewed: 32DiTWj7Nd_PZ2aQi_giU_IvKyG2EIq3UD-ECpMjQXE=
+reviewed: uvb4yZ8d1gNLYP7w7dgFZjgxeAYL0fZq4YjLoiSw5-g=
 status: accepted
 text: |
-  The display page shall assemble the modules named in the configuration, each into its configured
-  region of a single full-screen layout. Content exceeding the region it was given shall overflow
-  that region's bounds rather than be clipped, scrolled or scaled to fit. The assembled layout shall
-  reflow without horizontal scrolling at narrower viewports.
+  The display page shall lay out its regions across a single full-screen display so that no two
+  overlap and the set reflows without horizontal scrolling at narrower viewports, and shall assemble
+  into each region the modules the configuration names there. Content exceeding the region it was
+  given shall overflow that region's bounds rather than be clipped, scrolled or scaled to fit, and
+  where overflow and either bound above cannot both hold, the content is kept.
 verification-justification: |
-  Asserted by rendering a fixture configuration at three viewports, reading each module against the
-  region it was assigned - with a fixture whose content exceeds its region, so the overflowing case is
-  measured rather than assumed - and the document's scroll width against the viewport's. Whether
-  content was clipped, scrolled or scaled is decidable from the rendered box and the scroll extents.
-  Whether a person across the room can read it is not settled here and is not this item's to settle:
-  of the software's two contributions to that,
+  Asserted by rendering at three viewports and reading the laid-out regions against each other and
+  against the viewport, then reading each module's content against the region it was given - over a
+  fixture whose content exceeds its region, so the overflowing case is measured rather than assumed.
+  Disjointness, horizontal overflow, and whether content was clipped, scrolled or scaled are all
+  decidable from rendered geometry and scroll extents.
+  The precedence clause is what the check cannot fully reach. It can show the page keeps content in
+  the colliding case, and it cannot enumerate the configurations that produce a collision, because
+  how much any region is asked to hold follows from the configuration and from what upstream
+  returned. So the assertion is that the layout is disjoint and does not scroll sideways, and that
+  content is kept where it collides with either - not that no configuration collides.
+  Whether a person across the room can read the result is not settled here and is not this item's to
+  settle: of the software's two contributions to that,
   SRS033<!-- Text holds a minimum size against the display, at every resolution --> carries the type
   scale and SRS032<!-- Readable content is carried at full emission --> the emission, and neither is
-  a proof that anyone can read the result. What the configuration composes is not settled here
-  either - two assigned regions may overlap, and the page renders the overlap faithfully. One case
-  the two clauses here cannot both cover: content overflowing past the viewport's own edge extends
-  the scrollable area, so a region given far too little space trades the no-horizontal-scroll
-  property for the no-hiding one. The obligation is written to keep content rather than the property,
-  and no check claims otherwise.
+  a proof that anyone can read anything.
 verification-method: test
