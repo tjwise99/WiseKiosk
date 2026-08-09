@@ -884,10 +884,15 @@ unseeded copy, which is the must-pass row every table below shares and none repe
 | Must fail | a document with no items — a fourth tier, or one nested below a silo |
 | Must fail | a nested document holding an item with no `reviewed:` |
 | Must pass | a fourth tier, and a nested document, each holding one reviewed item |
+| Must fail | two nested documents sharing a directory name, one of them empty |
 | Must pass | a `.doorstop.yml` under `.venv/`, a tool's directory rather than a tier |
 
 The pasted-stamp row fails on the value of the item's own `reviewed:`, not on the paste — a copied
-stamp is byte-identical to an earned one. What it demonstrates is that the link is named.
+stamp is byte-identical to an earned one. What it demonstrates is that the link is named. Reading the
+pairing as forgery instead was tried and is wrong: `doorstop clear` on an item with no `reviewed:`
+stamps the link and leaves `reviewed: null`, so the rule would accuse a contributor halfway through
+the clear-then-review order. Dot-directories are skipped on Doorstop's own convention
+([ADR 0002 rev 1](../docs/decisions/0002-requirements-management-doorstop.md)).
 
 The `.yaml` row is the one that matters: the loader is a hand-rolled glob, unlike its siblings which go
 through `doorstop.build()`, and Doorstop indexes a `.yaml` item that a `*.yml` glob never sees. An item
