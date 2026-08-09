@@ -12,31 +12,18 @@ rationale: |
   That is why this is a need rather than a decomposition of the layout need: the two are satisfiable
   independently in both directions. The layout need is a want about content; this is a want about
   content's absence.
-  The reserve is the page's because the region set is. A configuration names a region per module and
-  cannot express a geometry (owner, 2026-08-08), so the page reserves the mirror by laying out no
-  region there: no position an operator can write addresses it. That is a property of what the page
-  draws, decidable from a rendered page, and it needs no configuration key and no rule for content
-  assigned into the reserve, because nothing can be assigned into it.
-  An earlier decomposition obliged the reserve as an emergent measurement - the largest contiguous
-  minimum-emission region spanning a fraction of the display, and centred on it - and that is
-  withdrawn rather than restated. The metric does not measure the want: on a display whose content covers all
-  but the mandated edge inset, the free surface is a thin band whose bounding box is the whole
-  display, so it scores full marks while returning no reflection at all. What replaces it obliges the
-  layout rather than the leftovers.
-  A second retraction, recorded because it was written here as settled. This item briefly declined
-  the reserve altogether, on the ground that guaranteeing it would need a configuration key and a
-  failure behaviour for content assigned into it. That rested on the operator placing content by
-  geometry, which the configuration does not let them do. The cost was never there.
-  A third, on the wording that replaced it. The reserve was stated as "the page shall lay out no
-  region within a contiguous part of the surface large enough and placed to return the reflection" -
-  a constraint over an area whose existence it never asserted, so a page covering the whole display
-  with regions satisfied it vacuously: no qualifying part exists, and nothing is within it. The want
-  is that such a part is there, which is why the clause is existential. It also stated the mechanism
-  at the need tier. How the page delivers the reserve - by laying out no region there - is a choice
-  the tree records below, and stating it here left the child restating it more loosely instead of
-  decomposing it.
+  The clause is existential because the want is that the reserve is there. How the page delivers it -
+  by laying out no region across it - is the tree's to record below, not this item's.
+  Two rejected positions. The reserve was obliged as an emergent measurement, the largest contiguous
+  minimum-emission region spanning a fraction of the display and centred on it, which does not
+  measure the want: on a display covered but for its mandated edge inset the free surface is a thin
+  band whose bounding box is the whole display, so it scores full marks while returning no reflection
+  at all. And the reserve was briefly declined altogether, on the ground that guaranteeing it needed
+  a configuration key and a failure behaviour for content assigned into it. It needs neither: a
+  configuration names a region per module and cannot express a geometry (owner, 2026-08-08), so no
+  position an operator can write addresses the reserve.
 ref: ''
-reviewed: D4M7sW1yCUtIWycyK4cgkgFdFnUzqybxZKy2vCCg3-8=
+reviewed: hcxzAWXDaJB9XZIG2gfgGXg_VS5IRfZ4uYbXzbR81YA=
 status: accepted
 text: |
   Wherever the display carries no content it shall be held at minimum emission; and the display shall

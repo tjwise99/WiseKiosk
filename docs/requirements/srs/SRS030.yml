@@ -4,44 +4,29 @@ header: |
   The page emits only through the content it presents
 level: 33
 links:
-- SYS008: D4M7sW1yCUtIWycyK4cgkgFdFnUzqybxZKy2vCCg3-8=
+- SYS008: hcxzAWXDaJB9XZIG2gfgGXg_VS5IRfZ4uYbXzbR81YA=
 normative: true
 rationale: |
   The mirror is made of absence, so anything drawn where content is not is drawn at the mirror's
-  expense. This forecloses the devices a designer reaches for first on a dark interface - a panel
-  behind a block of text, a card, a fill marking a region's bounds, a scrim to lift a glyph off its
-  background. Each is emitted light, so each brightens the ground rather than darkening it, spending
-  mirror that does not come back on a legibility gain that does not arrive.
-  Stated over what the page emits rather than over the surface no content occupies, and the wording
-  has been wrong twice in the same direction. The first form sampled the surface content did not
-  occupy, and occupancy is read from element boxes, so drawing a scrim removed its own area from the
-  population measured. The second obliged every element's ground, which a border, an outline or a
-  shadow is not - and a fill marking a region's bounds, the device this rationale names, is exactly a
-  border. Emission is the quantity the want is about, so emission is what the text says: a page that
+  expense - a panel behind a block of text, a card, a fill marking a region's bounds, a scrim lifting
+  a glyph off its background. Each is emitted light, so each brightens the ground rather than
+  darkening it. That list is the calibration of
+  TST045<!-- Pending: emitting-surface test -->, so a fifth device arrives as a case in a check
+  rather than a fifth noun here.
+  Stated over emission rather than over the surface no content occupies, because occupancy is read
+  from element boxes and a scrim would remove its own area from the population measured. A page that
   lights a pixel owes a module's content behind it, whatever draws it.
-  The exemption is the text and imagery the page presents, and it is stated over the page rather than
-  over a module because not all of it belongs to one. A configuration that cannot be applied leaves
-  no modules at all, and
+  The exemption is text and imagery, and it is the page's rather than a module's: a configuration
+  that cannot be applied leaves no modules at all, and
   SRS004<!-- Page renders a legible error state for every configuration failure class --> obliges a
-  legible error state anyway; the backend-unreachable state is page-wide by construction. Scoping the
-  exemption to a module's content would have forbidden both - the page owing a message and forbidden
-  to light it.
-  Text and imagery rather than "content", because a scrim is content to whoever added it. A border,
-  an outline and a shadow are neither, so they are caught wherever they appear. "As content" carries
-  the rest: a gradient is imagery by every rendering definition, and drawn behind an element it is a
-  scrim under another name, so what matters is not whether a thing is an image but whether the page
-  renders it as something to look at.
-  Four devices are named above as the ones to forbid, and this clause has now been written four ways -
-  over unoccupied surface, over element grounds, over a module's content, over emission. Each closed
-  the case it was shown and left the class open, because nothing compares that list against what the
-  wording reaches. The list is therefore the calibration of
-  TST045<!-- Pending: emitting-surface test --> rather than a paragraph here, so a fifth device
-  arrives as a case in a check rather than a fifth noun in this text.
-  What this still permits is a large bright image rendered as content, which takes the mirror as
-  surely as a scrim does; that is a module's design rather than the page's chrome, no item in this
-  tree obliges it, and this rationale says so rather than a check pretending otherwise.
+  legible error state anyway. Scoping it to a module's content would leave the page owing a message
+  and forbidden to light it. "Text and imagery" rather than "content" because a scrim is content to
+  whoever added it; "as content" because a gradient drawn behind an element is a scrim under another
+  name.
+  What this permits is a large bright image rendered as content, which takes the mirror as surely as
+  a scrim does. That is a module's design, and no item in this tree obliges otherwise.
 ref: ''
-reviewed: lQ8VsCcwGDOeJfZxm5lPYarxIKjz5suFfOFbyyjolgU=
+reviewed: 7m66KciqtoYcFEmYg-XpZ88-Ryn__IBPAFAClwjOGjs=
 status: accepted
 text: |
   The display page shall emit above the display's minimum emission only through the text and imagery

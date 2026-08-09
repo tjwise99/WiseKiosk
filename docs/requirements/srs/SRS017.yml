@@ -8,46 +8,30 @@ links:
 normative: true
 rationale: |
   Decomposes SYS002's<!-- Each module renders in full, and reads --> kiosk-primary,
-  desktop-secondary distinction into the concrete viewport-driven render obligations its rationale
-  anticipates, which fixes no viewports itself. The deployed display is a 16:9 television, so
-  1920×1080 landscape is the canonical kiosk test viewport; relative units carry the same layout to
-  4K without a second viewport. 1280×800 and 1440×900 are the desktop window sizes the secondary use
-  case must render sensibly at. Phone widths are deliberately not a requirement
-  (SYS002<!-- Each module renders in full, and reads -->; owner decision 2026-07-22) — if
-  wanted later, support arrives as its own reviewed system need, not a clause here. What is owed is a
-  reflowing layout, not a responsive-design programme, and the viewport figures are
+  desktop-secondary distinction, fixing no viewports itself: the figures are
   TST035's<!-- Pending: viewport-driven layout render test --> so tuning one does not touch the
-  specification.
-  The region set is the page's, so its disjointness is obliged here. A configuration names a region
-  per module and cannot express a geometry, so two modules can never be told to sit on top of one
-  another - what can put them there is a page that laid its own regions overlapping, which is a
-  defect rather than an operator's choice.
-  Disjointness and the no-clipping half of overflow are bound to every viewport rather than to the
-  kiosk alone. An earlier text obliged them at the kiosk viewport and, separately, "at narrower ones"
-  through a reflow clause, which put the same property in two places and left it open whether a
-  desktop window owed it. A layout that overlaps only when narrowed is the case a reflow obligation
-  exists to catch.
-  What the page decides about content too large for the region it was given is that it overflows
-  (owner, 2026-08-08). Clipping and scrolling were the alternatives, and both hide content the
-  operator asked for; scaling to fit was the third, and it drives type below the floor
+  specification. What is owed is a reflowing layout, not a responsive-design programme. Phone widths
+  are deliberately not a requirement (owner decision 2026-07-22) — if wanted later, support arrives
+  as its own reviewed system need, not a clause here.
+  The region set is the page's, so its disjointness is obliged here, and at every viewport rather
+  than the kiosk alone: a layout that overlaps only when narrowed is the case a reflow obligation
+  exists to catch. A configuration cannot express a geometry, so two modules can never be told to sit
+  on top of one another - overlapping regions are a page defect rather than an operator's choice.
+  Content too large for the region it was given overflows (owner, 2026-08-08). Clipping and scrolling
+  hide content the operator asked for; scaling to fit drives type below the floor
   SRS033<!-- Text holds a minimum size against the display, at every resolution --> sets, so the
   display would stay whole by becoming unreadable. Overflow is the only one of the four that hides
   nothing and reads at distance, and it makes a region given too little space visibly wrong rather
   than quietly lossy.
-  A configuration dense enough to make the display overflow badly gets no rendered failure state
-  (owner, 2026-08-08): the degraded display is the signal an operator needs, and announcing that the
-  display will look wrong is a second and worse way of saying what is already visible. Nothing has
-  failed, so it is not the case
+  A configuration dense enough to overflow badly gets no rendered failure state (owner, 2026-08-08):
+  the degraded display is the signal an operator needs. Nothing has failed, so it is not the case
   SYS001<!-- Failure is legible and proportionate --> carries, and no configuration is rejected, so
   the allocation of configuration validation is untouched.
-  Overflow and the two bounds around it collide, and the text says which gives way rather than
-  leaving it to a check. Overflowing content may cross into a neighbouring region and may extend the
-  document past the viewport's edge; both are permitted, because the alternative in each case is
-  hiding content, and keeping content is the want the whole item is built on. Disjointness and
-  no-horizontal-scroll are therefore obligations on what the page lays out, not on what content does
-  to it afterwards.
+  Where overflow collides with disjointness or the no-horizontal-scroll bound, the text says content
+  is kept rather than leaving it to a check. Both bounds are therefore obligations on what the page
+  lays out, not on what content does to it afterwards.
 ref: ''
-reviewed: dYCdvo5uybQuRd1UX3NuMdF6mvNk61iFhhrispFEm1A=
+reviewed: uF03QRbBEIpaJPMnqn3dFg07YVVzmCL61XZkPKfAmeU=
 status: accepted
 text: |
   The display page shall lay out its regions across a single full-screen display so that no two

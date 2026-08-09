@@ -4,26 +4,20 @@ header: |
   No region is laid out within the mirror reserve
 level: 38
 links:
-- SYS008: D4M7sW1yCUtIWycyK4cgkgFdFnUzqybxZKy2vCCg3-8=
+- SYS008: hcxzAWXDaJB9XZIG2gfgGXg_VS5IRfZ4uYbXzbR81YA=
 normative: true
 rationale: |
-  The reserve survives assignment because nothing can be assigned into it. The page owns the region
+  The reserve survives assignment because nothing can be assigned into it: the page owns the region
   set and the configuration names a region per module, so a reserve the page declines to cover is one
-  no position an operator can write addresses - which is the erosion this obligation exists against,
-  and the whole of what it stops.
-  It does not stop erosion by overflow. Modules stacking in a region adjacent to the reserve leave
-  each less room, content exceeds the region, and
+  no position an operator can write addresses. That is the erosion this obligation stops, and the
+  whole of it - modules stacking in an adjacent region leave each less room, and
   SRS017<!-- Full-screen assembly at kiosk; reflow, no horizontal scroll, at narrower widths -->
-  obliges that content to overflow - into the reserve, if that is where the region borders. Adding
-  modules therefore does reach the reserve, by the route the overflow ruling permits rather than by
-  the route this item closes. What is obliged here is the layout; what crosses it afterwards is the
-  consequence of keeping content, which was chosen over hiding it.
+  obliges the excess to overflow into the reserve if that is where the region borders. Adding modules
+  therefore does reach it, by the route the overflow ruling permits rather than the route this item
+  closes.
   Stated over the regions the page lays out rather than over the surface that ends up empty. The
-  emergent form was tried and withdrawn: a display covered but for its mandated edge inset leaves a
-  thin band whose bounding box is the whole display, so any measure of the largest empty region's
-  extent scores full marks on a display returning no reflection.
-  The extent and placement are the check's, so calibrating how much of a person the display returns
-  is not a specification change. They are not independent of the edge inset or the region set's own
+  extent and placement are the check's, so calibrating how much of a person the display returns is
+  not a specification change; they are not independent of the edge inset or the region set's own
   geometry, which is why one check reads them together.
   Three obligations spend the same finite height - this reserve, the inset in
   SRS034<!-- The laid-out regions keep clear of the display edge --> and the size floor in
@@ -35,7 +29,7 @@ rationale: |
   nothing is rendered to announce it. No bound on the configuration follows, and none should be
   added; the figures move together or not at all.
 ref: ''
-reviewed: MSQ0t28_XaNvhzcPhLpxHJlYDLjTfTzO5y4rmGfW3m4=
+reviewed: iXaMrzW6-STXQrehc8SFias3gf1uoR0_FsU9q1KG-vY=
 status: accepted
 text: |
   The display page shall lay out no region intersecting a contiguous area of the display of stated
