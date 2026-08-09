@@ -934,6 +934,7 @@ every placeholder edit is the most common act in a tree pass, and the CLI cannot
 |---|---|
 | Must fail | a link naming a parent UID the tree does not hold, on an **active** item |
 | Must fail | a `TST` item activated — the pending-tier exception reports itself dead |
+| Must fail | the venv's `doorstop` absent — named as missing, not diagnosed as a live tier |
 | Must pass | the tree as it stands |
 
 The activation row is the wrapper's self-retirement: with an active `TST` item the exception is no
@@ -944,6 +945,12 @@ dead exception survives as a passing gate.
 An adversarial pass tried to make the exception mask a real defect and could not: the message
 `ERROR: TST: no items` does collide between *all items inactive* and *no items exist*, but in this
 tree's topology it never occurs without a distinct second `ERROR:` line from the active tiers.
+
+The interpreter row is the one the wrapper could not answer for itself. Every branch reads Doorstop's
+output; with no interpreter there is none, and the last branch printed the activation diagnostic over
+that silence — a specific claim about the `TST` tier from a run that read no tree. Run against a
+worktree with the venv's `doorstop` moved aside: the current script names the missing interpreter,
+the pre-change one reported the tier as live. Both scripts exit 0 on the tree as it stands.
 
 ### `check-method-consistency.py`
 

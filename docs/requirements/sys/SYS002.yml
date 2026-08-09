@@ -33,12 +33,15 @@ rationale: |
   which the page cannot promise: how much content a region is asked to hold follows from the
   configuration and from what upstream returned, and past some volume it does not fit. It was then
   briefly replaced by containment, which the overflow ruling makes false: content too large for its
-  region leaves that region by design. And an earlier scope disclaimed readability
-  as visual judgement, which described what the tree then held rather than what a check can decide:
+  region leaves that region by design. And readability was treated as beyond verification: disclaimed
+  outright in SRS017's<!-- Full-screen assembly at kiosk; reflow, no horizontal scroll, at narrower widths -->
+  justification, and presupposed rather than obliged in this item's, which disclaimed only whether a
+  legible layout is a good one. That described what the tree then held rather than what a check can
+  decide:
   text size as a fraction of display height, and the emission a glyph is rendered at, are both
   settled by a machine reading a rendered page.
 ref: ''
-reviewed: XJGA2Zraq6XatlEAcqTB3GP-TADfFQ5xGlusWDTc3iE=
+reviewed: 7W7RU-cHbiG5qwkYx8MatYQ7ty7M2LQ7MzOPCw-HDyE=
 status: accepted
 text: |
   Every configured module shall render on the display it was configured for, laid out within the

@@ -4,7 +4,7 @@ header: |
   Full-screen assembly at kiosk; reflow, no horizontal scroll, at narrower widths
 level: 1.41
 links:
-- SYS002: XJGA2Zraq6XatlEAcqTB3GP-TADfFQ5xGlusWDTc3iE=
+- SYS002: 7W7RU-cHbiG5qwkYx8MatYQ7ty7M2LQ7MzOPCw-HDyE=
 normative: true
 rationale: |
   Decomposes SYS002's<!-- Each module renders in full, and reads --> kiosk-primary,
@@ -47,15 +47,15 @@ rationale: |
   no-horizontal-scroll are therefore obligations on what the page lays out, not on what content does
   to it afterwards.
 ref: ''
-reviewed: 0BfLGqaoDBTQ6Zcf6hkPI86fBqhxi_Lh6AST5yVJ-ic=
+reviewed: dYCdvo5uybQuRd1UX3NuMdF6mvNk61iFhhrispFEm1A=
 status: accepted
 text: |
   The display page shall lay out its regions across a single full-screen display so that no two
   overlap at any viewport it supports, and so that the set reflows without horizontal scrolling as
   the viewport narrows; and shall assemble into each region the modules the configuration names
   there. Content exceeding the region it was given shall overflow that region's bounds rather than be
-  clipped, scrolled or scaled to fit, at any viewport, and where overflow and either bound above
-  cannot both hold, the content is kept.
+  clipped, scrolled or scaled to fit, at any viewport, and where overflow and either the disjointness
+  or the no-horizontal-scroll bound cannot both hold, the content is kept.
 verification-justification: |
   Asserted by rendering at three viewports and reading the laid-out regions against each other and
   against the viewport, then reading each module's content against the region it was given - over a

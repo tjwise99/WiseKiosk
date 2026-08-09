@@ -13,6 +13,14 @@ set -eu
 DOORSTOP=docs/requirements/.venv/bin/doorstop
 PENDING_TIER='ERROR: TST: no items'
 
+# Every branch below reads Doorstop's output. Absent an interpreter there is none, and the
+# tier diagnostic is what the last branch prints over that silence.
+if [ ! -x "$DOORSTOP" ]; then
+    echo "$DOORSTOP is missing or not executable — this check read no tree." >&2
+    echo "Create the venv from docs/requirements/requirements-dev.txt." >&2
+    exit 1
+fi
+
 if out=$("$DOORSTOP" --error-all --no-reformat 2>&1); then
     validated=yes
 else
