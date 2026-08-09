@@ -53,7 +53,7 @@ amended, so a number in git history need not mean what it means here.
 | [0018](0018-frontend-svelte-vite-static-spa.md) | 1 | 2026-08-04 | Frontend is Svelte 5 + Vite, emitted as a static single-page bundle and served as files by the Go backend; no server-side rendering, no router, no meta-framework |
 | [0019](0019-boundary-at-what-deploys-and-tag-tier.md) | 2 | 2026-08-04 | The architecture boundary is what deploys; an element appears only where the system exchanges something with it, and its tag names the obliging requirement at the tier its level answers to |
 | [0020](0020-two-containers-one-origin-and-dual-tier-tags.md) | 1 | 2026-08-04 | Two containers behind one origin, the backend serving the bundle and the configuration; each relationship declared once at its true endpoints, and a boundary-spanning one tagged at both tiers |
-| [0021](0021-release-artifact-set-and-operator-tooling.md) | 1 | 2026-08-09 | A release is the image and its provenance material in the registry plus a recipe and an example configuration on the tag; the documentation site is not versioned, no operator tooling program ships, and the image declares a healthcheck nothing acts on |
+| [0021](0021-release-artifact-set-and-operator-tooling.md) | 1 | 2026-08-09 | A release is the image and its provenance material in the registry plus a recipe and an example configuration on the tag; the documentation site is not versioned, a release carries no operator tooling program, and the image declares a healthcheck nothing acts on |
 
 ## Revisions
 

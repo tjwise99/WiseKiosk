@@ -220,7 +220,9 @@ What each of these obligations *is*, and why, is [`DEPLOYMENT.md`](DEPLOYMENT.md
   ([ADR 0007 rev 2](decisions/0007-config-validation-allocation.md)), so a stale example still serves.
   A schema change that leaves the example behind fails here or nowhere — and the example is what the
   documented procedure tells an operator to copy, so it is the first configuration most deployments
-  ever run.
+  ever run. **In the page** is the load-bearing part: a schema validator run as a step here would be a
+  second implementation of the schema's rules, which that ADR forbids. This exercises the one engine
+  rather than authoring another.
 - **The committed recipe carries a restart policy.** A scripted check over the recipe, failing if the
   policy is absent. **It gates that one key deliberately and no others**: the key is the residue of a
   requirement deleted on #69 tree rebuild, not the beginning of a recipe linter. Every other value in

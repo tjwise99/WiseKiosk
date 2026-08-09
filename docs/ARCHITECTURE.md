@@ -33,9 +33,7 @@ are overwritten on the next export, and drift fails the staleness gate — see t
 for, and the boundary between them, which is what deploys: the published image and what it serves
 ([ADR 0019 rev 2](decisions/0019-boundary-at-what-deploys-and-tag-tier.md)). No external system
 appears at this level: an upstream data source is modelled once the module that reads it has a need
-in the tree ([ADR 0019 rev 2](decisions/0019-boundary-at-what-deploys-and-tag-tier.md)). What ships
-beside the image is two files rather than a program, and neither exchanges anything with the running
-system ([ADR 0021 rev 1](decisions/0021-release-artifact-set-and-operator-tooling.md)).
+in the tree ([ADR 0019 rev 2](decisions/0019-boundary-at-what-deploys-and-tag-tier.md)).
 
 <!-- arch-export:begin generated/index.mmd -->
 
