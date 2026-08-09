@@ -82,8 +82,10 @@ leave two subjects where the item has one.
 **SRS019<!-- The backend runs on both supported architectures --> moves to the container host**, off
 the Backend container. The 64-bit floor is the container runtime's rather than the backend's — no
 32-bit image is published, and the backend is never run outside the container, so what the binary
-itself targets is the image's business (owner, 2026-08-09). It was never a fact about that container,
-so it does not split across two depths.
+itself targets is the image's business (owner, 2026-08-09). On that ground it is not a fact about that
+container, so it does not split across two depths. **This is the one binding of the six that is open**
+— the published image is a live rival for it, argued under *Alternatives considered* below, and the
+tag stays here until the owner rules.
 
 **SRS021<!-- Frontend runs on a Pi Zero-class browser host --> binds at both depths**, keeping its
 Frontend container binding and gaining the display host. The bundle must be built for what that
@@ -171,9 +173,10 @@ to reach for. The stale sentence is confined to this integration branch:
 so what merges there never carries it.
 
 **The Deployment level is where a host obligation goes, and that is a new pull.** SRS019<!-- The
-backend runs on both supported architectures --> moved here because it was about a host all along;
-future items naming a host, a mount or an artifact now have somewhere to sit, and the pressure to bind
-them to a container is gone. The opposite pressure arrives with it: an item genuinely about an
+backend runs on both supported architectures --> moved here on the ground that the width floor belongs
+to the container runtime — a placement *Alternatives considered* records as still open, so this
+paragraph describes the pull rather than resting on that one item. Future items naming a host, a mount
+or an artifact now have somewhere to sit, and the pressure to bind them to a container is gone. The opposite pressure arrives with it: an item genuinely about an
 execution context can now be parked on a host because the host is the more concrete-sounding subject.
 Nothing gates that either — `check-arch-trace`'s scope is resolution and completeness, and whether the
 tagged subject is the one the requirement obliges is held by review, which is ADR 0021 rev 1's position
