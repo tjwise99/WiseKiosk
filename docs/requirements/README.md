@@ -241,7 +241,9 @@ otherwise be "reviewed" by whoever next ran the gate, which is the one thing the
 to prove. Failing first stops Doorstop before it can stamp. Clear it with `doorstop review <uid>`,
 deliberately, never by re-running the gate.
 
-Between them the five commands assert that no item carries a review fingerprint nobody wrote; that
+Between them these commands assert that no item carries a review fingerprint nobody wrote, and that
+every document the tree holds yields at least one item to check — a tier that yields nothing produces
+no finding, which reads exactly like a tier whose every item is reviewed; that
 every parent link resolves and no item is orphaned or left suspect, **inactive items included**;
 that every active `TST` item's `references` resolve to a real file; that every item carries a
 `verification-justification`; that no item claims a verification method its own children do not
