@@ -12,39 +12,32 @@ rationale: |
   That is why this is a need rather than a decomposition of the layout need: the two are satisfiable
   independently in both directions. The layout need is a want about content; this is a want about
   content's absence.
-  The clause is existential because the want is that the reserve is there. How the page delivers it -
-  by laying out no region across it - is the tree's to record below, not this item's.
-  The emission clause reads "negligibly" rather than "at minimum emission", which forbade a hairline
-  rule and a dark grouping tint along with the panels and scrims it was aimed at. Nothing obliges
-  either, and forbidding them decides a design question the need has no business deciding. Where the
-  line falls is the child's, and the figure the check's.
-  Two rejected positions. The reserve was obliged as an emergent measurement, the largest contiguous
-  minimum-emission region spanning a fraction of the display and centred on it, which does not
-  measure the want: on a display covered but for its mandated edge inset the free surface is a thin
-  band whose bounding box is the whole display, so it scores full marks while returning no reflection
-  at all. And the reserve was briefly declined altogether, on the ground that guaranteeing it needed
-  a configuration key and a failure behaviour for content assigned into it. It needs neither: a
-  configuration names a region per module and cannot express a geometry (owner, 2026-08-08), so no
-  position an operator can write addresses the reserve.
+  Nothing here obliges a reserve. The mirror is what content leaves, not an area held back for it,
+  and how much surface that is follows from the configuration: a deployment that fills the display
+  has chosen to, and the result is the operator's (owner, 2026-08-09). Two attempts at obliging one
+  are recorded because each reads well. The first measured the largest contiguous unlit region,
+  spanning a fraction of the display and centred on it, which does not measure the want - on a
+  display covered but for its edge band the free surface is a thin band whose bounding box is the
+  whole display, so it scores full marks while returning no reflection at all. The second obliged the
+  page to lay out no region across a reserved area, which protects nothing: a region is a layout box
+  and does not emit, so an empty region is unlit surface like any other. What takes the mirror is
+  content rendered into a region, and that is an operator's assignment rather than the page's
+  placement.
+  The clause reads "negligibly" rather than "at minimum emission", which forbade a hairline rule and
+  a dark grouping tint along with the panels and scrims it was aimed at. Nothing obliges either, and
+  forbidding them decides a design question the need has no business deciding. Where the line falls
+  is the child's, and the figure the check's.
 ref: ''
-reviewed: tgO_Ccf2WuA2BKWSFdYoo4nI7qNYzHDOJs-4VhaNdOk=
+reviewed: -oi8eAcyNEjFFqbz-al3_ScqaNmR7M4P9He0sYfkR7A=
 status: accepted
 text: |
-  Wherever the display carries no content it shall emit negligibly; and the display shall present a
-  contiguous part of its surface that carries no content, large enough and placed to return the
-  reflection of a viewer at the distance the display is installed for.
+  Wherever the display carries no content it shall emit negligibly.
 verification-justification: |
-  Its children read a rendered page: every emitting surface of every element the page draws, and the
-  laid-out regions read against the area the reserve occupies. Five things neither reaches. Whether
-  that area is large enough and placed to return a viewer's reflection at the installed distance is
-  settled by nothing here - the figures are the check's, so it supplies the area it then proves
-  nothing was laid into, and a reserve written as a corner of a few pixels would pass while
-  discharging the want not at all. Nothing bounds how much of the surface sits at the ceiling below
-  which a non-content surface may emit, so a tint covering the whole display satisfies the emission
-  clause while returning no mirror. The value the page renders is not the light the panel emits -
-  backlight, gamma, colour profile and the half-silvered surface all lie between them. What a viewer
-  sees in the reserve is the reflected room, which the software neither supplies nor controls. And
-  content overflowing a neighbouring region may cross into the reserve, which the overflow ruling
-  permits and no check here contradicts: what is obliged is that the page places no region there, not
-  that the reserve stays empty of every pixel under every configuration.
+  Settled by its child, which reads every emitting surface of every element the page draws against
+  the ceiling anything that is not content must sit below. Three things it does not reach. The value
+  the page renders is not the light the panel emits - backlight, gamma, colour profile and the
+  half-silvered surface all lie between them. What a viewer sees in the unlit surface is the
+  reflected room, which the software neither supplies nor controls. And nothing bounds how much
+  surface is left unlit, so a configuration dense enough to fill the display satisfies this item and
+  returns no reflection - the operator's choice rather than a gap in the check.
 verification-method: test
