@@ -773,12 +773,13 @@ moves, and a number that never moved cannot be shown to move by a single run. Bo
 to a commit that contains them: a hash paired with a commit whose tree holds a different script tells
 a reader nothing about which half is wrong.
 
-**Every row in this section was re-run on 2026-08-08 against the two-direction script at `c8f1511`,
-md5 `76f6fbcf4c1dad838c210b971cf186c2`** (#122 close check-arch-trace's second direction), and the
+**Every row in this section was re-run on 2026-08-08 against the two-direction script at `4695575`,
+md5 `962e69718a8927aadfabf50422913937`** (#122 close check-arch-trace's second direction), and the
 counting rows' *Reported* column carries those numbers rather than the ones the smaller model gave.
-The whole set was run twice: once against the first form of the second direction, and again against
-`c8f1511` after review found three defects in it. What the second pass is worth is bounded — it shows
-the rows still hold, not that they held before the fixes.
+The set was run twice: once against the first form of the second direction, and again after review
+found three defects in it. What the second pass is worth is bounded — it shows the rows hold now, not
+that they held before the fixes. `4695575` differs from the form the rows were run against only in
+the docstring; the scan is byte-identical.
 
 ### Why every must-pass row is seeded on an all-bound fixture
 
@@ -824,7 +825,6 @@ diagnostic would mean the fixture had drifted. None did.
 | Tag that is not an identifier | `needs-srs`, taken from the model on `origin/main` |
 | No tag at all | every declaration and application stripped from the model |
 | Model that does not parse | a `#tag` where the grammar wants `}` |
-| **A tag the scan cannot reach** | the two items applied to a **deployment node**, run against the pre-fix script — reported as *declared and applied to nothing* about tags that are applied |
 
 ### Must pass — tags → tree
 
@@ -836,15 +836,26 @@ than asserting in prose that they moved:
 |---|---|---|
 | The model as it stands | — | **retired as a must-pass.** It is the headline must-fail row above |
 | An accepted `SRS` identifier on an **element** rather than a relationship | the other half of the code path | the all-bound fixture, which binds one item each way |
-| Every tag on elements, none on any relationship | every relationship application moved onto the system element — 11 of them | re-seeded and re-run: 40 applications on 13 of 26 subjects, 30 items, exit 0 |
+| Every tag on elements, none on any relationship | every relationship application moved onto the system element — all **18**, across five relationship subjects | re-seeded and re-run: 40 applications on **11** of 26 subjects, 30 items, exit 0, and the export confirms no relationship carries a tag |
 | One identifier applied to two subjects | SYS003<!-- A deployment is parameterised from outside the image --> tagging both operator relationships — applications exceed identifiers | holds on the all-bound baseline, 41 applications naming 30 items |
 | A relationship carrying no tag | the bundle-serving edge, which no accepted item obliges | holds on the all-bound baseline, 15 of 26 subjects tagged |
 | **A tag on a deployment node** | the two items declared and applied inside a `deployment` block | **new** — 41 applications on 16 of **28** subjects, exit 0 |
 
-The last row is the fix for the must-fail row above it, and it was run as the **finding's own
+The last row is the fix for the deployment-node defect, and it was run as the **finding's own
 reproduction** rather than as a fresh case: the same seeded fixture, the script swapped between the
-pre-fix copy and `c8f1511`, failing on one and passing on the other. A fix verified by a new case of
-one's own choosing is not verified.
+pre-fix copy and `c8f1511`, failing with *declared and applied to nothing* on one and passing on the
+other. A fix verified by a new case of one's own choosing is not verified. That pre-fix failure is
+this row's control rather than a row of the must-fail table — an input the current script is supposed
+to pass, so listing it there would fail anyone re-running that table with the current script.
+
+**The relationship row asserts a seed, and the seed is the part that was wrong first.** Its earlier
+form moved the tags off the three *top-level* relationships and left the two nested ones carrying
+seven applications between them, so `relations` still contributed and the no-relationship-tags path
+was never entered — while the reported figures were internally consistent and reproduced exactly,
+which is what made it read as sound. Selecting relationship bodies by indentation is what did it: a
+tag nested inside a container sits at the same indent as an element's. The seed now tracks which `{`
+was opened by a `->` line, and the case is confirmed by reading the export for surviving relationship
+tags rather than by the exit status, which was 0 either way.
 
 ### Must fail — tree → tags
 
@@ -981,6 +992,29 @@ obliging tiers being present, and over the population being non-empty.
 removed requirements tree, and an unparseable model. The removed-directory case is the sharp one —
 `likec4 validate` exits **0** on a directory holding no model, so the element guard is the only thing
 that catches it, and a check trusting the validator's exit status alone would pass.
+
+### What it does not catch: a tag on a view
+
+The export carries tags in a fifth place — `views[x].tags` — and the scan does not read it. That is
+deliberate: a view is a projection of the model rather than a subject in it, and ADR 0022 rev 1 binds
+an item to an element or a relationship. Two runs, both observed rather than reasoned about:
+
+| Seed | Result |
+|---|---|
+| An item declared and applied **only** on a view | fails — *declared and applied to nothing*, and the item reported unbound |
+| A view tag naming an item already applied to an element | passes, exit 0, the counts unmoved — the view tag is invisible in both directions |
+
+**The verdict is right in both and the message is not.** The first is the same uninformative
+diagnostic the deployment defect produced, reached this time for a good reason; the second is a tag
+the export plainly carries that nothing here counts or complains about.
+
+The second row is also how the first seed went wrong: it was written against an item the all-bound
+fixture already binds to an element, so it passed and said nothing about views. **Seeding a case
+about a subject requires an item whose only application is on that subject** — otherwise the case
+measures a binding somewhere else.
+
+`globals`, `imports` and `manualLayouts` carry no tag-bearing subject; `imports` is empty in a
+single-project setup and is the next place to look if a second LikeC4 project is ever added.
 
 ### `check-arch` is asserted unchanged rather than re-fixtured
 
