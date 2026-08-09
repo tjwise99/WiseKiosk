@@ -14,16 +14,9 @@ hand: Doorstop reads it as "matching, hash to follow" and fills the hash in unpr
 So this runs first and fails, and `check-reqs` stops before Doorstop can stamp anything. Clearing it
 is `doorstop review <uid>` — the same act, performed deliberately.
 
-A stamp is a digest of the parent's content, so it can be copied from the parent's own `reviewed`
-value by hand and no test of the value tells the copy from one `doorstop clear` earned. That is not
-a bypass — such an item carries no fingerprint of its own, so the gate still fails — but it is an
-undercount: three items authored that way on PR #133 left the gate reporting seven unreviewed links
-where the tree held ten, and the three it dropped were the ones whose stamps were pasted.
-
-So a link is counted unreviewed when its own stamp is absent, and also when the item holding it is.
-Nobody has reviewed an item that carries no review, and it follows that nobody has reviewed the
-link either, whatever value the link carries. What that does not do is tell a pasted stamp from an
-earned one, which nothing reading the tree can do.
+A link counts as unreviewed when its own stamp is absent, and when the item holding it is: a stamp
+is a digest of the parent's content, so nothing reading the tree tells a copied one from an earned
+one. Every document is checked, found by walking for `.doorstop.yml`, and each must yield an item.
 """
 
 import sys
@@ -33,9 +26,7 @@ import yaml
 
 TREE = Path(__file__).resolve().parent.parent / "docs" / "requirements"
 
-# The tiers the tree is required to hold. Doorstop finds its documents by walking for `.doorstop.yml`
-# at any depth, so this walks the same way and additionally requires these three: a hard-coded list
-# alone skips a document it never names, and discovery alone reads a deleted tier as nothing to check.
+# Discovery alone reads a deleted tier as nothing to check.
 REQUIRED_SILOS = ("sys", "srs", "tst")
 
 
@@ -53,11 +44,9 @@ def load():
     unreviewed, unstamped, counts = [], [], {}
     for config in sorted(TREE.rglob(".doorstop.yml")):
         document = config.parent
-        # A document may sit at any depth, so it is named by its path from the tree root rather than
-        # by a directory name two of them could share.
-        silo = document.relative_to(TREE).as_posix()
+        silo = document.relative_to(TREE).as_posix()  # two nested documents may share a name
         if any(part.startswith(".") for part in document.relative_to(TREE).parts):
-            continue  # a tool's own directory, not a tier: `.venv` lives here
+            continue  # `.venv` lives in the tree
         counts[silo] = 0
         # Both suffixes: Doorstop indexes a .yaml item, and globbing only .yml would leave one
         # unread by a check whose whole subject is items nobody has reviewed.
@@ -73,8 +62,6 @@ def load():
             for link in item.get("links") or []:
                 parent = next(iter(link)) if isinstance(link, dict) else link
                 stamp = link[parent] if isinstance(link, dict) else None
-                # An unreviewed item's links are unreviewed whatever they carry: the stamp
-                # may be present without any review having produced it.
                 if unstamped_value(stamp) or item_unreviewed:
                     unstamped.append(f"{uid} -> {parent}")
     return unreviewed, unstamped, counts
@@ -83,10 +70,6 @@ def load():
 def main():
     unreviewed, unstamped, counts = load()
 
-    # A silo that yields nothing reports no violations, which is indistinguishable from a silo whose
-    # every item is reviewed. Asserted per silo rather than over the tree, because two of three
-    # reading fine hides the third; and as "read something" rather than a count, which would have to
-    # be kept in step with the tree by hand.
     empty = sorted(s for s, n in counts.items() if not n)
     absent = [s for s in REQUIRED_SILOS if s not in counts]
     if empty or absent:

@@ -4,7 +4,7 @@ header: |
   Text holds a minimum size against the display, at every resolution
 level: 36
 links:
-- SYS002: 5q3dEqVI_lWSI3n6-A6cYFpQlXaeqdoNQqfU1pYCKDE=
+- SYS002: VMRt6V9IP6p_nfGPWthqJ3vhrsDxegSoLxo6Av2mQ1k=
 normative: true
 rationale: |
   Wholly visible and readable are not the same property, and the display can satisfy the first while

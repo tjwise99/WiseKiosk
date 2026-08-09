@@ -4,42 +4,26 @@ header: |
   The reserve spans what a reflection needs
 level: 34
 links:
-- SYS008: dV0JMJWyes3Adt_RxELcAC4foNjthRq_s6lIZKVO-Os=
+- SYS008: yDPug9SYCBgbwHf9O9BLWWL3QAwl-drSHv-TZBgJJoU=
 normative: true
 rationale: |
   Erosion is silent: content added a module at a time takes the mirror gradually, each step looking
   like the last, until the want the display was built for is gone with nothing having failed. Naming
-  a span is what makes the loss observable at the step it happens rather than only in retrospect.
-  The item states the end state and not how a layout reaches it. Taking the region before content is
-  placed, and laying content around it, is the strategy that produces this property and belongs here
-  rather than in the obligation - an order of construction cannot be falsified from a rendered page,
-  where the span can be measured off one directly.
-  An earlier draft carried a second clause forbidding content inside the region. It was not
-  redundant: this item obliges a region at minimum emission, and an element rendered at minimum
-  emission is not excluded by that, so the clause did exclude a case the first does not. It was
-  dropped because the case it excluded satisfies the want - on a half-silvered surface an element
-  rendered at minimum emission is itself mirror - so the clause forbade a layout meeting the need.
-  Its check could not have caught anything either, having selected the region by carrying no content
-  before asserting it carried none, but that was a defect of the check's construction rather than a
-  consequence of the text.
-  "The largest" rather than "a" is what keeps this item and the placement item talking about the same
-  region. Under an existential reading a wide shallow strip could satisfy placement while a squarer
-  region elsewhere satisfied the span, both children green and the parent's single-region want
-  discharged by neither.
-  Five numbers decide whether this obligation and its neighbours can hold together: the two fractions
-  here, the text-size floor, the edge inset, and the centring tolerance. They live in four separate
-  checks and are not independent - a centred reserve pushes content outward, the inset forbids the
-  outer band, and the size floor sets how wide a row of text must be. Tightening one can make another
-  unreachable with no check objecting, so they are calibrated as a set against the content the
-  product actually carries, and a change to any of them is re-checked against the others.
-  A configuration dense enough that content will not fit around the reserve is met with no rendered
-  failure state, and that is a ruling rather than an omission (owner, 2026-08-08): the degraded
-  display is itself the signal the operator needs, and rendering a message to announce that the
-  display will look wrong is a second and worse way of saying what is already visible. Nor is it a
-  failure in the sense the legibility-of-failure need carries - nothing has failed, a choice has been
+  a span makes the loss observable at the step it happens.
+  The item states the end state rather than how a layout reaches it, because an order of construction
+  cannot be falsified from a rendered page where a span can be measured off one. "The largest" rather
+  than "a" keeps this item and the placement item on the same region; under an existential reading a
+  shallow strip could be placed while a squarer region elsewhere carried the span, and the parent's
+  single-region want would be discharged by neither.
+  The two fractions are not independent of the text-size floor, the edge inset and the centring
+  tolerance: a centred reserve pushes content outward, the inset forbids the outer band, and the floor
+  sets how wide a row must be. Tightening one can make another unreachable with no check objecting,
+  so they are calibrated as a set.
+  A configuration too dense for content to fit around the reserve gets no rendered failure state
+  (owner, 2026-08-08): the degraded display is the signal, and nothing has failed - a choice has been
   made badly.
 ref: ''
-reviewed: XqYtpGJv8NpD1JDHHoD6XDNy1CFog4opApuegLOzGSs=
+reviewed: Wu6bJswKZra16swywUeNB8c4DVJ7ZFungx1whUbriJ8=
 status: accepted
 text: |
   The largest contiguous region of the display held at minimum emission shall span at least a minimum

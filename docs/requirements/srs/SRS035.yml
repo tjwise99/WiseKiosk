@@ -4,31 +4,23 @@ header: |
   The reserve sits where a viewer is reflected
 level: 38
 links:
-- SYS008: dV0JMJWyes3Adt_RxELcAC4foNjthRq_s6lIZKVO-Os=
+- SYS008: yDPug9SYCBgbwHf9O9BLWWL3QAwl-drSHv-TZBgJJoU=
 normative: true
 rationale: |
-  Extent locates nothing. A layout that scatters its content into a checkerboard, or banks every
-  module down one side and leaves a strip along the top edge, satisfies the span obligation and
-  returns a reflection of the ceiling with the panel mounted perfectly. The want is separable from
-  extent in both directions - a correctly placed reserve can still be too small, and a reserve of the
-  right size can sit in the wrong place - so it is its own item rather than a clause bolted onto one.
-  Centring is stronger than the want argued here, and the trade is taken deliberately. What the
-  reflection needs is that the region not be banked against an edge; centring also forecloses a
-  reserve deliberately set low to suit a panel hung high, which is a real deployment and one the
-  parent need's own justification raises. It is chosen because "not against an edge" names no
-  quantity a check can read, while an offset from centre does, and because the operator can hang the
-  panel to suit the reserve more easily than the software can guess where they hung it.
-  The tolerance is wide by intent rather than by concession. The layout is asymmetric and will remain
-  so (owner, 2026-08-08): the columns either side of the reserve carry different content at different
-  widths, so the region they leave between them is offset from the display's centre in every layout
-  the product will have. A tolerance tightened toward zero would therefore reject the design rather
-  than catch a defect, and anyone narrowing it is changing what the display may look like, not
-  hardening a check.
-  Where the panel hangs and how tall the viewer is are the operator's, in the same way the kiosk host
-  is. Where the region sits on the panel is not, and was the half of that residue an earlier draft of
-  the parent wrongly disclaimed.
+  Extent locates nothing. A layout that banks every module down one side and leaves a strip along the
+  top edge satisfies the span obligation and returns a reflection of the ceiling with the panel
+  mounted perfectly. The two are separable in both directions, so this is its own item.
+  Centring is stronger than the want, which is only that the region not be banked against an edge,
+  and it forecloses a reserve set low to suit a panel hung high. It is chosen because an offset from
+  centre names a quantity a check can read where "not against an edge" does not, and because an
+  operator can hang the panel to suit the reserve more easily than the software can guess where they
+  hung it.
+  The tolerance is wide by intent. The layout is asymmetric and will remain so (owner, 2026-08-08) -
+  the columns either side carry different content at different widths - so tightening it toward zero
+  rejects the design rather than catching a defect.
+  Where the panel hangs is the operator's; where the region sits on it is not.
 ref: ''
-reviewed: ZRkaloqtB8fb7pBmdnGuk67o9x3lQHqrM6gFhHUnLak=
+reviewed: kfx-9h2TBOIqKVJ6Fsk9ZW2s8k4dojANXLF48tlAg5k=
 status: accepted
 text: |
   The largest contiguous region of the display held at minimum emission shall be centred on the

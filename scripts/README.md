@@ -880,65 +880,14 @@ unseeded copy, which is the must-pass row every table below shares and none repe
 | Must fail | `reviewed:` present but empty |
 | Must fail | a `.yaml`-suffixed item with no fingerprint |
 | Must fail | an item with no `reviewed:` whose link carries the parent's real stamp, copied by hand |
-| Must fail | one silo directory removed, the other two intact |
-| Must fail | one silo renamed |
-| Must fail | one silo emptied of its items |
-| Must fail | every silo removed |
-| Must fail | a fourth tier present with its `.doorstop.yml` and no items |
-| Must pass | a fourth tier present holding one reviewed item |
-| Must fail | a document nested below a silo, holding an item with no `reviewed:` |
-| Must fail | a nested document holding no items |
-| Must pass | a nested document holding one reviewed item |
-| Must pass | a `.doorstop.yml` under `.venv/`, which is a tool's directory and not a tier |
+| Must fail | one silo removed; one renamed; one emptied; all three removed |
+| Must fail | a document with no items — a fourth tier, or one nested below a silo |
+| Must fail | a nested document holding an item with no `reviewed:` |
+| Must pass | a fourth tier, and a nested document, each holding one reviewed item |
+| Must pass | a `.doorstop.yml` under `.venv/`, a tool's directory rather than a tier |
 
-The pasted-stamp row is a **report** case, not a verdict case, and the distinction is the point. A
-stamp is a digest of the parent's content, so a copy is byte-identical to one `doorstop clear` earned
-and nothing reading the tree can tell them apart. Such an item still fails, on the rule about its own
-missing fingerprint — what it defeated was the count. Three items authored that way on PR #133 left
-the gate reporting seven unreviewed links where the tree held ten, and the three it dropped were
-exactly the pasted ones. Re-run against that reproduction, the current check names all three and the
-pre-change one names none; both exit 1.
-
-So a link is counted unreviewed when its own stamp is absent, and also when the item holding it is —
-nobody has reviewed an item carrying no review, so nobody has reviewed its links either, whatever
-they carry. An earlier attempt read the same pairing as evidence of forgery and accused the author of
-writing the stamp by hand. That premise is false: `doorstop clear` on an item with no `reviewed:`
-stamps the link and leaves `reviewed: null`, which is the first half of the clear-then-review order
-[`../docs/requirements/README.md`](../docs/requirements/README.md) documents as the remedy. The check
-would have accused a contributor halfway through following it.
-
-
-The degenerate rows are the fail-open this file's own preamble names: a loader that reads nothing
-finds no violations and prints success, and nothing about that run looks different from a clean tree.
-Two things make the guard bite. It asserts **per silo**, because a tree-wide "read something" is
-satisfied by two tiers out of three and hides the third — one `git mv` away, and `validate-tree.sh`
-does not catch it either, since Doorstop loads the renamed document and stamps it on the same run.
-And it asserts *read something* rather than a count, which would have to be kept in step with the
-tree by hand; a guard keyed on the same number as the thing it guards falls to zero alongside it and
-then agrees nothing is wrong. The invariant is the tree's own —
-[`../docs/requirements/README.md`](../docs/requirements/README.md): *"A document can never be empty
-— 'no items' is a gate error."*
-
-The last two rows are why the silos are discovered rather than assumed. `load()` used a hard-coded
-list of three where Doorstop finds its documents by walking for `.doorstop.yml`, so a fourth tier
-would have been skipped in silence by the check that runs first. It now reads every silo it finds and
-additionally requires the three the tree is built on.
-
-Discovery walks to **any depth**, because Doorstop does. A single-segment glob left a document at
-`docs/requirements/srs/modules/` read by Doorstop and not by this check: seeded with an item carrying
-no `reviewed:`, the check exited 0 saying every item and every link carried a fingerprint, and
-`doorstop --error-all` then wrote one into that item — green gate, item stamped, nobody looked. That
-is the failure this check exists to prevent, one directory below where the guard reached. Documents
-are keyed by their path from the tree root rather than by a directory name, since two nested
-documents may share one; directories whose path carries a dotted component are skipped, because
-`.venv` lives in the tree and is a tool's, not a tier.
-
-**Known gap, second.** Any non-empty `reviewed:` string switches this rule off, so a pasted link stamp
-on an item carrying `reviewed: notadigest` reports nothing here. That state fails Doorstop's own
-validation as `unreviewed changes` further down `check-reqs`, so it is covered — by a different gate,
-three commands later, not by this one. And a pasted stamp on a genuinely reviewed item is invisible
-everywhere: both digests are then correct for their content, and the tree holds no evidence that the
-link's review never happened.
+The pasted-stamp row fails on the value of the item's own `reviewed:`, not on the paste — a copied
+stamp is byte-identical to an earned one. What it demonstrates is that the link is named.
 
 The `.yaml` row is the one that matters: the loader is a hand-rolled glob, unlike its siblings which go
 through `doorstop.build()`, and Doorstop indexes a `.yaml` item that a `*.yml` glob never sees. An item
@@ -950,6 +899,10 @@ Doorstop's internal encoding into our gate for a defect reachable only by delibe
 whose item fails the next real validation on content mismatch anyway. Owner ruled 2026-08-02 to record
 rather than close it. Malformed item YAML raises a traceback rather than the tool's own diagnostic; it
 still exits non-zero, so it fails closed.
+
+**Known gap, second.** Any non-empty `reviewed:` switches the pasted-stamp rule off; Doorstop's own
+validation catches that state later in `check-reqs`. A pasted stamp on a genuinely reviewed item is
+invisible everywhere — both digests are correct for their content.
 
 ### `check-suspect-links.py`
 

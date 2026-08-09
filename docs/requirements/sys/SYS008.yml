@@ -6,25 +6,19 @@ level: 13
 links: []
 normative: true
 rationale: |
-  Behind a half-silvered surface a pixel at minimum emission is a mirror - unlit, in the only sense
-  that matters here - so the part of the display carrying nothing is not spare capacity, it is the
-  product. A display that fills its surface with content is a different product wearing the same
-  hardware, and nothing else in the tree would notice: every module could render wholly, legibly and
-  within its region while the mirror was gone.
-  This is why the want is a need of its own rather than a decomposition of the layout need. The two
-  are satisfiable together and independently in both directions - a display can fill every pixel and
-  still lay out perfectly, or reserve half its surface and clip a module - which is the test that
-  decides a need from a decomposition. The layout need is a want about content; this is a want about
-  content's absence.
-  The obligation is stated over the surface the software controls rather than over the glass, which
-  WiseKiosk does not supply. What the mounting, the room and the viewer's height make of that surface
-  is the operator's, in the same way the kiosk host is (#132 layout need decomposition).
-  Neither clause carries a configuration bound. Holding unoccupied surface at minimum emission costs
-  nothing at any density; the reserve is the clause a dense deployment can defeat, and it is left
-  unbounded because how much a deployment carries is the operator's rather than the product's (owner,
-  2026-08-08). A deployment that takes the mirror takes it visibly.
+  Behind a half-silvered surface a pixel at minimum emission is a mirror, so the part of the display
+  carrying nothing is not spare capacity, it is the product. A display that fills its surface with
+  content is a different product on the same hardware, and nothing else in the tree would notice:
+  every module could render wholly, legibly and in its region while the mirror was gone.
+  That is why this is a need rather than a decomposition of the layout need. The two are satisfiable
+  independently in both directions - a display can fill every pixel and still lay out perfectly, or
+  reserve half its surface and clip a module. The layout need is a want about content; this is a want
+  about content's absence.
+  It is stated over the surface the software controls rather than over the glass, which WiseKiosk does
+  not supply, and it carries no configuration bound: how much a deployment carries is the operator's
+  (owner, 2026-08-08), and a deployment that takes the mirror takes it visibly.
 ref: ''
-reviewed: dV0JMJWyes3Adt_RxELcAC4foNjthRq_s6lIZKVO-Os=
+reviewed: yDPug9SYCBgbwHf9O9BLWWL3QAwl-drSHv-TZBgJJoU=
 status: accepted
 text: |
   Wherever the display carries no content it shall be held at minimum emission, and a contiguous part
