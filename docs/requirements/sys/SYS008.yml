@@ -27,20 +27,31 @@ rationale: |
   the reserve altogether, on the ground that guaranteeing it would need a configuration key and a
   failure behaviour for content assigned into it. That rested on the operator placing content by
   geometry, which the configuration does not let them do. The cost was never there.
+  A third, on the wording that replaced it. The reserve was stated as "the page shall lay out no
+  region within a contiguous part of the surface large enough and placed to return the reflection" -
+  a constraint over an area whose existence it never asserted, so a page covering the whole display
+  with regions satisfied it vacuously: no qualifying part exists, and nothing is within it. The want
+  is that such a part is there, which is why the clause is existential. It also stated the mechanism
+  at the need tier. How the page delivers the reserve - by laying out no region there - is a choice
+  the tree records below, and stating it here left the child restating it more loosely instead of
+  decomposing it.
 ref: ''
-reviewed: ouhMzhj5lp6pwr8iqxsRVAUoCmzwHZSZvY93pAx9r5Q=
+reviewed: D4M7sW1yCUtIWycyK4cgkgFdFnUzqybxZKy2vCCg3-8=
 status: accepted
 text: |
-  Wherever the display carries no content it shall be held at minimum emission, and the page shall
-  lay out no region within a contiguous part of the surface large enough and placed to return the
-  reflection of a viewer at the distance the display is installed for.
+  Wherever the display carries no content it shall be held at minimum emission; and the display shall
+  present a contiguous part of its surface that carries no content, large enough and placed to return
+  the reflection of a viewer at the distance the display is installed for.
 verification-justification: |
-  Settled by its children: every emitting surface of every element the page draws, and the laid-out
-  regions read against the area the reserve occupies. Three things neither reaches. The value the
-  page renders is not the light the panel emits - backlight, gamma, colour profile and the
-  half-silvered surface all lie between them. What a viewer sees in the reserve is the reflected
-  room, which the software neither supplies nor controls. And content overflowing a neighbouring
-  region may cross into the reserve, which the overflow ruling permits and no check here contradicts:
-  what is obliged is that the page places no region there, not that the reserve stays empty of every
-  pixel under every configuration.
+  Its children read a rendered page: every emitting surface of every element the page draws, and the
+  laid-out regions read against the area the reserve occupies. Four things neither reaches. Whether
+  that area is large enough and placed to return a viewer's reflection at the installed distance is
+  settled by nothing here - the figures are the check's, so it supplies the area it then proves
+  nothing was laid into, and a reserve written as a corner of a few pixels would pass while
+  discharging the want not at all. The value the page renders is not the light the panel emits -
+  backlight, gamma, colour profile and the half-silvered surface all lie between them. What a viewer
+  sees in the reserve is the reflected room, which the software neither supplies nor controls. And
+  content overflowing a neighbouring region may cross into the reserve, which the overflow ruling
+  permits and no check here contradicts: what is obliged is that the page places no region there, not
+  that the reserve stays empty of every pixel under every configuration.
 verification-method: test

@@ -4,7 +4,7 @@ header: |
   No region is laid out within the mirror reserve
 level: 38
 links:
-- SYS008: ouhMzhj5lp6pwr8iqxsRVAUoCmzwHZSZvY93pAx9r5Q=
+- SYS008: D4M7sW1yCUtIWycyK4cgkgFdFnUzqybxZKy2vCCg3-8=
 normative: true
 rationale: |
   The reserve survives assignment because nothing can be assigned into it. The page owns the region
