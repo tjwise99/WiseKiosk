@@ -8,31 +8,24 @@ normative: true
 rationale: |
   The product is a display. Content the page has hidden part of has failed silently, and so has
   content too small or too dim to read from where the display hangs - the same failure both times,
-  the rendering standing between what was configured and what a viewer receives. That is why this is
-  one obligation rather than a visibility want and a legibility want side by side.
-  It attributes cause instead of stating an outcome, and that is what makes it hold against the
-  overflow ruling. Content exceeding its region overflows and may leave the display entirely, so an
-  item obliging that nothing goes unseen would be contradicted by its own child. What the page owes
-  is not to be the reason: overlap, clipping, scaling away, a region behind the bezel, and type too
-  small or too dim all are, while a configuration asking for more than the display holds is not.
-  The scope is what the software renders rather than what the configuration composes. The page
-  defines the display's regions and the operator names which region each module goes in and nothing
-  more (owner, 2026-08-08), so the region set is the page's while how much any one region is asked to
-  hold is not. Phone widths are deliberately not a requirement.
-  Three retractions. The text obliged every module to be "wholly visible", which the page cannot
-  promise, since how much a region is asked to hold follows from the configuration and from what
-  upstream returned. It then enumerated its own decomposition - render, lay out within the presented
-  surface, hide nothing, read at distance - which is four of its five children restated one tier up,
-  adding nothing they do not say and forbidding, absolutely, what one of them permits. And
-  readability was treated as beyond verification, which described what the tree then held rather than
-  what a check can decide: text size as a fraction of display height and the emission a glyph is
-  rendered at are both read from a rendered page. The judgement obligation that appeared to have no
-  home was not one.
-  What the configuration asks for includes where it asks for it. A module rendered whole, legibly and
-  on screen, but in a region other than the one named for it, is not what was asked and the rendering
-  is the reason - which is the clause obliging assembly, and nothing else in the tree carries it.
+  the rendering standing between what was configured and what a viewer receives. One obligation,
+  not a visibility want and a legibility want side by side.
+  It attributes cause rather than stating an outcome, which is what makes it hold against the
+  overflow ruling: content exceeding its region may leave the display entirely, so an item obliging
+  that nothing goes unseen would be contradicted by its own child. Overlap, clipping, scaling away,
+  a region behind the bezel and type too small or too dim are all the rendering's doing; a
+  configuration asking for more than the display holds is not.
+  What the configuration asks for includes where it asks for it, so a module rendered whole and
+  legibly in a region other than the one named for it is not what was asked. The page defines the
+  display's regions and the operator names which region each module goes in and nothing more (owner,
+  2026-08-08), so the region set is the page's while how much any one region is asked to hold is not.
+  Phone widths are deliberately not a requirement.
+  Two earlier claims someone would otherwise make again. Every module "wholly visible" is not the
+  page's to promise. And readability is not beyond verification - text size as a fraction of display
+  height and the emission a glyph is rendered at are both read from a rendered page, so the judgement
+  obligation that appeared to have no home was not one.
 ref: ''
-reviewed: aZikzbEEXjnrAZZkbsE4dO8dlxSsHo3G32QlYhkeqIg=
+reviewed: 55uTxnkcVNpDKzSiVIVlT_wNH0Sbpqr33jvEbEBgr2w=
 status: accepted
 text: |
   Nothing the configuration asks the display to show shall be kept from a viewer watching it by the

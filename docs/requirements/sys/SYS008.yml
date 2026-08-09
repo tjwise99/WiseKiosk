@@ -10,28 +10,23 @@ rationale: |
   carrying nothing is the product rather than spare capacity. A display filling its surface with
   content is a different product on the same hardware, and nothing else in the tree would notice.
   That is why this is a need rather than a decomposition of the layout need: the two are satisfiable
-  independently in both directions. The layout need is a want about content; this is a want about
-  content's absence.
-  Nothing here obliges a reserve. The mirror is what content leaves, not an area held back for it,
-  and how much surface that is follows from the configuration: a deployment that fills the display
-  has chosen to, and the result is the operator's (owner, 2026-08-09).
-  Two attempts at obliging one are recorded because each reads well. The first measured the largest
-  contiguous unlit region, spanning a fraction of the display and centred on it, which does not
-  measure the want - on a display covered but for its edge band the free surface is a thin band whose
-  bounding box is the whole display, so it scores full marks while returning no reflection at all.
-  The second obliged the page to lay out no region across a reserved area, and that one worked: an
-  operator names a region and can never express a geometry, so an area the page lays no region across
-  is one no configuration can reach. Its one leak was overflow from an adjacent region, which it
-  recorded rather than hid. It was withdrawn because the guarantee is not wanted, not because it
-  failed - and the ground first written here, that a region is only a layout box and so reserving
-  against one protects nothing, is wrong: content reaches the display only inside a region, so
-  refusing to lay one there is exactly what makes the area unreachable.
+  independently in both directions.
+  Nothing here obliges a reserve. The mirror is what content leaves, and how much surface that is
+  follows from the configuration: a deployment that fills the display has chosen to, and the result
+  is the operator's (owner, 2026-08-09).
+  Two ways of obliging one were tried, and the difference between them matters to anyone who wants
+  the guarantee back. Measuring the largest contiguous unlit region does not measure the want - on a
+  display covered but for its edge band, the free surface is a thin band whose bounding box is the
+  whole display, so it scores full marks while returning no reflection. Obliging the page to lay out
+  no region across a reserved area does work: content reaches the display only inside a region and an
+  operator can name a region but never a geometry, so an area carrying no region is unreachable. Its
+  one leak is overflow from a neighbour. It was withdrawn because the guarantee is not wanted, not
+  because it failed.
   The clause reads "negligibly" rather than "at minimum emission", which forbade a hairline rule and
   a dark grouping tint along with the panels and scrims it was aimed at. Nothing obliges either, and
-  forbidding them decides a design question the need has no business deciding. Where the line falls
-  is the child's, and the figure the check's.
+  forbidding them decides a design question the need has no business deciding.
 ref: ''
-reviewed: xUHCdfa_Ow3zNzkpwvNkW_hwz5jaAUJTR2Gv9aw9AXA=
+reviewed: zoHGPjESkjdbrPSGNpJblk74Ko1jiq1dr8C48O-pyCk=
 status: accepted
 text: |
   Wherever the display carries no content it shall emit negligibly.

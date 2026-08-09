@@ -8,34 +8,26 @@ links:
 normative: true
 rationale: |
   What the band stands in for is a bezel, or a television's overscan - a physical property of one
-  installation, which distinguishes that deployment from every other and which no two need share. A
-  depth compiled into the image is one deployment's figure imposed on the rest, and the need above
-  admits no such value.
-  Assuming none where the configuration supplies none is the honest default (owner, 2026-08-09). The
-  software cannot observe the mask, so a guessed depth is a claim about hardware nobody described,
-  and it costs surface on every display that has no mask at all. A deployment with no bezel and no
-  overscan is then correct while saying nothing, and one with either says so once: the bezel is
-  uniform, so a single depth governs all four edges, and stating it against the display's height
-  keeps it one figure rather than one per axis.
-  The band and the type floor in
-  SRS033<!-- Text holds a minimum size against the display, at every resolution --> spend the same
-  finite display height, and an operator declaring a deep enough band leaves the floor no room. Past
-  that point they cannot both hold, and that is not a conflict between them to be resolved by
-  loosening one: an operator who declares a band the display cannot afford has overloaded it, and the
-  result is theirs (owner, 2026-08-09). No bound on the configuration follows, and none should be
-  added.
-  The key's name and its shape are not stated here (owner, 2026-08-09). Those are the schema's, and a
-  requirement naming them would make renaming a key a specification change. What is obliged is that
-  the depth comes from outside the image.
+  installation that no two need share, so a depth compiled into the image is one deployment's figure
+  imposed on the rest, and the need above admits no such value.
+  Assuming none where the configuration supplies none is the honest default (owner, 2026-08-09): the
+  software cannot observe the mask, so a guessed depth is a claim about hardware nobody described and
+  costs surface on every display that has none. The bezel is uniform, so one depth governs all four
+  edges, and stating it against the display's height keeps it one figure rather than one per axis.
   A measurement only the installation has goes to configuration; a bound the design sets stays with
-  its check (owner, 2026-08-09). Only this wall has this bezel, the software cannot see it, and no
-  other deployment's figure helps - so it is supplied. The emission ceiling and the type floor are
-  one number each, chosen once to hold across every installation the product is built for. That both
-  are calibrated against something physical - the glass, the distances the display is watched from -
-  is how a bound gets picked conservatively, not evidence either varies per site, and a deployment
-  wanting different ones wants a different product.
+  its check (owner, 2026-08-09). Only this wall has this bezel and no other deployment's figure
+  helps, so it is supplied. The emission ceiling and the type floor are one number each, chosen once
+  to hold across every installation the product is built for - that both are calibrated against
+  something physical is how a bound gets picked conservatively, not evidence either varies per site.
+  The key's name and its shape are not stated (owner, 2026-08-09); those are the schema's, and
+  naming them would make renaming a key a specification change.
+  This band and the type floor in
+  SRS033<!-- Text holds a minimum size against the display, at every resolution --> spend the same
+  finite display height, and past some depth they cannot both hold. That is not a conflict to be
+  resolved by loosening one: an operator who declares a band the display cannot afford has overloaded
+  it, and the result is theirs (owner, 2026-08-09). No bound on the configuration follows.
 ref: ''
-reviewed: r0-uFGnixoyWzxlKqScJxnWr8nU6gcGM7gZhICtLxrc=
+reviewed: 5yXeUx_0W2M2hGuEINEgtxuMbbAlyDKPVJ41EdoarRY=
 status: accepted
 text: |
   The depth of the band the display page holds its regions clear of shall be supplied by the
