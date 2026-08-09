@@ -17,11 +17,11 @@ rationale: |
   any inset. How far it overflows follows from the region the operator gave it and the data upstream
   returned, neither of which the page chooses; where it puts the regions, it does.
 ref: ''
-reviewed: LhBd09sMTEz8WOu3Par3RBdfAun33_T_1CVvxiGdtCs=
+reviewed: gdeGdT5kggZKn8R3KFqnXj9m4qRHhfoHUnQ3HrSPdw4=
 status: accepted
 text: |
-  Every region the display page lays out shall lie within an inset from every edge of the display,
-  stated as a fraction of the display's height.
+  No region the display page lays out shall enter a band along any edge of the display, the band's
+  depth stated as a fraction of the display's height.
 verification-justification: |
   Asserted by reading each laid-out region against the viewport and confirming none enters the outer
   band. Two things it does not settle. Whether the inset clears the mask actually fitted - the frame
