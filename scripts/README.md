@@ -837,9 +837,11 @@ diagnostic would mean the fixture had drifted. None did.
 
 Two rows carry the weight. The **deployment** pair covers both groups the scan reads, and each was run
 against the pre-fix script in the same fixture, where it fails with *declared and applied to nothing* —
-the defect they exist for. The **relationship** row's seed selects bodies by which `{` a `->` line
-opened, not by indentation, and is confirmed by reading the export for surviving relationship tags
-rather than by an exit status that is 0 either way.
+the defect they exist for. That failing input has no row in the must-fail table above because the
+current script passes it; listing it there would fail anyone re-running that table. The
+**relationship** row's seed selects bodies by which `{` a `->` line opened, not by indentation, and is
+confirmed by reading the export for surviving relationship tags rather than by an exit status that is
+0 either way.
 
 **A premise this check rests on and does not test:** an `instanceOf` does not inherit its logical
 target's tags — the deployment nodes export `tags: None` beside a `Backend` carrying eight. A LikeC4
