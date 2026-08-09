@@ -97,10 +97,9 @@ system element owing all seven `SYS` items restates that the `SYS` tier is the t
 ## Consequences
 
 **A tool the project ships is not thereby in the model.** Something this project builds that the
-system never exchanges anything with is absent rather than external. A release carries no program at
-all ([ADR 0021 rev 1](0021-release-artifact-set-and-operator-tooling.md)) — what ships beside the image
-is two files, described in [`../DEPLOYMENT.md`](../DEPLOYMENT.md) — so the rule has nothing to exclude.
-A tool that acted on the running deployment would gain an element; none exists to.
+system never exchanges anything with is absent rather than external. A tool that acted on the running
+deployment would gain an element. What ships beside the image is
+[`../DEPLOYMENT.md`](../DEPLOYMENT.md)'s.
 
 **The tags are gated on resolution, not on judgement.** `check-arch-trace` reads the model through
 `likec4 export json` and fails a tag naming no item, a retired or unaccepted one, or a mis-cased
