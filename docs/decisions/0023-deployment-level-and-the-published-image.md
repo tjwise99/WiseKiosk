@@ -176,8 +176,9 @@ so what merges there never carries it.
 backend runs on both supported architectures --> moved here on the ground that the width floor belongs
 to the container runtime — a placement *Alternatives considered* records as still open, so this
 paragraph describes the pull rather than resting on that one item. Future items naming a host, a mount
-or an artifact now have somewhere to sit, and the pressure to bind them to a container is gone. The opposite pressure arrives with it: an item genuinely about an
-execution context can now be parked on a host because the host is the more concrete-sounding subject.
+or an artifact now have somewhere to sit, and the pressure to bind them to a container is gone. The
+opposite pressure arrives with it: an item genuinely about an execution context can now be parked on a
+host because the host is the more concrete-sounding subject.
 Nothing gates that either — `check-arch-trace`'s scope is resolution and completeness, and whether the
 tagged subject is the one the requirement obliges is held by review, which is ADR 0021 rev 1's position
 on this link rather than a new one.
