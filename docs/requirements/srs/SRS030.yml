@@ -1,0 +1,47 @@
+active: true
+derived: false
+header: |
+  Only content is rendered above the emission ceiling
+level: 33
+links:
+- SYS008: zoHGPjESkjdbrPSGNpJblk74Ko1jiq1dr8C48O-pyCk=
+normative: true
+rationale: |
+  The mirror is made of absence, so anything drawn where content is not is drawn at the mirror's
+  expense: a panel behind a block of text, a card, a fill marking a region's bounds, a scrim lifting a
+  glyph off its background. Each brightens the ground rather than darkening it, spending mirror on a
+  legibility gain that does not arrive over a background already dark.
+  Stated as a ceiling rather than as a list of permitted devices, because a list decides today's
+  design and makes a fourth device a specification change. A hairline divider and a grouping tint
+  dark enough sit under the ceiling, a lit card or a scrim does not, and how dark is dark enough is
+  calibrated against the glass in
+  TST045<!-- Pending: emitting-surface test --> rather than fixed here. It is stated over emission
+  rather than over the surface no content occupies, since occupancy is read from element boxes and a
+  scrim would remove its own area from the population measured.
+  The exemption is text and imagery, and it is the page's rather than a module's: a configuration
+  that cannot be applied leaves no modules at all, and
+  SRS004<!-- Page renders a legible error state for every configuration failure class --> obliges a
+  legible error state anyway. Scoping it to a module's content would leave the page owing a message
+  and forbidden to light it.
+  What this permits is a large bright image rendered as content, which takes the mirror as surely as
+  a scrim does. That is a module's design, and no item in this tree obliges otherwise.
+ref: ''
+reviewed: 3Y7EQMCnyY049HPPKTkR8PsiojAGNlbx2aoLGvQl3rs=
+status: accepted
+text: |
+  Only the text and imagery the display page presents as content shall be rendered above a stated
+  fraction of the display's maximum emission.
+verification-justification: |
+  Asserted by reading every emitting surface of every element the page draws - ground, border,
+  outline and shadow, the page's own root among them - and requiring each below the ceiling except
+  where it is rendered text or imagery. The population is every element rather than a sampled area,
+  and every way an element emits rather than one of them.
+  Four things sit outside it. The exemption is a judgement the check cannot make: above the ceiling
+  it must still decide whether a surface is text or imagery rendered as content, and a gradient
+  behind a block is imagery by every rendering definition while being a scrim by intent. What the
+  page renders is not what the panel emits, since backlight, gamma, colour profile and the
+  half-silvered surface all lie between. What a viewer sees in the unlit surface is the reflected
+  room, which the software neither supplies nor controls. And nothing bounds how much of the display
+  sits at the ceiling, or how bright the exempt content is, so a tint covering everything passes and
+  so does an image that takes the mirror.
+verification-method: test

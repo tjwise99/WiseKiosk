@@ -1,0 +1,37 @@
+active: false
+derived: false
+header: |
+  Pending: emitting-surface test
+level: 67
+links:
+- SRS030: _qGbQuusJPp54s2qFDu349ID-hQJ0Uqg3fNiAvWQWh0=
+normative: true
+rationale: ''
+ref: ''
+reviewed: PiQyz87jNFTR7OKE6VwFQEHNEndqxPOUoNyPAJvcUEU=
+status: proposed
+text: |
+  Pending: render a fixture configuration and read every emitting surface of every element the page
+  draws - ground, border, outline and shadow, its root among them - asserting each sits below the
+  ceiling except where it is text or imagery rendered as content. Seeded both ways. Must fail: a lit
+  panel behind a block of text, a card, a fill marking a region's bounds, a scrim lifting a glyph off
+  its background, and each of the last two spelled as a gradient rather than a solid, which is the
+  spelling that reads as legal. Must pass: text at the maximum emission its own obligation requires,
+  and an image rendered as content brighter than the ceiling - the exemption is what these two
+  exercise, and without them a check that dropped the exemption altogether would report the right
+  answer on every other case. Must pass too: a hairline rule under a module title, and a grouping
+  tint dark enough to clear the ceiling. The ceiling is calibrated against the glass, so moving it
+  changes this check and not the requirement. Lands with the frontend skeleton (#10); activated and
+  given a references entry then.
+verification-justification: |
+  Settles that nothing the page draws other than text and imagery clears the ceiling, whatever the
+  configuration - the population is every element rendered and every surface it emits from, so
+  neither an element added nor a decoration drawn some other way escapes the reading. The cases run
+  in both directions across the ceiling and across the exemption, so a check that measured magnitude
+  alone and never classified would fail on the bright content cases rather than passing everything.
+  Leaves unproven what a viewer sees in the unlit surface, which is the reflected room and outside
+  the system; what the panel emits, since backlight, gamma and the half-silvered surface all lie past
+  the value read; how much the exempt text and imagery themselves emit, which a large bright image
+  takes the mirror with while satisfying this; and how much of the display sits at the ceiling, since
+  a tint covering all of it passes.
+verification-method: test

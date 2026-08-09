@@ -1,0 +1,43 @@
+active: true
+derived: false
+header: |
+  The masked edge band is the deployment's to declare
+level: 38
+links:
+- SYS003: x73sA6VMR9aDga-PqTW6L49gj-iwZdgTOg5xG8VhAwM=
+normative: true
+rationale: |
+  What the band stands in for is a bezel, or a television's overscan - a physical property of one
+  installation that no two need share, so a depth compiled into the image is one deployment's figure
+  imposed on the rest, and the need above admits no such value.
+  Assuming none where the configuration supplies none is the honest default (owner, 2026-08-09): the
+  software cannot observe the mask, so a guessed depth is a claim about hardware nobody described and
+  costs surface on every display that has none. The bezel is uniform, so one depth governs all four
+  edges, and stating it against the display's height keeps it one figure rather than one per axis.
+  A measurement only the installation has goes to configuration; a bound the design sets stays with
+  its check (owner, 2026-08-09). Only this wall has this bezel and no other deployment's figure
+  helps, so it is supplied. The emission ceiling and the type floor are one number each, chosen once
+  to hold across every installation the product is built for - that both are calibrated against
+  something physical is how a bound gets picked conservatively, not evidence either varies per site.
+  The key's name and its shape are not stated (owner, 2026-08-09); those are the schema's, and
+  naming them would make renaming a key a specification change.
+  This band and the type floor in
+  SRS033<!-- Text holds a minimum size against the display, at every resolution --> spend the same
+  finite display height, and past some depth they cannot both hold. That is not a conflict to be
+  resolved by loosening one: an operator who declares a band the display cannot afford has overloaded
+  it, and the result is theirs (owner, 2026-08-09). No bound on the configuration follows, and none
+  should be added.
+ref: ''
+reviewed: SJqSxxwoGZO1jDVxC2B-MT4joS1RSyNeadz-xENBUI0=
+status: accepted
+text: |
+  The depth of the band the display page holds its regions clear of shall be supplied by the
+  deployment's configuration, and where none is supplied the page shall assume none.
+verification-justification: |
+  Asserted by rendering with the band declared at more than one depth and reading the laid-out
+  regions against each, then rendering with it undeclared and finding the regions reaching the
+  display's own edge. A figure compiled into the image fails that in both directions - ignoring what
+  is declared, and substituting itself when nothing is. What the check does not settle is whether the
+  depth an operator writes clears the mask actually fitted: the frame and the television are theirs,
+  and no assertion over a rendered page reaches a bezel.
+verification-method: test

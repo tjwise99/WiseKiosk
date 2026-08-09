@@ -1016,6 +1016,20 @@ unseeded copy, which is the must-pass row every table below shares and none repe
 | Must fail | `reviewed: true` — Doorstop's declared-review placeholder, which YAML makes a bool |
 | Must fail | `reviewed:` present but empty |
 | Must fail | a `.yaml`-suffixed item with no fingerprint |
+| Must fail | an item with no `reviewed:` whose link carries the parent's real stamp, copied by hand |
+| Must fail | one silo removed; one renamed; one emptied; all three removed |
+| Must fail | a document with no items — a fourth tier, or one nested below a silo |
+| Must fail | a nested document holding an item with no `reviewed:` |
+| Must pass | a fourth tier, and a nested document, each holding one reviewed item |
+| Must fail | two nested documents sharing a directory name, one of them empty |
+| Must pass | a `.doorstop.yml` under `.venv/`, a tool's directory rather than a tier |
+
+The pasted-stamp row fails on the value of the item's own `reviewed:`, not on the paste — a copied
+stamp is byte-identical to an earned one. What it demonstrates is that the link is named. Reading the
+pairing as forgery instead was tried and is wrong: `doorstop clear` on an item with no `reviewed:`
+stamps the link and leaves `reviewed: null`, so the rule would accuse a contributor halfway through
+the clear-then-review order. Dot-directories are skipped on Doorstop's own convention
+([ADR 0002 rev 1](../docs/decisions/0002-requirements-management-doorstop.md)).
 
 The `.yaml` row is the one that matters: the loader is a hand-rolled glob, unlike its siblings which go
 through `doorstop.build()`, and Doorstop indexes a `.yaml` item that a `*.yml` glob never sees. An item
@@ -1027,6 +1041,10 @@ Doorstop's internal encoding into our gate for a defect reachable only by delibe
 whose item fails the next real validation on content mismatch anyway. Owner ruled 2026-08-02 to record
 rather than close it. Malformed item YAML raises a traceback rather than the tool's own diagnostic; it
 still exits non-zero, so it fails closed.
+
+**Known gap, second.** Any non-empty `reviewed:` switches the pasted-stamp rule off; Doorstop's own
+validation catches that state later in `check-reqs`. A pasted stamp on a genuinely reviewed item is
+invisible everywhere — both digests are correct for their content.
 
 ### `check-suspect-links.py`
 
@@ -1053,6 +1071,7 @@ every placeholder edit is the most common act in a tree pass, and the CLI cannot
 |---|---|
 | Must fail | a link naming a parent UID the tree does not hold, on an **active** item |
 | Must fail | a `TST` item activated — the pending-tier exception reports itself dead |
+| Must fail | the venv's `doorstop` absent — named as missing, not diagnosed as a live tier |
 | Must pass | the tree as it stands |
 
 The activation row is the wrapper's self-retirement: with an active `TST` item the exception is no
@@ -1063,6 +1082,12 @@ dead exception survives as a passing gate.
 An adversarial pass tried to make the exception mask a real defect and could not: the message
 `ERROR: TST: no items` does collide between *all items inactive* and *no items exist*, but in this
 tree's topology it never occurs without a distinct second `ERROR:` line from the active tiers.
+
+The interpreter row is the one the wrapper could not answer for itself. Every branch reads Doorstop's
+output; with no interpreter there is none, and the last branch printed the activation diagnostic over
+that silence — a specific claim about the `TST` tier from a run that read no tree. Run against a
+worktree with the venv's `doorstop` moved aside: the current script names the missing interpreter,
+the pre-change one reported the tier as live. Both scripts exit 0 on the tree as it stands.
 
 ### `check-method-consistency.py`
 

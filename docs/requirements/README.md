@@ -241,7 +241,9 @@ otherwise be "reviewed" by whoever next ran the gate, which is the one thing the
 to prove. Failing first stops Doorstop before it can stamp. Clear it with `doorstop review <uid>`,
 deliberately, never by re-running the gate.
 
-Between them the five commands assert that no item carries a review fingerprint nobody wrote; that
+Between them these commands assert that no item carries a review fingerprint nobody wrote, and that
+every document the tree holds yields at least one item to check — a tier that yields nothing produces
+no finding, which reads exactly like a tier whose every item is reviewed; that
 every parent link resolves and no item is orphaned or left suspect, **inactive items included**;
 that every active `TST` item's `references` resolve to a real file; that every item carries a
 `verification-justification`; that no item claims a verification method its own children do not
@@ -315,7 +317,7 @@ Run all commands with the venv (`docs/requirements/.venv/bin/doorstop …`):
   owner already fixed. `--error-all` cannot see this; grep the relevant items' rationales first. A
   clause that reverses a recorded decision is a finding: either the decision is reopened with its
   own review, or the clause does not land. (A phone-width `shall` slipped this way in the #38 round,
-  against a scope decision recorded in `SYS002`<!-- The configured layout renders whole --> —
+  against a scope decision recorded in `SYS002`<!-- The display's rendering keeps nothing from a viewer --> —
   caught only by independent review.)
 - **Traceability is item-level; individual clauses are not checked.** An item that links two parents
   satisfies the orphan gate at item granularity, yet a single clause inside its `text` can be
