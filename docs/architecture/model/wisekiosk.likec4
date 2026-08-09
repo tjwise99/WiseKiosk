@@ -6,7 +6,7 @@
 //
 // A tag parses only as the first entry of an element or relationship body.
 //
-// Boundary, actors and external systems are ADR 0019 rev 1's; the containers, the
+// Boundary, actors and external systems are ADR 0019 rev 2's; the containers, the
 // one origin they share and the tag tier are ADR 0020 rev 1's; what earns a
 // component and where the framework/module seam falls are ADR 0021 rev 1's; what
 // the Deployment level draws is ADR 0023 rev 1's.
@@ -28,7 +28,7 @@ specification {
   deploymentNode artifact
 
   // Each tag is a Doorstop identifier. Which item belongs on what, and at which
-  // tier, is ADR 0019 rev 1 as amended by ADR 0020 rev 1.
+  // tier, is ADR 0019 rev 2 as amended by ADR 0020 rev 1.
   tag SYS001
   tag SYS002
   tag SYS003

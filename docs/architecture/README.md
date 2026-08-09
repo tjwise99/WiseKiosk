@@ -111,12 +111,12 @@ underneath it changing, and no gate compares them.
 `icon` or `description`.
 
 **An element earns a place where the system exchanges something with it, and an upstream once the
-module that reads it has a need** ([ADR 0019 rev 1](../decisions/0019-boundary-at-what-deploys-and-tag-tier.md)).
+module that reads it has a need** ([ADR 0019 rev 2](../decisions/0019-boundary-at-what-deploys-and-tag-tier.md)).
 
 **A component earns a place by its interface — what it exposes, and who calls it — and each container
 holds only its framework half** ([ADR 0021 rev 1](../decisions/0021-component-earns-its-interface-and-framework-half-only.md)).
 A module's half of a container is the code a module author writes that runs there, and it arrives per
-module as that module's need lands, on ADR 0019 rev 1's ground for deferring an upstream.
+module as that module's need lands, on ADR 0019 rev 2's ground for deferring an upstream.
 
 **Source `link`s** wire the model to real code: once `backend/`/`frontend/` exist, a `link` property
 on a container or component points at the source implementing it. This is how the model stops being a
@@ -127,7 +127,7 @@ drawing and starts pointing at the code it describes, and it is checked at revie
 
 A LikeC4 **tag** carries the Doorstop id of the requirement obliging the element or relationship it
 sits on — that tag *is* the architecture → requirements link, and the tier follows the level
-([ADR 0019 rev 1](../decisions/0019-boundary-at-what-deploys-and-tag-tier.md)). At the Context level
+([ADR 0019 rev 2](../decisions/0019-boundary-at-what-deploys-and-tag-tier.md)). At the Context level
 it is `SYS`, bound where the obligation is observable at that level: on the relationships, not on the
 system box, which owes every `SYS` item and so distinguishes none of them. The Container level
 answers to `SRS`, and anything at a level also carries the coarser item it discharges observably

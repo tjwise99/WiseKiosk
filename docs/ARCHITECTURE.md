@@ -31,10 +31,9 @@ are overwritten on the next export, and drift fails the staleness gate — see t
 
 **System context (C4 L1)** — the Operator who deploys and configures WiseKiosk, the Viewer it renders
 for, and the boundary between them, which is what deploys: the published image and what it serves
-([ADR 0019 rev 1](decisions/0019-boundary-at-what-deploys-and-tag-tier.md)). No external system
+([ADR 0019 rev 2](decisions/0019-boundary-at-what-deploys-and-tag-tier.md)). No external system
 appears at this level: an upstream data source is modelled once the module that reads it has a need
-in the tree, and the provisioning tooling exchanges nothing with the running system
-([ADR 0019 rev 1](decisions/0019-boundary-at-what-deploys-and-tag-tier.md)).
+in the tree ([ADR 0019 rev 2](decisions/0019-boundary-at-what-deploys-and-tag-tier.md)).
 
 <!-- arch-export:begin generated/index.mmd -->
 
@@ -66,7 +65,7 @@ configuration, which the image does not carry
 (SRS018<!-- One generic published image -->) and which reaches its consumer on a second hop, when the
 page fetches it. No upstream source appears here for the reason none appears above: an upstream
 belongs to the module that reads it, and no module need is written
-([ADR 0019 rev 1](decisions/0019-boundary-at-what-deploys-and-tag-tier.md)).
+([ADR 0019 rev 2](decisions/0019-boundary-at-what-deploys-and-tag-tier.md)).
 
 <!-- arch-export:begin generated/containers.mmd -->
 
@@ -306,10 +305,9 @@ container runtime on one, a browser on the other — and one machine meeting bot
 configuration this is built for it cannot: the display host is below the runtime's floor, so the two
 are separate machines there.
 
-_The concrete wiring — the compose file, the mount paths, the deployment recipe — is documented where
-#71 release artifact set places it._ The health signal and the restart policy are properties
-of what ships rather than of the running system, and are in
-[`../tools/README.md`](../tools/README.md).
+The concrete wiring — the deployment recipe, the mount paths, the example configuration a release
+carries — is [`DEPLOYMENT.md`](DEPLOYMENT.md)'s, and so are the health signal and the restart policy:
+each is a property of what ships rather than of the running system.
 
 ## Security & hardening
 

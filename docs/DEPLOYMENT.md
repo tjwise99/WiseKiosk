@@ -1,0 +1,119 @@
+# Deployment
+
+What a deployment must do to reach a running kiosk, and to move from one published digest to the next.
+
+**None of this is a requirement.** A requirement obliges WiseKiosk itself. A deployment is something an
+operator assembles from what the project publishes, and every obligation below is on what ships or on
+the procedure that documents it — not on the running system, which cannot violate any of them. The
+product's obligations live in [`requirements/`](requirements/README.md)
+([ADR 0011 rev 1](decisions/0011-requirement-or-convention.md)).
+
+**What asserts each of these is [`CI.md`](CI.md).** An obligation is stated here; the check that
+decides it is described there, which is where every check on this repository is described.
+
+**None of it is built.** What a release consists of is
+[ADR 0021 rev 1](decisions/0021-release-artifact-set-and-operator-tooling.md); the material itself is
+published by #67 security and supply-chain gates and #54 container build and publish, and the
+procedure's literal commands wait on them.
+
+## What an operator receives
+
+The image and its provenance material from the registry, and two files from the release tag: the
+deployment recipe, and an example configuration. [`CI.md`](CI.md) § *Publishing and provenance* is
+where that set is stated and what is asserted of it.
+
+Nothing else is delivered. The host's operating system, its container runtime, its browser and
+whatever starts that browser are the operator's, and no requirement in the tree reaches them.
+
+## Bring-up
+
+A deployment reaches a working state on a clean host from the published artifact and the documented
+procedure alone — the executable form of *nothing required is missing*. If a clean environment can
+deploy by following only in-repo documentation, the documentation is sufficient.
+
+Three things the procedure owes, each of which fails a first deployment when it is missing.
+
+**The digest is verified before the image runs.** An operator who pulls an image is trusting a
+stranger's build, so the check against its signature and provenance comes ahead of running it rather
+than after, and the commands ship with the procedure rather than having to be reconstructed. That CI
+verifies its own published output is a separate assertion and is in [`CI.md`](CI.md).
+
+**The example configuration is copied, not edited in place.** The copy is what a deployment binds; the
+example stays as the reference an operator can read a broken configuration against. Only the
+configuration must be copied — the recipe runs as it ships.
+
+**The configuration file is readable by the image's user.** The image runs as a non-root user
+(SRS020<!-- Non-root container user -->), so a configuration written root-owned and unreadable to
+others is fetched by nothing, and the display renders the unfetchable case of
+SRS004<!-- Page renders a legible error state for every configuration failure class --> rather than
+the configured kiosk. The failure is legible and it is still a failure the procedure can prevent, so
+the permissions the file needs are stated where an operator sets them.
+
+## The deployment recipe
+
+The recipe is a **sample carrying opinionated defaults**. What ships is a starting point: a default
+costs one line to override, and its absence costs an operator knowing to add it. The obligation is on
+what ships, never on what runs — an operator who edits the recipe, or deploys without it, has made
+their own choice, and WiseKiosk has no way to override it.
+
+It carries restart policy `unless-stopped`, so a deployment that comes back after a host reboot is
+what following the documented procedure gets. `unless-stopped` rather than `always` because the
+latter also overrides a deliberate manual stop. Coming back after a reboot additionally depends on the
+Docker daemon being enabled at boot, which is host provisioning and outside what the project delivers.
+
+The recipe carries no user, because the image declares one and a second declaration is a second place
+for it to drift from.
+
+**What the recipe cannot yet carry** is the secret channel.
+SYS003<!-- A deployment is parameterised from outside the image --> obliges secrets to arrive from the
+deployment environment; which mechanism delivers them is #73 secret delivery mechanism and #74 keeping
+secrets out of client output, and the recipe is incomplete in that respect until they land.
+
+## The health signal
+
+The image declares a `HEALTHCHECK` against the constant service port: healthy while the backend is
+serving, unhealthy when it is not, including when the process is alive but wedged.
+
+**Nothing acts on the status.** Docker and Compose restart a container whose process exits, not one
+reporting unhealthy, so an unhealthy kiosk stays unhealthy until somebody intervenes.
+What tells an operator the kiosk is broken is the kiosk —
+SRS026<!-- The display says when the backend is gone --> obliges the display to say so, on the screen
+in the room, which is the surface somebody is actually looking at.
+
+It is declared for two smaller reasons. It is an oracle three automated checks read — bring-up,
+upgrade, and TST011<!-- Pending: two instances from one image share no state --> in the requirements
+tree — each of which needs a machine-readable *is it serving yet* rather than a scraped log line. And
+an operator wanting a health status in a container listing would otherwise write the declaration into
+their own recipe, which is the avoidable step the restart policy above exists to remove.
+
+**Reopen premise.** This sits outside the requirements tree because nothing acts on it. If WiseKiosk is
+ever run under an orchestrator that restarts on health status, or external monitoring is pointed at it,
+the signal becomes a control rather than an oracle and the obligation belongs in the tree.
+
+## Upgrade
+
+Moving a deployment from one published digest to the next is a scripted act. The operator supplies the
+same mount arguments they already use; nothing asks them to read a diff, edit code, or rebuild.
+
+**A newer image applies its own schema.** One image serves every deployment
+(SRS018<!-- One generic published image -->) and validation runs in the page against the schema that
+image ships ([ADR 0007 rev 2](decisions/0007-config-validation-allocation.md)), so a configuration the
+newer image cannot accept is not silently part-applied and is not merged over with defaults: it fails
+validation and the page reports which failure occurred, under
+SRS004<!-- Page renders a legible error state for every configuration failure class -->. The apply
+floor is a page reload (SRS003<!-- A configuration change applies no later than the next page load -->),
+so the correction costs an edit and a refresh rather than a redeployment.
+
+That is the whole of the position. **No promise is made that a newer image accepts an older
+configuration** — the project does not undertake to keep every key it has ever offered. What it
+undertakes is that an incompatibility is legible at the display rather than silent, which is the
+property an operator who is not the author can act on.
+
+## What is not here
+
+**What the kiosk does.** Rendering, configuration handling at run time, upstream fetching and failure
+behaviour are obligations on the running software and live in the requirements tree.
+
+**What CI publishes and asserts.** The release material, the gates over it, and what each is allowed to
+let through are [`CI.md`](CI.md)'s. An obligation here is on a deployment; a check there is something
+CI runs.
