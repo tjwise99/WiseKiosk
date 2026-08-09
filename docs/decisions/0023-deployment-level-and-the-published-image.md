@@ -185,6 +185,12 @@ pool, leaving anything above the gap stranded against the contiguity rule [`READ
 states.
 
 **`check-arch-trace` does not go green here.** This level binds three of the nine items the check
-reports unbound; the other six are #135 bind the mirror and legibility requirements'. The epic cannot
-merge to `main` until both have landed, which is recorded on both tickets rather than left to be
-discovered at the merge.
+reports unbound; the other six are #135 bind the mirror and legibility requirements'. That check goes
+green when this ticket and #135 have both landed, which is recorded on both tickets rather than left
+to be discovered at the merge.
+
+**The epic's merge to `main` waits on a third ticket as well.** #124 merge the three C4 ADRs is what
+removes the ADR 0021 rev 1 sentence this record makes false, so the paragraph above resting on that
+removal is a claim about what #124 does rather than a fact already true. Descoping or reordering that
+ticket does not fail a check — nothing gates it — it leaves a merged record asserting a binding the
+model does not hold.
