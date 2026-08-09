@@ -836,6 +836,10 @@ diagnostic would mean the fixture had drifted. None did.
 
 The headline row needs no fixture, which is what makes it better evidence than a seed: the check
 fails on what the repository actually holds, and #123 C4 phase 4 Deployment is what turns it green.
+**It was read in CI as well as locally**, which is what § *Confirming a gate in CI rather than
+locally* says a local run cannot show: on PR #134 the `architecture` job's last step fails while the
+`check-arch` step above it passes, and the other four jobs are green — so the step is wired, reached,
+and able to fail its job, and the red is confined to the one job.
 
 **The last two rows are the ones that matter**, and they are CONTRIBUTING question 10, *Unjudged
 input*, from both sides. The mis-spelled status is the sharp one: a comparison against `accepted`
