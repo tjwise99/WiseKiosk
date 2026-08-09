@@ -16,7 +16,7 @@ docs/architecture/
   package.json          pins `likec4` (the repo's first npm manifest); dev-only
   package-lock.json     committed lockfile — `npm ci` installs exactly this
   model/
-    wisekiosk.likec4    specification + logical model (elements, relationships)
+    wisekiosk.likec4    specification for both models + the logical one (elements, relationships)
     deployment.likec4   the deployment model (nodes, instances, artifacts)
     views.likec4        the views rendered to diagrams
   generated/            regenerated artifacts — DO NOT hand-edit (staleness-gated)

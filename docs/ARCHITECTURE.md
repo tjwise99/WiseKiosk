@@ -295,8 +295,9 @@ unparsed`" .-> ContainerHost.RunningContainer.Backend
 
 <!-- arch-export:end generated/deployment.mmd -->
 
-The published image is the one node here that does not run, and it is drawn because the obligations on
-it are obligations on the artifact rather than on the process it becomes — a deployment can override
+The published image is the one node here that exists before any deployment does — the configuration
+and the secret files sit at a deployment site as it does not — and it is drawn because the obligations
+on it are obligations on the artifact rather than on the process it becomes. A deployment can override
 what the image declares, which is why the two are separate subjects
 ([ADR 0023 rev 1](decisions/0023-deployment-level-and-the-published-image.md)).
 
@@ -305,8 +306,8 @@ container runtime on one, a browser on the other — and one machine meeting bot
 configuration this is built for it cannot: the display host is below the runtime's floor, so the two
 are separate machines there.
 
-_The concrete wiring — the compose file, the mount paths, the deployment recipe — is documented here
-once it is built (#71 release artifact set)._ The health signal and the restart policy are properties
+_The concrete wiring — the compose file, the mount paths, the deployment recipe — is documented where
+#71 release artifact set places it._ The health signal and the restart policy are properties
 of what ships rather than of the running system, and are in
 [`../tools/README.md`](../tools/README.md).
 

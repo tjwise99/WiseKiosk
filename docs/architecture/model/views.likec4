@@ -51,8 +51,7 @@ views {
     include *
 
     // A node whose only child is an instance is drawn as that instance, losing the
-    // node itself; naming it draws it. The Browser is named because what bounds the
-    // bundle is the browser rather than the host (ADR 0023 rev 1).
+    // node itself; naming it draws it.
     include containerHost.**
     include displayHost.displayBrowser
     include displayHost.**

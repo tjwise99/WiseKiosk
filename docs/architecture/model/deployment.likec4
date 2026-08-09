@@ -43,7 +43,7 @@ deployment {
       '''
     }
 
-    runningContainer = host 'Running container' {
+    runningContainer = process 'Running container' {
       description '''
         A running instance of the published image, with the configuration and the
         secret files mounted in. The backend executes here.
@@ -62,7 +62,7 @@ deployment {
       A single machine meeting both minimums may carry both roles.
     '''
 
-    displayBrowser = browser 'Browser' {
+    displayBrowser = process 'Browser' {
       description '''
         Runs the frontend bundle it fetched from the backend. Its engine and
         compatibility layers bound what that bundle may be built with.

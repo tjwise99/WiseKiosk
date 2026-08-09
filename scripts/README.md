@@ -843,12 +843,17 @@ current script passes it; listing it there would fail anyone re-running that tab
 confirmed by reading the export for surviving relationship tags rather than by an exit status that is
 0 either way.
 
-**A premise this check rests on and does not test:** an `instanceOf` does not inherit its logical
-target's tags. A LikeC4 version that propagated them would leave every run green while the
-completeness rule went hollow for every item bound to an instantiated container: no diagnostic, no
-count that moves. Re-run that row when the pin moves. It is confirmed against the committed
-deployment model rather than a fixture — read `likec4 export json` and compare each `kind: instance`
-entry's `tags` against the container it instantiates, which carries several.
+**A premise this check rests on and does not test:** in the deployment-elements section this check
+reads, an `instanceOf` entry carries no tags — it does not inherit its logical target's. A LikeC4
+version that propagated them there would leave every run green while the completeness rule went
+hollow for every item bound to an instantiated container: no diagnostic, no count that moves.
+
+Re-run that row when the pin moves, and read the right section. In `likec4 export json` the instances
+are the `.deployments.elements` entries carrying an `element` key naming the container; none carries
+a `tags` key. **The view section shows the opposite and is not what the check reads** —
+`.views.<name>.nodes[]` entries of `kind: instance` do carry the instantiated container's tags, and
+`kind: instance` appears nowhere else, so a selector written on it reads inheritance that the checked
+section does not have and reports the premise broken when it holds.
 
 ### Must fail — tree → tags
 

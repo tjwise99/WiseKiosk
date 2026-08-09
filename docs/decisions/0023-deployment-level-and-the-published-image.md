@@ -30,9 +30,12 @@ three items above turns on the answer.
 ## Decision
 
 **The Deployment level draws three kinds of subject: hosts, the processes on them, and the files placed
-beside them.** The nodes are a container host holding the operator's configuration file, the secret
-files and the running container; a display host holding the browser; and the published image. The
-Backend instance runs in the container, the Frontend instance in the browser.
+beside them.** Those three are the model's node kinds — `host`, `process`, `artifact` — so a
+contributor adding a node chooses from the categories this record names rather than inventing one. The
+running container and the browser are both processes; the published image, the configuration file and
+the secret files are all artifacts. The nodes are a container host holding the operator's configuration
+file, the secret files and the running container; a display host holding the browser; and the published
+image. The Backend instance runs in the container, the Frontend instance in the browser.
 
 **The published image is a subject, and it is not the running container.** The obligations on it are
 obligations on the artifact as published, and the requirements say so in their own text:
@@ -58,9 +61,12 @@ rather than argued.
 
 **The provisioning tooling gains no element.**
 [ADR 0019 rev 1](0019-boundary-at-what-deploys-and-tag-tier.md) said it would gain one "if and when it
-acts on the running deployment". The test returns no: #71 release artifact set covers compose files and
-an example configuration — read by an operator to start a deployment, never acting on a running one
-(owner, 2026-08-09). This is the existing test applied, not a new deferral.
+acts on the running deployment". The test returns no: #71 release artifact set covers compose files, an
+example configuration and a provisioning script automating the same steps — each read or run by an
+operator to *create* a deployment, none of them acting on a running one (owner, 2026-08-09). The script
+is named because it is the item most likely to trip the test, and it does not: bringing a deployment
+into existence is not acting on one that is running. This is the existing test applied, not a new
+deferral.
 
 **One view, not one per node.** A view per host carries three boxes, and each view costs a generated
 artifact and a splice marker in [`../ARCHITECTURE.md`](../ARCHITECTURE.md).

@@ -21,8 +21,10 @@ specification {
   element container
   element component
 
+  // The three kinds ADR 0023 rev 1 names: hosts, the processes on them, and the
+  // files placed beside them.
   deploymentNode host
-  deploymentNode browser
+  deploymentNode process
   deploymentNode artifact
 
   // Each tag is a Doorstop identifier. Which item belongs on what, and at which
