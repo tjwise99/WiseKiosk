@@ -1,25 +1,46 @@
 active: true
 derived: false
 header: |
-  The configured layout renders whole
+  The display's rendering keeps nothing from a viewer
 level: 2
 links: []
 normative: true
 rationale: |
-  The product is a display; a module that is present but clipped, overlapped or scrolled out of view
-  has failed silently. "Wholly visible" absorbs no-overlap, no-clipping and no-scrollbars as one
-  property rather than three observables — none of them is a separate want. "The display it was
-  configured for" carries the kiosk-primary, desktop-secondary distinction without fixing viewports
-  in the need;
-  SRS017<!-- Full-screen assembly at kiosk; reflow, not overlap, at narrower widths --> owns those.
+  The product is a display. Content the page has hidden part of has failed silently, and so has
+  content too small or too dim to read from where the display hangs - the same failure both times,
+  the rendering standing between what was configured and what a viewer receives. One obligation,
+  not a visibility want and a legibility want side by side.
+  It attributes cause rather than stating an outcome, which is what makes it hold against the
+  overflow ruling: content exceeding its region may leave the display entirely, so an item obliging
+  that nothing goes unseen would be contradicted by its own child. Overlap, clipping, scaling away,
+  a region behind the bezel and type too small or too dim are all the rendering's doing; a
+  configuration asking for more than the display holds is not.
+  What the configuration asks for includes where it asks for it, so a module rendered whole and
+  legibly in a region other than the one named for it is not what was asked, and the rendering is the
+  reason. The page defines the
+  display's regions and the operator names which region each module goes in and nothing more (owner,
+  2026-08-08), so the region set is the page's while how much any one region is asked to hold is not.
   Phone widths are deliberately not a requirement.
+  Three earlier claims someone would otherwise make again. Every module "wholly visible" is not the
+  page's to promise. This text once enumerated its own decomposition - four of its five children
+  restated one tier up, adding nothing they do not say and forbidding, absolutely, what one of them
+  permits. And readability is not beyond verification - text size as a fraction of display
+  height and the emission a glyph is rendered at are both read from a rendered page, so the judgement
+  obligation that appeared to have no home was not one.
 ref: ''
-reviewed: 7SUfOJEsZezu9KnDJgQyhRHtIyI0db2eT2uOxRUfXtc=
+reviewed: OrhTmXT5XuBIgdjunOm9d4yMELP8wcFRc02rW3-D9Ag=
 status: accepted
 text: |
-  Every configured module shall be wholly visible on the display it was configured for.
+  Nothing the configuration asks the display to show shall be kept from a viewer watching it by the
+  display's own rendering.
 verification-justification: |
-  Geometry is decidable: a rendered layout is measured against the viewport it declares. What the check
-  does not settle is whether a legible layout is a good one — visual judgement is not verification, and
-  no gate claims it.
+  Its children read a rendered page: the laid-out regions against each other and against a band the
+  viewport cannot see being masked, each module's content against the region it was given, text size
+  as a fraction of the display's height, and emission per element. Four things none of them settles.
+  What a viewer actually sees behind any glyph is the reflected room, which the software neither
+  supplies nor controls. Whether a configuration asks for more than the display can hold is decided
+  nowhere, so the checks show that the page keeps content rather than that no configuration overruns.
+  The size floor is read at sampled resolutions and the layout at sampled viewports rather than at
+  every one the display supports. And whether the result is a good display rather than a legible one
+  is the operator's, a judgement no gate claims.
 verification-method: test

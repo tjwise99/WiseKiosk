@@ -13,6 +13,10 @@ hand: Doorstop reads it as "matching, hash to follow" and fills the hash in unpr
 
 So this runs first and fails, and `check-reqs` stops before Doorstop can stamp anything. Clearing it
 is `doorstop review <uid>` — the same act, performed deliberately.
+
+A link counts as unreviewed when its own stamp is absent, and when the item holding it is: a stamp
+is a digest of the parent's content, so nothing reading the tree tells a copied one from an earned
+one. Every document is checked, found by walking for `.doorstop.yml`, and each must yield an item.
 """
 
 import sys
@@ -21,6 +25,9 @@ from pathlib import Path
 import yaml
 
 TREE = Path(__file__).resolve().parent.parent / "docs" / "requirements"
+
+# Discovery alone reads a deleted tier as nothing to check.
+REQUIRED_SILOS = ("sys", "srs", "tst")
 
 
 def unstamped_value(value):
@@ -34,27 +41,48 @@ def load():
     """Parse every item. YAML, not regex: a link is either a bare string (never stamped) or a
     single-key mapping whose value is the stamp or None, and a pattern reading one form drops the
     other silently."""
-    unreviewed, unstamped = [], []
-    for silo in ("sys", "srs", "tst"):
+    unreviewed, unstamped, counts = [], [], {}
+    for config in sorted(TREE.rglob(".doorstop.yml")):
+        document = config.parent
+        silo = document.relative_to(TREE).as_posix()  # two nested documents may share a name
+        if any(part.startswith(".") for part in document.relative_to(TREE).parts):
+            continue  # `.venv` lives in the tree
+        counts[silo] = 0
         # Both suffixes: Doorstop indexes a .yaml item, and globbing only .yml would leave one
         # unread by a check whose whole subject is items nobody has reviewed.
-        for path in sorted([*(TREE / silo).glob("*.yml"), *(TREE / silo).glob("*.yaml")]):
+        for path in sorted([*document.glob("*.yml"), *document.glob("*.yaml")]):
             if path.stem.startswith("."):
                 continue  # pathlib globs dotfiles: the silo's own .doorstop.yml is not an item
             item = yaml.safe_load(path.read_text()) or {}
             uid = path.stem
-            if unstamped_value(item.get("reviewed")):
+            counts[silo] += 1
+            item_unreviewed = unstamped_value(item.get("reviewed"))
+            if item_unreviewed:
                 unreviewed.append(uid)
             for link in item.get("links") or []:
                 parent = next(iter(link)) if isinstance(link, dict) else link
                 stamp = link[parent] if isinstance(link, dict) else None
-                if unstamped_value(stamp):
+                if unstamped_value(stamp) or item_unreviewed:
                     unstamped.append(f"{uid} -> {parent}")
-    return unreviewed, unstamped
+    return unreviewed, unstamped, counts
 
 
 def main():
-    unreviewed, unstamped = load()
+    unreviewed, unstamped, counts = load()
+
+    empty = sorted(s for s, n in counts.items() if not n)
+    absent = [s for s in REQUIRED_SILOS if s not in counts]
+    if empty or absent:
+        for silo in absent:
+            print(f"docs/requirements/{silo}/ holds no document — missing, renamed, or deleted.", file=sys.stderr)
+        for silo in empty:
+            print(f"docs/requirements/{silo}/ yielded no item — this check read none of it.", file=sys.stderr)
+        print(
+            "\nA tier that yields nothing produces no finding, which reads exactly like a tier whose"
+            "\nevery item is reviewed.",
+            file=sys.stderr,
+        )
+        return 1
 
     if unreviewed:
         print(f"{len(unreviewed)} item(s) carry no review fingerprint:", file=sys.stderr)

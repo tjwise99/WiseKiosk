@@ -1,36 +1,45 @@
 active: true
 derived: false
 header: |
-  Full-screen assembly at kiosk; reflow, not overlap, at narrower widths
+  Full-screen assembly at kiosk; reflow, no horizontal scroll, at narrower widths
 level: 1.41
 links:
-- SYS002: 7SUfOJEsZezu9KnDJgQyhRHtIyI0db2eT2uOxRUfXtc=
+- SYS002: OrhTmXT5XuBIgdjunOm9d4yMELP8wcFRc02rW3-D9Ag=
 normative: true
 rationale: |
-  Decomposes SYS002's<!-- The configured layout renders whole --> kiosk-primary, desktop-secondary
-  distinction into the concrete viewport-driven render obligations its rationale anticipates, which
-  fixes no viewports itself. The deployed display is a 16:9 television, so 1920×1080 landscape is
-  the canonical kiosk test viewport; relative units carry the same layout to 4K without a second
-  viewport. 1280×800 and 1440×900 are the desktop window sizes the secondary use case must render
-  sensibly at. Phone widths are deliberately not a requirement
-  (SYS002<!-- The configured layout renders whole -->; owner decision 2026-07-22) — if wanted
-  later, support arrives as its own reviewed system need, not a clause here. What is owed is a
-  reflowing layout, not a responsive-design programme, and the viewport figures are
+  Decomposes SYS002's<!-- The display's rendering keeps nothing from a viewer --> kiosk-primary,
+  desktop-secondary distinction, fixing no viewports itself: the figures are
   TST035's<!-- Pending: viewport-driven layout render test --> so tuning one does not touch the
-  specification. Verified by viewport-driven render tests (Playwright-class) asserting the
-  structural properties at each size; the residual aesthetic judgement stays human.
+  specification. What is owed is a reflowing layout, not a responsive-design programme. Phone widths
+  are deliberately not a requirement (owner decision 2026-07-22) - if wanted later, support arrives
+  as its own reviewed system need, not a clause here.
+  The region set is the page's, so its disjointness is obliged here, and at every viewport rather
+  than the kiosk alone: a layout that overlaps only when narrowed is the case a reflow obligation
+  exists to catch. A configuration cannot express a geometry, so two modules can never be told to sit
+  on top of one another - overlapping regions are a page defect rather than an operator's choice.
+  These bounds are on what the page lays out, not on what content does to it afterwards.
+  SRS031<!-- Content too large for its region overflows --> carries that, and what it permits -
+  content crossing a region, or leaving the display - is not a breach of the bounds stated here.
 ref: ''
-reviewed: SV0yIhagVDhRzbYJnNuNZe1QQFJXReqwXlvv8BVVVyg=
+reviewed: _iHtlmpQYy3UXc9Y7Rn6gNoOBeS-LUwBWb6ksDZ3KGM=
 status: accepted
 text: |
-  The display page shall assemble the modules named in the configuration, each
-  into its configured region of a single full-screen layout. The assembled layout
-  shall exhibit no overlapping regions and no clipped content at the kiosk
-  viewport, and shall reflow without overlap, clipping, or horizontal scrolling at
-  narrower ones.
+  The display page shall lay out its regions across a single full-screen display, no two overlapping
+  and the set reflowing without horizontal scrolling, at any viewport it supports; and shall assemble
+  into each region the modules the configuration names there.
 verification-justification: |
-  Asserted by rendering a fixture configuration at three viewports and reading the resulting
-  geometry and region set. What no check settles is whether the layout is legible to a person across
-  a room - overlap and clipping are decidable, readability at distance is the property the kiosk
-  actually needs and no assertion reaches it.
+  Asserted by rendering at three viewports and reading the laid-out regions against each other and
+  against the viewport, and each module's rendered place against the region the configuration named
+  for it. Disjointness is decidable from rendered geometry.
+  Horizontal overflow is not measurable on the region set directly - a scroll extent exists only on
+  the document - so it is read there, over a fixture whose content fits its regions. Content that
+  overflows moves the document and is permitted to, so what is settled is that the region set does
+  not scroll sideways, never that no page ever does.
+  The obligation covers every viewport the page supports while the check samples three, so a layout
+  that first overlaps at a fourth passes.
+  Whether a person across the room can read the result is not settled here and is not this item's to
+  settle: of the software's two contributions to that,
+  SRS033<!-- Text holds a minimum size against the display, at every resolution --> carries the type
+  scale and SRS032<!-- Readable text is carried at full emission --> the emission, and neither is
+  a proof that anyone can read anything.
 verification-method: test

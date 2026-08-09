@@ -24,18 +24,21 @@ rationale: |
   causes again. Which causes there are is
   TST001's<!-- Pending: upstream-failure error payload test -->, so a fifth one edits a check
   rather than this text.
+  A region may carry several modules, so "its own region" would have named a unit shared with
+  healthy siblings - the containment clause would then oblige nothing about them, or oblige the
+  impossible. The isolation is to the module's own place within whatever region it was given.
 ref: ''
-reviewed: 73JifccTzMBu4kp1Pjzfqo3L6Y4OdVx73_creZgeYwQ=
+reviewed: qoZWflC-JkoPH4aAyupFcU-3tkO34_ce_Gv_tp69z_k=
 status: accepted
 text: |
   When a module's data request fails, the backend shall report the failure distinct to its cause, and
-  that module shall render a plain-language error state in its own region that distinguishes it; no
-  other module shall be affected.
+  that module shall render a plain-language error state in its own place on the display that
+  distinguishes it; no other module shall be affected, including one sharing its region.
 verification-justification: |
   Asserted against each induced cause: the reported failure differs by cause
-  (TST001<!-- Pending: upstream-failure error payload test -->), the failing region carries an
-  error state that differs with it while its siblings still render
-  (TST002<!-- Pending: module error-state render test -->). What no check settles is whether the
+  (TST001<!-- Pending: upstream-failure error payload test -->), the failing module carries an
+  error state that differs with it while its siblings still render, a module sharing its region
+  among them (TST002<!-- Pending: module error-state render test -->). What no check settles is whether the
   distinction is useful - that the causes are told apart is decidable, that the wording helps
   somebody who did not write it is what SYS001<!-- Failure is legible and proportionate --> routes
   to review. Two causes calling for the same operator action are still required to differ, which is

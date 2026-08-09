@@ -1,0 +1,41 @@
+active: true
+derived: false
+header: |
+  The surface carrying no content is a mirror
+level: 13
+links: []
+normative: true
+rationale: |
+  Behind a half-silvered surface a pixel at minimum emission is a mirror, so the part of the display
+  carrying nothing is the product rather than spare capacity. A display filling its surface with
+  content is a different product on the same hardware, and nothing else in the tree would notice.
+  That is why this is a need rather than a decomposition of the layout need: the two are satisfiable
+  independently in both directions.
+  Nothing here obliges a reserve. The mirror is what content leaves, and how much surface that is
+  follows from the configuration: a deployment that fills the display has chosen to, and the result
+  is the operator's (owner, 2026-08-09).
+  Two ways of obliging one were tried, and the difference between them matters to anyone who wants
+  the guarantee back. Measuring the largest contiguous unlit region does not measure the want - on a
+  display covered but for its edge band, the free surface is a thin band whose bounding box is the
+  whole display, so it scores full marks while returning no reflection. Obliging the page to lay out
+  no region across a reserved area does work: content reaches the display only inside a region and an
+  operator can name a region but never a geometry, so an area carrying no region is unreachable. Its
+  one leak is overflow from a neighbour. It was withdrawn because the guarantee is not wanted, not
+  because it failed.
+  The clause reads "negligibly" rather than "at minimum emission", which forbade a hairline rule and
+  a dark grouping tint along with the panels and scrims it was aimed at. Nothing obliges either, and
+  forbidding them decides a design question the need has no business deciding.
+ref: ''
+reviewed: zoHGPjESkjdbrPSGNpJblk74Ko1jiq1dr8C48O-pyCk=
+status: accepted
+text: |
+  Wherever the display carries no content it shall emit negligibly.
+verification-justification: |
+  Settled by its child, which reads every emitting surface of every element the page draws against
+  the ceiling anything that is not content must sit below. Three things it does not reach. The value
+  the page renders is not the light the panel emits - backlight, gamma, colour profile and the
+  half-silvered surface all lie between them. What a viewer sees in the unlit surface is the
+  reflected room, which the software neither supplies nor controls. And nothing bounds how much
+  surface is left unlit, so a configuration dense enough to fill the display satisfies this item and
+  returns no reflection - the operator's choice rather than a gap in the check.
+verification-method: test
