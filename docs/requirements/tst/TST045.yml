@@ -8,7 +8,7 @@ links:
 normative: true
 rationale: ''
 ref: ''
-reviewed: zWEJd9niK_7gcqOolOeAyC_ZJIgOxUoFLQey4xLnRKg=
+reviewed: eaUeH_JNvseacaAhW91ao9JYkBpTebyIYOFzAZRi_X0=
 status: proposed
 text: |
   Pending: render a fixture configuration and read the rendered value across the surface its content
@@ -16,6 +16,7 @@ text: |
   frontend skeleton (#10); activated and given a references entry then.
 verification-justification: |
   Settles that the page draws no fill, panel or scrim outside its content, which is the whole of the
-  software's contribution to the reserve. Leaves unproven what a viewer sees there, which is the
-  reflected room and outside the boundary.
+  software's contribution to the mirror. Leaves unproven what a viewer sees there, which is the
+  reflected room and outside the system, and how much surface is left unoccupied at all, which
+  follows from the configuration.
 verification-method: test
