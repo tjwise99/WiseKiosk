@@ -22,6 +22,11 @@ rationale: |
   per module and cannot express a geometry, so two modules can never be told to sit on top of one
   another - what can put them there is a page that laid its own regions overlapping, which is a
   defect rather than an operator's choice.
+  Disjointness and the no-clipping half of overflow are bound to every viewport rather than to the
+  kiosk alone. An earlier text obliged them at the kiosk viewport and, separately, "at narrower ones"
+  through a reflow clause, which put the same property in two places and left it open whether a
+  desktop window owed it. A layout that overlaps only when narrowed is the case a reflow obligation
+  exists to catch.
   What the page decides about content too large for the region it was given is that it overflows
   (owner, 2026-08-08). Clipping and scrolling were the alternatives, and both hide content the
   operator asked for; scaling to fit was the third, and it drives type below the floor
@@ -36,14 +41,15 @@ rationale: |
   no-horizontal-scroll are therefore obligations on what the page lays out, not on what content does
   to it afterwards.
 ref: ''
-reviewed: uvb4yZ8d1gNLYP7w7dgFZjgxeAYL0fZq4YjLoiSw5-g=
+reviewed: nYyXw1fz7Y0xhT9GonXuic5SArGs3mfwbtz8Tb0nWpk=
 status: accepted
 text: |
   The display page shall lay out its regions across a single full-screen display so that no two
-  overlap and the set reflows without horizontal scrolling at narrower viewports, and shall assemble
-  into each region the modules the configuration names there. Content exceeding the region it was
-  given shall overflow that region's bounds rather than be clipped, scrolled or scaled to fit, and
-  where overflow and either bound above cannot both hold, the content is kept.
+  overlap at any viewport it supports, and so that the set reflows without horizontal scrolling as
+  the viewport narrows; and shall assemble into each region the modules the configuration names
+  there. Content exceeding the region it was given shall overflow that region's bounds rather than be
+  clipped, scrolled or scaled to fit, at any viewport, and where overflow and either bound above
+  cannot both hold, the content is kept.
 verification-justification: |
   Asserted by rendering at three viewports and reading the laid-out regions against each other and
   against the viewport, then reading each module's content against the region it was given - over a
