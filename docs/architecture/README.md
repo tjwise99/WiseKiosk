@@ -148,5 +148,6 @@ The `TST` tier is outside the rule, a verification item saying how an obligation
 than what the software owes — so a `TST` identifier is not a tag in this model, and one applied would
 resolve against the tree while naming nothing the element owes.
 
-**`just check-arch-trace` resolves them against the tree** — what it asserts, and what it leaves to
-review, is [`../CI.md`](../CI.md) § Documentation integrity's.
+**`just check-arch-trace` resolves the two against each other in both directions** — every tag to an
+accepted item, and every accepted, active obliging item to a tag. What each direction asserts, and
+what it leaves to review, is [`../CI.md`](../CI.md) § Documentation integrity's.

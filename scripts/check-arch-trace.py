@@ -1,12 +1,31 @@
 #!/usr/bin/env python3
-"""Every requirement identifier tagged in the architecture model resolves to an accepted item.
+"""The architecture model and the requirements tree name each other completely, in both directions.
 
-The rule is `docs/CI.md` § Documentation integrity; the tag mechanism and the tier it carries are
-ADR 0019 rev 1.
+Tags → tree: every requirement identifier tagged in the model resolves to an accepted item. Tree →
+tags: every accepted, active item in an obliging tier is tagged somewhere in the model.
 
-Scope is resolution: a tag names an item that exists, is active and accepted, is spelled
-canonically, and is applied somewhere. Whether the tagged element is the one that requirement
+The rules are `docs/CI.md` § Documentation integrity; the tag mechanism and the tier it carries are
+ADR 0019 rev 1, and the completeness obligation is ADR 0022 rev 1.
+
+A tag counts on four subject kinds: the logical model's elements and relationships, and the
+deployment model's, which the export keeps separate. A tag on a **view** is not read — a view is a
+projection of the model rather than a subject in it, and ADR 0022 rev 1 binds an item to an element
+or a relationship. One applied there fails as applied to nothing, which is the right verdict reached
+by a message that does not say so.
+
+Scope is resolution and completeness. Whether the tagged element is the one that requirement
 obliges, and whether the tier suits the level, are read at review.
+
+The second direction's population is decided here rather than filtered into existence:
+
+- **Tier decides first.** `SYS` and `SRS` oblige the software and are in; `TST` says how an
+  obligation is settled rather than what the software owes, and is out. A tier in neither set fails,
+  so a fourth one cannot escape the rule by being unrecognised.
+- **A status outside `accepted` and `proposed` fails.** A comparison against `accepted` alone would
+  read a mis-spelled status as *not accepted* and drop the item silently.
+- **`proposed` is out**, because the first direction resolves a tag only to an accepted item, so a
+  proposed item cannot be tagged and a rule reaching it would be unsatisfiable.
+- **Retired — `active: false`, `status` untouched — is out**, because a retired item obliges nothing.
 """
 
 import json
@@ -26,6 +45,10 @@ UID = re.compile(r"^(?:SYS|SRS|TST)\d{3}$")
 # Judged case-insensitively so a mis-cased identifier is reported rather than skipped: recognising
 # only the canonical spelling makes every other spelling invisible to this check rather than wrong.
 UID_ANY_CASE = re.compile(r"^(?:SYS|SRS|TST)\d{3}$", re.IGNORECASE)
+
+OBLIGING_TIERS = ("SYS", "SRS")
+VERIFICATION_TIERS = ("TST",)
+STATUSES = ("accepted", "proposed")
 
 
 def export():
@@ -55,16 +78,28 @@ def export():
 
 
 def tree_items():
-    """Every item in the tree. Document.items skips inactive items, which would report a tag on a
-    retired item as resolving to nothing rather than as pointing at something retired."""
+    """Every item in the tree, paired with the prefix of the document holding it — the tier comes
+    from the document rather than from the identifier's first three characters.
+
+    Document.items skips inactive items, which would report a tag on a retired item as resolving to
+    nothing rather than as pointing at something retired, and would hide the retired items the
+    second direction counts."""
     tree = doorstop.build(cwd=str(ROOT), root=str(ROOT))
-    return {item.uid.value: item for document in tree.documents for item in document._iter()}
+    return [
+        (str(document.prefix), item)
+        for document in tree.documents
+        for item in document._iter()
+    ]
 
 
 def main():
     model = export()
     elements = model.get("elements") or {}
     relations = model.get("relations") or {}
+    # The export separates the deployment model from the logical one, and a tag on a deployment node
+    # lands only here. Reading `elements`/`relations` alone reports a tag applied there as applied to
+    # nothing, and leaves the item it names bound nowhere.
+    deployments = model.get("deployments") or {}
     declared = (model.get("specification") or {}).get("tags") or {}
 
     # A model this failed to read carries no tags, and a tag check over no tags agrees that nothing
@@ -78,7 +113,12 @@ def main():
     # subjects and one subject may carry several identifiers, so neither count derives from
     # the other, and neither derives from the size of the model.
     tagged_subjects = set()
-    for kind, group in (("element", elements), ("relationship", relations)):
+    for kind, group in (
+        ("element", elements),
+        ("relationship", relations),
+        ("deployment element", deployments.get("elements") or {}),
+        ("deployment relationship", deployments.get("relations") or {}),
+    ):
         for key, body in group.items():
             for tag in body.get("tags") or []:
                 applied.setdefault(tag, []).append(f"{kind} {body.get('title') or key!r}")
@@ -92,7 +132,8 @@ def main():
             "link is absent rather than holding"
         )
 
-    items = tree_items()
+    tiered = tree_items()
+    items = {item.uid.value: item for _, item in tiered}
     if not items:
         sys.exit("check-arch-trace: the requirements tree loaded no item, so nothing here judged a tag")
 
@@ -117,19 +158,96 @@ def main():
             status = str(items[tag].get("status") or "").strip() or "unset"
             problems.append(f"{tag}: the item is {status}, not accepted ({where})")
 
+    # Keyed on the document set rather than on any item attribute, so it still fires where the tiers
+    # are present but nothing in them reads — the state the population guard below cannot separate
+    # from a tree that legitimately obliges nothing.
+    if not any(prefix in OBLIGING_TIERS for prefix, _ in tiered):
+        sys.exit(
+            "check-arch-trace: no document carries an obliging tier, so nothing here judged "
+            "allocation"
+        )
+
+    unbound = []
+    unjudged = []
+    population = []
+    proposed = retired = verification = 0
+    for prefix, item in tiered:
+        uid = item.uid.value
+        if prefix in VERIFICATION_TIERS:
+            verification += 1
+            continue
+        if prefix not in OBLIGING_TIERS:
+            unjudged.append(
+                f"{uid}: tier {prefix} is neither obliging nor verification, and ADR 0022 rev 1 "
+                "says nothing about whether it allocates — a tier to decide, not one to pass over"
+            )
+            continue
+        status = str(item.get("status") or "").strip() or "unset"
+        if status not in STATUSES:
+            unjudged.append(
+                f"{uid}: status {status} is outside the vocabulary this rule reads, so whether it "
+                "must bind is undecided rather than settled"
+            )
+            continue
+        if status != "accepted":
+            proposed += 1
+        elif not item.active:
+            retired += 1
+        else:
+            population.append(uid)
+            if uid not in applied:
+                unbound.append(uid)
+
+    # The unbound set is a subset of the population, so an empty population reports perfect
+    # allocation over nothing judged.
+    if not population:
+        sys.exit(
+            "check-arch-trace: no item is accepted and active, so nothing here judged allocation"
+        )
+
+    # The three problem lists report in full rather than the first one exiting, so a tag that stops
+    # resolving stays legible while the allocation set is non-empty. The guards above are the
+    # exception and reach none of this: each exits where it stands, discarding what was collected.
     if problems:
         print(f"check-arch-trace: {len(problems)} tag(s) do not resolve:", file=sys.stderr)
         for problem in problems:
             print("  " + problem, file=sys.stderr)
+    if unjudged:
+        print(
+            f"check-arch-trace: {len(unjudged)} item(s) this rule cannot place, leaving "
+            f"{len(population)} in the population it judged:",
+            file=sys.stderr,
+        )
+        for problem in unjudged:
+            print("  " + problem, file=sys.stderr)
+    if unbound:
+        print(
+            f"check-arch-trace: {len(unbound)} of {len(population)} accepted, active item(s) are "
+            "tagged nowhere in the model:",
+            file=sys.stderr,
+        )
+        for uid in sorted(unbound):
+            print(f"  {uid}: {items[uid].header}", file=sys.stderr)
+    if problems or unjudged or unbound:
         sys.exit(1)
 
     identifiers = len(set(declared) | set(applied))
     applications = sum(len(where) for where in applied.values())
-    subjects = len(elements) + len(relations)
+    subjects = (
+        len(elements)
+        + len(relations)
+        + len(deployments.get("elements") or {})
+        + len(deployments.get("relations") or {})
+    )
     print(
         f"architecture → requirements holds: {applications} tag application(s) on "
         f"{len(tagged_subjects)} of {subjects} element(s) and relationship(s), "
         f"naming {identifiers} accepted item(s)."
+    )
+    print(
+        f"requirements → architecture holds: all {len(population)} accepted, active item(s) in an "
+        f"obliging tier are tagged, of {len(tiered)} item(s) in the tree — {proposed} proposed, "
+        f"{retired} retired and {verification} verification item(s) are outside the population."
     )
 
 

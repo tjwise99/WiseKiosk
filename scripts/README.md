@@ -63,6 +63,13 @@ case_run () { # $1 label   $2 expect (pass|fail)   $3 file contents
 like a working check. When seeding into the tree rather than a fixture, `git diff --quiet <path>` before
 running, and treat a clean diff as the case failing rather than passing.
 
+**A seed that lands can still measure something else, and no diff catches that.** Assert the property
+the case is *about* — what the seeded file must contain afterwards, or what the tool under test now
+reports — rather than that the text changed. Three seeds failed this way in one afternoon writing the
+`check-arch-trace.py` cases: one asserted the wrong post-condition and never wrote the file, one
+selected lines by indentation and moved 11 of 18 of them, one used an input that already satisfied the
+case elsewhere. Each reported the verdict its row expected, so no exit status caught any of them.
+
 **Give the scratch repository a `git init`, and run the script from inside it.** Every `.mjs` check
 resolves its root with `git rev-parse --show-toplevel`, and `check-links.mjs`, `check-docs-index.mjs`
 and `check-workflow-hardening.mjs` build their file list with `git ls-files`. In a bare directory
@@ -773,7 +780,37 @@ moves, and a number that never moved cannot be shown to move by a single run. Bo
 to a commit that contains them: a hash paired with a commit whose tree holds a different script tells
 a reader nothing about which half is wrong.
 
-### Must fail
+**Every row in this section was re-run on 2026-08-08 against the two-direction script at `4695575`,
+md5 `962e69718a8927aadfabf50422913937`** (#122 close check-arch-trace's second direction), whose scan
+is byte-identical to the `c8f1511` the rows were run against — the two differ only in the docstring.
+
+**Every must-pass row is seeded on an all-bound fixture**: the extraction with
+SRS020<!-- Non-root container user --> declared and applied to the `Backend` element and
+SRS025<!-- No secret material in the published image --> to the operator's configuration
+relationship. The second direction fails on the tree's real state, so the model as it stands is not a
+must-pass input — it is the headline must-fail row below, and every tags→tree must-pass row had to be
+re-seeded even though that arm did not change. **A step added to a sequence re-decides every case the
+sequence already passed.**
+
+### Running a case here
+
+Each case is its own extraction. `node_modules` may be symlinked rather than copied — the reason the
+`check-arch` fixtures need a copy is `git add --intent-to-add`, which this check never runs.
+
+```sh
+d=$(mktemp -d)
+( cd "$REPO" && git archive HEAD | tar -x -C "$d" )
+ln -s "$REPO/docs/requirements/.venv"        "$d/docs/requirements/.venv"
+ln -s "$REPO/docs/architecture/node_modules" "$d/docs/architecture/node_modules"
+cp "$REPO/scripts/check-arch-trace.py" "$d/scripts/"   # fresh: the archive carries HEAD's copy
+md5sum "$d/scripts/check-arch-trace.py"                # assert it before reading any result
+( cd "$d" && docs/requirements/.venv/bin/python scripts/check-arch-trace.py )
+```
+
+### Must fail — tags → tree
+
+Each was seeded on the all-bound fixture, so an unbound report appearing beside the expected
+diagnostic would mean the fixture had drifted. None did.
 
 | Case | Input |
 |---|---|
@@ -786,40 +823,115 @@ a reader nothing about which half is wrong.
 | No tag at all | every declaration and application stripped from the model |
 | Model that does not parse | a `#tag` where the grammar wants `}` |
 
-### Must pass
+### Must pass — tags → tree
+
+| Case | Input | Where it is now |
+|---|---|---|
+| The model as it stands | — | **retired as a must-pass.** It is the headline must-fail row above |
+| An accepted `SRS` identifier on an **element** rather than a relationship | the other half of the code path | the all-bound fixture, which binds one item each way |
+| Every tag on elements, none on any relationship | every relationship application moved onto the system element — all **18**, across five relationship subjects | re-seeded and re-run: 40 applications on **11** of 26 subjects, 30 items, exit 0, and the export confirms no relationship carries a tag |
+| One identifier applied to two subjects | SYS003<!-- A deployment is parameterised from outside the image --> tagging both operator relationships — applications exceed identifiers | holds on the all-bound baseline, 41 applications naming 30 items |
+| A relationship carrying no tag | the bundle-serving edge, which no accepted item obliges | holds on the all-bound baseline, 15 of 26 subjects tagged |
+| **A tag on a deployment element** | the two items declared and applied on a node inside a `deployment` block | **new** — 41 applications on 16 of **28** subjects, exit 0 |
+| **A tag on a deployment relationship** | the same two on an edge between two nodes, both nodes untagged | **new** — 41 applications on 16 of **30** subjects, exit 0 |
+
+Two rows carry the weight. The **deployment** pair covers both groups the scan reads, and each was run
+against the pre-fix script in the same fixture, where it fails with *declared and applied to nothing* —
+the defect they exist for. That failing input has no row in the must-fail table above because the
+current script passes it; listing it there would fail anyone re-running that table. The
+**relationship** row's seed selects bodies by which `{` a `->` line opened, not by indentation, and is
+confirmed by reading the export for surviving relationship tags rather than by an exit status that is
+0 either way.
+
+**A premise this check rests on and does not test:** an `instanceOf` does not inherit its logical
+target's tags — the deployment nodes export `tags: None` beside a `Backend` carrying eight. A LikeC4
+version that propagated them would leave every run green while the completeness rule went hollow for
+every item bound to an instantiated container: no diagnostic, no count that moves. Re-run that row
+when the pin moves.
+
+### Must fail — tree → tags
 
 | Case | Input |
 |---|---|
-| The model as it stands | — |
-| An accepted `SRS` identifier on an **element** rather than a relationship | the other half of the code path |
-| Every tag on elements, none on any relationship | a Container-level model of the shape #97 C4 phase 2 will produce |
-| One identifier applied to two subjects | SYS003<!-- A deployment is parameterised from outside the image --> tagging both operator relationships — applications exceed identifiers |
-| A relationship carrying no tag | the bundle-serving edge, which no accepted item obliges |
+| **An accepted, active item bound nowhere** | **no seed — the tree's real state**, reporting SRS020<!-- Non-root container user --> and SRS025<!-- No secret material in the published image --> |
+| A bound item losing its only tag | one item's declaration *and* its application deleted from the all-bound fixture |
+| The tree loads no item | the three tier directories removed |
+| No document carries an obliging tier | the two obliging tiers removed, the verification tier left, its `parent:` line dropped so the build still resolves |
+| The population is empty | every `status: accepted` in the two obliging tiers flipped to `proposed` — 31 items, 0 left |
+| A tier the rule has no answer for | a fourth document with an unrecognised prefix, holding one item |
+| A status outside the vocabulary | one accepted item's `status` mis-spelled |
+
+The headline row needs no fixture, which is what makes it better evidence than a seed: the check
+fails on what the repository actually holds, and #123 C4 phase 4 Deployment is what turns it green.
+
+**It was read in CI as well as locally**, which § *Confirming a gate in CI rather than locally* says
+a local run cannot show: on PR #134 the `architecture` job's last step fails while the `check-arch`
+step above it passes, so the step is wired, reached, and able to fail its job.
+
+**The last two rows are CONTRIBUTING question 10, *Unjudged input*, from both sides.** The
+mis-spelled status is the sharp one: comparing against `accepted` alone reads it as *not accepted*
+and drops the item, indistinguishable from the item being correctly out of scope. The run names it
+and prints the surviving population beside the list — 30 → 29. That count belongs in the unplaceable
+message and not only in the success line, because the success line is absent from a failing run and
+the unbound message is absent when nothing is unbound: with an untagged item's status mis-spelled,
+both are, and the shrinkage would be real and invisible.
+
+### Must pass — tree → tags, and the controls that show each exclusion works
+
+An exclusion that passes proves nothing on its own: an item skipped for the right reason and an item
+skipped because the arm is dead read identically. Each row below is therefore a pair — the excluded
+input, and the same input with the excluding property removed.
+
+| Excluded input | Passes | Control: the property removed | Fails, reporting |
+|---|---|---|---|
+| A retired accepted item bound nowhere | SRS005<!-- One validation implementation -->, in the tree today | `active: true` | 1 of **31** — the population grew by the item |
+| A `proposed` item bound nowhere | four `SRS` and one `SYS` in the tree today | `status: accepted` on one | 1 of **31**, naming that item |
+| A verification-tier item bound nowhere | the whole tier, 44 items | one made `accepted` **and** `active`, still untagged | **nothing** — it stays out, so the exclusion is by tier |
+
+**The verification tier needed its control most**, because every item in that tier is `active: false`
+*and* `status: proposed`, so exclusion by tier and exclusion falling through the `status` and `active`
+gates are indistinguishable on today's tree. It has a second control on the code: deleting the
+verification arm from the fixture's script, against that same seed, reports all 44 as unplaceable and
+fails. `validate-tree.sh` rejecting an activated verification item is not a reason the seed cannot be
+placed — that check does not run inside a `check-arch-trace` fixture.
 
 ### What the success line counts
 
+Two lines, one per direction. A failing run prints neither, which is what reshaped the third row.
+
 | Case | Input | Reported |
 |---|---|---|
-| Baseline | the model as it stands | 18 applications on 7 of 11 subjects, 17 items |
-| One of two applications of the same identifier removed | one SYS003<!-- A deployment is parameterised from outside the image --> application deleted, the identifier still applied once | 17 applications, **17 items** — the counts separate |
-| A subject loses every tag **and** their declarations | both tags stripped from the `Frontend` element | 16 applications on **6** of 11 subjects |
+| Baseline | the all-bound fixture | 41 applications on 15 of 26 subjects, 30 items; **all 30** of 80 tree items bound, 5 proposed / 1 retired / 44 verification outside |
+| One of two applications of the same identifier removed | one SYS003<!-- A deployment is parameterised from outside the image --> application deleted, the identifier still applied once | 40 applications on 14 of 26, **30 items** — the counts separate |
+| A subject loses every tag, the applications surviving elsewhere | the `Frontend` element's two applications moved onto the `Backend` element | **41** applications on **14** of 26, 30 items |
 
 The middle row is why the counts are separate rather than one number, and it is the row that carries
 the argument. The `04cea31` form reported `len(set(declared) | set(applied))`, so an identifier
 applied twice counted once: deleting one of the two applications left its line **byte-identical**
 before and after the seed. **A count that cannot move is not evidence.**
 
-The third row is narrower than the second, and the `04cea31` form is not blind to it — that line's
-leading count moves too, 17 to 15. What it cannot say is that a **subject** stopped carrying links,
-because the only subject figures it reported were `len(elements)` and `len(relations)`, which are
-properties of the model rather than results of the check and read `5` and `6` either way. Stripping a
-tag *without* its declaration is not this case at all: it fails on the declared-and-applied-to-nothing
-arm, on both scripts. The fail-open shape is the one where the declaration goes too, and there the
-check is right to pass, because nothing it asserts is violated.
+**The third row moves the applications rather than stripping them.** Stripping a subject's tags and
+their declarations leaves those items unbound, so the run fails — and a failing run prints no success
+line at all, destroying the only thing the row measures. Moving them holds allocation complete while
+still emptying a subject: applications hold at 41, subjects drop 15 → 14.
 
 Nothing gates any of this — the success line is read by a person, and a wrong one fails no build,
 which is why it went unnoticed until a model carried both a duplicated identifier and a deliberately
 untagged relationship at the same time.
+
+### The guards' ordering, and what it hides
+
+Both directions report in full rather than the first exiting, so a tag that stops resolving stays
+legible while the allocation set is non-empty — which it is until #123 C4 phase 4 Deployment lands.
+**The guards are the exception: each exits on the spot.** The stripped-tag model reports *the model
+names no requirement* rather than 30 unbound items, and the emptied population reports *no item is
+accepted and active* rather than the 30 tag-resolution failures the same flip creates. Both are the
+guard being right, but the reader has been told the run stopped, not that the rest is clean.
+
+**Each guard reads something the thing it guards does not.** The obliging-tier guard is keyed on the
+document set, so it fires where the tiers have gone but items remain. The population guard is keyed
+on `status` and `active`, and the unbound set is a subset of the population, so a population of zero
+is exactly the state that would report perfect allocation over nothing.
 
 **The unparseable-model row is the one that matters.** `likec4 export json` behaves like `codegen`
 and **succeeds on a broken model**, emitting a degraded document whose tags have gone missing — so a
@@ -829,13 +941,38 @@ identifier, and prints success. It was found by a malformed seed, not by design:
 degradation dropped the declarations too, the run would have been green.
 
 **The no-tag row is a guard rather than an arm.** A model carrying no tag resolves every tag it
-carries, so an absent architecture → requirements link and a sound one read identically. It is the
-third of that shape in this check, beside the guards over the export and over the tree.
+carries, so an absent architecture → requirements link and a sound one read identically. It is one of
+five of that shape here, beside the guards over the export, over the tree loading at all, over the
+obliging tiers being present, and over the population being non-empty.
 
 **Every degenerate input fails closed**: an emptied model directory, a removed model directory, a
 removed requirements tree, and an unparseable model. The removed-directory case is the sharp one —
 `likec4 validate` exits **0** on a directory holding no model, so the element guard is the only thing
 that catches it, and a check trusting the validator's exit status alone would pass.
+
+### What it does not catch: a tag on a view
+
+The export carries tags in a fifth place — `views[x].tags` — and the scan does not read it. That is
+deliberate: a view is a projection of the model rather than a subject in it, and ADR 0022 rev 1 binds
+an item to an element or a relationship. Two runs, both observed rather than reasoned about:
+
+| Seed | Result |
+|---|---|
+| An item declared and applied **only** on a view | fails — *declared and applied to nothing*, and the item reported unbound |
+| A view tag naming an item already applied to an element | passes, exit 0, the counts unmoved — the view tag is invisible in both directions |
+
+The verdict is right in both and the message is not — the first is the same uninformative diagnostic
+the deployment defect produced, reached this time for a good reason.
+
+`globals`, `imports` and `manualLayouts` carry no tag-bearing subject; `imports` is empty in a
+single-project setup and is the next place to look if a second LikeC4 project is ever added.
+
+### `check-arch` is asserted unchanged rather than re-fixtured
+
+`check-arch`'s three-line gate shares no state with this check: nothing here touches `arch-export`,
+and this check writes nothing to the working tree. `just check-arch` was re-run on the unseeded tree
+as the control and passes, leaving zero index entries; the four fixture rows under § *The three-line
+gate* were **not** re-run, and this paragraph is the reason rather than an omission.
 
 ## `check-site`
 
