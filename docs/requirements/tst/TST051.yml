@@ -4,11 +4,11 @@ header: |
   Pending: mirror reserve region-placement test
 level: 72
 links:
-- SRS036: Tlg2Gr84UUjeNcqLpdJ9_TpSR7KTSjHFOSwyeKhmoio=
+- SRS036: 77uNRD4diLQzh1oCXR0YnRmy1KY5RVVKGPtM4-Q-xVU=
 normative: true
 rationale: ''
 ref: ''
-reviewed: 6W-kbMWralNEqni_HM19UnykCnG3X4wEWzV6uFLkJWU=
+reviewed: FSQstwfmaRIwqSN5GyWEOFTq5XBALJ-JSKgCxyd-9qI=
 status: proposed
 text: |
   Pending: read the geometry of every region the page lays out and assert none intersects the reserve
@@ -22,4 +22,8 @@ verification-justification: |
   adjacent region may cross into it, which the overflow ruling permits and this check does not
   contradict. Leaves unproven too that a viewer stands before the reserve, which follows from the
   height the panel is hung at and is the operator's.
+  And it cannot judge its own reserve. The area's extent and placement are figures held here, so this
+  check supplies the area it then proves nothing was laid into - shrink them and it passes over a
+  display with no mirror on it, reporting the same green. Whoever changes those figures is changing
+  what the product returns to a viewer, and nothing here will say so.
 verification-method: test

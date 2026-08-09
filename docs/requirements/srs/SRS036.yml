@@ -19,7 +19,7 @@ rationale: |
   is not a specification change. They are not independent of the edge inset or the region set's own
   geometry, which is why one check reads them together.
 ref: ''
-reviewed: 8z9ZgrKPDx1tyCLXS86XZ0bDORdOmJ7NKlwxFFV5q8w=
+reviewed: r575jfiNbKcuNRzV-dPArgb-23rCRw7cY9CN2J053F4=
 status: accepted
 text: |
   The display page shall lay out no region intersecting a contiguous area of the display of stated
@@ -27,10 +27,15 @@ text: |
 verification-justification: |
   Asserted by reading every laid-out region's geometry against the reserve area, over configurations
   chosen to load the display - the module roster at its fullest, and repeated instances of a module
-  an operator may add - since the region set may itself depend on which regions are occupied. Three
+  an operator may add - since the region set may itself depend on which regions are occupied. Four
   bounds. Content overflowing an adjacent region may cross into the reserve, which the overflow
   ruling permits, so the check settles that no region is placed there rather than that no pixel
   enters it. Whether the panel is hung so that a viewer stands before the reserve is the operator's,
   as mounting is. And that the reserve returns a recognisable reflection at all is a fact about
   half-silvered glass and the room, which no assertion over a rendered page reaches.
+  The fourth is the one this item cannot escape by wording. The reserve's extent and placement are
+  the check's, so the check supplies the area it then proves nothing was laid into - a reserve
+  written as a corner of a few pixels passes while discharging nothing. What the assertion settles is
+  that the region set avoids whatever area was declared; that the declared area is worth reserving is
+  a human act, performed where the figures live and re-performed whenever they change.
 verification-method: test
