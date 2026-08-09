@@ -31,7 +31,7 @@ rationale: |
   is kept rather than leaving it to a check. Both bounds are therefore obligations on what the page
   lays out, not on what content does to it afterwards.
 ref: ''
-reviewed: uF03QRbBEIpaJPMnqn3dFg07YVVzmCL61XZkPKfAmeU=
+reviewed: NcOrnMBYwyOdtA2pbAH-pk3PgVZyn7MJY01cpCfDvRY=
 status: accepted
 text: |
   The display page shall lay out its regions across a single full-screen display so that no two
@@ -54,6 +54,6 @@ verification-justification: |
   Whether a person across the room can read the result is not settled here and is not this item's to
   settle: of the software's two contributions to that,
   SRS033<!-- Text holds a minimum size against the display, at every resolution --> carries the type
-  scale and SRS032<!-- Readable content is carried at full emission --> the emission, and neither is
+  scale and SRS032<!-- Readable text is carried at full emission --> the emission, and neither is
   a proof that anyone can read anything.
 verification-method: test
