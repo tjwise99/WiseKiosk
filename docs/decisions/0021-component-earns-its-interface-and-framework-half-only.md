@@ -11,7 +11,7 @@
 ## Context
 
 [ADR 0003 rev 1](0003-architecture-as-code-likec4.md) authored the model so the Component level "can be
-added later without restructuring", and [ADR 0019 rev 1](0019-boundary-at-what-deploys-and-tag-tier.md) and
+added later without restructuring", and [ADR 0019 rev 2](0019-boundary-at-what-deploys-and-tag-tier.md) and
 [ADR 0020 rev 1](0020-two-containers-one-origin-and-dual-tier-tags.md) settled the boundary, the containers
 and the tier a tag answers to. This is that addition.
 
@@ -31,7 +31,7 @@ ruled the Component level would not be built and this builds it, which [`README.
 routes to supersession — recorded by revving the record superseded, not by a note on this one. That
 rev is left to #124 settle the C4 ADR set: written on this branch, the citation it would carry names
 a record that ceases to exist, because that ticket merges this record into
-[ADR 0019 rev 1](0019-boundary-at-what-deploys-and-tag-tier.md) at a later rev and frees this number.
+[ADR 0019 rev 2](0019-boundary-at-what-deploys-and-tag-tier.md) at a later rev and frees this number.
 The rest of that decision — LikeC4, the browser-free codegen, the staleness gate — stands untouched.
 The Code level is not built here, and this record does not decide it.
 
@@ -41,7 +41,7 @@ against the image that ships them. C4's component has no such test — a groupin
 functionality behind a well-defined interface, whose only crisp half is the negative one, that it is
 not separately deployable or it would be a container. Left there, the level draws whatever the source
 tree happens to look like: the folder listing, the layer cake, a box per type. Each is true of the
-system and of ten thousand others, which is the objection ADR 0019 rev 1 raised against tagging the system
+system and of ten thousand others, which is the objection ADR 0019 rev 2 raised against tagging the system
 element with every `SYS` item.
 
 **A second seam is already written down, and its vocabulary collides with this level's.**
@@ -89,12 +89,12 @@ configuration-schema fragment composes into the one schema the frontend validate
 tests, which run nowhere in either container and are [`../TESTING.md`](../TESTING.md)'s.
 
 **Only the framework half is drawn.** [ADR 0012 rev 1](0012-module-requirements-in-tree.md) makes a module
-a need, and the tree holds no module need, so nothing obliges a module component. This is ADR 0019 rev 1's
+a need, and the tree holds no module need, so nothing obliges a module component. This is ADR 0019 rev 2's
 ground for deferring an upstream element, reached one level down and by the same route: the roster in
 [`../../README.md`](../../README.md) names all five modules, and naming them is not what earns them a
 place.
 
-**A tag sits where its obligation is observable**, which is ADR 0019 rev 1's rule and not a new one. A
+**A tag sits where its obligation is observable**, which is ADR 0019 rev 2's rule and not a new one. A
 component depth does not make the finer placement the right one.
 SRS008<!-- No secret value in any backend output --> and
 SRS028<!-- Served responses declare their type, and forbid the browser inferring one --> quantify over
@@ -146,11 +146,11 @@ sit on, and the level would draw the half of the backend the specification says 
 **Per-module components now.** Architecturally these are real components and they will be drawn:
 five modules, five payload shapes, five configuration fragments, and the contract states their
 interface precisely. Rejected on sequencing. ADR 0012 rev 1 makes a module a need and none is written, so
-each box would trace to nothing — the same position ADR 0019 rev 1 met with the upstreams and answered the
+each box would trace to nothing — the same position ADR 0019 rev 2 met with the upstreams and answered the
 same way. **Premise that would reopen it:** the first module need lands.
 
 **A generic module or shaping placeholder box**, one per container, replaced by the real ones later.
-Rejected on ADR 0019 rev 1's own argument against the aggregate external system: it "belongs to no module,
+Rejected on ADR 0019 rev 2's own argument against the aggregate external system: it "belongs to no module,
 so it can carry no module's identifier", which forecloses the binding the tag mechanism exists for.
 Replacing it later is also restructuring, which is the one thing ADR 0003 rev 1 authored this model to
 avoid.
@@ -169,7 +169,7 @@ first.
 backend per **upstream-backed** module, and one Svelte component in the frontend per module. On the
 current roster that is three and five, because a local module "has no shaping library, no route
 registration and no boundary-schema fragment". The trigger is #76 module-spec procedure, which writes
-the first module need. This is scope recorded, not an omission, exactly as ADR 0019 rev 1 records the
+the first module need. This is scope recorded, not an omission, exactly as ADR 0019 rev 2 records the
 upstream elements it defers.
 
 **All three of ADR 0020 rev 1's parked items bind here, and its ground for parking them was wrong.** That
@@ -216,6 +216,6 @@ element to another leaves each `.mmd` artifact and `../ARCHITECTURE.md` byte-ide
 `check-arch` compares exactly those. `check-arch-trace` reads the model rather than the artifact, but
 its scope is resolution — that an identifier names an accepted item — which a tag on the wrong element
 satisfies completely. The architecture → requirements link is therefore held by review alone, and by
-nothing else in the repository. ADR 0019 rev 1 states this as the ordinary division between a gate and a
+nothing else in the repository. ADR 0019 rev 2 states this as the ordinary division between a gate and a
 reviewer; it is recorded here as a property of the artifact, because a level that multiplies the
 elements a tag can sit on multiplies the placements no check can see.

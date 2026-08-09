@@ -60,12 +60,12 @@ mount edges are where SYS003<!-- A deployment is parameterised from outside the 
 rather than argued.
 
 **The provisioning tooling gains no element.**
-[ADR 0019 rev 1](0019-boundary-at-what-deploys-and-tag-tier.md) said it would gain one "if and when it
-acts on the running deployment". The test returns no: #71 release artifact set covers compose files, an
-example configuration and a provisioning script automating the same steps — each read or run by an
-operator to *create* a deployment, none of them acting on a running one (owner, 2026-08-09). The script
-is named because it is the item most likely to trip the test, and it does not: bringing a deployment
-into existence is not acting on one that is running. This is the existing test applied, not a new
+[ADR 0019 rev 2](0019-boundary-at-what-deploys-and-tag-tier.md) states the test: "A tool that acted on
+the running deployment would gain an element." The test returns no, and the release artifact set
+settled by #71 release artifact set is why it does not even need arguing — that decision ships **no
+operator tooling program at all**, only a deployment recipe and an example configuration file. A
+recipe an operator runs to bring a deployment into existence is not a tool acting on one that is
+running, and there is no second candidate to weigh. This is the existing test applied, not a new
 deferral.
 
 **One view, not one per node.** A view per host carries three boxes, and each view costs a generated
@@ -148,10 +148,12 @@ puts the hosts. **The tag stays on the container host until the owner rules**; t
 reversal attaches, and where an affirmation is already written down.
 
 **Wait for #71 release artifact set to define what ships.** This ticket's own lead option, on the
-ground that a level drawing what ships should not guess the set. Rejected: four of the five release
-assets are things a release page lists rather than things that run anywhere, the level draws what runs
-where, and the one real coupling — whether provisioning tooling appears — is decided by
-ADR 0019 rev 1's test rather than by the artifact set. #71 is being worked in parallel.
+ground that a level drawing what ships should not guess the set. Rejected: what a release carries is
+material a registry and a release tag hold rather than anything that runs on a host, the level draws
+what runs where, and the one real coupling — whether provisioning tooling appears — is decided by
+ADR 0019 rev 2's test rather than by the artifact set. **#71 landed while this slice was in review,
+and the rejection held**: the set it defined ships no operator tooling program, so waiting would have
+changed nothing drawn here.
 
 ## Consequences
 
