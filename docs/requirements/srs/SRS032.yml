@@ -15,8 +15,17 @@ rationale: |
   Stating the obligation over emission rather than over a ratio against a background is what keeps it
   honest. A ratio computed against the rendered background is computed against the absence of one,
   and would report the same result whether the display were readable or unreadable.
+
+  Reopen premise. This forecloses typographic hierarchy in the one dimension a dark interface would
+  normally use it: no dimmed secondary text, no greyed stale reading, no colour carrying meaning.
+  That cost is accepted (owner, 2026-08-09) on the ground above - the room behind a glyph is not the
+  software's to know, so a reduced-emission glyph is not a quieter one but one that disappears
+  sooner, in conditions nobody can predict. Revisit if a deployed display proves hard to scan because
+  nothing distinguishes what matters from what surrounds it, which is the want uniform emission is
+  spending to protect. Size, weight and position remain available to distinguish content and are
+  untouched by this item; what is given up is brightness and colour as carriers of meaning.
 ref: ''
-reviewed: bvRWC52DUTsKYJb9ZRwyyLuZNhkihL1IvB5z7lVd_xE=
+reviewed: m1hGF51aez8SzrYt-_hwJ2VzGsojjLZg1s5O-SrhucY=
 status: accepted
 text: |
   Text the display presents to be read shall be rendered at the display's maximum emission.
