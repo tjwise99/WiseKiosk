@@ -4,10 +4,10 @@ header: |
   Full-screen assembly at kiosk; reflow, no horizontal scroll, at narrower widths
 level: 1.41
 links:
-- SYS002: ToFVbPFp9IatUvVWKKn-3S83c7ebsKajo1MUVxVHdbE=
+- SYS002: Zxe531jtUatE-VuJ4tpFFwvPcfWJ6Oup1VJEk-d-GGQ=
 normative: true
 rationale: |
-  Decomposes SYS002's<!-- Each module renders in full, and reads --> kiosk-primary,
+  Decomposes SYS002's<!-- The display's rendering keeps nothing from a viewer --> kiosk-primary,
   desktop-secondary distinction, fixing no viewports itself: the figures are
   TST035's<!-- Pending: viewport-driven layout render test --> so tuning one does not touch the
   specification. What is owed is a reflowing layout, not a responsive-design programme. Phone widths
@@ -21,7 +21,7 @@ rationale: |
   SRS031<!-- Content too large for its region overflows --> carries that, and what it permits -
   content crossing a region, or leaving the display - is not a breach of the bounds stated here.
 ref: ''
-reviewed: OI2ZEQOUvqc5zYDtNqASI3TgBru5jQucyw1AFtOujcs=
+reviewed: 481IpZfMXgMospkGAyD8raK4xP7wttz7FA_9IoJqSpE=
 status: accepted
 text: |
   The display page shall lay out its regions across a single full-screen display, no two overlapping

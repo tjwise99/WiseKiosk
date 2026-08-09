@@ -8,7 +8,7 @@ than a side effect: the page spends light only on what it presents, so every par
 does not fill is mirror (SYS008<!-- The surface carrying no content is a mirror -->). How much that
 is follows from the configuration — a deployment that fills the display has chosen to. The page defines the display's regions;
 the configuration names which one each module goes in
-(SYS002<!-- Each module renders in full, and reads -->,
+(SYS002<!-- The display's rendering keeps nothing from a viewer -->,
 SRS017<!-- Full-screen assembly at kiosk; reflow, no horizontal scroll, at narrower widths -->); there
 is nothing to interact with, it renders and it refreshes. Shipped as one container image; each
 deployment is independent, customised through configuration, never through a fork

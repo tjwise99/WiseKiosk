@@ -1,47 +1,47 @@
 active: true
 derived: false
 header: |
-  Each module renders in full, and reads
+  The display's rendering keeps nothing from a viewer
 level: 2
 links: []
 normative: true
 rationale: |
-  The product is a display; a module the page has hidden part of has failed silently, and so has one
-  too small or too dim to read from where the display hangs. Both are wants about what the software
-  renders rather than what the configuration composes: the page defines the display's regions and the
-  operator names which region each module goes in and nothing more (owner, 2026-08-08), so the region
-  set is the page's while how much any one region is asked to hold is not. Phone widths are
-  deliberately not a requirement.
-  The legibility clause is stated over text rather than over modules, because that is the population
-  its children oblige. It reaches text a module did not put there - a failure message, say - which is
-  intended: a type scale and an emission floor make any glyph readable at distance, whatever put it
-  on the screen. SYS001<!-- Failure is legible and proportionate --> obliges a failure to say why and
-  to stay in proportion, a different sense of the word and not doubled here.
-  Two retractions. "Wholly visible" is not something the page can promise: how much content a region
-  is asked to hold follows from the configuration and from what upstream returned, and past some
-  volume it does not fit. And readability was treated as beyond verification, which described what
-  the tree then held rather than what a check can decide - text size as a fraction of display height
-  and the emission a glyph is rendered at are both read from a rendered page. The judgement
-  obligation that appeared to have no home was not one.
+  The product is a display. Content the page has hidden part of has failed silently, and so has
+  content too small or too dim to read from where the display hangs - the same failure both times,
+  the rendering standing between what was configured and what a viewer receives. That is why this is
+  one obligation rather than a visibility want and a legibility want side by side.
+  It attributes cause instead of stating an outcome, and that is what makes it hold against the
+  overflow ruling. Content exceeding its region overflows and may leave the display entirely, so an
+  item obliging that nothing goes unseen would be contradicted by its own child. What the page owes
+  is not to be the reason: overlap, clipping, scaling away, a region behind the bezel, and type too
+  small or too dim all are, while a configuration asking for more than the display holds is not.
+  The scope is what the software renders rather than what the configuration composes. The page
+  defines the display's regions and the operator names which region each module goes in and nothing
+  more (owner, 2026-08-08), so the region set is the page's while how much any one region is asked to
+  hold is not. Phone widths are deliberately not a requirement.
+  Three retractions. The text obliged every module to be "wholly visible", which the page cannot
+  promise, since how much a region is asked to hold follows from the configuration and from what
+  upstream returned. It then enumerated its own decomposition - render, lay out within the presented
+  surface, hide nothing, read at distance - which is four of its five children restated one tier up,
+  adding nothing they do not say and forbidding, absolutely, what one of them permits. And
+  readability was treated as beyond verification, which described what the tree then held rather than
+  what a check can decide: text size as a fraction of display height and the emission a glyph is
+  rendered at are both read from a rendered page. The judgement obligation that appeared to have no
+  home was not one.
 ref: ''
-reviewed: ToFVbPFp9IatUvVWKKn-3S83c7ebsKajo1MUVxVHdbE=
+reviewed: Zxe531jtUatE-VuJ4tpFFwvPcfWJ6Oup1VJEk-d-GGQ=
 status: accepted
 text: |
-  Every configured module shall render on the display it was configured for, laid out within the
-  surface that display actually presents and with none of its content hidden by the page's own
-  layout; and text the display presents to be read shall be legible from where that display is
-  watched.
+  Nothing the configuration asks the display to show shall be kept from a viewer watching it by the
+  display's own rendering.
 verification-justification: |
-  Its children read a rendered page: the laid-out regions against each other and against an inset the
+  Its children read a rendered page: the laid-out regions against each other and against a band the
   viewport cannot see being masked, each module's content against the region it was given, text size
-  as a fraction of the display's height, and emission per element. Four things none of them settles,
-  and the item claims none of them. What a viewer actually sees behind any glyph is the reflected
-  room, which the software neither supplies nor controls. Content overflowing a region near the edge
-  crosses the inset SRS034<!-- The laid-out regions keep clear of the display edge --> states, and
-  may extend the document past the viewport, putting content behind a scroll a kiosk has no way to
-  perform - hiding, in this item's own sense, and permitted in both directions because the
-  alternative is discarding the content instead. The size floor is read at sampled resolutions rather
-  than at every one the display supports. And whether the configuration leaves a display worth
-  looking at, and whether the result is a good layout rather than a legible one, are the operator's
-  and a judgement no gate claims.
+  as a fraction of the display's height, and emission per element. Four things none of them settles.
+  What a viewer actually sees behind any glyph is the reflected room, which the software neither
+  supplies nor controls. Whether a configuration asks for more than the display can hold is decided
+  nowhere, so the checks show that the page keeps content rather than that no configuration overruns.
+  The size floor is read at sampled resolutions and the layout at sampled viewports rather than at
+  every one the display supports. And whether the result is a good display rather than a legible one
+  is the operator's, a judgement no gate claims.
 verification-method: test
