@@ -131,6 +131,20 @@ edge, and give it no second home. Rejected: that placement's stated reason was t
 element, and the reason is gone. Keeping it would leave the record asserting a workaround as a
 positive choice.
 
+**Bind SRS019<!-- The backend runs on both supported architectures --> to the published image rather
+than to the container host.** Recorded here without being settled, which is the one entry in this
+section that is not closed. The item's own `rationale` closes: "Stated as an obligation on WiseKiosk
+rather than as a fact about the host, because a host's capabilities are not ours to require; what is
+ours is running on both" — and the tag sits on a node whose description states a host capability. Its
+`verification-justification` settles it by "building for both architectures", and what is built for
+both is the image. The clause above choosing the host ends "what the binary itself targets is the
+image's business", which points at the image too. Against that stands the ground the choice was
+actually made on: the 64-bit floor exists because a container runtime needs it, which is a fact about
+where the thing runs (owner, 2026-08-09). It is also the only one of the six whose sole binding is now
+outside the system boundary, where SYS007<!-- The declared minimum host, and staying within it -->
+puts the hosts. **The tag stays on the container host until the owner rules**; this entry is where a
+reversal attaches, and where an affirmation is already written down.
+
 **Wait for #71 release artifact set to define what ships.** This ticket's own lead option, on the
 ground that a level drawing what ships should not guess the set. Rejected: four of the five release
 assets are things a release page lists rather than things that run anywhere, the level draws what runs
@@ -145,8 +159,16 @@ reason. It is in the node's `description` and in this record; nothing gates it.
 **ADR 0021 rev 1 loses a sentence.** Its statement that SRS018<!-- One generic published image -->
 "stays where what is observable of it is — the configuration arriving from outside" is false once the
 image is drawn. Correcting it means revving that record, which under [`README.md`](README.md) moves
-every citation of it — for text #124 merge the three C4 ADRs deletes. It is that ticket's to absorb,
-as ADR 0022 rev 1 recorded for the same reason.
+every citation of it — for text #124 merge the three C4 ADRs deletes, and that ticket already records
+this correction by name among what it absorbs. It is that ticket's, as ADR 0022 rev 1 recorded for the
+same reason.
+
+**No lesser fix is available, and that is the rule working rather than a gap.** [`README.md`](README.md)
+allows a correction to be a rev and forbids it being a block appended to the old text, so a pointer
+added to that record without revving it is the thing the rule refuses — there is no cheap third option
+to reach for. The stale sentence is confined to this integration branch:
+#124 merge the three C4 ADRs dissolves ADR 0021 rev 1 into one record before the epic reaches `main`,
+so what merges there never carries it.
 
 **The Deployment level is where a host obligation goes, and that is a new pull.** SRS019<!-- The
 backend runs on both supported architectures --> moved here because it was about a host all along;
