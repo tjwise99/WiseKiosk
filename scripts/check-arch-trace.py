@@ -7,6 +7,9 @@ tags: every accepted, active item in an obliging tier is tagged somewhere in the
 The rules are `docs/CI.md` § Documentation integrity; the tag mechanism and the tier it carries are
 ADR 0019 rev 1, and the completeness obligation is ADR 0022 rev 1.
 
+A tag counts wherever the export carries one — on the logical model's elements and relationships,
+and on the deployment model's, which the export keeps separate.
+
 Scope is resolution and completeness. Whether the tagged element is the one that requirement
 obliges, and whether the tier suits the level, are read at review.
 
@@ -90,6 +93,10 @@ def main():
     model = export()
     elements = model.get("elements") or {}
     relations = model.get("relations") or {}
+    # The export separates the deployment model from the logical one, and a tag on a deployment node
+    # lands only here. Reading `elements`/`relations` alone reports a tag applied there as applied to
+    # nothing, and leaves the item it names bound nowhere.
+    deployments = model.get("deployments") or {}
     declared = (model.get("specification") or {}).get("tags") or {}
 
     # A model this failed to read carries no tags, and a tag check over no tags agrees that nothing
@@ -103,7 +110,12 @@ def main():
     # subjects and one subject may carry several identifiers, so neither count derives from
     # the other, and neither derives from the size of the model.
     tagged_subjects = set()
-    for kind, group in (("element", elements), ("relationship", relations)):
+    for kind, group in (
+        ("element", elements),
+        ("relationship", relations),
+        ("deployment element", deployments.get("elements") or {}),
+        ("deployment relationship", deployments.get("relations") or {}),
+    ):
         for key, body in group.items():
             for tag in body.get("tags") or []:
                 applied.setdefault(tag, []).append(f"{kind} {body.get('title') or key!r}")
@@ -174,10 +186,10 @@ def main():
                 "must bind is undecided rather than settled"
             )
             continue
-        if not item.active:
-            retired += 1
-        elif status != "accepted":
+        if status != "accepted":
             proposed += 1
+        elif not item.active:
+            retired += 1
         else:
             population.append(uid)
             if uid not in applied:
@@ -190,15 +202,18 @@ def main():
             "check-arch-trace: no item is accepted and active, so nothing here judged allocation"
         )
 
-    # Each direction reports in full rather than the first one exiting, so a tag that stops
-    # resolving stays legible while the allocation set is non-empty.
+    # The three problem lists report in full rather than the first one exiting, so a tag that stops
+    # resolving stays legible while the allocation set is non-empty. The guards above are the
+    # exception and reach none of this: each exits where it stands, discarding what was collected.
     if problems:
         print(f"check-arch-trace: {len(problems)} tag(s) do not resolve:", file=sys.stderr)
         for problem in problems:
             print("  " + problem, file=sys.stderr)
     if unjudged:
         print(
-            f"check-arch-trace: {len(unjudged)} item(s) this rule cannot place:", file=sys.stderr
+            f"check-arch-trace: {len(unjudged)} item(s) this rule cannot place, leaving "
+            f"{len(population)} in the population it judged:",
+            file=sys.stderr,
         )
         for problem in unjudged:
             print("  " + problem, file=sys.stderr)
@@ -215,7 +230,12 @@ def main():
 
     identifiers = len(set(declared) | set(applied))
     applications = sum(len(where) for where in applied.values())
-    subjects = len(elements) + len(relations)
+    subjects = (
+        len(elements)
+        + len(relations)
+        + len(deployments.get("elements") or {})
+        + len(deployments.get("relations") or {})
+    )
     print(
         f"architecture → requirements holds: {applications} tag application(s) on "
         f"{len(tagged_subjects)} of {subjects} element(s) and relationship(s), "
