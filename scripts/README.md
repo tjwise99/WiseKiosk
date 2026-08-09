@@ -63,6 +63,12 @@ case_run () { # $1 label   $2 expect (pass|fail)   $3 file contents
 like a working check. When seeding into the tree rather than a fixture, `git diff --quiet <path>` before
 running, and treat a clean diff as the case failing rather than passing.
 
+**A seed that lands can still measure something else, and no diff catches that.** Assert the property
+the case is *about* — what the seeded file must contain afterwards, or what the tool under test now
+reports — rather than that the text changed. Three seeds failed this way in one afternoon on
+`check-arch-trace.py` below: one selected the wrong lines and moved 11 of 18 of them, one used an input
+that already satisfied the case elsewhere, and each reported the verdict its row expected.
+
 **Give the scratch repository a `git init`, and run the script from inside it.** Every `.mjs` check
 resolves its root with `git rev-parse --show-toplevel`, and `check-links.mjs`, `check-docs-index.mjs`
 and `check-workflow-hardening.mjs` build their file list with `git ls-files`. In a bare directory
@@ -800,8 +806,8 @@ md5sum "$d/scripts/check-arch-trace.py"                # assert it before readin
 ( cd "$d" && docs/requirements/.venv/bin/python scripts/check-arch-trace.py )
 ```
 
-**Three seeds in this pass landed and measured something else**, which is the failure this file's
-top-level § *Running a case* warns about, met three ways in one afternoon:
+**Three seeds in this pass landed and measured something else** — the second failure § *Running a
+case* names, met three ways in one afternoon:
 
 - a wrong post-condition raised before the file was written, so the case ran unseeded and reported
   `ok` — caught only because its numbers were byte-identical to the baseline row above it;
@@ -875,8 +881,8 @@ a local run cannot show: on PR #134 the `architecture` job's last step fails whi
 step above it passes, so the step is wired, reached, and able to fail its job. It was **not** a
 one-job red for most of the pass — of the five other jobs, `process` was red on the pull request's
 Development field not linking its ticket, a manual step unrelated to this check. Recorded because an
-earlier draft of this paragraph claimed otherwise, and the *land it wired* trade rests on the red
-being confined.
+earlier draft of this paragraph claimed otherwise — not stale, but never true at any commit on the
+branch — and the *land it wired* trade rests on the red being confined.
 
 **The last two rows are CONTRIBUTING question 10, *Unjudged input*, from both sides.** The
 mis-spelled status is the sharp one: comparing against `accepted` alone reads it as *not accepted*
