@@ -8,22 +8,26 @@ links:
 normative: true
 rationale: ''
 ref: ''
-reviewed: DZzyWDXBJMSdnGacfCH8hx8-InNhQFmA2JJoy-jrrlg=
+reviewed: 0B7hOdbJqV05-ivW4kQ564vSeHc-w2kXTySiygAsc78=
 status: proposed
 text: |
-  Pending: viewport-driven render test asserting a bijection between the modules the fixture
-  configuration names and the regions present in the DOM, with the module set read from the parsed
-  fixture rather than a hand-written list; asserting the laid-out regions are pairwise disjoint and
-  the document does not scroll horizontally, at the kiosk viewport (1920x1080) and at the desktop
-  viewports (1280x800 and 1440x900); and asserting at each of those three, over a fixture whose
-  content exceeds the region it is given, that the content is neither clipped nor reachable only by
-  scrolling nor scaled below the size it renders at when it fits, and that its box exceeds the
-  region's. Lands with the frontend
-  skeleton (#10); activated and given a references entry then.
+  Pending: viewport-driven render test asserting that every module the fixture configuration names
+  renders inside the region the configuration names for it, and that no region holds a module the
+  configuration did not name there, with the module set and its region assignments read from the
+  parsed fixture rather than a hand-written list; asserting the laid-out regions are pairwise
+  disjoint and the document does not scroll horizontally, at the kiosk viewport (1920x1080) and at
+  the desktop viewports (1280x800 and 1440x900); and asserting at each of those three, over a fixture
+  whose content exceeds the region it is given, that the content is neither clipped nor reachable
+  only by scrolling nor scaled below the size it renders at when it fits, and that its box exceeds
+  the region's. Lands with the frontend skeleton (#10); activated and given a references entry then.
 verification-justification: |
-  Settles that every configured module is present, that the regions the page lays out do not overlap
-  and do not scroll sideways at three viewports, and that content too large for its region overflows
-  rather than being hidden. The layout assertions and the overflow assertion take separate fixtures
+  Settles that every configured module renders in the region named for it and that no region carries
+  a module named elsewhere, that the regions the page lays out do not overlap and do not scroll
+  sideways at three viewports, and that content too large for its region overflows rather than being
+  hidden. Occupancy is read from the fixture's assignments in both directions, so a page rendering
+  every module into one region fails, which a count of modules against regions would not; what goes
+  unread is a region the configuration names no module for, which is asserted for geometry and not
+  for what it holds. The layout assertions and the overflow assertion take separate fixtures
   deliberately: overflowing content may cross a neighbouring region and may extend the document past
   the viewport, which the requirement permits, so one fixture asserting both would fail on a page
   behaving exactly as obliged. What that costs is the colliding case itself - the check shows the
