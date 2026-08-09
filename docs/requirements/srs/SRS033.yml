@@ -17,12 +17,11 @@ rationale: |
   halves on one of twice the resolution, so a guarantee expressed that way is not a guarantee about
   anything a viewer experiences. The fraction also carries the viewing distance the product is built
   for without fixing a distance in the specification.
-  This floor and the edge band spend the same display height. Where a declared band leaves the floor
-  no room the result is the operator's, which
-  SRS035<!-- The masked edge band is the deployment's to declare --> rules and this item does not
-  restate.
+  This floor and the edge band spend the same display height, and past some depth they cannot both
+  hold. What follows from that is ruled at
+  SRS035<!-- The masked edge band is the deployment's to declare --> and not restated here.
 ref: ''
-reviewed: c-xG4EPm2dP38J0jRFn2dNKKLclPnnozya1frqANClg=
+reviewed: 2tANRFaxIO3x54Qm33xG04KPQy4yCqmifNjCjkT8WqE=
 status: accepted
 text: |
   Text the display presents to be read shall occupy at least a minimum fraction of the display's
