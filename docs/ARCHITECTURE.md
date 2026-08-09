@@ -102,40 +102,19 @@ the repository layout is #5.
 
 _To be documented as it is built._ Language and boundary-contract decision:
 [ADR 0001 rev 1](decisions/0001-backend-language-go.md); the backend's config-blindness is
-[ADR 0007 rev 2](decisions/0007-config-validation-allocation.md)'s. Normative shape:
-SRS001<!-- A failed module shows why, and only that module -->,
-SRS006<!-- Unresolvable secret surfaces as that source's upstream failure -->,
-SRS008<!-- No secret value in any backend output -->,
-SRS009<!-- Every source reachable through the backend, statelessly -->,
-SRS011<!-- Upstream request rate is bounded, and the bound is not operator-tunable -->,
-SRS012<!-- Request parameters validated against known-good per-source patterns -->,
-SRS013<!-- Client-facing contract for rejected requests -->,
-SRS016<!-- Both sides consume the generated types -->,
-SRS019<!-- The backend runs on both supported architectures -->,
-SRS028<!-- Served responses declare their type, and forbid the browser inferring one -->.
+[ADR 0007 rev 2](decisions/0007-config-validation-allocation.md)'s. What the backend must do is the
+[requirements tree](requirements/README.md); which obligations bind this container is the
+[architecture model](architecture/README.md). Neither is restated here.
 
 ## Frontend
 
 _To be documented as it is built._ Svelte 5 + Vite, a static single-page bundle served as static
 files ([ADR 0018 rev 1](decisions/0018-frontend-svelte-vite-static-spa.md)); each module's poll cadence is
 that module's own need, per
-[the module contract](contracts/module-contract.md). Normative shape:
-SRS002<!-- A module-scoped configuration error is reported at that module -->,
-SRS003<!-- A configuration change applies no later than the next page load -->,
-SRS010<!-- The display page reaches no origin but the backend's -->,
-SRS016<!-- Both sides consume the generated types -->,
-SRS017<!-- Full-screen assembly at kiosk; reflow, no horizontal scroll, at narrower widths -->,
-SRS021<!-- Frontend runs on a Pi Zero-class browser host -->,
-SRS024<!-- Every offered configuration key is exercised at a non-default value -->,
-SRS026<!-- The display says when the backend is gone -->,
-SRS027<!-- The display page holds no device capability it does not use -->,
-SRS030<!-- Only content is rendered above the emission ceiling -->,
-SRS031<!-- Content too large for its region overflows -->,
-SRS032<!-- Readable text is carried at full emission -->,
-SRS033<!-- Text holds a minimum size against the display, at every resolution -->,
-SRS034<!-- The laid-out regions keep clear of the display edge -->,
-SRS035<!-- The masked edge band is the deployment's to declare -->; configuration
+[the module contract](contracts/module-contract.md); configuration
 validation is frontend-owned per [ADR 0007 rev 2](decisions/0007-config-validation-allocation.md).
+What the display page must do is the [requirements tree](requirements/README.md); which obligations
+bind this container is the [architecture model](architecture/README.md). Neither is restated here.
 
 ## The boundary contract
 
