@@ -4,13 +4,20 @@ header: |
   No region is laid out within the mirror reserve
 level: 38
 links:
-- SYS008: VPfvnggRFZk-lw_hS19tLa7dy6YEIx6HnnAFt0GPdyo=
+- SYS008: ouhMzhj5lp6pwr8iqxsRVAUoCmzwHZSZvY93pAx9r5Q=
 normative: true
 rationale: |
-  The reserve survives because nothing can be put in it, not because nothing happens to be. The page
-  owns the region set and the configuration names a region per module, so a reserve the page declines
-  to cover is one no configuration can address - erosion by adding modules cannot reach it, which is
-  the failure this obligation exists against.
+  The reserve survives assignment because nothing can be assigned into it. The page owns the region
+  set and the configuration names a region per module, so a reserve the page declines to cover is one
+  no position an operator can write addresses - which is the erosion this obligation exists against,
+  and the whole of what it stops.
+  It does not stop erosion by overflow. Modules stacking in a region adjacent to the reserve leave
+  each less room, content exceeds the region, and
+  SRS017<!-- Full-screen assembly at kiosk; reflow, no horizontal scroll, at narrower widths -->
+  obliges that content to overflow - into the reserve, if that is where the region borders. Adding
+  modules therefore does reach the reserve, by the route the overflow ruling permits rather than by
+  the route this item closes. What is obliged here is the layout; what crosses it afterwards is the
+  consequence of keeping content, which was chosen over hiding it.
   Stated over the regions the page lays out rather than over the surface that ends up empty. The
   emergent form was tried and withdrawn: a display covered but for its mandated edge inset leaves a
   thin band whose bounding box is the whole display, so any measure of the largest empty region's
@@ -19,7 +26,7 @@ rationale: |
   is not a specification change. They are not independent of the edge inset or the region set's own
   geometry, which is why one check reads them together.
 ref: ''
-reviewed: r575jfiNbKcuNRzV-dPArgb-23rCRw7cY9CN2J053F4=
+reviewed: oFOiABLfYhwrQpzGrPB4pDuNtoFzMrrjKlxl9sZZNkk=
 status: accepted
 text: |
   The display page shall lay out no region intersecting a contiguous area of the display of stated

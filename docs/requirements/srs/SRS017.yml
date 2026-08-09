@@ -4,7 +4,7 @@ header: |
   Full-screen assembly at kiosk; reflow, no horizontal scroll, at narrower widths
 level: 1.41
 links:
-- SYS002: 6ke7ibP5v8qlaCLCBH4AN5gC-ynA2tyvaAbl7RZxqFM=
+- SYS002: XJGA2Zraq6XatlEAcqTB3GP-TADfFQ5xGlusWDTc3iE=
 normative: true
 rationale: |
   Decomposes SYS002's<!-- Each module renders in full, and reads --> kiosk-primary,
@@ -34,6 +34,12 @@ rationale: |
   display would stay whole by becoming unreadable. Overflow is the only one of the four that hides
   nothing and reads at distance, and it makes a region given too little space visibly wrong rather
   than quietly lossy.
+  A configuration dense enough to make the display overflow badly gets no rendered failure state
+  (owner, 2026-08-08): the degraded display is the signal an operator needs, and announcing that the
+  display will look wrong is a second and worse way of saying what is already visible. Nothing has
+  failed, so it is not the case
+  SYS001<!-- Failure is legible and proportionate --> carries, and no configuration is rejected, so
+  the allocation of configuration validation is untouched.
   Overflow and the two bounds around it collide, and the text says which gives way rather than
   leaving it to a check. Overflowing content may cross into a neighbouring region and may extend the
   document past the viewport's edge; both are permitted, because the alternative in each case is
@@ -41,7 +47,7 @@ rationale: |
   no-horizontal-scroll are therefore obligations on what the page lays out, not on what content does
   to it afterwards.
 ref: ''
-reviewed: nYyXw1fz7Y0xhT9GonXuic5SArGs3mfwbtz8Tb0nWpk=
+reviewed: 0BfLGqaoDBTQ6Zcf6hkPI86fBqhxi_Lh6AST5yVJ-ic=
 status: accepted
 text: |
   The display page shall lay out its regions across a single full-screen display so that no two

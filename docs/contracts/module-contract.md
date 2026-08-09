@@ -1,7 +1,9 @@
 # Module contract
 
-A **display module** is one region of the kiosk display, fed by one data source, added and removed as
-a unit. This page is the contract: what a module is made of, and what an author does to add one. It
+A **display module** is one unit of the kiosk display, fed by one data source, added and removed as a
+unit. It renders into a region the configuration names for it; regions are the page's and a region
+may carry several modules
+(SRS017<!-- Full-screen assembly at kiosk; reflow, no horizontal scroll, at narrower widths -->). This page is the contract: what a module is made of, and what an author does to add one. It
 is the canonical statement, not a summary of one — where a module shape arrives that this contract
 does not fit, the contract is amended to describe it.
 

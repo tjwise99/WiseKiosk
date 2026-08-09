@@ -17,9 +17,9 @@ rationale: |
   region there: no position an operator can write addresses it. That is a property of what the page
   draws, decidable from a rendered page, and it needs no configuration key and no rule for content
   assigned into the reserve, because nothing can be assigned into it.
-  An earlier revision of this item obliged the reserve as an emergent measurement - the largest
-  contiguous minimum-emission region spanning some fraction of the display - and that is withdrawn
-  rather than restated. The metric does not measure the want: on a display whose content covers all
+  An earlier decomposition obliged the reserve as an emergent measurement - the largest contiguous
+  minimum-emission region spanning a fraction of the display, and centred on it - and that is
+  withdrawn rather than restated. The metric does not measure the want: on a display whose content covers all
   but the mandated edge inset, the free surface is a thin band whose bounding box is the whole
   display, so it scores full marks while returning no reflection at all. What replaces it obliges the
   layout rather than the leftovers.
@@ -28,14 +28,14 @@ rationale: |
   failure behaviour for content assigned into it. That rested on the operator placing content by
   geometry, which the configuration does not let them do. The cost was never there.
 ref: ''
-reviewed: VPfvnggRFZk-lw_hS19tLa7dy6YEIx6HnnAFt0GPdyo=
+reviewed: ouhMzhj5lp6pwr8iqxsRVAUoCmzwHZSZvY93pAx9r5Q=
 status: accepted
 text: |
   Wherever the display carries no content it shall be held at minimum emission, and the page shall
   lay out no region within a contiguous part of the surface large enough and placed to return the
   reflection of a viewer at the distance the display is installed for.
 verification-justification: |
-  Settled by its children: the rendered ground of every element the page draws, and the laid-out
+  Settled by its children: every emitting surface of every element the page draws, and the laid-out
   regions read against the area the reserve occupies. Three things neither reaches. The value the
   page renders is not the light the panel emits - backlight, gamma, colour profile and the
   half-silvered surface all lie between them. What a viewer sees in the reserve is the reflected

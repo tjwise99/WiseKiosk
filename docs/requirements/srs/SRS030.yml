@@ -1,10 +1,10 @@
 active: true
 derived: false
 header: |
-  Nothing the page draws carries a lit ground
+  The page emits only where a module presents content
 level: 33
 links:
-- SYS008: VPfvnggRFZk-lw_hS19tLa7dy6YEIx6HnnAFt0GPdyo=
+- SYS008: ouhMzhj5lp6pwr8iqxsRVAUoCmzwHZSZvY93pAx9r5Q=
 normative: true
 rationale: |
   The mirror is made of absence, so anything drawn where content is not is drawn at the mirror's
@@ -12,26 +12,35 @@ rationale: |
   behind a block of text, a card, a fill marking a region's bounds, a scrim to lift a glyph off its
   background. Each is emitted light, so each brightens the ground rather than darkening it, spending
   mirror that does not come back on a legibility gain that does not arrive.
-  Stated over every element the page draws rather than over the surface no content occupies, and that
-  is the whole point of the wording. Under the earlier form the check sampled the surface content did
-  not occupy, and occupancy is read from element boxes - so drawing a scrim removed its own area from
-  the population being measured, and the item passed on a display whose mirror had been spent. Adding
-  an element now adds an obligation instead of shrinking a sample, which is the only form of this
-  requirement that a lit ground cannot walk out of.
+  Stated over what the page emits rather than over the surface no content occupies, and the wording
+  has been wrong twice in the same direction. The first form sampled the surface content did not
+  occupy, and occupancy is read from element boxes, so drawing a scrim removed its own area from the
+  population measured. The second obliged every element's ground, which a border, an outline or a
+  shadow is not - and a fill marking a region's bounds, the device this rationale names, is exactly a
+  border. Emission is the quantity the want is about, so emission is what the text says: a page that
+  lights a pixel owes a module's content behind it, whatever draws it.
+  Content a module presents is excluded because that is the display doing its job. What that permits
+  is a module rendering something large and bright - a full-bleed image - which takes the mirror as
+  surely as a scrim does and is not forbidden here. That is a module's design rather than the page's
+  chrome, and no item in this tree obliges it; the tree is silent, and this rationale says so rather
+  than the check pretending otherwise.
 ref: ''
-reviewed: S6UtwEWjaVPVmeLck41_IG1UOcUoHGf03KYBqSURs88=
+reviewed: TiZrpCTYfPATPX91QbNAu1gYewOyDIdOh7s5rHw8Rzg=
 status: accepted
 text: |
-  Every element the display page draws shall have a ground at the display's minimum emission, so that
-  the display emits only from the content it presents to be read.
+  The display page shall emit above the display's minimum emission only where it renders content a
+  module presents.
 verification-justification: |
-  Asserted by reading the rendered ground of every element the page draws, the page's own root among
-  them. The population is every element rather than a sampled area, so an element added to the page
-  is an element the check reads. Three steps sit outside the assertion. What the page renders is not
-  what the panel emits - backlight, gamma, colour profile and any tone mapping lie between them, and
-  a half-silvered surface attenuates the result again - so the check settles the value the software
-  chose, not the light that leaves the glass. What a viewer sees there is the reflected room, which
-  the software neither supplies nor controls. And an element may still emit through its content
-  rather than its ground: a bright image fills its box and this item does not forbid it, because a
-  module presenting an image is presenting content.
+  Asserted by reading every emitting surface of every element the page draws - ground, border,
+  outline and shadow, the page's own root among them - and requiring each above the minimum to belong
+  to a module's rendered content. The population is every element rather than a sampled area, so an
+  element added to the page is an element the check reads, and it is every way an element emits
+  rather than one of them. Three steps sit outside the assertion. What the page renders is not what
+  the panel emits - backlight, gamma, colour profile and any tone mapping lie between them, and a
+  half-silvered surface attenuates the result again - so the check settles the value the software
+  chose, not the light that leaves the glass. What a viewer sees in the unlit surface is the
+  reflected room, which the software neither supplies nor controls. And how much a module's own
+  content emits is outside the exemption's reach by construction: a module rendering a large bright
+  image satisfies this and takes the mirror, which the rationale records as unobliged rather than the
+  check reporting green over.
 verification-method: test

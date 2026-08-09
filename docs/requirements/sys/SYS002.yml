@@ -38,7 +38,7 @@ rationale: |
   text size as a fraction of display height, and the emission a glyph is rendered at, are both
   settled by a machine reading a rendered page.
 ref: ''
-reviewed: 6ke7ibP5v8qlaCLCBH4AN5gC-ynA2tyvaAbl7RZxqFM=
+reviewed: XJGA2Zraq6XatlEAcqTB3GP-TADfFQ5xGlusWDTc3iE=
 status: accepted
 text: |
   Every configured module shall render on the display it was configured for, laid out within the
@@ -53,7 +53,9 @@ verification-justification: |
   room, which the software neither supplies nor controls. Content overflowing a region near the edge
   crosses that inset, which
   SRS034<!-- The laid-out regions keep clear of the display edge --> states and nothing here
-  contradicts. The size floor is read at sampled resolutions rather than at every one the display
-  supports. And whether the configuration leaves a display worth looking at, and whether the result
+  contradicts. Overflow may also extend the document past the viewport, putting content behind a
+  scroll a kiosk has no way to perform - hiding, in this item's own sense, and permitted because the
+  alternative is discarding the content instead. The size floor is read at sampled resolutions rather
+  than at every one the display supports. And whether the configuration leaves a display worth looking at, and whether the result
   is a good layout rather than a legible one, are the operator's and a judgement no gate claims.
 verification-method: test
