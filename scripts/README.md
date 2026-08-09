@@ -773,9 +773,12 @@ moves, and a number that never moved cannot be shown to move by a single run. Bo
 to a commit that contains them: a hash paired with a commit whose tree holds a different script tells
 a reader nothing about which half is wrong.
 
-**Every row in this section was re-run on 2026-08-08 against the two-direction script at `bb40de7`,
-md5 `1a6c86d393a6b8a94dc5bbbe13c853e1`** (#122 close check-arch-trace's second direction), and the
+**Every row in this section was re-run on 2026-08-08 against the two-direction script at `c8f1511`,
+md5 `76f6fbcf4c1dad838c210b971cf186c2`** (#122 close check-arch-trace's second direction), and the
 counting rows' *Reported* column carries those numbers rather than the ones the smaller model gave.
+The whole set was run twice: once against the first form of the second direction, and again against
+`c8f1511` after review found three defects in it. What the second pass is worth is bounded — it shows
+the rows still hold, not that they held before the fixes.
 
 ### Why every must-pass row is seeded on an all-bound fixture
 
@@ -821,6 +824,27 @@ diagnostic would mean the fixture had drifted. None did.
 | Tag that is not an identifier | `needs-srs`, taken from the model on `origin/main` |
 | No tag at all | every declaration and application stripped from the model |
 | Model that does not parse | a `#tag` where the grammar wants `}` |
+| **A tag the scan cannot reach** | the two items applied to a **deployment node**, run against the pre-fix script — reported as *declared and applied to nothing* about tags that are applied |
+
+### Must pass — tags → tree
+
+The five rows this table held were all seeded on *the model as it stands*, which the second direction
+fails, so each had to be re-seeded on the all-bound fixture. Recording where each one went, rather
+than asserting in prose that they moved:
+
+| Case | Input | Where it is now |
+|---|---|---|
+| The model as it stands | — | **retired as a must-pass.** It is the headline must-fail row above |
+| An accepted `SRS` identifier on an **element** rather than a relationship | the other half of the code path | the all-bound fixture, which binds one item each way |
+| Every tag on elements, none on any relationship | every relationship application moved onto the system element — 11 of them | re-seeded and re-run: 40 applications on 13 of 26 subjects, 30 items, exit 0 |
+| One identifier applied to two subjects | SYS003<!-- A deployment is parameterised from outside the image --> tagging both operator relationships — applications exceed identifiers | holds on the all-bound baseline, 41 applications naming 30 items |
+| A relationship carrying no tag | the bundle-serving edge, which no accepted item obliges | holds on the all-bound baseline, 15 of 26 subjects tagged |
+| **A tag on a deployment node** | the two items declared and applied inside a `deployment` block | **new** — 41 applications on 16 of **28** subjects, exit 0 |
+
+The last row is the fix for the must-fail row above it, and it was run as the **finding's own
+reproduction** rather than as a fresh case: the same seeded fixture, the script swapped between the
+pre-fix copy and `c8f1511`, failing on one and passing on the other. A fix verified by a new case of
+one's own choosing is not verified.
 
 ### Must fail — tree → tags
 
@@ -836,16 +860,31 @@ diagnostic would mean the fixture had drifted. None did.
 
 The headline row needs no fixture, which is what makes it better evidence than a seed: the check
 fails on what the repository actually holds, and #123 C4 phase 4 Deployment is what turns it green.
+
 **It was read in CI as well as locally**, which is what § *Confirming a gate in CI rather than
 locally* says a local run cannot show: on PR #134 the `architecture` job's last step fails while the
-`check-arch` step above it passes, and the other four jobs are green — so the step is wired, reached,
-and able to fail its job, and the red is confined to the one job.
+`check-arch` step above it passes, so the step is wired, reached, and able to fail its job. **What
+that run does *not* show is a one-job red.** The workflow defines six jobs; of the five besides
+`architecture`, four were green and `process` was red throughout the pass, on the pull request's
+Development field not linking its ticket — unrelated to this check, and a manual step outside it. An
+earlier draft of this paragraph claimed the other jobs were green, which was never true at any commit
+on the branch. Recorded rather than quietly corrected, because the *land it wired* trade argued in
+the pull request rests on the red being confined and legible, and a two-job red is the signal erosion
+the ticket named, arriving from a second direction.
 
 **The last two rows are the ones that matter**, and they are CONTRIBUTING question 10, *Unjudged
 input*, from both sides. The mis-spelled status is the sharp one: a comparison against `accepted`
 alone reads it as *not accepted* and drops the item, which is indistinguishable from the item being
-correctly out of scope. The run instead names it and the population moves 30 → 29, so the shrinkage
-is on screen rather than inferred.
+correctly out of scope. The run instead names it, and the surviving population is printed beside the
+list — 30 → 29 — so the shrinkage is on screen rather than inferred.
+
+**That count is printed in the unplaceable message rather than only in the success line, and the
+difference was found by review.** The population size otherwise appears in two places a failing run
+may never reach: the success line, which a failing run does not print at all, and the unbound
+message, which is absent when nothing is unbound. Seeded on the all-bound fixture with an untagged
+`proposed` item's status mis-spelled, the earlier form printed the item and no population at all —
+the shrinkage real and invisible. Nothing was fail-open; the claim above was simply narrower than it
+read.
 
 ### Must pass — tree → tags, and the controls that show each exclusion works
 
@@ -857,14 +896,23 @@ input, and the same input with the excluding property removed.
 |---|---|---|---|
 | A retired accepted item bound nowhere | SRS005<!-- One validation implementation -->, in the tree today | `active: true` | 1 of **31** — the population grew by the item |
 | A `proposed` item bound nowhere | four `SRS` and one `SYS` in the tree today | `status: accepted` on one | 1 of **31**, naming that item |
-| A verification-tier item bound nowhere | the whole tier, 44 items | — see below | — |
+| A verification-tier item bound nowhere | the whole tier, 44 items | one made `accepted` **and** `active`, still untagged | **nothing** — it stays out, so the exclusion is by tier |
 
-**The verification tier has no live control**, and that is a stated gap rather than an oversight:
-activating one is itself rejected by `validate-tree.sh`'s pending-tier exception, so the seed cannot
-be placed. What stands in for it is the unrecognised-tier row above — a tier outside both sets
-**fails** rather than falling through — which is what makes the verification tier's exclusion a
-decision the code states rather than a skip that happens to be there. The 44 is also printed on every
-green run, so the tier vanishing is visible.
+**The verification tier's row is the one that needed the control most**, because every item in that
+tier is `active: false` *and* `status: proposed`, so on today's tree an exclusion by tier and an
+exclusion that merely falls through the `status` and `active` gates are indistinguishable. Making one
+item accepted and active separates them: it stays out, and the run is still green. Its second control
+is on the code rather than the tree — deleting the verification arm from the fixture's copy of the
+script, against that same seed, reports all 44 items as unplaceable and fails. Both directions, so
+the arm is load-bearing rather than decorative.
+
+An earlier draft of this section recorded that control as **unplaceable**, on the ground that
+`validate-tree.sh` rejects an activated verification item. That reason is wrong — `validate-tree.sh`
+is a different check and does not run inside a `check-arch-trace` fixture, and two neighbouring rows
+already seed trees the tree gates would refuse. It is recorded because a stated gap is a standing
+instruction not to look, which is worse than no entry: the next reader would have taken it that the
+tier arm cannot be separated from the `status` and `active` arms, which is exactly the confusion the
+control resolves.
 
 ### What the success line counts
 

@@ -122,9 +122,9 @@ jobs:
     # --exit-code`): the staleness gate that mirrors the repo's "CI fails on
     # stale generated code" rule for the architecture layer. Then the model and
     # the Doorstop tree are resolved against each other in both directions.
-    # Doorstop is read
-    # through the requirements silo's venv and LikeC4 through the architecture
-    # silo's node_modules, each with the feature it serves. Browser-free:
+    # Doorstop is read through the requirements silo's venv and LikeC4 through
+    # the architecture silo's node_modules, each with the feature it serves.
+    # Browser-free:
     # bundled WASM graphviz, no chromium. No secrets: pure model validation +
     # codegen.
     runs-on: ubuntu-latest
