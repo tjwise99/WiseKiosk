@@ -4,27 +4,29 @@ header: |
   Pending: emitting-surface test
 level: 67
 links:
-- SRS030: jSbmGYyR1wo2eBsn5haF4B5nLYGDlMeYDeh1iIIIOuQ=
+- SRS030: QqjOCMqeXUbaIbIH0SFKaR0ewYoz8WNvpJGvDHp2sMQ=
 normative: true
 rationale: ''
 ref: ''
-reviewed: Ht8Iih6ze71PJgsH4MIG7O0bbe9SRkvXia9qyRxYmnc=
+reviewed: 3Rr1Gb1uC9AXs_cMCH8pAx6z0lYqQBCy0LVpjykjAmU=
 status: proposed
 text: |
   Pending: render a fixture configuration and read every emitting surface of every element the page
-  draws - ground, border, outline and shadow, its root among them - asserting each sits at the
-  display's minimum except where it is text or imagery rendered as content. Seeded against the
-  devices the requirement exists to forbid, each as its own case: a panel behind a block of text, a
-  card, a fill marking a region's bounds, a scrim lifting a glyph off its background, and each of the
-  last two spelled as a gradient rather than a solid, since a gradient is imagery by every rendering
-  definition and is the spelling that reads as legal. A device added later is a case added here.
-  Lands with the frontend skeleton (#10); activated and given a references entry then.
+  draws - ground, border, outline and shadow, its root among them - asserting each sits below the
+  ceiling except where it is text or imagery rendered as content. Seeded both ways. Must fail: a lit
+  panel behind a block of text, a card, a fill marking a region's bounds, a scrim lifting a glyph off
+  its background, and each of the last two spelled as a gradient rather than a solid, which is the
+  spelling that reads as legal. Must pass: a hairline rule under a module title, and a grouping tint
+  dark enough to clear the ceiling - legal devices the check must not reject. The ceiling is
+  calibrated against the glass, so moving it changes this check and not the requirement. Lands with
+  the frontend skeleton (#10); activated and given a references entry then.
 verification-justification: |
-  Settles that the page draws no panel, card, fill, scrim, border, outline or shadow that emits,
-  whatever the configuration - the population is every element rendered and every surface it emits
-  from, so neither an element added nor a decoration drawn some other way escapes the reading. Leaves
-  unproven what a viewer sees in the unlit surface, which is the reflected room and outside the
-  system; what the panel emits, since backlight, gamma and the half-silvered surface all lie past the
-  value read; and how much the exempt text and imagery themselves emit, which a large bright image
-  takes the mirror with while satisfying this.
+  Settles that nothing the page draws other than text and imagery clears the ceiling, whatever the
+  configuration - the population is every element rendered and every surface it emits from, so
+  neither an element added nor a decoration drawn some other way escapes the reading. Leaves unproven
+  what a viewer sees in the unlit surface, which is the reflected room and outside the system; what
+  the panel emits, since backlight, gamma and the half-silvered surface all lie past the value read;
+  how much the exempt text and imagery themselves emit, which a large bright image takes the mirror
+  with while satisfying this; and how much of the display sits at the ceiling, since a tint covering
+  all of it passes.
 verification-method: test
