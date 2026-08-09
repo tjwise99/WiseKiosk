@@ -27,16 +27,25 @@ rationale: |
   exemption to a module's content would have forbidden both - the page owing a message and forbidden
   to light it.
   Text and imagery rather than "content", because a scrim is content to whoever added it. A border,
-  an outline and a shadow are neither, so they are caught wherever they appear. What this still
-  permits is a large bright image, which takes the mirror as surely as a scrim does; that is a
-  module's design rather than the page's chrome, no item in this tree obliges it, and this rationale
-  says so rather than a check pretending otherwise.
+  an outline and a shadow are neither, so they are caught wherever they appear. "As content" carries
+  the rest: a gradient is imagery by every rendering definition, and drawn behind an element it is a
+  scrim under another name, so what matters is not whether a thing is an image but whether the page
+  renders it as something to look at.
+  Four devices are named above as the ones to forbid, and this clause has now been written four ways -
+  over unoccupied surface, over element grounds, over a module's content, over emission. Each closed
+  the case it was shown and left the class open, because nothing compares that list against what the
+  wording reaches. The list is therefore the calibration of
+  TST045<!-- Pending: emitting-surface test --> rather than a paragraph here, so a fifth device
+  arrives as a case in a check rather than a fifth noun in this text.
+  What this still permits is a large bright image rendered as content, which takes the mirror as
+  surely as a scrim does; that is a module's design rather than the page's chrome, no item in this
+  tree obliges it, and this rationale says so rather than a check pretending otherwise.
 ref: ''
-reviewed: Fmy5nJDGXP3zrRoQgeR4qWWb7CY2TJoSD6TIL_-1RqQ=
+reviewed: lQ8VsCcwGDOeJfZxm5lPYarxIKjz5suFfOFbyyjolgU=
 status: accepted
 text: |
   The display page shall emit above the display's minimum emission only through the text and imagery
-  it presents.
+  it renders as content.
 verification-justification: |
   Asserted by reading every emitting surface of every element the page draws - ground, border,
   outline and shadow, the page's own root among them - and requiring each above the minimum to be
