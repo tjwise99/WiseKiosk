@@ -4,23 +4,28 @@ header: |
   Pending: viewport-driven layout render test
 level: 1.41
 links:
-- SRS017: rHCjACeC3qwyfyV2MlyY6x_c47neKajlBuMTsfJJFyw=
+- SRS017: GoavV7AUrpT59A1XgHRovWHHXB_1Dap4FrDrAAI8tQU=
 normative: true
 rationale: ''
 ref: ''
-reviewed: oXHuPqUlhRnEk1iNuXGnoKW6DdjqpCX3CAkgfageIjQ=
+reviewed: YSlQpn2L-rMrwwUgHmcD9aBAyeOP5o_pB66dS1bMP24=
 status: proposed
 text: |
   Pending: viewport-driven render test asserting a bijection between the modules the fixture
-  configuration names and the regions present in the DOM, each module's rendered box lying within the
-  bounds of the region the configuration assigns it, with the module set read from the parsed fixture
-  rather than a hand-written list; and asserting the document does not scroll horizontally at the
-  kiosk viewport (1920x1080) or at the desktop viewports (1280x800 and 1440x900). Lands with the
-  frontend skeleton (#10); activated and given a references entry then.
+  configuration names and the regions present in the DOM, with the module set read from the parsed
+  fixture rather than a hand-written list; asserting, over a fixture whose content exceeds the region
+  it is given, that the content is neither clipped nor reachable only by scrolling nor scaled below
+  the size it renders at when it fits, and that its box exceeds the region's; and asserting the
+  document does not scroll horizontally at the kiosk viewport (1920x1080) or at the desktop viewports
+  (1280x800 and 1440x900). Lands with the frontend skeleton (#10); activated and given a references
+  entry then.
 verification-justification: |
-  Settles that every configured module is present, rendered inside the region it was assigned, with
-  no horizontal scroll at three viewports. Leaves unproven what the configuration composes: two
-  assigned regions may overlap, and a page rendering the overlap faithfully passes every assertion
-  here. Leaves legibility across a room unproven too, which no geometric assertion reaches - it is
-  obliged and checked separately rather than here.
+  Settles that every configured module is present, that content too large for its region overflows
+  rather than being hidden, and that the document does not scroll sideways at three viewports.
+  Leaves unproven what the configuration composes: two assigned regions may overlap, and a page
+  rendering the overlap faithfully passes every assertion here. The overflow and no-horizontal-scroll
+  assertions are made over separate fixtures, because content overflowing past the viewport's edge
+  extends the scrollable area and no single fixture can satisfy both - which is a property of the
+  obligations rather than of the check. Leaves legibility across a room unproven too, which no
+  geometric assertion reaches - it is obliged and checked separately rather than here.
 verification-method: test

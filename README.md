@@ -7,7 +7,7 @@ behind one-way glass. What that glass returns where the display carries nothing 
 than a side effect: the page adds no light where it presents no content
 (SYS008<!-- The surface carrying no content is a mirror -->), and how much surface that leaves is
 the operator's to arrange. The configuration assigns each module its region, and the page renders it
-there (SYS002<!-- Each module renders within its region, and reads -->,
+there (SYS002<!-- Each module renders in full, and reads -->,
 SRS017<!-- Full-screen assembly at kiosk; reflow, no horizontal scroll, at narrower widths -->); there
 is nothing to interact with, it renders and it refreshes. Shipped as one container image; each
 deployment is independent, customised through configuration, never through a fork

@@ -1,26 +1,32 @@
 active: true
 derived: false
 header: |
-  Content keeps clear of the display edge
+  The laid-out regions keep clear of the display edge
 level: 37
 links:
-- SYS002: 91axd_1dLgOSnLun8sBZIMhrVsiH2HQyeBW5OaT1VAQ=
+- SYS002: QG4tuI7Quh1X7Al-9h-E7TITSd0jlKe2CBaFpqgEMxY=
 normative: true
 rationale: |
   A panel set in a frame, or driven by a television that overscans, does not present its own edge to
   anybody: some outer band of it is behind trim or off the tube, and the browser reports every pixel
   of that band as visible. So the property the layout need states cannot be established by the
   viewport alone - the one measurement available is the one that cannot see the mask.
-  Holding content clear of the edge is what the software can do about a mask it cannot observe.
+  Holding the layout clear of the edge is what the software can do about a mask it cannot observe.
+  It is stated over the regions the page lays out rather than over everything it renders, because
+  content too large for its region overflows that region (owner, 2026-08-08) and can therefore cross
+  any inset. How far it overflows follows from the region the operator gave it and the data upstream
+  returned, neither of which the page chooses; where it puts the regions, it does.
 ref: ''
-reviewed: FDqHw-nvNn7L7PSRa4BKYQlZ2cbh0IL9kA3QE4x5Fwg=
+reviewed: LhBd09sMTEz8WOu3Par3RBdfAun33_T_1CVvxiGdtCs=
 status: accepted
 text: |
-  Content the display renders shall lie within an inset from every edge of the display, stated as a
-  fraction of the display's height.
+  Every region the display page lays out shall lie within an inset from every edge of the display,
+  stated as a fraction of the display's height.
 verification-justification: |
-  Asserted by reading rendered geometry against the viewport and confirming no content enters the
-  outer band. What the check does not settle is whether the inset clears the mask actually fitted -
-  the frame and the television are the operator's, so the figure is calibrated against a deployment
-  known to present its content whole, and is held with the check rather than here.
+  Asserted by reading each laid-out region against the viewport and confirming none enters the outer
+  band. Two things it does not settle. Whether the inset clears the mask actually fitted - the frame
+  and the television are the operator's, so the figure is calibrated against a deployment known to
+  present its content whole, and is held with the check rather than here. And whether what the
+  regions hold stays inside them, which it does not by design: content overflowing a region near the
+  edge crosses the inset, and nothing here or anywhere claims otherwise.
 verification-method: test

@@ -15,7 +15,7 @@ One published container image serving a full-screen, config-driven smart-mirror 
 backend proxies a handful of public APIs and serves the built frontend
 ([ADR 0020 rev 1](decisions/0020-two-containers-one-origin-and-dual-tier-tags.md)); a Svelte SPA renders
 modules into regions of the page. See the [README](../README.md) for the product definition, and
-SYS002<!-- Each module renders within its region, and reads -->,
+SYS002<!-- Each module renders in full, and reads -->,
 SYS004<!-- Upstream data reaches the display only through the backend --> and
 SYS005<!-- Single-definition internal contract --> with their SRS children in the [requirements
 tree](requirements/README.md) for the intended architecture until this section describes the built

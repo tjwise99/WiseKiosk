@@ -4,18 +4,20 @@ header: |
   Pending: edge inset clearance test
 level: 71
 links:
-- SRS034: jZKYTX_s0um2W6eUaCetfafw_AtdrjC7qLkfbP42JoQ=
+- SRS034: 8TnfF86bfDX-HUB_KFuRVNoFn7E3VBZMrrHFhG5BUgE=
 normative: true
 rationale: ''
 ref: ''
-reviewed: y-3Ng-VrsQUApz3-zrwJgUSaimEV3rZZQPvmKOe3ct4=
+reviewed: 9Uint9-mzOYUh3yQTwSoJ10-FhKgj1Oo0O9hLw2mDSg=
 status: proposed
 text: |
-  Pending: read rendered geometry against the viewport, asserting no content enters the outer band
-  on any edge, over configurations chosen to load the display rather than a single fixture. Lands
-  with the frontend skeleton (#10); activated and given a references entry then.
+  Pending: read each laid-out region's geometry against the viewport, asserting no region enters the
+  outer band on any edge, over configurations chosen to load the display rather than a single
+  fixture. Lands with the frontend skeleton (#10); activated and given a references entry then.
 verification-justification: |
-  Settles that content keeps clear of a band the software cannot observe being masked. Leaves
+  Settles that the layout keeps clear of a band the software cannot observe being masked. Leaves
   unproven that the band clears the mask actually fitted - the frame and the television are the
   operator's, so the figure is calibrated against a deployment known to present its content whole.
+  It reads regions rather than content deliberately: content overflows its region by design, so a
+  content-level assertion would fail on a display behaving exactly as obliged.
 verification-method: test
