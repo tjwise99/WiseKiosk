@@ -19,6 +19,12 @@ rationale: |
   SRS017<!-- Full-screen assembly at kiosk; reflow, no horizontal scroll, at narrower widths --> owns
   those, and "from where that display is watched" carries viewing distance the same way. Phone widths
   are deliberately not a requirement.
+  The legibility clause is stated over text rather than over modules, because that is the population
+  its children oblige and a narrower clause would leave part of them tracing to nothing. It reaches
+  text a module did not put there - a failure message, say - which is intended: a type scale and an
+  emission floor are what make any glyph readable at distance, whatever put it on the screen.
+  SYS001<!-- Failure is legible and proportionate --> obliges a failure to say why and to stay in
+  proportion, which is a different sense of the word and is not doubled here.
   Two earlier claims are retracted here. The text obliged every module to be "wholly visible", which
   reads as a promise about the assembled layout - no overlap, nothing clipped - and the product does
   not choose the arrangement that decides it. And an earlier scope disclaimed readability as visual
@@ -26,12 +32,12 @@ rationale: |
   as a fraction of display height, and the emission a glyph is rendered at, are both settled by a
   machine reading a rendered page.
 ref: ''
-reviewed: FpIoje68BCM8Yw6Pho7u_68y2_hds12_tkRgI7JC_8I=
+reviewed: 91axd_1dLgOSnLun8sBZIMhrVsiH2HQyeBW5OaT1VAQ=
 status: accepted
 text: |
   Every configured module shall render wholly within the region the configuration assigns it and
-  within the surface the display actually presents, on the display it was configured for, and shall
-  be legible from where that display is watched.
+  within the surface the display actually presents, on the display it was configured for; and text
+  the display presents to be read shall be legible from where that display is watched.
 verification-justification: |
   Settled by its children, and all of it decidable: each module's rendered box read against the
   region it was assigned, text size read as a fraction of the display's height, emission read per
