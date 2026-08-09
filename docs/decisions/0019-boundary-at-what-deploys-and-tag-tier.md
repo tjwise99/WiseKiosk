@@ -2,7 +2,7 @@
 
 **Status:** accepted
 **Decided:** 2026-08-04 (C4 phase 1 design discussion, ticket #96 C4 phase 1 System Context)
-**Rev:** 1
+**Rev:** 2
 
 > **Tag tier widened, 2026-08-04 ([ADR 0020 rev 1](0020-two-containers-one-origin-and-dual-tier-tags.md), #97
 > C4 phase 2).** The tier rule below reads as one tier per level. The Container level found two
@@ -19,6 +19,9 @@
 
 ## Revisions
 
+- **rev 2** — 2026-08-09 — corrects a consequence that named a desk validator retired by #129 retire
+  the desk configuration validator and a tooling document since deleted; the boundary and the tag-tier
+  rule are unchanged (#71 release artifact set).
 - **rev 1** — 2026-08-05 — revision tracking begins; text as merged (#118 ADR revisions).
 
 ## Context
@@ -93,9 +96,11 @@ system element owing all seven `SYS` items restates that the `SYS` tier is the t
 
 ## Consequences
 
-**A tool the project ships is not thereby in the model.** The desk validator has no element and no
-relationship; the provisioning tooling gains one if and when it acts on the running deployment.
-[`../../tools/README.md`](../../tools/README.md) remains where the desk-side story is told.
+**A tool the project ships is not thereby in the model.** Something this project builds that the
+system never exchanges anything with is absent rather than external. No such tool ships at all
+([ADR 0021 rev 1](0021-release-artifact-set-and-operator-tooling.md)), so the rule has no live subject;
+one would gain an element if and when it acted on the running deployment.
+[`../DEPLOYMENT.md`](../DEPLOYMENT.md) is where what ships beside the image is described.
 
 **The tags are gated on resolution, not on judgement.** `check-arch-trace` reads the model through
 `likec4 export json` and fails a tag naming no item, a retired or unaccepted one, or a mis-cased
