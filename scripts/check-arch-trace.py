@@ -7,8 +7,11 @@ tags: every accepted, active item in an obliging tier is tagged somewhere in the
 The rules are `docs/CI.md` § Documentation integrity; the tag mechanism and the tier it carries are
 ADR 0019 rev 1, and the completeness obligation is ADR 0022 rev 1.
 
-A tag counts wherever the export carries one — on the logical model's elements and relationships,
-and on the deployment model's, which the export keeps separate.
+A tag counts on four subject kinds: the logical model's elements and relationships, and the
+deployment model's, which the export keeps separate. A tag on a **view** is not read — a view is a
+projection of the model rather than a subject in it, and ADR 0022 rev 1 binds an item to an element
+or a relationship. One applied there fails as applied to nothing, which is the right verdict reached
+by a message that does not say so.
 
 Scope is resolution and completeness. Whether the tagged element is the one that requirement
 obliges, and whether the tier suits the level, are read at review.
