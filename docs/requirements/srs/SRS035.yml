@@ -25,9 +25,10 @@ rationale: |
   SRS033<!-- Text holds a minimum size against the display, at every resolution --> spend the same
   finite display height, and past some depth they cannot both hold. That is not a conflict to be
   resolved by loosening one: an operator who declares a band the display cannot afford has overloaded
-  it, and the result is theirs (owner, 2026-08-09). No bound on the configuration follows.
+  it, and the result is theirs (owner, 2026-08-09). No bound on the configuration follows, and none
+  should be added.
 ref: ''
-reviewed: 5yXeUx_0W2M2hGuEINEgtxuMbbAlyDKPVJ41EdoarRY=
+reviewed: SJqSxxwoGZO1jDVxC2B-MT4joS1RSyNeadz-xENBUI0=
 status: accepted
 text: |
   The depth of the band the display page holds its regions clear of shall be supplied by the

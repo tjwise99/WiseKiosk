@@ -16,16 +16,19 @@ rationale: |
   a region behind the bezel and type too small or too dim are all the rendering's doing; a
   configuration asking for more than the display holds is not.
   What the configuration asks for includes where it asks for it, so a module rendered whole and
-  legibly in a region other than the one named for it is not what was asked. The page defines the
+  legibly in a region other than the one named for it is not what was asked, and the rendering is the
+  reason. The page defines the
   display's regions and the operator names which region each module goes in and nothing more (owner,
   2026-08-08), so the region set is the page's while how much any one region is asked to hold is not.
   Phone widths are deliberately not a requirement.
-  Two earlier claims someone would otherwise make again. Every module "wholly visible" is not the
-  page's to promise. And readability is not beyond verification - text size as a fraction of display
+  Three earlier claims someone would otherwise make again. Every module "wholly visible" is not the
+  page's to promise. This text once enumerated its own decomposition - four of its five children
+  restated one tier up, adding nothing they do not say and forbidding, absolutely, what one of them
+  permits. And readability is not beyond verification - text size as a fraction of display
   height and the emission a glyph is rendered at are both read from a rendered page, so the judgement
   obligation that appeared to have no home was not one.
 ref: ''
-reviewed: 55uTxnkcVNpDKzSiVIVlT_wNH0Sbpqr33jvEbEBgr2w=
+reviewed: OrhTmXT5XuBIgdjunOm9d4yMELP8wcFRc02rW3-D9Ag=
 status: accepted
 text: |
   Nothing the configuration asks the display to show shall be kept from a viewer watching it by the
