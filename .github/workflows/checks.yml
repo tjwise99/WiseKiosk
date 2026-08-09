@@ -120,8 +120,9 @@ jobs:
     # output — the artifacts under docs/architecture/ and the diagrams spliced
     # into docs/ARCHITECTURE.md — then fails on any drift (`git diff
     # --exit-code`): the staleness gate that mirrors the repo's "CI fails on
-    # stale generated code" rule for the architecture layer. Then the model's
-    # requirement tags are resolved against the Doorstop tree. Doorstop is read
+    # stale generated code" rule for the architecture layer. Then the model and
+    # the Doorstop tree are resolved against each other in both directions.
+    # Doorstop is read
     # through the requirements silo's venv and LikeC4 through the architecture
     # silo's node_modules, each with the feature it serves. Browser-free:
     # bundled WASM graphviz, no chromium. No secrets: pure model validation +
@@ -155,7 +156,7 @@ jobs:
           git add --intent-to-add -- docs/architecture/
           git diff --exit-code HEAD -- docs/architecture/ docs/ARCHITECTURE.md
 
-      - name: Every requirement identifier tagged in the model resolves to an accepted item
+      - name: Every tagged identifier resolves to an accepted item, and every accepted, active item is tagged
         run: docs/requirements/.venv/bin/python scripts/check-arch-trace.py
 
   process:
