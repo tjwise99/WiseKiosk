@@ -104,7 +104,7 @@ underneath it changing, and no gate compares them.
 `icon` or `description`.
 
 **An element earns a place where the system exchanges something with it, and an upstream once the
-module that reads it has a need** ([ADR 0019 rev 1](../decisions/0019-boundary-at-what-deploys-and-tag-tier.md)).
+module that reads it has a need** ([ADR 0019 rev 2](../decisions/0019-boundary-at-what-deploys-and-tag-tier.md)).
 Component content waits on the code it describes, which is ADR 0003 rev 1's rule against building a level
 before its second consumer exists rather than anything this level decides.
 
@@ -117,7 +117,7 @@ drawing and starts pointing at the code it describes, and it is checked at revie
 
 A LikeC4 **tag** carries the Doorstop id of the requirement obliging the element or relationship it
 sits on — that tag *is* the architecture → requirements link, and the tier follows the level
-([ADR 0019 rev 1](../decisions/0019-boundary-at-what-deploys-and-tag-tier.md)). At the Context level
+([ADR 0019 rev 2](../decisions/0019-boundary-at-what-deploys-and-tag-tier.md)). At the Context level
 it is `SYS`, bound where the obligation is observable at that level: on the relationships, not on the
 system box, which owes every `SYS` item and so distinguishes none of them. The Container level
 answers to `SRS`, and anything at a level also carries the coarser item it discharges observably

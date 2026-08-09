@@ -10,11 +10,12 @@
 
 ## Context
 
-`SRS052` was deleted in the tree rebuild (#69 tree rebuild): it enumerated the artifacts the project
-delivers and forbade delivering any host provisioning, and it traced to no clause of the need above
-it. Its prohibition was struck separately, on the ground that it forbade a case the owner could
-foresee wanting. Nothing replaced either half, so the specification neither describes what a release
-consists of nor rules on what may ship beside it.
+A requirement deleted in the tree rebuild (#69 tree rebuild) enumerated the artifacts the project
+delivers and forbade delivering any host provisioning. It went for two reasons: the enumeration was a
+table of contents for unrelated things that each had obligations already, and it traced to no clause
+of the need above it. Its prohibition was struck separately, on the ground that it forbade a case the
+owner could foresee wanting. Nothing replaced either half, so the specification neither describes what
+a release consists of nor rules on what may ship beside it.
 
 An enumeration returned as a check rather than a requirement — [`../CI.md`](../CI.md) asserts a
 release asset set and fails an undeclared asset — but a check asserting the set is what it says does
@@ -126,7 +127,7 @@ against separate APIs, and #67 security and supply-chain gates inherits them as 
 **The container build inherits a constraint from the healthcheck.** A declared `HEALTHCHECK` needs
 something inside the image able to reach the service over HTTP. A distribution base carries one; a
 minimal base does not, and the check then needs a self-check path in the backend binary.
-[ADR 0015 rev 1](0015-container-toolchain-and-image-annotations.md) leaves the base image undecided, so
+[ADR 0015 rev 2](0015-container-toolchain-and-image-annotations.md) leaves the base image undecided, so
 #54 container build and publish takes this cost with that choice rather than meeting it as a surprise.
 
 **An operator on an older digest reads a procedure describing the default branch.** The site is

@@ -147,14 +147,29 @@ enabled, and this paragraph rather than a check is what records it.
 
 What a release publishes and what CI asserts about it. Verification runs against the published digest
 in a separate job that pulls from the registry, reads only the registry and the public transparency
-log, and holds no credential. Unbuilt; owned by #67, with the asset set defined by #71.
+log, and holds no credential. Unbuilt; owned by #67 security and supply-chain gates, against the set
+[ADR 0021 rev 1](decisions/0021-release-artifact-set-and-operator-tooling.md) decides.
 
 **Nothing decides the no-credential property.** It is a proposal for a check, not an asserted
 guarantee: no gate compares the verification job's permissions against it, and SECURITY.md publishes
 a posture resting on this section. Until #77 fences this document, read it as intent.
 
-- **The release asset set is exactly** the image reference, the SBOM, the signature, the
-  build-provenance attestation, and the deployment recipe. An undeclared asset fails.
+- **A release occupies two locations, and each is a separate assertion.** The registry carries the
+  image at a digest, with the SBOM, the signature and the build-provenance attestation attached to it
+  as referring artifacts. The release tag carries exactly two files, the deployment recipe and an
+  example configuration. The release notes name the digest, which is what ties the tag to the
+  registry. Resolving referring artifacts against a digest, listing files on a tag and reading the
+  notes for a digest are three queries against two APIs, so **a run that reads one surface and skips
+  another fails** rather than reporting success over the part it reached — an unreadable surface, and
+  resolving no surface at all, are failures and not skips. An undeclared file on the tag fails, and so
+  does a declared one that is absent.
+  **The image reference is not an asset**, and counting it as one is what let a single sentence stand
+  for all three claims: it is a pointer rather than a file, and asserting the notes name it is a
+  different act from enumerating a tag.
+  **What no check here decides:** the documentation site is deployed from the default branch rather
+  than from a tag, so it is not a release asset and nothing asserts any correspondence between what it
+  describes and the digest an operator is running. That drift is chosen rather than overlooked, and
+  ADR 0021 rev 1 records the choice.
 - **Signature.** Keyless `cosign` verification against the published digest, with the expected
   certificate identity and OIDC issuer, exits zero; against a deliberately wrong identity it exits
   non-zero.
@@ -167,7 +182,7 @@ a posture resting on this section. Until #77 fences this document, read it as in
   `.description`, `.url`, `.source`, `.version`, `.created`, `.revision`, `.licenses` and
   `.documentation` — are present and non-empty **as labels on the image config and as annotations on
   the manifest**, which are separate metadata with separate readers
-  ([ADR 0015 rev 1](decisions/0015-container-toolchain-and-image-annotations.md)). Both are read: a check
+  ([ADR 0015 rev 2](decisions/0015-container-toolchain-and-image-annotations.md)). Both are read: a check
   reading one reports nothing about the other. No value is a `LABEL` line in the Dockerfile, and one
   is bound rather than merely present: **`.revision` is the commit the job published**, which is what
   a hardcoded value fails. A missing key, an empty value or that binding failing exits non-zero;
@@ -186,6 +201,36 @@ a posture resting on this section. Until #77 fences this document, read it as in
 - **The code generators are pinned** to an exact version, so a toolchain bump cannot present as
   schema drift and a regeneration is reproducible. Structurally the same rule as the line above, and
   no requirement states it: nothing the running software does can violate a pin (#7).
+
+## Deployment and bring-up
+
+What the published material must let an operator do, checked by running it rather than by reading it.
+What each of these obligations *is*, and why, is [`DEPLOYMENT.md`](DEPLOYMENT.md)'s.
+
+- **The documented procedure executes.** The bring-up commands the documentation states are run in a
+  clean container and the service is asserted to serve. It fails if a documented step does not run, or
+  if the sequence completes without a serving deployment — so documentation that omits a step fails
+  here rather than at somebody's first deployment. The procedure's verification step is inside that
+  sequence: a procedure whose digest check does not run, or does not fail on a digest that fails
+  verification, fails the check.
+- **The committed recipe carries a restart policy.** A scripted check over the recipe, failing if the
+  policy is absent. **It gates that one key deliberately and no others**: the key is the residue of a
+  requirement deleted on #69 tree rebuild, not the beginning of a recipe linter. Every other value in
+  the recipe is a sample default an operator is expected to weigh and change
+  ([ADR 0021 rev 1](decisions/0021-release-artifact-set-and-operator-tooling.md)), and gating one would
+  assert a recommendation as an obligation.
+- **The image reports its health in both directions.** An integration test runs the image and reads
+  the reported status while the backend serves and while it does not. A test that only ever observes
+  the healthy state cannot tell a working signal from a hardcoded one.
+- **An image swap preserves the deployment.** A test runs published digest A with a mounted
+  configuration and secret directory and asserts it is healthy and serving that configuration; stops
+  and removes it; runs digest B with byte-identical mount arguments and asserts it is healthy, serving
+  the same configuration, and reporting a changed version — with no builder invoked at any point.
+
+**Unbuilt, and two of them have no implementation ticket.** The recipe and health-signal checks are
+#54 container build and publish's. The bring-up and image-swap checks run against what that ticket
+publishes, and #71 release artifact set decided what they assert while shipping no code, so nothing
+currently builds them. Stated rather than left to be inferred from an owner line that would be wrong.
 
 ## The exception register
 
@@ -324,7 +369,7 @@ resolve, a citation to something that does not exist, an index that has drifted 
 - Every requirement identifier tagged in the architecture model names an item that exists, is active
   and accepted, and is spelled canonically; every declared tag is applied to something. A tag
   carrying anything other than an identifier fails rather than being passed over — the model's tags
-  carry requirement links ([ADR 0019 rev 1](decisions/0019-boundary-at-what-deploys-and-tag-tier.md)), so
+  carry requirement links ([ADR 0019 rev 2](decisions/0019-boundary-at-what-deploys-and-tag-tier.md)), so
   one carrying something else is a decision to take, not an exemption to add. A model naming no
   requirement at all fails too: it resolves every tag it carries, so an absent link and a sound one
   would read identically. What this leaves unproven is whether the tagged element is the one that
