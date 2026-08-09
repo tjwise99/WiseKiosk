@@ -65,9 +65,10 @@ running, and treat a clean diff as the case failing rather than passing.
 
 **A seed that lands can still measure something else, and no diff catches that.** Assert the property
 the case is *about* — what the seeded file must contain afterwards, or what the tool under test now
-reports — rather than that the text changed. Three seeds failed this way in one afternoon on
-`check-arch-trace.py` below: one selected the wrong lines and moved 11 of 18 of them, one used an input
-that already satisfied the case elsewhere, and each reported the verdict its row expected.
+reports — rather than that the text changed. Three seeds failed this way in one afternoon writing the
+`check-arch-trace.py` cases: one asserted the wrong post-condition and never wrote the file, one
+selected lines by indentation and moved 11 of 18 of them, one used an input that already satisfied the
+case elsewhere. Each reported the verdict its row expected, so no exit status caught any of them.
 
 **Give the scratch repository a `git init`, and run the script from inside it.** Every `.mjs` check
 resolves its root with `git rev-parse --show-toplevel`, and `check-links.mjs`, `check-docs-index.mjs`
@@ -787,9 +788,9 @@ is byte-identical to the `c8f1511` the rows were run against — the two differ 
 SRS020<!-- Non-root container user --> declared and applied to the `Backend` element and
 SRS025<!-- No secret material in the published image --> to the operator's configuration
 relationship. The second direction fails on the tree's real state, so the model as it stands is not a
-must-pass input — it is the headline must-fail row below, and all five of the tags→tree must-pass
-rows had to be re-seeded even though that arm did not change. **A step added to a sequence re-decides
-every case the sequence already passed.**
+must-pass input — it is the headline must-fail row below, and every tags→tree must-pass row had to be
+re-seeded even though that arm did not change. **A step added to a sequence re-decides every case the
+sequence already passed.**
 
 ### Running a case here
 
@@ -805,18 +806,6 @@ cp "$REPO/scripts/check-arch-trace.py" "$d/scripts/"   # fresh: the archive carr
 md5sum "$d/scripts/check-arch-trace.py"                # assert it before reading any result
 ( cd "$d" && docs/requirements/.venv/bin/python scripts/check-arch-trace.py )
 ```
-
-**Three seeds in this pass landed and measured something else** — the second failure § *Running a
-case* names, met three ways in one afternoon:
-
-- a wrong post-condition raised before the file was written, so the case ran unseeded and reported
-  `ok` — caught only because its numbers were byte-identical to the baseline row above it;
-- relationship bodies selected by **indentation**, which a tag nested inside a container shares with
-  an element's, so 11 of 18 applications moved and the case never entered the path it names;
-- a subject case seeded with an item **already bound elsewhere**, so it passed while saying nothing
-  about the subject.
-
-Each reported the expected verdict, so the exit status caught none of them.
 
 ### Must fail — tags → tree
 
@@ -846,20 +835,17 @@ diagnostic would mean the fixture had drifted. None did.
 | **A tag on a deployment element** | the two items declared and applied on a node inside a `deployment` block | **new** — 41 applications on 16 of **28** subjects, exit 0 |
 | **A tag on a deployment relationship** | the same two on an edge between two nodes, both nodes untagged | **new** — 41 applications on 16 of **30** subjects, exit 0 |
 
-The two deployment rows were run as the **finding's own reproduction** rather than as fresh cases:
-the same fixture, the script swapped between the pre-fix copy and `c8f1511`, failing with *declared
-and applied to nothing* on one and passing on the other. Both are needed because the scan reads two
-groups. The pre-fix failure is their control rather than a must-fail row — the current script passes
-that input, so listing it there would fail anyone re-running the table.
+Two rows carry the weight. The **deployment** pair covers both groups the scan reads, and each was run
+against the pre-fix script in the same fixture, where it fails with *declared and applied to nothing* —
+the defect they exist for. The **relationship** row's seed selects bodies by which `{` a `->` line
+opened, not by indentation, and is confirmed by reading the export for surviving relationship tags
+rather than by an exit status that is 0 either way.
 
 **A premise this check rests on and does not test:** an `instanceOf` does not inherit its logical
 target's tags — the deployment nodes export `tags: None` beside a `Backend` carrying eight. A LikeC4
 version that propagated them would leave every run green while the completeness rule went hollow for
 every item bound to an instantiated container: no diagnostic, no count that moves. Re-run that row
 when the pin moves.
-
-The relationship row's seed tracks which `{` a `->` line opened, and is confirmed by reading the
-export for surviving relationship tags — see § *Running a case here* for the form of it that did not.
 
 ### Must fail — tree → tags
 
@@ -878,19 +864,15 @@ fails on what the repository actually holds, and #123 C4 phase 4 Deployment is w
 
 **It was read in CI as well as locally**, which § *Confirming a gate in CI rather than locally* says
 a local run cannot show: on PR #134 the `architecture` job's last step fails while the `check-arch`
-step above it passes, so the step is wired, reached, and able to fail its job. It was **not** a
-one-job red for most of the pass — of the five other jobs, `process` was red on the pull request's
-Development field not linking its ticket, a manual step unrelated to this check. Recorded because an
-earlier draft of this paragraph claimed otherwise — not stale, but never true at any commit on the
-branch — and the *land it wired* trade rests on the red being confined.
+step above it passes, so the step is wired, reached, and able to fail its job.
 
 **The last two rows are CONTRIBUTING question 10, *Unjudged input*, from both sides.** The
 mis-spelled status is the sharp one: comparing against `accepted` alone reads it as *not accepted*
 and drops the item, indistinguishable from the item being correctly out of scope. The run names it
-and prints the surviving population beside the list — 30 → 29. That count is in the unplaceable
-message rather than only in the success line because the success line is absent from a failing run
-and the unbound message is absent when nothing is unbound; seeded with an untagged `proposed` item's
-status mis-spelled, the earlier form printed no population at all.
+and prints the surviving population beside the list — 30 → 29. That count belongs in the unplaceable
+message and not only in the success line, because the success line is absent from a failing run and
+the unbound message is absent when nothing is unbound: with an untagged item's status mis-spelled,
+both are, and the shrinkage would be real and invisible.
 
 ### Must pass — tree → tags, and the controls that show each exclusion works
 
@@ -905,12 +887,11 @@ input, and the same input with the excluding property removed.
 | A verification-tier item bound nowhere | the whole tier, 44 items | one made `accepted` **and** `active`, still untagged | **nothing** — it stays out, so the exclusion is by tier |
 
 **The verification tier needed its control most**, because every item in that tier is `active: false`
-*and* `status: proposed`, so exclusion by tier and exclusion falling through the `status` and
-`active` gates are indistinguishable on today's tree. It has a second control on the code: deleting
-the verification arm from the fixture's script, against that same seed, reports all 44 as unplaceable
-and fails. An earlier draft called this control **unplaceable**, on the ground that `validate-tree.sh`
-rejects an activated verification item — wrong, since that check does not run inside a
-`check-arch-trace` fixture. Recorded because a stated gap is a standing instruction not to look.
+*and* `status: proposed`, so exclusion by tier and exclusion falling through the `status` and `active`
+gates are indistinguishable on today's tree. It has a second control on the code: deleting the
+verification arm from the fixture's script, against that same seed, reports all 44 as unplaceable and
+fails. `validate-tree.sh` rejecting an activated verification item is not a reason the seed cannot be
+placed — that check does not run inside a `check-arch-trace` fixture.
 
 ### What the success line counts
 
@@ -927,11 +908,10 @@ the argument. The `04cea31` form reported `len(set(declared) | set(applied))`, s
 applied twice counted once: deleting one of the two applications left its line **byte-identical**
 before and after the seed. **A count that cannot move is not evidence.**
 
-**The third row had to be re-seeded.** Its old form stripped a subject's tags *and their
-declarations*, which under two directions leaves those items unbound — so the run fails, and a
-failing run prints no success line at all, destroying the only thing the row measures. Moving the
-applications instead holds allocation complete while still emptying a subject: applications hold at
-41, subjects drop 15 → 14.
+**The third row moves the applications rather than stripping them.** Stripping a subject's tags and
+their declarations leaves those items unbound, so the run fails — and a failing run prints no success
+line at all, destroying the only thing the row measures. Moving them holds allocation complete while
+still emptying a subject: applications hold at 41, subjects drop 15 → 14.
 
 Nothing gates any of this — the success line is read by a person, and a wrong one fails no build,
 which is why it went unnoticed until a model carried both a duplicated identifier and a deliberately
@@ -980,19 +960,17 @@ an item to an element or a relationship. Two runs, both observed rather than rea
 | A view tag naming an item already applied to an element | passes, exit 0, the counts unmoved — the view tag is invisible in both directions |
 
 The verdict is right in both and the message is not — the first is the same uninformative diagnostic
-the deployment defect produced, reached this time for a good reason. The second row is also the seed
-that went wrong third in § *Running a case here*.
+the deployment defect produced, reached this time for a good reason.
 
 `globals`, `imports` and `manualLayouts` carry no tag-bearing subject; `imports` is empty in a
 single-project setup and is the next place to look if a second LikeC4 project is ever added.
 
 ### `check-arch` is asserted unchanged rather than re-fixtured
 
-`check-arch`'s three-line gate is not in this change's sequence: nothing here touches `arch-export`,
-and this check writes nothing to the working tree, so the mutable state those three lines cooperate
-over is untouched. `just check-arch` was re-run on the unseeded tree as the control and passes,
-leaving zero index entries. The four fixture rows under § *The three-line gate* were **not** re-run,
-and this paragraph is the reason rather than an omission.
+`check-arch`'s three-line gate shares no state with this check: nothing here touches `arch-export`,
+and this check writes nothing to the working tree. `just check-arch` was re-run on the unseeded tree
+as the control and passes, leaving zero index entries; the four fixture rows under § *The three-line
+gate* were **not** re-run, and this paragraph is the reason rather than an omission.
 
 ## `check-site`
 
