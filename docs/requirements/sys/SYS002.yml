@@ -1,36 +1,43 @@
 active: true
 derived: false
 header: |
-  The configured layout renders whole and reads
+  Each module renders within its region, and reads
 level: 2
 links: []
 normative: true
 rationale: |
-  The product is a display; a module present but clipped, overlapped or scrolled out of view has
-  failed silently, and so has one too small or too dim to read from where the display hangs. "Wholly
-  visible and legible" absorbs no-overlap, no-clipping, no-scrollbars and readability as one property
-  rather than four observables. "The display it was configured for" carries the kiosk-primary,
-  desktop-secondary distinction without fixing viewports;
-  SRS017<!-- Full-screen assembly at kiosk; reflow, not overlap, at narrower widths --> owns those,
-  and "from where that display is watched" carries viewing distance the same way. Phone widths are
-  deliberately not a requirement.
-  There is no configuration bound: how many modules a deployment names is the operator's (owner,
-  2026-08-08), and a deployment dense enough to defeat this defeats it visibly.
-  An earlier scope covered the three geometric observables alone and disclaimed readability as visual
-  judgement. That described what the tree then held rather than what a check can decide: text size as
-  a fraction of display height, and the emission a glyph is rendered at, are both settled by a machine
-  reading a rendered page.
+  The product is a display; a module whose content escapes the region it was given has failed
+  silently, and so has one too small or too dim to read from where the display hangs. The scope is
+  what the software renders rather than what the configuration composes: the operator assigns every
+  region (owner, 2026-08-08), so whether two regions overlap, and how densely the surface is filled,
+  follow from the configuration. Containment is what the product does decide, and is what "wholly
+  within" obliges. "The surface the display actually presents" is not the viewport, which reports
+  every pixel as visible whether or not a frame or an overscanning television hides its outer band;
+  holding content clear of that band is the page's, because the mask is nobody's to observe. "The
+  display it was configured for" carries the kiosk-primary, desktop-secondary distinction without
+  fixing viewports;
+  SRS017<!-- Full-screen assembly at kiosk; reflow, no horizontal scroll, at narrower widths --> owns
+  those, and "from where that display is watched" carries viewing distance the same way. Phone widths
+  are deliberately not a requirement.
+  Two earlier claims are retracted here. The text obliged every module to be "wholly visible", which
+  reads as a promise about the assembled layout - no overlap, nothing clipped - and the product does
+  not choose the arrangement that decides it. And an earlier scope disclaimed readability as visual
+  judgement, which described what the tree then held rather than what a check can decide: text size
+  as a fraction of display height, and the emission a glyph is rendered at, are both settled by a
+  machine reading a rendered page.
 ref: ''
-reviewed: HRAcizwL7FVS6vyQR0HHP_zs532nmBvnuJ4zNVsHjX8=
+reviewed: FpIoje68BCM8Yw6Pho7u_68y2_hds12_tkRgI7JC_8I=
 status: accepted
 text: |
-  Every configured module shall be wholly visible and legible on the display it was
-  configured for, from where that display is watched.
+  Every configured module shall render wholly within the region the configuration assigns it and
+  within the surface the display actually presents, on the display it was configured for, and shall
+  be legible from where that display is watched.
 verification-justification: |
-  Settled by its children, and all of it decidable: a rendered layout measured against the viewport it
-  declares, text size read as a fraction of the display's height, emission read per element, and content
-  measured against an inset the viewport cannot see being masked. Two things no child reaches. What a
-  viewer actually sees behind any glyph is the reflected room, which the software neither supplies nor
-  controls. And whether the result is a good layout rather than a legible one is a judgement no gate
-  claims. Legibility is not on that list: its children carry it.
+  Settled by its children, and all of it decidable: each module's rendered box read against the
+  region it was assigned, text size read as a fraction of the display's height, emission read per
+  element, and content measured against an inset the viewport cannot see being masked. Three things
+  no child reaches. What a viewer actually sees behind any glyph is the reflected room, which the
+  software neither supplies nor controls. Whether the configuration assigns regions that overlap, or
+  leaves a display worth looking at, is the operator's. And whether the result is a good layout
+  rather than a legible one is a judgement no gate claims.
 verification-method: test

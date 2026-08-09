@@ -6,10 +6,10 @@ A config-driven smart-mirror display. A full-screen browser page renders a fixed
 behind one-way glass. What that glass returns where the display carries nothing is the point rather
 than a side effect: the page adds no light where it presents no content
 (SYS008<!-- The surface carrying no content is a mirror -->), and how much surface that leaves is
-the operator's to arrange. The layout is fixed
-(SYS002<!-- The configured layout renders whole and reads -->,
-SRS017<!-- Full-screen assembly at kiosk; reflow, not overlap, at narrower widths -->) and there is
-nothing to interact with: it renders and it refreshes. Shipped as one container image; each
+the operator's to arrange. The configuration assigns each module its region, and the page renders it
+there (SYS002<!-- Each module renders within its region, and reads -->,
+SRS017<!-- Full-screen assembly at kiosk; reflow, no horizontal scroll, at narrower widths -->); there
+is nothing to interact with, it renders and it refreshes. Shipped as one container image; each
 deployment is independent, customised through configuration, never through a fork
 (SYS003<!-- A deployment is parameterised from outside the image -->). A sixth module is added by
 the documented six-part contract in
