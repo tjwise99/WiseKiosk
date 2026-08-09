@@ -94,12 +94,9 @@ legibly says when one failed`" .-> Viewer
 
 <!-- arch-export:end generated/containers.mmd -->
 
-The Component level (C4 L3) is drawn per container, in the two container sections below. No element
-carries a `link` to the source implementing it: no code exists, and the repository layout is #5.
-
-Several sections below list the **requirements that shape** that part of the system, read out of the
-[requirements tree](requirements/README.md). **Such a list is a reading aid into the tree, not the
-model's tag set, and the two are not expected to agree in either direction.**
+The Component level (C4 L3) is drawn per container, in the two container sections below, and the
+Deployment level in [§ Deployment](#deployment). No element carries a `link` to the source
+implementing it: no code exists, and the repository layout is #5.
 
 **Every accepted, active `SYS` or `SRS` item binds somewhere in this model, and where one cannot, the
 model grows to draw what it obliges**
@@ -111,25 +108,14 @@ to an accepted item; a retired item is out for the same reason it obliges nothin
 outside it too: a verification item says how an obligation is settled, not what the software owes.
 
 **Which items are unbound is the check's answer, not this document's.** The second direction of
-`check-arch-trace` enumerates them (#122 close check-arch-trace's second direction); a list written
-here would be a point-in-time inventory nothing compares to the tree, which is the failure the
-paragraph below describes in the other direction. What is worth stating is the *kind* of absence
-rather than the roster. An obligation on the published image is one such kind: the image is neither
-container nor component, so SRS020<!-- Non-root container user --> and
-SRS025<!-- No secret material in the published image --> bind when the Deployment level draws it
-(#123 C4 phase 4 Deployment). What distinguishes such an item from one that simply has not been bound
-is that the
-obligation has no observable this model draws, rather than the subject being unusual —
-SRS018<!-- One generic published image --> obliges the same image and does bind, on the configuration
-arriving from outside, because that is where what it obliges is observable
-([ADR 0021 rev 1](decisions/0021-component-earns-its-interface-and-framework-half-only.md)).
-
-Tagged and unlisted: a tag sits where its obligation is observable
-([ADR 0021 rev 1](decisions/0021-component-earns-its-interface-and-framework-half-only.md)), which is
-often a component or an edge rather than the part a list is written under, and a list is not
-rewritten when a binding lands — that would make it a second inventory of the model, kept in step by
-nothing. Nothing compares the two, so neither is evidence about the other: read a list as a way into
-the tree, and the model as the record of where an obligation is observable.
+`check-arch-trace` enumerates them; a roster written here would be a point-in-time inventory nothing
+compares to the tree, and it is wrong from the first binding that lands after it. The **kind** of
+absence is what a reader needs, and there is one: an item whose subject the model does not draw at
+all. That is a reason to grow the model, never to register an exemption
+([ADR 0022 rev 1](decisions/0022-every-accepted-requirement-binds.md)), and the worked example is the
+published image — neither container nor component, so the obligations on it had nowhere to sit until
+the Deployment level drew it
+([ADR 0023 rev 1](decisions/0023-deployment-level-and-the-published-image.md)).
 
 ## Backend
 
@@ -273,12 +259,56 @@ bare `<NAME>` environment variable (SRS007<!-- Configuration schema offers no se
 
 ## Deployment
 
-_To be documented as it is built._ Container image, bind-mounted config, `_FILE` secrets.
-Requirements that shape this: SRS018<!-- One generic published image -->,
-SRS025<!-- No secret material in the published image -->,
-SRS022<!-- A bounded running footprint -->, SRS020<!-- Non-root container user -->. The health
-signal and the restart policy are properties of what ships rather than of the running system, and
-are in [`../tools/README.md`](../tools/README.md).
+**Deployment** — what the project publishes, the hosts that run it, and the files the operator places
+beside them ([ADR 0023 rev 1](decisions/0023-deployment-level-and-the-published-image.md)). It is not
+one of C4's four core levels: C4's fourth is Code, and deployment is a supplementary diagram mapping
+containers onto the infrastructure they run on.
+
+<!-- arch-export:begin generated/deployment.mmd -->
+
+```mermaid
+---
+title: "WiseKiosk — Deployment"
+---
+graph TB
+  subgraph DisplayHost["`Display host`"]
+    subgraph DisplayHost.DisplayBrowser["`Browser`"]
+      DisplayHost.DisplayBrowser.Frontend@{ shape: rectangle, label: "Frontend" }
+    end
+  end
+  PublishedImage@{ shape: rectangle, label: "Published image" }
+  subgraph ContainerHost["`Container host`"]
+    ContainerHost.ConfigurationFile@{ shape: rectangle, label: "Configuration file" }
+    ContainerHost.SecretFiles@{ shape: rectangle, label: "Secret files" }
+    subgraph ContainerHost.RunningContainer["`Running container`"]
+      ContainerHost.RunningContainer.Backend@{ shape: rectangle, label: "Backend" }
+    end
+  end
+  DisplayHost.DisplayBrowser.Frontend -. "`Fetches the configuration, served back 
+unparsed`" .-> ContainerHost.RunningContainer.Backend
+  DisplayHost.DisplayBrowser.Frontend -. "`Fetches the payload for each module`" .-> ContainerHost.RunningContainer.Backend
+  ContainerHost.RunningContainer.Backend -. "`Serves the single-page bundle`" .-> DisplayHost.DisplayBrowser.Frontend
+  PublishedImage -. "`Runs as this container`" .-> ContainerHost.RunningContainer
+  ContainerHost.ConfigurationFile -. "`Mounted in`" .-> ContainerHost.RunningContainer
+  ContainerHost.SecretFiles -. "`Mounted in`" .-> ContainerHost.RunningContainer
+```
+
+<!-- arch-export:end generated/deployment.mmd -->
+
+The published image is the one node here that does not run, and it is drawn because the obligations on
+it are obligations on the artifact rather than on the process it becomes — a deployment can override
+what the image declares, which is why the two are separate subjects
+([ADR 0023 rev 1](decisions/0023-deployment-level-and-the-published-image.md)).
+
+The container host and the display host are **roles, not machines**. They have different floors — a
+container runtime on one, a browser on the other — and one machine meeting both may carry both. In the
+configuration this is built for it cannot: the display host is below the runtime's floor, so the two
+are separate machines there.
+
+_The concrete wiring — the compose file, the mount paths, the deployment recipe — is documented here
+once it is built (#71 release artifact set)._ The health signal and the restart policy are properties
+of what ships rather than of the running system, and are in
+[`../tools/README.md`](../tools/README.md).
 
 ## Security & hardening
 
