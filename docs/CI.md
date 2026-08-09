@@ -329,6 +329,21 @@ resolve, a citation to something that does not exist, an index that has drifted 
   requirement at all fails too: it resolves every tag it carries, so an absent link and a sound one
   would read identically. What this leaves unproven is whether the tagged element is the one that
   requirement obliges, and whether the tier suits the level; both are read at review.
+- **Every accepted, active `SYS` or `SRS` item is tagged somewhere in the architecture model**, on an
+  element or a relationship ([ADR 0022 rev 1](decisions/0022-every-accepted-requirement-binds.md)).
+  There is no exemption record and nothing to add an item to: where one can bind nowhere, the model
+  grows to draw what it obliges. The population is decided rather than filtered — a tier outside the
+  obliging and verification sets fails, and so does a `status` outside `accepted` and `proposed`,
+  because comparing against `accepted` alone reads a mis-spelled status as *not accepted* and drops
+  the item from the check's own population. `TST` is outside the rule, a verification item saying how
+  an obligation is settled rather than what the software owes; a `proposed` item is outside it
+  because the direction above resolves a tag only to an accepted item, so one cannot be tagged; a
+  retired item — `active: false`, `status` untouched — is outside it because it obliges nothing. A
+  tree that loads no item, one whose obliging tiers are absent, and one where no item is accepted and
+  active each fail rather than reporting complete allocation over nothing judged. What this leaves
+  unproven is the same thing the direction above leaves unproven, and it is the cheaper pressure this
+  rule creates: an item can be tagged onto an element it does not oblige, and the check reads that as
+  bound. Held by review alone.
 - The documentation site builds under Sphinx with warnings-as-errors.
 
 **Considered and rejected:** a registry mapping each canonical document to the path globs it

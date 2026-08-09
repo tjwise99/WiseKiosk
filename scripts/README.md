@@ -773,7 +773,43 @@ moves, and a number that never moved cannot be shown to move by a single run. Bo
 to a commit that contains them: a hash paired with a commit whose tree holds a different script tells
 a reader nothing about which half is wrong.
 
-### Must fail
+**Every row in this section was re-run on 2026-08-08 against the two-direction script at `bb40de7`,
+md5 `1a6c86d393a6b8a94dc5bbbe13c853e1`** (#122 close check-arch-trace's second direction), and the
+counting rows' *Reported* column carries those numbers rather than the ones the smaller model gave.
+
+### The base state moved, and every must-pass row moved with it
+
+The second direction fails on the tree's real state, so **the model as it stands is no longer a
+must-pass input** — it is the headline must-fail row below. Every case that must *pass* is therefore
+seeded on top of an **all-bound fixture**: the extraction with SRS020<!-- Non-root container user -->
+declared and applied to the `Backend` element and SRS025<!-- No secret material in the published
+image --> to the operator's configuration relationship. That one fixture also discharges the
+element/relationship pair the old table listed as two rows, since it binds one item each way.
+
+This is the interaction to carry away rather than the arithmetic: **a step added to a sequence
+re-decides every case the sequence already passed.** Nothing about the tags→tree arm changed, and
+five of its six must-pass rows still had to be re-seeded, because what they were seeded *on* stopped
+passing.
+
+### Running a case here
+
+Each case is its own extraction. `node_modules` may be symlinked rather than copied — the reason the
+`check-arch` fixtures need a copy is `git add --intent-to-add`, which this check never runs.
+
+```sh
+d=$(mktemp -d)
+( cd "$REPO" && git archive HEAD | tar -x -C "$d" )
+ln -s "$REPO/docs/requirements/.venv"        "$d/docs/requirements/.venv"
+ln -s "$REPO/docs/architecture/node_modules" "$d/docs/architecture/node_modules"
+cp "$REPO/scripts/check-arch-trace.py" "$d/scripts/"   # fresh: the archive carries HEAD's copy
+md5sum "$d/scripts/check-arch-trace.py"                # assert it before reading any result
+( cd "$d" && docs/requirements/.venv/bin/python scripts/check-arch-trace.py )
+```
+
+### Must fail — tags → tree
+
+Each was seeded on the all-bound fixture, so an unbound report appearing beside the expected
+diagnostic would mean the fixture had drifted. None did.
 
 | Case | Input |
 |---|---|
@@ -786,40 +822,96 @@ a reader nothing about which half is wrong.
 | No tag at all | every declaration and application stripped from the model |
 | Model that does not parse | a `#tag` where the grammar wants `}` |
 
-### Must pass
+### Must fail — tree → tags
 
 | Case | Input |
 |---|---|
-| The model as it stands | — |
-| An accepted `SRS` identifier on an **element** rather than a relationship | the other half of the code path |
-| Every tag on elements, none on any relationship | a Container-level model of the shape #97 C4 phase 2 will produce |
-| One identifier applied to two subjects | SYS003<!-- A deployment is parameterised from outside the image --> tagging both operator relationships — applications exceed identifiers |
-| A relationship carrying no tag | the bundle-serving edge, which no accepted item obliges |
+| **An accepted, active item bound nowhere** | **no seed — the tree's real state**, reporting SRS020<!-- Non-root container user --> and SRS025<!-- No secret material in the published image --> |
+| A bound item losing its only tag | one item's declaration *and* its application deleted from the all-bound fixture |
+| The tree loads no item | the three tier directories removed |
+| No document carries an obliging tier | the two obliging tiers removed, the verification tier left, its `parent:` line dropped so the build still resolves |
+| The population is empty | every `status: accepted` in the two obliging tiers flipped to `proposed` — 31 items, 0 left |
+| A tier the rule has no answer for | a fourth document with an unrecognised prefix, holding one item |
+| A status outside the vocabulary | one accepted item's `status` mis-spelled |
+
+The headline row needs no fixture, which is what makes it better evidence than a seed: the check
+fails on what the repository actually holds, and #123 C4 phase 4 Deployment is what turns it green.
+
+**The last two rows are the ones that matter**, and they are CONTRIBUTING question 10, *Unjudged
+input*, from both sides. The mis-spelled status is the sharp one: a comparison against `accepted`
+alone reads it as *not accepted* and drops the item, which is indistinguishable from the item being
+correctly out of scope. The run instead names it and the population moves 30 → 29, so the shrinkage
+is on screen rather than inferred.
+
+### Must pass — tree → tags, and the controls that show each exclusion works
+
+An exclusion that passes proves nothing on its own: an item skipped for the right reason and an item
+skipped because the arm is dead read identically. Each row below is therefore a pair — the excluded
+input, and the same input with the excluding property removed.
+
+| Excluded input | Passes | Control: the property removed | Fails, reporting |
+|---|---|---|---|
+| A retired accepted item bound nowhere | SRS005<!-- One validation implementation -->, in the tree today | `active: true` | 1 of **31** — the population grew by the item |
+| A `proposed` item bound nowhere | four `SRS` and one `SYS` in the tree today | `status: accepted` on one | 1 of **31**, naming that item |
+| A verification-tier item bound nowhere | the whole tier, 44 items | — see below | — |
+
+**The verification tier has no live control**, and that is a stated gap rather than an oversight:
+activating one is itself rejected by `validate-tree.sh`'s pending-tier exception, so the seed cannot
+be placed. What stands in for it is the unrecognised-tier row above — a tier outside both sets
+**fails** rather than falling through — which is what makes the verification tier's exclusion a
+decision the code states rather than a skip that happens to be there. The 44 is also printed on every
+green run, so the tier vanishing is visible.
 
 ### What the success line counts
 
+Two lines now, one per direction. A failing run prints neither, which reshaped the third row below.
+
 | Case | Input | Reported |
 |---|---|---|
-| Baseline | the model as it stands | 18 applications on 7 of 11 subjects, 17 items |
-| One of two applications of the same identifier removed | one SYS003<!-- A deployment is parameterised from outside the image --> application deleted, the identifier still applied once | 17 applications, **17 items** — the counts separate |
-| A subject loses every tag **and** their declarations | both tags stripped from the `Frontend` element | 16 applications on **6** of 11 subjects |
+| Baseline | the all-bound fixture | 41 applications on 15 of 26 subjects, 30 items; **all 30** of 80 tree items bound, 5 proposed / 1 retired / 44 verification outside |
+| One of two applications of the same identifier removed | one SYS003<!-- A deployment is parameterised from outside the image --> application deleted, the identifier still applied once | 40 applications on 14 of 26, **30 items** — the counts separate |
+| A subject loses every tag, the applications surviving elsewhere | the `Frontend` element's two applications moved onto the `Backend` element | **41** applications on **14** of 26, 30 items |
 
 The middle row is why the counts are separate rather than one number, and it is the row that carries
 the argument. The `04cea31` form reported `len(set(declared) | set(applied))`, so an identifier
 applied twice counted once: deleting one of the two applications left its line **byte-identical**
 before and after the seed. **A count that cannot move is not evidence.**
 
-The third row is narrower than the second, and the `04cea31` form is not blind to it — that line's
-leading count moves too, 17 to 15. What it cannot say is that a **subject** stopped carrying links,
-because the only subject figures it reported were `len(elements)` and `len(relations)`, which are
-properties of the model rather than results of the check and read `5` and `6` either way. Stripping a
-tag *without* its declaration is not this case at all: it fails on the declared-and-applied-to-nothing
-arm, on both scripts. The fail-open shape is the one where the declaration goes too, and there the
-check is right to pass, because nothing it asserts is violated.
+**The third row had to be re-seeded, and why is the interaction worth recording.** Its old form
+stripped a subject's tags *and their declarations*, which under two directions leaves those items
+bound nowhere — so the run fails, and a failing run prints no success line at all. The seed would
+have destroyed the only thing the row measures. Moving the applications to another subject holds
+allocation complete while still emptying a subject, which is the assertion: applications hold at 41
+and subjects drop 15 → 14, so the figure that moved is a result of the check rather than a property
+of the model.
 
 Nothing gates any of this — the success line is read by a person, and a wrong one fails no build,
 which is why it went unnoticed until a model carried both a duplicated identifier and a deliberately
 untagged relationship at the same time.
+
+**One seed silently failed to apply during this pass, and it read as a pass.** The third row's first
+attempt asserted the wrong post-condition, raised before writing the file, and the case then ran
+against the unseeded fixture and reported `ok`. It was caught only because the *Reported* column was
+byte-identical to the baseline row above it. This is the trap § *Running a case* names, observed
+rather than quoted: confirm the seed applied, and prefer an assertion that names what the seeded file
+must now contain over one that merely says the text changed.
+
+### The guards' ordering, and what it hides
+
+Both directions report in full rather than the first one exiting, so a tag that stops resolving stays
+legible while the allocation set is non-empty — which it is on this branch until #123 C4 phase 4
+Deployment lands. **The guards are the exception: each exits on the spot**, and two of the rows
+above show what that costs. The stripped-tag model reports *the model names no requirement* rather
+than 30 unbound items, and the emptied population reports *no item is accepted and active* rather
+than the 30 tag-resolution failures the same flip creates. Both are the guard being right — a run
+that judged nothing must say so rather than list what it did not judge — but a reader seeing one of
+those two lines has been told the run stopped, not that the rest is clean.
+
+**Each guard reads something the thing it guards does not.** The obliging-tier guard is keyed on the
+document set, so it fires where the tiers have gone but items remain — the state a status-keyed guard
+cannot separate from a tree that legitimately obliges nothing. The population guard is keyed on
+`status` and `active`, and the unbound set is a subset of the population, so a population of zero is
+exactly the state that would report perfect allocation over nothing.
 
 **The unparseable-model row is the one that matters.** `likec4 export json` behaves like `codegen`
 and **succeeds on a broken model**, emitting a degraded document whose tags have gone missing — so a
@@ -829,13 +921,22 @@ identifier, and prints success. It was found by a malformed seed, not by design:
 degradation dropped the declarations too, the run would have been green.
 
 **The no-tag row is a guard rather than an arm.** A model carrying no tag resolves every tag it
-carries, so an absent architecture → requirements link and a sound one read identically. It is the
-third of that shape in this check, beside the guards over the export and over the tree.
+carries, so an absent architecture → requirements link and a sound one read identically. It is one of
+five of that shape here, beside the guards over the export, over the tree loading at all, over the
+obliging tiers being present, and over the population being non-empty.
 
 **Every degenerate input fails closed**: an emptied model directory, a removed model directory, a
 removed requirements tree, and an unparseable model. The removed-directory case is the sharp one —
 `likec4 validate` exits **0** on a directory holding no model, so the element guard is the only thing
 that catches it, and a check trusting the validator's exit status alone would pass.
+
+### `check-arch` is asserted unchanged rather than re-fixtured
+
+`check-arch`'s three-line gate is not in this change's sequence: nothing here touches `arch-export`,
+and this check writes nothing to the working tree, so the mutable state those three lines cooperate
+over is untouched. `just check-arch` was re-run on the unseeded tree as the control and passes,
+leaving zero index entries. The four fixture rows under § *The three-line gate* were **not** re-run,
+and this paragraph is the reason rather than an omission.
 
 ## `check-site`
 
