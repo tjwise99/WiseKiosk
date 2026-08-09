@@ -839,14 +839,24 @@ than asserting in prose that they moved:
 | Every tag on elements, none on any relationship | every relationship application moved onto the system element — all **18**, across five relationship subjects | re-seeded and re-run: 40 applications on **11** of 26 subjects, 30 items, exit 0, and the export confirms no relationship carries a tag |
 | One identifier applied to two subjects | SYS003<!-- A deployment is parameterised from outside the image --> tagging both operator relationships — applications exceed identifiers | holds on the all-bound baseline, 41 applications naming 30 items |
 | A relationship carrying no tag | the bundle-serving edge, which no accepted item obliges | holds on the all-bound baseline, 15 of 26 subjects tagged |
-| **A tag on a deployment node** | the two items declared and applied inside a `deployment` block | **new** — 41 applications on 16 of **28** subjects, exit 0 |
+| **A tag on a deployment element** | the two items declared and applied on a node inside a `deployment` block | **new** — 41 applications on 16 of **28** subjects, exit 0 |
+| **A tag on a deployment relationship** | the same two on an edge between two nodes, both nodes untagged | **new** — 41 applications on 16 of **30** subjects, exit 0 |
 
-The last row is the fix for the deployment-node defect, and it was run as the **finding's own
-reproduction** rather than as a fresh case: the same seeded fixture, the script swapped between the
-pre-fix copy and `c8f1511`, failing with *declared and applied to nothing* on one and passing on the
-other. A fix verified by a new case of one's own choosing is not verified. That pre-fix failure is
-this row's control rather than a row of the must-fail table — an input the current script is supposed
-to pass, so listing it there would fail anyone re-running that table with the current script.
+The deployment-element row is the fix for the deployment-node defect, and it was run as the
+**finding's own reproduction** rather than as a fresh case: the same seeded fixture, the script
+swapped between the pre-fix copy and `c8f1511`, failing with *declared and applied to nothing* on one
+and passing on the other. A fix verified by a new case of one's own choosing is not verified. That
+pre-fix failure is the row's control rather than a row of the must-fail table — an input the current
+script is supposed to pass, so listing it there would fail anyone re-running that table with the
+current script.
+
+**Both deployment rows are needed because the scan reads two groups**, and one row would evidence
+half a fix. The relationship row also settles the question that would make the wider scan wrong: an
+`instanceOf` does **not** inherit its logical target's tags. Its two nodes export `tags: None` beside
+a `Backend` carrying eight, so drawing a deployment binds nothing by itself and a deployment subject
+binds only what somebody deliberately tagged on it — the same contract as a logical element. Had
+inheritance existed, drawing the Deployment level would have silently satisfied the completeness rule
+for every item already bound to the container it instantiates.
 
 **The relationship row asserts a seed, and the seed is the part that was wrong first.** Its earlier
 form moved the tags off the three *top-level* relationships and left the two nested ones carrying
