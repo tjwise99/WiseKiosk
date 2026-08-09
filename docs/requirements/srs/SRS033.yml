@@ -4,7 +4,7 @@ header: |
   Text holds a minimum size against the display, at every resolution
 level: 36
 links:
-- SYS002: Zxe531jtUatE-VuJ4tpFFwvPcfWJ6Oup1VJEk-d-GGQ=
+- SYS002: aZikzbEEXjnrAZZkbsE4dO8dlxSsHo3G32QlYhkeqIg=
 normative: true
 rationale: |
   Rendering everything and reading at distance are not the same property, and the display can satisfy
@@ -17,8 +17,12 @@ rationale: |
   halves on one of twice the resolution, so a guarantee expressed that way is not a guarantee about
   anything a viewer experiences. The fraction also carries the viewing distance the product is built
   for without fixing a distance in the specification.
+  This floor and the edge band spend the same display height. Where a declared band leaves the floor
+  no room the result is the operator's, which
+  SRS035<!-- The masked edge band is the deployment's to declare --> rules and this item does not
+  restate.
 ref: ''
-reviewed: mAmmhLhaQ1GDZ82_6cv0LTelWBagImfXOs6ya25bSQA=
+reviewed: c-xG4EPm2dP38J0jRFn2dNKKLclPnnozya1frqANClg=
 status: accepted
 text: |
   Text the display presents to be read shall occupy at least a minimum fraction of the display's

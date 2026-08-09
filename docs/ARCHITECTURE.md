@@ -104,7 +104,8 @@ _To be documented as it is built._ Language and boundary-contract decision:
 [ADR 0001 rev 1](decisions/0001-backend-language-go.md); the backend's config-blindness is
 [ADR 0007 rev 2](decisions/0007-config-validation-allocation.md)'s. What the backend must do is the
 [requirements tree](requirements/README.md); which obligations bind this container is the
-[architecture model](architecture/README.md). Neither is restated here.
+[architecture model](architecture/README.md), as each is modelled (#119 C4 model completion).
+Neither is restated here.
 
 ## Frontend
 
@@ -114,7 +115,8 @@ that module's own need, per
 [the module contract](contracts/module-contract.md); configuration
 validation is frontend-owned per [ADR 0007 rev 2](decisions/0007-config-validation-allocation.md).
 What the display page must do is the [requirements tree](requirements/README.md); which obligations
-bind this container is the [architecture model](architecture/README.md). Neither is restated here.
+bind this container is the [architecture model](architecture/README.md), as each is modelled
+(#119 C4 model completion). Neither is restated here.
 
 ## The boundary contract
 

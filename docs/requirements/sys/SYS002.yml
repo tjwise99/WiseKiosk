@@ -28,8 +28,11 @@ rationale: |
   what a check can decide: text size as a fraction of display height and the emission a glyph is
   rendered at are both read from a rendered page. The judgement obligation that appeared to have no
   home was not one.
+  What the configuration asks for includes where it asks for it. A module rendered whole, legibly and
+  on screen, but in a region other than the one named for it, is not what was asked and the rendering
+  is the reason - which is the clause obliging assembly, and nothing else in the tree carries it.
 ref: ''
-reviewed: Zxe531jtUatE-VuJ4tpFFwvPcfWJ6Oup1VJEk-d-GGQ=
+reviewed: aZikzbEEXjnrAZZkbsE4dO8dlxSsHo3G32QlYhkeqIg=
 status: accepted
 text: |
   Nothing the configuration asks the display to show shall be kept from a viewer watching it by the

@@ -27,8 +27,13 @@ rationale: |
   The key's name and its shape are not stated here (owner, 2026-08-09). Those are the schema's, and a
   requirement naming them would make renaming a key a specification change. What is obliged is that
   the depth comes from outside the image.
+  The test is whether the figure describes the hardware or the design (owner, 2026-08-09). A bezel is
+  geometry of the panel in front of a viewer: it differs per unit, the software cannot see it, and no
+  judgement enters it, so it is the deployment's. A figure describing the design stays with its check
+  - the emission ceiling and the type floor are calibrated once for the product this is, and a
+  deployment wanting different ones wants a different product.
 ref: ''
-reviewed: K8c4qJEI30u9zhdngECFPXJ8hk6TS4urUpjK7SQLI24=
+reviewed: 98eunAREN5N0Hnmc1SLScUePA2jUJqFwsMaB9Zdv_TM=
 status: accepted
 text: |
   The depth of the band the display page holds its regions clear of shall be supplied by the
