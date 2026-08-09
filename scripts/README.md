@@ -777,18 +777,18 @@ a reader nothing about which half is wrong.
 md5 `1a6c86d393a6b8a94dc5bbbe13c853e1`** (#122 close check-arch-trace's second direction), and the
 counting rows' *Reported* column carries those numbers rather than the ones the smaller model gave.
 
-### The base state moved, and every must-pass row moved with it
+### Why every must-pass row is seeded on an all-bound fixture
 
-The second direction fails on the tree's real state, so **the model as it stands is no longer a
-must-pass input** — it is the headline must-fail row below. Every case that must *pass* is therefore
-seeded on top of an **all-bound fixture**: the extraction with SRS020<!-- Non-root container user -->
-declared and applied to the `Backend` element and SRS025<!-- No secret material in the published
-image --> to the operator's configuration relationship. That one fixture also discharges the
-element/relationship pair the old table listed as two rows, since it binds one item each way.
+The second direction fails on the tree's real state, so **the model as it stands is not a must-pass
+input** — it is the headline must-fail row below. Every case that must *pass* is therefore seeded on
+top of an **all-bound fixture**: the extraction with SRS020<!-- Non-root container user --> declared
+and applied to the `Backend` element and SRS025<!-- No secret material in the published image --> to
+the operator's configuration relationship. That one fixture also discharges the element/relationship
+pair the earlier table listed as two rows, since it binds one item each way.
 
 This is the interaction to carry away rather than the arithmetic: **a step added to a sequence
-re-decides every case the sequence already passed.** Nothing about the tags→tree arm changed, and
-five of its six must-pass rows still had to be re-seeded, because what they were seeded *on* stopped
+re-decides every case the sequence already passed.** Nothing about the tags→tree arm changed, and all
+five of its must-pass rows still had to be re-seeded, because what they were seeded *on* stopped
 passing.
 
 ### Running a case here
@@ -868,7 +868,7 @@ green run, so the tier vanishing is visible.
 
 ### What the success line counts
 
-Two lines now, one per direction. A failing run prints neither, which reshaped the third row below.
+Two lines, one per direction. A failing run prints neither, which is what reshaped the third row.
 
 | Case | Input | Reported |
 |---|---|---|
@@ -897,8 +897,8 @@ untagged relationship at the same time.
 attempt asserted the wrong post-condition, raised before writing the file, and the case then ran
 against the unseeded fixture and reported `ok`. It was caught only because the *Reported* column was
 byte-identical to the baseline row above it. This is the trap § *Running a case* names, observed
-rather than quoted: confirm the seed applied, and prefer an assertion that names what the seeded file
-must now contain over one that merely says the text changed.
+rather than quoted: confirm the seed applied, and prefer an assertion naming what the seeded file
+must contain afterwards over one that merely says the text changed.
 
 ### The guards' ordering, and what it hides
 
