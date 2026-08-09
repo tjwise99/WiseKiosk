@@ -1,5 +1,5 @@
-// WiseKiosk architecture model — C4 System Context (L1), Container (L2) and
-// Component (L3).
+// WiseKiosk architecture model — C4 System Context (L1), Container (L2),
+// Component (L3) and Deployment, the last in ./deployment.likec4.
 //
 // Single source of truth for the diagrams in ../../ARCHITECTURE.md. Edit here, then
 // run `just arch-export` (ADR 0003 rev 1).
@@ -8,7 +8,8 @@
 //
 // Boundary, actors and external systems are ADR 0019 rev 1's; the containers, the
 // one origin they share and the tag tier are ADR 0020 rev 1's; what earns a
-// component and where the framework/module seam falls are ADR 0021 rev 1's.
+// component and where the framework/module seam falls are ADR 0021 rev 1's; what
+// the Deployment level draws is ADR 0023 rev 1's.
 
 specification {
   element person {
@@ -19,6 +20,10 @@ specification {
   element system
   element container
   element component
+
+  deploymentNode host
+  deploymentNode browser
+  deploymentNode artifact
 
   // Each tag is a Doorstop identifier. Which item belongs on what, and at which
   // tier, is ADR 0019 rev 1 as amended by ADR 0020 rev 1.
@@ -46,10 +51,13 @@ specification {
   tag SRS017
   tag SRS018
   tag SRS019
+  tag SRS020
   tag SRS021
   tag SRS022
+  tag SRS025
   tag SRS026
   tag SRS028
+  tag SRS035
 }
 
 model {
@@ -73,7 +81,6 @@ model {
       #SRS008
       #SRS009
       #SRS014
-      #SRS019
       #SRS022
       #SRS028
       technology 'Go'
@@ -223,7 +230,6 @@ model {
   operator -> staticServing 'Places the configuration into the served tree' {
     #SYS003
     #SRS007
-    #SRS018
   }
 
   frontend -> viewer 'Renders the configured modules, and legibly says when one failed' {
