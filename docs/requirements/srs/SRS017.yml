@@ -21,7 +21,7 @@ rationale: |
   SRS031<!-- Content too large for its region overflows --> carries that, and what it permits -
   content crossing a region, or leaving the display - is not a breach of the bounds stated here.
 ref: ''
-reviewed: 481IpZfMXgMospkGAyD8raK4xP7wttz7FA_9IoJqSpE=
+reviewed: _iHtlmpQYy3UXc9Y7Rn6gNoOBeS-LUwBWb6ksDZ3KGM=
 status: accepted
 text: |
   The display page shall lay out its regions across a single full-screen display, no two overlapping
@@ -30,8 +30,11 @@ text: |
 verification-justification: |
   Asserted by rendering at three viewports and reading the laid-out regions against each other and
   against the viewport, and each module's rendered place against the region the configuration named
-  for it. Disjointness and horizontal overflow are both decidable from rendered geometry and scroll
-  extents.
+  for it. Disjointness is decidable from rendered geometry.
+  Horizontal overflow is not measurable on the region set directly - a scroll extent exists only on
+  the document - so it is read there, over a fixture whose content fits its regions. Content that
+  overflows moves the document and is permitted to, so what is settled is that the region set does
+  not scroll sideways, never that no page ever does.
   The obligation covers every viewport the page supports while the check samples three, so a layout
   that first overlaps at a fourth passes.
   Whether a person across the room can read the result is not settled here and is not this item's to

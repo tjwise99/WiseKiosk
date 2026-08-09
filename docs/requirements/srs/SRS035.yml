@@ -17,11 +17,18 @@ rationale: |
   overscan is then correct while saying nothing, and one with either says so once: the bezel is
   uniform, so a single depth governs all four edges, and stating it against the display's height
   keeps it one figure rather than one per axis.
+  The band and the type floor in
+  SRS033<!-- Text holds a minimum size against the display, at every resolution --> spend the same
+  finite display height, and an operator declaring a deep enough band leaves the floor no room. Past
+  that point they cannot both hold, and that is not a conflict between them to be resolved by
+  loosening one: an operator who declares a band the display cannot afford has overloaded it, and the
+  result is theirs (owner, 2026-08-09). No bound on the configuration follows, and none should be
+  added.
   The key's name and its shape are not stated here (owner, 2026-08-09). Those are the schema's, and a
   requirement naming them would make renaming a key a specification change. What is obliged is that
   the depth comes from outside the image.
 ref: ''
-reviewed: zvhw2i6ddYHjyaVoNuuqI-TF3OMC4d0Si2S1Cjqto3U=
+reviewed: K8c4qJEI30u9zhdngECFPXJ8hk6TS4urUpjK7SQLI24=
 status: accepted
 text: |
   The depth of the band the display page holds its regions clear of shall be supplied by the

@@ -8,16 +8,18 @@ links:
 normative: true
 rationale: ''
 ref: ''
-reviewed: 9Uint9-mzOYUh3yQTwSoJ10-FhKgj1Oo0O9hLw2mDSg=
+reviewed: H88DDb0vEHPoOW-vZYniwGf027RyZW0Qlf3l4bDLEjI=
 status: proposed
 text: |
   Pending: read each laid-out region's geometry against the viewport, asserting no region enters the
-  outer band on any edge, over configurations chosen to load the display rather than a single
-  fixture. Lands with the frontend skeleton (#10); activated and given a references entry then.
+  band the configuration declares, on any edge, over configurations chosen to load the display rather
+  than a single fixture. Lands with the frontend skeleton (#10); activated and given a references
+  entry then.
 verification-justification: |
-  Settles that the layout keeps clear of a band the software cannot observe being masked. Leaves
-  unproven that the band clears the mask actually fitted - the frame and the television are the
-  operator's, so the figure is calibrated against a deployment known to present its content whole.
-  It reads regions rather than content deliberately: content overflows its region by design, so a
-  content-level assertion would fail on a display behaving exactly as obliged.
+  Settles that the layout keeps clear of the band it was told about, which is a band the software
+  cannot observe being masked. Leaves unproven that the declared depth clears the mask actually
+  fitted: the frame, the television and now the depth are all the operator's, and no assertion over a
+  rendered page reaches a bezel. It reads regions rather than content deliberately - content
+  overflows its region by design, so a content-level assertion would fail on a display behaving
+  exactly as obliged.
 verification-method: test

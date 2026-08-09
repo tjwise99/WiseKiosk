@@ -4,7 +4,7 @@ header: |
   Only content is rendered above the emission ceiling
 level: 33
 links:
-- SYS008: -oi8eAcyNEjFFqbz-al3_ScqaNmR7M4P9He0sYfkR7A=
+- SYS008: xUHCdfa_Ow3zNzkpwvNkW_hwz5jaAUJTR2Gv9aw9AXA=
 normative: true
 rationale: |
   The mirror is made of absence, so anything drawn where content is not is drawn at the mirror's
@@ -16,8 +16,12 @@ rationale: |
   naming its own devices always costs. A ceiling states the property and leaves the devices to the
   design: a hairline divider and a grouping tint dark enough sit under it, a lit card or a scrim does
   not, and how dark is dark enough is calibrated against the glass in
-  TST045<!-- Pending: emitting-surface test --> rather than fixed here. It also makes the obligation
-  decidable, because reading a magnitude replaces sorting a device.
+  TST045<!-- Pending: emitting-surface test --> rather than fixed here.
+  It narrows the judgement without removing it. Whether a thing is text or imagery rendered as
+  content, rather than a scrim under another name, still has to be decided - a gradient is imagery by
+  every rendering definition and is the spelling that reads as legal. What changes is the population
+  that decision is made over: below the ceiling nothing is classified, because nothing there spends
+  the mirror, so the judgement falls only on what is bright enough to matter.
   Stated over emission rather than over the surface no content occupies, because occupancy is read
   from element boxes and a scrim would remove its own area from the population measured.
   The exemption is text and imagery, and it is the page's rather than a module's: a configuration
@@ -28,7 +32,7 @@ rationale: |
   What this permits is a large bright image rendered as content, which takes the mirror as surely as
   a scrim does. That is a module's design, and no item in this tree obliges otherwise.
 ref: ''
-reviewed: BCM7wrdzIj7VQIL7iUropw54iWTexBW44FjfLCiRh6Q=
+reviewed: myKPT2d2lKng7WCc37fkkhMx5beLow_B2lkYFa_iin0=
 status: accepted
 text: |
   Only the text and imagery the display page presents as content shall be rendered above a stated
@@ -38,9 +42,11 @@ verification-justification: |
   outline and shadow, the page's own root among them - and requiring each below the ceiling except
   where it is rendered text or imagery. The population is every element rather than a sampled area,
   so an element added to the page is an element the check reads, and it is every way an element emits
-  rather than one of them. Reading a magnitude is what makes it decidable: whether a gradient behind
-  a block is imagery or a scrim under another name is a judgement, whether it clears the ceiling is
-  not.
+  rather than one of them.
+  The exemption is where judgement survives. For every surface above the ceiling the check must still
+  decide whether it is text or imagery rendered as content, and a gradient behind a block is imagery
+  by every rendering definition while being a scrim by intent. The ceiling bounds how often that
+  decision is reached, not whether it is sound, and no assertion here settles it.
   Four things sit outside the assertion. What the page renders is not what the panel emits -
   backlight, gamma, colour profile and any tone mapping lie between them, and a half-silvered surface
   attenuates the result again - so the check settles the value the software chose, not the light that

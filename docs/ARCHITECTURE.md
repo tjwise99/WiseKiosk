@@ -128,7 +128,13 @@ SRS017<!-- Full-screen assembly at kiosk; reflow, no horizontal scroll, at narro
 SRS021<!-- Frontend runs on a Pi Zero-class browser host -->,
 SRS024<!-- Every offered configuration key is exercised at a non-default value -->,
 SRS026<!-- The display says when the backend is gone -->,
-SRS027<!-- The display page holds no device capability it does not use -->; configuration
+SRS027<!-- The display page holds no device capability it does not use -->,
+SRS030<!-- Only content is rendered above the emission ceiling -->,
+SRS031<!-- Content too large for its region overflows -->,
+SRS032<!-- Readable text is carried at full emission -->,
+SRS033<!-- Text holds a minimum size against the display, at every resolution -->,
+SRS034<!-- The laid-out regions keep clear of the display edge -->,
+SRS035<!-- The masked edge band is the deployment's to declare -->; configuration
 validation is frontend-owned per [ADR 0007 rev 2](decisions/0007-config-validation-allocation.md).
 
 ## The boundary contract

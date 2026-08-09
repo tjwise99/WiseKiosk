@@ -4,11 +4,11 @@ header: |
   Pending: viewport-driven layout render test
 level: 1.41
 links:
-- SRS017: 6wxL57vvOFVwTScBpT2JZBnHuCKMCS_EcrZVqAOyvhc=
+- SRS017: n8xaUm3pOaOCC44dX72TnvTc65GF_6GuCUlah0jSynU=
 normative: true
 rationale: ''
 ref: ''
-reviewed: XsCS-aJuqlF1RsWHzcrLAvgGJseEjtarBdJ2GwhOek0=
+reviewed: ndToM7D8fMSc0sJ9w9u-8eRLeZ1HStYdo--BMeUEDWs=
 status: proposed
 text: |
   Pending: viewport-driven render test asserting that every module the fixture configuration names
@@ -16,14 +16,18 @@ text: |
   configuration did not name there, with the module set and its region assignments read from the
   parsed fixture rather than a hand-written list; and asserting the laid-out regions are pairwise
   disjoint and the document does not scroll horizontally, at the kiosk viewport (1920x1080) and at
-  the desktop viewports (1280x800 and 1440x900). Lands with the frontend skeleton (#10); activated
-  and given a references entry then.
+  the desktop viewports (1280x800 and 1440x900), over a fixture whose content fits the regions it is
+  given. Lands with the frontend skeleton (#10); activated and given a references entry then.
 verification-justification: |
   Settles that every configured module renders in the region named for it, that no region carries a
   module named elsewhere, and that the regions the page lays out neither overlap nor scroll sideways
   at three viewports. Occupancy is read from the fixture's assignments in both directions, so a page
   rendering every module into one region fails, which a count of modules against regions would not;
   what goes unread is a region the configuration names no module for, which is asserted for geometry
-  and not for what it holds. The obligation covers every viewport the page supports and this renders
-  three, so a layout that first overlaps at a fourth passes.
+  and not for what it holds.
+  The horizontal measure is taken on the document, which is the only place a scroll extent exists,
+  while the obligation is on the region set. Overflowing content moves the document and is permitted
+  to, so the fixture is constrained to content that fits - which is why the overflowing case is a
+  separate item rather than a second assertion here. The obligation also covers every viewport the
+  page supports and this renders three, so a layout that first overlaps at a fourth passes.
 verification-method: test

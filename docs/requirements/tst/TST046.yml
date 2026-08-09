@@ -2,7 +2,7 @@ active: false
 derived: false
 header: |
   Pending: region overflow render test
-level: 73
+level: 72
 links:
 - SRS031: ph2eZ6zSvcd5yzfKWArF7gSsJNmd8n90iVM6pzpqcr8=
 normative: true
