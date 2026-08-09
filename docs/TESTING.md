@@ -103,7 +103,7 @@ This tier exists specifically to make that impossible.
 Gate on these — they name what must be proven. Not on a coverage number. Each is stated here in the
 short form a test author needs, and cited to whatever governs it: an item in the
 [requirements tree](requirements/README.md) where the obligation is on the running software, and the
-module contract or [`../tools/README.md`](../tools/README.md) where it is not
+module contract or [`DEPLOYMENT.md`](DEPLOYMENT.md) where it is not
 ([ADR 0011 rev 1](decisions/0011-requirement-or-convention.md)). What every one has is a home that can be
 checked against, rather than prose alone.
 

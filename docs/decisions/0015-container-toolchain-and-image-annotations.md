@@ -2,10 +2,13 @@
 
 **Status:** accepted
 **Decided:** 2026-08-02 (#61 OCI image annotations)
-**Rev:** 1
+**Rev:** 2
 
 ## Revisions
 
+- **rev 2** — 2026-08-09 — repoints two citations at [`../DEPLOYMENT.md`](../DEPLOYMENT.md), which
+  carries the deployment obligations the deleted tooling document held; the toolchain choice and the
+  annotation set are unchanged (#71 release artifact set).
 - **rev 1** — 2026-08-05 — revision tracking begins; text as merged (#118 ADR revisions).
 
 ## Context
@@ -32,7 +35,7 @@ documents presume one without arguing for it: `../CI.md` names "every base and s
 Dockerfile" and excludes the Docker build context by `.dockerignore`;
 [ADR 0010 rev 1](0010-runtime-materialised-gate-fixtures.md) lists a `Dockerfile` among its throwaway
 fixture manifests; [`../../scripts/README.md`](../../scripts/README.md) carries `docker://` action
-references as pin fixtures; and [`../../tools/README.md`](../../tools/README.md) goes furthest,
+references as pin fixtures; and [`../DEPLOYMENT.md`](../DEPLOYMENT.md) goes furthest,
 naming Docker and Compose as what restarts a container whose process exits. The requirements tree
 says *container image* throughout and never *Docker*. The presumption is load-bearing in four places
 and argued in none. Writing one tool's defaults
@@ -123,7 +126,7 @@ the action used to generate, which is invisible to review and to every other gat
 **What is actually locked in is the Dockerfile format** — the most portable artifact of the options
 weighed. Buildah consumes it unchanged, and an OCI image is runnable by any conforming runtime, so
 what builds the image does not fix what runs it —
-[`../../tools/README.md`](../../tools/README.md) names Docker and Compose there, and this decision
+[`../DEPLOYMENT.md`](../DEPLOYMENT.md) names Docker and Compose there, and this decision
 neither changes that nor rests on it. Only the metadata wiring is Buildx-specific, and it is a handful of
 workflow lines. A future maintainer reversing this decision rewrites those lines and keeps everything
 else.

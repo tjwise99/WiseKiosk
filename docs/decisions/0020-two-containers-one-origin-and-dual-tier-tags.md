@@ -25,7 +25,7 @@
 
 ## Context
 
-[ADR 0019 rev 1](0019-boundary-at-what-deploys-and-tag-tier.md) settled the boundary and the Context level,
+[ADR 0019 rev 2](0019-boundary-at-what-deploys-and-tag-tier.md) settled the boundary and the Context level,
 and deliberately left the tier at each level below to the phase that models it. Authoring the
 Container level then surfaced two more questions, one of them older than this ticket.
 
@@ -36,7 +36,7 @@ decision but weighs only frameworks against each other.
 [ADR 0007 rev 2](0007-config-validation-allocation.md) reasons *from* it — "the page runs in a browser on
 the display host, so config bytes reach it only over HTTP, from the origin that already serves the
 SPA bundle." Three records lean on the arrangement and none argues it, which is the shape
-[ADR 0015 rev 1](0015-container-toolchain-and-image-annotations.md) caught with the container toolchain. A
+[ADR 0015 rev 2](0015-container-toolchain-and-image-annotations.md) caught with the container toolchain. A
 Container level draws that arrangement, so it either argues it or presumes it a fourth time.
 
 **Where a relationship is declared decides which levels can see it.** LikeC4 renders every level from
@@ -83,7 +83,7 @@ operator edge under the label that level authors, since naming a container in a 
 would cost the Context level its abstraction.
 
 **The Container level answers to `SRS`, and anything here also carries the `SYS` item it discharges
-observably at this level.** An `SRS` item allocates to a container, which is what ADR 0019 rev 1 gave as
+observably at this level.** An `SRS` item allocates to a container, which is what ADR 0019 rev 2 gave as
 its reason for refusing that tier at the Context level, and is the argument for it here.
 
 The second clause is what makes the tier usable rather than a trap. Restricting `SYS` to
@@ -95,7 +95,7 @@ here. Both are discharged observably on one edge, the frontend fetching each mod
 the boundary contract itself; SRS010<!-- The display page reaches no origin but the backend's --> and
 SRS016<!-- Both sides consume the generated types --> are their children and sit there too.
 
-**This widens ADR 0019 rev 1 rather than exercising it**, and that record carries a dated amendment saying
+**This widens ADR 0019 rev 2 rather than exercising it**, and that record carries a dated amendment saying
 so. Its rule was one tier per level; a relationship may now also carry a coarser item, where that
 item's obligation is visible in what this level draws. Its rejection of `SRS` at the Context level is
 untouched and is why the widening runs in one direction only: a coarser item names something a finer
@@ -112,8 +112,8 @@ relationship no accepted item obliges carries none: the bundle-serving edge has 
 serves the bundle is a decision under [ADR 0011 rev 1](0011-requirement-or-convention.md) rather than a
 property of the running software. And an item whose obligation reaches something **permanently**
 outside the model is not a tag here — SRS005<!-- One validation implementation --> binds the page to
-the desk validator, which ADR 0019 rev 1 keeps outside the boundary for good, so tagging the frontend with
-it points past the diagram in the way ADR 0019 rev 1 rejects. Permanence is what that turns on, not
+the desk validator, which ADR 0019 rev 2 keeps outside the boundary for good, so tagging the frontend with
+it points past the diagram in the way ADR 0019 rev 2 rejects. Permanence is what that turns on, not
 absence: an upstream is *deferred* rather than excluded, and the model gains one per upstream as each
 module's need lands, so SRS009<!-- Every source reachable through the backend, statelessly --> stays
 on the backend and gains the edges its obligation names when they arrive.
@@ -142,16 +142,16 @@ SRS010<!-- The display page reaches no origin but the backend's --> — and on d
 internet dependency in front of a display that runs unattended on a LAN, and files on a host
 [`../../README.md`](../../README.md) states WiseKiosk does not own.
 
-**One container, the image as the unit.** The literal reading of ADR 0019 rev 1's boundary sentence, and it
+**One container, the image as the unit.** The literal reading of ADR 0019 rev 2's boundary sentence, and it
 erases what this level exists to draw: SYS005<!-- Single-definition internal contract --> has no
 boundary to be a contract across, SRS010<!-- The display page reaches no origin but the backend's -->
 has no page and no origin, and config-blindness has no second party to be blind to.
 
 **The configuration as a third element.** It would make config-blindness structural rather than
-something a label states. Rejected: a mounted file is not a running unit, and ADR 0019 rev 1 already
+something a label states. Rejected: a mounted file is not a running unit, and ADR 0019 rev 2 already
 refused to invent an element — the aggregate "Public APIs" — to carry what a relationship can carry.
 
-**Deferring the operator's secret supply until a module needs a secret**, as ADR 0019 rev 1 defers an
+**Deferring the operator's secret supply until a module needs a secret**, as ADR 0019 rev 2 defers an
 upstream. Rejected because what defers an upstream is individuation: an upstream belongs to the
 module that reads it and cannot be drawn honestly as one box, whereas
 SRS006<!-- Unresolvable secret surfaces as that source's upstream failure --> and
@@ -206,12 +206,12 @@ which it does.
 **Some obligations have nowhere to bind yet.** SRS011<!-- Upstream request rate is bounded, and the
 bound is not operator-tunable -->, SRS012<!-- Request parameters validated against known-good
 per-source patterns --> and SRS013<!-- Client-facing contract for rejected requests --> want a
-relationship to an upstream, and no upstream element exists until a module need does (ADR 0019 rev 1).
+relationship to an upstream, and no upstream element exists until a module need does (ADR 0019 rev 2).
 
 **Neither container carries a `link`.** No source exists and the repository layout is #5 repo layout;
 the model gains one per container when it does.
 
-**ADR 0019 rev 1 is exercised, not amended.** It delegated the tier below Context to the phase that models
+**ADR 0019 rev 2 is exercised, not amended.** It delegated the tier below Context to the phase that models
 that level, and this is that phase answering. Its rule that the tier is a property of the level
 stands — a relationship spanning two levels answers to two.
 

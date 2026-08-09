@@ -27,16 +27,17 @@ for them (SRS019<!-- The backend runs on both supported architectures -->). Whic
 operator buys, and how they are provisioned, is theirs.
 
 **What WiseKiosk does not own.** The kiosk host lies outside the system: its operating system, its
-browser, and whatever starts that browser on boot. WiseKiosk delivers a container image and the
-recipe for running it; provisioning the machine that runs it is the operator's, and no requirement
-in the tree reaches it.
+container runtime, its browser, and whatever starts that browser on boot. Provisioning that machine is
+the operator's, and no requirement in the tree reaches it. That bounds what WiseKiosk can be failed
+against rather than what it is willing to ship — the release carries a deployment recipe and an example
+configuration precisely to shorten the path ([`docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md)).
 
 **The operator is frequently not the author.** Deployments run at the author's house and at friends'
 and family's houses — separate networks, separate configs, separate owners. This constraint outranks
 every other requirement here: it is why a bad configuration must fail loudly and legibly rather than
-as a blank screen (SYS001<!-- Failure is legible and proportionate -->), and why a configuration
-must be validatable before deployment rather than only at boot
-([`tools/README.md`](tools/README.md)).
+as a blank screen (SYS001<!-- Failure is legible and proportionate -->), and why correcting one costs
+an edit and a page reload rather than a redeployment
+(SRS003<!-- A configuration change applies no later than the next page load -->).
 
 Nothing is inherited from any prior mirror framework, and there is no compatibility layer.
 
@@ -71,7 +72,7 @@ explain, orient, and cite rather than oblige.
 - [`docs/CI.md`](docs/CI.md) — every check on the repository: what CI provides, what blocks a merge,
   and what each gate is allowed to let through. None of it is a requirement — it constrains the
   repository, not the running system.
-- [`tools/README.md`](tools/README.md) — what ships alongside WiseKiosk to stand a deployment up:
-  the generator, bring-up and upgrade. Separate programs an operator runs, so their
-  obligations are here rather than in the tree.
+- [`docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md) — what a deployment must do to reach a running kiosk and
+  to move between published digests: bring-up, the recipe's shipped defaults, and upgrade. Obligations
+  on what ships rather than on the running system, so they are here rather than in the tree.
 - [`CONTRIBUTING.md`](CONTRIBUTING.md) — running the checks and getting a change merged.

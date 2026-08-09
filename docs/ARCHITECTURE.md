@@ -31,10 +31,9 @@ are overwritten on the next export, and drift fails the staleness gate — see t
 
 **System context (C4 L1)** — the Operator who deploys and configures WiseKiosk, the Viewer it renders
 for, and the boundary between them, which is what deploys: the published image and what it serves
-([ADR 0019 rev 1](decisions/0019-boundary-at-what-deploys-and-tag-tier.md)). No external system
+([ADR 0019 rev 2](decisions/0019-boundary-at-what-deploys-and-tag-tier.md)). No external system
 appears at this level: an upstream data source is modelled once the module that reads it has a need
-in the tree, and the provisioning tooling exchanges nothing with the running system
-([ADR 0019 rev 1](decisions/0019-boundary-at-what-deploys-and-tag-tier.md)).
+in the tree ([ADR 0019 rev 2](decisions/0019-boundary-at-what-deploys-and-tag-tier.md)).
 
 <!-- arch-export:begin generated/index.mmd -->
 
@@ -66,7 +65,7 @@ configuration, which the image does not carry
 (SRS018<!-- One generic published image -->) and which reaches its consumer on a second hop, when the
 page fetches it. No upstream source appears here for the reason none appears above: an upstream
 belongs to the module that reads it, and no module need is written
-([ADR 0019 rev 1](decisions/0019-boundary-at-what-deploys-and-tag-tier.md)).
+([ADR 0019 rev 2](decisions/0019-boundary-at-what-deploys-and-tag-tier.md)).
 
 <!-- arch-export:begin generated/containers.mmd -->
 
@@ -278,7 +277,7 @@ Requirements that shape this: SRS018<!-- One generic published image -->,
 SRS025<!-- No secret material in the published image -->,
 SRS022<!-- A bounded running footprint -->, SRS020<!-- Non-root container user -->. The health
 signal and the restart policy are properties of what ships rather than of the running system, and
-are in [`../tools/README.md`](../tools/README.md).
+are in [`DEPLOYMENT.md`](DEPLOYMENT.md).
 
 ## Security & hardening
 

@@ -137,7 +137,7 @@ active-only and both answer `no item with UID`. Stamping a pending item means a 
 | As-built structure | `docs/ARCHITECTURE.md` — **facts only**, never rationale |
 | Test strategy | `docs/TESTING.md` |
 | A repository convention a machine decides, or material CI produces | `docs/CI.md` — **outside the tree** |
-| An obligation on a program an operator runs, not on the kiosk | `tools/README.md` |
+| An obligation on what ships beside the image, not on the kiosk | `docs/DEPLOYMENT.md` |
 | An authoring rule no machine can decide | `CONTRIBUTING.md`'s review checklist |
 | A reason | the item's own `rationale` |
 | "Revisit if X" | a **reopen premise** in `rationale`, in `SYS019`'s form |
