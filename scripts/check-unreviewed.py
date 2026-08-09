@@ -33,9 +33,9 @@ import yaml
 
 TREE = Path(__file__).resolve().parent.parent / "docs" / "requirements"
 
-# The tiers the tree is required to hold. Doorstop finds its documents by walking for `.doorstop.yml`,
-# so this reads every silo it finds and additionally requires these three: a hard-coded list alone
-# skips a fourth tier in silence, and discovery alone treats a deleted tier as nothing to check.
+# The tiers the tree is required to hold. Doorstop finds its documents by walking for `.doorstop.yml`
+# at any depth, so this walks the same way and additionally requires these three: a hard-coded list
+# alone skips a document it never names, and discovery alone reads a deleted tier as nothing to check.
 REQUIRED_SILOS = ("sys", "srs", "tst")
 
 
@@ -51,12 +51,17 @@ def load():
     single-key mapping whose value is the stamp or None, and a pattern reading one form drops the
     other silently."""
     unreviewed, unstamped, counts = [], [], {}
-    for config in sorted(TREE.glob("*/.doorstop.yml")):
-        silo = config.parent.name
+    for config in sorted(TREE.rglob(".doorstop.yml")):
+        document = config.parent
+        # A document may sit at any depth, so it is named by its path from the tree root rather than
+        # by a directory name two of them could share.
+        silo = document.relative_to(TREE).as_posix()
+        if any(part.startswith(".") for part in document.relative_to(TREE).parts):
+            continue  # a tool's own directory, not a tier: `.venv` lives here
         counts[silo] = 0
         # Both suffixes: Doorstop indexes a .yaml item, and globbing only .yml would leave one
         # unread by a check whose whole subject is items nobody has reviewed.
-        for path in sorted([*(TREE / silo).glob("*.yml"), *(TREE / silo).glob("*.yaml")]):
+        for path in sorted([*document.glob("*.yml"), *document.glob("*.yaml")]):
             if path.stem.startswith("."):
                 continue  # pathlib globs dotfiles: the silo's own .doorstop.yml is not an item
             item = yaml.safe_load(path.read_text()) or {}

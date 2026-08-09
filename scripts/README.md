@@ -886,6 +886,10 @@ unseeded copy, which is the must-pass row every table below shares and none repe
 | Must fail | every silo removed |
 | Must fail | a fourth tier present with its `.doorstop.yml` and no items |
 | Must pass | a fourth tier present holding one reviewed item |
+| Must fail | a document nested below a silo, holding an item with no `reviewed:` |
+| Must fail | a nested document holding no items |
+| Must pass | a nested document holding one reviewed item |
+| Must pass | a `.doorstop.yml` under `.venv/`, which is a tool's directory and not a tier |
 
 The pasted-stamp row is a **report** case, not a verdict case, and the distinction is the point. A
 stamp is a digest of the parent's content, so a copy is byte-identical to one `doorstop clear` earned
@@ -920,19 +924,14 @@ list of three where Doorstop finds its documents by walking for `.doorstop.yml`,
 would have been skipped in silence by the check that runs first. It now reads every silo it finds and
 additionally requires the three the tree is built on.
 
-**Known gap, third — a nested document is invisible, and Doorstop stamps it.** Silos are discovered
-with `TREE.glob("*/.doorstop.yml")`, which matches one path segment, where Doorstop walks
-recursively. A document at `docs/requirements/srs/modules/` is therefore read by Doorstop and not by
-this check: seeded with an item carrying no `reviewed:`, the check exits 0 saying every item and
-every link carries a fingerprint, and `doorstop --error-all` then writes a fingerprint into that item
-— green gate, item stamped, nobody looked. That is the failure this check exists to prevent,
-surviving one directory deeper than the guard reaches.
-
-Recorded rather than closed because it needs a nested document to reach, the tree has none, and
-nothing in [ADR 0012 rev 1](../docs/decisions/0012-module-requirements-in-tree.md)'s per-module
-structure implies one. Closing it is two lines rather than one: `rglob` for the configs, **and** the
-item glob, which reads `TREE / silo` and stops being the document's path the moment a document is
-nested.
+Discovery walks to **any depth**, because Doorstop does. A single-segment glob left a document at
+`docs/requirements/srs/modules/` read by Doorstop and not by this check: seeded with an item carrying
+no `reviewed:`, the check exited 0 saying every item and every link carried a fingerprint, and
+`doorstop --error-all` then wrote one into that item — green gate, item stamped, nobody looked. That
+is the failure this check exists to prevent, one directory below where the guard reached. Documents
+are keyed by their path from the tree root rather than by a directory name, since two nested
+documents may share one; directories whose path carries a dotted component are skipped, because
+`.venv` lives in the tree and is a tool's, not a tier.
 
 **Known gap, second.** Any non-empty `reviewed:` string switches this rule off, so a pasted link stamp
 on an item carrying `reviewed: notadigest` reports nothing here. That state fails Doorstop's own
