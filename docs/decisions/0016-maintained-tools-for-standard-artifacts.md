@@ -27,7 +27,7 @@ never about whether to author one at all.
 The exceptions show the question has an answer whenever it is actually asked, and there are four of
 them. `check-site` is a Sphinx build with warnings-as-errors, adopted by
 [ADR 0004 rev 1](0004-docs-site-sphinx-needs.md). `check-arch` validates the model with `likec4 validate`,
-adopted by [ADR 0003 rev 1](0003-architecture-as-code-likec4.md). `check-reqs` delegates tree integrity to
+adopted by [ADR 0003 rev 2](0003-architecture-as-code-likec4.md). `check-reqs` delegates tree integrity to
 `doorstop --error-all`, adopted by [ADR 0002 rev 1](0002-requirements-management-doorstop.md) — a delegation
 [`../CI.md`](../CI.md) relies on explicitly when it scopes the dead-test gate away from the
 requirements tier. `secret-scan` is `gitleaks`. So the precedent

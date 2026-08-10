@@ -35,7 +35,7 @@ amended, so a number in git history need not mean what it means here.
 |---|---|---|---|
 | [0001](0001-backend-language-go.md) | 1 | 2026-07-21 | Backend in Go; the frontend/backend boundary contract is generated from one schema |
 | [0002](0002-requirements-management-doorstop.md) | 1 | 2026-07-21 | Requirements tracked and V&V-gated with Doorstop (SYS→SRS→TST tree) |
-| [0003](0003-architecture-as-code-likec4.md) | 1 | 2026-07-22 | Architecture modeled as code with LikeC4; browser-free Mermaid codegen, staleness-gated |
+| [0003](0003-architecture-as-code-likec4.md) | 2 | 2026-07-22 | Architecture modeled as code with LikeC4; browser-free Mermaid codegen, staleness-gated |
 | [0004](0004-docs-site-sphinx-needs.md) | 1 | 2026-07-22 | Documentation site built with Sphinx + MyST + sphinx-needs; traceability rendered by sphinx-needs, deployed to GitHub Pages |
 | [0005](0005-traceability-gating.md) | 1 | 2026-07-22 | All work traces to the requirements tree via four in-repo gates; per-test attribution, derived verification status, tree as backlog |
 | [0006](0006-process-gates.md) | 2 | 2026-07-22 | Process gates: branches named type_number-snake_name, typed by ticket template and linked to an open issue; Conventional-Commit PR titles |
@@ -51,12 +51,8 @@ amended, so a number in git history need not mean what it means here.
 | [0016](0016-maintained-tools-for-standard-artifacts.md) | 3 | 2026-08-03 | A check is authored where the obligation it asserts is this repository's own rule, and delegated to a maintained tool where it is a public convention; zizmor, actionlint, lychee, commitlint and pre-commit replace four authored checks, and three obligations are retired |
 | [0017](0017-authored-language-set.md) | 3 | 2026-08-04 | Authored language follows the artifact's audience: Go and TypeScript for what ships, Python (standard library only) for what checks the repository; sh and JavaScript author nothing, and a toolchain's own configuration format is invoking rather than authoring |
 | [0018](0018-frontend-svelte-vite-static-spa.md) | 1 | 2026-08-04 | Frontend is Svelte 5 + Vite, emitted as a static single-page bundle and served as files by the Go backend; no server-side rendering, no router, no meta-framework |
-| [0019](0019-boundary-at-what-deploys-and-tag-tier.md) | 2 | 2026-08-04 | The architecture boundary is what deploys; an element appears only where the system exchanges something with it, and its tag names the obliging requirement at the tier its level answers to |
-| [0020](0020-two-containers-one-origin-and-dual-tier-tags.md) | 1 | 2026-08-04 | Two containers behind one origin, the backend serving the bundle and the configuration; each relationship declared once at its true endpoints, and a boundary-spanning one tagged at both tiers |
-| [0021](0021-release-artifact-set-and-operator-tooling.md) | 1 | 2026-08-09 | A release is the image and its provenance material in the registry plus a recipe and an example configuration on the tag; the documentation site is not versioned, a release carries no operator tooling program, and the image declares a healthcheck nothing acts on |
-| [0021](0021-component-earns-its-interface-and-framework-half-only.md) | 1 | 2026-08-05 | A component is a responsibility with a nameable interface, so the route registry is not one; the framework/module seam is the module contract's, and only the framework half is drawn until module needs exist |
-| [0022](0022-every-accepted-requirement-binds.md) | 1 | 2026-08-08 | Every accepted requirement binds somewhere in the architecture model; where one cannot, the model grows to draw what it obliges rather than an exemption being recorded |
-| [0023](0023-deployment-level-and-the-published-image.md) | 1 | 2026-08-09 | The Deployment level draws hosts, the processes on them and the files placed beside them; the published image is a subject distinct from the container it becomes, and what obliges the artifact binds there |
+| [0019](0019-boundary-at-what-deploys-and-tag-tier.md) | 3 | 2026-08-04 | The architecture boundary is what deploys; an element earns a place where the system exchanges something with it, a component by its interface, and the Deployment level draws hosts, processes and the files beside them; every accepted requirement binds, tagged at the tier its level answers to |
+| [0020](0020-release-artifact-set-and-operator-tooling.md) | 1 | 2026-08-09 | A release is the image and its provenance material in the registry plus a recipe and an example configuration on the tag; the documentation site is not versioned, a release carries no operator tooling program, and the image declares a healthcheck nothing acts on |
 
 ## Revisions
 
