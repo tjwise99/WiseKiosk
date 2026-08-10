@@ -371,16 +371,18 @@ fails, so it sits on that exchange alone.
 **The request path.** SRS011<!-- Upstream request rate is bounded, and the bound is not
 operator-tunable -->, SRS012<!-- Request parameters validated against known-good per-source
 patterns --> and SRS013<!-- Client-facing contract for rejected requests --> bind at the Component
-level. Two reject a request "without issuing any upstream request" and "before making any upstream
-call", and they sit on request validation. A rate limit is one of the six per-route values the
-registration entry carries, which the seam above rules to be data read by framework components, so it
-binds where its two neighbours in that entry — the timeout and the response-size ceiling — already do:
-twice, because its distinguishing clause is "regardless of how many clients it serves or how often
-they ask", and what decouples client rate from upstream rate is the response cache while what bounds
-the residual is the upstream client. SRS013<!-- Client-facing contract for rejected requests --> also
-binds twice, keeping request validation and gaining the payload relationship: its text is a boundary
-obligation asserted at the boundary, which is the composed-observable rule rather than a second
-subject for one observable.
+level. **The latter two sit on request validation**, rejecting a request "without issuing any upstream
+request" and "before making any upstream call" — internal by their own text, and never an upstream's
+property. **SRS011<!-- Upstream request rate is bounded, and the bound is not operator-tunable --> is
+not one either**: a rate limit is one of the six per-route values the registration entry carries, which
+the seam above rules to be data read by framework components, so it binds where its two neighbours in
+that entry — the timeout and the response-size ceiling — already do. It binds twice, because its
+distinguishing clause is "regardless of how many clients it serves or how often they ask", and what
+decouples client rate from upstream rate is the response cache while what bounds the residual is the
+upstream client. **SRS013<!-- Client-facing contract for rejected requests --> binds twice as well**,
+keeping request validation and gaining the payload relationship: its text is a boundary obligation
+asserted at the boundary, which is the composed-observable rule rather than a second subject for one
+observable.
 
 SRS009<!-- Every source reachable through the backend, statelessly --> is the same shape read the other
 way: reachability by the endpoints the boundary contract defines is the route handler's, and holding no
@@ -586,7 +588,7 @@ configuration *and* secrets as the two things arriving from outside the image �
 that the supplies drawn there are one obligation.
 
 **Tagging an element with every id it owes.** Rejected: true, and it carries no information — the system
-element owing all seven `SYS` items restates that the `SYS` tier is the tier about the system.
+element owing every `SYS` item restates that the `SYS` tier is the tier about the system.
 
 ### The binding rule
 
