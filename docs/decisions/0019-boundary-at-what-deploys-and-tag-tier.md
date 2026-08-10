@@ -4,11 +4,17 @@
 **Decided:** 2026-08-04 (C4 phase 1 design discussion, #96 C4 phase 1 System Context; the Container
 level the same day, #97 C4 phase 2 Container; the Component level 2026-08-05, #98 C4 phase 3
 Component; the binding rule 2026-08-08, #121 allocation completeness; the Deployment level
-2026-08-09, #123 C4 phase 4 Deployment)
-**Rev:** 3
+2026-08-09, #123 C4 phase 4 Deployment; the display-surface placements 2026-08-10, #135 bind the
+mirror and legibility requirements)
+**Rev:** 4
 
 ## Revisions
 
+- **rev 4** — 2026-08-10 — places the mirror and legibility items PR #133 what the display owes a
+  viewer accepted, on the axis the layout pair already carried; settles that pair's ground, which
+  rested on a decomposition #132 under-decomposition of the layout need has since landed; closes the
+  SRS035<!-- The masked edge band is the deployment's to declare --> second-subject question rev 3
+  left to this ticket (#135 bind the mirror and legibility requirements).
 - **rev 3** — 2026-08-09 — absorbs the Container, Component and Deployment level decisions and the
   requirement-binding completeness rule, which were four records written one slice at a time and each
   correcting the one before it; the amendment blocks and the grounds they reversed are gone, and every
@@ -343,13 +349,12 @@ narrower widths --> names a property of the assembled page rather than of what i
 second binding is the container element, while its parent
 SYS002<!-- The display's rendering keeps nothing from a viewer --> sits on the render relationship.
 Read as a contradiction twice, so the distinction is recorded. It bites only if the two are
-co-extensive, and they are not: **the parent is under-decomposed** (owner, 2026-08-08). The child
-covers the geometry half — regions that do not overlap, content that is not clipped, reflow rather
-than horizontal scrolling — and what the parent obliges beyond that is how the assembled display reads
-to the person in front of it. **The parent therefore sits where its decomposition will land, rather
-than as a coarser copy of the child.** What that decomposition contains is #132 under-decomposition of
-the layout need's to settle, and a ruling there that the parent is *not* under-decomposed reopens this
-placement — by arguing a different subject, not by removing the binding.
+co-extensive, and they are not: the parent was under-decomposed (owner, 2026-08-08), that child
+covering the geometry half alone — regions that do not overlap, and a set that reflows rather than
+scrolling sideways. #132 under-decomposition of the layout need settled it and PR #133 what the
+display owes a viewer landed the rest, so **the parent sits above a decomposition that exists rather
+than one anticipated**: four further children, none of them a coarser copy and none co-extensive with
+it, placed under *What the surface is* below.
 
 A ground that reads well and is wrong, recorded because two readers reached it: not *the child is
 decidable geometry while the parent is what a person sees*. SYS002's<!-- The display's rendering keeps
@@ -357,6 +362,50 @@ nothing from a viewer --> own `rationale` absorbs no-overlap, no-clipping and no
 property rather than three observables", and its `verification-justification` opens "Geometry is
 decidable" — so the parent is geometry too, and measurable too. The axis is what each obliges, not
 whether anyone has to watch.
+
+**What the surface is.** SYS008<!-- The surface carrying no content is a mirror --> obliges what the
+display does where content is *not*, which is what a Viewer meets there, so it sits on the render
+relationship beside SYS001<!-- Failure is legible and proportionate --> and
+SYS002<!-- The display's rendering keeps nothing from a viewer -->. That relationship then carries
+three `SYS` items, which is the accumulation this record says to argue rather than assume. It earns
+the third: it is the only item in the tree obliging the absence of content, and its own `rationale`
+holds that it and the layout need "are satisfiable independently in both directions" — a
+configuration dense enough to fill the display satisfies that need and returns no reflection.
+
+**Its child and three of SYS002's<!-- The display's rendering keeps nothing from a viewer --> bind at
+container depth, on the axis the layout pair already carried.** An item quantifying over every element
+the page draws has no drawn component that determines it:
+SRS030<!-- Only content is rendered above the emission ceiling --> names "ground, border, outline and
+shadow, the page's own root among them", and
+SRS032<!-- Readable text is carried at full emission --> and
+SRS033<!-- Text holds a minimum size against the display, at every resolution --> quantify over every
+text element the page presents for reading, the page shell's error state included —
+SRS004<!-- Page renders a legible error state for every configuration failure class --> obliges that
+state to render before any configuration is applied, so it is text no module and no layout produced.
+This is SRS028<!-- Served responses declare their type, and forbid the browser inferring one --> read
+on the other container: an item obliging every output an element produces belongs on the element.
+
+**The strongest rival puts those three on the render relationship**, on the reading that legibility is
+what a Viewer receives, and it is the reading a reviewer reaches first. Rejected on the items' own
+text, each `verification-justification` disclaiming the viewer-side outcome: the value the page
+renders "is not the light the panel emits", and what a viewer sees behind a glyph "is the reflected
+room, which the software neither supplies nor controls". What the three oblige is a value the page
+chose, and the items obliging what a Viewer receives are their parents, which is where the parents
+sit. It would also blur the set SYS001's<!-- Failure is legible and proportionate -->
+`verification-justification` names on that relationship, which is four plain-language items rather
+than every item about seeing.
+
+**SRS031<!-- Content too large for its region overflows --> and
+SRS034<!-- The laid-out regions keep clear of the display edge --> name the region, and the region is
+layout assembly's product.** Whether content exceeding one is clipped, scrolled, scaled or let out is
+a property of the region it was given, and "no region the display page lays out" is that component's
+population verbatim. Neither doubles at container depth, there being nothing the assembled page adds:
+the region set is laid out in one place.
+
+**SRS033<!-- Text holds a minimum size against the display, at every resolution --> was the open
+one**, layout assembly being the subject its two siblings take. It is not one. That component places
+regions and renders no text, so the population the item quantifies over is not its to hold — the same
+reasoning that admits it, read as a bar rather than as a warrant.
 
 **The boundary crossing.** SRS010<!-- The display page reaches no origin but the backend's --> stays
 on the payload relationship, being a property of the whole page rather than of the component that
@@ -403,11 +452,15 @@ distinction is recorded because it is the general answer rather than this item's
 the next close call is argued from an item's `verification-justification` and this trade is walked
 again.
 
-SRS035<!-- The masked edge band is the deployment's to declare --> binds on the configuration file: its
-first clause obliges the deployment's configuration to supply the band depth, and that file is the
-deployment supplying it. Its second clause — the page assuming no band where none is supplied — is a
-Frontend observable, and #135 bind the mirror and legibility requirements places it if that ticket
-judges the split real.
+SRS035<!-- The masked edge band is the deployment's to declare --> binds on the configuration file and
+on layout assembly. Its first clause obliges the deployment's configuration to supply the band depth,
+and that file is the deployment supplying it; its second — the page assuming no band where none is
+supplied — is the same component's that holds the regions clear of one. The split is real, so this is
+the composed-observable rule rather than two subjects for one observable: neither endpoint discharges
+the item alone, a file declaring a depth nothing honours obliging nothing and a page defaulting
+correctly to none saying nothing about a depth that was supplied. Its
+`verification-justification` reads both halves off rendered pages, the laid-out regions against a
+declared depth and then against none.
 
 **The published image.** SRS020<!-- Non-root container user -->,
 SRS025<!-- No secret material in the published image --> and
@@ -648,6 +701,14 @@ current roster that is three and five, because a local module "has no shaping li
 registration and no boundary-schema fragment". The trigger is #76 module-spec procedure, which writes
 the first module need. This is scope recorded, not an omission, exactly as the deferred upstream
 elements are.
+
+**Three of the Frontend's bindings are container-depth only until those components land.**
+SRS030<!-- Only content is rendered above the emission ceiling -->,
+SRS032<!-- Readable text is carried at full emission --> and
+SRS033<!-- Text holds a minimum size against the display, at every resolution --> quantify over every
+element the page draws, and a module's Svelte component will draw some of them; each then gains the
+finer half the composed-observable rule asks for. The items are bound throughout, so what is deferred
+is an element rather than a binding — the distinction the exemption record was rejected on.
 
 **The frontend view names the Viewer explicitly.** What that container exists to do terminates at the
 Viewer, and that relationship's endpoint is the module component this record leaves undrawn, so
