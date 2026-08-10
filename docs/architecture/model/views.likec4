@@ -3,7 +3,7 @@
 //
 // A view renders parallel relationships as one edge unless it asks for them
 // separately; `multiple true` is that request, and a title overrides the label
-// of a merge left in place (ADR 0020 rev 1).
+// of a merge left in place (ADR 0019 rev 3).
 
 views {
   // Named `index` so it is LikeC4's default landscape view — this avoids a
@@ -42,7 +42,7 @@ views {
 
     // `include *` draws this container's children and what they relate to, not
     // what the container itself relates to. Naming the Viewer draws it and the
-    // edge to it (ADR 0021 rev 1).
+    // edge to it (ADR 0019 rev 3).
     include viewer
   }
 

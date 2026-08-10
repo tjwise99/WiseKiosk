@@ -12,7 +12,7 @@ product's obligations live in [`requirements/`](requirements/README.md)
 decides it is described there, which is where every check on this repository is described.
 
 **None of it is built.** What a release consists of is
-[ADR 0021 rev 1](decisions/0021-release-artifact-set-and-operator-tooling.md); the material itself is
+[ADR 0020 rev 1](decisions/0020-release-artifact-set-and-operator-tooling.md); the material itself is
 published by #67 security and supply-chain gates and #54 container build and publish, and the
 procedure's literal commands wait on them.
 
