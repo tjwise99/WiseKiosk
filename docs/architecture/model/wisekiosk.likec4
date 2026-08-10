@@ -7,7 +7,7 @@
 // A tag parses only as the first entry of an element or relationship body.
 //
 // The boundary, what earns an element a place at each level, and where a tag sits
-// are ADR 0019 rev 3's.
+// are ADR 0019 rev 4's.
 
 specification {
   element person {
@@ -19,14 +19,14 @@ specification {
   element container
   element component
 
-  // The three kinds ADR 0019 rev 3 names: hosts, the processes on them, and the
+  // The three kinds ADR 0019 rev 4 names: hosts, the processes on them, and the
   // files placed beside them.
   deploymentNode host
   deploymentNode process
   deploymentNode artifact
 
   // Each tag is a Doorstop identifier. Which item belongs on what, and at which
-  // tier, is ADR 0019 rev 3.
+  // tier, is ADR 0019 rev 4.
   tag SYS001
   tag SYS002
   tag SYS003
