@@ -117,8 +117,8 @@ def changelog_revs(text):
 
 
 def current_revs(problems):
-    """Each ADR's number and the rev its own head declares."""
-    revs, carriers = {}, {}
+    """Each ADR's number and the rev its own head declares, and the numbers carried by two files."""
+    revs, carriers, collided = {}, {}, set()
     for path in sorted(DECISIONS.iterdir()):
         match = ADR_FILE.match(path.name)
         if not match:
@@ -136,15 +136,16 @@ def current_revs(problems):
             )
             continue
         rev, number = int(heads[0]), match.group(1)
-        # Two files at one number leave `revs` holding whichever sorted last, so every citation of
-        # that number is judged against an arbitrary one of them and the other's rev against
-        # nothing. Reported here rather than mapped: which document the number names is what a
-        # citation cannot be judged without.
+        # A number two files carry is dropped from the mapping rather than assigned from one of
+        # them: which document it names is what a citation of it cannot be judged without, and
+        # either assignment judges every such citation against a file chosen by sort order.
         if number in carriers:
             problems.append(
                 f"docs/decisions/{carriers[number]} and docs/decisions/{path.name} both carry "
                 f"number {number} — no rev can be attributed to it, so no citation of it is judged"
             )
+            collided.add(number)
+            revs.pop(number, None)
         else:
             carriers[number] = path.name
             revs[number] = rev
@@ -154,9 +155,11 @@ def current_revs(problems):
                 f"docs/decisions/{path.name} is at rev {rev} but its Revisions section declares "
                 f"{declared or 'nothing'}, expected one line per rev from 1"
             )
-    if not revs:
+    # Guarded on the heads that parsed, not on the mapping: a tree whose every number collided
+    # empties `revs` while the format is fine, and would otherwise be reported as a parser fault.
+    if not carriers:
         problems.append("no ADR declared a rev — the head format or this parser is wrong")
-    return revs
+    return revs, collided
 
 
 def check_index(revs, problems):
@@ -213,7 +216,7 @@ def readable(path, text):
         yield number, row.group(2) if row else line, False
 
 
-def check_citations(revs, problems):
+def check_citations(revs, collided, problems):
     unreadable, judged = [], {"prose": 0, "link": 0}
     for path in tracked():
         try:
@@ -252,8 +255,8 @@ def check_citations(revs, problems):
                     )
                 else:
                     problems.extend(
-                        judge(revs, where, number, titled.group(1), titled.group(2), title,
-                              historical)
+                        judge(revs, collided, where, number, titled.group(1),
+                              titled.group(2), title, historical)
                     )
 
             for form, pattern in (("reference-style link", REF_DEF), ("raw <a href>", RAW_HREF)):
@@ -281,8 +284,8 @@ def check_citations(revs, problems):
                     )
                     continue
                 problems.extend(
-                    judge(revs, where, number, match.group(1), match.group(2), line.strip(),
-                          historical)
+                    judge(revs, collided, where, number, match.group(1), match.group(2),
+                          line.strip(), historical)
                 )
 
     if unreadable:
@@ -301,13 +304,19 @@ def check_citations(revs, problems):
     return sum(judged.values())
 
 
-def judge(revs, where, number, cited, pinned, context, historical=False):
+def judge(revs, collided, where, number, cited, pinned, context, historical=False):
     """One citation against the ADR it names.
 
     `historical` drops the comparison against the ADR's current rev, and drops nothing else: a
     changelog entry may name a rev that has moved on, but not an ADR that does not exist and not a
     citation carrying no rev at all.
+
+    A citation of a colliding number is left unjudged, and the run fails on the collision itself.
+    Judging it reports a rev disagreement the tree does not have, against a correct citation, and
+    the repair that reads as obvious — move the pin — writes a wrong rev across the tree.
     """
+    if cited in collided:
+        return []
     if cited not in revs:
         return [f"{where}:{number}: cites ADR {cited}, which is not an ADR — {context}"]
     if not pinned:
@@ -321,11 +330,11 @@ def judge(revs, where, number, cited, pinned, context, historical=False):
 
 def main():
     problems = []
-    revs = current_revs(problems)
+    revs, collided = current_revs(problems)
     judged = 0
     if revs:
         check_index(revs, problems)
-        judged = check_citations(revs, problems)
+        judged = check_citations(revs, collided, problems)
     if problems:
         return fail(sorted(problems))
     print(f"{len(revs)} ADRs; {judged} citations, every one pinning the current rev")

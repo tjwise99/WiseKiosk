@@ -618,18 +618,36 @@ The same narrowing applies to the index row, which drops only the leading self-l
 moved, one passing and one failing. Without both, "the exemption works" and "the exemption is narrow"
 are indistinguishable.
 
-**The duplicate-number pair is the same lesson about a different mechanism.** The number → rev map was
-a plain assignment, so two files at one number left it holding whichever sorted last: every citation of
-that number was judged against an arbitrary one of the two, and the other's rev against nothing. The
-loud shape — the two at different revs — fails, but on stale-citation messages that name neither file
-and point the reader at the citations instead. **The quiet shape is the one that ran on a real branch**:
-two records at 0021, both at rev 1, reported as `23 ADRs` over a directory holding 24, exit 0. Reading a
-count against the directory is what makes the seed decidable, and an equal-rev pair is why the check
-cannot rely on a rev disagreeing. `check-adr-index.mjs` catches the same directory state, so nothing was
-loose in `just verify` — but a check that reports a population smaller than its input, and says so in the
-same line it reports success, is the failure CONTRIBUTING question 10, *Unjudged input*, names. Uniqueness
-stays that check's to enforce; this one reports the collision because a number two documents carry has no
-one rev to hold a citation to (question 13, *Second enforcer*).
+**The duplicate-number cases are seeded in both filename orders, because the verdict used to depend on
+one.** The number → rev map was a plain assignment, so two files at one number left it holding whichever
+sorted last: every citation of that number was judged against an arbitrary one of the two, and the
+other's rev against nothing. Which one that is decides the whole outcome, and the seed's slug decides
+which one it is — a copy at `0020-a-…` and the same copy at `0020-zzz-…` are the same defect and gave
+opposite exit codes. **A seed that fixes the slug measures the sort order, not the check.**
+
+Four runs, all observed:
+
+| Seed (copy of an ADR under a second slug) | Old | Current |
+|---|---|---|
+| Sorts first, same rev | exit 0 | exit 1, the collision |
+| Sorts last, same rev | exit 0 | exit 1, the collision |
+| Sorts first, head raised | **exit 0** | exit 1, the collision |
+| Sorts last, head raised | exit 1, on 8 stale-citation messages naming neither file | exit 1, the collision |
+
+**The equal-rev shape is the one that ran on a real branch**: two records at 0021, both at rev 1,
+reported as `23 ADRs` over a directory holding 24, exit 0. It is decidable only by reading the count
+against the directory — nothing else moved — which is why an equal-rev pair, not a disagreeing one, is
+the case that matters. `check-adr-index.mjs` catches the same directory state, so nothing was loose in
+`just verify`, but a check reporting a population smaller than its input in the same line it reports
+success is the failure CONTRIBUTING question 10, *Unjudged input*, names.
+
+**The colliding number is dropped from the map rather than assigned from one of the two files, and its
+citations go unjudged.** Assigning it makes the run fail on wrong-rev messages against citations that
+are correct, sorted above the collision message so they are what a contributor reads first — and the
+repair they invite, moving the pins, writes a wrong rev across the tree. That is the old defect with
+one line added, not a fix for it. Uniqueness stays `check-adr-index.mjs`'s to enforce; this check
+reports the collision because a number two documents carry has no one rev to hold a citation to
+(question 13, *Second enforcer*).
 
 **The link reader is anchored on the target, not the title.** Titled-pattern matching missed a link
 whose title carried a bracketed phrase: the title pattern cannot cross a closing bracket, so the link
