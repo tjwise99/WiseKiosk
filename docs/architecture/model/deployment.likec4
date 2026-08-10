@@ -9,21 +9,22 @@
 deployment {
   publishedImage = artifact 'Published image' {
     #SRS018
+    #SRS019
     #SRS020
     #SRS025
     description '''
-      The one artifact the project publishes. Carries the backend binary and the
-      frontend bundle, and declares the user the backend runs as. Holds no
-      configuration file, no secret material and no deployment-specific value.
+      The one artifact the project publishes, built for each architecture it
+      supports. Carries the backend binary and the frontend bundle, and declares
+      the user the backend runs as. Holds no configuration file, no secret
+      material and no deployment-specific value.
     '''
   }
 
   containerHost = host 'Container host' {
-    #SRS019
     description '''
-      A 64-bit host, amd64 or arm64, running a container runtime. The width is the
-      runtime's floor rather than the backend's: the backend is never run outside
-      the container, so what the binary itself targets is the image's business.
+      A host running a container runtime, of an architecture the published image
+      is built for. Which architectures those are is the image's, not this host's:
+      the backend is never run outside the container.
     '''
 
     configurationFile = artifact 'Configuration file' {

@@ -301,9 +301,9 @@ what the image declares, which is why the two are separate subjects
 ([ADR 0023 rev 1](decisions/0023-deployment-level-and-the-published-image.md)).
 
 The container host and the display host are **roles, not machines**. They have different floors — a
-container runtime on one, a browser on the other — and one machine meeting both may carry both. In the
-configuration this is built for it cannot: the display host is below the runtime's floor, so the two
-are separate machines there.
+runtime able to run the published image on one, a browser on the other — and one machine meeting both
+may carry both. In the configuration this is built for it cannot: the display host is below the first
+of those, so the two are separate machines there.
 
 The concrete wiring — the deployment recipe, the mount paths, the example configuration a release
 carries — is [`DEPLOYMENT.md`](DEPLOYMENT.md)'s, and so are the health signal and the restart policy:

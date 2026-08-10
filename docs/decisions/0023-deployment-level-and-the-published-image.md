@@ -79,13 +79,16 @@ SRS018's<!-- One generic published image --> binding **moves** off the operator'
 rather than doubling: ADR 0021 rev 1 placed it there for want of an image, and a second home would
 leave two subjects where the item has one.
 
-**SRS019<!-- The backend runs on both supported architectures --> moves to the container host**, off
-the Backend container. The 64-bit floor is the container runtime's rather than the backend's — no
-32-bit image is published, and the backend is never run outside the container, so what the binary
-itself targets is the image's business (owner, 2026-08-09). On that ground it is not a fact about that
-container, so it does not split across two depths. **This is the one binding of the six that is open**
-— the published image is a live rival for it, argued under *Alternatives considered* below, and the
-tag stays here until the owner rules.
+**SRS019<!-- The backend runs on both supported architectures --> moves to the published image**, off
+the Backend container. It obliges WiseKiosk rather than any host — its own `rationale` says so, in the
+sentence forbidding it be read "as a fact about the host, because a host's capabilities are not ours
+to require" — and what the project builds for each architecture is the image. Its
+`verification-justification` settles it by "building for both architectures", which is an observation
+of the artifact. The decisive point is that **"both" cannot be witnessed on a host at all**: any one
+host is of one architecture, and only the published image carries both. The container host is the
+rejected alternative, argued below, and carries no tag: the architectures it must be one of are the
+image's property, not an obligation this project places on the operator's hardware
+(owner, 2026-08-09).
 
 **SRS021<!-- Frontend runs on a Pi Zero-class browser host --> binds at both depths**, keeping its
 Frontend container binding and gaining the display host. The bundle must be built for what that
@@ -103,10 +106,14 @@ judges the split real.
 
 They have different floors, and one machine meeting both may carry both roles. In the configuration
 being built for it cannot: the display host was read before this was argued — `armv6l`, one core,
-432 MB, no container runtime — so it is below the container host's floor and the two are necessarily
-separate machines there. ADR 0020 rev 1 said the frontend runs "potentially a separate machine of a
-different architecture"; for at least one supported configuration that is stronger than *potentially*,
-and the node descriptions carry it rather than the model asserting two machines as a rule.
+432 MB — and while a container runtime is packaged for it, the one that is predates the image format
+and the `HEALTHCHECK` the published image declares. So it is below the floor for running *this image*,
+which is the floor that matters, and the two roles are necessarily separate machines there. Stating it
+as "that host cannot run containers" would be false and is the sort of host-capability claim
+SRS019<!-- The backend runs on both supported architectures --> declines to make. ADR 0020 rev 1 said
+the frontend runs "potentially a separate machine of a different architecture"; for at least one
+supported configuration that is stronger than *potentially*, and the node descriptions carry it rather
+than the model asserting two machines as a rule.
 
 ## Alternatives considered
 
@@ -133,19 +140,21 @@ edge, and give it no second home. Rejected: that placement's stated reason was t
 element, and the reason is gone. Keeping it would leave the record asserting a workaround as a
 positive choice.
 
-**Bind SRS019<!-- The backend runs on both supported architectures --> to the published image rather
-than to the container host.** Recorded here without being settled, which is the one entry in this
-section that is not closed. The item's own `rationale` closes: "Stated as an obligation on WiseKiosk
-rather than as a fact about the host, because a host's capabilities are not ours to require; what is
-ours is running on both" — and the tag sits on a node whose description states a host capability. Its
-`verification-justification` settles it by "building for both architectures", and what is built for
-both is the image. The clause above choosing the host ends "what the binary itself targets is the
-image's business", which points at the image too. Against that stands the ground the choice was
-actually made on: the 64-bit floor exists because a container runtime needs it, which is a fact about
-where the thing runs (owner, 2026-08-09). It is also the only one of the six whose sole binding is now
-outside the system boundary, where SYS007<!-- The declared minimum host, and staying within it -->
-puts the hosts. **The tag stays on the container host until the owner rules**; this entry is where a
-reversal attaches, and where an affirmation is already written down.
+**Bind SRS019<!-- The backend runs on both supported architectures --> to the container host.** Held
+for most of this slice, on the ground that the width floor belongs to the container runtime rather
+than to the backend: a runtime needs 64 bits, no 32-bit image is published, and the backend never runs
+outside the container. Rejected once that ground was tested. It is not generally true — 32-bit
+container runtimes exist and are packaged for `armhf`, including on the display host this project
+deploys to — and the version that is installable there predates OCI images, manifest lists and the
+`HEALTHCHECK` the published image declares, so what it establishes is that the *image* cannot be run
+by it rather than that the host cannot run a runtime. That is the item's own distinction: the
+`rationale` forbids reading it as a fact about the host, and a host node cannot witness "both" in any
+case. Binding it here would also have made it the only one of the six whose sole subject lies outside
+the boundary, where SYS007<!-- The declared minimum host, and staying within it --> puts the hosts.
+
+What the rejected ground does establish is a question this record does not answer: whether amd64 and
+arm64 are the right set for that item to name. That is the requirement's content, changed by a
+specification change with its own verification, not by where a tag sits.
 
 **Wait for #71 release artifact set to define what ships.** This ticket's own lead option, on the
 ground that a level drawing what ships should not guess the set. Rejected: what a release carries is
@@ -174,11 +183,11 @@ to reach for. The stale sentence is confined to this integration branch:
 #124 merge the three C4 ADRs dissolves ADR 0021 rev 1 into one record before the epic reaches `main`,
 so what merges there never carries it.
 
-**The Deployment level is where a host obligation goes, and that is a new pull.** SRS019<!-- The
-backend runs on both supported architectures --> moved here on the ground that the width floor belongs
-to the container runtime — a placement *Alternatives considered* records as still open, so this
-paragraph describes the pull rather than resting on that one item. Future items naming a host, a mount
-or an artifact now have somewhere to sit, and the pressure to bind them to a container is gone. The
+**The Deployment level is where a host obligation goes, and that is a new pull.** No item exercises it
+yet — SRS019<!-- The backend runs on both supported architectures --> looked like one and turned out to
+oblige the artifact instead, which is the pull's first test and a useful one. Future items naming a
+host, a mount or an artifact now have somewhere to sit, and the pressure to bind them to a container is
+gone. The
 opposite pressure arrives with it: an item genuinely about an execution context can now be parked on a
 host because the host is the more concrete-sounding subject.
 Nothing gates that either — `check-arch-trace`'s scope is resolution and completeness, and whether the
