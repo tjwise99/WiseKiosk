@@ -700,8 +700,8 @@ Component and Deployment levels baselined nothing: every item they bound was alr
 
 **Acceptance carries an allocation obligation.** Baselining an item is already the act of reading it and
 judging what it obliges; it also requires deciding where that obligation is observable, or that the
-model must grow first. Five `SYS` and `SRS` items are `proposed` and each acquires this when accepted;
-the `TST` tier acquires nothing, being outside the population.
+model must grow first. The `SYS` and `SRS` items still `proposed` each acquire this when accepted; the
+`TST` tier acquires nothing, being outside the population.
 
 **The model's element set answers to the tree, in one narrow way.** An accepted item whose subject
 nothing draws is a reason to extend the model. That pressure is bounded — the rule requires each item to
