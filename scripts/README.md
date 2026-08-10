@@ -589,6 +589,8 @@ described without spelling a live ADR number, which this check reads as a citati
 | **The prose citation spelling drifted, so none is recognised** | `CITATION` altered not to match |
 | **The link spelling drifted, so none is recognised** | `TARGET` altered not to match |
 | An ADR revved with one citation left behind | one ADR to rev 2, every citation but one moved |
+| **Two files carrying one number, at the same rev** | a copy of an ADR under a second slug — the quiet shape |
+| **The same, at different revs** | the copy's head raised, so the two disagree |
 
 ### Must pass
 
@@ -615,6 +617,19 @@ The same narrowing applies to the index row, which drops only the leading self-l
 **The two rev-2 cases are the pair that matters**: same tree, differing only in whether one citation
 moved, one passing and one failing. Without both, "the exemption works" and "the exemption is narrow"
 are indistinguishable.
+
+**The duplicate-number pair is the same lesson about a different mechanism.** The number → rev map was
+a plain assignment, so two files at one number left it holding whichever sorted last: every citation of
+that number was judged against an arbitrary one of the two, and the other's rev against nothing. The
+loud shape — the two at different revs — fails, but on stale-citation messages that name neither file
+and point the reader at the citations instead. **The quiet shape is the one that ran on a real branch**:
+two records at 0021, both at rev 1, reported as `23 ADRs` over a directory holding 24, exit 0. Reading a
+count against the directory is what makes the seed decidable, and an equal-rev pair is why the check
+cannot rely on a rev disagreeing. `check-adr-index.mjs` catches the same directory state, so nothing was
+loose in `just verify` — but a check that reports a population smaller than its input, and says so in the
+same line it reports success, is the failure CONTRIBUTING question 10, *Unjudged input*, names. Uniqueness
+stays that check's to enforce; this one reports the collision because a number two documents carry has no
+one rev to hold a citation to (question 13, *Second enforcer*).
 
 **The link reader is anchored on the target, not the title.** Titled-pattern matching missed a link
 whose title carried a bracketed phrase: the title pattern cannot cross a closing bracket, so the link

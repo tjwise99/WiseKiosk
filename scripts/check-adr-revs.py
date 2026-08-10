@@ -11,6 +11,8 @@ Assertions, over the tracked file set:
 - Each ADR's head carries `**Rev:** N`, and the index table in `docs/decisions/README.md` agrees
   with it. The head is authoritative; the table is checked against it, never trusted.
 - Each ADR's *Revisions* section carries one changelog line per rev, numbered 1 to that head rev.
+- No two files carry one number. Uniqueness is `scripts/check-adr-index.mjs`'s to enforce; it is
+  reported here because a number two documents carry has no one rev to hold a citation of it to.
 - Every `ADR NNNN` in prose is followed by `rev M`, and M is that ADR's current rev.
 - Every markdown link resolving to an ADR file is titled `ADR NNNN rev M` likewise. The link rule is
   what the prose rule cannot reach: a citation spelled `[NNNN](NNNN-slug.md)` names no ADR in prose
@@ -116,7 +118,7 @@ def changelog_revs(text):
 
 def current_revs(problems):
     """Each ADR's number and the rev its own head declares."""
-    revs = {}
+    revs, carriers = {}, {}
     for path in sorted(DECISIONS.iterdir()):
         match = ADR_FILE.match(path.name)
         if not match:
@@ -133,8 +135,19 @@ def current_revs(problems):
                 f"docs/decisions/{path.name} declares {len(heads)} `**Rev:** N` lines, expected 1"
             )
             continue
-        rev = int(heads[0])
-        revs[match.group(1)] = rev
+        rev, number = int(heads[0]), match.group(1)
+        # Two files at one number leave `revs` holding whichever sorted last, so every citation of
+        # that number is judged against an arbitrary one of them and the other's rev against
+        # nothing. Reported here rather than mapped: which document the number names is what a
+        # citation cannot be judged without.
+        if number in carriers:
+            problems.append(
+                f"docs/decisions/{carriers[number]} and docs/decisions/{path.name} both carry "
+                f"number {number} — no rev can be attributed to it, so no citation of it is judged"
+            )
+        else:
+            carriers[number] = path.name
+            revs[number] = rev
         declared = changelog_revs(text)
         if sorted(declared) != list(range(1, rev + 1)):
             problems.append(
