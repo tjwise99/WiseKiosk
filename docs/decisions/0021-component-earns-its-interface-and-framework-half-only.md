@@ -31,7 +31,8 @@ ruled the Component level would not be built and this builds it, which [`README.
 routes to supersession — recorded by revving the record superseded, not by a note on this one. That
 rev is left to #124 settle the C4 ADR set: written on this branch, the citation it would carry names
 a record that ceases to exist, because that ticket merges this record into
-[ADR 0019 rev 2](0019-boundary-at-what-deploys-and-tag-tier.md) at a later rev and frees this number.
+[ADR 0019 rev 2](0019-boundary-at-what-deploys-and-tag-tier.md) at a later rev and releases this
+number, which `main` has since given to another record.
 The rest of that decision — LikeC4, the browser-free codegen, the staleness gate — stands untouched.
 The Code level is not built here, and this record does not decide it.
 
@@ -115,7 +116,7 @@ SRS001<!-- A failed module shows why, and only that module -->,
 SRS002<!-- A module-scoped configuration error is reported at that module --> and
 SRS026<!-- The display says when the backend is gone --> name what a Viewer sees, so theirs is the
 relationship that renders.
-SRS017<!-- Full-screen assembly at kiosk; reflow, not overlap, at narrower widths --> names a property
+SRS017<!-- Full-screen assembly at kiosk; reflow, no horizontal scroll, at narrower widths --> names a property
 of the assembled page rather than of what it shows anyone, so its second binding is the container
 element. SRS009<!-- Every source reachable through the backend, statelessly --> is the same shape read
 the other way: reachability by the endpoints the boundary contract defines is the route handler's, and

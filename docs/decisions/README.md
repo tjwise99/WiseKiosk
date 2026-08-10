@@ -56,6 +56,7 @@ amended, so a number in git history need not mean what it means here.
 | [0021](0021-release-artifact-set-and-operator-tooling.md) | 1 | 2026-08-09 | A release is the image and its provenance material in the registry plus a recipe and an example configuration on the tag; the documentation site is not versioned, a release carries no operator tooling program, and the image declares a healthcheck nothing acts on |
 | [0021](0021-component-earns-its-interface-and-framework-half-only.md) | 1 | 2026-08-05 | A component is a responsibility with a nameable interface, so the route registry is not one; the framework/module seam is the module contract's, and only the framework half is drawn until module needs exist |
 | [0022](0022-every-accepted-requirement-binds.md) | 1 | 2026-08-08 | Every accepted requirement binds somewhere in the architecture model; where one cannot, the model grows to draw what it obliges rather than an exemption being recorded |
+| [0023](0023-deployment-level-and-the-published-image.md) | 1 | 2026-08-09 | The Deployment level draws hosts, the processes on them and the files placed beside them; the published image is a subject distinct from the container it becomes, and what obliges the artifact binds there |
 
 ## Revisions
 

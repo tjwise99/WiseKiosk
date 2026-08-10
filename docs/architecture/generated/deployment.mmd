@@ -1,0 +1,24 @@
+---
+title: "WiseKiosk — Deployment"
+---
+graph TB
+  subgraph DisplayHost["`Display host`"]
+    subgraph DisplayHost.DisplayBrowser["`Browser`"]
+      DisplayHost.DisplayBrowser.Frontend@{ shape: rectangle, label: "Frontend" }
+    end
+  end
+  PublishedImage@{ shape: rectangle, label: "Published image" }
+  subgraph ContainerHost["`Container host`"]
+    ContainerHost.ConfigurationFile@{ shape: rectangle, label: "Configuration file" }
+    ContainerHost.SecretFiles@{ shape: rectangle, label: "Secret files" }
+    subgraph ContainerHost.RunningContainer["`Running container`"]
+      ContainerHost.RunningContainer.Backend@{ shape: rectangle, label: "Backend" }
+    end
+  end
+  DisplayHost.DisplayBrowser.Frontend -. "`Fetches the configuration, served back 
+unparsed`" .-> ContainerHost.RunningContainer.Backend
+  DisplayHost.DisplayBrowser.Frontend -. "`Fetches the payload for each module`" .-> ContainerHost.RunningContainer.Backend
+  ContainerHost.RunningContainer.Backend -. "`Serves the single-page bundle`" .-> DisplayHost.DisplayBrowser.Frontend
+  PublishedImage -. "`Runs as this container`" .-> ContainerHost.RunningContainer
+  ContainerHost.ConfigurationFile -. "`Mounted in`" .-> ContainerHost.RunningContainer
+  ContainerHost.SecretFiles -. "`Mounted in`" .-> ContainerHost.RunningContainer

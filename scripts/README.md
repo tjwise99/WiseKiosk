@@ -843,17 +843,23 @@ current script passes it; listing it there would fail anyone re-running that tab
 confirmed by reading the export for surviving relationship tags rather than by an exit status that is
 0 either way.
 
-**A premise this check rests on and does not test:** an `instanceOf` does not inherit its logical
-target's tags — the deployment nodes export `tags: None` beside a `Backend` carrying eight. A LikeC4
-version that propagated them would leave every run green while the completeness rule went hollow for
-every item bound to an instantiated container: no diagnostic, no count that moves. Re-run that row
-when the pin moves.
+**A premise this check rests on and does not test:** in the deployment-elements section this check
+reads, an `instanceOf` entry carries no tags — it does not inherit its logical target's. A LikeC4
+version that propagated them there would leave every run green while the completeness rule went
+hollow for every item bound to an instantiated container: no diagnostic, no count that moves.
+
+Re-run that row when the pin moves, and read the right section. In `likec4 export json` the instances
+are the `.deployments.elements` entries carrying an `element` key naming the container; none carries
+a `tags` key. **The view section shows the opposite and is not what the check reads** —
+`.views.<name>.nodes[]` entries of `kind: instance` do carry the instantiated container's tags, and
+`kind: instance` appears nowhere else, so a selector written on it reads inheritance that the checked
+section does not have and reports the premise broken when it holds.
 
 ### Must fail — tree → tags
 
 | Case | Input |
 |---|---|
-| **An accepted, active item bound nowhere** | **no seed — the tree's real state**, reporting SRS020<!-- Non-root container user --> and SRS025<!-- No secret material in the published image --> |
+| **An accepted, active item bound nowhere** | **no seed — the tree's real state** |
 | A bound item losing its only tag | one item's declaration *and* its application deleted from the all-bound fixture |
 | The tree loads no item | the three tier directories removed |
 | No document carries an obliging tier | the two obliging tiers removed, the verification tier left, its `parent:` line dropped so the build still resolves |
@@ -862,7 +868,9 @@ when the pin moves.
 | A status outside the vocabulary | one accepted item's `status` mis-spelled |
 
 The headline row needs no fixture, which is what makes it better evidence than a seed: the check
-fails on what the repository actually holds, and #123 C4 phase 4 Deployment is what turns it green.
+fails on what the repository actually holds. Naming the items it reports, or the one ticket that
+clears them, is what dates this row — the set changes whenever an item is accepted or a binding
+lands, and nothing here is compared against the tree.
 
 **It was read in CI as well as locally**, which § *Confirming a gate in CI rather than locally* says
 a local run cannot show: on PR #134 the `architecture` job's last step fails while the `check-arch`
