@@ -2,14 +2,12 @@
 // Component (L3) and Deployment, the last in ./deployment.likec4.
 //
 // Single source of truth for the diagrams in ../../ARCHITECTURE.md. Edit here, then
-// run `just arch-export` (ADR 0003 rev 1).
+// run `just arch-export` (ADR 0003 rev 2).
 //
 // A tag parses only as the first entry of an element or relationship body.
 //
-// Boundary, actors and external systems are ADR 0019 rev 2's; the containers, the
-// one origin they share and the tag tier are ADR 0020 rev 1's; what earns a
-// component and where the framework/module seam falls are ADR 0021 rev 1's; what
-// the Deployment level draws is ADR 0023 rev 1's.
+// The boundary, what earns an element a place at each level, and where a tag sits
+// are ADR 0019 rev 3's.
 
 specification {
   element person {
@@ -21,14 +19,14 @@ specification {
   element container
   element component
 
-  // The three kinds ADR 0023 rev 1 names: hosts, the processes on them, and the
+  // The three kinds ADR 0019 rev 3 names: hosts, the processes on them, and the
   // files placed beside them.
   deploymentNode host
   deploymentNode process
   deploymentNode artifact
 
   // Each tag is a Doorstop identifier. Which item belongs on what, and at which
-  // tier, is ADR 0019 rev 2 as amended by ADR 0020 rev 1.
+  // tier, is ADR 0019 rev 3.
   tag SYS001
   tag SYS002
   tag SYS003

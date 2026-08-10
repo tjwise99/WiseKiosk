@@ -589,6 +589,8 @@ described without spelling a live ADR number, which this check reads as a citati
 | **The prose citation spelling drifted, so none is recognised** | `CITATION` altered not to match |
 | **The link spelling drifted, so none is recognised** | `TARGET` altered not to match |
 | An ADR revved with one citation left behind | one ADR to rev 2, every citation but one moved |
+| **Two files carrying one number, at the same rev** | a copy of an ADR under a second slug — the quiet shape |
+| **The same, at different revs** | the copy's head raised, so the two disagree |
 
 ### Must pass
 
@@ -615,6 +617,47 @@ The same narrowing applies to the index row, which drops only the leading self-l
 **The two rev-2 cases are the pair that matters**: same tree, differing only in whether one citation
 moved, one passing and one failing. Without both, "the exemption works" and "the exemption is narrow"
 are indistinguishable.
+
+**The duplicate-number cases are seeded in both filename orders, because the verdict used to depend on
+one.** The number → rev map was a plain assignment, so two files at one number left it holding whichever
+sorted last: every citation of that number was judged against an arbitrary one of the two, and the
+other's rev against nothing. Which one that is decides the whole outcome, and the seed's slug decides
+which one it is — a copy at `0020-a-…` and the same copy at `0020-zzz-…` are the same defect and gave
+opposite exit codes. **A seed that fixes the slug measures the sort order, not the check.**
+
+Four runs, all observed:
+
+| Seed (copy of an ADR under a second slug) | Old | Current |
+|---|---|---|
+| Sorts first, same rev | exit 0 | exit 1, the collision |
+| Sorts last, same rev | exit 0 | exit 1, the collision |
+| Sorts first, head raised | **exit 0** | exit 1, the collision |
+| Sorts last, head raised | exit 1, but on stale-citation messages against correct citations and an index-row disagreement — nothing pointing at the collision | exit 1, the collision |
+
+**The equal-rev shape is the one that ran on a real branch**: two records at 0021, both at rev 1,
+reported as `23 ADRs` over a directory holding 24, exit 0. It is decidable only by reading the count
+against the directory — nothing else moved — which is why an equal-rev pair, not a disagreeing one, is
+the case that matters. `check-adr-index.mjs` catches the same directory state, so nothing was loose in
+`just verify`, but a check reporting a population smaller than its input in the same line it reports
+success is the failure CONTRIBUTING question 10, *Unjudged input*, names.
+
+**The colliding number is dropped from the map rather than assigned from one of the two files, and its
+citations go unjudged.** Assigning it makes the run fail on wrong-rev messages against citations that
+are correct, sorted above the collision message so they are what a contributor reads first — and the
+repair they invite, moving the pins, writes a wrong rev across the tree. That is the old defect with
+one line added, not a fix for it. **The row above carries no message count on purpose**: how many
+problems that run prints depends on how the seed was built — whether the copy's *Revisions* section was
+made consistent with its raised head — so a number there would be a property of one seed, which is the
+defect this whole entry exists to record. The kinds of message are what the row is arguing, and those
+hold across both constructions.
+
+**Two things go unreported while a number collides**, and both are deferred rather than bypassed: a
+citation of that number carrying no rev at all, and an index-row disagreement for it (`check_index`
+iterates the map the number was dropped from). The run fails on the collision either way, so neither
+can reach `main`; the cost is that the run after the collision is resolved reports a second round of
+problems the first did not show. Uniqueness stays `check-adr-index.mjs`'s to enforce; this check
+reports the collision because a number two documents carry has no one rev to hold a citation to
+(question 13, *Second enforcer*).
 
 **The link reader is anchored on the target, not the title.** Titled-pattern matching missed a link
 whose title carried a bracketed phrase: the title pattern cannot cross a closing bracket, so the link
@@ -961,7 +1004,7 @@ that catches it, and a check trusting the validator's exit status alone would pa
 ### What it does not catch: a tag on a view
 
 The export carries tags in a fifth place — `views[x].tags` — and the scan does not read it. That is
-deliberate: a view is a projection of the model rather than a subject in it, and ADR 0022 rev 1 binds
+deliberate: a view is a projection of the model rather than a subject in it, and ADR 0019 rev 3 binds
 an item to an element or a relationship. Two runs, both observed rather than reasoned about:
 
 | Seed | Result |
