@@ -632,7 +632,7 @@ Four runs, all observed:
 | Sorts first, same rev | exit 0 | exit 1, the collision |
 | Sorts last, same rev | exit 0 | exit 1, the collision |
 | Sorts first, head raised | **exit 0** | exit 1, the collision |
-| Sorts last, head raised | exit 1, on 8 stale-citation messages naming neither file | exit 1, the collision |
+| Sorts last, head raised | exit 1, but on stale-citation messages against correct citations and an index-row disagreement — nothing pointing at the collision | exit 1, the collision |
 
 **The equal-rev shape is the one that ran on a real branch**: two records at 0021, both at rev 1,
 reported as `23 ADRs` over a directory holding 24, exit 0. It is decidable only by reading the count
@@ -645,7 +645,17 @@ success is the failure CONTRIBUTING question 10, *Unjudged input*, names.
 citations go unjudged.** Assigning it makes the run fail on wrong-rev messages against citations that
 are correct, sorted above the collision message so they are what a contributor reads first — and the
 repair they invite, moving the pins, writes a wrong rev across the tree. That is the old defect with
-one line added, not a fix for it. Uniqueness stays `check-adr-index.mjs`'s to enforce; this check
+one line added, not a fix for it. **The row above carries no message count on purpose**: how many
+problems that run prints depends on how the seed was built — whether the copy's *Revisions* section was
+made consistent with its raised head — so a number there would be a property of one seed, which is the
+defect this whole entry exists to record. The kinds of message are what the row is arguing, and those
+hold across both constructions.
+
+**Two things go unreported while a number collides**, and both are deferred rather than bypassed: a
+citation of that number carrying no rev at all, and an index-row disagreement for it (`check_index`
+iterates the map the number was dropped from). The run fails on the collision either way, so neither
+can reach `main`; the cost is that the run after the collision is resolved reports a second round of
+problems the first did not show. Uniqueness stays `check-adr-index.mjs`'s to enforce; this check
 reports the collision because a number two documents carry has no one rev to hold a citation to
 (question 13, *Second enforcer*).
 
