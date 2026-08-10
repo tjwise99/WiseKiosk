@@ -266,7 +266,8 @@ reason. #129 retire the desk configuration validator sweeps the citations; what 
 C4 ADRs must absorb is that the *argument* those passages make no longer has its example. Recorded
 here because this register is where that ticket will look.
 
-**This record takes 0022, and #124 merge the three C4 ADRs will renumber it.** That slice merges
-ADR 0019 rev 2, ADR 0020 rev 1 and ADR 0021 rev 1 into one document and returns two numbers to the
-pool, which leaves this one stranded above a gap against the contiguity rule
-[`README.md`](README.md) states.
+**This record takes 0022, and #124 merge the C4 ADRs will renumber it.** That slice merges the C4
+records into one document, which leaves this one stranded above a gap against the contiguity rule
+[`README.md`](README.md) states. Whether it is renumbered beside that record or merged into it is
+open there; its subject is requirement-binding completeness rather than a C4 level, so the default is
+that it stays a separate record.

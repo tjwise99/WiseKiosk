@@ -31,7 +31,8 @@ ruled the Component level would not be built and this builds it, which [`README.
 routes to supersession — recorded by revving the record superseded, not by a note on this one. That
 rev is left to #124 settle the C4 ADR set: written on this branch, the citation it would carry names
 a record that ceases to exist, because that ticket merges this record into
-[ADR 0019 rev 2](0019-boundary-at-what-deploys-and-tag-tier.md) at a later rev and frees this number.
+[ADR 0019 rev 2](0019-boundary-at-what-deploys-and-tag-tier.md) at a later rev and releases this
+number, which `main` has since given to another record.
 The rest of that decision — LikeC4, the browser-free codegen, the staleness gate — stands untouched.
 The Code level is not built here, and this record does not decide it.
 

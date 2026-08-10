@@ -172,16 +172,16 @@ reason. It is in the node's `description` and in this record; nothing gates it.
 **ADR 0021 rev 1 loses a sentence.** Its statement that SRS018<!-- One generic published image -->
 "stays where what is observable of it is — the configuration arriving from outside" is false once the
 image is drawn. Correcting it means revving that record, which under [`README.md`](README.md) moves
-every citation of it — for text #124 merge the three C4 ADRs deletes, and that ticket already records
-this correction by name among what it absorbs. It is that ticket's, as ADR 0022 rev 1 recorded for the
+every citation of it — for text #124 merge the C4 ADRs deletes, and that ticket already records this
+correction by name among what it absorbs. It is that ticket's, as ADR 0022 rev 1 recorded for the
 same reason.
 
 **No lesser fix is available, and that is the rule working rather than a gap.** [`README.md`](README.md)
 allows a correction to be a rev and forbids it being a block appended to the old text, so a pointer
 added to that record without revving it is the thing the rule refuses — there is no cheap third option
 to reach for. The stale sentence is confined to this integration branch:
-#124 merge the three C4 ADRs dissolves ADR 0021 rev 1 into one record before the epic reaches `main`,
-so what merges there never carries it.
+#124 merge the C4 ADRs dissolves ADR 0021 rev 1 into one record before the epic reaches `main`, so
+what merges there never carries it.
 
 **The Deployment level is where a host obligation goes, and that is a new pull.** No item exercises it
 yet — SRS019<!-- The backend runs on both supported architectures --> looked like one and turned out to
@@ -194,10 +194,12 @@ Nothing gates that either — `check-arch-trace`'s scope is resolution and compl
 tagged subject is the one the requirement obliges is held by review, which is ADR 0021 rev 1's position
 on this link rather than a new one.
 
-**This record takes 0023, and #124 merge the three C4 ADRs will renumber it**, for the reason
-ADR 0022 rev 1 records of itself: that slice merges three ADRs into one and returns two numbers to the
-pool, leaving anything above the gap stranded against the contiguity rule [`README.md`](README.md)
-states.
+**This record takes 0023, and #124 merge the C4 ADRs absorbs it** (owner, 2026-08-09). One record for
+the C4 set is the shape decided there, so this document's decisions are transcribed into the merged
+record rather than kept beside it — which is also why the number it holds here is not worth defending.
+The same slice closes the collision `main` created by publishing a record at a number this branch was
+already using, and the contiguity rule [`README.md`](README.md) states reaches the records left above
+the gap.
 
 **`check-arch-trace` does not go green here.** This level binds three of the nine items the check
 reports unbound; the other six are #135 bind the mirror and legibility requirements'. That check goes
