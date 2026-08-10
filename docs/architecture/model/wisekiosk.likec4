@@ -33,6 +33,7 @@ specification {
   tag SYS004
   tag SYS005
   tag SYS006
+  tag SYS008
   tag SRS001
   tag SRS002
   tag SRS003
@@ -57,6 +58,11 @@ specification {
   tag SRS025
   tag SRS026
   tag SRS028
+  tag SRS030
+  tag SRS031
+  tag SRS032
+  tag SRS033
+  tag SRS034
   tag SRS035
 }
 
@@ -149,12 +155,18 @@ model {
     frontend = container 'Frontend' {
       #SRS017
       #SRS021
+      #SRS030
+      #SRS032
+      #SRS033
       technology 'Svelte 5, static single-page bundle'
       icon tech:svelte
       description '''
         Runs in the browser on the display host. Validates the configuration
         before applying it, assembles the configured modules into one
         full-screen layout, and renders each payload into its module region.
+        Everything it draws but the content itself is held under one emission
+        ceiling, and the text it presents to be read is rendered at full
+        emission and above one size floor read against the display's height.
       '''
 
       pageShell = component 'Page shell' {
@@ -177,10 +189,16 @@ model {
 
       layout = component 'Layout assembly' {
         #SRS017
+        #SRS031
+        #SRS034
+        #SRS035
         description '''
           Places each configured module into its region of one full-screen
-          layout, and reflows rather than overlapping or clipping at narrower
-          viewports.
+          layout, and reflows rather than overlapping or scrolling sideways at
+          narrower viewports. Holds every region out of the masked band along the
+          display's edges, at the depth the configuration declares and none
+          where it declares nothing. Content exceeding the region it was given
+          overflows it rather than being clipped, scrolled or scaled.
         '''
       }
 
@@ -232,9 +250,10 @@ model {
     #SRS007
   }
 
-  frontend -> viewer 'Renders the configured modules, and legibly says when one failed' {
+  frontend -> viewer 'Renders the configured modules, legibly says when one failed, and mirrors the rest' {
     #SYS001
     #SYS002
+    #SYS008
     #SRS001
     #SRS002
     #SRS004

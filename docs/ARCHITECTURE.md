@@ -47,8 +47,9 @@ graph TB
   Viewer@{ icon: "fa:user", shape: rounded, label: "Viewer" }
   Operator -. "`Configures the deployment and supplies 
 its secrets`" .-> Wisekiosk
-  Wisekiosk -. "`Renders the configured modules, and 
-legibly says when one failed`" .-> Viewer
+  Wisekiosk -. "`Renders the configured modules, legibly 
+says when one failed, and mirrors the 
+rest`" .-> Viewer
 ```
 
 <!-- arch-export:end generated/index.mmd -->
@@ -87,8 +88,9 @@ tree`" .-> Wisekiosk.Backend
   Wisekiosk.Frontend -. "`Fetches the configuration, served back 
 unparsed`" .-> Wisekiosk.Backend
   Wisekiosk.Frontend -. "`Fetches the payload for each module`" .-> Wisekiosk.Backend
-  Wisekiosk.Frontend -. "`Renders the configured modules, and 
-legibly says when one failed`" .-> Viewer
+  Wisekiosk.Frontend -. "`Renders the configured modules, legibly 
+says when one failed, and mirrors the 
+rest`" .-> Viewer
 ```
 
 <!-- arch-export:end generated/containers.mmd -->
@@ -220,8 +222,9 @@ module`" .-> WisekioskFrontend.PayloadClient
   WisekioskFrontend.Configuration -. "`Fetches the configuration, served back 
 unparsed`" .-> WisekioskBackend
   WisekioskFrontend.PayloadClient -. "`Fetches the payload for each module`" .-> WisekioskBackend
-  WisekioskFrontend -. "`Renders the configured modules, and 
-legibly says when one failed`" .-> Viewer
+  WisekioskFrontend -. "`Renders the configured modules, legibly 
+says when one failed, and mirrors the 
+rest`" .-> Viewer
 ```
 
 <!-- arch-export:end generated/frontendComponents.mmd -->

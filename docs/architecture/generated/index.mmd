@@ -7,5 +7,6 @@ graph TB
   Viewer@{ icon: "fa:user", shape: rounded, label: "Viewer" }
   Operator -. "`Configures the deployment and supplies 
 its secrets`" .-> Wisekiosk
-  Wisekiosk -. "`Renders the configured modules, and 
-legibly says when one failed`" .-> Viewer
+  Wisekiosk -. "`Renders the configured modules, legibly 
+says when one failed, and mirrors the 
+rest`" .-> Viewer
