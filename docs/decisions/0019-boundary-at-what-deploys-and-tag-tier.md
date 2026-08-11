@@ -14,7 +14,9 @@ mirror and legibility requirements)
   viewer accepted, on the axis the layout pair already carried; settles that pair's ground, which
   rested on a decomposition #132 under-decomposition of the layout need has since landed; closes the
   SRS035<!-- The masked edge band is the deployment's to declare --> second-subject question rev 3
-  left to this ticket (#135 bind the mirror and legibility requirements).
+  left to this ticket; and states the placements section as the rules that were argued, one case each,
+  the walkthrough of where every tag went belonging to the commit that applies one
+  (#135 bind the mirror and legibility requirements).
 - **rev 3** — 2026-08-09 — absorbs the Container, Component and Deployment level decisions and the
   requirement-binding completeness rule, which were four records written one slice at a time and each
   correcting the one before it; the amendment blocks and the grounds they reversed are gone, and every
@@ -330,153 +332,93 @@ was put on the table.
 
 ### The contested placements
 
-The judgements below are the ones that were argued, not an inventory of every tag: nothing compares a
-list here against the model, so a complete one would be wrong the moment a tag moves. Each is a
-placement no check can decide.
+**Each entry below states a placement rule, the one case that established it, and the reading it was
+chosen over.** It is deliberately not a walkthrough of where every tag went. That argument belongs to
+the commit applying the tag, which `git log -S` on the identifier reaches and which cannot come to
+disagree with the model the way a copy here would — nothing compares prose here against the tags, so a
+walkthrough is wrong the moment one moves. **An entry earns its place by having settled something**: a
+placement following from a rule stated here adds nothing by being listed beneath it, and a batch of
+bindings that settles no rule adds nothing at all.
 
-**What a Viewer sees.** SRS001<!-- A failed module shows why, and only that module -->,
-SRS002<!-- A module-scoped configuration error is reported at that module --> and
-SRS026<!-- The display says when the backend is gone --> name what a Viewer sees, so their second
-binding is the relationship that renders.
-SRS004<!-- Page renders a legible error state for every configuration failure class --> sits at two
-depths for the same reason — a plain-language error state naming which failure occurred is what a
-Viewer sees, and a page shell that loads without requiring a valid configuration is a property of one
-component. SYS001<!-- Failure is legible and proportionate -->'s `verification-justification` names
-those four items as one set, and they sit on that relationship together.
-
-**The layout pair.** SRS017<!-- Full-screen assembly at kiosk; reflow, no horizontal scroll, at
-narrower widths --> names a property of the assembled page rather than of what it shows anyone, so its
-second binding is the container element, while its parent
-SYS002<!-- The display's rendering keeps nothing from a viewer --> sits on the render relationship.
-Read as a contradiction twice, so the distinction is recorded. It bites only if the two are
-co-extensive, and they are not: the parent was under-decomposed (owner, 2026-08-08), that child
-covering the geometry half alone — regions that do not overlap, and a set that reflows rather than
-scrolling sideways. #132 under-decomposition of the layout need settled it and PR #133 what the
-display owes a viewer landed the rest, so **the parent sits above a decomposition that exists rather
-than one anticipated**: four further children, none of them a coarser copy and none co-extensive with
-it, placed under *What the surface is* below.
-
-A ground that reads well and is wrong, recorded because two readers reached it: not *the child is
+**The axis is what an item obliges, not whether anyone has to watch it.** SRS017<!-- Full-screen
+assembly at kiosk; reflow, no horizontal scroll, at narrower widths --> names a property of the
+assembled page rather than of what it shows anyone, so its second binding is the container element,
+while its parent SYS002<!-- The display's rendering keeps nothing from a viewer --> sits on the render
+relationship. Read as a contradiction twice, so the distinction is recorded. It bites only if the two
+are co-extensive, and they are not: the parent was under-decomposed (owner, 2026-08-08), that child
+covering the geometry half alone, and #132 under-decomposition of the layout need with PR #133 what the
+display owes a viewer landed four further children — none a coarser copy and none co-extensive with it.
+**The ground that reads well and is wrong**, recorded because two readers reached it: not *the child is
 decidable geometry while the parent is what a person sees*. SYS002's<!-- The display's rendering keeps
 nothing from a viewer --> own `rationale` absorbs no-overlap, no-clipping and no-scrollbars "as one
 property rather than three observables", and its `verification-justification` opens "Geometry is
-decidable" — so the parent is geometry too, and measurable too. The axis is what each obliges, not
-whether anyone has to watch.
+decidable" — so the parent is geometry too, and measurable too.
 
-**What the surface is.** SYS008<!-- The surface carrying no content is a mirror --> obliges what the
-display does where content is *not*, which is what a Viewer meets there, so it sits on the render
-relationship beside SYS001<!-- Failure is legible and proportionate --> and
-SYS002<!-- The display's rendering keeps nothing from a viewer -->. That relationship then carries
-three `SYS` items, which is the accumulation this record says to argue rather than assume. It earns
-the third: it is the only item in the tree obliging the absence of content, and its own `rationale`
-holds that it and the layout need "are satisfiable independently in both directions" — a
-configuration dense enough to fill the display satisfies that need and returns no reflection.
-
-**Its child and three of SYS002's<!-- The display's rendering keeps nothing from a viewer --> bind at
-container depth, on the axis the layout pair already carried.** An item quantifying over every element
-the page draws has no drawn component that determines it:
-SRS030<!-- Only content is rendered above the emission ceiling --> names "ground, border, outline and
-shadow, the page's own root among them", and
+**A placement is read off the item's own text, and a `verification-justification` disclaiming the
+outcome moves the subject inward rather than outward.**
+SRS030<!-- Only content is rendered above the emission ceiling -->,
 SRS032<!-- Readable text is carried at full emission --> and
-SRS033<!-- Text holds a minimum size against the display, at every resolution --> quantify over every
-text element the page presents for reading, the page shell's error state included —
-SRS004<!-- Page renders a legible error state for every configuration failure class --> obliges that
-state to render before any configuration is applied, so it is text no module and no layout produced.
-This is SRS028<!-- Served responses declare their type, and forbid the browser inferring one --> read
-on the other container: an item obliging every output an element produces belongs on the element.
+SRS033<!-- Text holds a minimum size against the display, at every resolution --> bind at container
+depth on the Frontend, each quantifying over every element or every text element the page draws, the
+page shell's error state included. The strongest rival puts the three on the render relationship, on
+the reading that legibility is what a Viewer receives, and it is the reading a reviewer reaches first.
+Rejected on the items' own text, each `verification-justification` disclaiming the viewer-side outcome:
+the value the page renders "is not the light the panel emits", and what a viewer sees behind a glyph
+"is the reflected room, which the software neither supplies nor controls". What the three oblige is a
+value the page chose, and the items obliging what a Viewer receives are their parents, which is where
+the parents sit. Read as a bar rather than as a warrant, the same sentence keeps
+SRS033<!-- Text holds a minimum size against the display, at every resolution --> off layout assembly,
+which places regions and renders no text of its own.
 
-**The strongest rival puts those three on the render relationship**, on the reading that legibility is
-what a Viewer receives, and it is the reading a reviewer reaches first. Rejected on the items' own
-text, each `verification-justification` disclaiming the viewer-side outcome: the value the page
-renders "is not the light the panel emits", and what a viewer sees behind a glyph "is the reflected
-room, which the software neither supplies nor controls". What the three oblige is a value the page
-chose, and the items obliging what a Viewer receives are their parents, which is where the parents
-sit. It would also blur the set SYS001's<!-- Failure is legible and proportionate -->
-`verification-justification` names on that relationship, which is four plain-language items rather
-than every item about seeing.
+**A set of items one `verification-justification` names sits together.**
+SYS001<!-- Failure is legible and proportionate -->'s names
+SRS001<!-- A failed module shows why, and only that module -->,
+SRS002<!-- A module-scoped configuration error is reported at that module -->,
+SRS004<!-- Page renders a legible error state for every configuration failure class --> and
+SRS026<!-- The display says when the backend is gone --> as one set, and they sit on the render
+relationship together. It is also the second leg against widening that relationship: the set is four
+plain-language items rather than every item about seeing.
 
-**SRS031<!-- Content too large for its region overflows --> and
-SRS034<!-- The laid-out regions keep clear of the display edge --> name the region, and the region is
-layout assembly's product.** Whether content exceeding one is clipped, scrolled, scaled or let out is
-a property of the region it was given, and "no region the display page lays out" is that component's
-population verbatim. Neither doubles at container depth, there being nothing the assembled page adds:
-the region set is laid out in one place.
+**Accumulation is argued rather than assumed, and what earns an addition is discrimination.**
+SYS008<!-- The surface carrying no content is a mirror --> obliges what the display does where content
+is *not*, which is what a Viewer meets there, so it sits on the render relationship beside
+SYS001<!-- Failure is legible and proportionate --> and SYS002<!-- The display's rendering keeps nothing
+from a viewer -->. That relationship then carries three `SYS` items. It earns the third: it is the only
+item in the tree obliging the absence of content, and its own `rationale` holds that it and the layout
+need "are satisfiable independently in both directions" — a configuration dense enough to fill the
+display satisfies that need and returns no reflection.
 
-**SRS033<!-- Text holds a minimum size against the display, at every resolution --> was the open
-one**, layout assembly being the subject its two siblings take. It is not one. That component places
-regions and renders no text, so the population the item quantifies over is not its to hold — the same
-reasoning that admits it, read as a bar rather than as a warrant.
-
-**The boundary crossing.** SRS010<!-- The display page reaches no origin but the backend's --> stays
-on the payload relationship, being a property of the whole page rather than of the component that
-fetches. SRS015<!-- One schema, all boundary value classes --> sits there too, where its parent
-SYS005<!-- Single-definition internal contract --> and its only sibling
-SRS016<!-- Both sides consume the generated types --> already are: its middle clause quantifies over
-"every value crossing the boundary, including those a module contributes", and that relationship is
-the boundary being crossed. SRS003<!-- A configuration change applies no later than the next page
-load --> is a timing property of an exchange that either endpoint can satisfy while the obligation
-fails, so it sits on that exchange alone.
-
-**The request path.** SRS011<!-- Upstream request rate is bounded, and the bound is not
-operator-tunable -->, SRS012<!-- Request parameters validated against known-good per-source
-patterns --> and SRS013<!-- Client-facing contract for rejected requests --> bind at the Component
-level. **The latter two sit on request validation**, rejecting a request "without issuing any upstream
-request" and "before making any upstream call" — internal by their own text, and never an upstream's
-property. **SRS011<!-- Upstream request rate is bounded, and the bound is not operator-tunable --> is
-not one either**: a rate limit is one of the six per-route values the registration entry carries, which
-the seam above rules to be data read by framework components, so it binds where its two neighbours in
-that entry — the timeout and the response-size ceiling — already do. It binds twice, because its
-distinguishing clause is "regardless of how many clients it serves or how often they ask", and what
-decouples client rate from upstream rate is the response cache while what bounds the residual is the
-upstream client. **SRS013<!-- Client-facing contract for rejected requests --> binds twice as well**,
-keeping request validation and gaining the payload relationship: its text is a boundary obligation
-asserted at the boundary, which is the composed-observable rule rather than a second subject for one
-observable.
-
-SRS009<!-- Every source reachable through the backend, statelessly --> is the same shape read the other
-way: reachability by the endpoints the boundary contract defines is the route handler's, and holding no
-per-client or session state is true of every endpoint, so it sits on both.
-SRS008<!-- No secret value in any backend output --> and
-SRS028<!-- Served responses declare their type, and forbid the browser inferring one --> quantify over
-every output and every response, so they sit on the container.
-
-**The operator's supplies.** SRS007<!-- Configuration schema offers no secret-bearing key --> binds on
-the operator's configuration supply. Its second clause obliges delivery — "the delivered configuration
-shall be secret-free by construction, not by a redaction step" — and that relationship is the delivery.
-It discriminates, because the operator's *other* supply is where a secret does travel, and this is the
-item saying the two cannot be one. The strongest counter is that its first clause obliges the
-configuration *schema's key set*, and its `verification-justification` settles that against a committed
-allowlist rather than against anything a delivery shows. **That objection mistakes verification for
-observability: a tag records where an obligation is observable, not where it is settled.** The
+**A tag records where an obligation is observable, not where it is settled.**
+SRS007<!-- Configuration schema offers no secret-bearing key --> binds on the operator's configuration
+supply: its second clause obliges delivery — "the delivered configuration shall be secret-free by
+construction, not by a redaction step" — and that relationship is the delivery. It discriminates,
+because the operator's *other* supply is where a secret does travel, and this is the item saying the two
+cannot be one. The strongest counter is that its first clause obliges the configuration *schema's key
+set*, and its `verification-justification` settles that against a committed allowlist rather than
+against anything a delivery shows. **That objection mistakes verification for observability.** The
 distinction is recorded because it is the general answer rather than this item's detail — without it,
 the next close call is argued from an item's `verification-justification` and this trade is walked
 again.
 
-SRS035<!-- The masked edge band is the deployment's to declare --> binds on the configuration file and
-on layout assembly. Its first clause obliges the deployment's configuration to supply the band depth,
-and that file is the deployment supplying it; its second — the page assuming no band where none is
-supplied — is the same component's that holds the regions clear of one. The split is real, so this is
-the composed-observable rule rather than two subjects for one observable: neither endpoint discharges
-the item alone, a file declaring a depth nothing honours obliging nothing and a page defaulting
-correctly to none saying nothing about a depth that was supplied. Its
-`verification-justification` reads both halves off rendered pages, the laid-out regions against a
-declared depth and then against none.
+**A second binding is the composed-observable rule only where neither endpoint discharges the item
+alone.** SRS035<!-- The masked edge band is the deployment's to declare --> binds on the configuration
+file and on layout assembly: its first clause obliges the deployment's configuration to supply the band
+depth, and that file is the deployment supplying it, while its second — the page assuming no band where
+none is supplied — is the same component's that holds the regions clear of one. Neither endpoint
+discharges it alone, a file declaring a depth nothing honours obliging nothing and a page defaulting
+correctly to none saying nothing about a depth that was supplied. The same test refuses a second
+binding to SRS003<!-- A configuration change applies no later than the next page load -->, a timing
+property of an exchange that *either* endpoint can satisfy while the obligation fails, so it sits on
+that exchange alone.
 
-**The published image.** SRS020<!-- Non-root container user -->,
-SRS025<!-- No secret material in the published image --> and
-SRS018<!-- One generic published image --> bind on the published image.
-SRS019<!-- The backend runs on both supported architectures --> binds there too, and not on any host:
-it obliges WiseKiosk rather than a host — its own `rationale` forbids reading it "as a fact about the
-host, because a host's capabilities are not ours to require" — its `verification-justification` settles
-it by "building for both architectures", which is an observation of the artifact, and **"both" cannot
-be witnessed on a host at all**, any one host being of one architecture. The container host carries no
-tag: the architectures it must be one of are the image's property, not an obligation this project
-places on the operator's hardware (owner, 2026-08-09).
-
-SRS021<!-- Frontend runs on a Pi Zero-class browser host --> binds at both depths, on the Frontend
-container and on the display host. The bundle must be built for what that device's browser and
-compatibility layers accept, which is a property of the Frontend; the device being Pi Zero-class is a
-property of the deployment.
+**An obligation on WiseKiosk is not an obligation on the operator's hardware.**
+SRS019<!-- The backend runs on both supported architectures --> binds on the published image and on no
+host: its own `rationale` forbids reading it "as a fact about the host, because a host's capabilities
+are not ours to require", its `verification-justification` settles it by "building for both
+architectures", which is an observation of the artifact, and **"both" cannot be witnessed on a host at
+all**, any one host being of one architecture. The container host carries no tag: the architectures it
+must be one of are the image's property, not an obligation this project places on the operator's
+hardware (owner, 2026-08-09).
 
 ## Alternatives considered
 
