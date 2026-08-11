@@ -7,7 +7,7 @@
 // A tag parses only as the first entry of an element or relationship body.
 //
 // The boundary, what earns an element a place at each level, and where a tag sits
-// are ADR 0019 rev 3's.
+// are ADR 0019 rev 4's.
 
 specification {
   element person {
@@ -19,20 +19,21 @@ specification {
   element container
   element component
 
-  // The three kinds ADR 0019 rev 3 names: hosts, the processes on them, and the
+  // The three kinds ADR 0019 rev 4 names: hosts, the processes on them, and the
   // files placed beside them.
   deploymentNode host
   deploymentNode process
   deploymentNode artifact
 
   // Each tag is a Doorstop identifier. Which item belongs on what, and at which
-  // tier, is ADR 0019 rev 3.
+  // tier, is ADR 0019 rev 4.
   tag SYS001
   tag SYS002
   tag SYS003
   tag SYS004
   tag SYS005
   tag SYS006
+  tag SYS008
   tag SRS001
   tag SRS002
   tag SRS003
@@ -57,6 +58,11 @@ specification {
   tag SRS025
   tag SRS026
   tag SRS028
+  tag SRS030
+  tag SRS031
+  tag SRS032
+  tag SRS033
+  tag SRS034
   tag SRS035
 }
 
@@ -75,6 +81,8 @@ model {
       deploys: the published container image and what it serves.
     '''
 
+    // Why an obligation over every output this container produces binds here, and
+    // not on one of the edges carrying them, is ADR 0019 rev 4.
     backend = container 'Backend' {
       #SYS006
       #SRS006
@@ -149,12 +157,18 @@ model {
     frontend = container 'Frontend' {
       #SRS017
       #SRS021
+      #SRS030
+      #SRS032
+      #SRS033
       technology 'Svelte 5, static single-page bundle'
       icon tech:svelte
       description '''
         Runs in the browser on the display host. Validates the configuration
         before applying it, assembles the configured modules into one
         full-screen layout, and renders each payload into its module region.
+        Everything it draws but the content itself is held under one emission
+        ceiling, and the text it presents to be read is rendered at full
+        emission and above one size floor read against the display's height.
       '''
 
       pageShell = component 'Page shell' {
@@ -177,10 +191,16 @@ model {
 
       layout = component 'Layout assembly' {
         #SRS017
+        #SRS031
+        #SRS034
+        #SRS035
         description '''
           Places each configured module into its region of one full-screen
-          layout, and reflows rather than overlapping or clipping at narrower
-          viewports.
+          layout, and reflows rather than overlapping or scrolling sideways at
+          narrower viewports. Holds every region out of the masked band along the
+          display's edges, at the depth the configuration declares and none
+          where it declares nothing. Content exceeding the region it was given
+          overflows it rather than being clipped, scrolled or scaled.
         '''
       }
 
@@ -232,9 +252,10 @@ model {
     #SRS007
   }
 
-  frontend -> viewer 'Renders the configured modules, and legibly says when one failed' {
+  frontend -> viewer 'Renders the configured modules, legibly says when one failed, and mirrors the rest' {
     #SYS001
     #SYS002
+    #SYS008
     #SRS001
     #SRS002
     #SRS004

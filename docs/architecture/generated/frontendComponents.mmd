@@ -19,5 +19,6 @@ module`" .-> WisekioskFrontend.PayloadClient
   WisekioskFrontend.Configuration -. "`Fetches the configuration, served back 
 unparsed`" .-> WisekioskBackend
   WisekioskFrontend.PayloadClient -. "`Fetches the payload for each module`" .-> WisekioskBackend
-  WisekioskFrontend -. "`Renders the configured modules, and 
-legibly says when one failed`" .-> Viewer
+  WisekioskFrontend -. "`Renders the configured modules, legibly 
+says when one failed, and mirrors the 
+rest`" .-> Viewer

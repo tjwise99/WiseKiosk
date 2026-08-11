@@ -1004,7 +1004,7 @@ that catches it, and a check trusting the validator's exit status alone would pa
 ### What it does not catch: a tag on a view
 
 The export carries tags in a fifth place — `views[x].tags` — and the scan does not read it. That is
-deliberate: a view is a projection of the model rather than a subject in it, and ADR 0019 rev 3 binds
+deliberate: a view is a projection of the model rather than a subject in it, and ADR 0019 rev 4 binds
 an item to an element or a relationship. Two runs, both observed rather than reasoned about:
 
 | Seed | Result |
