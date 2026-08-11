@@ -4,19 +4,18 @@
 **Decided:** 2026-08-04 (C4 phase 1 design discussion, #96 C4 phase 1 System Context; the Container
 level the same day, #97 C4 phase 2 Container; the Component level 2026-08-05, #98 C4 phase 3
 Component; the binding rule 2026-08-08, #121 allocation completeness; the Deployment level
-2026-08-09, #123 C4 phase 4 Deployment; the display-surface placements 2026-08-10, #135 bind the
-mirror and legibility requirements)
+2026-08-09, #123 C4 phase 4 Deployment; the disclaimer and composed-observable rules 2026-08-10,
+#135 bind the mirror and legibility requirements)
 **Rev:** 4
 
 ## Revisions
 
-- **rev 4** — 2026-08-10 — places the mirror and legibility items PR #133 what the display owes a
-  viewer accepted, on the axis the layout pair already carried; settles that pair's ground, which
-  rested on a decomposition #132 under-decomposition of the layout need has since landed; closes the
-  SRS035<!-- The masked edge band is the deployment's to declare --> second-subject question rev 3
-  left to this ticket; and states the placements section as the rules that were argued, one case each,
-  the walkthrough of where every tag went belonging to the commit that applies one
-  (#135 bind the mirror and legibility requirements).
+- **rev 4** — 2026-08-10 — states the rule a `verification-justification` disclaiming an outcome
+  answers to, and the test that separates a composed observable from a shared one; **withdraws the
+  per-requirement placements this record had been accumulating**, which are the model's to carry and
+  the applying commit's to argue, and keeps as rules only what decides the next placement, with the
+  readings they were chosen over moved to the alternatives (#135 bind the mirror and legibility
+  requirements).
 - **rev 3** — 2026-08-09 — absorbs the Container, Component and Deployment level decisions and the
   requirement-binding completeness rule, which were four records written one slice at a time and each
   correcting the one before it; the amendment blocks and the grounds they reversed are gone, and every
@@ -282,14 +281,24 @@ distinguishes none of them. Depth does not make the finer placement the right on
 over every output a container produces belongs on the container even where components are drawn
 beneath it.
 
+**Observable is not the same as settled.** An item's `verification-justification` names the evidence
+that closes it, and reading a placement off that evidence puts the tag where the check runs rather than
+where the obligation lives: an obligation on a delivered thing, settled against a committed file, still
+binds on the delivery. Read the other way, a `verification-justification` that disclaims an outcome
+moves the subject inward rather than outward — where an item denies owing what becomes of its output
+once it leaves, what it obliges is the value it produced.
+
+**The axis is what an item obliges, not whether anyone has to watch it.** A parent and its child are not
+co-extensive merely because both are measurable, so each binds where what *it* obliges is observable,
+which may be two different depths. Where one `verification-justification` names several items as a
+single set, that set sits together rather than splitting across depths.
+
 **A tag is applied where an accepted item obliges the thing it sits on, and nowhere else.** Three
 consequences follow.
 
 - An item obliging every exchange an element has belongs on the element rather than on one of its
   edges — SRS028<!-- Served responses declare their type, and forbid the browser inferring one -->
-  obliges every response the backend serves, and
-  SRS008<!-- No secret value in any backend output --> every output it produces, so both sit on the
-  backend rather than on the route or the upstream edge either one could have been read onto.
+  obliges every response the backend serves, so it sits on the backend.
 - An element or relationship no accepted item obliges carries none: the bundle-serving edge has no
   tag, because who serves the bundle is a decision under
   [ADR 0011 rev 1](0011-requirement-or-convention.md) rather than a property of the running software.
@@ -305,11 +314,25 @@ consequences follow.
 
 **An item whose observable is composed carries a binding at each depth** — on the component determining
 it in part, and at container depth where the assembled whole determines it. Which container-depth
-subject takes the second is the item's to say, not a rule.
+subject takes the second is the item's to say, not a rule. **The test is that neither subject discharges
+the item alone**: where either one could satisfy it while the obligation still fails, the observable is
+not composed but shared, and the item binds once, on the exchange between them.
+
+**An obligation on WiseKiosk is not an obligation on the operator's hardware** (owner, 2026-08-09).
+What the software must run on is a property of what this project ships, so it binds on the artifact.
+A host the operator supplies carries a tag only where an item obliges the operator, never where it
+obliges us to work within what they have.
 
 **Tags discriminate rather than inventory**: the bar is against stamping an element with everything it
 owes, which distinguishes nothing, not against a count. A subject accumulating tags is the signal to
 argue the next addition rather than assume it.
+
+**Which subject a given item binds to is not recorded here** (owner, 2026-08-10). The tag is that
+record, and the argument for it belongs to the commit applying it, which `git log -S` on the identifier
+reaches. Nothing compares prose in this record against the tags in the model, so a walkthrough of them
+is wrong the moment one moves, and an accepted record at a pinned rev is the worst place for a claim
+with no check behind it. What is kept here is the rule that decides the next placement, and the reading
+it was chosen over.
 
 ### Every accepted item binds
 
@@ -331,96 +354,6 @@ admits `TST` because it judges resolution rather than allocation; this rule does
 rules.** Where a tag sits is settled above; this says only that the set of items bound nowhere is
 empty. Discrimination and completeness are orthogonal, and the levels won the first before the second
 was put on the table.
-
-### The contested placements
-
-**Each entry below states a placement rule, the one case that established it, and the reading it was
-chosen over.** It is deliberately not a walkthrough of where every tag went. That argument belongs to
-the commit applying the tag, which `git log -S` on the identifier reaches and which cannot come to
-disagree with the model the way a copy here would — nothing compares prose here against the tags, so a
-walkthrough is wrong the moment one moves. **An entry earns its place by having settled something**: a
-placement following from a rule stated here adds nothing by being listed beneath it, and a batch of
-bindings that settles no rule adds nothing at all.
-
-**The axis is what an item obliges, not whether anyone has to watch it.** SRS017<!-- Full-screen
-assembly at kiosk; reflow, no horizontal scroll, at narrower widths --> names a property of the
-assembled page rather than of what it shows anyone, so its second binding is the container element,
-while its parent SYS002<!-- The display's rendering keeps nothing from a viewer --> sits on the render
-relationship. Read as a contradiction twice, so the distinction is recorded. It bites only if the two
-are co-extensive, and they are not: the parent was under-decomposed (owner, 2026-08-08), that child
-covering the geometry half alone, and #132 under-decomposition of the layout need with PR #133 what the
-display owes a viewer landed four further children — none a coarser copy and none co-extensive with it.
-**The ground that reads well and is wrong**, recorded because two readers reached it: not *the child is
-decidable geometry while the parent is what a person sees*. SYS002's<!-- The display's rendering keeps
-nothing from a viewer --> own `rationale` absorbs no-overlap, no-clipping and no-scrollbars "as one
-property rather than three observables", and its `verification-justification` opens "Geometry is
-decidable" — so the parent is geometry too, and measurable too.
-
-**A placement is read off the item's own text, and a `verification-justification` disclaiming the
-outcome moves the subject inward rather than outward.**
-SRS030<!-- Only content is rendered above the emission ceiling -->,
-SRS032<!-- Readable text is carried at full emission --> and
-SRS033<!-- Text holds a minimum size against the display, at every resolution --> bind at container
-depth on the Frontend, each quantifying over every element or every text element the page draws, the
-page shell's error state included. The strongest rival puts the three on the render relationship, on
-the reading that legibility is what a Viewer receives, and it is the reading a reviewer reaches first.
-Rejected on the items' own text, each `verification-justification` disclaiming the viewer-side outcome:
-the value the page renders "is not the light the panel emits", and what a viewer sees behind a glyph
-"is the reflected room, which the software neither supplies nor controls". What the three oblige is a
-value the page chose, and the items obliging what a Viewer receives are their parents, which is where
-the parents sit. Read as a bar rather than as a warrant, the same sentence keeps
-SRS033<!-- Text holds a minimum size against the display, at every resolution --> off layout assembly,
-which places regions and renders no text of its own.
-
-**A set of items one `verification-justification` names sits together.**
-SYS001<!-- Failure is legible and proportionate -->'s names
-SRS001<!-- A failed module shows why, and only that module -->,
-SRS002<!-- A module-scoped configuration error is reported at that module -->,
-SRS004<!-- Page renders a legible error state for every configuration failure class --> and
-SRS026<!-- The display says when the backend is gone --> as one set, and they sit on the render
-relationship together. It is also the second leg against widening that relationship: the set is four
-plain-language items rather than every item about seeing.
-
-**Accumulation is argued rather than assumed, and what earns an addition is discrimination.**
-SYS008<!-- The surface carrying no content is a mirror --> obliges what the display does where content
-is *not*, which is what a Viewer meets there, so it sits on the render relationship beside
-SYS001<!-- Failure is legible and proportionate --> and SYS002<!-- The display's rendering keeps nothing
-from a viewer -->. That relationship then carries three `SYS` items. It earns the third: it is the only
-item in the tree obliging the absence of content, and its own `rationale` holds that it and the layout
-need "are satisfiable independently in both directions" — a configuration dense enough to fill the
-display satisfies that need and returns no reflection.
-
-**A tag records where an obligation is observable, not where it is settled.**
-SRS007<!-- Configuration schema offers no secret-bearing key --> binds on the operator's configuration
-supply: its second clause obliges delivery — "the delivered configuration shall be secret-free by
-construction, not by a redaction step" — and that relationship is the delivery. It discriminates,
-because the operator's *other* supply is where a secret does travel, and this is the item saying the two
-cannot be one. The strongest counter is that its first clause obliges the configuration *schema's key
-set*, and its `verification-justification` settles that against a committed allowlist rather than
-against anything a delivery shows. **That objection mistakes verification for observability.** The
-distinction is recorded because it is the general answer rather than this item's detail — without it,
-the next close call is argued from an item's `verification-justification` and this trade is walked
-again.
-
-**A second binding is the composed-observable rule only where neither endpoint discharges the item
-alone.** SRS035<!-- The masked edge band is the deployment's to declare --> binds on the configuration
-file and on layout assembly: its first clause obliges the deployment's configuration to supply the band
-depth, and that file is the deployment supplying it, while its second — the page assuming no band where
-none is supplied — is the same component's that holds the regions clear of one. Neither endpoint
-discharges it alone, a file declaring a depth nothing honours obliging nothing and a page defaulting
-correctly to none saying nothing about a depth that was supplied. The same test refuses a second
-binding to SRS003<!-- A configuration change applies no later than the next page load -->, a timing
-property of an exchange that *either* endpoint can satisfy while the obligation fails, so it sits on
-that exchange alone.
-
-**An obligation on WiseKiosk is not an obligation on the operator's hardware.**
-SRS019<!-- The backend runs on both supported architectures --> binds on the published image and on no
-host: its own `rationale` forbids reading it "as a fact about the host, because a host's capabilities
-are not ours to require", its `verification-justification` settles it by "building for both
-architectures", which is an observation of the artifact, and **"both" cannot be witnessed on a host at
-all**, any one host being of one architecture. The container host carries no tag: the architectures it
-must be one of are the image's property, not an obligation this project places on the operator's
-hardware (owner, 2026-08-09).
 
 ## Alternatives considered
 
@@ -587,6 +520,24 @@ that the supplies drawn there are one obligation.
 **Tagging an element with every id it owes.** Rejected: true, and it carries no information — the system
 element owing every `SYS` item restates that the `SYS` tier is the tier about the system.
 
+**Placement follows what a viewer receives**, anything a person ends up seeing binding on the
+relationship that renders. Recorded because it is the reading a reviewer reaches first. Rejected: it
+collects every item about seeing onto one edge, which discriminates nothing, and it contradicts the
+items — one disclaiming the viewer-side outcome in its own `verification-justification`, owing a value
+rendered rather than a light emitted or a reflection returned, obliges the element that chose the value.
+
+**Placement follows the `verification-justification`**, the subject being wherever the evidence closing
+the item is read. Rejected: it mistakes verification for observability, and the two come apart wherever
+an obligation on a delivered thing is settled against a committed file — the tag would leave the
+delivery for the file, which obliges nothing.
+
+**A parent and its child bind at one depth**, either because one is a coarser copy of the other or
+because the parent is what a person sees while the child is decidable geometry. Rejected, and the second
+form recorded because two readers reached it: a `rationale` can absorb several observables as one
+property and a `verification-justification` can open by calling them decidable, so measurability is not
+the axis. An under-decomposed parent is not co-extensive with its one child, and neither is a decomposed
+one — a child covering half of what the parent obliges binds where that half is observable.
+
 ### The binding rule
 
 **An exemption record: every unbound item carries an entry naming a category and a reason.** The
@@ -646,13 +597,11 @@ registration and no boundary-schema fragment". The trigger is #76 module-spec pr
 the first module need. This is scope recorded, not an omission, exactly as the deferred upstream
 elements are.
 
-**Three of the Frontend's bindings are container-depth only until those components land.**
-SRS030<!-- Only content is rendered above the emission ceiling -->,
-SRS032<!-- Readable text is carried at full emission --> and
-SRS033<!-- Text holds a minimum size against the display, at every resolution --> quantify over every
-element the page draws, and a module's Svelte component will draw some of them; each then gains the
-finer half the composed-observable rule asks for. The items are bound throughout, so what is deferred
-is an element rather than a binding — the distinction the exemption record was rejected on.
+**A Frontend binding is container-depth only while the module half is undrawn.** An item quantifying
+over every element the page draws has no drawn component determining it until the module components
+land, and gains the finer half the composed-observable rule asks for when they do. Such items are bound
+throughout, so what is deferred is an element rather than a binding — the distinction the exemption
+record was rejected on.
 
 **The frontend view names the Viewer explicitly.** What that container exists to do terminates at the
 Viewer, and that relationship's endpoint is the module component this record leaves undrawn, so
