@@ -287,7 +287,9 @@ consequences follow.
 
 - An item obliging every exchange an element has belongs on the element rather than on one of its
   edges — SRS028<!-- Served responses declare their type, and forbid the browser inferring one -->
-  obliges every response the backend serves, so it sits on the backend.
+  obliges every response the backend serves, and
+  SRS008<!-- No secret value in any backend output --> every output it produces, so both sit on the
+  backend rather than on the route or the upstream edge either one could have been read onto.
 - An element or relationship no accepted item obliges carries none: the bundle-serving edge has no
   tag, because who serves the bundle is a decision under
   [ADR 0011 rev 1](0011-requirement-or-convention.md) rather than a property of the running software.

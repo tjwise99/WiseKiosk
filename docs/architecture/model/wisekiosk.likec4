@@ -81,6 +81,8 @@ model {
       deploys: the published container image and what it serves.
     '''
 
+    // Why an obligation over every output this container produces binds here, and
+    // not on one of the edges carrying them, is ADR 0019 rev 4.
     backend = container 'Backend' {
       #SYS006
       #SRS006
