@@ -11,10 +11,11 @@ Component; the binding rule 2026-08-08, #121 allocation completeness; the Deploy
 ## Revisions
 
 - **rev 4** — 2026-08-10 — states the rule a `verification-justification` disclaiming an outcome
-  answers to, and the test that separates a composed observable from a shared one; **withdraws the
-  per-requirement placements this record had been accumulating**, which are the model's to carry and
-  the applying commit's to argue, and keeps as rules only what decides the next placement, with the
-  readings they were chosen over moved to the alternatives (#135 bind the mirror and legibility
+  answers to, and the test that separates a composed observable from a shared one; **withdraws every
+  per-requirement placement this record carried** (owner, 2026-08-10), which the model records and the
+  commit applying a tag argues, and states every rule and every rejected reading over the class
+  instead. An identifier is left only where a rejected rule is refuted by the items it would strand,
+  which is the one argument a reader cannot check without them (#135 bind the mirror and legibility
   requirements).
 - **rev 3** — 2026-08-09 — absorbs the Container, Component and Deployment level decisions and the
   requirement-binding completeness rule, which were four records written one slice at a time and each
@@ -90,12 +91,7 @@ model, not the gate system." The model then built a mechanism answering a differ
 rule above argues **which** element a tag belongs on, and none of them concerns whether every
 requirement lands anywhere at all. Nothing could have noticed: `check-arch-trace` walked tags→tree, so
 a requirement the model represents nowhere was invisible to it by construction. The state that reading
-met was **31 accepted items, 26 tagged**, five bound nowhere —
-SRS005<!-- One validation implementation -->,
-SRS007<!-- Configuration schema offers no secret-bearing key -->,
-SRS015<!-- One schema, all boundary value classes -->,
-SRS020<!-- Non-root container user --> and
-SRS025<!-- No secret material in the published image -->. Each absence was defensible and none was
+met was **31 accepted items, 26 tagged**, five bound nowhere. Each absence was defensible and none was
 recorded.
 
 ## Decision
@@ -112,7 +108,7 @@ context of system are different sets, and the model draws the second.
 
 **An upstream data source is modelled individually, and only once the module that reads it has a need
 in the tree.** The corollary above does not reach this on its own:
-SYS004<!-- Upstream data reaches the display only through the backend --> is accepted and obliges
+an accepted item obliges
 precisely such an exchange, so "exchanges something with it" would admit an upstream element today.
 What defers it is that an upstream belongs to the module that reads it —
 [ADR 0012 rev 1](0012-module-requirements-in-tree.md) decomposes a module need by *its upstream* — and
@@ -123,20 +119,15 @@ system and gains one per upstream as each module's need lands.
 
 **Two containers: `Backend` and `Frontend`.** A C4 container is an execution context, not a shipping
 artifact. One published image holds both, but the frontend's code executes in a browser on the display
-host — a separate process, and by
-SRS019<!-- The backend runs on both supported architectures --> and
-SRS021<!-- Frontend runs on a Pi Zero-class browser host --> potentially a separate machine of a
+host — a separate process, and by accepted items potentially a separate machine of a
 different architecture. They are named for the vocabulary of the prose they are spliced beside rather
 than the tree's *display page*, which stays as it is; renaming accepted items is a specification
 change and would trade an observable noun for an organisational one.
 
 **The backend serves the bundle and the configuration, and there is exactly one origin.** The system
-cannot not have an HTTP server —
-SYS004<!-- Upstream data reaches the display only through the backend --> and
-SRS009<!-- Every source reachable through the backend, statelessly --> require the proxy to exist — so
-the question is never *server or no server* but *one origin or two*.
-SRS010<!-- The display page reaches no origin but the backend's --> is enforced by a policy naming one
-origin, and every arrangement that serves the page from somewhere else makes the page's own origin
+cannot not have an HTTP server — accepted items require the proxy to exist — so
+the question is never *server or no server* but *one origin or two*. The single-origin obligation is
+enforced by a policy naming one origin, and every arrangement that serves the page from somewhere else makes the page's own origin
 that other host and the backend a second one. Serving is not knowing: a static handler has no rewrite
 path and cannot tell the configuration from a script asset, so the config-blindness
 [ADR 0007 rev 2](0007-config-validation-allocation.md) holds is preserved exactly by the bytes
@@ -171,8 +162,8 @@ where a fact about where policy is *written* belongs.
 
 **What executes that entry is a component, and it is the one the registry's absence obscured.** The
 same test that excludes the data admits the code reading it: a route handler answers
-`GET /api/<source>`, which is what SRS009<!-- Every source reachable through the backend,
-statelessly --> obliges and what the frontend's payload fetch terminates on. **Each container has
+`GET /api/<source>`, which is what the source-reachability obligation names and what the frontend's
+payload fetch terminates on. **Each container has
 exactly one such owner** — the route handler in the backend, the page shell in the frontend — and the
 remaining components are asked, never asking. Without one, a level has no subject for a relationship
 label and its parts appear to call each other, which is a sequence no document states.
@@ -211,19 +202,17 @@ file, the secret files and the running container; a display host holding the bro
 image. The Backend instance runs in the container, the Frontend instance in the browser.
 
 **The published image is a subject, and it is not the running container.** The obligations on it are
-obligations on the artifact as published, and the requirements say so in their own text:
-SRS020<!-- Non-root container user -->'s `verification-justification` states that "a deployment can
-override the user, and no property of the image prevents it", and
-SRS025<!-- No secret material in the published image --> and
-SRS018<!-- One generic published image --> are settled by exporting the image rather than by observing
-anything running. Binding them to the running container would assert precisely what those items
+obligations on the artifact as published, and the requirements naming it say so in their own text: one
+`verification-justification` states that "a deployment can override the user, and no property of the
+image prevents it", and others are settled by exporting the image rather than by observing anything
+running. Binding them to the running container would assert precisely what those items
 disclaim.
 
 **The configuration file and the secret files are nodes.** A mounted file is not a running unit, which
 is why the Container level refuses the configuration a container element — but that is a
 container-level objection, a container being an execution context, and it does not reach a level whose
 subject is what sits at the deployment site. Without them the level draws nothing the Container level
-does not, and SYS003<!-- A deployment is parameterised from outside the image --> has no observable
+does not, and the obligation to parameterise a deployment from outside the image has no observable
 here.
 
 **The provisioning tooling gains no element.** The test is the one the boundary states: a tool that
@@ -242,8 +231,7 @@ In the configuration being built for it cannot: the display host was read before
 predates the image format and the `HEALTHCHECK` the published image declares. So it is below the floor
 for running *this image*, which is the floor that matters, and the two roles are necessarily separate
 machines there. Stating it as "that host cannot run containers" would be false and is the sort of
-host-capability claim SRS019<!-- The backend runs on both supported architectures --> declines to
-make. The frontend runs "potentially a separate machine of a different architecture"; for at least one
+host-capability claim the requirements decline to make. The frontend runs "potentially a separate machine of a different architecture"; for at least one
 supported configuration that is stronger than *potentially*, and the node descriptions carry it rather
 than the model asserting two machines as a rule.
 
@@ -258,15 +246,11 @@ Deployment level for the same reason read outward, an obligation on a host or an
 
 **An element or relationship also carries any coarser item it discharges observably at that level.**
 Restricting `SYS` to relationships that cross the boundary — the shape the actor edges suggest, since
-those are the ones rendered at both levels — leaves
-SYS004<!-- Upstream data reaches the display only through the backend --> and
-SYS005<!-- Single-definition internal contract --> with no home at any level: both name things inside
-the boundary, so neither fits the Context level, and the restriction bars them from the level that
-does draw them. Both are discharged observably on one edge, the frontend fetching each module payload,
-which is the boundary contract itself; SRS010<!-- The display page reaches no origin but the
-backend's --> and SRS016<!-- Both sides consume the generated types --> are their children and sit
-there too. At the Deployment level the mount edges are where
-SYS003<!-- A deployment is parameterised from outside the image --> is watched rather than argued.
+those are the ones rendered at both levels — leaves every `SYS` item naming something inside the
+boundary with no home at any level: such an item does not fit the Context level, and the restriction
+bars it from the level that does draw it. One discharged observably on a single edge carries there, and
+its children with it. At the Deployment level the mount edges are where a coarser item is watched
+rather than argued.
 
 The widening runs in one direction only: a coarser item names something a finer level can still show,
 where a finer item names something the coarser level does not draw. The aggregate an actor edge
@@ -297,8 +281,8 @@ single set, that set sits together rather than splitting across depths.
 consequences follow.
 
 - An item obliging every exchange an element has belongs on the element rather than on one of its
-  edges — SRS028<!-- Served responses declare their type, and forbid the browser inferring one -->
-  obliges every response the backend serves, so it sits on the backend.
+  edges: one obliging every response a container serves sits on the container, not on the route that
+  produced any one of them.
 - An element or relationship no accepted item obliges carries none: the bundle-serving edge has no
   tag, because who serves the bundle is a decision under
   [ADR 0011 rev 1](0011-requirement-or-convention.md) rather than a property of the running software.
@@ -306,11 +290,11 @@ consequences follow.
   generally or of the image.
 - An item whose obligation reaches something **permanently** outside the model is not a tag here,
   because it would point past the diagram carrying it. **No item in the tree has that shape**: the one
-  that did, SRS005<!-- One validation implementation -->, retired with the desk validator it obliged
+  that did retired with the desk validator it obliged
   (#129 retire the desk configuration validator). The clause is kept because permanence is what it
   turns on, not absence — an upstream is *deferred* rather than excluded, and the model gains one per
-  upstream as each module's need lands, so SRS009<!-- Every source reachable through the backend,
-  statelessly --> stays on the backend and gains the edges its obligation names when they arrive.
+  upstream as each module's need lands, so an item obliging every source's reachability stays on the
+  container and gains the edges its obligation names as they arrive.
 
 **An item whose observable is composed carries a binding at each depth** — on the component determining
 it in part, and at container depth where the assembled whole determines it. Which container-depth
@@ -375,9 +359,8 @@ no module's identifier — which forecloses the binding the tag mechanism exists
 ### The containers
 
 **A reverse proxy in front** — nginx or Caddy serving the bundle and proxying the API. This is the
-strongest rival and the one the origin argument does *not* refute: it is single-origin, so
-SRS010<!-- The display page reaches no origin but the backend's --> survives it intact, and it is a
-common shape in self-hosted deployments. It is refused on delivery. Reaching it means either publishing
+strongest rival and the one the origin argument does *not* refute: it is single-origin, so the
+single-origin obligation survives it intact, and it is a common shape in self-hosted deployments. It is refused on delivery. Reaching it means either publishing
 several images and a compose file, against the single image [`../../README.md`](../../README.md) states
 the product ships — no requirement forbids a second image, so this leg rests on the product definition
 rather than on the tree — or supervising a second process inside one container. Either buys a
@@ -387,15 +370,13 @@ grows independently deployed pieces, at which point the proxy arrives with them.
 operator putting their own proxy in front of the container; what is refused is shipping one.
 
 **A separate static host or a CDN.** Rejected on the second origin it creates — a widened `connect-src`
-and cross-origin requests to the API, against
-SRS010<!-- The display page reaches no origin but the backend's --> — and on deployment: it puts an
+and cross-origin requests to the API, against the single-origin obligation — and on deployment: it puts an
 internet dependency in front of a display that runs unattended on a LAN, and files on a host
 [`../../README.md`](../../README.md) states WiseKiosk does not own.
 
 **One container, the image as the unit.** The literal reading of the boundary sentence, and it erases
-what the Container level exists to draw: SYS005<!-- Single-definition internal contract --> has no
-boundary to be a contract across, SRS010<!-- The display page reaches no origin but the backend's -->
-has no page and no origin, and config-blindness has no second party to be blind to.
+what the Container level exists to draw: the single-definition contract has no boundary to be a
+contract across, the single-origin obligation has no page and no origin, and config-blindness has no second party to be blind to.
 
 **The configuration as a third container.** It would make config-blindness structural rather than
 something a label states. Rejected: a mounted file is not a running unit, and inventing an element to
@@ -405,13 +386,10 @@ what executes.
 
 **Deferring the operator's secret supply until a module needs a secret**, as an upstream is deferred.
 Rejected because what defers an upstream is individuation: an upstream belongs to the module that
-reads it and cannot be drawn honestly as one box, whereas
-SRS006<!-- Unresolvable secret surfaces as that source's upstream failure --> and
-SRS007<!-- Configuration schema offers no secret-bearing key --> specify one delivery mechanism
-generically today, and the first module that uses a secret adds an upstream element and a route without
+reads it and cannot be drawn honestly as one box, whereas the items governing secret delivery specify
+one mechanism generically today, and the first module that uses a secret adds an upstream element and a route without
 changing that relationship. Drawing the configuration and omitting the secrets would also leave the
-level answering SYS003<!-- A deployment is parameterised from outside the image --> wrongly rather than
-partially, in the direction that invites a credential into the configuration file.
+level answering the outside-the-image parameterisation obligation wrongly rather than partially, in the direction that invites a credential into the configuration file.
 
 **Keeping every decomposed relationship and accepting `[...]`.** The model would stay maximally
 decomposed and each tag precisely bound. Rejected because the committed artifact — what a reader meets
@@ -422,12 +400,8 @@ model is authored to be read.
 
 **Mirror the module contract's six parts as the components.** The strongest rival: model and contract
 would be one statement and could never drift. Rejected because the six parts describe *a module*, not
-*a container*. The framework machinery the tree spends most of its backend obligations on —
-SRS011<!-- Upstream request rate is bounded, and the bound is not operator-tunable -->,
-SRS012<!-- Request parameters validated against known-good per-source patterns -->,
-SRS013<!-- Client-facing contract for rejected requests --> and
-SRS014<!-- No single upstream exchange can stall or exhaust the backend --> — would have no box to sit
-on, and the level would draw the half of the backend the specification says least about.
+*a container*. The framework machinery the tree spends most of its backend obligations on — rate bounding, parameter
+validation, the rejection contract, and the stall and exhaustion limits — would have no box to sit on, and the level would draw the half of the backend the specification says least about.
 
 **Per-module components immediately.** Architecturally these are real components and they will be
 drawn: five modules, five payload shapes, five configuration fragments, and the contract states their
@@ -442,19 +416,17 @@ carry no module's identifier, which forecloses the binding the tag mechanism exi
 later is also restructuring, which is the one thing ADR 0003 rev 2 authored this model to avoid.
 
 **The frontend as one unit, with no component view** — answered for the container where the
-terminology collides worst. Rejected because the tree partitions the page itself:
-SRS004<!-- Page renders a legible error state for every configuration failure class --> obliges a page
-shell that "shall load and render this state without requiring a valid configuration", which is a
-component named by an accepted item and distinguished from everything that needs the configuration
-first.
+terminology collides worst. Rejected because the tree partitions the page itself: an
+accepted item obliges a page shell that "shall load and render this state without requiring a valid
+configuration", which is a component the specification names and distinguishes from everything that
+needs the configuration first.
 
 ### The deployment
 
 **Bind the three image items to the running container**, with a description saying it runs an instance
 of the image, and draw no image node. The strongest rival: it keeps the level to things that run, which
 is what a deployment diagram is usually taken to be. Rejected on the requirements' own text — the
-sentence in SRS020<!-- Non-root container user --> quoted above exists precisely to say the running
-process is not the subject. The description cannot carry the difference either: `check-arch-trace` reads
+sentence quoted above exists precisely to say the running process is not the subject. The description cannot carry the difference either: `check-arch-trace` reads
 tags, so the model would assert the false claim and the check would agree. That is the cheap failure the
 binding rule names — the plausible tag on an element that already exists — arrived at by exactly the
 reasoning it predicted.
@@ -468,13 +440,12 @@ by nothing, which is the failure [`../ARCHITECTURE.md`](../ARCHITECTURE.md) alre
 the other direction. What survives is the content: the image's `description` enumerates what it
 carries.
 
-**Leave SRS018<!-- One generic published image --> on the operator's configuration edge**, where it sat
-for want of an image element, and give it no second home. Rejected: that placement's stated reason was
-the absence of an image, and drawing one removes it. Its binding therefore **moves** rather than
-doubling — a second home would leave two subjects where the item has one — and keeping it would leave
+**Leave a binding where an absent element forced it**, and give it no second home once that element is
+drawn. Rejected: such a placement's stated reason was the absence, and drawing the element removes it.
+The binding therefore **moves** rather than doubling — a second home would leave two subjects where the item has one — and keeping it would leave
 the record asserting a workaround as a positive choice.
 
-**Bind SRS019<!-- The backend runs on both supported architectures --> to the container host.** Held for
+**Bind an obligation naming supported architectures to the host that must have one.** Held for
 most of that slice, on the ground that the width floor belongs to the container runtime rather than to
 the backend: a runtime needs 64 bits, no 32-bit image is published, and the backend never runs outside
 the container. Rejected once that ground was tested. It is not generally true — 32-bit container
@@ -482,9 +453,8 @@ runtimes exist and are packaged for `armhf`, including on the display host this 
 and the version that is installable there predates OCI images, manifest lists and the `HEALTHCHECK` the
 published image declares, so what it establishes is that the *image* cannot be run by it rather than
 that the host cannot run a runtime. That is the item's own distinction, and a host node cannot witness
-"both" in any case. Binding it there would also have made it the only one of the six whose sole subject
-lies outside the boundary, where SYS007<!-- The declared minimum host, and staying within it --> puts
-the hosts.
+"both" in any case. Binding it there would also have made it the only obligation whose sole subject
+lies outside the boundary.
 
 What the rejected ground does establish is a question this record does not answer: whether amd64 and
 arm64 are the right set for that item to name. That is the requirement's content, changed by a
@@ -543,13 +513,11 @@ one — a child covering half of what the parent obliges binds where that half i
 **An exemption record: every unbound item carries an entry naming a category and a reason.** The
 strongest rival, and what #122 close check-arch-trace's second direction was scoped to build. Rejected
 on its population. The candidate vocabulary was *enabling system*, *design-time artifact*, *deployment
-artifact* and *deferred*; walking the five items emptied three of those four.
-SRS007<!-- Configuration schema offers no secret-bearing key --> and
-SRS015<!-- One schema, all boundary value classes --> bind, so *design-time artifact* has no member.
-*Deferred* has none and arguably never could — the module and upstream deferrals this record makes are
-deferred **elements**, not unbound requirements, and no accepted item is unbound because a module
-component is undrawn. SRS005<!-- One validation implementation --> retires, so *enabling system* has
-none. What remained was two items that bind the moment the Deployment level lands, and none of the five
+artifact* and *deferred*; walking the five items emptied three of those four. Two
+of them bind, so *design-time artifact* has no member. *Deferred* has none and arguably never could —
+the module and upstream deferrals this record makes are deferred **elements**, not unbound
+requirements, and no accepted item is unbound because a module component is undrawn. One retires, so
+*enabling system* has none. What remained was two items that bind the moment the Deployment level lands, and none of the five
 `proposed` items looks unbindable either.
 
 So the mechanism would have been built to hold two entries for the length of one slice. The deciding
@@ -573,8 +541,8 @@ written. Rejected on sequencing: the rule is what tells that level which require
 accommodate, and deciding the rule after the level that answers it would let the level's convenience
 choose the rule. The order taken is decide, make true, enforce.
 
-**Bind SRS020<!-- Non-root container user --> to the Backend container**, on the argument that the thing
-running under a uid is that container. Rejected: it is the image's property, not the running process's,
+**Bind an image obligation to the Backend container**, on the argument that the thing running under a
+uid is that container. Rejected: it is the image's property, not the running process's,
 and the Deployment level would then either move the tag or argue why it stayed — this effort writing
 itself a correction, which is the one outcome the integration branch exists to prevent.
 
@@ -638,10 +606,8 @@ browser-free artifact cannot show is carried by the prose in
 
 ### The requirements tree
 
-**Two requirements were baselined by the Container level's work, by the owner.**
-SRS026<!-- The display says when the backend is gone --> and
-SRS028<!-- Served responses declare their type, and forbid the browser inferring one --> were
-`proposed`, and `check-arch-trace` refuses a tag on an unbaselined item. Binding a requirement to an
+**Two requirements were baselined by the Container level's work, by the owner.** Both were `proposed`,
+and `check-arch-trace` refuses a tag on an unbaselined item. Binding a requirement to an
 element is the act of reading it and judging what it obliges, so the review happened there: both items
 were put in front of the owner in full and accepted (owner, 2026-08-04). That decision is the record —
 [ADR 0005 rev 1](0005-traceability-gating.md) reserves acceptance to a human, and no property of an
@@ -663,9 +629,8 @@ bind to *something*, not to have an element of its own, and existing elements an
 almost everything — but it is real, and it is the opposite of the direction this record pushes when it
 refuses an aggregate external system and a placeholder module box.
 
-**The Deployment level is where a host obligation goes, and that is a new pull.** No item exercises it —
-SRS019<!-- The backend runs on both supported architectures --> looked like one and turned out to oblige
-the artifact instead, which is the pull's first test and a useful one. An item naming a host, a mount or
+**The Deployment level is where a host obligation goes, and that is a new pull.** No item exercises it — the
+one that looked like it turned out to oblige the artifact instead, which is the pull's first test and a useful one. An item naming a host, a mount or
 an artifact has somewhere to sit, and the pressure to bind it to a container is gone. The opposite
 pressure arrives with it: an item genuinely about an execution context can be parked on a host because
 the host is the more concrete-sounding subject.
