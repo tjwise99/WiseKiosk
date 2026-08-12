@@ -568,10 +568,12 @@ md5 `c816ba0d4e721b862efec9d363128b38` — the script at `66d168f` — in `git a
 extractions rather than in the working tree, for the reason under *Fixtures here must reckon with two
 different file sets* below. **Copy the script in fresh and assert its md5 before running a row**, per
 *Copy the script under test in fresh each time* above: the assertion is what separates *the fix does
-not work* from *the fix was not in the tree you ran*, and a copy whose md5 differs from the pin means
-you are re-dating these rows rather than reproducing them. An earlier draft of this paragraph pinned a
-hash belonging to no committed version, taken from the script mid-edit, and a reader could not have
-told a broken fix from a fixture carrying the wrong script.
+not work* from *the fix was not in the tree you ran*. A copy whose md5 differs from the pin is one of
+two things — a stale checkout, whose result says nothing about the row, or a script that has moved on,
+in which case these rows are being re-dated rather than reproduced. **Re-date against a commit that
+carries the script, never a working tree**: an earlier draft of this paragraph pinned a hash belonging
+to no committed version, taken from the script mid-edit, and a reader could not have told a broken fix
+from a fixture carrying the wrong script.
 
 **Pinning the script is not enough, because a whole-tree seed counts ADRs** — every row whose input is
 spelled *all twenty*, and the paragraph below reading twenty problems out of one of them, is keyed on
