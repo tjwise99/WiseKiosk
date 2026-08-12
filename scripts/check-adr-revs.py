@@ -6,8 +6,8 @@ correction is a new rev. A citation names the rev it was written against, so rev
 every document citing it — each is then updated or re-decided rather than left asserting a claim the
 ADR's current rev does not make.
 
-Assertions. Everything read out of `docs/decisions/` is read from the directory; the citation scan
-alone reads the tracked set:
+Assertions. The ADR set is read from `docs/decisions/` itself, so an uncommitted file is judged; the
+citation scan reads the tracked set:
 
 - Each ADR's head carries `**Rev:** N`, and the index table in `docs/decisions/README.md` agrees
   with it. The head is authoritative; the table is checked against it, never trusted.
@@ -33,8 +33,9 @@ alone reads the tracked set:
 That an ADR's rev was raised for a good reason, and that a citation pinning the current rev still
 means what the ADR says, is decided by nothing here.
 
-Whether every ADR has an index row, every row a file, and numbering is contiguous is
-`scripts/check-adr-index.mjs`.
+Whether every index row has a file, and numbering is contiguous, is `scripts/check-adr-index.mjs`.
+An ADR carrying no row is reported here as well, because the row is where this reads the rev it holds
+citations to: no row is this check's own population going unjudged, not only a gap in the table.
 """
 
 import re
