@@ -148,7 +148,7 @@ enabled, and this paragraph rather than a check is what records it.
 What a release publishes and what CI asserts about it. Verification runs against the published digest
 in a separate job that pulls from the registry, reads only the registry and the public transparency
 log, and holds no credential. Unbuilt; owned by #67 security and supply-chain gates, against the set
-[ADR 0021 rev 1](decisions/0021-release-artifact-set-and-operator-tooling.md) decides.
+[ADR 0020 rev 1](decisions/0020-release-artifact-set-and-operator-tooling.md) decides.
 
 **Nothing decides the no-credential property.** It is a proposal for a check, not an asserted
 guarantee: no gate compares the verification job's permissions against it, and SECURITY.md publishes
@@ -169,7 +169,7 @@ a posture resting on this section. Until #77 fences this document, read it as in
   **What no check here decides:** the documentation site is deployed from the default branch rather
   than from a tag, so it is not a release asset and nothing asserts any correspondence between what it
   describes and the digest an operator is running. That drift is chosen rather than overlooked, and
-  ADR 0021 rev 1 records the choice.
+  ADR 0020 rev 1 records the choice.
 - **Signature.** Keyless `cosign` verification against the published digest, with the expected
   certificate identity and OIDC issuer, exits zero; against a deliberately wrong identity it exits
   non-zero.
@@ -227,7 +227,7 @@ What each of these obligations *is*, and why, is [`DEPLOYMENT.md`](DEPLOYMENT.md
   policy is absent. **It gates that one key deliberately and no others**: the key is the residue of a
   requirement deleted on #69 tree rebuild, not the beginning of a recipe linter. Every other value in
   the recipe is a sample default an operator is expected to weigh and change
-  ([ADR 0021 rev 1](decisions/0021-release-artifact-set-and-operator-tooling.md)), and gating one would
+  ([ADR 0020 rev 1](decisions/0020-release-artifact-set-and-operator-tooling.md)), and gating one would
   assert a recommendation as an obligation.
 - **The image reports its health in both directions.** An integration test runs the image and reads
   the reported status while the backend serves and while it does not. A test that only ever observes
@@ -382,11 +382,32 @@ resolve, a citation to something that does not exist, an index that has drifted 
 - Every requirement identifier tagged in the architecture model names an item that exists, is active
   and accepted, and is spelled canonically; every declared tag is applied to something. A tag
   carrying anything other than an identifier fails rather than being passed over — the model's tags
-  carry requirement links ([ADR 0019 rev 2](decisions/0019-boundary-at-what-deploys-and-tag-tier.md)), so
+  carry requirement links ([ADR 0019 rev 4](decisions/0019-boundary-at-what-deploys-and-tag-tier.md)), so
   one carrying something else is a decision to take, not an exemption to add. A model naming no
   requirement at all fails too: it resolves every tag it carries, so an absent link and a sound one
-  would read identically. What this leaves unproven is whether the tagged element is the one that
-  requirement obliges, and whether the tier suits the level; both are read at review.
+  would read identically. A tag counts on four subject kinds — the logical model's elements and
+  relationships, and the deployment model's, which the export keeps separate; reading only the first
+  pair reports a tag applied to a deployment node as applied to nothing, which is a diagnostic the
+  input cannot support. **A tag on a view is deliberately not read**, a view being a projection of
+  the model rather than a subject in it, so one applied there fails as applied to nothing — the right
+  verdict, reached by a message that does not explain it. What this leaves unproven is whether the
+  tagged element is the one that requirement obliges, and whether the tier suits the level; both are
+  read at review.
+- **Every accepted, active `SYS` or `SRS` item is tagged somewhere in the architecture model**, on an
+  element or a relationship ([ADR 0019 rev 4](decisions/0019-boundary-at-what-deploys-and-tag-tier.md)).
+  There is no exemption record and nothing to add an item to: where one can bind nowhere, the model
+  grows to draw what it obliges. The population is decided rather than filtered — a tier outside the
+  obliging and verification sets fails, and so does a `status` outside `accepted` and `proposed`,
+  because comparing against `accepted` alone reads a mis-spelled status as *not accepted* and drops
+  the item from the check's own population. `TST` is outside the rule, a verification item saying how
+  an obligation is settled rather than what the software owes; a `proposed` item is outside it
+  because the direction above resolves a tag only to an accepted item, so one cannot be tagged; a
+  retired item — `active: false`, `status` untouched — is outside it because it obliges nothing. A
+  tree that loads no item, one whose obliging tiers are absent, and one where no item is accepted and
+  active each fail rather than reporting complete allocation over nothing judged. What this leaves
+  unproven is the same thing the direction above leaves unproven, and it is the cheaper pressure this
+  rule creates: an item can be tagged onto an element it does not oblige, and the check reads that as
+  bound. Held by review alone.
 - The documentation site builds under Sphinx with warnings-as-errors.
 
 **Considered and rejected:** a registry mapping each canonical document to the path globs it

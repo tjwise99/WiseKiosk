@@ -114,7 +114,7 @@ check-arch:
     git diff --exit-code HEAD -- docs/architecture/ docs/ARCHITECTURE.md
 
 [group('checks')]
-[doc('Every requirement identifier tagged in the architecture model resolves to an accepted item')]
+[doc('Every requirement identifier tagged in the architecture model resolves to an accepted item, and every accepted, active SYS or SRS item is tagged somewhere in the model')]
 check-arch-trace:
     docs/requirements/.venv/bin/python scripts/check-arch-trace.py
 

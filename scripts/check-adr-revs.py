@@ -6,11 +6,22 @@ correction is a new rev. A citation names the rev it was written against, so rev
 every document citing it — each is then updated or re-decided rather than left asserting a claim the
 ADR's current rev does not make.
 
-Assertions, over the tracked file set:
+Assertions. The ADR set is read from `docs/decisions/` itself, so an uncommitted file is judged; the
+citation scan reads the tracked set:
 
 - Each ADR's head carries `**Rev:** N`, and the index table in `docs/decisions/README.md` agrees
   with it. The head is authoritative; the table is checked against it, never trusted.
+- Each ADR's title line carries the number its filename carries. Identity by number is the premise
+  every citation here rests on, and the head is where the document states it — the same head, one
+  field over from the rev. Only the number is compared: the separator and the title text are the
+  author's, and a rule reaching them would be a formatting gate.
+- Every entry in `docs/decisions/` is an ADR this judges or a reported problem. One misnamed by case,
+  separator or digit count carries no readable number, and passing over it reports a population
+  smaller than the directory. The directory read above is what lets this see an entry no commit has
+  yet introduced.
 - Each ADR's *Revisions* section carries one changelog line per rev, numbered 1 to that head rev.
+- No two files carry one number. Uniqueness is `scripts/check-adr-index.mjs`'s to enforce; it is
+  reported here because a number two documents carry has no one rev to hold a citation of it to.
 - Every `ADR NNNN` in prose is followed by `rev M`, and M is that ADR's current rev.
 - Every markdown link resolving to an ADR file is titled `ADR NNNN rev M` likewise. The link rule is
   what the prose rule cannot reach: a citation spelled `[NNNN](NNNN-slug.md)` names no ADR in prose
@@ -22,8 +33,11 @@ Assertions, over the tracked file set:
 That an ADR's rev was raised for a good reason, and that a citation pinning the current rev still
 means what the ADR says, is decided by nothing here.
 
-Whether every ADR has an index row, every row a file, and numbering is contiguous is
-`scripts/check-adr-index.mjs`.
+Whether every index row has a file, and numbering is contiguous, is `scripts/check-adr-index.mjs`.
+An ADR carrying no row is reported here as well, because the table assertion above is then the thing
+with nothing to compare. It is not that such an ADR goes unjudged: the rev is read from the head, so
+the title, changelog, collision and citation rules all still hold it, and deleting the table check
+would change no citation verdict.
 """
 
 import re
@@ -37,6 +51,10 @@ INDEX = DECISIONS / "README.md"
 
 ADR_FILE = re.compile(r"^(\d{4})-[a-z0-9-]+\.md$")
 HEAD_REV = re.compile(r"^\*\*Rev:\*\* *(\d+) *$", re.M)
+# Read from the first non-blank line, and no further, so a fenced `# …` in the body cannot stand in
+# for a missing title.
+HEAD_TITLE = re.compile(r"^# +(\S+)")
+NOT_AN_ADR = ("README.md", "TEMPLATE.md")
 INDEX_ROW = re.compile(r"^(\| *\[\d{4}\]\([^)]+\) *\|)(.*)$")
 
 # Any spelling that reaches for an ADR by number, deliberately wider than the one form accepted:
@@ -115,35 +133,68 @@ def changelog_revs(text):
 
 
 def current_revs(problems):
-    """Each ADR's number and the rev its own head declares."""
-    revs = {}
+    """Each ADR's number and the rev its own head declares, and the numbers carried by two files."""
+    revs, carriers, collided = {}, {}, set()
     for path in sorted(DECISIONS.iterdir()):
         match = ADR_FILE.match(path.name)
         if not match:
+            if path.name not in NOT_AN_ADR:
+                problems.append(
+                    f"docs/decisions/{path.name} is not named `NNNN-<lowercase-slug>.md`, so no "
+                    "number can be read from it and nothing here judged it"
+                )
             continue
         # An entry named like an ADR that is a directory or a dangling symlink is not one, and must
         # not pass for want of a readable head.
         if not path.is_file():
             problems.append(f"docs/decisions/{path.name} is not a readable file")
             continue
-        text = path.read_text(encoding="utf-8")
+        # `utf-8-sig` drops a byte-order mark if one is there, so it cannot be read as part of the
+        # title's number. Spelling that as a strip of the character itself puts an invisible one in
+        # this source, where its loss would show up nowhere.
+        text = path.read_text(encoding="utf-8-sig")
+        title = HEAD_TITLE.match(next((l for l in text.splitlines() if l.strip()), ""))
+        if not title:
+            problems.append(
+                f"docs/decisions/{path.name} opens with no `# NNNN …` line, so the document does "
+                "not say which ADR it is"
+            )
+        elif title.group(1) != match.group(1):
+            problems.append(
+                f"docs/decisions/{path.name} titles itself {title.group(1)}, but its filename and "
+                f"every citation of it say {match.group(1)}"
+            )
         heads = HEAD_REV.findall(text)
         if len(heads) != 1:
             problems.append(
                 f"docs/decisions/{path.name} declares {len(heads)} `**Rev:** N` lines, expected 1"
             )
             continue
-        rev = int(heads[0])
-        revs[match.group(1)] = rev
+        rev, number = int(heads[0]), match.group(1)
+        # A number two files carry is dropped from the mapping rather than assigned from one of
+        # them: which document it names is what a citation of it cannot be judged without, and
+        # either assignment judges every such citation against a file chosen by sort order.
+        if number in carriers:
+            problems.append(
+                f"docs/decisions/{carriers[number]} and docs/decisions/{path.name} both carry "
+                f"number {number} — no rev can be attributed to it, so no citation of it is judged"
+            )
+            collided.add(number)
+            revs.pop(number, None)
+        else:
+            carriers[number] = path.name
+            revs[number] = rev
         declared = changelog_revs(text)
         if sorted(declared) != list(range(1, rev + 1)):
             problems.append(
                 f"docs/decisions/{path.name} is at rev {rev} but its Revisions section declares "
                 f"{declared or 'nothing'}, expected one line per rev from 1"
             )
-    if not revs:
+    # Guarded on the heads that parsed, not on the mapping: a tree whose every number collided
+    # empties `revs` while the format is fine, and would otherwise be reported as a parser fault.
+    if not carriers:
         problems.append("no ADR declared a rev — the head format or this parser is wrong")
-    return revs
+    return revs, collided
 
 
 def check_index(revs, problems):
@@ -200,7 +251,7 @@ def readable(path, text):
         yield number, row.group(2) if row else line, False
 
 
-def check_citations(revs, problems):
+def check_citations(revs, collided, problems):
     unreadable, judged = [], {"prose": 0, "link": 0}
     for path in tracked():
         try:
@@ -239,8 +290,8 @@ def check_citations(revs, problems):
                     )
                 else:
                     problems.extend(
-                        judge(revs, where, number, titled.group(1), titled.group(2), title,
-                              historical)
+                        judge(revs, collided, where, number, titled.group(1),
+                              titled.group(2), title, historical)
                     )
 
             for form, pattern in (("reference-style link", REF_DEF), ("raw <a href>", RAW_HREF)):
@@ -268,8 +319,8 @@ def check_citations(revs, problems):
                     )
                     continue
                 problems.extend(
-                    judge(revs, where, number, match.group(1), match.group(2), line.strip(),
-                          historical)
+                    judge(revs, collided, where, number, match.group(1), match.group(2),
+                          line.strip(), historical)
                 )
 
     if unreadable:
@@ -288,13 +339,19 @@ def check_citations(revs, problems):
     return sum(judged.values())
 
 
-def judge(revs, where, number, cited, pinned, context, historical=False):
+def judge(revs, collided, where, number, cited, pinned, context, historical=False):
     """One citation against the ADR it names.
 
     `historical` drops the comparison against the ADR's current rev, and drops nothing else: a
     changelog entry may name a rev that has moved on, but not an ADR that does not exist and not a
     citation carrying no rev at all.
+
+    A citation of a colliding number is left unjudged, and the run fails on the collision itself.
+    Judging it reports a rev disagreement the tree does not have, against a correct citation, and
+    the repair that reads as obvious — move the pin — writes a wrong rev across the tree.
     """
+    if cited in collided:
+        return []
     if cited not in revs:
         return [f"{where}:{number}: cites ADR {cited}, which is not an ADR — {context}"]
     if not pinned:
@@ -308,11 +365,11 @@ def judge(revs, where, number, cited, pinned, context, historical=False):
 
 def main():
     problems = []
-    revs = current_revs(problems)
+    revs, collided = current_revs(problems)
     judged = 0
     if revs:
         check_index(revs, problems)
-        judged = check_citations(revs, problems)
+        judged = check_citations(revs, collided, problems)
     if problems:
         return fail(sorted(problems))
     print(f"{len(revs)} ADRs; {judged} citations, every one pinning the current rev")

@@ -1,0 +1,25 @@
+---
+title: "WiseKiosk Backend — Components (C4 L3)"
+---
+graph TB
+  Operator@{ icon: "fa:user", shape: rounded, label: "Operator" }
+  WisekioskFrontend@{ shape: rectangle, label: "Frontend" }
+  subgraph WisekioskBackend["`Backend`"]
+    WisekioskBackend.StaticServing@{ shape: rectangle, label: "Static serving" }
+    WisekioskBackend.RouteHandler@{ shape: rectangle, label: "Route handler" }
+    WisekioskBackend.RequestValidation@{ shape: rectangle, label: "Request validation" }
+    WisekioskBackend.ResponseCache@{ shape: rectangle, label: "Response cache" }
+    WisekioskBackend.UpstreamClient@{ shape: rectangle, label: "Upstream client" }
+  end
+  Operator -. "`Places the configuration into the served 
+tree`" .-> WisekioskBackend.StaticServing
+  Operator -. "`Supplies the secret for each source`" .-> WisekioskBackend.UpstreamClient
+  WisekioskFrontend -. "`Fetches the configuration, served back 
+unparsed`" .-> WisekioskBackend.StaticServing
+  WisekioskFrontend -. "`Fetches the payload for each module`" .-> WisekioskBackend.RouteHandler
+  WisekioskBackend.RouteHandler -. "`Asks whether the parameters conform`" .-> WisekioskBackend.RequestValidation
+  WisekioskBackend.RouteHandler -. "`Asks for a held answer, and stores what 
+it gets`" .-> WisekioskBackend.ResponseCache
+  WisekioskBackend.RouteHandler -. "`Asks for a fresh response when nothing 
+is held`" .-> WisekioskBackend.UpstreamClient
+  WisekioskBackend.StaticServing -. "`Serves the single-page bundle`" .-> WisekioskFrontend

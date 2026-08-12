@@ -63,6 +63,13 @@ case_run () { # $1 label   $2 expect (pass|fail)   $3 file contents
 like a working check. When seeding into the tree rather than a fixture, `git diff --quiet <path>` before
 running, and treat a clean diff as the case failing rather than passing.
 
+**A seed that lands can still measure something else, and no diff catches that.** Assert the property
+the case is *about* — what the seeded file must contain afterwards, or what the tool under test now
+reports — rather than that the text changed. Three seeds failed this way in one afternoon writing the
+`check-arch-trace.py` cases: one asserted the wrong post-condition and never wrote the file, one
+selected lines by indentation and moved 11 of 18 of them, one used an input that already satisfied the
+case elsewhere. Each reported the verdict its row expected, so no exit status caught any of them.
+
 **Give the scratch repository a `git init`, and run the script from inside it.** Every `.mjs` check
 resolves its root with `git rev-parse --show-toplevel`, and `check-links.mjs`, `check-docs-index.mjs`
 and `check-workflow-hardening.mjs` build their file list with `git ls-files`. In a bare directory
@@ -556,6 +563,40 @@ Every case below was run on 2026-08-05 by seeding the working tree, running `pyt
 scripts/check-adr-revs.py`, and restoring. The seeded state is described rather than committed — and
 described without spelling a live ADR number, which this check reads as a citation like any other.
 
+**The title-number and misnamed-entry rows were added later**, and were run against
+md5 `c816ba0d4e721b862efec9d363128b38` — the script at `66d168f` — in `git archive` + `git init`
+extractions rather than in the working tree, for the reason under *Fixtures here must reckon with two
+different file sets* below. **Copy the script in fresh and assert its md5 before running a row**, per
+*Copy the script under test in fresh each time* above: the assertion is what separates *the fix does
+not work* from *the fix was not in the tree you ran*. A copy whose md5 differs from the pin is one of
+two things — a stale checkout, whose result says nothing about the row, or a script that has moved on,
+in which case these rows are being re-dated rather than reproduced. **Re-date against a commit that
+carries the script, never a working tree**: an earlier draft of this paragraph pinned a hash belonging
+to no committed version, taken from the script mid-edit, and a reader could not have told a broken fix
+from a fixture carrying the wrong script.
+
+**Pinning the script is not enough, because a whole-tree seed counts ADRs** — every row whose input is
+spelled *all twenty*, and the paragraph below reading twenty problems out of one of them, is keyed on
+how many ADRs the directory holds, which the script's hash cannot see. So the tree is pinned to the
+commit carrying the pinned script rather than to some other one — a hash paired with a commit whose
+tree holds a different script says nothing about which half is wrong. Extract `66d168f`, where a
+passing run reports **20 ADRs**, and read that count before those rows. It appears on a **passing**
+run only — a failing one prints problems in its place — and the citation count beside it moves with
+every citation the branch adds, so it is no part of the pin.
+
+**Their headline row is the state at `128ff83` and is reachable from no later commit**, the rename
+that caused it and the correction that ended it both being on this branch. Extract that commit
+literally — not `HEAD`, which stopped reproducing it the moment the fix landed — and give it the
+script under test, which the archive will not carry:
+
+```sh
+d=$(mktemp -d)
+( cd "$REPO" && git archive 128ff83 | tar -x -C "$d" )
+cp "$REPO/scripts/check-adr-revs.py" "$d/scripts/"
+( cd "$d" && git init -q . && git add -A && git commit -qm fixture )   # the citation scan reads git ls-files
+( cd "$d" && python3 scripts/check-adr-revs.py )
+```
+
 ### Must fail
 
 | Case | Input |
@@ -582,6 +623,15 @@ described without spelling a live ADR number, which this check reads as a citati
 | **The prose citation spelling drifted, so none is recognised** | `CITATION` altered not to match |
 | **The link spelling drifted, so none is recognised** | `TARGET` altered not to match |
 | An ADR revved with one citation left behind | one ADR to rev 2, every citation but one moved |
+| **Two files carrying one number, at the same rev** | a copy of an ADR under a second slug — the quiet shape |
+| **The same, at different revs** | the copy's head raised, so the two disagree |
+| **An ADR titling itself a number its filename does not carry** | **the state at `128ff83`**, where a rename left the title behind — 1 problem, naming the file |
+| **The same, seeded elsewhere** | one ADR's title line renumbered to another live ADR's number — 1 problem |
+| **Two ADRs' title numbers swapped** | the set of title numbers is still contiguous from 0001 — **2 problems**, one per file |
+| **A title number of the wrong digit count** | one title line cut to three digits |
+| **An ADR with no title line** | the first line of one ADR deleted |
+| **The title format changed everywhere, so no number parses** | the space after `#` dropped in all twenty — 20 problems, not silence |
+| **An entry in `docs/decisions/` named outside `NNNN-<lowercase-slug>.md`** | a copy of an ADR under a mixed-case slug |
 
 ### Must pass
 
@@ -592,6 +642,10 @@ described without spelling a live ADR number, which this check reads as a citati
 | A changelog line pinning a rev that is not current | a supersession line on that same rev-2 ADR |
 | An indented continuation of one, pinning a stale rev | the wrapped form of the same line |
 | An index row's leading self-link | every row in the index table |
+| **A title spelled with a hyphen rather than an em-dash** | the separator changed on one ADR — only the number is compared |
+| **A title whose text differs from its index row's *Decision* cell** | the tree as it stands: the cell is a summary written for the table, not a copy of the title |
+| **A blank line before the title** | one ADR given a leading newline — the opening line is the first non-blank one, not byte 0 |
+| **A UTF-8 byte-order mark before the title** | the same ADR given a BOM — stripped, not read as part of the number |
 
 **The exemption was narrowed twice, and the second time is the instructive one.** It began as the
 whole *Revisions* section: an ordinary citation placed inside it passed with exit 0 while the
@@ -608,6 +662,89 @@ The same narrowing applies to the index row, which drops only the leading self-l
 **The two rev-2 cases are the pair that matters**: same tree, differing only in whether one citation
 moved, one passing and one failing. Without both, "the exemption works" and "the exemption is narrow"
 are indistinguishable.
+
+**The duplicate-number cases are seeded in both filename orders, because the verdict used to depend on
+one.** The number → rev map was a plain assignment, so two files at one number left it holding whichever
+sorted last: every citation of that number was judged against an arbitrary one of the two, and the
+other's rev against nothing. Which one that is decides the whole outcome, and the seed's slug decides
+which one it is — a copy at `0020-a-…` and the same copy at `0020-zzz-…` are the same defect and gave
+opposite exit codes. **A seed that fixes the slug measures the sort order, not the check.**
+
+Four runs, all observed:
+
+| Seed (copy of an ADR under a second slug) | Old | Current |
+|---|---|---|
+| Sorts first, same rev | exit 0 | exit 1, the collision |
+| Sorts last, same rev | exit 0 | exit 1, the collision |
+| Sorts first, head raised | **exit 0** | exit 1, the collision |
+| Sorts last, head raised | exit 1, but on stale-citation messages against correct citations and an index-row disagreement — nothing pointing at the collision | exit 1, the collision |
+
+**The equal-rev shape is the one that ran on a real branch**: two records at 0021, both at rev 1,
+reported as `23 ADRs` over a directory holding 24, exit 0. It is decidable only by reading the count
+against the directory — nothing else moved — which is why an equal-rev pair, not a disagreeing one, is
+the case that matters. `check-adr-index.mjs` catches the same directory state, so nothing was loose in
+`just verify`, but a check reporting a population smaller than its input in the same line it reports
+success is the failure CONTRIBUTING question 10, *Unjudged input*, names.
+
+**The colliding number is dropped from the map rather than assigned from one of the two files, and its
+citations go unjudged.** Assigning it makes the run fail on wrong-rev messages against citations that
+are correct, sorted above the collision message so they are what a contributor reads first — and the
+repair they invite, moving the pins, writes a wrong rev across the tree. That is the old defect with
+one line added, not a fix for it. **The row above carries no message count on purpose**: how many
+problems that run prints depends on how the seed was built — whether the copy's *Revisions* section was
+made consistent with its raised head — so a number there would be a property of one seed, which is the
+defect this whole entry exists to record. The kinds of message are what the row is arguing, and those
+hold across both constructions.
+
+**Two things go unreported while a number collides**, and both are deferred rather than bypassed: a
+citation of that number carrying no rev at all, and an index-row disagreement for it (`check_index`
+iterates the map the number was dropped from). The run fails on the collision either way, so neither
+can reach `main`; the cost is that the run after the collision is resolved reports a second round of
+problems the first did not show. Uniqueness stays `check-adr-index.mjs`'s to enforce; this check
+reports the collision because a number two documents carry has no one rev to hold a citation to
+(question 13, *Second enforcer*).
+
+**The title-number rule is the collision rule's other half.** A collision asks which of two files a
+number names; a wrong title asks whether the one file naming it agrees. Both are identity, which is the
+premise every citation here rests on — and both were reached by the same route, a number moving. The
+`0021` → `0020` rename on this branch carried the file and left its title line, and nothing saw it:
+`check-adr-index.mjs` derives every number it compares from a filename or an index row and never opens
+an ADR body, so it printed agreement over twenty ADRs one of which called itself something else.
+
+**Only the number is compared.** The separator and the title text are the author's, which is why both
+must-pass rows above exist rather than being obvious: without the em-dash row the rule silently becomes
+a formatting gate, and without the *Decision*-cell row someone eventually "completes" it into a title
+comparator, which reds the tree on sight — the index cell is a summary written for the table.
+
+**The swapped pair is the row that pins the rule.** Two ADRs exchanging title numbers leaves the set of
+title numbers exactly what it was, contiguous from 0001, so a rule comparing the two *sets* passes it
+while every citation of either document resolves to the wrong record. Comparing per file reports both,
+which is why that row's message count is stated: one problem is a rule that stopped after the first
+file, two is a rule that read them independently.
+
+**The population cannot empty quietly**, because a missing title line is a problem rather than a skip —
+the same shape as the `**Rev:** N` head, which fails on zero or two matches rather than passing over the
+file. The whole-tree seed is the proof: respelling every title at once reports twenty problems, where a
+rule that only compared the titles it could parse would have reported none. A guard keyed on the literal
+it guards goes to zero with the thing it measures and then agrees nothing is wrong.
+
+**The satisfiability control is the cell the old check could not produce.** Correcting the title and
+re-running exits 0 — and before the rule existed, correcting it changed nothing: the run printed
+`decisions/ and its index agree: 20 ADR(s), contiguous from 0001.` with the defect present and the
+identical line with it removed. An output that does not move when the defect does is the evidence that
+nothing looked, and it is why *the check passed* was never evidence here.
+
+**Which script owns this.** `check-adr-revs.py` already opens every ADR body and already holds both
+halves in one loop — the filename's number from `ADR_FILE`, the head it just read for the rev — so the
+rule costs no second traversal, and the head is where a document states its identity as much as its rev.
+`check-adr-index.mjs` compares a directory against a table and opens no body; a head parser there would
+be a second one beside this, drifting from it (question 13, *Second enforcer*).
+
+**Fixtures here must reckon with two different file sets.** `current_revs()` walks
+`DECISIONS.iterdir()`, the filesystem, while the citation scan walks `git ls-files`. A seeded ADR is
+therefore judged as an entry whether or not it was added, but its citations are read only once it is —
+so a case about a title or a filename needs no `git add` and a case about a citation does, and a seed
+that forgets is a row that measured half of what it claims.
 
 **The link reader is anchored on the target, not the title.** Titled-pattern matching missed a link
 whose title carried a bracketed phrase: the title pattern cannot cross a closing bracket, so the link
@@ -659,6 +796,75 @@ The rev pins a version, not an identity. A citation written on a branch across a
 re-taking of the same number merges green, because at merge time the number resolves and the rev
 matches. Nothing here decides it; `../docs/CI.md` § *Documentation integrity* names it.
 
+**Nothing may live in `docs/decisions/` but ADRs, the index and the template.** Every other entry is
+reported as unreadable-numbered, whatever it is: a subdirectory, a non-Markdown asset, an editor
+backup. That is the rule working — an entry passed over is a population smaller than the directory —
+but it narrows what the directory may hold, so it is written down rather than discovered.
+
+**An H1 indented up to three spaces is legal CommonMark and is rejected here**, the opening line being
+matched from its first character. It is the residue of the blank-line case one class smaller, and no
+ADR is written that way; `opening.lstrip()` would close it and would also accept an indented code
+block opening a file as that file's title, which is the worse trade.
+
+**A dotfile is an entry like any other**, so a `.gitkeep` or an editor swap file in `docs/decisions/`
+is reported. That is the same argument as the backup file and is deliberate; it is written here
+because a dotfile is the one stray a reader does not picture when they read "every other entry".
+
+**Two spellings that look like strays and are not**, both seeded and both passing: a blank line
+before an ADR's title, and a byte-order mark before it. The opening line is the first non-blank one
+rather than byte 0, and a BOM is stripped before the number is read. Neither weakens the rule — a
+fenced `# …` deeper in the body is still unreachable, because reading stops at that first non-blank
+line — and without them this check would be the repository's only enforcer of *title at byte 0*,
+under a message that names a different cause. There is no markdownlint here and no `pre-commit`
+config, only `.editorconfig`.
+
+**The two ADR checks now disagree about that, and the line between them is the `.md` suffix.**
+`check-adr-index.mjs` skips anything not ending `.md`, so it sees a non-conforming `.md` name and
+nothing else. Observed, one stray at a time:
+
+| Stray in `docs/decisions/` | `check-adr-revs.py` | `check-adr-index.mjs` |
+|---|---|---|
+| `notes.txt` | exit 1 | **exit 0** |
+| `0019-…-tag-tier.md~`, an editor backup | exit 1 | **exit 0** |
+| a subdirectory | exit 1 | **exit 0** |
+| `draft-supersede-0007.md` | exit 1 | exit 1 |
+
+**Directory scope is `current_revs()`'s, not this one rule's.** It reads `DECISIONS.iterdir()` rather
+than `git ls-files`, deliberately: an entry no commit has introduced is exactly what a name check
+should still see, and a stray that only becomes visible once it is committed is a check that waits for
+the mistake to land. But the naming rule is not alone in there — the head rev, the title number, the
+*Revisions* changelog and the collision rule are read in the same walk, and `check_index()` then asks
+the table about whatever that walk found. Only the citation scan reads the tracked set, which is the
+split *Fixtures here must reckon with two different file sets* above states.
+
+So the consequence is wider than a stray, and it is the first thing anybody will hit — **an untracked
+file reds `just verify` locally while CI stays green**, because `actions/checkout` gives CI committed
+state and the file is not in it. Measured on one tree, one file at a time:
+
+| Untracked in `docs/decisions/` | Reported locally |
+|---|---|
+| `notes.txt` | the naming rule — 1 problem |
+| `0021-untracked-draft.md`, an ADR drafted the ordinary way: rev 1, its one changelog line | **1 problem, from neither** — `check_index()`, finding the number carries no index row |
+
+An archive of the same `HEAD`, which is what CI gets, exits **0** for both. The exit codes are the
+row; the citation count printed beside them moves with every citation the branch adds, so it is not
+recorded here.
+
+Red locally and green in CI, over a file that is not in the change, is what makes a check feel broken.
+For a stray it is not: the fix is to rename or remove the file, and the alternative — judging only what
+is committed — trades a visible local failure for a silent one. **The draft is the case with no stray
+to remove**, and its answer is different: the index row is genuinely owed, `check-adr-index.mjs` reds
+on the same file with the same remedy — so this is not the disagreement the table above records — and
+nothing here gates a commit, both hooks in `.githooks/` being advisory and neither running `verify`.
+What the local run buys is notice before the push, not enforcement. Recorded so the reader meets the
+argument rather than the surprise.
+
+A title number is read as the first whitespace-delimited token after `# `, so a title running the
+number into its text — no space before the separator — is reported as titling itself that whole token
+rather than as malformed. The verdict is right and the message is not. Reading the token rather than a
+number-shaped pattern is what lets *no title line* and *wrong digit count* both be reported instead of
+skipped, which is the trade taken.
+
 ## `check-arch` — `splice-arch-diagrams.mjs`
 
 The recipe runs `likec4 validate`, `likec4 codegen`, this script, and then `git diff --exit-code`. The
@@ -698,20 +904,45 @@ so `git diff --exit-code` is what catches staleness.
 | Must pass | the unseeded tree — exit 0, leaving **zero** index entries |
 
 `arch-export`'s `rm -rf`, the `git add --intent-to-add`, and the `HEAD` in the diff are three parts of
-one mechanism. **Each was proven necessary by removing it and re-running the row it protects**, on
-fixtures built identically and differing only in the recipe. The other cross-cells — each line
-removed against each row it does not protect — are sampled rather than confirmed: one was run and
-behaved, the rest were not:
+one mechanism, and **the whole grid is run** — each line removed against every row, not only against
+the row it protects. Sixteen cells, at `adc1f65`, by a later pass than the rows above: each cell its
+own extraction with `node_modules` **copied** rather than symlinked, the ablation applied to that
+fixture's own `justfile` and committed, and each seed asserted present in `HEAD` before the run.
+Removing `HEAD` means diffing against the index instead; removing the line entirely would leave no
+gate to measure.
 
-| Line removed | Row that then passes wrongly |
-|---|---|
-| `rm -rf docs/architecture/generated` | artifact with no view — codegen never prunes, so the orphan stays byte-identical to what is committed |
-| `git add --intent-to-add` | view with no artifact — a regenerated artifact nobody committed is untracked, and `git diff` reads tracked paths only |
-| `HEAD` in the diff | artifact with no view, **again** — `git add` with a pathspec stages the deletion `rm -rf` just made, and an index-relative diff reads worktree and index as agreeing |
+| Seeded state | full | no `rm -rf` | no `--intent-to-add` | no `HEAD` |
+|---|---|---|---|---|
+| Unchanged tree (must pass) | 0 | 0 | 0 | 0 |
+| Committed artifact hand-edited | 1 | 1 | 1 | 1 |
+| Committed view, artifact never committed | 1 | 1 | **0** | 1 |
+| Committed artifact no view produces | 1 | **0** | 1 | **0** |
 
-The third row is the one to remember. Adding `--intent-to-add` to close the second row silently
-re-opened the first, because the two lines act on the same index in opposite directions: one exists to
-create evidence of a deletion, the other erases it. It survived a full local `just verify`, six
+**Each line is necessary for exactly one row, and no ablation false-positives on the unchanged tree.**
+The three zeroes are the argument, and each was corroborated by looking at the tree rather than at the
+exit code alone:
+
+- **`rm -rf` × orphan.** `codegen` never prunes, so `ghost.mmd` is still sitting in `generated/`
+  after the run, byte-identical to what is committed.
+- **`--intent-to-add` × uncommitted artifact.** `extraView.mmd` *was* generated — it is on disk and
+  `git status` reports it `??`. `git diff` reads tracked paths, so an untracked file is not drift.
+- **`HEAD` × orphan.** `git status` reports `D  docs/architecture/generated/ghost.mmd`, staged: the
+  `git add` with a pathspec stages the deletion `rm -rf` just made, and an index-relative diff then
+  reads worktree and index as agreeing.
+
+The hand-edited row is caught by every variant, which is worth stating rather than leaving as a row of
+ones: it is the only one of the three defects that changes a **tracked** file in place, so it needs
+none of the three lines — the bare diff sees it. That is why it is the wrong case to develop this gate
+against, and why the two that need machinery are the two that were missed.
+
+The unchanged column matters as much as the zeroes. A gate can be made to catch everything by failing
+on everything, and three of these four cells would look identical either way; the top row is what
+separates *necessary* from *noisy*, and the `full` cell also leaves **zero** index entries behind.
+
+**The orphan row's two zeroes are the pair to remember**, because they are the same index read twice.
+Adding `--intent-to-add` to catch the uncommitted artifact silently re-opened the orphan, and the
+`HEAD` was what closed it again: the two lines act on one index in opposite directions, one existing
+to create evidence of a deletion and the other erasing it. It survived a full local `just verify`, six
 commits, and a green CI run — CI proves nothing here, because the repository tree holds no orphan, so
 the gate has nothing to miss. It was caught only by re-running the *original* finding's own
 reproduction against the fix, which is the practice this whole file exists to make routine.
@@ -773,53 +1004,208 @@ moves, and a number that never moved cannot be shown to move by a single run. Bo
 to a commit that contains them: a hash paired with a commit whose tree holds a different script tells
 a reader nothing about which half is wrong.
 
-### Must fail
+**Every row in this section was re-run at `adc1f65`, against `check-arch-trace.py` md5
+`f3d15a77411d08dc2fc50c04cb798b1a`.** That scan is unchanged from the
+`962e69718a8927aadfabf50422913937` the rows were last run against: the whole diff is three docstring
+lines and one message string, each a citation moving to ADR 0019 rev 4.
 
-| Case | Input |
-|---|---|
-| Identifier naming no item | a three-digit `SYS` identifier the tree does not hold, declared and applied |
-| Mis-cased identifier | the same identifier in lower case |
-| Declared, applied to nothing | a declaration with no `#` application anywhere |
-| Item not accepted | a tag on an item whose `status` is `proposed` |
-| Item retired | a tag on an item with `active: false` |
-| Tag that is not an identifier | `needs-srs`, taken from the model on `origin/main` |
-| No tag at all | every declaration and application stripped from the model |
-| Model that does not parse | a `#tag` where the grammar wants `}` |
+**Pinning the script is not enough here, and that is what this section learned.** Its rows count
+elements, relationships and items, so a model or tree that grows re-decides every one of them while
+the script's hash sits still — which is why the commit above is the model's pin as much as the
+script's, and why the rows carry a second, cheaper check on both: the baseline they report.
 
-### Must pass
+```
+architecture → requirements holds: 52 tag application(s) on 19 of 38 element(s) and relationship(s), naming 37 accepted item(s).
+requirements → architecture holds: all 37 accepted, active item(s) in an obliging tier are tagged, of 93 item(s) in the tree — 5 proposed, 1 retired and 50 verification item(s) are outside the population.
+```
 
-| Case | Input |
-|---|---|
-| The model as it stands | — |
-| An accepted `SRS` identifier on an **element** rather than a relationship | the other half of the code path |
-| Every tag on elements, none on any relationship | a Container-level model of the shape #97 C4 phase 2 will produce |
-| One identifier applied to two subjects | SYS003<!-- A deployment is parameterised from outside the image --> tagging both operator relationships — applications exceed identifiers |
-| A relationship carrying no tag | the bundle-serving edge, which no accepted item obliges |
+**Read that pair before trusting a figure below.** If it does not reproduce, the tree has moved and
+every count here is suspect. A date, a commit and an md5 cannot say that on their own: this section
+carried all three and was false anyway, because what had moved was the model rather than the script.
+**So no row here is worded *the tree's real state*** — a row keyed on what the tree happens to hold
+dates the moment the tree changes, silently, since nothing compares it against the tree. A row that
+names a commit says when it was true; the pair above says whether it still is.
 
-### What the success line counts
+**There is no all-bound fixture, and the headline must-fail row is a seed.** Both are the same
+correction. When the second direction landed, the tree held accepted items the model bound nowhere:
+the must-fail table's first row therefore needed no seed, and every must-pass row had to be seeded on
+an extraction with those items bound. #119 bound the last of them, which inverted the arrangement —
+the unseeded row asserted a failure over a tree that now passes, and the fixture the must-pass rows
+described could no longer be built, its two items having moved to the deployment model. Every
+must-pass row below is now the plain extraction, and the defect direction is seeded.
+
+### Running a case here
+
+Each case is its own extraction. `node_modules` may be symlinked rather than copied — the reason the
+`check-arch` fixtures need a copy is `git add --intent-to-add`, which this check never runs.
+
+**The commit is named, not `HEAD`.** Every row here counts something the model or the tree holds, so
+an extraction of whatever `HEAD` has become reproduces a different input and disagrees for a reason
+that has nothing to do with the check. `adc1f65` is the state the rows were run against.
+
+```sh
+d=$(mktemp -d)
+( cd "$REPO" && git archive adc1f65 | tar -x -C "$d" )
+ln -s "$REPO/docs/requirements/.venv"        "$d/docs/requirements/.venv"
+ln -s "$REPO/docs/architecture/node_modules" "$d/docs/architecture/node_modules"
+cp "$REPO/scripts/check-arch-trace.py" "$d/scripts/"   # fresh: the archive carries that commit's copy
+md5sum "$d/scripts/check-arch-trace.py"                # assert it before reading any result
+( cd "$d" && docs/requirements/.venv/bin/python scripts/check-arch-trace.py )
+```
+
+Running a case against a later commit is fine and is how these rows get re-dated — but reproduce the
+baseline pair above first. If it has moved, the figures below have to move with it.
+
+### Must fail — tags → tree
+
+Each is seeded on the plain extraction, so an unbound report appearing beside the expected diagnostic
+would mean the seed had disturbed the second direction as well. None did.
 
 | Case | Input | Reported |
 |---|---|---|
-| Baseline | the model as it stands | 18 applications on 7 of 11 subjects, 17 items |
-| One of two applications of the same identifier removed | one SYS003<!-- A deployment is parameterised from outside the image --> application deleted, the identifier still applied once | 17 applications, **17 items** — the counts separate |
-| A subject loses every tag **and** their declarations | both tags stripped from the `Frontend` element | 16 applications on **6** of 11 subjects |
+| Identifier naming no item | a three-digit `SYS` identifier the tree does not hold, declared and applied to the `Layout assembly` element | `no such item in the requirements tree` |
+| Mis-cased identifier | an accepted `SRS` item's own number, lower-cased, declared and applied the same way | `mis-cased — items are upper-case` |
+| Declared, applied to nothing | `tag SRS023<!-- The backend establishes no client identity and gates no route on one -->` with no `#` application anywhere | `declared and applied to nothing` |
+| Item not accepted | `SRS023<!-- The backend establishes no client identity and gates no route on one -->`, which is `proposed`, declared **and** applied | `the item is proposed, not accepted` |
+| Item retired | `SRS005<!-- One validation implementation -->`, `active: false`, declared and applied | `the item is retired` |
+| Tag that is not an identifier | `needs-srs`, taken from the model on `origin/main` | `not a requirement identifier` |
+| No tag at all | every declaration and application stripped from both model files | the *names no requirement* guard |
+| Model that does not parse | a `#tag` where the grammar wants `}` | `the model does not validate`, from `likec4 validate` |
 
-The middle row is why the counts are separate rather than one number, and it is the row that carries
-the argument. The `04cea31` form reported `len(set(declared) | set(applied))`, so an identifier
-applied twice counted once: deleting one of the two applications left its line **byte-identical**
-before and after the seed. **A count that cannot move is not evidence.**
+**The no-tag seed asserts the count it removes**, and that assertion is the cheapest independent check
+on the baseline above: it fails unless it deletes exactly **89** lines — 37 declarations and 52
+applications. Those two numbers are the ones the success line reports, arrived at by deleting rather
+than by counting, so they do not both come from the same reader.
 
-The third row is narrower than the second, and the `04cea31` form is not blind to it — that line's
-leading count moves too, 17 to 15. What it cannot say is that a **subject** stopped carrying links,
-because the only subject figures it reported were `len(elements)` and `len(relations)`, which are
-properties of the model rather than results of the check and read `5` and `6` either way. Stripping a
-tag *without* its declaration is not this case at all: it fails on the declared-and-applied-to-nothing
-arm, on both scripts. The fail-open shape is the one where the declaration goes too, and there the
-check is right to pass, because nothing it asserts is violated.
+### Must pass — tags → tree
+
+| Case | Input | Reported |
+|---|---|---|
+| The model as it stands | **no seed** | the baseline pair above, exit 0 |
+| An accepted identifier on an **element** | no seed — ten elements carry tags | " |
+| An accepted identifier on a **relationship** | no seed — five logical relationships carry tags | " |
+| One identifier applied to several subjects | no seed — SYS003<!-- A deployment is parameterised from outside the image --> sits on four: two operator relationships and both mount edges. Applications exceed identifiers | " |
+| A relationship carrying no tag | no seed — the bundle-serving edge and six others | " |
+| **A tag on a deployment element** | no seed — `publishedImage` carries four, `configurationFile` one | " |
+| **A tag on a deployment relationship** | no seed — both mount edges carry SYS003<!-- A deployment is parameterised from outside the image --> | " |
+| An item bound on two subjects losing one of them | SRS017<!-- Full-screen assembly at kiosk; reflow, no horizontal scroll, at narrower widths -->'s application on `frontend` deleted, its `layout` application and its declaration left | **51** applications on 19 of 38, 37 items, exit 0 — one application fewer, still bound |
+| Every tag on elements, none on any relationship | all **16** relationship applications removed, the **13** distinct identifiers among them placed on the system element | **49** applications on **13** of 38, 37 items, exit 0, and the export confirms **zero** relationship subjects carry a tag |
+
+**Seven of those rows need no seed, which is exactly what makes them weak.** An arm that is never read
+and an arm that reads and approves are the same exit code. The two deployment rows are the ones this
+matters for, because they are the arms `c8f1511` added, so each has a control that moves the item out
+of the logical model entirely:
+
+| Control | Reported |
+|---|---|
+| SRS028<!-- Served responses declare their type, and forbid the browser inferring one -->'s only application moved from the `Backend` element onto the `secretFiles` **deployment element** | passes — 52 applications on **20** of 38, all 37 bound |
+| The same application moved instead onto the `publishedImage -> runningContainer` **deployment relationship** | passes — 52 applications on **20** of 38, all 37 bound |
+
+Were either group unread, SRS028<!-- Served responses declare their type, and forbid the browser inferring one --> would have been reported *declared and applied to nothing* and
+*tagged nowhere*, which is precisely what it does report when the tag goes onto a **view** instead —
+see § *What it does not catch*. That comparison is the control's other half: the same move, into a
+place the scan does not read, fails.
+
+The relationship row's seed selects bodies by which `{` a `->` line opened, not by indentation, and is
+confirmed by reading the export for surviving relationship tags rather than by an exit status that is
+0 either way.
+
+**A premise this check rests on and does not test:** in the deployment-elements section this check
+reads, an `instanceOf` entry carries no tags — it does not inherit its logical target's. A LikeC4
+version that propagated them there would leave every run green while the completeness rule went
+hollow for every item bound to an instantiated container: no diagnostic, no count that moves.
+
+Re-run that row when the pin moves, and read the right section. In `likec4 export json` the instances
+are the `.deployments.elements` entries carrying an `element` key naming the container;
+`containerHost.runningContainer.backend` and `displayHost.displayBrowser.frontend` are the two, and
+neither carries a `tags` key. **The view section shows the opposite and is not what the check reads** —
+`.views.<name>.nodes[]` entries of `kind: instance` do carry the instantiated container's tags, eight
+apiece here, and `kind: instance` appears nowhere else, so a selector written on it reads inheritance
+that the checked section does not have and reports the premise broken when it holds.
+
+### Must fail — tree → tags
+
+| Case | Input | Reported |
+|---|---|---|
+| **An accepted, active item bound nowhere** | SRS028<!-- Served responses declare their type, and forbid the browser inferring one -->'s declaration **and** its only application removed | `1 of 37 accepted, active item(s) are tagged nowhere`, naming it |
+| The tree loads no item | the three tier directories removed | `the requirements tree loaded no item` |
+| No document carries an obliging tier | the two obliging tiers removed, the verification tier left, its `parent:` line dropped so the build still resolves | `no document carries an obliging tier` |
+| The population is empty | every `status: accepted` in the two obliging tiers flipped to `proposed` — **38** items, 0 left | `no item is accepted and active` |
+| A tier the rule has no answer for | a fourth document, prefix `OPS`, parented to `SYS`, holding one accepted item | `1 item(s) this rule cannot place, leaving 37 in the population it judged` |
+| A status outside the vocabulary | one accepted item's `status` mis-spelled `acccepted` | both arms — an unresolved tag **and** `leaving 36 in the population it judged` |
+
+The first row is a seed because the alternative dated: see the fingerprint note at the head of this
+section. The seed removes an item bound on exactly one subject; an item bound on two is the must-pass
+row above, and the pair is what separates *unbound* from *bound less often*.
+
+**It was read in CI as well as locally**, which § *Confirming a gate in CI rather than locally* says
+a local run cannot show: on PR #134 the `architecture` job's last step fails while the `check-arch`
+step above it passes, so the step is wired, reached, and able to fail its job.
+
+**The last two rows are CONTRIBUTING question 10, *Unjudged input*, from both sides.** The
+mis-spelled status is the sharp one: comparing against `accepted` alone reads it as *not accepted*
+and drops the item, indistinguishable from the item being correctly out of scope. The run names it
+and prints the surviving population beside the list — 37 → 36. That count belongs in the unplaceable
+message and not only in the success line, because the success line is absent from a failing run and
+the unbound message is absent when nothing is unbound: with an untagged item's status mis-spelled,
+both are, and the shrinkage would be real and invisible.
+
+### Must pass — tree → tags, and the controls that show each exclusion works
+
+An exclusion that passes proves nothing on its own: an item skipped for the right reason and an item
+skipped because the arm is dead read identically. Each row below is therefore a pair — the excluded
+input, and the same input with the excluding property removed.
+
+| Excluded input | Passes | Control: the property removed | Fails, reporting |
+|---|---|---|---|
+| A retired accepted item bound nowhere | SRS005<!-- One validation implementation -->, in the tree | `active: true` | 1 of **38** — the population grew by the item |
+| A `proposed` item bound nowhere | four `SRS` and one `SYS`, in the tree | `status: accepted` on SRS023<!-- The backend establishes no client identity and gates no route on one --> | 1 of **38**, naming that item |
+| A verification-tier item bound nowhere | the whole tier, **50** items | one made `accepted` **and** `active`, still untagged | **nothing** — 52 applications, population 37, 50 verification, exit 0. It stays out, so the exclusion is by tier |
+
+**The verification tier needed its control most**, because every item in that tier is `active: false`
+*and* `status: proposed`, so exclusion by tier and exclusion falling through the `status` and `active`
+gates are indistinguishable on the tree as it stands. It has a second control on the code: deleting
+the verification arm from the fixture's script, against that same seed, reports all **50** as
+unplaceable and fails. `validate-tree.sh` rejecting an activated verification item is not a reason the
+seed cannot be placed — that check does not run inside a `check-arch-trace` fixture.
+
+### What the success line counts
+
+Two lines, one per direction. A failing run prints neither, which is what shaped the last two rows.
+
+| Case | Input | Reported |
+|---|---|---|
+| Baseline | no seed | 52 applications on 19 of 38 subjects, 37 items; **all 37** of 93 tree items bound, 5 proposed / 1 retired / 50 verification outside |
+| One of several applications of the same identifier removed | SYS003<!-- A deployment is parameterised from outside the image --> dropped from the `operator -> staticServing` edge, which keeps SRS007<!-- Configuration schema offers no secret-bearing key --> so the subject survives | **51** applications on **19** of 38, **37 items** — applications move alone |
+| A subject loses every tag, the applications surviving elsewhere | `pageShell`'s only tag, SRS004<!-- Page renders a legible error state for every configuration failure class -->, moved onto `layout` | **52** applications on **18** of 38, **37 items** — subjects move alone |
+
+**Each of the last two rows moves exactly one of the three numbers**, which is what makes them
+evidence that the three are independent rather than one number spelled three ways. The middle row
+carries the argument: the `04cea31` form reported `len(set(declared) | set(applied))`, so an
+identifier applied twice counted once, and deleting one of its applications left that line
+**byte-identical** before and after the seed. **A count that cannot move is not evidence.**
+
+The third row moves the applications rather than stripping them, for a reason worth keeping: stripping
+a subject's tags and their declarations leaves those items unbound, so the run fails — and a failing
+run prints no success line at all, destroying the only thing the row measures.
 
 Nothing gates any of this — the success line is read by a person, and a wrong one fails no build,
 which is why it went unnoticed until a model carried both a duplicated identifier and a deliberately
 untagged relationship at the same time.
+
+### The guards' ordering, and what it hides
+
+Both directions report in full rather than the first exiting, so a tag that stops resolving stays
+legible beside a list of unbound items. **The guards are the exception: each exits on the spot.** The
+stripped-tag model reports *the model names no requirement* rather than 37 unbound items, and the
+emptied population reports *no item is accepted and active* rather than the 37 tag-resolution failures
+the same flip creates. Both are the guard being right, but the reader has been told the run stopped,
+not that the rest is clean.
+
+**Each guard reads something the thing it guards does not.** The obliging-tier guard is keyed on the
+document set, so it fires where the tiers have gone but items remain. The population guard is keyed
+on `status` and `active`, and the unbound set is a subset of the population, so a population of zero
+is exactly the state that would report perfect allocation over nothing.
 
 **The unparseable-model row is the one that matters.** `likec4 export json` behaves like `codegen`
 and **succeeds on a broken model**, emitting a degraded document whose tags have gone missing — so a
@@ -829,13 +1215,50 @@ identifier, and prints success. It was found by a malformed seed, not by design:
 degradation dropped the declarations too, the run would have been green.
 
 **The no-tag row is a guard rather than an arm.** A model carrying no tag resolves every tag it
-carries, so an absent architecture → requirements link and a sound one read identically. It is the
-third of that shape in this check, beside the guards over the export and over the tree.
+carries, so an absent architecture → requirements link and a sound one read identically. It is one of
+five of that shape here, beside the guards over the export, over the tree loading at all, over the
+obliging tiers being present, and over the population being non-empty.
 
 **Every degenerate input fails closed**: an emptied model directory, a removed model directory, a
 removed requirements tree, and an unparseable model. The removed-directory case is the sharp one —
 `likec4 validate` exits **0** on a directory holding no model, so the element guard is the only thing
 that catches it, and a check trusting the validator's exit status alone would pass.
+
+**One group is guarded and three are not.** The export is read as `elements`, `relations`,
+`deployments.elements` and `deployments.relations`, and only the first is asserted non-empty. The
+other three fail closed today because each holds the sole application of some identifier, which is a
+property of where the tags sit rather than of the check: with `.deployments.relations` dropped from
+the export the run exits **0**, subjects falling 38 → 35 while all 37 items still report bound,
+because its only identifier is SYS003<!-- A deployment is parameterised from outside the image --> and SYS003<!-- A deployment is parameterised from outside the image --> is also on two logical relationships. A shape change
+in `likec4 export json` is the only input that reaches this, so it is recorded rather than fixed;
+asserting that all four keys are **present** — not that they are non-empty, which would red a project
+with no deployment block — is what would make it a property of the check.
+
+### What it does not catch: a tag on a view
+
+The export carries tags in a fifth place — `views[x].tags` — and the scan does not read it. That is
+deliberate: a view is a projection of the model rather than a subject in it, and ADR 0019 rev 4 binds
+an item to an element or a relationship. Two runs, both observed rather than reasoned about:
+
+| Seed | Result |
+|---|---|
+| An item declared and applied **only** on a view | fails — *declared and applied to nothing*, and the item reported unbound |
+| A view tag naming an item already applied to an element | passes, exit 0, the counts unmoved — the view tag is invisible in both directions |
+
+The verdict is right in both and the message is not — the first is the same uninformative diagnostic
+the deployment defect produced, reached this time for a good reason. It is also the control for the
+deployment rows above: the same move into a group the scan **does** read passes.
+
+`globals`, `imports` and `manualLayouts` carry no tag-bearing subject; `imports` is empty in a
+single-project setup and is the next place to look if a second LikeC4 project is ever added.
+
+### `check-arch` is unaffected, and that is asserted rather than assumed
+
+`check-arch`'s three-line gate shares no state with this check: nothing here touches `arch-export`,
+and this check writes nothing to the working tree — asserted, not assumed, by taking
+`git status --porcelain` before and after a run in a git fixture and finding it unchanged, with zero
+index entries. `just check-arch` passes on the tree as it stands, which is the other half: the tag
+moves this branch made changed no generated artifact, as ADR 0019 rev 4 says they cannot.
 
 ## `check-site`
 

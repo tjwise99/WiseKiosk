@@ -2,10 +2,13 @@
 
 **Status:** accepted
 **Decided:** 2026-07-22 (issue #15)
-**Rev:** 1
+**Rev:** 2
 
 ## Revisions
 
+- **rev 2** — 2026-08-09 — the deferral of the Component level is superseded by ADR 0019 rev 3, which
+  builds it; the deferral of the Code level, and every other part of this record, stand
+  (#124 merge the C4 ADRs).
 - **rev 1** — 2026-08-05 — revision tracking begins; text as merged (#118 ADR revisions).
 
 ## Context
@@ -36,10 +39,12 @@ and Container view. It is:
   on stale generated code" rule to the architecture layer.
 
 The model is authored so Component and Code levels — and source `link`s into `backend/`/`frontend/` —
-can be **added later without restructuring** (LikeC4 nests elements additively). Those levels are not
-built now: no application code exists, so building them would be an abstraction with a single
+can be **added later without restructuring** (LikeC4 nests elements additively). Neither is built
+here: no application code exists, so building them would be an abstraction with a single
 implementation and no second consumer ([`CONTRIBUTING.md`](../../CONTRIBUTING.md)'s review checklist,
-generality).
+question 8, *Generality*). That ground holds for the Code level and is answered for the Component
+level, which [ADR 0019 rev 4](0019-boundary-at-what-deploys-and-tag-tier.md) builds — superseding this
+record in that part alone.
 
 ## Alternatives considered
 
@@ -77,4 +82,4 @@ renderable browser-free.
   ids (architecture → requirements). The SRS items this was decided against were placeholder, pending
   the requirements pass in issue #18, so this decision bound none of them. Which tier an element's tag
   names, and the binding itself, are
-  [ADR 0019 rev 2](0019-boundary-at-what-deploys-and-tag-tier.md)'s.
+  [ADR 0019 rev 4](0019-boundary-at-what-deploys-and-tag-tier.md)'s.

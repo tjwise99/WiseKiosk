@@ -59,7 +59,7 @@ the single documentation toolchain.
   `pages: write` + `id-token: write` via OIDC — elevated *permissions*, still **no stored
   credentials**, so the secret-free-CI stance holds.
 - **Diagrams are not load-bearing in this choice.** The Mermaid splice
-  ([ADR 0003 rev 1](0003-architecture-as-code-likec4.md)) keeps serving GitHub; how LikeC4 output enters
+  ([ADR 0003 rev 2](0003-architecture-as-code-likec4.md)) keeps serving GitHub; how LikeC4 output enters
   the site (rendered Mermaid, SVG export, or LikeC4's interactive build) is decided at
   implementation and forecloses nothing here.
 

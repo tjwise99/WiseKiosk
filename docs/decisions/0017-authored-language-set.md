@@ -37,7 +37,7 @@ carry a header comment recording that they deliberately scan plain text rather t
 parser, three of them naming the YAML parser they avoid. Consolidating the checks on Python therefore
 adds no toolchain and takes Node out of that layer; consolidating them on Node would keep both there
 indefinitely. Node does not leave the repository either way — LikeC4
-([ADR 0003 rev 1](0003-architecture-as-code-likec4.md)) and Vite
+([ADR 0003 rev 2](0003-architecture-as-code-likec4.md)) and Vite
 ([ADR 0018 rev 1](0018-frontend-svelte-vite-static-spa.md)) make it unconditional as an invoked toolchain. The
 asymmetry is about which layer owes which interpreter, not about which language is present.
 
@@ -78,7 +78,7 @@ point, since [ADR 0016 rev 3](0016-maintained-tools-for-standard-artifacts.md) a
 decision does not reach them.**
 
 **Node is an invoked toolchain and never an authoring language.** LikeC4
-([ADR 0003 rev 1](0003-architecture-as-code-likec4.md)) and Vite are invoked; so is whatever an adopted hook
+([ADR 0003 rev 2](0003-architecture-as-code-likec4.md)) and Vite are invoked; so is whatever an adopted hook
 provisions for itself. The distinction is who wrote the code being run.
 
 **POSIX sh authors nothing.** The rule that admitted it — sh only where no interpreter can be
@@ -182,7 +182,7 @@ unregistered language whatever this record said.
 - **The review checklist gains a question, *Languages***, appended to its *Code* section rather than
   placed beside the dependency question it most resembles. Inserting it there would have renumbered
   the questions below it, against [ADR 0002 rev 1](0002-requirements-management-doorstop.md),
-  [ADR 0003 rev 1](0003-architecture-as-code-likec4.md) and
+  [ADR 0003 rev 2](0003-architecture-as-code-likec4.md) and
   [ADR 0016 rev 3](0016-maintained-tools-for-standard-artifacts.md), which cite one by number with
   nothing gating the citation. That constraint does not bind a later change:
   [`../../CONTRIBUTING.md`](../../CONTRIBUTING.md) requires a citation to carry the question's name

@@ -1,0 +1,84 @@
+// WiseKiosk architecture model — Deployment.
+//
+// What the project publishes, the hosts that run it, and the files the operator
+// places beside it. What earns a node here, and which obligations bind at this
+// depth rather than on a container, is ADR 0019 rev 4.
+//
+// A tag parses only as the first entry of an element or relationship body.
+
+deployment {
+  publishedImage = artifact 'Published image' {
+    #SRS018
+    #SRS019
+    #SRS020
+    #SRS025
+    description '''
+      The one artifact the project publishes, built for each architecture it
+      supports. Carries the backend binary and the frontend bundle, and declares
+      the user the backend runs as. Holds no configuration file, no secret
+      material and no deployment-specific value.
+    '''
+  }
+
+  containerHost = host 'Container host' {
+    description '''
+      A host running a container runtime, of an architecture the published image
+      is built for. Which architectures those are is the image's, not this host's:
+      the backend is never run outside the container.
+    '''
+
+    configurationFile = artifact 'Configuration file' {
+      #SRS035
+      description '''
+        The operator's configuration, placed on the host and mounted into the
+        container. Carries every deployment-specific value, including the depth of
+        the masked band the display page keeps its regions clear of.
+      '''
+    }
+
+    secretFiles = artifact 'Secret files' {
+      description '''
+        One file per secret, placed on the host and mounted into the container. The
+        backend is given each secret's name; the value never travels in the
+        configuration.
+      '''
+    }
+
+    runningContainer = process 'Running container' {
+      description '''
+        A running instance of the published image, with the configuration and the
+        secret files mounted in. The backend executes here.
+      '''
+
+      instanceOf wisekiosk.backend
+    }
+  }
+
+  displayHost = host 'Display host' {
+    description '''
+      The machine driving the display. It needs a browser rather than a container
+      runtime, so it may sit below the container host's width floor — the
+      configuration this is built for does, which makes the two separate machines.
+      A single machine meeting both minimums may carry both roles.
+    '''
+
+    displayBrowser = process 'Browser' {
+      description '''
+        Runs the frontend bundle it fetched from the backend. Its engine and
+        compatibility layers bound what that bundle may be built with.
+      '''
+
+      instanceOf wisekiosk.frontend
+    }
+  }
+
+  publishedImage -> runningContainer 'Runs as this container'
+
+  configurationFile -> runningContainer 'Mounted in' {
+    #SYS003
+  }
+
+  secretFiles -> runningContainer 'Mounted in' {
+    #SYS003
+  }
+}

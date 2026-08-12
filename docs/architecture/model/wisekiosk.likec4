@@ -1,12 +1,13 @@
-// WiseKiosk architecture model — C4 System Context (L1) and Container (L2).
+// WiseKiosk architecture model — C4 System Context (L1), Container (L2),
+// Component (L3) and Deployment, the last in ./deployment.likec4.
 //
-// Single source of truth for the diagrams in ../ARCHITECTURE.md. Edit here, then
-// run `just arch-export` (ADR 0003 rev 1).
+// Single source of truth for the diagrams in ../../ARCHITECTURE.md. Edit here, then
+// run `just arch-export` (ADR 0003 rev 2).
 //
 // A tag parses only as the first entry of an element or relationship body.
 //
-// Boundary, actors and external systems are ADR 0019 rev 2's; the containers, the one
-// origin they share and the tag tier here are ADR 0020 rev 1's.
+// The boundary, what earns an element a place at each level, and where a tag sits
+// are ADR 0019 rev 4's.
 
 specification {
   element person {
@@ -16,26 +17,53 @@ specification {
   }
   element system
   element container
+  element component
+
+  // The three kinds ADR 0019 rev 4 names: hosts, the processes on them, and the
+  // files placed beside them.
+  deploymentNode host
+  deploymentNode process
+  deploymentNode artifact
 
   // Each tag is a Doorstop identifier. Which item belongs on what, and at which
-  // tier, is ADR 0019 rev 2 as amended by ADR 0020 rev 1.
+  // tier, is ADR 0019 rev 4.
   tag SYS001
   tag SYS002
   tag SYS003
   tag SYS004
   tag SYS005
+  tag SYS006
+  tag SYS008
   tag SRS001
+  tag SRS002
   tag SRS003
   tag SRS004
   tag SRS006
+  tag SRS007
+  tag SRS008
   tag SRS009
   tag SRS010
+  tag SRS011
+  tag SRS012
+  tag SRS013
+  tag SRS014
+  tag SRS015
   tag SRS016
   tag SRS017
   tag SRS018
+  tag SRS019
+  tag SRS020
+  tag SRS021
   tag SRS022
+  tag SRS025
   tag SRS026
   tag SRS028
+  tag SRS030
+  tag SRS031
+  tag SRS032
+  tag SRS033
+  tag SRS034
+  tag SRS035
 }
 
 model {
@@ -53,8 +81,15 @@ model {
       deploys: the published container image and what it serves.
     '''
 
+    // Why an obligation over every output this container produces binds here, and
+    // not on one of the edges carrying them, is ADR 0019 rev 4.
     backend = container 'Backend' {
+      #SYS004
+      #SYS006
+      #SRS006
+      #SRS008
       #SRS009
+      #SRS014
       #SRS022
       #SRS028
       technology 'Go'
@@ -65,52 +100,166 @@ model {
         schema defines, and serves the frontend bundle and the configuration
         file as static content it never interprets.
       '''
+
+      staticServing = component 'Static serving' {
+        description '''
+          Serves the frontend bundle and the configuration file as bytes,
+          interpreting neither. The configuration is not in the image and is
+          read from the served tree on each request for it.
+        '''
+      }
+
+      routeHandler = component 'Route handler' {
+        #SRS009
+        description '''
+          Serves one route per upstream source. Owns the order the other
+          parts run in, and calls the module's shaping functions to build the
+          upstream request and to parse what comes back — the point where
+          this container's framework half reaches its module half.
+        '''
+      }
+
+      requestValidation = component 'Request validation' {
+        #SRS012
+        #SRS013
+        description '''
+          Checks a request's parameters against the pattern that route's entry
+          declares, before any upstream call is made, so the backend issues
+          only the upstream requests its configuration calls for. Builds the
+          rejection for one that does not conform: a status distinct to its
+          cause, and a body the frontend can render. It reads nothing about
+          who is asking.
+        '''
+      }
+
+      responseCache = component 'Response cache' {
+        #SRS011
+        description '''
+          Holds a route's last success and last failure, each for the interval
+          that route's entry sets, so a display refresh no faster than the
+          interval reaches no upstream.
+        '''
+      }
+
+      upstreamClient = component 'Upstream client' {
+        #SRS001
+        #SRS006
+        #SRS011
+        #SRS014
+        description '''
+          Makes the outbound request a route calls for, under that route's
+          timeout, response-size ceiling and request-rate bound, and
+          resolves the source's secret as it goes. Reports a failure by its
+          cause, and a secret by its name.
+        '''
+      }
     }
 
     frontend = container 'Frontend' {
-      #SRS004
+      #SYS002
+      #SYS008
+      #SRS010
       #SRS017
+      #SRS021
+      #SRS030
+      #SRS032
+      #SRS033
       technology 'Svelte 5, static single-page bundle'
       icon tech:svelte
       description '''
         Runs in the browser on the display host. Validates the configuration
         before applying it, assembles the configured modules into one
         full-screen layout, and renders each payload into its module region.
+        Everything it draws but the content itself is held under one emission
+        ceiling, and the text it presents to be read is rendered at full
+        emission and above one size floor read against the display's height.
       '''
+
+      pageShell = component 'Page shell' {
+        #SRS004
+        description '''
+          Loads and renders before any configuration is applied, so a
+          configuration that cannot be applied at all is reported on a page
+          that exists rather than on a blank one.
+        '''
+      }
+
+      configuration = component 'Configuration load and validation' {
+        #SRS002
+        description '''
+          Fetches the configuration on each page load and validates it against
+          the schema, reporting an error it can isolate as belonging to one
+          module rather than to the configuration as a whole.
+        '''
+      }
+
+      layout = component 'Layout assembly' {
+        #SRS017
+        #SRS031
+        #SRS034
+        #SRS035
+        description '''
+          Places each configured module into its region of one full-screen
+          layout, and reflows rather than overlapping or scrolling sideways at
+          narrower viewports. Holds every region out of the masked band along the
+          display's edges, at the depth the configuration declares and none
+          where it declares nothing. Content exceeding the region it was given
+          overflows it rather than being clipped, scrolled or scaled.
+        '''
+      }
+
+      payloadClient = component 'Payload client' {
+        #SRS026
+        description '''
+          Fetches each configured module's payload and hands back what it
+          gets. Distinguishes a backend that cannot be reached from a module
+          that failed, so the display says the former once.
+        '''
+      }
     }
 
-    backend -> frontend 'Serves the single-page bundle' {
+    // Deliberately server->client, terminating on a container (../../ARCHITECTURE.md § Frontend).
+    staticServing -> frontend 'Serves the single-page bundle' {
       technology 'HTTP'
     }
 
-    frontend -> backend 'Fetches the configuration, served back unparsed' {
+    pageShell -> configuration 'Asks for the configuration, and applies it once it validates'
+    pageShell -> payloadClient 'Asks for the payload of each configured module'
+    pageShell -> layout 'Hands over each configured module and its payload'
+
+    routeHandler -> requestValidation 'Asks whether the parameters conform'
+    routeHandler -> responseCache 'Asks for a held answer, and stores what it gets'
+    routeHandler -> upstreamClient 'Asks for a fresh response when nothing is held'
+
+    configuration -> staticServing 'Fetches the configuration, served back unparsed' {
       #SRS003
       technology 'HTTP'
     }
 
-    frontend -> backend 'Fetches the payload for each module' {
+    payloadClient -> routeHandler 'Fetches the payload for each module' {
       #SYS004
       #SYS005
-      #SRS010
+      #SRS013
+      #SRS015
       #SRS016
       technology 'HTTP / JSON'
     }
   }
 
-  operator -> backend 'Supplies the secret for each source' {
+  operator -> upstreamClient 'Supplies the secret for each source' {
     #SYS003
-    #SRS006
   }
 
-  operator -> backend 'Places the configuration into the served tree' {
+  operator -> staticServing 'Places the configuration into the served tree' {
     #SYS003
-    #SRS018
+    #SRS007
   }
 
-  frontend -> viewer 'Renders the configured modules, and legibly says when one failed' {
+  frontend -> viewer 'Renders the configured modules, legibly says when one failed, and mirrors the rest' {
     #SYS001
-    #SYS002
     #SRS001
+    #SRS002
+    #SRS004
     #SRS026
   }
 }

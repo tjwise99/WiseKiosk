@@ -1,4 +1,4 @@
-# 0021 — A release is an image in the registry and two files on a tag, and carries no operator tooling program
+# 0020 — A release is an image in the registry and two files on a tag, and carries no operator tooling program
 
 **Status:** accepted
 **Decided:** 2026-08-09 (design discussion, #71 release artifact set)
