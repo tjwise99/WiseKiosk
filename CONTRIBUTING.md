@@ -32,9 +32,12 @@ What each gate is allowed to let through, and why, is [`docs/CI.md`](docs/CI.md)
 
 ## Tickets, branches, and titles
 
-Open an issue from a template before branching. Enforced by the `process` CI check
-([ADR 0006 rev 2](docs/decisions/0006-process-gates.md)) — and locally by the `pre-push` hook
-`just install-hooks` installs, which is where you want to meet it.
+Open an issue from a template first: the branch name is derived from it. Enforced by the `process` CI
+check ([ADR 0006 rev 2](docs/decisions/0006-process-gates.md)). The `pre-push` hook from
+`just install-hooks` checks the shape only — not the issue conditions below — and only at push, when
+the branch and its commits already exist. **Nothing checks the name at `git switch -c`**, which is
+where it is chosen and where it goes wrong, so this section is in the file
+[`.claude/settings.json`](.claude/settings.json) injects at session start.
 
 ```
 design_119-c4_model_completion
