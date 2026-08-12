@@ -48,7 +48,7 @@ INDEX = DECISIONS / "README.md"
 ADR_FILE = re.compile(r"^(\d{4})-[a-z0-9-]+\.md$")
 HEAD_REV = re.compile(r"^\*\*Rev:\*\* *(\d+) *$", re.M)
 # Read from the first non-blank line, and no further, so a fenced `# …` in the body cannot stand in
-# for a missing title. A leading byte-order mark is stripped rather than read as part of the number.
+# for a missing title.
 HEAD_TITLE = re.compile(r"^# +(\S+)")
 NOT_AN_ADR = ("README.md", "TEMPLATE.md")
 INDEX_ROW = re.compile(r"^(\| *\[\d{4}\]\([^)]+\) *\|)(.*)$")
@@ -145,9 +145,11 @@ def current_revs(problems):
         if not path.is_file():
             problems.append(f"docs/decisions/{path.name} is not a readable file")
             continue
-        text = path.read_text(encoding="utf-8")
-        opening = next((line for line in text.lstrip("﻿").splitlines() if line.strip()), "")
-        title = HEAD_TITLE.match(opening)
+        # `utf-8-sig` drops a byte-order mark if one is there, so it cannot be read as part of the
+        # title's number. Spelling that as a strip of the character itself puts an invisible one in
+        # this source, where its loss would show up nowhere.
+        text = path.read_text(encoding="utf-8-sig")
+        title = HEAD_TITLE.match(next((l for l in text.splitlines() if l.strip()), ""))
         if not title:
             problems.append(
                 f"docs/decisions/{path.name} opens with no `# NNNN …` line, so the document does "

@@ -564,7 +564,7 @@ scripts/check-adr-revs.py`, and restoring. The seeded state is described rather 
 described without spelling a live ADR number, which this check reads as a citation like any other.
 
 **The title-number and misnamed-entry rows were added later**, and were run against
-md5 `d909bfb633f3210cb33a05f3ad407f0b` — the script as this branch commits it — in `git archive` +
+md5 `c8ba96721482a1244685db79498a22e2` — the script as this branch commits it — in `git archive` +
 `git init` extractions rather than in the working tree, for the reason under *Fixtures here must
 reckon with two different file sets* below. **Assert that md5 on the copy under test before running a
 row**, per *Which script a case ran against* below: an earlier draft of this paragraph pinned a hash
@@ -787,6 +787,11 @@ matches. Nothing here decides it; `../docs/CI.md` § *Documentation integrity* n
 reported as unreadable-numbered, whatever it is: a subdirectory, a non-Markdown asset, an editor
 backup. That is the rule working — an entry passed over is a population smaller than the directory —
 but it narrows what the directory may hold, so it is written down rather than discovered.
+
+**An H1 indented up to three spaces is legal CommonMark and is rejected here**, the opening line being
+matched from its first character. It is the residue of the blank-line case one class smaller, and no
+ADR is written that way; `opening.lstrip()` would close it and would also accept an indented code
+block opening a file as that file's title, which is the worse trade.
 
 **A dotfile is an entry like any other**, so a `.gitkeep` or an editor swap file in `docs/decisions/`
 is reported. That is the same argument as the backup file and is deliberate; it is written here

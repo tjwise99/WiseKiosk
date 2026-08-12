@@ -143,10 +143,9 @@ handler, and the operator's secret supply at the upstream client.
 **Where two relationships share endpoints, the view asks for them separately.** A view renders
 parallel relationships as one edge labelled `[...]`, losing every label, and that merge happens in the
 computed view rather than in a renderer — Mermaid, D2, PlantUML and the image export all show it. The
-view predicate `multiple true` is the request to render each separately, and every level makes it:
-the Container level for the operator's two supplies and the frontend's two fetches, the Context level
-for those same supplies aggregated. **A `title` overriding the merge is the rival, and it is refused
-everywhere.** It reads well and costs the coupling: a title survives the relationships beneath it
+view predicate `multiple true` is the request to render each separately, and every view holding a
+parallel pair makes it — at whatever depth the pair renders, the coarse ones included. **A `title`
+overriding the merge is the rival, and it is refused.** It reads well and costs the coupling: a title survives the relationships beneath it
 changing, or reducing to one, and no gate compares them, because the committed artifact and the
 regenerated one are produced from the same override. Splitting at the Context level was thought to
 require naming a container, which would draw it and cost that level its abstraction; it does not —
@@ -587,8 +586,9 @@ container and component gains one when the code it describes is written, which i
 are declared, and the operator edge is no exception: the view asks for its two supplies separately
 rather than labelling their merge. `multiple true` needs no container named — the endpoint is the
 system, which that level already draws — so the abstraction survives the split, and every label on the
-level is the model's rather than the view's. **No view here authors a label**, which is what keeps the
-declare-once rule's drift from reappearing one layer up: a hand-written title overrides a merge whether
+level is the model's rather than the view's. **No view here gives a relationship a `title` of its own**
+— a view's own `title`, which names the diagram, is a different thing — and that is what keeps the
+declare-once rule's drift from reappearing one layer up: a relationship title overrides a merge whether
 or not a merge remains, and nothing compares it to what it merges, whereas a rendered label moves the
 generated artifact and the staleness gate reads the difference.
 

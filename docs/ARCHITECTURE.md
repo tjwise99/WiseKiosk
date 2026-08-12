@@ -7,10 +7,12 @@ How the pieces of WiseKiosk actually fit together — the living structural desc
 > _To be documented as it is built._ and stay empty until their part lands. The diagrams are the
 > exception: they are generated from the [architecture model](architecture/README.md), which is
 > normative for structure ([ADR 0003 rev 2](decisions/0003-architecture-as-code-likec4.md)). What
-> `codegen mermaid` drops from them — element descriptions, icons — is read in that model, not copied
-> here. What a component must *do* is normative in the [requirements tree](requirements/README.md)
-> and the [ADRs](decisions/README.md). This document holds structural rationale that is real but not
-> weighty enough for an ADR, and cites the rest.
+> `codegen mermaid` drops from them — element descriptions, icons — is read in that model. The prose
+> here says what each box is, since the artifact labels it and no more; an element's responsibility
+> statement stays in the model rather than being copied beside it. What a component must *do* is
+> normative in the [requirements tree](requirements/README.md) and the
+> [ADRs](decisions/README.md). This document holds structural rationale that is real but not weighty
+> enough for an ADR, and cites the rest.
 
 ## System shape
 

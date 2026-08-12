@@ -104,8 +104,9 @@ include frontend -> backend with {
 
 A coarse view asks the same way, naming the ancestor it already draws rather than a nested element,
 which would gain it a box: the Context level splits the operator's supplies with
-`include operator -> wisekiosk with { multiple true }`. **No view here authors a label with
-`title '…'`** — one survives the relationships beneath it changing, and no gate compares them, while a
+`include operator -> wisekiosk with { multiple true }`. **No view here gives a relationship a `title`
+of its own** — the `title` at the head of each view names the diagram and is a different thing. A
+relationship title survives the relationships beneath it changing, and no gate compares them, while a
 rendered label moves the generated artifact and the staleness gate reads the difference.
 
 **Element and relationship bodies parse a tag only as their first entry**, before `technology`,
