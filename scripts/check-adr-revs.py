@@ -34,8 +34,10 @@ That an ADR's rev was raised for a good reason, and that a citation pinning the 
 means what the ADR says, is decided by nothing here.
 
 Whether every index row has a file, and numbering is contiguous, is `scripts/check-adr-index.mjs`.
-An ADR carrying no row is reported here as well, because the row is where this reads the rev it holds
-citations to: no row is this check's own population going unjudged, not only a gap in the table.
+An ADR carrying no row is reported here as well, because the table assertion above is then the thing
+with nothing to compare. It is not that such an ADR goes unjudged: the rev is read from the head, so
+the title, changelog, collision and citation rules all still hold it, and deleting the table check
+would change no citation verdict.
 """
 
 import re
