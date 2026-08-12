@@ -152,3 +152,16 @@ already escaped one. The name is what a reader can still resolve when the number
     same obligation arriving late. The three clauses are the floor: below them this is a licence to
     change anything nearby, which is the failure mode question 11, *Narrowed guards*, describes from the
     other side.
+
+**Architecture**
+
+18. **Tag placement.** Where the change adds, moves or removes a requirement tag in the architecture
+    model, is the subject it sits on the one that requirement obliges, rather than an existing element
+    the tag is merely plausible on? No check decides this, and both of them read as green either way: a
+    tag renders nowhere, so `check-arch` compares artifacts a move leaves byte-identical, and
+    `check-arch-trace` asks only that every accepted item is tagged somewhere
+    ([ADR 0019 rev 4](docs/decisions/0019-boundary-at-what-deploys-and-tag-tier.md)). An item that can
+    bind nowhere is a level the model has not drawn, never a tag parked on the nearest subject that
+    already exists. This question is appended rather than placed beside question 4, *Architecture
+    links*, which it most resembles, because inserting it there would renumber every question below —
+    the shape [ADR 0017 rev 3](docs/decisions/0017-authored-language-set.md) took for the same reason.

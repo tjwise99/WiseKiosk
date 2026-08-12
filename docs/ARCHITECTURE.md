@@ -3,11 +3,14 @@
 How the pieces of WiseKiosk actually fit together — the living structural description of the system
 **as built**. It grows with the code.
 
-> **Status: skeleton.** No code exists yet. Until a component is built, its *intended* shape is
+> **Status: modelled, not built.** No code exists yet, so the narrative sections below carry
+> _To be documented as it is built._ and stay empty until their part lands. The diagrams are the
+> exception: they are generated from the [architecture model](architecture/README.md), which is
+> normative for structure ([ADR 0003 rev 2](decisions/0003-architecture-as-code-likec4.md)), and the
+> prose beside each one carries what `codegen mermaid` drops from it. What a component must *do* is
 > normative in the [requirements tree](requirements/README.md) and the
-> [ADRs](decisions/README.md) — not here. This document records what is actually implemented, and
-> structural rationale that is real but not weighty enough for an ADR. Each section below is filled
-> in as its part of the system lands.
+> [ADRs](decisions/README.md), and is cited here rather than restated. This document also holds
+> structural rationale that is real but not weighty enough for an ADR.
 
 ## System shape
 
@@ -97,7 +100,7 @@ rest`" .-> Viewer
 
 The Component level (C4 L3) is drawn per container, in the two container sections below, and the
 Deployment level in [§ Deployment](#deployment). No element carries a `link` to the source
-implementing it: no code exists, and the repository layout is #5.
+implementing it: no code exists, and the repository layout is #5 repo layout.
 
 **Every accepted, active `SYS` or `SRS` item binds somewhere in this model, and where one cannot, the
 model grows to draw what it obliges**
@@ -132,7 +135,13 @@ what goes out for a new one, and what serves files. Nothing here reads who is as
 (SRS009<!-- Every source reachable through the backend, statelessly -->), which is why the parameter
 check exists: it holds the set of upstream requests the backend can be made to issue to the set its
 configuration calls for
-(SYS004<!-- Upstream data reaches the display only through the backend -->), whoever is asking. A module's own half of this
+(SYS004<!-- Upstream data reaches the display only through the backend -->), whoever is asking; a
+request that does not conform is refused with a status distinct to its cause and a body the frontend
+can render (SRS013<!-- Client-facing contract for rejected requests -->). What holds an answer keeps a
+route's last success and its last failure, each for the interval that route's entry sets, and what
+serves files re-reads the configuration from the served tree on each request for it, which is why a
+configuration change needs no rebuild
+(SRS003<!-- A configuration change applies no later than the next page load -->). A module's own half of this
 container is its shaping library, drawn when that module's need lands
 ([ADR 0019 rev 4](decisions/0019-boundary-at-what-deploys-and-tag-tier.md)); the handler
 calls it twice — to build the upstream request and to parse the answer — so what is drawn here cannot
@@ -189,7 +198,26 @@ bind this container is the [architecture model](architecture/README.md), as each
 in, which renders before any configuration is applied, and beneath it the load-and-validate step, the
 fetch of each module's payload, and the assembly of configured modules into their regions. Assembly
 places what it is handed and fetches nothing, which is the discipline the module contract puts on a
-module component applied one level up. A module's own half of this container is its Svelte component,
+module component applied one level up. It also holds every region out of the masked band along the
+display's edges, at the depth the configuration declares and none where it declares nothing
+(SRS034<!-- The laid-out regions keep clear of the display edge -->,
+SRS035<!-- The masked edge band is the deployment's to declare -->), reflows rather than overlapping
+or scrolling sideways at narrower viewports
+(SRS017<!-- Full-screen assembly at kiosk; reflow, no horizontal scroll, at narrower widths -->), and
+lets content exceeding its region overflow rather than be clipped, scrolled or scaled
+(SRS031<!-- Content too large for its region overflows -->). The payload fetch distinguishes a backend
+that cannot be reached from a module that failed, so the display says the former once rather than
+five times (SRS026<!-- The display says when the backend is gone -->).
+
+What the container owes across all of them is the mirror it is made of: everything the page draws but
+the content itself sits under one emission ceiling
+(SRS030<!-- Only content is rendered above the emission ceiling --> under
+SYS008<!-- The surface carrying no content is a mirror -->), and the text it presents to be read is
+rendered at full emission (SRS032<!-- Readable text is carried at full emission -->) and above a size
+floor read against the display's height
+(SRS033<!-- Text holds a minimum size against the display, at every resolution -->). Those are
+properties of the assembled page rather than of any one component, which is why they bind on the
+container. A module's own half of this container is its Svelte component,
 drawn when that module's need lands
 ([ADR 0019 rev 4](decisions/0019-boundary-at-what-deploys-and-tag-tier.md)) — which is why
 the edge to the Viewer leaves this container rather than a region within it. The bundle that becomes
@@ -300,12 +328,24 @@ The published image is the one node here that exists before any deployment does 
 and the secret files sit at a deployment site as it does not — and it is drawn because the obligations
 on it are obligations on the artifact rather than on the process it becomes. A deployment can override
 what the image declares, which is why the two are separate subjects
-([ADR 0019 rev 4](decisions/0019-boundary-at-what-deploys-and-tag-tier.md)).
+([ADR 0019 rev 4](decisions/0019-boundary-at-what-deploys-and-tag-tier.md)). It carries the backend
+binary and the frontend bundle, is built for each architecture it supports
+(SRS019<!-- The backend runs on both supported architectures -->), declares the user the backend runs
+as (SRS020<!-- Non-root container user -->), and holds no configuration file, no secret material and
+no deployment-specific value (SRS018<!-- One generic published image -->,
+SRS025<!-- No secret material in the published image -->). The operator's configuration file carries
+every deployment-specific value instead, the masked band's depth among them
+(SRS035<!-- The masked edge band is the deployment's to declare -->).
 
 The container host and the display host are **roles, not machines**. They have different floors — a
 runtime able to run the published image on one, a browser on the other — and one machine meeting both
 may carry both. In the configuration this is built for it cannot: the display host is below the first
-of those, so the two are separate machines there.
+of those, so the two are separate machines there. Which architectures the container host must be one
+of is the image's property rather than the host's, the backend never running outside the container;
+neither host carries a requirement tag, because what the software must run on binds on what this
+project ships and not on hardware the operator supplies
+([ADR 0019 rev 4](decisions/0019-boundary-at-what-deploys-and-tag-tier.md)). What bounds the frontend
+is the browser there: its engine and compatibility layers decide what that bundle may be built with.
 
 The concrete wiring — the deployment recipe, the mount paths, the example configuration a release
 carries — is [`DEPLOYMENT.md`](DEPLOYMENT.md)'s, and so are the health signal and the restart policy:

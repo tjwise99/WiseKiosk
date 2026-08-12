@@ -657,14 +657,11 @@ no check can see.
 **The completeness rule's cheap failure is invisible for the same reason, and it is the likelier of the
 two.** Inventing an element is the visible way to satisfy a rule that cannot be satisfied honestly; the
 cheap way is a plausible-but-wrong tag on an element that already exists. An exemption record would have
-surfaced that situation as a written entry someone reads; this rule surfaces it as a green check. **No
-question in [`../../CONTRIBUTING.md`](../../CONTRIBUTING.md)'s checklist asks it**, so review here means
-a reader who happens to look rather than one who is prompted. That gap is named rather than left for the
-first person to find it; a rule creating two pressures and answering one has not been thought through.
-Closing it is a checklist edit, and it is not made here because inserting a question renumbers the ones
-below it, and [`../requirements/README.md`](../requirements/README.md),
-[`../../scripts/README.md`](../../scripts/README.md),
-[`../../CONTRIBUTING.md`](../../CONTRIBUTING.md) itself and open tickets all cite question numbers.
+surfaced that situation as a written entry someone reads; this rule surfaces it as a green check. Review
+is therefore the only control, and a control nothing prompts is a reader who happens to look. So the
+review checklist carries it: [`../../CONTRIBUTING.md`](../../CONTRIBUTING.md)'s question 18, *Tag
+placement*, asks whether the subject a tag sits on is the one its requirement obliges. A rule creating
+two pressures may answer only one; this one answers both.
 
 **The completeness direction needs no seeded defect fixture.** It fails on the tree's real state
 wherever an accepted, active item is bound nowhere, which is better evidence than a seed. The legal

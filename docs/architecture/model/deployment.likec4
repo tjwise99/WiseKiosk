@@ -55,7 +55,6 @@ deployment {
   }
 
   displayHost = host 'Display host' {
-    #SRS021
     description '''
       The machine driving the display. It needs a browser rather than a container
       runtime, so it may sit below the container host's width floor — the

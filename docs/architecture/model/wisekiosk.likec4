@@ -84,6 +84,7 @@ model {
     // Why an obligation over every output this container produces binds here, and
     // not on one of the edges carrying them, is ADR 0019 rev 4.
     backend = container 'Backend' {
+      #SYS004
       #SYS006
       #SRS006
       #SRS008
@@ -155,6 +156,9 @@ model {
     }
 
     frontend = container 'Frontend' {
+      #SYS002
+      #SYS008
+      #SRS010
       #SRS017
       #SRS021
       #SRS030
@@ -235,7 +239,6 @@ model {
     payloadClient -> routeHandler 'Fetches the payload for each module' {
       #SYS004
       #SYS005
-      #SRS010
       #SRS013
       #SRS015
       #SRS016
@@ -254,8 +257,6 @@ model {
 
   frontend -> viewer 'Renders the configured modules, legibly says when one failed, and mirrors the rest' {
     #SYS001
-    #SYS002
-    #SYS008
     #SRS001
     #SRS002
     #SRS004
