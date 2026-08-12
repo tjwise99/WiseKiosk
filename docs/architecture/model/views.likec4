@@ -2,8 +2,7 @@
 // artifact (`just arch-export`).
 //
 // A view renders parallel relationships as one edge unless it asks for them
-// separately; `multiple true` is that request, and a title overrides the label
-// of a merge left in place (ADR 0019 rev 4).
+// separately; `multiple true` is that request (ADR 0019 rev 4).
 
 views {
   // Named `index` so it is LikeC4's default landscape view — this avoids a
@@ -12,10 +11,10 @@ views {
     title 'WiseKiosk — System Context (C4 L1)'
     include *
 
-    // Naming a container here would draw it, so this level labels the merge
-    // rather than splitting it. The title is independent of what it merges.
+    // Splits the operator's two supplies rather than merging them, without
+    // naming a container: the endpoint is the system, which this level draws.
     include operator -> wisekiosk with {
-      title 'Configures the deployment and supplies its secrets'
+      multiple true
     }
   }
 

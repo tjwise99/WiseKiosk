@@ -5,8 +5,9 @@ graph TB
   Operator@{ icon: "fa:user", shape: rounded, label: "Operator" }
   Wisekiosk@{ shape: rectangle, label: "WiseKiosk" }
   Viewer@{ icon: "fa:user", shape: rounded, label: "Viewer" }
-  Operator -. "`Configures the deployment and supplies 
-its secrets`" .-> Wisekiosk
+  Operator -. "`Supplies the secret for each source`" .-> Wisekiosk
+  Operator -. "`Places the configuration into the served 
+tree`" .-> Wisekiosk
   Wisekiosk -. "`Renders the configured modules, legibly 
 says when one failed, and mirrors the 
 rest`" .-> Viewer

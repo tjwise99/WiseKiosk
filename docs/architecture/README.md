@@ -102,10 +102,11 @@ include frontend -> backend with {
 }
 ```
 
-A view that must stay coarse instead labels the merge, `with { title '…' }`, because naming a nested
-element in a view draws it — which is how the Context level keeps one operator edge without gaining a
-container. That title is not coupled to the merge it was written for: it survives the relationships
-underneath it changing, and no gate compares them.
+A coarse view asks the same way, naming the ancestor it already draws rather than a nested element,
+which would gain it a box: the Context level splits the operator's supplies with
+`include operator -> wisekiosk with { multiple true }`. **No view here authors a label with
+`title '…'`** — one survives the relationships beneath it changing, and no gate compares them, while a
+rendered label moves the generated artifact and the staleness gate reads the difference.
 
 **Element and relationship bodies parse a tag only as their first entry**, before `technology`,
 `icon` or `description`.

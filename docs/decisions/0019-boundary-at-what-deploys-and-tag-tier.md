@@ -143,11 +143,14 @@ handler, and the operator's secret supply at the upstream client.
 **Where two relationships share endpoints, the view asks for them separately.** A view renders
 parallel relationships as one edge labelled `[...]`, losing every label, and that merge happens in the
 computed view rather than in a renderer — Mermaid, D2, PlantUML and the image export all show it. The
-view predicate `multiple true` is the request to render each separately, and a `title` overrides the
-label of a merge deliberately left in place. Both are used: the Container level asks for the operator's
-two supplies and the frontend's two fetches separately, and the Context level keeps one operator edge
-under the label that level authors, since naming a container in a view draws it and would cost the
-Context level its abstraction.
+view predicate `multiple true` is the request to render each separately, and every level makes it:
+the Container level for the operator's two supplies and the frontend's two fetches, the Context level
+for those same supplies aggregated. **A `title` overriding the merge is the rival, and it is refused
+everywhere.** It reads well and costs the coupling: a title survives the relationships beneath it
+changing, or reducing to one, and no gate compares them, because the committed artifact and the
+regenerated one are produced from the same override. Splitting at the Context level was thought to
+require naming a container, which would draw it and cost that level its abstraction; it does not —
+the predicate names the *system*, which the level already draws.
 
 ### What earns a component
 
@@ -581,17 +584,13 @@ container and component gains one when the code it describes is written, which i
 [`../../CONTRIBUTING.md`](../../CONTRIBUTING.md) carries as its architecture-links question.
 
 **The Context level renders the labels of the container-depth relationships**, since that is where they
-are declared — except the operator edge, which the view labels itself. **That label is the one thing
-here not coupled to what it describes.** A view title overrides a merged connection whether or not a
-merge remains, so the relationships beneath it can change, or reduce to one, while it goes on reading
-as before. No gate compares them: the generated artifact and the committed one agree, because both are
-produced from the same override. It is the drift the declare-once rule exists to prevent, displaced one
-layer up, and it is accepted because the alternatives are worse — naming a container at the Context
-level draws it, and `[...]` says nothing at all. **Nothing prompts a re-read of that title; a change to
-the operator's supplies requires one.** No review question carries that obligation, which
-[ADR 0011 rev 1](0011-requirement-or-convention.md) would route to
-[`../../CONTRIBUTING.md`](../../CONTRIBUTING.md)'s checklist: one override in one view does not earn a
-question every change is walked through. A second view taking a title is the point at which it does.
+are declared, and the operator edge is no exception: the view asks for its two supplies separately
+rather than labelling their merge. `multiple true` needs no container named — the endpoint is the
+system, which that level already draws — so the abstraction survives the split, and every label on the
+level is the model's rather than the view's. **No view here authors a label**, which is what keeps the
+declare-once rule's drift from reappearing one layer up: a hand-written title overrides a merge whether
+or not a merge remains, and nothing compares it to what it merges, whereas a rendered label moves the
+generated artifact and the staleness gate reads the difference.
 
 **The levels above a re-declared edge render byte-identically.** LikeC4 aggregates a component-depth
 edge to the nearest ancestor a view does not expand, so `index.mmd` and `containers.mmd` are unchanged
@@ -600,9 +599,10 @@ property it was adopted for, and it is checked by the staleness gate rather than
 
 **The Mermaid artifact is the poorer of the two renderings.** `codegen mermaid` drops element
 descriptions and the icons, which the PNG export keeps, and at the Component level those descriptions
-are the whole responsibility statement. Images stay outside every gate (ADR 0003 rev 2); what the
-browser-free artifact cannot show is carried by the prose in
-[`../ARCHITECTURE.md`](../ARCHITECTURE.md).
+are the whole responsibility statement. Images stay outside every gate (ADR 0003 rev 2). What the
+artifact cannot show is read in the model source, which is committed and is ADR 0003 rev 2's source of
+truth — not restated in [`../ARCHITECTURE.md`](../ARCHITECTURE.md), which would put a second copy of
+every responsibility statement beside the first with nothing comparing them.
 
 ### The requirements tree
 
