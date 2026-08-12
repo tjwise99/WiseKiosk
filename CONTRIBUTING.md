@@ -32,12 +32,28 @@ What each gate is allowed to let through, and why, is [`docs/CI.md`](docs/CI.md)
 
 ## Tickets, branches, and titles
 
-Enforced by the `process` CI check ([ADR 0006 rev 2](docs/decisions/0006-process-gates.md)). Open an
-issue from a template before branching. Branches are `type_number-snake_name` — e.g.
-`task_27-process_gates`, `type` from the template set (`task`, `bug`, `design`, `module`) — with
-`main` and Dependabot exempt. PR titles are Conventional Commits, since the title becomes the commit
-on `main`. The PR's Development field must link its ticket; a `Closes #N` body keyword writes the same
-record on default-base PRs, and an integration or epic base needs linking by hand.
+Open an issue from a template before branching. Enforced by the `process` CI check
+([ADR 0006 rev 2](docs/decisions/0006-process-gates.md)) — and locally by the `pre-push` hook
+`just install-hooks` installs, which is where you want to meet it.
+
+```
+design_119-c4_model_completion
+└──┬──┘ └┬┘ └────────┬────────┘
+   │     │           └─ lowercase snake_case
+   │     └─ the issue's own number
+   └─ task | bug | design | module — the issue's template, and its label
+```
+
+`main` and Dependabot branches are exempt. Every other branch must also satisfy all of:
+
+- the issue is **open**, **type-labelled**, and **milestoned**;
+- its **parent matches the PR base** — a sub-issue's PR targets its integration branch, a top-level
+  issue's targets `main`, and the gate asserts that in both directions;
+- the PR's **Development field links the ticket**: `Closes #N` in the body writes that record on a
+  default-base PR, an integration or epic base needs it linked by hand.
+
+**PR titles are Conventional Commits** — the repo squash-merges, so the title becomes the commit
+on `main`.
 
 ## Getting a change merged
 
