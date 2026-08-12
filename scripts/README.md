@@ -564,12 +564,19 @@ scripts/check-adr-revs.py`, and restoring. The seeded state is described rather 
 described without spelling a live ADR number, which this check reads as a citation like any other.
 
 **The title-number and misnamed-entry rows were added later**, and were run against
-md5 `c8ba96721482a1244685db79498a22e2` — the script as this branch commits it — in `git archive` +
+md5 `10fef22f8297f98a9df986ee3e6c223e` — the script as this branch commits it — in `git archive` +
 `git init` extractions rather than in the working tree, for the reason under *Fixtures here must
 reckon with two different file sets* below. **Assert that md5 on the copy under test before running a
 row**, per *Which script a case ran against* below: an earlier draft of this paragraph pinned a hash
 belonging to no committed version, taken from the script mid-edit, and a reader could not have told a
 broken fix from a fixture carrying the wrong script.
+
+**Pinning the script is not enough, because two of the rows count ADRs**, which the directory decides
+and the script's hash cannot see: the whole-tree respelling reports one problem per ADR, and the
+swapped pair turns on the title numbers still running contiguously from 0001. Both were taken at
+`e58d331`, where a passing run reports **20 ADRs** — so the count is its own baseline, printed by
+every run, and reading it first is what says whether those two rows still hold. The citation count
+printed beside it moves with every citation the branch adds and is no part of the pin.
 
 **Their headline row is the state at `128ff83` and is reachable from no later commit**, the rename
 that caused it and the correction that ended it both being on this branch. Extract that commit
@@ -816,20 +823,32 @@ nothing else. Observed, one stray at a time:
 | a subdirectory | exit 1 | **exit 0** |
 | `draft-supersede-0007.md` | exit 1 | exit 1 |
 
-**And this assertion is directory-scoped where the rest of the check is not.** It reads
-`DECISIONS.iterdir()` rather than `git ls-files`, deliberately: an entry no commit has introduced is
-exactly what a name check should still see, and a stray that only becomes visible once it is committed
-is a check that waits for the mistake to land. The consequence follows from it and is the first thing
-anybody will hit — **an untracked stray reds `just verify` locally while CI stays green**, because
-`actions/checkout` gives CI committed state and the file is not in it. Measured on one tree: with
-`docs/decisions/notes.txt` present but never added, the local run exits **1**; an archive of the same
-`HEAD`, which is what CI gets, exits **0**. The exit codes are the row; the citation count printed
-beside them moves with every citation the branch adds, so it is not recorded here.
+**Directory scope is `current_revs()`'s, not this one rule's.** It reads `DECISIONS.iterdir()` rather
+than `git ls-files`, deliberately: an entry no commit has introduced is exactly what a name check
+should still see, and a stray that only becomes visible once it is committed is a check that waits for
+the mistake to land. But the naming rule is not alone in there — the head rev, the title number, the
+*Revisions* changelog and the collision rule are read in the same walk, and `check_index()` then asks
+the table about whatever that walk found. Only the citation scan reads the tracked set, which is the
+split *Fixtures here must reckon with two different file sets* above states.
+
+So the consequence is wider than a stray, and it is the first thing anybody will hit — **an untracked
+file reds `just verify` locally while CI stays green**, because `actions/checkout` gives CI committed
+state and the file is not in it. Measured on one tree, one file at a time:
+
+| Untracked in `docs/decisions/` | Reported locally |
+|---|---|
+| `notes.txt` | the naming rule alone — 1 problem |
+| `0021-untracked-draft.md`, an ADR being drafted | **2 problems, from neither** — no index row, and a *Revisions* section short of its head rev |
+
+An archive of the same `HEAD`, which is what CI gets, exits **0** for both. The exit codes are the
+row; the citation count printed beside them moves with every citation the branch adds, so it is not
+recorded here.
 
 Red locally and green in CI, over a file that is not in the change, is what makes a check feel broken.
-It is not: the fix is to rename or remove the file, and the alternative — judging only what is
-committed — trades a visible local failure for a silent one. Recorded so the reader meets the argument
-rather than the surprise.
+For a stray it is not: the fix is to rename or remove the file, and the alternative — judging only what
+is committed — trades a visible local failure for a silent one. **For a draft ADR there is nothing to
+fix**, and the answer is that the run is telling the truth early: the row and the changelog line are
+owed before the commit, not after. Recorded so the reader meets the argument rather than the surprise.
 
 A title number is read as the first whitespace-delimited token after `# `, so a title running the
 number into its text — no space before the separator — is reported as titling itself that whole token

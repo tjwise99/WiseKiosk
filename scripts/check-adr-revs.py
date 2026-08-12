@@ -6,7 +6,8 @@ correction is a new rev. A citation names the rev it was written against, so rev
 every document citing it — each is then updated or re-decided rather than left asserting a claim the
 ADR's current rev does not make.
 
-Assertions, over the tracked file set:
+Assertions. Everything read out of `docs/decisions/` is read from the directory; the citation scan
+alone reads the tracked set:
 
 - Each ADR's head carries `**Rev:** N`, and the index table in `docs/decisions/README.md` agrees
   with it. The head is authoritative; the table is checked against it, never trusted.
@@ -16,8 +17,8 @@ Assertions, over the tracked file set:
   author's, and a rule reaching them would be a formatting gate.
 - Every entry in `docs/decisions/` is an ADR this judges or a reported problem. One misnamed by case,
   separator or digit count carries no readable number, and passing over it reports a population
-  smaller than the directory. This one assertion reads the directory rather than the tracked set,
-  which is what lets it see an entry no commit has yet introduced.
+  smaller than the directory. The directory read above is what lets this see an entry no commit has
+  yet introduced.
 - Each ADR's *Revisions* section carries one changelog line per rev, numbered 1 to that head rev.
 - No two files carry one number. Uniqueness is `scripts/check-adr-index.mjs`'s to enforce; it is
   reported here because a number two documents carry has no one rev to hold a citation of it to.
