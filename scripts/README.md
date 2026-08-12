@@ -563,9 +563,13 @@ Every case below was run on 2026-08-05 by seeding the working tree, running `pyt
 scripts/check-adr-revs.py`, and restoring. The seeded state is described rather than committed — and
 described without spelling a live ADR number, which this check reads as a citation like any other.
 
-**The title-number and misnamed-entry rows were added later**, and were run on 2026-08-12 against
-md5 `d2e70ed3cab1af48a4e2618ddeae301f` in `git archive` + `git init` extractions rather than in the
-working tree, for the reason under *Fixtures here must reckon with two different file sets* below.
+**The title-number and misnamed-entry rows were added later**, and were run against
+md5 `d909bfb633f3210cb33a05f3ad407f0b` — the script as this branch commits it — in `git archive` +
+`git init` extractions rather than in the working tree, for the reason under *Fixtures here must
+reckon with two different file sets* below. **Assert that md5 on the copy under test before running a
+row**, per *Which script a case ran against* below: an earlier draft of this paragraph pinned a hash
+belonging to no committed version, taken from the script mid-edit, and a reader could not have told a
+broken fix from a fixture carrying the wrong script.
 
 **Their headline row is the state at `128ff83` and is reachable from no later commit**, the rename
 that caused it and the correction that ended it both being on this branch. Extract that commit
@@ -627,6 +631,8 @@ cp "$REPO/scripts/check-adr-revs.py" "$d/scripts/"
 | An index row's leading self-link | every row in the index table |
 | **A title spelled with a hyphen rather than an em-dash** | the separator changed on one ADR — only the number is compared |
 | **A title whose text differs from its index row's *Decision* cell** | the tree as it stands: the cell is a summary written for the table, not a copy of the title |
+| **A blank line before the title** | one ADR given a leading newline — the opening line is the first non-blank one, not byte 0 |
+| **A UTF-8 byte-order mark before the title** | the same ADR given a BOM — stripped, not read as part of the number |
 
 **The exemption was narrowed twice, and the second time is the instructive one.** It began as the
 whole *Revisions* section: an ordinary citation placed inside it passed with exit 0 while the
@@ -782,6 +788,18 @@ reported as unreadable-numbered, whatever it is: a subdirectory, a non-Markdown 
 backup. That is the rule working — an entry passed over is a population smaller than the directory —
 but it narrows what the directory may hold, so it is written down rather than discovered.
 
+**A dotfile is an entry like any other**, so a `.gitkeep` or an editor swap file in `docs/decisions/`
+is reported. That is the same argument as the backup file and is deliberate; it is written here
+because a dotfile is the one stray a reader does not picture when they read "every other entry".
+
+**Two spellings that look like strays and are not**, both seeded and both passing: a blank line
+before an ADR's title, and a byte-order mark before it. The opening line is the first non-blank one
+rather than byte 0, and a BOM is stripped before the number is read. Neither weakens the rule — a
+fenced `# …` deeper in the body is still unreachable, because reading stops at that first non-blank
+line — and without them this check would be the repository's only enforcer of *title at byte 0*,
+under a message that names a different cause. There is no markdownlint here and no `pre-commit`
+config, only `.editorconfig`.
+
 **The two ADR checks now disagree about that, and the line between them is the `.md` suffix.**
 `check-adr-index.mjs` skips anything not ending `.md`, so it sees a non-conforming `.md` name and
 nothing else. Observed, one stray at a time:
@@ -800,7 +818,8 @@ is a check that waits for the mistake to land. The consequence follows from it a
 anybody will hit — **an untracked stray reds `just verify` locally while CI stays green**, because
 `actions/checkout` gives CI committed state and the file is not in it. Measured on one tree: with
 `docs/decisions/notes.txt` present but never added, the local run exits **1**; an archive of the same
-`HEAD`, which is what CI gets, exits **0** with `20 ADRs; 265 citations`.
+`HEAD`, which is what CI gets, exits **0**. The exit codes are the row; the citation count printed
+beside them moves with every citation the branch adds, so it is not recorded here.
 
 Red locally and green in CI, over a file that is not in the change, is what makes a check feel broken.
 It is not: the fix is to rename or remove the file, and the alternative — judging only what is

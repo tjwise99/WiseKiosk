@@ -47,7 +47,8 @@ INDEX = DECISIONS / "README.md"
 
 ADR_FILE = re.compile(r"^(\d{4})-[a-z0-9-]+\.md$")
 HEAD_REV = re.compile(r"^\*\*Rev:\*\* *(\d+) *$", re.M)
-# Read from the first line alone, so a fenced `# …` in the body cannot stand in for a missing title.
+# Read from the first non-blank line, and no further, so a fenced `# …` in the body cannot stand in
+# for a missing title. A leading byte-order mark is stripped rather than read as part of the number.
 HEAD_TITLE = re.compile(r"^# +(\S+)")
 NOT_AN_ADR = ("README.md", "TEMPLATE.md")
 INDEX_ROW = re.compile(r"^(\| *\[\d{4}\]\([^)]+\) *\|)(.*)$")
@@ -145,7 +146,8 @@ def current_revs(problems):
             problems.append(f"docs/decisions/{path.name} is not a readable file")
             continue
         text = path.read_text(encoding="utf-8")
-        title = HEAD_TITLE.match(text.partition("\n")[0])
+        opening = next((line for line in text.lstrip("﻿").splitlines() if line.strip()), "")
+        title = HEAD_TITLE.match(opening)
         if not title:
             problems.append(
                 f"docs/decisions/{path.name} opens with no `# NNNN …` line, so the document does "

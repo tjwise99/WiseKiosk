@@ -309,8 +309,9 @@ what the image declares, which is why the two are separate subjects
 The container host and the display host are **roles, not machines**. They have different floors — a
 runtime able to run the published image on one, a browser on the other — and one machine meeting both
 may carry both. In the configuration this is built for it cannot: the display host is below the first
-of those, so the two are separate machines there. Neither host carries a requirement tag: what the
-software must run on binds on what this project ships, never on hardware the operator supplies
+of those, so the two are separate machines there. What the software must run on binds on what this
+project ships rather than on hardware the operator supplies, so a host carries a tag only where an
+item obliges the operator
 ([ADR 0019 rev 4](decisions/0019-boundary-at-what-deploys-and-tag-tier.md)).
 
 The concrete wiring — the deployment recipe, the mount paths, the example configuration a release

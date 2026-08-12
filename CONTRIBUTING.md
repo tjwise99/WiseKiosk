@@ -162,6 +162,7 @@ already escaped one. The name is what a reader can still resolve when the number
     `check-arch-trace` asks only that every accepted item is tagged somewhere
     ([ADR 0019 rev 4](docs/decisions/0019-boundary-at-what-deploys-and-tag-tier.md)). An item that can
     bind nowhere is a level the model has not drawn, never a tag parked on the nearest subject that
-    already exists. This question is appended rather than placed beside question 4, *Architecture
-    links*, which it most resembles, because inserting it there would renumber every question below —
-    the shape [ADR 0017 rev 3](docs/decisions/0017-authored-language-set.md) took for the same reason.
+    already exists. It is appended rather than placed beside question 4, *Architecture links*, which it
+    most resembles, only to spare the renumbering — not because anything forbids inserting one.
+    [ADR 0017 rev 3](docs/decisions/0017-authored-language-set.md) dropped that constraint: a citation
+    carries the question's name beside its number, so a renumbered one still names what it meant.
