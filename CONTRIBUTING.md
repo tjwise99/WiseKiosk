@@ -143,7 +143,9 @@ already escaped one. The name is what a reader can still resolve when the number
 16. **Recorded cases.** Where the change adds or edits a check, does
     [`scripts/README.md`](scripts/README.md) record what it was run against, in both directions — the
     defect it must catch, and the legal input it must not reject? A check's own green run is not
-    evidence it works, which is why that record exists.
+    evidence it works, which is why that record exists. **Seed the defect and name the commit each
+    case ran against.** A row pointing at what the tree happens to hold is true until the tree moves
+    and then reads as a passing check that should fail, with nothing to say which.
 17. **Defects the work surfaced.** Where the work exercised an existing check and found it **fails to
     catch what it exists to catch, admits what it exists to reject, or reports a result its input
     cannot support**, is that fixed here? A check is verified by whoever was placed to see it fail,
@@ -166,3 +168,24 @@ already escaped one. The name is what a reader can still resolve when the number
     most resembles, only to spare the renumbering — not because anything forbids inserting one.
     [ADR 0017 rev 3](docs/decisions/0017-authored-language-set.md) dropped that constraint: a citation
     carries the question's name beside its number, so a renumbered one still names what it meant.
+
+**Prose**
+
+Both of these are failures of sentences rather than of code, and both are invisible to every gate:
+prose is compared to nothing. They are appended for the reason question 18 is.
+
+19. **Counted claims.** Does a sentence the change adds state a count, a roster, or an absolute about
+    the tree — *every*, *no*, *neither*, *three and five* — that nothing compares to the tree? Such a
+    sentence is true when written and silently false afterwards. **The test is who falsifies it:** a
+    claim ordinary work elsewhere breaks — adding a module, accepting a requirement, drawing an
+    element — is the failure, because nobody doing that work opens the document they just made wrong.
+    A claim about a gate or a tool is not, since changing that is work on the subject the sentence
+    describes, done by someone reading it. Prefer the rule that decides the next case to an inventory
+    of the current ones; where a count is the point, name the commit it was taken at, and say when a
+    list is examples rather than the set.
+20. **Untested premises.** Where the change accommodates a reason an existing document gives — a
+    constraint it records, a limitation it accepts, a rejected alternative — has that reason been
+    tested against the tree, or only read? Testing it is usually cheaper than the accommodation, and
+    a stated reason that no longer holds is how a workaround gets written for a problem nobody has.
+    A document's own reason is the last place a reader thinks to doubt, which is what makes this
+    worth asking rather than trusting.

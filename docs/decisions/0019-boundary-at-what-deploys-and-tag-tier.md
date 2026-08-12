@@ -561,9 +561,10 @@ not, and what ships beside the image is [`../DEPLOYMENT.md`](../DEPLOYMENT.md)'s
 the reason. It is in the node's `description` and in this record; nothing gates it.
 
 **The model gains one component per module as each module's need lands** — one shaping library in the
-backend per **upstream-backed** module, and one Svelte component in the frontend per module. On the
-current roster that is three and five, because a local module "has no shaping library, no route
-registration and no boundary-schema fragment". The trigger is #76 module-spec procedure, which writes
+backend per **upstream-backed** module, and one Svelte component in the frontend per module, a local
+module having "no shaping library, no route registration and no boundary-schema fragment". How many
+that is follows from the roster in [`../../README.md`](../../README.md), which this record does not
+copy. The trigger is #76 module-spec procedure, which writes
 the first module need. This is scope recorded, not an omission, exactly as the deferred upstream
 elements are.
 
