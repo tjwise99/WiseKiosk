@@ -10,6 +10,14 @@ Assertions, over the tracked file set:
 
 - Each ADR's head carries `**Rev:** N`, and the index table in `docs/decisions/README.md` agrees
   with it. The head is authoritative; the table is checked against it, never trusted.
+- Each ADR's title line carries the number its filename carries. Identity by number is the premise
+  every citation here rests on, and the head is where the document states it — the same head, one
+  field over from the rev. Only the number is compared: the separator and the title text are the
+  author's, and a rule reaching them would be a formatting gate.
+- Every entry in `docs/decisions/` is an ADR this judges or a reported problem. One misnamed by case,
+  separator or digit count carries no readable number, and passing over it reports a population
+  smaller than the directory. This one assertion reads the directory rather than the tracked set,
+  which is what lets it see an entry no commit has yet introduced.
 - Each ADR's *Revisions* section carries one changelog line per rev, numbered 1 to that head rev.
 - No two files carry one number. Uniqueness is `scripts/check-adr-index.mjs`'s to enforce; it is
   reported here because a number two documents carry has no one rev to hold a citation of it to.
@@ -39,6 +47,9 @@ INDEX = DECISIONS / "README.md"
 
 ADR_FILE = re.compile(r"^(\d{4})-[a-z0-9-]+\.md$")
 HEAD_REV = re.compile(r"^\*\*Rev:\*\* *(\d+) *$", re.M)
+# Read from the first line alone, so a fenced `# …` in the body cannot stand in for a missing title.
+HEAD_TITLE = re.compile(r"^# +(\S+)")
+NOT_AN_ADR = ("README.md", "TEMPLATE.md")
 INDEX_ROW = re.compile(r"^(\| *\[\d{4}\]\([^)]+\) *\|)(.*)$")
 
 # Any spelling that reaches for an ADR by number, deliberately wider than the one form accepted:
@@ -122,6 +133,11 @@ def current_revs(problems):
     for path in sorted(DECISIONS.iterdir()):
         match = ADR_FILE.match(path.name)
         if not match:
+            if path.name not in NOT_AN_ADR:
+                problems.append(
+                    f"docs/decisions/{path.name} is not named `NNNN-<lowercase-slug>.md`, so no "
+                    "number can be read from it and nothing here judged it"
+                )
             continue
         # An entry named like an ADR that is a directory or a dangling symlink is not one, and must
         # not pass for want of a readable head.
@@ -129,6 +145,17 @@ def current_revs(problems):
             problems.append(f"docs/decisions/{path.name} is not a readable file")
             continue
         text = path.read_text(encoding="utf-8")
+        title = HEAD_TITLE.match(text.partition("\n")[0])
+        if not title:
+            problems.append(
+                f"docs/decisions/{path.name} opens with no `# NNNN …` line, so the document does "
+                "not say which ADR it is"
+            )
+        elif title.group(1) != match.group(1):
+            problems.append(
+                f"docs/decisions/{path.name} titles itself {title.group(1)}, but its filename and "
+                f"every citation of it say {match.group(1)}"
+            )
         heads = HEAD_REV.findall(text)
         if len(heads) != 1:
             problems.append(
