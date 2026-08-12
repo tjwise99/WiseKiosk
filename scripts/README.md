@@ -564,19 +564,21 @@ scripts/check-adr-revs.py`, and restoring. The seeded state is described rather 
 described without spelling a live ADR number, which this check reads as a citation like any other.
 
 **The title-number and misnamed-entry rows were added later**, and were run against
-md5 `10fef22f8297f98a9df986ee3e6c223e` — the script as this branch commits it — in `git archive` +
-`git init` extractions rather than in the working tree, for the reason under *Fixtures here must
-reckon with two different file sets* below. **Assert that md5 on the copy under test before running a
-row**, per *Which script a case ran against* below: an earlier draft of this paragraph pinned a hash
-belonging to no committed version, taken from the script mid-edit, and a reader could not have told a
-broken fix from a fixture carrying the wrong script.
+md5 `c80e1db5a9bfe06bef1bceff011a44de` — the script at `e953db8` — in `git archive` + `git init`
+extractions rather than in the working tree, for the reason under *Fixtures here must reckon with two
+different file sets* below. **Assert that md5 on the copy under test before running a row**, per
+*Which script a case ran against* below: an earlier draft of this paragraph pinned a hash belonging to
+no committed version, taken from the script mid-edit, and a reader could not have told a broken fix
+from a fixture carrying the wrong script.
 
-**Pinning the script is not enough, because two of the rows count ADRs**, which the directory decides
-and the script's hash cannot see: the whole-tree respelling reports one problem per ADR, and the
-swapped pair turns on the title numbers still running contiguously from 0001. Both were taken at
-`e58d331`, where a passing run reports **20 ADRs** — so the count is its own baseline, printed by
-every run, and reading it first is what says whether those two rows still hold. The citation count
-printed beside it moves with every citation the branch adds and is no part of the pin.
+**Pinning the script is not enough, because a whole-tree seed counts ADRs** — every row whose input is
+spelled *all twenty*, and the paragraph below reading twenty problems out of one of them, is keyed on
+how many ADRs the directory holds, which the script's hash cannot see. So the tree is pinned to the
+same commit as the script rather than to a different one, per *Which script a case ran against* below:
+extract `e953db8`, where a passing run reports **20 ADRs** and needs no script copied in. Read that
+count before those rows. It appears on a **passing** run only — a failing one prints problems in its
+place — and the citation count beside it moves with every citation the branch adds, so it is no part
+of the pin.
 
 **Their headline row is the state at `128ff83` and is reachable from no later commit**, the rename
 that caused it and the correction that ended it both being on this branch. Extract that commit
@@ -837,8 +839,8 @@ state and the file is not in it. Measured on one tree, one file at a time:
 
 | Untracked in `docs/decisions/` | Reported locally |
 |---|---|
-| `notes.txt` | the naming rule alone — 1 problem |
-| `0021-untracked-draft.md`, an ADR being drafted | **2 problems, from neither** — no index row, and a *Revisions* section short of its head rev |
+| `notes.txt` | the naming rule — 1 problem |
+| `0021-untracked-draft.md`, an ADR drafted the ordinary way: rev 1, its one changelog line | **1 problem, from neither** — `check_index()`, finding the number carries no index row |
 
 An archive of the same `HEAD`, which is what CI gets, exits **0** for both. The exit codes are the
 row; the citation count printed beside them moves with every citation the branch adds, so it is not
@@ -846,9 +848,12 @@ recorded here.
 
 Red locally and green in CI, over a file that is not in the change, is what makes a check feel broken.
 For a stray it is not: the fix is to rename or remove the file, and the alternative — judging only what
-is committed — trades a visible local failure for a silent one. **For a draft ADR there is nothing to
-fix**, and the answer is that the run is telling the truth early: the row and the changelog line are
-owed before the commit, not after. Recorded so the reader meets the argument rather than the surprise.
+is committed — trades a visible local failure for a silent one. **The draft is the case with no stray
+to remove**, and its answer is different: the index row is genuinely owed, `check-adr-index.mjs` reds
+on the same file with the same remedy — so this is not the disagreement the table above records — and
+nothing here gates a commit, both hooks in `.githooks/` being advisory and neither running `verify`.
+What the local run buys is notice before the push, not enforcement. Recorded so the reader meets the
+argument rather than the surprise.
 
 A title number is read as the first whitespace-delimited token after `# `, so a title running the
 number into its text — no space before the separator — is reported as titling itself that whole token
