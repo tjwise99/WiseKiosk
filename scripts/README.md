@@ -564,21 +564,23 @@ scripts/check-adr-revs.py`, and restoring. The seeded state is described rather 
 described without spelling a live ADR number, which this check reads as a citation like any other.
 
 **The title-number and misnamed-entry rows were added later**, and were run against
-md5 `c80e1db5a9bfe06bef1bceff011a44de` — the script at `e953db8` — in `git archive` + `git init`
+md5 `c816ba0d4e721b862efec9d363128b38` — the script at `66d168f` — in `git archive` + `git init`
 extractions rather than in the working tree, for the reason under *Fixtures here must reckon with two
-different file sets* below. **Assert that md5 on the copy under test before running a row**, per
-*Which script a case ran against* below: an earlier draft of this paragraph pinned a hash belonging to
-no committed version, taken from the script mid-edit, and a reader could not have told a broken fix
-from a fixture carrying the wrong script.
+different file sets* below. **Copy the script in fresh and assert its md5 before running a row**, per
+*Copy the script under test in fresh each time* above: the assertion is what separates *the fix does
+not work* from *the fix was not in the tree you ran*, and a copy whose md5 differs from the pin means
+you are re-dating these rows rather than reproducing them. An earlier draft of this paragraph pinned a
+hash belonging to no committed version, taken from the script mid-edit, and a reader could not have
+told a broken fix from a fixture carrying the wrong script.
 
 **Pinning the script is not enough, because a whole-tree seed counts ADRs** — every row whose input is
 spelled *all twenty*, and the paragraph below reading twenty problems out of one of them, is keyed on
 how many ADRs the directory holds, which the script's hash cannot see. So the tree is pinned to the
-same commit as the script rather than to a different one, per *Which script a case ran against* below:
-extract `e953db8`, where a passing run reports **20 ADRs** and needs no script copied in. Read that
-count before those rows. It appears on a **passing** run only — a failing one prints problems in its
-place — and the citation count beside it moves with every citation the branch adds, so it is no part
-of the pin.
+commit carrying the pinned script rather than to some other one — a hash paired with a commit whose
+tree holds a different script says nothing about which half is wrong. Extract `66d168f`, where a
+passing run reports **20 ADRs**, and read that count before those rows. It appears on a **passing**
+run only — a failing one prints problems in its place — and the citation count beside it moves with
+every citation the branch adds, so it is no part of the pin.
 
 **Their headline row is the state at `128ff83` and is reachable from no later commit**, the rename
 that caused it and the correction that ended it both being on this branch. Extract that commit
