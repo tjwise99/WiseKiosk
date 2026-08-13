@@ -178,9 +178,9 @@ the second one to be invented would have to argue against the first rather than 
   document, the sole exception being a top-level dot-directory, and none of these roots is one. A new
   top-level directory is cheap; a document inside one is not, and that is deliberate.
 - **A base-image Dependabot entry has no home under the rule above.** A `docker` ecosystem entry
-  pointing at the root fails § *Repository shape*'s non-root requirement, and the check recognises
-  three ecosystems, failing an unmapped one outright rather than passing it — so such an entry needs a
-  script edit wherever the Dockerfile sits. Recorded for #54 container build and publish, which is
+  pointing at the root fails § *Repository shape*'s non-root requirement, and the check maps a fixed
+  set of ecosystems, failing an unmapped one outright rather than passing it — so such an entry needs
+  a script edit wherever the Dockerfile sits. Recorded for #54 container build and publish, which is
   where the trade lands; neither half is decided here.
 - **The model's `link` properties gain their targets with the source they point at.** ADR 0019 rev 5
   withholds one for two reasons — no source, and no layout. This record answers the second; the first
