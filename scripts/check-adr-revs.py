@@ -38,6 +38,8 @@ An ADR carrying no row is reported here as well, because the table assertion abo
 with nothing to compare. It is not that such an ADR goes unjudged: the rev is read from the head, so
 the title, changelog, collision and citation rules all still hold it, and deleting the table check
 would change no citation verdict.
+
+What this has been run against, in both directions: cases/check-adr-revs-py.md
 """
 
 import re

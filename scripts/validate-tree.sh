@@ -8,6 +8,8 @@
 #
 # The exception fails when it stops being needed: no such error means the tier has an active item,
 # and this wrapper is then dead code rather than a passing gate.
+#
+# What this has been run against, in both directions: cases/the-requirements-tree-checks.md
 set -eu
 
 DOORSTOP=docs/requirements/.venv/bin/doorstop

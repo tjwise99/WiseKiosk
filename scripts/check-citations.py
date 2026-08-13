@@ -5,6 +5,8 @@ The rule, its exemptions and the reasoning for each are `docs/CI.md` § Document
 
 Scope is resolution, the header pair, and the comment's placement. Whether a cited item is accepted,
 and whether the sentence means the item it names, is beyond this.
+
+What this has been run against, in both directions: cases/the-requirements-tree-checks.md
 """
 
 import re

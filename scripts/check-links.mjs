@@ -6,6 +6,8 @@
 // invariant and the host allowlist in docs/CI.md § Documentation integrity.
 //
 // No dependencies: uses `git ls-files` for the tracked-file list and Node's stdlib.
+//
+// What this has been run against, in both directions: cases/check-links-mjs.md
 
 import { execSync } from "node:child_process";
 import { readFileSync, existsSync, realpathSync } from "node:fs";

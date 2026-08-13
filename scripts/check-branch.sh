@@ -12,6 +12,8 @@
 # a bearer token when set (rate limits, CI); the GraphQL phase requires it.
 #
 # Dependencies: git, grep, sed, curl, jq.
+#
+# What this has been run against, in both directions: cases/check-branch-sh.md
 set -eu
 
 fail() {

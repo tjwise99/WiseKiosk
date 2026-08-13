@@ -6,6 +6,8 @@
 //
 // No dependencies: Node stdlib only, plain text scanning (no YAML parser) —
 // matches scripts/check-links.mjs's idiom.
+//
+// What this has been run against, in both directions: cases/check-verify-ci-parity-mjs.md
 
 import { readFileSync } from "node:fs";
 import { execSync } from "node:child_process";

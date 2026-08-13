@@ -6,6 +6,8 @@
 # the CI gate on the PR title, which becomes the commit on main.
 #
 # Dependencies: grep, head.
+#
+# What this has been run against, in both directions: cases/check-commit-msg-sh.md
 set -eu
 
 fail() {

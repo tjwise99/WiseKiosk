@@ -32,6 +32,8 @@ that does not touch what a citation asserts is legal and ordinary — most of a 
 gate failing every pin-only edit would fail closed on legal input, and the exemption list it would
 grow is where a bypass gets spelled ([ADR 0011 rev 1](../docs/decisions/0011-requirement-or-convention.md)
 routes a judgement obligation to the review checklist instead).
+
+What this has been run against, in both directions: cases/adr-rev-reach-py.md
 """
 
 import difflib

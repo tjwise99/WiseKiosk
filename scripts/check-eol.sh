@@ -2,6 +2,8 @@
 # Every tracked text file is LF-only (.gitattributes). `git grep -l` exits 0 when it finds a match —
 # this check's failure case — 1 when it finds none, and anything else when the search itself failed.
 # The three are distinguished: a failed search has judged nothing, and must not read as a clean tree.
+#
+# What this has been run against, in both directions: cases/check-eol-sh.md
 set -eu
 
 # `git grep` answers 1 both for "searched, found nothing" and for "there was nothing to search", so

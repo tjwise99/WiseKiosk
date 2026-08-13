@@ -13,6 +13,8 @@ comparison possible at all.
 The comparison is Doorstop's own `Stamp`, taken from the library rather than reimplemented. Clearing
 what it reports is not a CLI operation — `Tree.find_item` is active-only — so the remedy is the one
 `docs/requirements/README.md § Adding or changing requirements` gives. Nothing is written.
+
+What this has been run against, in both directions: cases/the-requirements-tree-checks.md
 """
 
 import sys

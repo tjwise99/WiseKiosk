@@ -12,6 +12,8 @@ decision to someone reading the tree as a tree, so they may name items; the obli
 Scope is the identifier shape only. Whether a cited identifier resolves, and whether it carries the
 header of the item it names, is `scripts/check-citations.py`. Whether the sentence means the item it
 names is decided by nothing here.
+
+What this has been run against, in both directions: cases/the-requirements-tree-checks.md
 """
 
 import re

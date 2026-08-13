@@ -26,6 +26,8 @@ The second direction's population is decided here rather than filtered into exis
 - **`proposed` is out**, because the first direction resolves a tag only to an accepted item, so a
   proposed item cannot be tagged and a rule reaching it would be unsatisfiable.
 - **Retired — `active: false`, `status` untouched — is out**, because a retired item obliges nothing.
+
+What this has been run against, in both directions: cases/check-arch-trace-py.md
 """
 
 import json

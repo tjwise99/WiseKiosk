@@ -13,6 +13,8 @@ verification-justification, which is the argument for why the residue exists.
 That attribute is also required on its own, on every item, per ADR 0009 rev 2: below `test`, what blocks a
 mechanical check; at `test`, what the check leaves unproven. Absence is the failure the method rule
 cannot see — an item with no justification satisfies the rule by having nothing to argue.
+
+What this has been run against, in both directions: cases/the-requirements-tree-checks.md
 """
 
 import sys
