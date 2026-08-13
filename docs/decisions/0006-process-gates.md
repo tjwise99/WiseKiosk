@@ -5,10 +5,13 @@
 write-scoped-token alternative supplies; gate path corrected by
 [ADR 0016 rev 3](0016-maintained-tools-for-standard-artifacts.md)
 **Decided:** 2026-07-22 (process-gates design discussion, ticket #27)
-**Rev:** 2
+**Rev:** 3
 
 ## Revisions
 
+- **rev 3** — 2026-08-13 — the *Consequences* count of required CI checks said five against a workflow
+  defining six, and had survived two revs because the pin is gated and the sentence is not. Replaced
+  by the rule, which `CI.md` asserts; no gate changes (#145 prose pass).
 - **rev 2** — 2026-08-06 — drops the claim that the gate path is toolchain-free, recording that
   property under *Alternatives considered* as given up, and states gate 3's single-declaration
   property without the file glob that carried it; the four gates are unchanged (#126 absorb
@@ -97,8 +100,10 @@ mirrored locally by `just check-branch` and the advisory hooks `just install-hoo
 
 ## Consequences
 
-- All five CI checks, `process` included, are required on `main` (strict, admins bound): PRs from
-  nonconforming branches cannot merge.
+- Every gate job the workflow defines is required on `main`, `process` included (strict, admins
+  bound), so a PR from a nonconforming branch cannot merge. That the required set equals that job set
+  is [`../CI.md`](../CI.md) § *Gate wiring*'s to assert; a count here would be falsified by adding a
+  gate job, by someone with no reason to open this record.
 - The in-flight legacy branch (`feat/21-docs-site`) is blocked until renamed and its ticket
   labeled.
 - Dependabot is exempt from branch shape; its PR titles already conform (`build(deps): …`).

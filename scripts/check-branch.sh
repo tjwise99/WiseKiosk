@@ -1,5 +1,5 @@
 #!/bin/sh
-# The branch name must follow type_number-snake_name (ADR 0006 rev 2): the shape is
+# The branch name must follow type_number-snake_name (ADR 0006 rev 3): the shape is
 # defined once in scripts/branch-shape.regex, shared with the pre-push hook;
 # the number resolves via the GitHub API to an open issue carrying a milestone
 # and exactly one type label, which is the branch type (ADR 0013 rev 3). main and
@@ -136,7 +136,7 @@ if [ "$base_ref" = "$default_branch" ]; then
     echo "Issue #$number has no parent, and PR #$pr_number targets the default branch."
 else
     printf '%s' "$base_ref" | grep -Eqf "$scripts_dir/branch-shape.regex" ||
-        fail "PR #$pr_number's base '$base_ref' is neither the default branch nor a conforming integration branch — an integration branch is a branch, so it links a ticket of its own (ADR 0006 rev 2)"
+        fail "PR #$pr_number's base '$base_ref' is neither the default branch nor a conforming integration branch — an integration branch is a branch, so it links a ticket of its own (ADR 0006 rev 3)"
     anchor_rest=${base_ref#*_}
     anchor=${anchor_rest%%-*}
     [ -n "$parent" ] || fail "PR #$pr_number targets integration branch '$base_ref' but issue #$number has no parent — a ticket whose PR targets an integration branch is a sub-issue of that branch's anchor #$anchor (ADR 0013 rev 3)"

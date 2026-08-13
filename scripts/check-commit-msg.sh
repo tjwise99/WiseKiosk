@@ -1,5 +1,5 @@
 #!/bin/sh
-# The first line of a commit message must be a Conventional Commit (ADR 0006 rev 2);
+# The first line of a commit message must be a Conventional Commit (ADR 0006 rev 3);
 # the pattern is defined once in scripts/conventional-commit.regex, shared with
 # the commit-msg hook. Default mode mirrors the hook's fixup!/squash!/merge
 # allowances — they never survive the squash merge. --pr-title drops them for

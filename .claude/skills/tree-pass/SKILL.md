@@ -140,7 +140,7 @@ active-only and both answer `no item with UID`. Stamping a pending item means a 
 | An obligation on what ships beside the image, not on the kiosk | `docs/DEPLOYMENT.md` |
 | An authoring rule no machine can decide | `CONTRIBUTING.md`'s review checklist |
 | A reason | the item's own `rationale` |
-| "Revisit if X" | a **reopen premise** in `rationale`, in `SYS019`'s form |
+| "Revisit if X" | a **reopen premise** in `rationale` |
 | Uncommitted feature | a GitHub issue, with the reopen path written into it |
 | A lint rule or threshold | tool configuration, described in `docs/CI.md` |
 

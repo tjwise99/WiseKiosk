@@ -60,7 +60,8 @@ Two properties are enforced, both browser-free and both run in CI:
   the same "CI fails on stale generated code" rule the boundary contract and config schema live
   under. The `architecture` job in
   [`../../.github/workflows/checks.yml`](../../.github/workflows/checks.yml) runs the byte-identical
-  commands (its install step is `just arch-install`), and `check-arch` is part of `just verify`.
+  commands, inlined rather than reached through `just`, which that job does not install; `check-arch`
+  is part of `just verify`.
 
 ## Rendering (browser-free)
 

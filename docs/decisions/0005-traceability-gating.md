@@ -73,7 +73,7 @@ nothing by design, gated by review.
   from the diff against the tree — a PR-body ID either restates that or contradicts it, and in a
   contradiction the diff is the truth. PR metadata lives outside the checked zone: no scanner reads
   it, no page renders it, nothing fails when it rots. Issues remain as scheduling views over the
-  backlog; branch shape is process-gated by [ADR 0006 rev 2](0006-process-gates.md) but stays outside the
+  backlog; branch shape is process-gated by [ADR 0006 rev 3](0006-process-gates.md) but stays outside the
   traceability evidence channel — the rejection here stands.
   The partition also obliges gate 4's claim mechanism to reach files Doorstop references cannot —
   paths under dot-directories, a limit 0002 records — so that claim check is scanner-side or those

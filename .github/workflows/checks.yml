@@ -53,9 +53,9 @@ jobs:
     # Validates the Doorstop requirements tree: every TST reference resolves, no
     # suspect/unreviewed/orphan items, no item claims a verification method its
     # children do not support, and no item's statement cites another item by
-    # identifier. Runs every command `just check-reqs` runs, in
-    # the same order, then `just check-citations`, which reads the tree through
-    # the same venv; check-verify-ci-parity asserts that per command, so adding
+    # identifier. Runs every command `just check-reqs` runs and the one
+    # `just check-citations` runs, which reads the tree through the same venv;
+    # check-verify-ci-parity asserts that per command and not by order, so adding
     # one to a recipe without adding it here fails. The tool is siloed under
     # docs/requirements/ with the feature it serves. No secrets: pure tree
     # validation.
@@ -160,7 +160,7 @@ jobs:
         run: docs/requirements/.venv/bin/python scripts/check-arch-trace.py
 
   process:
-    # Process gates (ADR 0006 rev 2): the branch is named type_number-snake_name and
+    # Process gates (ADR 0006 rev 3): the branch is named type_number-snake_name and
     # links an open issue labeled with its type; the PR title — the commit that
     # reaches main under squash-merge — is a Conventional Commit. Runs the exact
     # scripts the local recipes run (`just check-branch`; the commit-msg hook's

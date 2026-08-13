@@ -24,7 +24,7 @@ where deployed.
 
 ```sh
 just              # the gate roster: every check, beside what it asserts
-just verify       # run every check the PR gate runs
+just verify       # every check the PR gate runs that has a local form
 just install-hooks  # once per clone: advisory commit-msg and pre-push hooks
 ```
 
@@ -33,7 +33,7 @@ What each gate is allowed to let through, and why, is [`docs/CI.md`](docs/CI.md)
 ## Tickets, branches, and titles
 
 Open an issue from a template first: the branch name is derived from it. Enforced by the `process` CI
-check ([ADR 0006 rev 2](docs/decisions/0006-process-gates.md)). The `pre-push` hook from
+check ([ADR 0006 rev 3](docs/decisions/0006-process-gates.md)). The `pre-push` hook from
 `just install-hooks` checks the shape only — not the issue conditions below — and only at push, when
 the branch and its commits already exist. **Nothing checks the name at `git switch -c`**, which is
 where it is chosen and where it goes wrong, so this section is in the file
@@ -49,7 +49,8 @@ design_119-c4_model_completion
 
 `main` and Dependabot branches are exempt. Every other branch must also satisfy all of:
 
-- the issue is **open**, **type-labelled**, and **milestoned**;
+- the issue is **open**, **milestoned**, and carries **exactly one** type label — a second one makes
+  the branch type ambiguous ([ADR 0013 rev 3](docs/decisions/0013-work-tracking-invariants.md));
 - its **parent matches the PR base** — a sub-issue's PR targets its integration branch, a top-level
   issue's targets `main`, and the gate asserts that in both directions;
 - the PR's **Development field links the ticket**: `Closes #N` in the body writes that record on a
