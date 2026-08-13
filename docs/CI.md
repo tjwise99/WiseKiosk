@@ -59,6 +59,23 @@ that reports without failing degrades to noise within a release.
 
 Unbuilt; owned by #67 security and supply-chain CI gates.
 
+## Generated boundary types
+
+The one OpenAPI schema is hand-authored and both sides' types are generated from it
+([ADR 0008 rev 2](decisions/0008-boundary-contract-openapi-codegen.md)). The gate regenerates the Go
+and TypeScript types and fails on any difference, so a schema edit that reaches neither side, and a
+hand-edit of either, both fail.
+
+- Each side seeded independently — the committed types edited away from what the schema produces, one
+  language at a time, each asserted to exit non-zero. Regenerating both and re-running exits zero.
+- **A run that regenerates nothing fails** rather than reporting agreement over an empty comparison,
+  which is what a missing generator or a schema path that resolves to no file would otherwise read as.
+
+**What it leaves unproven** is whether the schema says what the boundary actually carries; the gate
+compares the schema against its own output and nothing against the running system.
+
+Unbuilt; owned by #7 boundary-contract codegen.
+
 ## In-code prose
 
 Comments state mechanism. Reason, history and evaluative judgement are authored in a documentation

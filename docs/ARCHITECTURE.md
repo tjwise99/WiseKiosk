@@ -227,9 +227,9 @@ request parameters, success payloads, the structured upstream-failure and client
 and the status codes the frontend discriminates on.
 
 The one schema is `boundary/openapi.yaml`, and the types generated from it are committed inside the
-package that compiles them ([ADR 0021 rev 2](decisions/0021-repository-layout.md)). _The rest of the
-wiring — the generate step, the drift-check workflow — is documented here once it is built (#7
-boundary-contract codegen)._
+package that compiles them ([ADR 0021 rev 2](decisions/0021-repository-layout.md)). What the drift
+gate asserts, and what it leaves unproven, is [`CI.md`](CI.md) § *Generated boundary types*; the
+structure the generate step lands in is drawn here once it is built (#7 boundary-contract codegen).
 
 ## Config and secrets
 
