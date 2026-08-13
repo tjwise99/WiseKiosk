@@ -296,6 +296,9 @@ resolve, a citation to something that does not exist, an index that has drifted 
   reference, and allowlisting a host to satisfy a code sample would put it in the register on the
   strength of an example. The population is the tracked set, so an unstaged document is invisible to a
   local run; CI checks out committed state and is unaffected.
+  **What no check here decides: that a fragment names a real heading.** The fragment is split off
+  before resolution runs and never read again, so a link whose path resolves and whose fragment names
+  no heading in the target still passes — only the path half of the destination is proven.
 - Every absolute `http` or `https` link in tracked documentation names a host on the committed
   upstream-documentation allowlist, and every allowlist entry names the tool or service it serves.
   This extends the link checker above rather than adding a second tool.
