@@ -1135,6 +1135,35 @@ The last pair is the one that matters: the allowances exist because a fixup or m
 survives the squash, but a PR title *becomes* the commit on `main`, so the same string must be
 accepted in one mode and rejected in the other.
 
+## `adr-rev-reach.py`
+
+Not a check — it reports and exits zero, and sits outside `just verify`
+([ADR 0022 rev 1](../docs/decisions/0022-rev-reach-enumerated-not-gated.md)). Its cases are still
+recorded here, because what it must and must not list is the same kind of claim every row above makes.
+Exercised against the sweep that motivated it, `52bb933` on the branch squashed as `197d075`.
+
+| Direction | Case | Input | Reported |
+|---|---|---|---|
+| Must list | The sweep that hid two false claims | `52bb933^ 52bb933` — three ADRs revved, the tree re-pinned | 55 citations, including both lines whose claim the same commit falsified |
+| Must not list | A sentence the author rewrote | `52bb933^ 8f43ccb` — the same sweep with the two fixes folded in | neither line; an edited line falls out of the pairing rather than being tested and passed |
+| Must not list | An administrative rev | an ADR revved with a changelog line and nothing else | classified *body unchanged*; none of its citations appear |
+| Must not list | A rev the sweep merely passed through | an ADR whose only body edit is re-pinning its own citations of the revved record | classified *body unchanged*, so the sweep does not cascade into the records it crosses |
+| Must not list | No rev in range | `8f43ccb 62c0a48` | `no ADR revved between these trees; nothing to re-read`, exit 0 |
+
+The two *body unchanged* rows are the pair that matters, and they are why substance is compared with
+the head rev line dropped, the *Revisions* section dropped, and every rev token in the remainder
+masked. Without the masking, every record a sweep crosses differs textually while asserting what it
+asserted before, and its own citations join the list — the report grows with the sweep rather than
+with the work. The two rows were seeded together over a clean `main` and re-run: 30 citations
+reported, none of them from either seeded ADR.
+
+**The list shrinks only on an edit.** A reviewer who reads a sentence and finds it still true leaves
+it untouched, so it is listed again next run. That is not a defect to close: reaching zero would
+reward editing a sentence cosmetically to clear it.
+
+**Its population is complete only while `check-adr-revs` is green** — a citation a sweep missed fails
+that gate and never reaches this tool.
+
 ## Confirming a gate in CI rather than locally
 
 Local runs prove the script; they do not prove the step is wired, reached, and able to fail the job.

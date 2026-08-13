@@ -166,3 +166,9 @@ appended for the same reason; inserting one is permitted
     constraint it records, a limitation it accepts — has that reason been tested against the tree, or
     only read? Testing it is usually cheaper than the accommodation, and a stated reason that no
     longer holds is how a workaround gets written for a problem nobody has.
+21. **Rev reach.** Where the change revs an ADR, has each citation the sweep re-pinned **without
+    touching the sentence around it** been read against what that rev actually changed?
+    `just rev-reach` lists them, per file and line; `just check-adr-revs` holds the pin and decides
+    nothing about the claim ([ADR 0022 rev 1](docs/decisions/0022-rev-reach-enumerated-not-gated.md)).
+    A rev that does not touch what a citation asserts is the ordinary case, so most of that list is
+    sound — the failure is answering from having run the sweep rather than from having read it.

@@ -123,6 +123,11 @@ check-arch-trace:
 arch-dev:
     docs/architecture/node_modules/.bin/likec4 start docs/architecture/model
 
+[group('review')]
+[doc('List every ADR citation this branch re-pinned without touching the sentence around it, per file and line (reports; not a gate)')]
+rev-reach *ref:
+    python3 scripts/adr-rev-reach.py {{ref}}
+
 [group('checks')]
 [doc('Run every check the PR gate runs that has a local form; secret scanning and the PR-title check are CI-only')]
 verify: check-links check-eol check-branch check-reqs check-citations check-arch check-arch-trace check-site check-adr-index check-adr-revs check-docs-index check-repo-silo check-workflow-hardening check-verify-ci-parity

@@ -54,6 +54,7 @@ amended, so a number in git history need not mean what it means here.
 | [0019](0019-boundary-at-what-deploys-and-tag-tier.md) | 5 | 2026-08-04 | The architecture boundary is what deploys; an element earns a place where the system exchanges something with it, a component by its interface, and the Deployment level draws hosts, processes and the files beside them; every accepted requirement binds, tagged at the tier its level answers to |
 | [0020](0020-release-artifact-set-and-operator-tooling.md) | 1 | 2026-08-09 | A release is the image and its provenance material in the registry plus a recipe and an example configuration on the tag; the documentation site is not versioned, a release carries no operator tooling program, and the image declares a healthcheck nothing acts on |
 | [0021](0021-repository-layout.md) | 1 | 2026-08-12 | The top level projects the containers: a Go module root, an npm package root, the boundary schema owned by neither, and the release material outside both; a module's files split across the packages that run them, under one name |
+| [0022](0022-rev-reach-enumerated-not-gated.md) | 1 | 2026-08-13 | A rev's reach is enumerated by a non-gating tool that lists every citation a sweep re-pinned without touching the sentence around it, and read by a reviewer; no check decides whether the claim survived |
 
 ## Revisions
 

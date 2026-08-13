@@ -592,11 +592,14 @@ specification rather than of the repository, so they are stated where the specif
 
 ## What is not gated here
 
-**Review obligations.** Four questions cannot be decided by a machine and are answered by a reader,
-in [`../CONTRIBUTING.md`](../CONTRIBUTING.md)'s checklist: whether a change updated the document that
-describes the code it touched, whether an architecture element's model link points at its
-implementation, whether each added comment states mechanism rather than reason, and whether a comment
-citing an identifier restates it. The pull-request template points there.
+**Review obligations.** An obligation on an author that leaves no artifact is answered by a reader, in
+[`../CONTRIBUTING.md`](../CONTRIBUTING.md)'s checklist, rather than by anything here
+([ADR 0011 rev 1](decisions/0011-requirement-or-convention.md)). The pull-request template points
+there. Two of those questions have a mechanical artifact to read from, deliberately: the documentation
+index this document's gates hold to the tree, and `just rev-reach`, which lists every ADR citation a
+change re-pinned without touching the sentence around it
+([ADR 0022 rev 1](decisions/0022-rev-reach-enumerated-not-gated.md)). Neither is a gate — the second
+reports and exits zero, sits outside `just verify`, and is named so that it does not read as one.
 
 **The product's obligations.** What the software must do is in
 [`requirements/`](requirements/README.md), verified by tests that trace to it. A gate here can block a
