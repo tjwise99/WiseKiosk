@@ -603,7 +603,11 @@ already decided, which is what makes it a check and not a want.
   and is deliberately not re-encoded here. Unbuilt until a runner exists to detect anything: #82
   dead-test detector.
 - The default branch's required status checks equal the gate jobs the workflow defines — a gate job
-  absent from the required set fails, and so does a required entry naming no defined job.
+  absent from the required set fails, and so does a required entry naming no defined job. **The
+  protection is strict, and administrators are bound by it**: a branch behind the default branch
+  cannot merge on a stale green, and there is no role that merges past a red gate. Both are repository
+  settings rather than files, so no check here decides them — the same standing as the secret-scanning
+  settings above, and this line rather than a gate is what records it.
 
 The requirements tree's own integrity checks run here too, but what they assert is a property of the
 specification rather than of the repository, so they are stated where the specification is:
@@ -616,9 +620,11 @@ specification rather than of the repository, so they are stated where the specif
 ([ADR 0011 rev 1](decisions/0011-requirement-or-convention.md)). The pull-request template points
 there. Two of those questions have a mechanical artifact to read from, deliberately: the documentation
 index this document's gates hold to the tree, and `just rev-reach`, which lists every ADR citation a
-change re-pinned without touching the sentence around it
-([ADR 0022 rev 1](decisions/0022-rev-reach-enumerated-not-gated.md)). Neither is a gate — the second
-reports and exits zero, sits outside `just verify`, and is named so that it does not read as one.
+change re-pinned without touching the sentence around it. Neither is a gate — the second reports and
+exits zero, sits outside `just verify`, and is named so that it does not read as one. A blocking form
+was weighed and refused: a rev that does not touch what a citation asserts is the ordinary case, so
+failing every pin-only edit is fail-closed on legal input, and the exemption list it would grow is
+where a bypass gets spelled.
 
 **The product's obligations.** What the software must do is in
 [`requirements/`](requirements/README.md), verified by tests that trace to it. A gate here can block a

@@ -92,7 +92,7 @@ out of scope, the display host is out of reach, and the remainder is a compose f
 one compose file and one example configuration is those two files with an archive around them.
 
 **A compiled binary attached to the release tag.** It fits the language rule for what an operator runs
-([ADR 0017 rev 4](0017-authored-language-set.md)) as written and needs no runtime on the host, so it was
+([ADR 0017 rev 3](0017-authored-language-set.md)) as written and needs no runtime on the host, so it was
 the strongest form of a shipped helper. Rejected with the helper itself, and independently by the
 single-enforcer rule above: the only thing it could usefully do is emit a configuration, and it cannot
 check what it emits.

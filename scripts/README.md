@@ -1141,9 +1141,8 @@ accepted in one mode and rejected in the other.
 
 ## `adr-rev-reach.py`
 
-Not a check — it reports and exits zero, and sits outside `just verify`
-([ADR 0022 rev 1](../docs/decisions/0022-rev-reach-enumerated-not-gated.md)). Its cases are still
-recorded here, because what it must and must not list is the same kind of claim every row above makes.
+Not a check — it reports and exits zero, and sits outside `just verify`. Its cases are still recorded
+here, because what it must and must not list is the same kind of claim every row above makes.
 Exercised against the sweep that motivated it, `52bb933` on the branch squashed as `197d075`.
 
 | Direction | Case | Input | Reported |

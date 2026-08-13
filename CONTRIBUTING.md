@@ -79,7 +79,7 @@ reviewer is the mechanism ([ADR 0011 rev 1](docs/decisions/0011-requirement-or-c
 **Cite a question by number *and* name** — `question 8, *Generality*`. A bare number resolves silently
 to whatever occupies it after a renumber, in documents no sweep reliably reaches. New questions are
 appended for the same reason; inserting one is permitted
-([ADR 0017 rev 4](docs/decisions/0017-authored-language-set.md)) and renumbers everything below.
+([ADR 0017 rev 3](docs/decisions/0017-authored-language-set.md)) and renumbers everything below.
 
 **Documentation**
 
@@ -114,7 +114,7 @@ appended for the same reason; inserting one is permitted
     narrowing reachable by the defect the check exists to catch? An exemption is the first place a
     bypass gets spelled, and the reasoning that produces one reads as caution.
 12. **Languages.** Does the change author a program outside the set
-    [ADR 0017 rev 4](docs/decisions/0017-authored-language-set.md) states, and if so has that language
+    [ADR 0017 rev 3](docs/decisions/0017-authored-language-set.md) states, and if so has that language
     been through an ADR?
 13. **Second enforcer.** Does the change add a second place enforcing a rule an ADR allocated to one —
     today the configuration schema, validated in the page alone
@@ -170,9 +170,9 @@ appended for the same reason; inserting one is permitted
 21. **Rev reach.** Where the change revs an ADR, has each citation the sweep re-pinned **without
     touching the sentence around it** been read against what that rev actually changed?
     `just rev-reach` lists them, per file and line; `just check-adr-revs` holds the pin and decides
-    nothing about the claim ([ADR 0022 rev 1](docs/decisions/0022-rev-reach-enumerated-not-gated.md)).
-    A rev that does not touch what a citation asserts is the ordinary case, so most of that list is
-    sound — the failure is answering from having run the sweep rather than from having read it.
+    nothing about the claim. A rev that does not touch what a citation asserts is the ordinary case,
+    so most of that list is sound — the failure is answering from having run the sweep rather than
+    from having read it.
 22. **One home.** Is each fact the change states in prose stated in the document that guarantees it?
     The [index](docs/README.md) decides: a *Guarantees* cell is what a document may state, an
     *Excludes* cell is what it must cite instead. **The test is question 6 read one level up** — strip

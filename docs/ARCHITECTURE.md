@@ -25,7 +25,7 @@ shape is a repository check, in [`CI.md`](CI.md), rather than a need.
 Those two containers project onto two package roots — `backend/` and `frontend/` — with the one
 boundary schema at `boundary/openapi.yaml` because it belongs to neither, and the release material in
 `deploy/` because it is outside the boundary
-([ADR 0021 rev 2](decisions/0021-repository-layout.md)).
+([ADR 0021 rev 1](decisions/0021-repository-layout.md)).
 
 Every diagram below is **generated from the validated [LikeC4 model](architecture/README.md)**, not
 drawn by hand. Edit `docs/architecture/model/` and run `just arch-export`, which regenerates each
@@ -98,7 +98,7 @@ rest`" .-> Viewer
 The Component level (C4 L3) is drawn per container, in the two sections below, and the Deployment level
 in [§ Deployment](#deployment). No element carries a `link` to the source implementing it, no code
 existing; where that source sits when it lands is
-[ADR 0021 rev 2](decisions/0021-repository-layout.md).
+[ADR 0021 rev 1](decisions/0021-repository-layout.md).
 
 **Every accepted, active `SYS` or `SRS` item binds somewhere in this model, and where one cannot, the
 model grows to draw what it obliges** — there is no exemption record, and which items are unbound is
@@ -112,7 +112,7 @@ Deployment level, which is the level drawn to carry them.
 
 _To be documented as it is built._ Its source root is `backend/`, the Go module root, holding the shared
 framework under `internal/` and each upstream-backed module's shaping library under
-`internal/modules/<name>/` ([ADR 0021 rev 2](decisions/0021-repository-layout.md)). Language and
+`internal/modules/<name>/` ([ADR 0021 rev 1](decisions/0021-repository-layout.md)). Language and
 boundary-contract decision: [ADR 0001 rev 1](decisions/0001-backend-language-go.md); config-blindness:
 [ADR 0007 rev 2](decisions/0007-config-validation-allocation.md). What the backend must do is the
 [requirements tree](requirements/README.md); which obligations bind this container is the
@@ -164,7 +164,7 @@ is held`" .-> WisekioskBackend.UpstreamClient
 _To be documented as it is built._ Its source root is `frontend/`, the npm package root, holding the
 framework half under `src/lib/`, each module's component and configuration-schema fragment under
 `src/modules/<name>/`, and the configuration schema those fragments compose into under `src/config/`
-([ADR 0021 rev 2](decisions/0021-repository-layout.md)). Svelte 5 + Vite, a static single-page bundle
+([ADR 0021 rev 1](decisions/0021-repository-layout.md)). Svelte 5 + Vite, a static single-page bundle
 served as static files ([ADR 0018 rev 1](decisions/0018-frontend-svelte-vite-static-spa.md)); each
 module's poll cadence is that module's own need
 ([the module contract](contracts/module-contract.md)); configuration validation is frontend-owned
@@ -227,7 +227,7 @@ request parameters, success payloads, the structured upstream-failure and client
 and the status codes the frontend discriminates on.
 
 The one schema is `boundary/openapi.yaml`, and the types generated from it are committed inside the
-package that compiles them ([ADR 0021 rev 2](decisions/0021-repository-layout.md)). What the drift
+package that compiles them ([ADR 0021 rev 1](decisions/0021-repository-layout.md)). What the drift
 gate asserts, and what it leaves unproven, is [`CI.md`](CI.md) § *Generated boundary types*; the
 structure the generate step lands in is drawn here once it is built (#7 boundary-contract codegen).
 
@@ -305,6 +305,5 @@ SYS006<!-- Neither grant privilege nor require it -->, each with TST verificatio
 
 Everything else here is [`CI.md`](CI.md)'s and no requirement states it: published-artifact
 supply-chain integrity, which is material CI produces; the repository-facing gates; the branch
-protection that makes each gate job required — held there against the workflow rather than listed
-here, and strict, with administrators bound; and secret scanning with push protection, recorded there as configuration no
-workflow token can read.
+protection that makes each gate job required, held there against the workflow rather than listed here;
+and secret scanning with push protection, recorded there as configuration no workflow token can read.

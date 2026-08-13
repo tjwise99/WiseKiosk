@@ -12,7 +12,7 @@ entry. There is no mechanism to register with at runtime.
 
 The concrete locations — which directory holds a module's files, and where the registration list
 lives — are fixed by the repository layout
-([ADR 0021 rev 2](../decisions/0021-repository-layout.md)). This page names the parts, not their
+([ADR 0021 rev 1](../decisions/0021-repository-layout.md)). This page names the parts, not their
 paths.
 
 ## Two module shapes
