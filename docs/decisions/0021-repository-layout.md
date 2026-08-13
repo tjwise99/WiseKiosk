@@ -16,9 +16,9 @@ this projects landed as [ADR 0019 rev 5](0019-boundary-at-what-deploys-and-tag-t
 concrete locations — which directory holds a module's files, and where the registration list lives —
 to the repository layout. [ADR 0008 rev 2](0008-boundary-contract-openapi-codegen.md) chose the
 boundary-contract mechanism and left the schema's location open, which is what held #7
-boundary-contract codegen from building it. No element of the architecture model carries a source
-`link`, and [ADR 0019 rev 5](0019-boundary-at-what-deploys-and-tag-tier.md) names this record for
-where that source will sit. So the layout was a blocking dependency rather than a matter of tidiness,
+boundary-contract codegen from building it. No element of the architecture model carried a source
+`link`, and where that source would sit was undecided. So the layout was a blocking dependency rather
+than a matter of tidiness,
 and what it unblocks is a set of paths other work resolves.
 
 **Half the answer is already forced, by a rule written for another reason.**
