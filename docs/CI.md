@@ -507,7 +507,7 @@ top-level blocks are what a check can see, and they are what the rule above cons
 
 These keep a module self-contained and the shared framework ignorant of it. They were verification
 items in the tree until the extensibility need above them dissolved — its children were architecture
-([ADR 0012 rev 1](decisions/0012-module-requirements-in-tree.md)) — and nothing the running kiosk does can
+([ADR 0012 rev 2](decisions/0012-module-requirements-in-tree.md)) — and nothing the running kiosk does can
 violate any of them, so they are checks here rather than obligations there.
 
 - **Shared framework code names no module.** No shared framework source names any module outside the

@@ -78,7 +78,7 @@ an operator-tunable configuration key.
 
 First, write the module's need and its decomposition in the requirements tree — one `SYS` for the
 user-facing want, `SRS` items for what is specific to this module
-([ADR 0012 rev 1](../decisions/0012-module-requirements-in-tree.md)). The steps below build against it.
+([ADR 0012 rev 2](../decisions/0012-module-requirements-in-tree.md)). The steps below build against it.
 
 Steps 1, 3, 4 and 6 apply to upstream-backed modules only. Steps 2, 5, 7 and 8 apply to every
 module — a local module's component renders from configuration or the browser rather than from a

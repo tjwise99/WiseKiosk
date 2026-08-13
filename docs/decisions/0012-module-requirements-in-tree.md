@@ -2,17 +2,20 @@
 
 **Status:** accepted
 **Decided:** 2026-07-26 (`SRS` pass of the tree rebuild #69)
-**Rev:** 1
+**Rev:** 2
 
 ## Revisions
 
+- **rev 2** — 2026-08-13 — the Context opened on a count of the need tier that the tree contradicted,
+  and on which the framework-shaped observation rested. Replaced by the observation itself, which is
+  what the decision argues from; nothing else changes (#145 prose pass).
 - **rev 1** — 2026-08-05 — revision tracking begins; text as merged (#118 ADR revisions).
 
 ## Context
 
-The need tier holds eleven items and **not one of them says what the kiosk is for.** Every need is
-framework-shaped — failure legibility, the published artifact, the gate regime, the internal
-contract. The product's value reaches the tree only as the framework that carries it.
+The need tier was **framework-shaped throughout** — failure legibility, the published artifact, the
+gate regime, the internal contract — and nothing in it said what the kiosk is *for*. The product's
+value reached the tree only as the framework that carries it.
 
 That left module-specific obligations with no home. The `SRS` pass repeatedly routed content "to that
 module's work" — the triage rule for an item whose content is one instance — against a destination

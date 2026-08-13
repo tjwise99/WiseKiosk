@@ -19,7 +19,7 @@ A V-model tree — needs on the left, verification on the right:
 
 A module is a need: each carries one `SYS` item for its user-facing want, decomposed into `SRS` items
 stating only what is specific to that module. Obligations true of every module stay on the framework
-needs and are not restated ([ADR 0012 rev 1](../decisions/0012-module-requirements-in-tree.md)).
+needs and are not restated ([ADR 0012 rev 2](../decisions/0012-module-requirements-in-tree.md)).
 
 Each item is one YAML file named for its ID (`SYS001.yml`) — the prefix plus a zero-padded 3-digit
 number. **An ID is permanent**: once assigned it is never reused or renumbered, so external

@@ -3,10 +3,15 @@
 **Status:** accepted
 **Decided:** 2026-08-04 (#60 authored-language set, taken after
 [ADR 0016 rev 3](0016-maintained-tools-for-standard-artifacts.md) settled which authored checks survive at all)
-**Rev:** 3
+**Rev:** 4
 
 ## Revisions
 
+- **rev 4** — 2026-08-13 — three claims the tree contradicted: a count of Python check scripts and the
+  *reads-the-tree* split drawn from it, a line count for the one sh file, and a closed ticket carrying
+  the argument that this disposition ends rather than grandfathers. Each replaced by the rule it was
+  an instance of; the language set, the derivation rule and every rejected alternative are unchanged
+  (#145 prose pass).
 - **rev 3** — 2026-08-08 — drops the append-only placement constraint on the review checklist: a
   citation carries the question's name beside its number, so a renumber no longer strands one. The
   language set is unchanged (#129 retire the desk configuration validator).
@@ -41,9 +46,10 @@ indefinitely. Node does not leave the repository either way — LikeC4
 ([ADR 0018 rev 1](0018-frontend-svelte-vite-static-spa.md)) make it unconditional as an invoked toolchain. The
 asymmetry is about which layer owes which interpreter, not about which language is present.
 
-Symmetrically, every one of the six Python check scripts imports `doorstop` or `yaml`, so the split
-at the time of this decision is exactly *reads the requirements tree* against *does not*. The Node
-dependency is habit; the Python one is the Doorstop silo.
+Symmetrically, a Python check that reads the requirements tree imports `doorstop` or `yaml` and so
+pays no interpreter this repository was not already installing. The Node dependency is habit; the
+Python one is the Doorstop silo. A Python check that reads something else — the decisions directory,
+say — imports neither and still pays nothing, which is the asymmetry rather than an exception to it.
 
 ## Decision
 
@@ -99,17 +105,19 @@ reads the tree is a different artifact from one that reads the repository.
 exemption:** `scripts/check-branch.sh` converts (#109 check-branch conversion); the four index, silo
 and splice checks in Node convert (#110 Node check conversion); `scripts/check-verify-ci-parity.mjs`
 waits on #101 CI invoking just recipes directly, because that ticket may delete it (#111 parity-check
-conversion); and `scripts/validate-tree.sh` is **deleted rather than converted**, by #78 retire the
+conversion); and `scripts/validate-tree.sh` is **deleted rather than converted**, retiring the
 pending-TST-tier exception, which drops the wrapper and restores the bare `doorstop` call it stands
-in for. Tree validation is not what goes; the exception is.
+in for. Tree validation is not what goes; the exception is. The wrapper itself names where that
+retirement is tracked, and says so in the message it prints on the run that makes it unnecessary.
 
-**#78 is committed but unscheduled, and that has a cost worth stating:** it fires when the first
-`TST` item activates, so until then sh remains an authored language in this tree for one 34-line
-file — a classifier arm and its fixtures, which is exactly the price the grandfathering alternative
-was rejected for paying. The disposition is deletion rather than conversion because converting a
-script another ticket deletes is the waste this decision's own sequencing avoids elsewhere; the cost
-is accepted, not overlooked. The difference from grandfathering is that this ends, and #78 is where
-it is decided that it has not — if that ticket stalls, conversion is the remedy and this record needs
+**That deletion is conditional, and the cost of the condition is worth stating:** the wrapper goes
+when the first `TST` item activates and the exception it stands in for stops being needed, so until
+then sh remains an authored language in this tree for exactly one file — a classifier arm and its
+fixtures, which is the price the grandfathering alternative was rejected for paying. The disposition
+is deletion rather than conversion because converting a script another change deletes is the waste
+this decision's own sequencing avoids elsewhere; the cost is accepted, not overlooked. The difference
+from grandfathering is that this ends on a condition the tree decides rather than on anyone's
+intention — and if that condition proves unreachable, conversion is the remedy and this record needs
 no rev for it.
 
 That list is a snapshot taken on the decision date, not a standing inventory — no check compares it
