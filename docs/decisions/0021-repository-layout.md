@@ -16,8 +16,8 @@ this projects landed as [ADR 0019 rev 5](0019-boundary-at-what-deploys-and-tag-t
 locations — which directory holds a module's files, and where the registration list lives — are fixed
 here. [ADR 0008 rev 2](0008-boundary-contract-openapi-codegen.md) chooses the boundary-contract
 mechanism and leaves the schema's location open, which is what holds #7 boundary-contract codegen from
-building it. [ADR 0019 rev 5](0019-boundary-at-what-deploys-and-tag-tier.md) gives it as one of the two
-reasons no model element carries a `link`.
+building it. [ADR 0019 rev 5](0019-boundary-at-what-deploys-and-tag-tier.md) withholds a `link` from
+every model element partly for want of it.
 So the layout is a blocking dependency rather than a matter of tidiness, and the thing being unblocked
 is a set of paths other work will resolve.
 
@@ -182,9 +182,12 @@ the second one to be invented would have to argue against the first rather than 
   set of ecosystems, failing an unmapped one outright rather than passing it — so such an entry needs
   a script edit wherever the Dockerfile sits. Recorded for #54 container build and publish, which is
   where the trade lands; neither half is decided here.
-- **The model's `link` properties gain their targets with the source they point at.** ADR 0019 rev 5
-  withholds one for two reasons — no source, and no layout. This record answers the second; the first
-  is what keeps every element without one.
+- **The model's `link` properties gain their targets with the source they point at.** This record
+  supplies the layout a `link` needs; no source exists, and that is what keeps every element without
+  one. How ADR 0019 rev 5 words its own deferral is that record's to change, so this one does not
+  count its reasons — a claim about another record's argument goes stale when that record is revised,
+  and a pinned citation is green either way, the pin being current while what it is attached to is
+  not.
 - **Almost none of this is gated.** The root-manifest half is enforced today; the rest is a convention
   that becomes checkable as the module and framework structure checks
   [`../CI.md`](../CI.md) describes are built against these paths. Until then review is the control,
