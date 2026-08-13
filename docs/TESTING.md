@@ -42,9 +42,9 @@ scheduled run decides whether the fixtures still describe reality.
 
 **Rejected: an encrypted CI secret scoped to one workflow, running live on every pull request.** It
 costs quota against a rate limit nobody watches, and it inherits upstream availability on the merge
-path, which trains an author to ignore red. Only one upstream source needs a credential ([`CI.md §
-Upstream contract checks`](CI.md#upstream-contract-checks) names which), so this would have been a
-general solution to a case of one. Confining the credentialed job to the schedule, off the merge
+path, which trains an author to ignore red. Few upstream sources need a credential at all — which
+ones is the [module roster](../README.md)'s and each module's registration entry — so this would have
+been a general solution to a narrow case. Confining the credentialed job to the schedule, off the merge
 path, is the narrower answer to the nested module
 [ADR 0010 rev 1](decisions/0010-runtime-materialised-gate-fixtures.md) found leaky.
 
