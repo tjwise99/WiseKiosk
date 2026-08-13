@@ -27,6 +27,11 @@ tree](requirements/README.md) for the intended architecture until this section d
 one. The frontend's static-bundle shape is not a need: it is a repository check, in
 [`CI.md`](CI.md).
 
+Those two containers project onto two package roots — `backend/`, the Go module root, and
+`frontend/`, the npm package root — with the one boundary schema at `boundary/openapi.yaml` because it
+belongs to neither, and the release material in `deploy/` because it is outside the boundary
+([ADR 0021 rev 1](decisions/0021-repository-layout.md)).
+
 The diagram below is **generated from the validated [LikeC4 model](architecture/README.md)**, not
 drawn by hand — edit `docs/architecture/model/` and run `just arch-export`, which regenerates every
 Mermaid artifact in [`docs/architecture/generated/`](architecture/generated/) and splices each
@@ -103,7 +108,8 @@ rest`" .-> Viewer
 
 The Component level (C4 L3) is drawn per container, in the two container sections below, and the
 Deployment level in [§ Deployment](#deployment). No element carries a `link` to the source
-implementing it: no code exists, and the repository layout is #5 repo layout.
+implementing it: no code exists. Where that source sits when it lands is
+[ADR 0021 rev 1](decisions/0021-repository-layout.md).
 
 **Every accepted, active `SYS` or `SRS` item binds somewhere in this model, and where one cannot, the
 model grows to draw what it obliges**
@@ -125,7 +131,10 @@ level, which is the level drawn to carry them.
 
 ## Backend
 
-_To be documented as it is built._ Language and boundary-contract decision:
+_To be documented as it is built._ Its source root is `backend/`, the Go module root, holding the
+shared framework under `internal/` and each upstream-backed module's shaping library under
+`internal/modules/<name>/` ([ADR 0021 rev 1](decisions/0021-repository-layout.md)). Language and
+boundary-contract decision:
 [ADR 0001 rev 1](decisions/0001-backend-language-go.md); the backend's config-blindness is
 [ADR 0007 rev 2](decisions/0007-config-validation-allocation.md)'s. What the backend must do is the
 [requirements tree](requirements/README.md); which obligations bind this container is the
@@ -182,7 +191,11 @@ is held`" .-> WisekioskBackend.UpstreamClient
 
 ## Frontend
 
-_To be documented as it is built._ Svelte 5 + Vite, a static single-page bundle served as static
+_To be documented as it is built._ Its source root is `frontend/`, the npm package root, holding the
+framework half under `src/lib/`, each module's component and configuration-schema fragment under
+`src/modules/<name>/`, and the configuration schema those fragments compose into under `src/config/`
+([ADR 0021 rev 1](decisions/0021-repository-layout.md)). Svelte 5 + Vite, a static single-page bundle
+served as static
 files ([ADR 0018 rev 1](decisions/0018-frontend-svelte-vite-static-spa.md)); each module's poll cadence is
 that module's own need, per
 [the module contract](contracts/module-contract.md); configuration
@@ -249,8 +262,10 @@ sides and fails on any difference. The schema owns every value that crosses the 
 parameters, success payloads, the structured upstream-failure and client-error rejection bodies, and
 the status codes the frontend discriminates on.
 
-_The concrete wiring — where the schema file lives, the generate step, the drift-check workflow — is
-documented here once it is built (#7, after the repo layout in #5)._
+The one schema is `boundary/openapi.yaml`, and the types generated from it are committed inside the
+package that compiles them ([ADR 0021 rev 1](decisions/0021-repository-layout.md)). _The rest of the
+wiring — the generate step, the drift-check workflow — is documented here once it is built (#7
+boundary-contract codegen)._
 
 ## Config and secrets
 
