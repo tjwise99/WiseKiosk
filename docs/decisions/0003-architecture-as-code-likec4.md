@@ -43,7 +43,7 @@ can be **added later without restructuring** (LikeC4 nests elements additively).
 here: no application code exists, so building them would be an abstraction with a single
 implementation and no second consumer ([`CONTRIBUTING.md`](../../CONTRIBUTING.md)'s review checklist,
 question 8, *Generality*). That ground holds for the Code level and is answered for the Component
-level, which [ADR 0019 rev 4](0019-boundary-at-what-deploys-and-tag-tier.md) builds — superseding this
+level, which [ADR 0019 rev 5](0019-boundary-at-what-deploys-and-tag-tier.md) builds — superseding this
 record in that part alone.
 
 ## Alternatives considered
@@ -82,4 +82,4 @@ renderable browser-free.
   ids (architecture → requirements). The SRS items this was decided against were placeholder, pending
   the requirements pass in issue #18, so this decision bound none of them. Which tier an element's tag
   names, and the binding itself, are
-  [ADR 0019 rev 4](0019-boundary-at-what-deploys-and-tag-tier.md)'s.
+  [ADR 0019 rev 5](0019-boundary-at-what-deploys-and-tag-tier.md)'s.

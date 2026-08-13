@@ -310,13 +310,13 @@ written rather than a defect in the document.
 
 The consequential one is the second: every `|`-leading line in `docs/README.md` is read as an index
 row, so the file may hold exactly one table and no fenced example containing one. `docs/CI.md` and
-ADR 0014 rev 1 both say a *Document* cell *renders* as a path, where the check requires a Markdown link
+ADR 0014 rev 2 both say a *Document* cell *renders* as a path, where the check requires a Markdown link
 whose text is a backticked path — the prose is looser than the code.
 
 **What it does not catch.** Two things, both run and observed rather than reasoned about.
 
 **A new top-level dot-directory is excluded the moment it exists**, with no edit anywhere: adding
-`.notes/NOTES.md` alone gives exit 0. This is the accepted trade recorded in ADR 0014 rev 1 — it is what
+`.notes/NOTES.md` alone gives exit 0. This is the accepted trade recorded in ADR 0014 rev 2 — it is what
 buys the absence of an exclusions list, since anything that is *not* a dot-directory cannot be
 excluded without changing this check. The check names the machinery directories it skipped on every
 run, so a new one is on screen rather than inferred from a count. An earlier revision of this PR
@@ -1007,7 +1007,7 @@ a reader nothing about which half is wrong.
 **Every row in this section was re-run at `adc1f65`, against `check-arch-trace.py` md5
 `f3d15a77411d08dc2fc50c04cb798b1a`.** That scan is unchanged from the
 `962e69718a8927aadfabf50422913937` the rows were last run against: the whole diff is three docstring
-lines and one message string, each a citation moving to ADR 0019 rev 4.
+lines and one message string, each a citation moving to ADR 0019 rev 5.
 
 **Pinning the script is not enough here, and that is what this section learned.** Its rows count
 elements, relationships and items, so a model or tree that grows re-decides every one of them while
@@ -1237,7 +1237,7 @@ with no deployment block — is what would make it a property of the check.
 ### What it does not catch: a tag on a view
 
 The export carries tags in a fifth place — `views[x].tags` — and the scan does not read it. That is
-deliberate: a view is a projection of the model rather than a subject in it, and ADR 0019 rev 4 binds
+deliberate: a view is a projection of the model rather than a subject in it, and ADR 0019 rev 5 binds
 an item to an element or a relationship. Two runs, both observed rather than reasoned about:
 
 | Seed | Result |
@@ -1258,7 +1258,7 @@ single-project setup and is the next place to look if a second LikeC4 project is
 and this check writes nothing to the working tree — asserted, not assumed, by taking
 `git status --porcelain` before and after a run in a git fixture and finding it unchanged, with zero
 index entries. `just check-arch` passes on the tree as it stands, which is the other half: the tag
-moves this branch made changed no generated artifact, as ADR 0019 rev 4 says they cannot.
+moves this branch made changed no generated artifact, as ADR 0019 rev 5 says they cannot.
 
 ## `check-site`
 

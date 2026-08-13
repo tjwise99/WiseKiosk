@@ -18,7 +18,7 @@ How the pieces of WiseKiosk actually fit together — the living structural desc
 
 One published container image serving a full-screen, config-driven smart-mirror display. A Go
 backend proxies a handful of public APIs and serves the built frontend
-([ADR 0019 rev 4](decisions/0019-boundary-at-what-deploys-and-tag-tier.md)); a Svelte SPA renders
+([ADR 0019 rev 5](decisions/0019-boundary-at-what-deploys-and-tag-tier.md)); a Svelte SPA renders
 modules into regions of the page. See the [README](../README.md) for the product definition, and
 SYS002<!-- The display's rendering keeps nothing from a viewer -->,
 SYS004<!-- Upstream data reaches the display only through the backend --> and
@@ -26,6 +26,11 @@ SYS005<!-- Single-definition internal contract --> with their SRS children in th
 tree](requirements/README.md) for the intended architecture until this section describes the built
 one. The frontend's static-bundle shape is not a need: it is a repository check, in
 [`CI.md`](CI.md).
+
+Those two containers project onto two package roots — `backend/`, the Go module root, and
+`frontend/`, the npm package root — with the one boundary schema at `boundary/openapi.yaml` because it
+belongs to neither, and the release material in `deploy/` because it is outside the boundary
+([ADR 0021 rev 1](decisions/0021-repository-layout.md)).
 
 The diagram below is **generated from the validated [LikeC4 model](architecture/README.md)**, not
 drawn by hand — edit `docs/architecture/model/` and run `just arch-export`, which regenerates every
@@ -36,9 +41,9 @@ are overwritten on the next export, and drift fails the staleness gate — see t
 
 **System context (C4 L1)** — the Operator who deploys and configures WiseKiosk, the Viewer it renders
 for, and the boundary between them, which is what deploys: the published image and what it serves
-([ADR 0019 rev 4](decisions/0019-boundary-at-what-deploys-and-tag-tier.md)). No external system
+([ADR 0019 rev 5](decisions/0019-boundary-at-what-deploys-and-tag-tier.md)). No external system
 appears at this level: an upstream data source is modelled once the module that reads it has a need
-in the tree ([ADR 0019 rev 4](decisions/0019-boundary-at-what-deploys-and-tag-tier.md)).
+in the tree ([ADR 0019 rev 5](decisions/0019-boundary-at-what-deploys-and-tag-tier.md)).
 
 <!-- arch-export:begin generated/index.mmd -->
 
@@ -63,7 +68,7 @@ rest`" .-> Viewer
 **Containers (C4 L2)** — what runs inside the boundary. Two things run: the backend process, and the
 frontend bundle executing in the browser on the display host. They share one origin, because the
 backend serves that bundle and the configuration file as static content it never interprets
-([ADR 0019 rev 4](decisions/0019-boundary-at-what-deploys-and-tag-tier.md),
+([ADR 0019 rev 5](decisions/0019-boundary-at-what-deploys-and-tag-tier.md),
 [ADR 0007 rev 2](decisions/0007-config-validation-allocation.md)). What parameterises a deployment
 (SYS003<!-- A deployment is parameterised from outside the image -->) reaches that filesystem as two
 separate supplies: the secret for each source, resolved per request
@@ -72,7 +77,7 @@ configuration, which the image does not carry
 (SRS018<!-- One generic published image -->) and which reaches its consumer on a second hop, when the
 page fetches it. No upstream source appears here for the reason none appears above: an upstream
 belongs to the module that reads it, and no module need is written
-([ADR 0019 rev 4](decisions/0019-boundary-at-what-deploys-and-tag-tier.md)).
+([ADR 0019 rev 5](decisions/0019-boundary-at-what-deploys-and-tag-tier.md)).
 
 <!-- arch-export:begin generated/containers.mmd -->
 
@@ -103,11 +108,12 @@ rest`" .-> Viewer
 
 The Component level (C4 L3) is drawn per container, in the two container sections below, and the
 Deployment level in [§ Deployment](#deployment). No element carries a `link` to the source
-implementing it: no code exists, and the repository layout is #5 repo layout.
+implementing it: no code exists. Where that source sits when it lands is
+[ADR 0021 rev 1](decisions/0021-repository-layout.md).
 
 **Every accepted, active `SYS` or `SRS` item binds somewhere in this model, and where one cannot, the
 model grows to draw what it obliges**
-([ADR 0019 rev 4](decisions/0019-boundary-at-what-deploys-and-tag-tier.md)). There is no exemption record:
+([ADR 0019 rev 5](decisions/0019-boundary-at-what-deploys-and-tag-tier.md)). There is no exemption record:
 an item bound nowhere is a level this model has not drawn yet, not a case to register. An item still
 `proposed` is outside the rule rather than exempt from it, since `check-arch-trace` resolves a tag only
 to an accepted item; a retired item is out for the same reason it obliges nothing, and retirement is
@@ -119,13 +125,16 @@ outside it too: a verification item says how an obligation is settled, not what 
 compares to the tree, and it is wrong from the first binding that lands after it. The **kind** of
 absence is what a reader needs, and there is one: an item whose subject the model does not draw at
 all. That is a reason to grow the model, never to register an exemption
-([ADR 0019 rev 4](decisions/0019-boundary-at-what-deploys-and-tag-tier.md)), and the worked example is
+([ADR 0019 rev 5](decisions/0019-boundary-at-what-deploys-and-tag-tier.md)), and the worked example is
 the published image: neither container nor component, so the obligations on it sit at the Deployment
 level, which is the level drawn to carry them.
 
 ## Backend
 
-_To be documented as it is built._ Language and boundary-contract decision:
+_To be documented as it is built._ Its source root is `backend/`, the Go module root, holding the
+shared framework under `internal/` and each upstream-backed module's shaping library under
+`internal/modules/<name>/` ([ADR 0021 rev 1](decisions/0021-repository-layout.md)). Language and
+boundary-contract decision:
 [ADR 0001 rev 1](decisions/0001-backend-language-go.md); the backend's config-blindness is
 [ADR 0007 rev 2](decisions/0007-config-validation-allocation.md)'s. What the backend must do is the
 [requirements tree](requirements/README.md); which obligations bind this container is the
@@ -140,7 +149,7 @@ check exists: it holds the set of upstream requests the backend can be made to i
 configuration calls for
 (SYS004<!-- Upstream data reaches the display only through the backend -->), whoever is asking. A module's own half of this
 container is its shaping library, drawn when that module's need lands
-([ADR 0019 rev 4](decisions/0019-boundary-at-what-deploys-and-tag-tier.md)); the handler
+([ADR 0019 rev 5](decisions/0019-boundary-at-what-deploys-and-tag-tier.md)); the handler
 calls it twice — to build the upstream request and to parse the answer — so what is drawn here cannot
 serve a payload on its own. A route's parameter validation, its two cache TTLs, its rate limit, its
 outbound timeout and its maximum response size are one entry in a static registration list and live
@@ -182,7 +191,11 @@ is held`" .-> WisekioskBackend.UpstreamClient
 
 ## Frontend
 
-_To be documented as it is built._ Svelte 5 + Vite, a static single-page bundle served as static
+_To be documented as it is built._ Its source root is `frontend/`, the npm package root, holding the
+framework half under `src/lib/`, each module's component and configuration-schema fragment under
+`src/modules/<name>/`, and the configuration schema those fragments compose into under `src/config/`
+([ADR 0021 rev 1](decisions/0021-repository-layout.md)). Svelte 5 + Vite, a static single-page bundle
+served as static
 files ([ADR 0018 rev 1](decisions/0018-frontend-svelte-vite-static-spa.md)); each module's poll cadence is
 that module's own need, per
 [the module contract](contracts/module-contract.md); configuration
@@ -197,7 +210,7 @@ fetch of each module's payload, and the assembly of configured modules into thei
 places what it is handed and fetches nothing, which is the discipline the module contract puts on a
 module component applied one level up. A module's own half of this container is its Svelte component,
 drawn when that module's need lands
-([ADR 0019 rev 4](decisions/0019-boundary-at-what-deploys-and-tag-tier.md)) — which is why
+([ADR 0019 rev 5](decisions/0019-boundary-at-what-deploys-and-tag-tier.md)) — which is why
 the edge to the Viewer leaves this container rather than a region within it. The bundle that becomes
 this container arrives on the one edge drawn server-to-client, which terminates on the container
 rather than on a child because no component exists to fetch what has yet to run; `include *` does not
@@ -241,7 +254,7 @@ One schema definition, both sides generated from it — the load-bearing structu
 whole system (SYS005<!-- Single-definition internal contract -->,
 SRS015<!-- One schema, all boundary value classes -->–SRS016<!-- Both sides consume the generated types -->,
 [ADR 0001 rev 1](decisions/0001-backend-language-go.md)). The codegen mechanism is
-[ADR 0008 rev 1](decisions/0008-boundary-contract-openapi-codegen.md): a single hand-authored OpenAPI
+[ADR 0008 rev 2](decisions/0008-boundary-contract-openapi-codegen.md): a single hand-authored OpenAPI
 schema (3.0.3, with 3.1 the stated migration target), owned by neither package, with Go types
 generated by `oapi-codegen` and TypeScript types by `openapi-typescript`, kept honest by a CI drift
 gate that regenerates both
@@ -249,8 +262,10 @@ sides and fails on any difference. The schema owns every value that crosses the 
 parameters, success payloads, the structured upstream-failure and client-error rejection bodies, and
 the status codes the frontend discriminates on.
 
-_The concrete wiring — where the schema file lives, the generate step, the drift-check workflow — is
-documented here once it is built (#7, after the repo layout in #5)._
+The one schema is `boundary/openapi.yaml`, and the types generated from it are committed inside the
+package that compiles them ([ADR 0021 rev 1](decisions/0021-repository-layout.md)). _The rest of the
+wiring — the generate step, the drift-check workflow — is documented here once it is built (#7
+boundary-contract codegen)._
 
 ## Config and secrets
 
@@ -267,7 +282,7 @@ bare `<NAME>` environment variable (SRS007<!-- Configuration schema offers no se
 ## Deployment
 
 **Deployment** — what the project publishes, the hosts that run it, and the files the operator places
-beside them ([ADR 0019 rev 4](decisions/0019-boundary-at-what-deploys-and-tag-tier.md)). It is not
+beside them ([ADR 0019 rev 5](decisions/0019-boundary-at-what-deploys-and-tag-tier.md)). It is not
 one of C4's four core levels: C4's fourth is Code, and deployment is a supplementary diagram mapping
 containers onto the infrastructure they run on.
 
@@ -306,7 +321,7 @@ The published image is the one node here that exists before any deployment does 
 and the secret files sit at a deployment site as it does not — and it is drawn because the obligations
 on it are obligations on the artifact rather than on the process it becomes. A deployment can override
 what the image declares, which is why the two are separate subjects
-([ADR 0019 rev 4](decisions/0019-boundary-at-what-deploys-and-tag-tier.md)).
+([ADR 0019 rev 5](decisions/0019-boundary-at-what-deploys-and-tag-tier.md)).
 
 The container host and the display host are **roles, not machines**. They have different floors — a
 runtime able to run the published image on one, a browser on the other — and one machine meeting both
@@ -314,7 +329,7 @@ may carry both. In the configuration this is built for it cannot: the display ho
 of those, so the two are separate machines there. What the software must run on binds on what this
 project ships rather than on hardware the operator supplies, so a host carries a tag only where an
 item obliges the operator
-([ADR 0019 rev 4](decisions/0019-boundary-at-what-deploys-and-tag-tier.md)).
+([ADR 0019 rev 5](decisions/0019-boundary-at-what-deploys-and-tag-tier.md)).
 
 The concrete wiring — the deployment recipe, the mount paths, the example configuration a release
 carries — is [`DEPLOYMENT.md`](DEPLOYMENT.md)'s, and so are the health signal and the restart policy:

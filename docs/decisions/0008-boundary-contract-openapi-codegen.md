@@ -3,10 +3,13 @@
 **Status:** accepted
 **Decided:** 2026-07-23 (boundary-contract requirements round #37; the codegen-mechanism trade
 carried by #7). This ADR records the mechanism **decision**; the **build** is #7.
-**Rev:** 1
+**Rev:** 2
 
 ## Revisions
 
+- **rev 2** — 2026-08-12 — the schema's location, left open here and named as another ticket's to
+  take, is [ADR 0021 rev 1](0021-repository-layout.md)'s; the sentences deferring it now cite that
+  record. The mechanism, the version and the drift gate are unchanged (#5 repo layout).
 - **rev 1** — 2026-08-05 — revision tracking begins; text as merged (#118 ADR revisions).
 
 ## Context
@@ -19,14 +22,15 @@ SRS015<!-- One schema, all boundary value classes -->–SRS016<!-- Both sides co
 deliberately **mechanism-agnostic** — a "shall" that names a tool churns when the tool changes. This
 ADR chooses the tool, which is the decision half of #7.
 
-#7 is gated on #5 (repo layout — where the single schema and the two packages live). Choosing the
-mechanism does not need that layout; only *building* it does. So this ADR lands the decision now,
-and #7's acceptance — schema file present, both generators wired, drift gate green — waits on #5.
+#7 was gated on the repository layout — where the single schema and the two packages live. Choosing
+the mechanism does not need that layout; only *building* it does, so this ADR took the decision
+without one, and [ADR 0021 rev 1](0021-repository-layout.md) supplied the layout afterwards. #7's
+acceptance — schema file present, both generators wired, drift gate green — is what waited.
 
 ## Decision
 
-- **One hand-authored OpenAPI schema is the single definition**, owned by neither package (its
-  repository location is #5's call). A module contributes its payload as a **named component inside
+- **One hand-authored OpenAPI schema is the single definition**, owned by neither package (it sits at
+  `boundary/openapi.yaml`, per [ADR 0021 rev 1](0021-repository-layout.md)). A module contributes its payload as a **named component inside
   that schema**: the *fragment* [the module contract](../contracts/module-contract.md) part 5 names is
   that component, a section of the one schema rather than a file of its own, so nothing recomposes and
   the schema stays authored rather than generated. Rejected — one fragment file per module, recomposed
@@ -95,7 +99,8 @@ and #7's acceptance — schema file present, both generators wired, drift gate g
 ## Consequences
 
 - **#7 becomes an implementation ticket**: the mechanism is settled; its build (schema file, wired
-  generators, green drift gate) waits on #5's repo layout.
+  generators, green drift gate) has the layout it waited for
+  ([ADR 0021 rev 1](0021-repository-layout.md)).
 - **Two pinned generators to keep current** — inherent to Go not sharing types (ADR 0001 rev 1 paid for
   this knowingly), tracked like any pinned tool.
 - **Hand-authored OpenAPI YAML is verbose** — accepted for ~5 payloads; the 3.1 migration and, if it
@@ -105,7 +110,7 @@ and #7's acceptance — schema file present, both generators wired, drift gate g
   rendering — a shared *vocabulary*, not a merged schema (that would be abstraction without a second
   consumer).
 - **ARCHITECTURE.md's "boundary contract" section** (its "open question 2") is answered by this ADR;
-  the fuller prose is written when the mechanism is built under #7/#5.
+  the fuller prose is written when the mechanism is built, under #7 boundary-contract codegen.
 - **Requirement text stays mechanism-agnostic**
   (SYS005<!-- Single-definition internal contract -->,
   SRS015<!-- One schema, all boundary value classes -->–SRS016<!-- Both sides consume the generated types -->):

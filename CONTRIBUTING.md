@@ -151,7 +151,7 @@ appended for the same reason; inserting one is permitted
     is merely plausible on? Both gates read green either way: a tag renders nowhere, so `check-arch`
     compares artifacts a move leaves byte-identical, and `check-arch-trace` asks only that every
     accepted item is tagged somewhere
-    ([ADR 0019 rev 4](docs/decisions/0019-boundary-at-what-deploys-and-tag-tier.md)). An item that can
+    ([ADR 0019 rev 5](docs/decisions/0019-boundary-at-what-deploys-and-tag-tier.md)). An item that can
     bind nowhere is a level the model has not drawn.
 
 **Prose**
