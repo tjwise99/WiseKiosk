@@ -119,19 +119,14 @@ boundary-contract decision: [ADR 0001 rev 1](decisions/0001-backend-language-go.
 [architecture model](architecture/README.md), as each is modelled (#119 C4 model completion). Neither is
 restated here.
 
-**Components (C4 L3)** — the backend's framework half: a route handler owning the order things happen
-in, and beneath it what checks a request's parameters before any upstream call, what holds an answer,
-what goes out for a new one, and what serves files. Nothing here reads who is asking
-(SRS009<!-- Every source reachable through the backend, statelessly -->), which is why the parameter
-check exists: it holds the set of upstream requests the backend can be made to issue to the set its
-configuration calls for (SYS004<!-- Upstream data reaches the display only through the backend -->),
-whoever is asking. A module's own half of this container is its shaping library, drawn when that
-module's need lands ([ADR 0019 rev 5](decisions/0019-boundary-at-what-deploys-and-tag-tier.md)); the
-handler calls it twice — to build the upstream request and to parse the answer — so what is drawn here
-cannot serve a payload on its own. A route's parameter validation, its two cache TTLs, its rate limit,
-its outbound timeout and its maximum response size are one entry in a static registration list and live
-nowhere else ([the module contract](contracts/module-contract.md)); that entry is data these components
-read rather than a component of its own.
+**Components (C4 L3)**, diagrammed below; each box's responsibility is the model's, not restated here.
+A module's own half of this container is its shaping library, drawn when that module's need lands
+([ADR 0019 rev 5](decisions/0019-boundary-at-what-deploys-and-tag-tier.md)); the route handler calls
+it twice — to build the upstream request and to parse the answer — so what is drawn here cannot serve
+a payload on its own. A route's policies — parameter validation, both cache TTLs, rate limit, outbound
+timeout, maximum response size — are one entry in the static registration list and live nowhere else
+([the module contract](contracts/module-contract.md)); that entry is data these components read rather
+than a component of its own.
 
 <!-- arch-export:begin generated/backendComponents.mmd -->
 
@@ -178,17 +173,15 @@ module's poll cadence is that module's own need
 [architecture model](architecture/README.md), as each is modelled (#119 C4 model completion). Neither is
 restated here.
 
-**Components (C4 L3)** — the frontend's framework half: a page shell owning the order things happen in,
-which renders before any configuration is applied, and beneath it the load-and-validate step, the fetch
-of each module's payload, and the assembly of configured modules into their regions. Assembly places
-what it is handed and fetches nothing — the discipline the module contract puts on a module component,
-applied one level up. A module's own half of this container is its Svelte component, drawn when that
-module's need lands ([ADR 0019 rev 5](decisions/0019-boundary-at-what-deploys-and-tag-tier.md)), which
-is why the edge to the Viewer leaves this container rather than a region within it. The bundle that
-becomes this container arrives on the one edge drawn server-to-client, terminating on the container
-rather than on a child because no component exists to fetch what has yet to run; `include *` does not
-reach it, so this view alone omits where the bundle comes from, and the Backend's view above is where it
-is drawn.
+**Components (C4 L3)**, diagrammed below; each box's responsibility is the model's, not restated here.
+A module's own half of this container is its Svelte component, drawn when that module's need lands
+([ADR 0019 rev 5](decisions/0019-boundary-at-what-deploys-and-tag-tier.md)), which is why the edge to
+the Viewer leaves this container rather than a region within it. Assembly's discipline — placing what
+it is handed, fetching nothing — is the module contract's rule for a module component, applied one
+level up. The bundle that becomes this container arrives on the one edge drawn server-to-client,
+terminating on the container rather than on a child because no component exists to fetch what has yet
+to run; `include *` does not reach it, so this view alone omits where the bundle comes from, and the
+Backend's view above is where it is drawn.
 
 <!-- arch-export:begin generated/frontendComponents.mmd -->
 
