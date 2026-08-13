@@ -27,15 +27,11 @@ The inputs this check has been run against, in both directions. What it *asserts
 | Must pass | In-repo symlink | a symlink whose target is inside the repository |
 | Must pass | Prose that resembles a definition | a sentence opening with a bracketed label and a colon |
 
-The symlink pair is the one that matters. `resolve()` and `existsSync()` both follow a symlink without
-reporting that they did, so a path whose *text* stays inside said nothing about where it landed — the
-check's own invariant defeated with no signal either way. The three-syntax rows are the same lesson
-from the other side: matching only Markdown's inline form leaves two other ways of writing a relative
-path entirely unread.
+The symlink pair and the three-syntax rows are each a pair: one proves the check follows a link, the
+other that it reads every syntax carrying a relative path.
 
-**This section cannot show its own cases.** Backticks do not exempt a link from the scan, so writing
-one out as an example makes it a real link that must resolve; the cases are described rather than
-quoted. The first draft quoted them and `just verify` failed on this file.
+**This file cannot show its own cases.** Backticks do not exempt a link from the scan, so writing one
+out as an example makes it a real link that must resolve. Describe the form; never write it out.
 
 **Known rejections.**
 
@@ -51,7 +47,5 @@ The root-relative row is accepted rather than fixed: a document that must resolv
 use a path rooted at a server, so the rejection is right even though the message names the wrong
 reason.
 
-**What it does not catch.** A link inside a fenced block, broken or off-allowlist, passes — a fenced
-block is a sample, not a reference, and allowlisting a host to satisfy a code sample would put it in
-the register on the strength of an example. The file list comes from `git ls-files`, so an unstaged
-document is invisible locally.
+What this gate lets through — fenced blocks, and documents not yet staged — is
+[`docs/CI.md`](../../docs/CI.md)'s.

@@ -135,7 +135,7 @@ appended for the same reason; inserting one is permitted
 
 **Checks**
 
-16. **Recorded cases.** Does [`scripts/README.md`](scripts/README.md) record what a changed check was
+16. **Recorded cases.** Does that check's file under [`scripts/cases/`](scripts/README.md) record what it was
     run against, in both directions — the defect it must catch, and the legal input it must not
     reject? Seed the defect and name the commit each case ran against: a row pointing at what the tree
     happens to hold reads as a passing check that should fail, the moment the tree moves.
