@@ -1113,10 +1113,11 @@ its own counter-example: an identifier written there in any case is read as a ci
 malformed spellings are described rather than shown — the check caught the documentation of itself on
 the first run.
 
-**Documented divergence.** `CI.md` and the docstring both say a citation may wrap over *one* line
-break; the normaliser accepts any number, including a blank-line paragraph break inside the comment.
-Not a false-resolve — CommonMark reads it as one comment either way — but the documented limit and the
-implemented one disagree.
+**Two wrapping rules, and they differ.** The `ADR` pattern admits exactly one line break between the
+word and its number; the header normaliser admits any number, including a blank-line paragraph break.
+Neither is a false-resolve — CommonMark reads the comment as one either way — and the difference is
+between two readers rather than between a document and its code. An earlier wording in `docs/CI.md`
+described the header with the pattern's limit.
 
 ## `check-commit-msg.sh`
 
