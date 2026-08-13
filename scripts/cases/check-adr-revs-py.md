@@ -3,9 +3,8 @@
 The inputs this check has been run against, in both directions. What it *asserts*, and why, is
 [`docs/CI.md`](../../docs/CI.md)'s; how to run a case is [`../README.md`](../README.md)'s.
 
-Run by seeding the working tree, running the check, and restoring. The seeded state is described
-rather than committed, and described without spelling a live ADR number, which this check reads as a
-citation like any other.
+Seeded state is described rather than committed, and never spells a live ADR number — this check
+reads one as a citation like any other.
 
 Exercised at `66d168f`, script md5 `c816ba0d4e721b862efec9d363128b38`, where a passing run reports
 **20 ADRs** — read that count before any row whose input is spelled *all twenty*. The headline
@@ -55,47 +54,18 @@ caused it and the correction that ended it both being on that branch; extract it
 | Must pass | A blank line before the title | one ADR given a leading newline — the opening line is the first non-blank one, not byte 0 |
 | Must pass | A UTF-8 byte-order mark before the title | the same ADR given a BOM — stripped, not read as part of the number |
 
-What the cases prove, one line each:
+What the cases prove, beyond what the table shows on its own:
 
-- **The exemption rows.** The *Revisions* exemption was narrowed twice by extent and neither held — a
-  citation inside the section, then one on an indented continuation. Narrowing its **effect** did: a
-  changelog citation is exempt from being *current* and from nothing else. Question 11, *Narrowed
-  guards*, twice over.
-- **The two rev-2 rows are a pair**: same tree, differing only in whether one citation moved. Without
-  both, *the exemption works* and *the exemption is narrow* are indistinguishable.
-- **The title-number rows are the collision rule's other half.** A collision asks which of two files a
-  number names; a wrong title asks whether the one file naming it agrees. Both are identity, the
-  premise every citation rests on. `check-adr-index.mjs` derives every number from a filename or an
-  index row and never opens a body, so it printed agreement over twenty ADRs one of which called
-  itself something else.
-- **Only the number is compared**, which is why both must-pass rows exist: without the em-dash row the
-  rule silently becomes a formatting gate, and without the *Decision*-cell row someone completes it
-  into a title comparator, which reds the tree on sight.
-- **The swapped pair pins the rule.** Exchanging two title numbers leaves the set contiguous from
-  0001, so a rule comparing the two *sets* passes while every citation of either resolves to the wrong
-  record. That row's message count is stated because one problem is a rule that stopped after the
-  first file and two is a rule that read them independently.
-- **The whole-tree title seed is the population guard.** Respelling every title at once reports twenty
-  problems where a rule comparing only the titles it could parse would report none. Correcting one
-  title and re-running exits 0 — the satisfiability control the old check could not produce, which
-  printed a byte-identical success line with the defect present and removed.
-- **The bracketed-title row.** Titled-pattern matching missed a link whose title carried a bracketed
-  phrase — the pattern cannot cross a closing bracket, so the link was never matched and passed with
-  exit 0, the exact defect the link rule was added for, invisible to the empty-population guard
-  because other links kept the count non-zero. Anchoring on the target also surfaced two live
-  citations in `docs/site/` no reader had ever seen, their titles wrapped across a line break; the
-  tree's citation count went 227 → 229 on that fix alone.
-- **The unpinned-citation-beside-a-titled-link row.** Deduplicating by text skipped a prose citation
-  falling inside a link title so one defect is not reported twice — but the prose form is a substring
-  of the link title, so that pairing was silently dropped. The test is now the match's position
-  against the title's span.
-- **The three drift rows** each seed the pattern a reader depends on, because the guards are per
-  reader rather than over the total: one count hid the prose reader going to zero while fifty link
-  citations kept it non-zero.
-- **This rule lives in `check-adr-revs.py`** because it already opens every ADR body and holds both
-  halves in one loop. A head parser in `check-adr-index.mjs` would be a second one beside it, drifting
-  (question 13, *Second enforcer*).
-- **Fixtures reckon with two file sets.** The ADR walk reads the filesystem, the citation scan reads
+- **The two rev-2 must-pass rows are a pair, same tree**: without both, *the exemption works* and
+  *the exemption is narrow* are indistinguishable.
+- **The title-number rows are the collision rule's other half** — a collision asks which of two
+  files a number names, a wrong title asks whether the one file naming it agrees.
+  `check-adr-index.mjs` derives every number from a filename or an index row and never opens a body,
+  so it passed a tree where one ADR's title named a different number.
+- **The whole-tree title seed is the population guard**: respelling every title at once reports
+  twenty problems, and correcting one title and re-running exits 0 — the satisfiability control the
+  predecessor check could not produce.
+- **Fixtures reckon with two file sets.** The ADR walk reads the filesystem; the citation scan reads
   `git ls-files`. A case about a title or filename needs no `git add`; a case about a citation does.
 
 **Duplicate-number cases are seeded in both filename orders, because the verdict used to depend on
@@ -114,9 +84,7 @@ built, which is the defect this entry records.
 **The equal-rev shape is the one that ran on a real branch**: two records at one number, both at rev 1,
 reported as `23 ADRs` over a directory holding 24, exit 0. It is decidable only by reading the count
 against the directory, which is why an equal-rev pair rather than a disagreeing one is the case that
-matters. A colliding number is dropped from the map rather than assigned from one of the two files, so
-its citations and its index row go unjudged until the collision is resolved — deferred rather than
-bypassed, the run failing on the collision either way.
+matters.
 
 **Known rejections and gaps.**
 
@@ -124,25 +92,16 @@ bypassed, the run failing on the collision either way.
   and it cost three fixes: `docs/decisions/README.md`, this check's docstring, and the first draft of
   the tables above each named a real ADR while describing the citation form. A check that exempted
   examples would be exempting the spelling most likely to hide a bypass.
-- A file whose bytes do not decode as UTF-8 is not scanned. Every such file is named on stderr, so the
-  population stays visible.
-- **The rev pins a version, not an identity.** A citation written across a freeing and a re-taking of
-  the same number merges green: at merge time the number resolves and the rev matches. Nothing here
-  decides it.
-- **The claim attached to a pin is decided by nothing here.** A citation pinning the current rev while
-  the sentence hanging off it describes what an earlier rev said passes. That is
-  [`docs/CI.md`](../../docs/CI.md) § *Documentation integrity*'s statement of the gap and the review
-  question that answers it.
-- **Nothing may live in `docs/decisions/` but ADRs, the index and the template.** Every other entry is
-  reported as unreadable-numbered — a subdirectory, a non-Markdown asset, an editor backup, a dotfile.
-  That is the rule working, but it narrows what the directory may hold.
-- **An H1 indented up to three spaces is legal CommonMark and is rejected**, the opening line being
-  matched from its first character. `opening.lstrip()` would close it and would also accept an indented
-  code block opening a file as that file's title, which is the worse trade.
+- **Only ADRs, the index and the template may live in `docs/decisions/`.** Every other entry — a
+  subdirectory, a non-Markdown asset, an editor backup, a dotfile — is reported as unreadable-numbered,
+  which narrows what the directory may hold.
+- **An H1 indented up to three spaces is legal CommonMark and is rejected** — the opening line is
+  matched from its first character. `opening.lstrip()` would close that gap, but would also accept an
+  indented code block's opening line as a title, the worse trade.
 - A title number is read as the first whitespace-delimited token after `# `, so a title running the
   number into its text is reported as titling itself that whole token rather than as malformed. The
-  verdict is right and the message is not; reading the token rather than a number-shaped pattern is
-  what lets *no title line* and *wrong digit count* both be reported instead of skipped.
+  verdict is right and the message is not — reading a token rather than a number-shaped pattern is what
+  lets *no title line* and *wrong digit count* both be reported instead of skipped.
 
 **The two ADR checks disagree about strays, and the line between them is the `.md` suffix.** Observed,
 one stray at a time:
@@ -154,19 +113,18 @@ one stray at a time:
 | a subdirectory | exit 1 | **exit 0** |
 | `draft-supersede-0007.md` | exit 1 | exit 1 |
 
-Directory scope is `current_revs()`'s rather than one rule's: it reads the filesystem deliberately,
-since an entry no commit has introduced is exactly what a name check should still see. The consequence
-is wider than a stray — **an untracked file reds `just verify` locally while CI stays green**, because
-`actions/checkout` gives CI committed state. Measured on one tree, one file at a time:
+Directory scope is `current_revs()`'s rather than one rule's, reading the filesystem rather than
+tracked state. The consequence is wider than a stray — **an untracked file reds `just verify` locally
+while CI stays green**, because `actions/checkout` gives CI committed state. Measured on one tree, one
+file at a time:
 
 | Untracked in `docs/decisions/` | Reported locally |
 |---|---|
 | `notes.txt` | the naming rule — 1 problem |
 | an ADR drafted the ordinary way, at rev 1 with its changelog line | **1 problem, from neither** — `check_index()`, finding the number carries no index row |
 
-An archive of the same `HEAD`, which is what CI gets, exits 0 for both. For a stray the fix is to
-rename or remove the file, and judging only what is committed would trade a visible local failure for
-a silent one. The draft is the case with no stray to remove, and its answer differs: the index row is
-genuinely owed, `check-adr-index.mjs` reds on the same file with the same remedy, and nothing here
-gates a commit — both hooks in `.githooks/` are advisory and neither runs `verify`. What the local run
-buys is notice before the push, not enforcement.
+An archive of the same `HEAD`, which is what CI gets, exits 0 for both. For a stray, the fix is to
+rename or remove the file. The draft is the case with no stray to remove, and its answer differs: the
+index row is genuinely owed, `check-adr-index.mjs` reds on the same file with the same remedy, and
+nothing here gates a commit — both hooks in `.githooks/` are advisory and neither runs `verify`. What
+the local run buys is notice before the push, not enforcement.

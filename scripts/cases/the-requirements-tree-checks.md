@@ -22,23 +22,16 @@ every table below shares and none repeats.
 | Must pass | a fourth tier, and a nested document, each holding one reviewed item |
 | Must pass | a `.doorstop.yml` under `.venv/`, a tool's directory rather than a tier |
 
-The pasted-stamp row fails on the value of the item's own `reviewed:`, not on the paste — a copied
-stamp is byte-identical to an earned one. Reading the pairing as forgery was tried and is wrong:
-`doorstop clear` on an item with no `reviewed:` stamps the link and leaves `reviewed: null`, so the
-rule would accuse a contributor halfway through the clear-then-review order. Dot-directories are
-skipped on Doorstop's own convention
-([ADR 0002 rev 1](../../docs/decisions/0002-requirements-management-doorstop.md)). The `.yaml` row
-matters because the loader is a hand-rolled glob, unlike its siblings which go through
-`doorstop.build()`, and Doorstop indexes a `.yaml` item a `*.yml` glob never sees.
+**Known gaps.**
 
-**Known gaps.** A quoted, non-empty `reviewed:` string spelling falsehood passes, the check testing
-only that the value is a non-empty string; closing it means pinning Doorstop's internal encoding into
-our gate for a defect reachable only by deliberate hand-forgery, whose item fails the next real
-validation on content mismatch anyway — the owner ruled on 2026-08-02 to record rather than close it.
-Any non-empty `reviewed:` switches the pasted-stamp rule off; Doorstop's own validation catches that
-state later in `check-reqs`, and a pasted stamp on a genuinely reviewed item is invisible everywhere,
-both digests being correct for their content. Malformed item YAML raises a traceback rather than the
-tool's diagnostic; it still exits non-zero, so it fails closed.
+- A quoted, non-empty `reviewed:` string spelling falsehood passes — the check tests only that the
+  value is a non-empty string. The owner ruled on 2026-08-02 to record rather than close it: closing
+  it pins Doorstop's internal encoding into the gate for a defect reachable only by hand-forgery, and
+  the forged item fails the next real validation on content mismatch anyway.
+- The same gap swallows a pasted stamp on a genuinely reviewed item — both digests are correct for
+  their content, so it is invisible everywhere.
+- Malformed item YAML raises a traceback rather than the tool's diagnostic; it still exits non-zero,
+  so it fails closed.
 
 ## `check-suspect-links.py`
 
@@ -47,10 +40,6 @@ tool's diagnostic; it still exits non-zero, so it fails closed.
 | Must fail | the parent of an inactive item mutated, so the child's stamp goes stale |
 | Must fail | an inactive item linking a parent UID the tree does not hold |
 | Must pass | a **`SYS`** item mutated — its `SRS` children are active, so nothing inactive went stale |
-
-The `SYS` row is the easy case to record wrongly. This check covers only inactive items; every `TST`
-item is inactive and no other item is, so mutating a `SYS` parent proves nothing about it. A first
-pass seeded exactly that and read the pass as evidence the check was broken.
 
 **Documented gap, not to be closed.** A `TST` item's *own* fingerprint is checked for presence, never
 correctness: inactive items are invisible to `doorstop --error-all`, and this check scopes itself to
@@ -68,17 +57,8 @@ inactive item.
 | Must fail | the venv's `doorstop` absent — named as missing, not diagnosed as a live tier |
 | Must pass | the tree as it stands |
 
-The activation row is the wrapper's self-retirement: with an active `TST` item the exception is no
-longer needed, and rather than passing quietly it says so and tells the reader to delete the wrapper,
-restore the bare command and close #78. A guard that cannot notice it has become unnecessary is how a
-dead exception survives as a passing gate. An adversarial pass tried to make the exception mask a real
-defect and could not: the *no items* message does collide between *all items inactive* and *no items
-exist*, but in this tree's topology it never occurs without a distinct second error line from the
-active tiers.
-
-The interpreter row is the one the wrapper could not answer for itself. Every branch reads Doorstop's
-output; with no interpreter there is none, and the last branch printed the activation diagnostic over
-that silence — a specific claim about a tier from a run that read no tree.
+The *no items* message collides between *all items inactive* and *no items exist*; in this tree's
+topology it never occurs without a distinct second error line from the active tiers.
 
 ## `check-method-consistency.py`
 
@@ -91,14 +71,6 @@ that silence — a specific claim about a tier from a run that read no tree.
 | Must fail | the `verification-method` key deleted |
 | Must pass | a `normative: false` item carrying an empty method and no justification |
 
-The last three are one defect and it is the worst kind. An unrecognised value ranked as nothing and
-the rule then *skipped* the item rather than judging it, so a single mis-typed character exempted an
-item from the check meant to judge it while the run still reported the methods consistent. The same
-shape came back in the fix: the success line kept counting every item loaded while the rules had
-narrowed to the items that oblige something, so a blanked justification on a non-normative item
-printed a clean sentence over a population the run had not judged. A review caught it; the seeding did
-not.
-
 ## `check-text-citations.py`
 
 | Direction | Input |
@@ -106,10 +78,6 @@ not.
 | Must fail | an identifier in an item's `text` |
 | Must fail | a **lowercase** identifier in an item's `text` |
 | Must pass | an identifier in `rationale` |
-
-Lowercase was invisible rather than wrong until the regex was made case-insensitive. A mis-cased
-identifier defeats this rule exactly as an uppercase one does: the reader still needs a lookup, and a
-renumber still leaves the sentence pointing at whatever now occupies the number.
 
 ## `check-headers.py`
 
@@ -121,15 +89,9 @@ renumber still leaves the sentence pointing at whatever now occupies the number.
 | Must fail | a header containing a **non-breaking space**, leading or mid-string |
 | Must pass | a header folded across two lines in the YAML block scalar |
 
-The non-breaking space is the row that matters, and the script's own docstring predicted it: the
-permitted set is an allowlist because a list of characters to reject fails open on the one nobody
-enumerated. The allowlist was right; the normalisation in front of it was not. `str.split()` and
-`str.strip()` are both unicode-aware and folded U+00A0 into ordinary whitespace before the allowlist
-saw it — retiring exactly the character it existed to catch. The first fix replaced the split and left
-the strip, so a mid-string space was caught while a leading one still passed; both had to go. A
-zero-width space, not being whitespace to Python, was caught throughout. A *trailing* non-breaking
-space is unreachable rather than accepted: Doorstop strips it from the block scalar before the check
-reads the header, confirmed by reading `item.header` directly.
+- A zero-width space, not being whitespace to Python, is caught throughout.
+- A *trailing* non-breaking space is unreachable rather than accepted: Doorstop strips it from the
+  block scalar before the check reads the header, confirmed by reading `item.header` directly.
 
 ## `check-citations.py`
 
@@ -144,16 +106,11 @@ reads the header, confirmed by reading `item.header` directly.
 | Must pass | a word merely containing an identifier |
 | Must pass | a correct uppercase citation with its verbatim header |
 
-Case is the row that matters. A lowercase citation with a fabricated header on a *real* item passed
+The case rows exist because a lowercase citation carrying a fabricated header on a *real* item passed
 clean — the exact failure the check exists to catch, invisible rather than reported. The owner ruled
-on 2026-08-02 that a mis-cased identifier is malformed, and
-[`../docs/CI.md`](../../docs/CI.md) § *Documentation integrity* records the rule. That rule cannot state
-its own counter-example: an identifier written there in any case is read as a citation, so the
-malformed spellings are described rather than shown — the check caught the documentation of itself on
-the first run.
+on 2026-08-02 that a mis-cased identifier is malformed.
 
 **Two wrapping rules, and they differ.** The `ADR` pattern admits exactly one line break between the
 word and its number; the header normaliser admits any number, including a blank-line paragraph break.
 Neither is a false-resolve — CommonMark reads the comment as one either way — and the difference is
-between two readers rather than between a document and its code. An earlier wording in `docs/CI.md`
-described the header with the pattern's limit.
+between two readers rather than between a document and its code.

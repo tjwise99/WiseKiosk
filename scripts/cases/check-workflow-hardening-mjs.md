@@ -49,10 +49,6 @@ The inputs this check has been run against, in both directions. What it *asserts
 | Must pass | Job-level elevation | `pages: write` and `id-token: write` in a job's own block |
 | Must pass | Block placed after `jobs:` | the top-level block declared below the jobs it governs |
 
-The last row of each direction is the pair that matters: the check must reject a workflow it cannot
-read and must not reject one merely spelled unusually. Four defects were found by the must-pass column
-alone — the first three fixes for a fail-open each rejected a legal workflow.
-
 **Known rejections.** Legal YAML this rejects, each failing loudly by file and line, each needing a
 spelling this repository does not use. Closing them means another cut at the matcher and every
 previous cut introduced a defect.

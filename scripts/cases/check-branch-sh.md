@@ -56,12 +56,11 @@ script misreading rather than the ticket being wrong:
 Two guards stand over the regex file rather than one because a top-level alternation satisfies the
 group count, and only the membership check rejects it. The `databaseId` row needs a parented issue:
 against an unparented one the check correctly passes, so reading that pass as evidence would record
-the opposite of what the row claims. The parent number is asserted rather than defaulted because a
-`parent` key present and null is how *legitimately no parent* arrives, while anything else means the
-query stopped naming what is read — and `// ""` erases that difference, printing a conclusion the run
-never read. The assertion reaches the scalar the code consumes: asserting the issue node passes an
-aliased `parent`, and asserting `parent` passes a selection returning `databaseId`, a plausible edit
-since the sub-issues REST endpoint wants the database id.
+the opposite of what the row claims. Without the parent-key assertion, `// ""` would erase the
+difference between *no parent* and *a stopped query*, printing a conclusion the run never read — the
+assertion reaches the scalar the code consumes: an aliased `parent` on the issue node, then a
+selection returning `databaseId`, a plausible edit since the sub-issues REST endpoint wants the
+database id.
 
 The epic-membership assertion needs a pull request, so its cases ran against PR #88 by re-running the
 `process` job against mutated live state:

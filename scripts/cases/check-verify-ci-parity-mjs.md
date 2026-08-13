@@ -43,10 +43,3 @@ The inputs this check has been run against, in both directions. What it *asserts
 
 The trailing-comment rows need their control to mean anything: a step deleted outright **is** caught,
 which is what made the comment cases holes rather than a misreading of the design.
-
-Two simpler spellings each left a hole no row describes. Skipping any line containing a quote leaves
-`key: "value" # token` open. Tracking quote state closed that and left an *unbalanced* quote — an
-apostrophe in `it's` — opening a phantom scalar that swallowed the rest of the line, while newly
-rejecting a legal workflow whose escaped quote closed the tracker early. Both were found by review,
-neither by the seeding that prompted the fix. What holds is YAML's own rule: a quote is syntactic only
-where a scalar may begin.

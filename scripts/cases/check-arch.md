@@ -20,13 +20,9 @@ script fails on marker problems; staleness is caught by the diff.
 | Must pass | a second run — idempotent, md5 stable, reporting *already current* |
 | Must pass | an artifact containing backticks mid-line, which closes no fence |
 
-Two rows carry the weight. The symlink one: the escape guard tested the marker *text*, so a symlink
-under `docs/architecture/` satisfied it and still read from anywhere on the host — observed splicing a
-file from outside the repository into the document with exit 0. The fence one: the body is wrapped in
-a fenced block, so a fence marker inside it closed that fence early and spliced the remainder into the
-document as running Markdown. Confirmed separately, because only a real run shows it: a hand edit
-inside a marker region is overwritten and the tree goes clean again, and a change to a generated
-artifact reaches the document.
+The symlink case was observed splicing a file from outside the repository into the document with
+exit 0. Confirmed separately, because only a real run shows it: a hand edit inside a marker region is
+overwritten and the tree goes clean again, and a change to a generated artifact reaches the document.
 
 ## The three-line gate
 
@@ -51,11 +47,13 @@ asserted present in `HEAD` before the run.
 | Committed artifact no view produces | 1 | **0** | 1 | **0** |
 
 **Each line is necessary for exactly one row, and no ablation false-positives on the unchanged tree.**
-The three zeroes are the argument, each corroborated by looking at the tree rather than the exit code:
-`codegen` never prunes, so the orphan is still on disk byte-identical to what is committed; the
-uncommitted artifact *was* generated and `git status` reports it `??`, which `git diff` does not read
-as drift; and the `git add` with a pathspec stages the deletion `rm -rf` just made, so an
-index-relative diff reads worktree and index as agreeing.
+Corroborated by looking at the tree rather than the exit code:
+
+- `codegen` never prunes, so the orphan artifact sits on disk byte-identical to what is committed.
+- The uncommitted artifact *was* generated and `git status` reports it `??`, which `git diff` does not
+  read as drift.
+- `git add` with a pathspec stages the deletion `rm -rf` just made, so an index-relative diff reads
+  worktree and index as agreeing.
 
 The hand-edited row is caught by every variant because it is the only one of the three that changes a
 **tracked** file in place — which is why it is the wrong case to develop this gate against, and why
@@ -79,15 +77,11 @@ non-ignored file under `docs/architecture/` fails the gate, and after a failing 
 refuses with *"Entry … not uptodate"* until `git reset` clears the marker. Staged in-progress work
 under `docs/architecture/` also fails the gate.
 
-**What it does not catch: the index.** The comparison is HEAD against the worktree, and `arch-export`
-rewrites the worktree before the diff runs, so staged content diverging from the worktree is invisible
-— measured at exit 0 for a staged hand-edit of a generated artifact, a staged `git rm --cached` of it,
-and a staged tamper of the document. A plain `git commit` lands the *index*, so each commits content
-the gate never read. This is the same shape as the defect above, one level out: the earlier recipe
-compared worktree to index and was blind to HEAD, this one compares HEAD to the worktree and is blind
-to the index, and no form has compared all three. It is a **local false green only** —
-`actions/checkout` gives CI a tree whose index equals HEAD — and `git add -A` before `just verify` is
-the ordinary sequence that produces it.
+**What it does not catch: the index** ([docs/CI.md](../../docs/CI.md) § *Documentation integrity*
+states the mechanism) — measured at exit 0 for a staged hand-edit of a generated artifact, a staged
+`git rm --cached` of it, and a staged tamper of the document. The same shape as the orphan defect
+above, one level out: that recipe compared worktree to index and was blind to HEAD, this one compares
+HEAD to worktree and is blind to the index — no form has compared all three.
 
 **Unprobed, and so unevidenced:** worktrees, submodules, `core.fileMode`, `autocrlf`, sparse checkout,
 and git older than 2.53. **`likec4 codegen` has no case here** — a gap, not a reasoned exemption, since
