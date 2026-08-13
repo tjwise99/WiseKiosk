@@ -11,15 +11,15 @@ this projects landed as [ADR 0019 rev 4](0019-boundary-at-what-deploys-and-tag-t
 
 ## Context
 
-**Three documents defer a location to this decision by name, and two tickets are gated on it.**
+**Documents across the tree defer a location to this decision by name.**
 [The module contract](../contracts/module-contract.md) states the six parts and says the concrete
 locations — which directory holds a module's files, and where the registration list lives — are fixed
 here. [ADR 0008 rev 1](0008-boundary-contract-openapi-codegen.md) chooses the boundary-contract
 mechanism and leaves the schema's location open, which is what holds #7 boundary-contract codegen from
-building it; #8 config schema format is behind the same question for the configuration schema.
-[`../ARCHITECTURE.md`](../ARCHITECTURE.md) gives this as one of two reasons no model element carries a
-`link`. So the layout is a blocking dependency rather than a matter of tidiness, and the thing being
-unblocked is a set of paths other work will resolve.
+building it. [ADR 0019 rev 4](0019-boundary-at-what-deploys-and-tag-tier.md) and
+[`../ARCHITECTURE.md`](../ARCHITECTURE.md) each give it as a reason no model element carries a `link`.
+So the layout is a blocking dependency rather than a matter of tidiness, and the thing being unblocked
+is a set of paths other work will resolve.
 
 **Half the answer is already forced, by a rule written for another reason.**
 [`../CI.md`](../CI.md) § *Repository shape* gates that a depth-1 listing of the root holds no
@@ -30,9 +30,12 @@ What is left to decide is what the roots are called, what sits in neither, and w
 go.
 
 **A repository layout is a projection of the container decomposition onto directories**, which is why
-this decision waited on one. ADR 0019 rev 4 decided two containers behind one origin, and it decided
-two further things this projection has to hold: the boundary schema belongs to neither of them, and
-the provisioning material shipped beside the image is outside the boundary altogether.
+this decision waited on one. [ADR 0019 rev 4](0019-boundary-at-what-deploys-and-tag-tier.md) decided
+two containers behind one origin, and that the provisioning material shipped beside the image falls
+outside the boundary altogether. The third thing the projection has to hold is older: the boundary
+schema belongs to neither container, which is
+[ADR 0008 rev 1](0008-boundary-contract-openapi-codegen.md)'s and which ADR 0019 rev 4 reasons from
+rather than decides.
 
 **The module is where the projection stops being obvious.** A module is "added and removed as a unit",
 and its parts run in two different execution contexts — a shaping library in the backend, a component
@@ -40,8 +43,8 @@ in the browser. A local module fetches nothing, so it has no backend half at all
 are follows from the roster in [`../../README.md`](../../README.md), which this record does not copy.
 Whatever this decides has to leave the checks
 [`../CI.md`](../CI.md) § *Module and framework structure* describes — module directories in bijection
-with configuration fragments, with registration entries, with test files — walking populations that
-can be read off the tree.
+with configuration fragments and with test files, and one registration entry per upstream-backed
+module — walking populations that can be read off the tree.
 
 **Generated output has no say in where it sits.** A compiler reads a package where the package is, so
 the Go and TypeScript types [ADR 0008 rev 1](0008-boundary-contract-openapi-codegen.md) emits are
@@ -77,8 +80,8 @@ product rather than running in it.
 test. A local module has the second only. The directory name is the module's name and is identical in
 both trees, which is what lets a check pair the halves without a mapping table to maintain.
 
-**The single route registration is framework code and sits outside `modules/`**, in its own package
-under `backend/internal/`. The reason is the populations above: every child of `modules/` is a module,
+**The single route registration is framework code and sits outside `modules/`**, in
+`backend/internal/registry/`. The reason is the populations above: every child of `modules/` is a module,
 so a check that walks it is reading a directory listing rather than a listing minus the entries it
 knows to skip — and a listing minus known exceptions is the shape that goes quietly wrong when
 somebody adds a second exception.
@@ -93,7 +96,8 @@ that enforces it ([ADR 0007 rev 2](0007-config-validation-allocation.md)); the f
 are in the module directories that declare them. Its format, its dialect and its file name are #8
 config schema format's, and nothing here constrains them.
 
-**What this does not decide.** The package names inside `backend/internal/` and `frontend/src/lib/`
+**What this does not decide.** Every path another document defers here is named above. The framework
+packages beyond them — whatever holds the response cache, the upstream client, the page shell —
 follow each toolchain's conventions and arrive with the code that needs them; an inventory of them
 here would be a list nothing compares to the tree. Nor does this decide any of the module
 roster's contents, which is [`../../README.md`](../../README.md)'s.
@@ -122,9 +126,15 @@ since a schema owned by one side is a schema that side can change alone. *Bounda
 repository already uses for the contract and for the types generated from it.
 
 **`openapi.yaml` at the repository root**, expressing "owned by neither" as strongly as a path can and
-adding no directory for one file. Rejected on what arrives with #7 boundary-contract codegen: the
-schema comes with tooling of its own, and a root file leaves each piece of it to a fresh argument about
-which package should hold it — which is the argument this record exists to end.
+adding no directory for one file. The honest position is that it works, and that the directory holds
+one file with no second occupant anyone can name — ADR 0008 rev 1 puts each generator in a package
+toolchain and makes the drift gate repo-level, so nothing there is waiting for a home. It is rejected
+on the top level's own shape rather than on a future file: the roots here each name what they hold,
+and the loose files beside them are the repository's front matter — the README, the licence, the task
+runner. A schema is neither, and a root entry that is neither is the one a later reader has to be told
+about. The `Dockerfile` is exactly such an entry and it is there anyway, because a build context
+cannot be anywhere but where the build reads it — which is the difference between a placement that is
+forced and one that is merely available.
 
 **The configuration schema in a neutral directory beside the boundary schema.** Two schemas, one place
 to look, and the symmetry is genuinely easier to explain. Rejected because the symmetry is false. The
@@ -158,12 +168,18 @@ the second one to be invented would have to argue against the first rather than 
 - **Dependabot gains an entry per package root when the manifest exists, and not before.**
   [`../CI.md`](../CI.md) § *Repository shape* requires every non-`github-actions` entry to resolve to a
   directory holding its manifest, so an entry added ahead of the code fails the gate it belongs to.
-- **A `README.md` in any of these roots needs a row in [`README.md`](../README.md) or a committed silo
-  exclusion**, under [ADR 0014 rev 1](0014-documentation-index-claims-documents.md). A new top-level
-  directory is cheap; a document inside one is not, and that is deliberate.
+- **A `README.md` in any of these roots needs a row in [`README.md`](../README.md).** Under
+  [ADR 0014 rev 1](0014-documentation-index-claims-documents.md) a row is the only thing that claims a
+  document, the sole exception being a top-level dot-directory, and none of these roots is one. A new
+  top-level directory is cheap; a document inside one is not, and that is deliberate.
+- **A base-image Dependabot entry has no home under the rule above.** The root `Dockerfile` is the
+  right file in the right place and it is not a manifest a package directory holds, so a `docker`
+  ecosystem entry pointing at the root fails § *Repository shape*'s non-root requirement. Recorded for
+  #54 container build and publish, which is where the trade lands: an entry needs either a Dockerfile
+  somewhere a package owns or a change to that rule, and neither is decided here.
 - **The model's `link` properties gain their targets with the source they point at.** ADR 0019 rev 4
-  leaves every element without one for two reasons, and this record answers only the second: no source
-  exists, so nothing has moved.
+  withholds one for two reasons — no source, and no layout. This record answers the second; the first
+  is what keeps every element without one.
 - **Almost none of this is gated.** The root-manifest half is enforced today; the rest is a convention
   that becomes checkable as the module and framework structure checks
   [`../CI.md`](../CI.md) describes are built against these paths. Until then review is the control,
