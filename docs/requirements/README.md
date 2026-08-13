@@ -3,8 +3,8 @@
 WiseKiosk's requirements are tracked as a **Doorstop** tree under this directory — a Python,
 Git-native requirements-management tool that gives every requirement a **stable ID**, decomposes
 stakeholder needs into testable software requirements and then into verification items, and **fails
-CI** when a requirement change leaves a downstream item unreviewed, an item orphaned, or a
-verification reference unresolved. Why this exists and why Doorstop specifically:
+CI** when a change leaves the trace stale ([what that comes to](#running-the-gate)). Why this exists
+and why Doorstop specifically:
 [ADR 0002 rev 1](../decisions/0002-requirements-management-doorstop.md).
 
 ## The three documents
@@ -64,12 +64,11 @@ written both inside a comment and inside a table cell. Prefix-freeness is the re
 rather than the checker's, which compares a header exactly: two items whose headers begin alike are
 told apart only by a reader who reaches the end of both.
 
-`rationale` and `verification-justification` answer different questions: why the obligation exists,
-versus what its verification does and does not settle. An item at `inspection`, `analysis`, or
-`demonstration` is claiming a human must judge it, and the justification is that claim's evidence, so
-a method can never be weakened without saying what blocks the stronger one. An item at `test` is
-claiming a machine settles it, and the justification bounds that claim — a green check that decides
-set equality against a recorded list has not decided that the list is right.
+An item at `inspection`, `analysis`, or `demonstration` is claiming a human must judge it, and the
+justification is that claim's evidence, so a method can never be weakened without saying what blocks
+the stronger one. An item at `test` is claiming a machine settles it, and the justification bounds
+that claim — a green check that decides set equality against a recorded list has not decided that the
+list is right.
 
 `verification-method`, `verification-justification`, and `rationale` are fenced by the review
 fingerprint (editing them re-flags review), as are the item's **parent links** — `Item.review()`
@@ -150,10 +149,9 @@ excluded from reference and review checking; each is activated and given a real 
 its test lands. A `SRS` parent whose child is pending surfaces an informational `no item with UID:
 TST00x` line during validation — Doorstop noting a stubbed verification, not a failure.
 
-**A tier in which every item is pending is a different case, and it does not validate clean.**
-Doorstop treats a document with no *active* item as having no items at all, and stops checking it
-there. That is the tier the `TST` document is in until the first test lands, and it is why the gate
-runs Doorstop behind [`validate-tree.sh`](#running-the-gate) rather than directly.
+**A tier in which every item is pending is a different case, and it does not validate clean.** That is
+the tier the `TST` document is in until the first test lands, and it is why the gate runs Doorstop
+behind [`validate-tree.sh`](#running-the-gate) rather than directly.
 
 ### Pending decomposition
 
@@ -202,7 +200,7 @@ docs/requirements/.venv/bin/pip install -r docs/requirements/requirements-dev.tx
 Then:
 
 ```sh
-just check-reqs   # check-unreviewed.py, check-suspect-links.py, validate-tree.sh, check-method-consistency.py, check-text-citations.py, check-headers.py — in that order
+just check-reqs   # the tree's own checks, in the order the recipe lists them
 just verify       # runs check-reqs alongside the other repo gates
 ```
 
@@ -288,9 +286,6 @@ enough — it cannot see a reflow, and reflow is how an unintended change hides.
 - **Validation stamps what it touches, so never run it on the tree you care about.** `doorstop`'s
   validation pass re-blesses items as it goes, so a diagnostic run silently re-stamps the very items
   whose review state was in question. Copy the tree to a throwaway directory and validate there.
-- **A glob for `*.yml` matches `.doorstop.yml`** as well as the item files, and a script that treats
-  the document's own configuration as an item reads garbage from it. Filter on the UID pattern rather
-  than the extension.
 - **Inactive items are not rewritten by Doorstop**, so write their parent links in dict form,
   `- UID: null` (the form Doorstop itself stamps); a plain-string link breaks the docs-site needs
   generator.
