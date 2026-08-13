@@ -7,8 +7,9 @@
 ## Revisions
 
 - **rev 2** — 2026-08-12 — deletes the exclusions list from the Decision. The *What is not a document
-  is derived too* paragraph already said there is none and the Alternatives record why — it was built, two one-line edits
-  to it hid a document, and it was removed rather than patched — so the Decision was advertising the
+  is derived too* paragraph already said there is none and the Alternatives record why — it was built,
+  two one-line edits to it hid a document, and it was removed rather than patched — so the Decision
+  was advertising the
   mechanism this record exists to have deleted. What claims a document is unchanged (#5 repo layout).
 - **rev 1** — 2026-08-05 — revision tracking begins; text as merged (#118 ADR revisions).
 

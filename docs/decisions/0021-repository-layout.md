@@ -11,15 +11,15 @@ this projects landed as [ADR 0019 rev 5](0019-boundary-at-what-deploys-and-tag-t
 
 ## Context
 
-**Documents across the tree defer a location to this decision by name.**
-[The module contract](../contracts/module-contract.md) states the six parts and says the concrete
-locations — which directory holds a module's files, and where the registration list lives — are fixed
-here. [ADR 0008 rev 2](0008-boundary-contract-openapi-codegen.md) chooses the boundary-contract
-mechanism and leaves the schema's location open, which is what holds #7 boundary-contract codegen from
-building it. [ADR 0019 rev 5](0019-boundary-at-what-deploys-and-tag-tier.md) withholds a `link` from
-every model element partly for want of it.
-So the layout is a blocking dependency rather than a matter of tidiness, and the thing being unblocked
-is a set of paths other work will resolve.
+**Documents across the tree deferred a location to this decision by name.**
+[The module contract](../contracts/module-contract.md) states a module's parts and leaves their
+concrete locations — which directory holds a module's files, and where the registration list lives —
+to the repository layout. [ADR 0008 rev 2](0008-boundary-contract-openapi-codegen.md) chose the
+boundary-contract mechanism and left the schema's location open, which is what held #7
+boundary-contract codegen from building it. No element of the architecture model carries a source
+`link`, and [ADR 0019 rev 5](0019-boundary-at-what-deploys-and-tag-tier.md) names this record for
+where that source will sit. So the layout was a blocking dependency rather than a matter of tidiness,
+and what it unblocks is a set of paths other work resolves.
 
 **Half the answer is already forced, by a rule written for another reason.**
 [`../CI.md`](../CI.md) § *Repository shape* gates that a depth-1 listing of the root holds no
