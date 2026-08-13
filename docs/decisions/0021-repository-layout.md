@@ -36,8 +36,9 @@ the provisioning material shipped beside the image is outside the boundary altog
 
 **The module is where the projection stops being obvious.** A module is "added and removed as a unit",
 and its parts run in two different execution contexts — a shaping library in the backend, a component
-in the browser. Two of the five modules named in [`../../README.md`](../../README.md) are local: they
-fetch nothing, so they have no backend half at all. Whatever this decides has to leave the checks
+in the browser. A local module fetches nothing, so it has no backend half at all; which modules those
+are follows from the roster in [`../../README.md`](../../README.md), which this record does not copy.
+Whatever this decides has to leave the checks
 [`../CI.md`](../CI.md) § *Module and framework structure* describes — module directories in bijection
 with configuration fragments, with registration entries, with test files — walking populations that
 can be read off the tree.
@@ -94,7 +95,7 @@ config schema format's, and nothing here constrains them.
 
 **What this does not decide.** The package names inside `backend/internal/` and `frontend/src/lib/`
 follow each toolchain's conventions and arrive with the code that needs them; an inventory of them
-written now would be a list nothing compares to the tree. Nor does this decide any of the module
+here would be a list nothing compares to the tree. Nor does this decide any of the module
 roster's contents, which is [`../../README.md`](../../README.md)'s.
 
 ## Alternatives considered
@@ -104,9 +105,9 @@ module contract's *"added and removed as a unit"* literal rather than a property
 one directory to add, one to delete, both halves visible together. Rejected on what it costs to reach.
 Go source has to be inside a Go module, so this needs either a root `go.mod` — which
 [`../CI.md`](../CI.md) § *Repository shape* forbids — or a second module plus a workspace, and a Vite
-build reaching outside its own root. Then the population argument runs the other way: the two local
-modules have no backend half, so a third of these directories would hold frontend files only while the
-shared name promises both. What actually keeps a module removable is the dependency direction the
+build reaching outside its own root. Then the population argument runs the other way: a local module
+has no backend half, so its directory would hold frontend files only while the shared name promises
+both. What actually keeps a module removable is the dependency direction the
 contract states and the bijection checks that enforce it, neither of which is adjacency on disk.
 
 **The repository root as the Go module root**, with the frontend nested under it. It is what a Go
@@ -160,9 +161,9 @@ the second one to be invented would have to argue against the first rather than 
 - **A `README.md` in any of these roots needs a row in [`README.md`](../README.md) or a committed silo
   exclusion**, under [ADR 0014 rev 1](0014-documentation-index-claims-documents.md). A new top-level
   directory is cheap; a document inside one is not, and that is deliberate.
-- **The model's `link` properties gain their targets when code lands, not now.** ADR 0019 rev 4 leaves
-  every element without one for two reasons, and this record answers only the second: no source exists
-  yet, so nothing has moved.
+- **The model's `link` properties gain their targets with the source they point at.** ADR 0019 rev 4
+  leaves every element without one for two reasons, and this record answers only the second: no source
+  exists, so nothing has moved.
 - **Almost none of this is gated.** The root-manifest half is enforced today; the rest is a convention
   that becomes checkable as the module and framework structure checks
   [`../CI.md`](../CI.md) describes are built against these paths. Until then review is the control,
