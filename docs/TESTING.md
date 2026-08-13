@@ -75,7 +75,7 @@ hand-maintained type declarations checked for agreement by a test — it is **on
 sides generated from it**. The tier's job in CI is to prove the generation is real and current:
 
 - Generation from the one schema by the codegen mechanism
-  ([ADR 0008 rev 1](decisions/0008-boundary-contract-openapi-codegen.md)), the CI drift gate that fails on
+  ([ADR 0008 rev 2](decisions/0008-boundary-contract-openapi-codegen.md)), the CI drift gate that fails on
   committed output differing from a fresh regeneration, and version-pinning of the generators so
   regeneration is deterministic. Generation from one schema is
   **SRS015<!-- One schema, all boundary value classes -->** and the drift gate is verified under
@@ -88,7 +88,7 @@ sides generated from it**. The tier's job in CI is to prove the generation is re
   **SYS005<!-- Single-definition internal contract -->**.
 - That the frontend adds no second, runtime validator over proxied payloads, so agreement rests on
   the schema and the drift gate rather than a bundled re-check —
-  [ADR 0008 rev 1](decisions/0008-boundary-contract-openapi-codegen.md). No requirement states this: it was
+  [ADR 0008 rev 2](decisions/0008-boundary-contract-openapi-codegen.md). No requirement states this: it was
   deleted as a prohibition against a case that does not exist, and the ADR carries the decision and
   the premise it rests on.
 
@@ -173,7 +173,7 @@ is a defect in the suite's architecture, not a neutral choice.
 ## Review cadence
 
 The test architecture is reviewed **whenever a module is added** and **whenever the boundary
-transport** (the OpenAPI schema / codegen mechanism, [ADR 0008 rev 1](decisions/0008-boundary-contract-openapi-codegen.md))
+transport** (the OpenAPI schema / codegen mechanism, [ADR 0008 rev 2](decisions/0008-boundary-contract-openapi-codegen.md))
 **changes**. This is scheduled deliberately: removing or reshaping a test feels like a regression even
 when the test proves nothing, so without a scheduled review the suite silently becomes permanent
 architecture nobody revisits. Code gets that review by default; tests must be given it explicitly.

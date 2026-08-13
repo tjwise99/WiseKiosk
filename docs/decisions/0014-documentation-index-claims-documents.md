@@ -2,10 +2,14 @@
 
 **Status:** accepted
 **Decided:** 2026-08-02 (#90 documentation-index claim check)
-**Rev:** 1
+**Rev:** 2
 
 ## Revisions
 
+- **rev 2** — 2026-08-12 — deletes the exclusions list from the Decision. The section two paragraphs
+  below already said there is none and the Alternatives record why — it was built, two one-line edits
+  to it hid a document, and it was removed rather than patched — so the Decision was advertising the
+  mechanism this record exists to have deleted. What claims a document is unchanged (#5 repo layout).
 - **rev 1** — 2026-08-05 — revision tracking begins; text as merged (#118 ADR revisions).
 
 ## Context
@@ -33,8 +37,8 @@ a check, and this ADR records how that check decides.
 ## Decision
 
 **A row in the documentation index claims a document.** A tracked Markdown file is claimed by a row in
-[`../README.md`](../README.md)'s table, or it sits under a silo named in a committed exclusions list.
-Nothing else claims a document.
+[`../README.md`](../README.md)'s table, or it is machinery under a top-level dot-directory, which the
+section below derives. Nothing else claims a document.
 
 **The claimable set is derived from the repository.** `git ls-files '*.md'` is the population, so a
 document added without a row fails. No inventory of documents is maintained by hand.

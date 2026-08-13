@@ -6,10 +6,13 @@ level the same day, #97 C4 phase 2 Container; the Component level 2026-08-05, #9
 Component; the binding rule 2026-08-08, #121 allocation completeness; the Deployment level
 2026-08-09, #123 C4 phase 4 Deployment; the disclaimer and composed-observable rules 2026-08-10,
 #135 bind the mirror and legibility requirements)
-**Rev:** 4
+**Rev:** 5
 
 ## Revisions
 
+- **rev 5** — 2026-08-12 — the `link` consequence no longer names an open ticket for the repository
+  layout, which [ADR 0021 rev 1](0021-repository-layout.md) decides; no rule here changes (#5 repo
+  layout).
 - **rev 4** — 2026-08-10 — states the rule a `verification-justification` disclaiming an outcome
   answers to, and the test that separates a composed observable from a shared one; **withdraws every
   per-requirement placement this record carried** (owner, 2026-08-10), which the model records and the
@@ -183,7 +186,7 @@ per-route configuration as per-module structure would make request validation, t
 the upstream client all module-owned and leave the framework half empty — against the contract's own
 dependency direction, under which framework code "is shared code from the moment it is written". Parts
 4 and 5 earn no component either: the boundary-schema fragment belongs to the one schema, which
-[ADR 0008 rev 1](0008-boundary-contract-openapi-codegen.md) gives to neither side, and the
+[ADR 0008 rev 2](0008-boundary-contract-openapi-codegen.md) gives to neither side, and the
 configuration-schema fragment composes into the one schema the frontend validates against. Part 6 is
 tests, which run nowhere in either container and are [`../TESTING.md`](../TESTING.md)'s.
 
@@ -579,7 +582,8 @@ Viewer, and that relationship's endpoint is the module component this record lea
 `include *` reaches neither and the level would otherwise render without its purpose. A view predicate
 compensating for an undrawn element is a seam, and it closes when the module components land.
 
-**No element carries a `link`.** No source exists and the repository layout is #5 repo layout; each
+**No element carries a `link`.** No source exists, and where it will sit is
+[ADR 0021 rev 1](0021-repository-layout.md); each
 container and component gains one when the code it describes is written, which is the review obligation
 [`../../CONTRIBUTING.md`](../../CONTRIBUTING.md) carries as its architecture-links question.
 

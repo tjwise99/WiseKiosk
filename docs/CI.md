@@ -359,13 +359,13 @@ resolve, a citation to something that does not exist, an index that has drifted 
   the repository rather than read from an inventory: adding a document without indexing it fails,
   retiring one fails until its row goes, and there is no exclusions list to append to — excluding
   anything that is not machinery by that rule takes a change to the check itself
-  ([ADR 0014 rev 1](decisions/0014-documentation-index-claims-documents.md)). A row whose *Document* cell
+  ([ADR 0014 rev 2](decisions/0014-documentation-index-claims-documents.md)). A row whose *Document* cell
   renders with a trailing slash claims the subtree beneath it, which is how `decisions/`,
   `requirements/`, `contracts/`, `architecture/` and `site/` are covered by one row each. Every row's
   link resolves to a tracked file, one rendered path carries one row, a row names a tracked document
   or a directory holding one, no row indexes a dot-directory, and no *Guarantees* or *Excludes* cell
   is empty. The index does not index itself. A new top-level dot-directory is excluded the moment it
-  exists, with no edit anywhere — the trade ADR 0014 rev 1 records, which is why the check names the
+  exists, with no edit anywhere — the trade ADR 0014 rev 2 records, which is why the check names the
   machinery directories it skipped on every run. A dot-prefixed file at the repository root is not a
   directory and must be indexed like any other document. Scope is Markdown: the tree's items are
   claimed by the tree and gated by `check-reqs`, and code is claimed by nothing here.
@@ -382,7 +382,7 @@ resolve, a citation to something that does not exist, an index that has drifted 
 - Every requirement identifier tagged in the architecture model names an item that exists, is active
   and accepted, and is spelled canonically; every declared tag is applied to something. A tag
   carrying anything other than an identifier fails rather than being passed over — the model's tags
-  carry requirement links ([ADR 0019 rev 4](decisions/0019-boundary-at-what-deploys-and-tag-tier.md)), so
+  carry requirement links ([ADR 0019 rev 5](decisions/0019-boundary-at-what-deploys-and-tag-tier.md)), so
   one carrying something else is a decision to take, not an exemption to add. A model naming no
   requirement at all fails too: it resolves every tag it carries, so an absent link and a sound one
   would read identically. A tag counts on four subject kinds — the logical model's elements and
@@ -394,7 +394,7 @@ resolve, a citation to something that does not exist, an index that has drifted 
   tagged element is the one that requirement obliges, and whether the tier suits the level; both are
   read at review.
 - **Every accepted, active `SYS` or `SRS` item is tagged somewhere in the architecture model**, on an
-  element or a relationship ([ADR 0019 rev 4](decisions/0019-boundary-at-what-deploys-and-tag-tier.md)).
+  element or a relationship ([ADR 0019 rev 5](decisions/0019-boundary-at-what-deploys-and-tag-tier.md)).
   There is no exemption record and nothing to add an item to: where one can bind nowhere, the model
   grows to draw what it obliges. The population is decided rather than filtered — a tier outside the
   obliging and verification sets fails, and so does a `status` outside `accepted` and `proposed`,

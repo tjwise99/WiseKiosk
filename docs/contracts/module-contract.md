@@ -40,7 +40,7 @@ Parts 1, 2 and 5 apply to upstream-backed modules only. Parts 3, 4 and 6 apply t
    them into the module's region; it fetches no data, parses no configuration and validates no
    payload. Where the module has a payload, the component consumes the type generated from the
    boundary schema rather than one declared by hand
-   ([ADR 0008 rev 1](../decisions/0008-boundary-contract-openapi-codegen.md)).
+   ([ADR 0008 rev 2](../decisions/0008-boundary-contract-openapi-codegen.md)).
 4. **A configuration-schema fragment.** Declares what this module accepts, composed into the one
    configuration schema and enforced at apply time in the page, which is where validation runs, per
    [ADR 0007 rev 2](../decisions/0007-config-validation-allocation.md). The fragment does not cross the
@@ -48,7 +48,7 @@ Parts 1, 2 and 5 apply to upstream-backed modules only. Parts 3, 4 and 6 apply t
 5. **A boundary-schema fragment.** Declares the payload this module returns across the boundary, as a
    named component in the one boundary schema — a section of that schema rather than a file of its own,
    and nothing recomposes it
-   ([ADR 0008 rev 1](../decisions/0008-boundary-contract-openapi-codegen.md)). This is what makes the
+   ([ADR 0008 rev 2](../decisions/0008-boundary-contract-openapi-codegen.md)). This is what makes the
    module's generated payload type exist.
 6. **Tests.** Unit tests for the shaping library and a render test for the component, both wired into
    CI. What they must cover, where they sit, and the standing obligation they discharge are

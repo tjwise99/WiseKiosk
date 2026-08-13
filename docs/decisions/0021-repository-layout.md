@@ -2,7 +2,7 @@
 
 **Status:** accepted
 **Decided:** 2026-08-12 (#5 repo layout, once #97 C4 phase 2 Container closed and the decomposition
-this projects landed as [ADR 0019 rev 4](0019-boundary-at-what-deploys-and-tag-tier.md))
+this projects landed as [ADR 0019 rev 5](0019-boundary-at-what-deploys-and-tag-tier.md))
 **Rev:** 1
 
 ## Revisions
@@ -14,9 +14,9 @@ this projects landed as [ADR 0019 rev 4](0019-boundary-at-what-deploys-and-tag-t
 **Documents across the tree defer a location to this decision by name.**
 [The module contract](../contracts/module-contract.md) states the six parts and says the concrete
 locations — which directory holds a module's files, and where the registration list lives — are fixed
-here. [ADR 0008 rev 1](0008-boundary-contract-openapi-codegen.md) chooses the boundary-contract
+here. [ADR 0008 rev 2](0008-boundary-contract-openapi-codegen.md) chooses the boundary-contract
 mechanism and leaves the schema's location open, which is what holds #7 boundary-contract codegen from
-building it. [ADR 0019 rev 4](0019-boundary-at-what-deploys-and-tag-tier.md) gives it as one of the two
+building it. [ADR 0019 rev 5](0019-boundary-at-what-deploys-and-tag-tier.md) gives it as one of the two
 reasons no model element carries a `link`.
 So the layout is a blocking dependency rather than a matter of tidiness, and the thing being unblocked
 is a set of paths other work will resolve.
@@ -30,11 +30,11 @@ What is left to decide is what the roots are called, what sits in neither, and w
 go.
 
 **A repository layout is a projection of the container decomposition onto directories**, which is why
-this decision waited on one. [ADR 0019 rev 4](0019-boundary-at-what-deploys-and-tag-tier.md) decided
+this decision waited on one. [ADR 0019 rev 5](0019-boundary-at-what-deploys-and-tag-tier.md) decided
 two containers behind one origin, and that the provisioning material shipped beside the image falls
 outside the boundary altogether. The third thing the projection has to hold is older: the boundary
 schema belongs to neither container, which is
-[ADR 0008 rev 1](0008-boundary-contract-openapi-codegen.md)'s and which ADR 0019 rev 4 reasons from
+[ADR 0008 rev 2](0008-boundary-contract-openapi-codegen.md)'s and which ADR 0019 rev 5 reasons from
 rather than decides.
 
 **The module is where the projection stops being obvious.** A module is "added and removed as a unit",
@@ -47,7 +47,7 @@ with configuration fragments and with test files, and one registration entry per
 module — walking populations that can be read off the tree.
 
 **Generated output has no say in where it sits.** A compiler reads a package where the package is, so
-the Go and TypeScript types [ADR 0008 rev 1](0008-boundary-contract-openapi-codegen.md) emits are
+the Go and TypeScript types [ADR 0008 rev 2](0008-boundary-contract-openapi-codegen.md) emits are
 inside the package that consumes them whatever this record prefers, and they are committed because
 that ADR's drift gate is a `git diff`.
 
@@ -64,7 +64,7 @@ product rather than running in it.
 - **`frontend/` is the npm package root.** `package.json` sits there; `src/` holds the sources Vite
   builds, with the framework half under `src/lib/`.
 - **`boundary/openapi.yaml` is the one boundary schema.** It is owned by neither package
-  ([ADR 0008 rev 1](0008-boundary-contract-openapi-codegen.md)), so it is inside neither, and the
+  ([ADR 0008 rev 2](0008-boundary-contract-openapi-codegen.md)), so it is inside neither, and the
   directory is named for what the repository already calls the thing.
 - **`deploy/` holds what a release carries beside the image** — the deployment recipe and the example
   configuration file ([ADR 0020 rev 1](0020-release-artifact-set-and-operator-tooling.md)). Outside
@@ -125,13 +125,13 @@ project with documentation inside it.
 
 **`api/openapi.yaml`**, the widely used Go project-layout convention for exactly this file. Rejected
 because it names the wrong thing: sitting beside `backend/`, an `api/` directory reads as the API the
-backend serves — the ownership [ADR 0008 rev 1](0008-boundary-contract-openapi-codegen.md) refuses,
+backend serves — the ownership [ADR 0008 rev 2](0008-boundary-contract-openapi-codegen.md) refuses,
 since a schema owned by one side is a schema that side can change alone. *Boundary* is the word this
 repository already uses for the contract and for the types generated from it.
 
 **`openapi.yaml` at the repository root**, expressing "owned by neither" as strongly as a path can and
 adding no directory for one file. The honest position is that it works, and that the directory holds
-one file with no second occupant anyone can name — ADR 0008 rev 1 puts each generator in a package
+one file with no second occupant anyone can name — ADR 0008 rev 2 puts each generator in a package
 toolchain and makes the drift gate repo-level, so nothing there is waiting for a home. It is rejected
 on the top level's own shape rather than on a future file: the roots here each name what they hold,
 and the loose files beside them are the repository's front matter — the README, the licence, the task
@@ -174,7 +174,7 @@ the second one to be invented would have to argue against the first rather than 
   [`../CI.md`](../CI.md) § *Repository shape* requires every non-`github-actions` entry to resolve to a
   directory holding its manifest, so an entry added ahead of the code fails the gate it belongs to.
 - **A `README.md` in any of these roots needs a row in [`README.md`](../README.md).** Under
-  [ADR 0014 rev 1](0014-documentation-index-claims-documents.md) a row is the only thing that claims a
+  [ADR 0014 rev 2](0014-documentation-index-claims-documents.md) a row is the only thing that claims a
   document, the sole exception being a top-level dot-directory, and none of these roots is one. A new
   top-level directory is cheap; a document inside one is not, and that is deliberate.
 - **A base-image Dependabot entry has no home under the rule above.** A `docker` ecosystem entry
@@ -182,7 +182,7 @@ the second one to be invented would have to argue against the first rather than 
   three ecosystems, failing an unmapped one outright rather than passing it — so such an entry needs a
   script edit wherever the Dockerfile sits. Recorded for #54 container build and publish, which is
   where the trade lands; neither half is decided here.
-- **The model's `link` properties gain their targets with the source they point at.** ADR 0019 rev 4
+- **The model's `link` properties gain their targets with the source they point at.** ADR 0019 rev 5
   withholds one for two reasons — no source, and no layout. This record answers the second; the first
   is what keeps every element without one.
 - **Almost none of this is gated.** The root-manifest half is enforced today; the rest is a convention
