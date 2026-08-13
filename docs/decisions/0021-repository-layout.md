@@ -16,8 +16,8 @@ this projects landed as [ADR 0019 rev 4](0019-boundary-at-what-deploys-and-tag-t
 locations — which directory holds a module's files, and where the registration list lives — are fixed
 here. [ADR 0008 rev 1](0008-boundary-contract-openapi-codegen.md) chooses the boundary-contract
 mechanism and leaves the schema's location open, which is what holds #7 boundary-contract codegen from
-building it. [ADR 0019 rev 4](0019-boundary-at-what-deploys-and-tag-tier.md) and
-[`../ARCHITECTURE.md`](../ARCHITECTURE.md) each give it as a reason no model element carries a `link`.
+building it. [ADR 0019 rev 4](0019-boundary-at-what-deploys-and-tag-tier.md) gives it as one of the two
+reasons no model element carries a `link`.
 So the layout is a blocking dependency rather than a matter of tidiness, and the thing being unblocked
 is a set of paths other work will resolve.
 
@@ -70,9 +70,13 @@ product rather than running in it.
   configuration file ([ADR 0020 rev 1](0020-release-artifact-set-and-operator-tooling.md)). Outside
   both packages, because it is outside the boundary: it runs nowhere the system runs.
 - **The `Dockerfile` is at the repository root.** A build that produces one image from a Go binary and
-  a built bundle has a context spanning both package roots, and the context's directory is where the
-  file that reads it belongs. The root-manifest rule above does not reach it — a Dockerfile is not a
-  dependency manifest, and nothing resolves it by walking up from a package.
+  a built bundle has a context spanning both package roots, so the file belongs to neither of them; of
+  the places left, the root is the one a build finds without being told, `PATH/Dockerfile` being what
+  `docker build <PATH>` reads by default. That is a convention rather than a constraint — `-f` names a
+  Dockerfile anywhere and `COPY` resolves against the context regardless — and it is chosen because
+  the default is what a reader and an unfamiliar builder both reach for first. The root-manifest rule
+  above does not reach it: a Dockerfile is not a dependency manifest, and nothing resolves it by
+  walking up from a package.
 
 **A module's files sit in each package that runs one, under the same name.**
 `backend/internal/modules/<name>/` holds the shaping library and its unit tests;
@@ -132,9 +136,10 @@ toolchain and makes the drift gate repo-level, so nothing there is waiting for a
 on the top level's own shape rather than on a future file: the roots here each name what they hold,
 and the loose files beside them are the repository's front matter — the README, the licence, the task
 runner. A schema is neither, and a root entry that is neither is the one a later reader has to be told
-about. The `Dockerfile` is exactly such an entry and it is there anyway, because a build context
-cannot be anywhere but where the build reads it — which is the difference between a placement that is
-forced and one that is merely available.
+about. The `Dockerfile` is exactly such an entry and it is there anyway, on the one ground that does
+not transfer: a build reads `PATH/Dockerfile` by default, so the root is where an unfamiliar builder
+looks without being told. Nothing resolves a schema by convention, so the same argument buys
+`openapi.yaml` nothing.
 
 **The configuration schema in a neutral directory beside the boundary schema.** Two schemas, one place
 to look, and the symmetry is genuinely easier to explain. Rejected because the symmetry is false. The
@@ -172,11 +177,11 @@ the second one to be invented would have to argue against the first rather than 
   [ADR 0014 rev 1](0014-documentation-index-claims-documents.md) a row is the only thing that claims a
   document, the sole exception being a top-level dot-directory, and none of these roots is one. A new
   top-level directory is cheap; a document inside one is not, and that is deliberate.
-- **A base-image Dependabot entry has no home under the rule above.** The root `Dockerfile` is the
-  right file in the right place and it is not a manifest a package directory holds, so a `docker`
-  ecosystem entry pointing at the root fails § *Repository shape*'s non-root requirement. Recorded for
-  #54 container build and publish, which is where the trade lands: an entry needs either a Dockerfile
-  somewhere a package owns or a change to that rule, and neither is decided here.
+- **A base-image Dependabot entry has no home under the rule above.** A `docker` ecosystem entry
+  pointing at the root fails § *Repository shape*'s non-root requirement, and the check recognises
+  three ecosystems, failing an unmapped one outright rather than passing it — so such an entry needs a
+  script edit wherever the Dockerfile sits. Recorded for #54 container build and publish, which is
+  where the trade lands; neither half is decided here.
 - **The model's `link` properties gain their targets with the source they point at.** ADR 0019 rev 4
   withholds one for two reasons — no source, and no layout. This record answers the second; the first
   is what keeps every element without one.
