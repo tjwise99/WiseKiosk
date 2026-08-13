@@ -172,3 +172,9 @@ appended for the same reason; inserting one is permitted
     nothing about the claim ([ADR 0022 rev 1](docs/decisions/0022-rev-reach-enumerated-not-gated.md)).
     A rev that does not touch what a citation asserts is the ordinary case, so most of that list is
     sound — the failure is answering from having run the sweep rather than from having read it.
+22. **One home.** Is each fact the change states in prose stated in the document that guarantees it?
+    The [index](docs/README.md) decides: a *Guarantees* cell is what a document may state, an
+    *Excludes* cell is what it must cite instead. **The test is question 6 read one level up** — strip
+    the citation out of the sentence, and if what remains still asserts what the cited document
+    asserts, it restates rather than cites. Summarizing and citing is permitted; a second independent
+    statement is what goes stale in one copy while the other stays right, with nothing comparing them.
