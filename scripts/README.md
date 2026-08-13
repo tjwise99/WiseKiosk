@@ -18,8 +18,10 @@ a green run, so the only evidence a check works is the list of inputs somebody p
 that it is verified.
 
 **This is a snapshot and nothing gates it.** `just verify` grows and each new check arrives with no
-section and nothing to say so. A complete-looking file is a record of what somebody ran, on the day
-they ran it.
+section and nothing to say so. **#77 gate CI.md against the workflow does not close this** — it covers
+`CI.md`'s sections against the workflow's jobs, not this record against the checks, and it is itself
+unbuildable ([`../docs/CI.md`](../docs/CI.md) § *What is not gated here* says why). A complete-looking
+file is a record of what somebody ran, on the day they ran it.
 
 **A success line says how much was checked, not how much exists.** Only the first is evidence:
 `17 tags over 5 elements and 6 relationships` reads the same whether every element carries a
@@ -745,11 +747,13 @@ not that `check-arch` reaches it.
 
 ## `check-arch-trace.py`
 
-Every row re-run at `adc1f65`, script md5 `f3d15a77411d08dc2fc50c04cb798b1a`. The counting rows were
-first exercised at `7883e3b`, md5 `012e4cd6425770ec3ce01b5d1b111216`, each run a second time against
-the form it replaced — `04cea31`, md5 `62e44de86ab097dfa0ee68084a1fb6f3` — because what those rows
-assert is that a number *moves*, and a number that never moved cannot be shown to move by a single
-run.
+Every row re-run at `adc1f65`, script md5 `f3d15a77411d08dc2fc50c04cb798b1a` — unchanged in what it
+scans from the `962e69718a8927aadfabf50422913937` the rows were last run against, that diff being
+three docstring lines and one message string. The section was first exercised at `5c48ed8` against
+md5 `62e44de86ab097dfa0ee68084a1fb6f3`. The counting rows were first exercised at `7883e3b`, md5
+`012e4cd6425770ec3ce01b5d1b111216`, each run a second time against the form it replaced — `04cea31`,
+md5 `62e44de86ab097dfa0ee68084a1fb6f3` — because what those rows assert is that a number *moves*, and
+a number that never moved cannot be shown to move by a single run.
 
 **Pinning the script is not enough here, and that is what this section learned.** Its rows count
 elements, relationships and items, so a model or tree that grows re-decides every one of them while
