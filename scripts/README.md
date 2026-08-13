@@ -1165,8 +1165,21 @@ reported, none of them from either seeded ADR.
 it untouched, so it is listed again next run. That is not a defect to close: reaching zero would
 reward editing a sentence cosmetically to clear it.
 
-**Its population is complete only while `check-adr-revs` is green** — a citation a sweep missed fails
-that gate and never reaches this tool.
+**Known gaps.**
+
+- **A citation re-pinned and re-wrapped in the same change is not listed.** Alignment is a `difflib`
+  `equal` block over the masked lines, so a reflowed line is a `replace` and falls out of the pairing
+  exactly as a rewritten one does — the tool cannot tell a mechanical wrap from an author who had the
+  sentence open. Seeded and observed: an ADR revved with a real body edit, one citing line re-pinned
+  and reflowed onto two lines, reported as *no citation was re-pinned without its sentence being
+  edited*. Reachable here, because re-wrapping is what a prose pass does and this repository's own
+  citations are wrap-sensitive. Closing it means pairing on something other than line identity, which
+  is a larger change than the tool has earned; a sweep that also reflows should be split into two
+  commits, and the pin-only one is what to run this against.
+- **Its population is complete only while `check-adr-revs` is green** — a citation a sweep missed
+  fails that gate and never reaches this tool.
+- **Line granularity is an approximation.** A claim can rot several lines below the citation it hangs
+  off. The line printed is a handle to the paragraph a reader opens, not the extent of what they read.
 
 ## Confirming a gate in CI rather than locally
 

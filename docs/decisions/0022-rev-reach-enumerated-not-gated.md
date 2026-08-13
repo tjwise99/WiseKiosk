@@ -105,4 +105,14 @@ that gate and never reaches this tool. The two compose, and neither substitutes 
 
 **Line granularity is what a machine can see.** A claim can rot below its citation, which `8f43ccb`'s
 own class — a record describing how another record argues — is the shape of. The line printed is a
-handle to a paragraph, not a bound on what a reader opens.
+handle to a paragraph, not a bound on what a reader opens. A citation re-pinned and **re-wrapped** in
+one change falls out of the pairing for the same reason and is not listed; the recorded gaps sit with
+the tool's cases in [`../../scripts/README.md`](../../scripts/README.md).
+
+**A rev is bought by a change in what a reader would otherwise get wrong, not by a change in how many
+words it takes.** This record prices a rev: taking one obliges the bumper to re-read every citation
+the sweep re-pinned, so a rewrite nobody can perceive costs real reading for no gain. The corollary is
+that **a document whose bulk is rejected alternatives cannot be condensed by a prose pass at all** — a
+reason compressed past a point stops being an argument a later reader can check. Where a condensation
+is worth having but not worth its own sweep, it belongs in the record's next substantive rev, where
+the sweep is being paid anyway.

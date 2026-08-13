@@ -593,7 +593,8 @@ already decided, which is what makes it a check and not a want.
   **What it compares is command text, not the ability to run it.** A command naming a venv or
   `node_modules` executable is proved present in both places while the toolchain providing it is
   installed per job by steps this deliberately skips, so a check can be wired identically in both and
-  still be unable to execute in one. A tool a check *invokes internally* is further out of reach
+  still be unable to execute in one. **Nothing maps a check to the toolchain its job installs.** A
+  tool a check *invokes internally* is further out of reach
   still: no gate here reads a check's source, so a dependency written inside one is declared nowhere
   any of them look. `just` is the live instance — two of these scripts read its dump, and nothing
   says so where a gate would see it.
