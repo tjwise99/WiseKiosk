@@ -95,7 +95,7 @@ mirrored locally by `just check-branch` and the advisory hooks `just install-hoo
   maintained tool and the local hook layer follows it there. What the property bought was a
   contributor needing nothing installed to run the gates; what it cost was an authored parser for a
   convention that already has a maintained implementation.
-  [ADR 0017 rev 3](0017-authored-language-set.md) ends what remains of it, moving the authored gates
+  [ADR 0017 rev 4](0017-authored-language-set.md) ends what remains of it, moving the authored gates
   to Python.
 
 ## Consequences

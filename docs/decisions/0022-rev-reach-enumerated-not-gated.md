@@ -18,7 +18,7 @@ states in its own docstring.
 A sweep that rewrites `rev N` to `rev N+1` across the tree therefore satisfies the gate while
 re-deciding nothing, and the green result certifies a reach that did not happen. On the branch
 squashed as `197d075`, commit `52bb933` bumped three records and re-pinned the tree; two sentences in
-[ADR 0021 rev 1](0021-repository-layout.md) had only their rev token changed while the claim
+[ADR 0021 rev 2](0021-repository-layout.md) had only their rev token changed while the claim
 each hung off went false, and `check-adr-revs` reported 295 of 295 citations current across both.
 `8f43ccb` fixed them and recorded that it was the third recurrence of one class; `9177e5a` and
 `62c0a48` are two more on the same branch.
