@@ -619,12 +619,13 @@ specification rather than of the repository, so they are stated where the specif
 [`../CONTRIBUTING.md`](../CONTRIBUTING.md)'s checklist, rather than by anything here
 ([ADR 0011 rev 1](decisions/0011-requirement-or-convention.md)). The pull-request template points
 there. Two of those questions have a mechanical artifact to read from, deliberately: the documentation
-index this document's gates hold to the tree, and `just rev-reach`, which lists every ADR citation a
-change re-pinned without touching the sentence around it. Neither is a gate — the second reports and
-exits zero, sits outside `just verify`, and is named so that it does not read as one. A blocking form
-was weighed and refused: a rev that does not touch what a citation asserts is the ordinary case, so
-failing every pin-only edit is fail-closed on legal input, and the exemption list it would grow is
-where a bypass gets spelled.
+index this document's gates hold to the tree, and the list of every ADR citation a change re-pinned
+without touching the sentence around it, which the `pre-push` hook prints whenever a branch revs one
+and `just rev-reach` gives on demand. Neither is a gate — the second reports and exits zero, sits
+outside `just verify`, and is named so that it does not read as one. A blocking form was weighed and
+refused: a rev that does not touch what a citation asserts is the ordinary case, so failing every
+pin-only edit is fail-closed on legal input, and the exemption list it would grow is where a bypass
+gets spelled.
 
 **The product's obligations.** What the software must do is in
 [`requirements/`](requirements/README.md), verified by tests that trace to it. A gate here can block a

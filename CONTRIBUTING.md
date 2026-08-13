@@ -169,10 +169,11 @@ appended for the same reason; inserting one is permitted
     longer holds is how a workaround gets written for a problem nobody has.
 21. **Rev reach.** Where the change revs an ADR, has each citation the sweep re-pinned **without
     touching the sentence around it** been read against what that rev actually changed?
-    `just rev-reach` lists them, per file and line; `just check-adr-revs` holds the pin and decides
-    nothing about the claim. A rev that does not touch what a citation asserts is the ordinary case,
-    so most of that list is sound — the failure is answering from having run the sweep rather than
-    from having read it.
+    The `pre-push` hook prints them, per file and line, whenever a branch revs one; `just rev-reach`
+    is the same list on demand. `just check-adr-revs` holds the pin and decides nothing about the
+    claim. A rev that does not touch what a citation asserts is the ordinary case, so most of that
+    list is sound — the failure is answering from having run the sweep rather than from having read
+    it.
 22. **One home.** Is each fact the change states in prose stated in the document that guarantees it?
     The [index](docs/README.md) decides: a *Guarantees* cell is what a document may state, an
     *Excludes* cell is what it must cite instead. **The test is question 6 read one level up** — strip

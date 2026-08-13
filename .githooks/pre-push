@@ -11,3 +11,16 @@ if ! printf '%s' "$branch" | grep -Eqf scripts/branch-shape.regex; then
     echo "pre-push: branch '$branch' does not match type_number-snake_name (see scripts/branch-shape.regex)." >&2
     exit 1
 fi
+
+# Prints the citations a rev bump re-pinned without touching the sentence around them, for review
+# checklist question 21. Never fails the push: a rev that does not touch what a citation asserts is
+# the ordinary case, so there is nothing here to decide.
+if command -v python3 >/dev/null 2>&1; then
+    reach=$(python3 scripts/adr-rev-reach.py 2>/dev/null) || reach=""
+    case "$reach" in
+        *"re-pinned, sentence untouched"*)
+            printf '%s\n' "$reach" >&2
+            echo "pre-push: read each line above against what that rev changed (question 21, Rev reach)." >&2
+            ;;
+    esac
+fi
