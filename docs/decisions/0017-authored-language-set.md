@@ -3,10 +3,18 @@
 **Status:** accepted
 **Decided:** 2026-08-04 (#60 authored-language set, taken after
 [ADR 0016 rev 3](0016-maintained-tools-for-standard-artifacts.md) settled which authored checks survive at all)
-**Rev:** 4
+**Rev:** 5
 
 ## Revisions
 
+- **rev 5** — 2026-08-13 — the set is now gated. `scripts/check-languages.py` asserts every tracked
+  file's declared kind, so three claims here no longer hold: that nothing is gated, that no check
+  compares the disposition list against the tree, and that the reviewer is the whole mechanism. The
+  rejected alternative *Gate the set with a check* keeps its reasoning and gains the condition that
+  changed. What review still owes is narrowed to what a path-and-suffix check cannot see: control
+  flow embedded in a derived format, and a new entry in the declared set arriving without the rev
+  that decided it. The language set, the audience rule and the derivation rule are unchanged
+  (#145 prose pass).
 - **rev 4** — 2026-08-13 — three claims the tree contradicted: a count of Python check scripts and the
   *reads-the-tree* split drawn from it, a line count for the one sh file, and a closed ticket carrying
   the argument that this disposition ends rather than grandfathers. Each replaced by the rule it was
@@ -72,10 +80,11 @@ rather than a shell script wearing a recipe's clothes.
 
 **A program embedded in a derived format is still an authored program**, and the rule above reaches
 it: a workflow `run:` block or a hook `entry:` carrying control flow is authored sh whatever file it
-sits in. Only the `justfile` leg of this has a check behind it; the rest is the reviewer's, under
-[`../../CONTRIBUTING.md`](../../CONTRIBUTING.md) review checklist item 12, *Languages*, and it is the one place
-where this decision's reason for refusing a gate — that a new language is a new file extension, the
-loudest thing in a diff — does not hold.
+sits in. Only the `justfile` leg of this has a check behind it. The gate below judges a file by its
+path and its extension and never opens it, so an embedded program changes nothing that gate can see;
+the rest is the reviewer's, under [`../../CONTRIBUTING.md`](../../CONTRIBUTING.md) review checklist
+item 12, *Languages*. It is the one place where the argument that a new language arrives as a new
+file extension, the loudest thing in a diff, does not hold at all.
 
 Nothing above needs revising when a tool arrives with a format not yet seen here — which is the
 point, since [ADR 0016 rev 3](0016-maintained-tools-for-standard-artifacts.md) adopts four such tools.
@@ -120,11 +129,22 @@ from grandfathering is that this ends on a condition the tree decides rather tha
 intention — and if that condition proves unreachable, conversion is the remedy and this record needs
 no rev for it.
 
-That list is a snapshot taken on the decision date, not a standing inventory — no check compares it
-against the tree, and the rule above is what governs anything written after it.
+That list is a snapshot taken on the decision date, not a standing inventory, and the rule above is
+what governs anything written after it. Its live counterpart is
+[`../../scripts/check-languages.py`](../../scripts/check-languages.py), which grandfathers each file
+above — and each one [ADR 0016 rev 3](0016-maintained-tools-for-standard-artifacts.md) disposes of —
+by exact path, and fails an entry once that path stops being tracked, so a disposition that lands
+takes its grant with it rather than leaving a dead one behind.
 
-**Nothing here is gated.** A language outside this set is a decision with a rejected alternative, so
-it arrives as a rev of this record or an ADR superseding it, and the reviewer is the mechanism —
+**The set is gated; what the gate cannot decide is the reviewer's.**
+[`../../scripts/check-languages.py`](../../scripts/check-languages.py) fails any tracked file whose
+extension is outside the declared set, or whose exact path is undeclared where it has no extension,
+and fails a run resolving no tracked file rather than reporting a clean tree. Two things stay out of
+its reach, both by construction: it never opens a file, so a program embedded in a derived format is
+invisible to it, and closing one of its failures takes a single declared entry, which nothing there
+holds to arriving with the rev that decided it. A language outside this set is still a decision with
+a rejected alternative, so it arrives as a rev of this record or an ADR superseding it, and the
+reviewer is the mechanism for exactly those two residues —
 [`../../CONTRIBUTING.md`](../../CONTRIBUTING.md) review checklist item 12, *Languages*, added with this record.
 #59 comment-discipline gate's coverage registry is **not** this decision's enforcement: it exists so
 that gate cannot go silently blind on a language it has no arm for, and it would fail-closed on an
@@ -164,6 +184,14 @@ unregistered language whatever this record said.
   the case as a residue, which is the condition under which the second reaches it at all. The
   checklist question is what 0011 requires so the obligation is not a dead letter; a gate on top of it
   would be ceremony.
+  **Adopted at rev 5.** What that arithmetic priced was a gate bought against one residual
+  obligation. Built, it discharges two the ledger never carried: the declared set becomes an artifact
+  in the tree, each entry naming what it serves and which record grants it, and the disposition list
+  above stops being a snapshot nobody is forced to notice going stale. Neither is reachable by a
+  reviewer reading a diff, and the check adds no toolchain this repository was not already
+  installing. The rejection's own reasoning survives adoption — the new extension is still the loud
+  case, and it is now the *gated* case, which is why the checklist question narrows to the residue
+  rather than retiring.
 
 ## Consequences
 

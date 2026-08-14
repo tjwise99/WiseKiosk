@@ -445,7 +445,7 @@ changed, which the citation resolver above decides without anyone declaring anyt
 ## Repository shape
 
 - **Every tracked file is a declared kind** — an authored program in the set
-  [ADR 0017 rev 4](decisions/0017-authored-language-set.md) states, a derived format a toolchain
+  [ADR 0017 rev 5](decisions/0017-authored-language-set.md) states, a derived format a toolchain
   requires, data an authored check reads, or documentation. **A file type nobody has decided about
   fails**, which is the point: closing that failure is a person deciding which side it falls on. A run
   resolving no tracked file fails rather than reporting a clean tree.
