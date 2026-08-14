@@ -178,10 +178,11 @@ appended for the same reason; inserting one is permitted
     is the same list on demand. `just check-adr-revs` holds the pin and decides nothing about the
     claim. A rev that does not touch what a citation asserts is the ordinary case, so most of that
     list is sound — the failure is answering from having run the sweep rather than from having read
-    it. **And has any reflow left a citation split across a line break?** Both checks match within one
-    line, so a citation wrapped after its keyword is invisible to each — permanently, not until the
-    next sweep. Treat one as an unbreakable token when rewrapping a paragraph; two such splits were
-    introduced here by prose passes and neither was reported by anything.
+    it. **Separately, and whether or not the change revs anything: has a reflow left a citation split
+    across a line break?** Both checks match within one line, so a citation wrapped after its keyword
+    is invisible to each — permanently, not until the next sweep. Treat one as an unbreakable token
+    when rewrapping a paragraph. Both splits found here were introduced by prose passes that revved
+    no ADR at all, which is why this question does not sit behind the condition above.
 22. **One home.** Is each fact the change states in prose stated in the document that guarantees it?
     The [index](docs/README.md) decides: a *Guarantees* cell is what a document may state, an
     *Excludes* cell is what it must cite instead. **The test is question 6 read one level up** — strip
