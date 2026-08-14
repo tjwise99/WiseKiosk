@@ -14,6 +14,9 @@ Exercised against the sweep that motivated it, `52bb933` on the branch squashed 
 | Must not list | An administrative rev | an ADR revved with a changelog line and nothing else | classified *body unchanged*; none of its citations appear |
 | Must not list | A rev the sweep merely passed through | an ADR whose only body edit is re-pinning its own citations of the revved record | classified *body unchanged*, so the sweep does not cascade into the records it crosses |
 | Must not list | No rev in range | `8f43ccb 62c0a48` | `no ADR revved between these trees; nothing to re-read`, exit 0 |
+| Must list | A pin-only line outside Markdown | the ADR 0017 rev 5 sweep, whose 41 citations sit 28 in a Python docstring and its comments, 12 in Markdown, 1 hand-edited | all 40 pin-only lines, `scripts/check-languages.py` among them |
+| Must not list | A line outside Markdown whose sentence the author rewrote | the same sweep with `scripts/check-languages.py:153` reworded alongside its pin | 39, that line absent — the pairing rule holds identically outside Markdown |
+| Must name | A tracked file not decodable as text at either tree | a binary committed at the base and carried to the head across that sweep | named under *not decodable as text*, never passed over |
 
 The two *body unchanged* rows are the pair that matters, and they are why substance is compared with
 the head rev line dropped, the *Revisions* section dropped, and every rev token in the remainder
@@ -25,6 +28,14 @@ reported, none of them from either seeded ADR.
 **The list shrinks only on an edit.** A reviewer who reads a sentence and finds it still true leaves
 it untouched, so it is listed again next run. That is not a defect to close: reaching zero would
 reward editing a sentence cosmetically to clear it.
+
+**The population is every tracked file, and was not always.** As first written this walked Markdown
+alone. The ADR 0017 rev 5 sweep is what exposed it: 28 of its 41 citations sit in a Python docstring
+and its comments, all of them held to the current rev by `check-adr-revs.py`, none of them visible
+here — and the summary line still read as the whole population. Ablation on one fixture, the two
+scripts differing only in that restriction: **12 citations reported before, 40 after**, and the
+binary file named only by the second. A reporter whose population is narrower than the gate it audits
+does not under-report loudly; it reports a smaller number in the same sentence.
 
 **Known gaps.**
 

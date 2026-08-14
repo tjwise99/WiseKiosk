@@ -13,7 +13,11 @@ what it produces is a list of file, line and sentence for a reader to judge, und
 Reported. For each ADR whose head rev moved between the base ref and the head tree, and whose body
 outside its head-rev line and its *Revisions* section also changed: every line in the tracked set
 that is identical across the two trees once every `rev N` token is masked, and different before
-masking. That is a line whose sole edit was the pin.
+masking. That is a line whose sole edit was the pin. The tracked set is every file, not the Markdown
+in it: `scripts/check-adr-revs.py` holds a citation in a docstring or a comment to its rev exactly as
+it holds one in prose, so a sweep reaches there too. A file not decodable as text at either tree is
+named in the output rather than passed over, since a shrunken population reported as a whole one is
+the failure this tool exists to catch.
 
 Not reported, each deliberately:
 
@@ -232,15 +236,17 @@ def revved(base, head, problems):
 
 def pin_only(base, head, moved, problems):
     """Every line whose sole edit was a pin of one of `moved`, as number → (path, line, text)."""
-    work = {number: [] for number in moved}
+    work, unreadable = {number: [] for number in moved}, []
     if not moved:
-        return work
+        return work, unreadable
     at_head = set(listing(head))
     for path in sorted(at_head & set(listing(base))):
-        if not path.endswith(".md"):
-            continue
         old, new = read(base, path), read(head, path)
         if old is None or new is None:
+            # Named rather than skipped: the population this walks is the population
+            # `check-adr-revs.py` holds to a rev, and a file dropped from it silently would shrink
+            # the reach reported below without shrinking the sweep that produced it.
+            unreadable.append(path)
             continue
         old_lines, new_lines = old.split("\n"), new.split("\n")
         if not CITATION.search(old) and not CITATION.search(new):
@@ -273,10 +279,10 @@ def pin_only(base, head, moved, problems):
                         work[number].append(
                             (path, new_start + offset + 1, new_line.strip())
                         )
-    return work
+    return work, sorted(unreadable)
 
 
-def report(substantive, administrative, work):
+def report(substantive, administrative, work, unreadable):
     items = 0
     for number, (was, is_now, path, note) in substantive.items():
         lines = work[number]
@@ -295,6 +301,10 @@ def report(substantive, administrative, work):
             f"\nADR {number} rev {was} → {is_now}, body unchanged — {path}\n"
             "  nothing to re-read: the rev rewrote no claim a citation can be about"
         )
+    if unreadable:
+        print("\nnot decodable as text at one of the two trees, so unjudged here:")
+        for path in unreadable:
+            print(f"  {path}")
     total = len(substantive) + len(administrative)
     print(
         f"\n{total} ADR(s) revved; {items} citation(s) re-pinned by a sweep and not otherwise read"
@@ -315,13 +325,13 @@ def main(argv):
             return fail(f"{ref!r} names no commit")
     problems = []
     substantive, administrative = revved(base, head, problems)
-    work = pin_only(base, head, substantive, problems)
+    work, unreadable = pin_only(base, head, substantive, problems)
     if problems:
         for problem in sorted(problems):
             print(f"adr-rev-reach: {problem}", file=sys.stderr)
         return 2
     print(f"citations re-pinned between {base} and {head or 'the worktree'}:")
-    report(substantive, administrative, work)
+    report(substantive, administrative, work, unreadable)
     return 0
 
 
