@@ -9,7 +9,7 @@ and the assets a documentation build serves, are carved out of the decision enti
 
 This asserts that every extension actually present is one of those three kinds, declared and
 attributed below — never inferred from what happens to already be in the tree. A file type nobody has
-decided about **fails**, which is the opposite of a denylist: the unbounded set ADR 0017 rejected
+decided about **fails**, which is the opposite of a denylist: the unbounded set ADR 0017 rev 4 rejected
 would pass silently on a new extension, and only a bounded, declared set can fail on one.
 
 `sh` and `mjs` are **not** declared extensions: ADR 0017 rev 4 names POSIX sh and Node as authoring
@@ -17,13 +17,15 @@ nothing at all, so an allowlisted `.sh`/`.mjs` extension would be the one hole t
 the violation this check exists to catch. The check scripts already written in them are real, but each
 carries **a disposition rather than an exemption** — ADR 0017 rev 4's own words for this, applied here
 the same way it applies there — so each is declared individually, by its exact repository-relative
-path, in `LEGACY`, citing the record and ticket that ends it. A *new* `.sh` or `.mjs` file, anywhere
-not in that list, fails.
+path, in `LEGACY`, citing the record that ends it. A *new* `.sh` or `.mjs` file, anywhere not in that
+list, fails — and an entry whose file is no longer tracked fails too, so the list cannot silently
+outlive the conversion it was grandfathering.
 
 A file with no extension is judged the same way, by its exact repository-relative path in
-`NO_EXTENSION` — `justfile`, `LICENSE`, `.gitignore` and a git hook serve nothing in common, and a
-shared no-extension bucket would wave through the next one just as silently as an unbounded extension
-set would.
+`NO_EXTENSION` — `justfile`, `LICENSE` and `.gitignore` serve nothing in common, and a shared
+no-extension bucket would wave through the next one just as silently as an unbounded extension set
+would. The three `.githooks/` hooks are POSIX sh with no extension, so they are grandfathered in
+`LEGACY` rather than `NO_EXTENSION`, on the same reasoning as the `.sh` entries there.
 
 Population is `git ls-files`. An empty population fails rather than passing: a run that resolved no
 tracked file judged nothing, and this repository's whole review checklist turns on that not reading
@@ -81,21 +83,19 @@ NO_EXTENSION = {
     ".gitattributes": "derived — git's own required input format",
     ".editorconfig": "derived — EditorConfig's own required input format",
     ".github/CODEOWNERS": "derived — GitHub's own required input format",
-    ".githooks/pre-commit": "authored, legacy — POSIX sh git hook, the same disposition as the "
-    "`.sh` extension above (ADR 0016 rev 3, `pre-commit` as the local hook layer)",
-    ".githooks/pre-push": "authored, legacy — POSIX sh git hook, the same disposition as the "
-    "`.sh` extension above (ADR 0016 rev 3, `pre-commit` as the local hook layer)",
 }
 
 
 # Exact repository-relative path -> the record giving that file its disposition. `sh` and `mjs` are
 # NOT declared extensions: ADR 0017 rev 4 says they author nothing, so a *new* file in either must
 # fail. The files below predate that decision and each carries "a disposition rather than an
-# exemption" in ADR 0017 rev 4's own words — so they are grandfathered one at a time, and the list
-# empties itself as each conversion lands.
-LEGACY_AUTHORED = {
+# exemption" in ADR 0017 rev 4's own words — so they are grandfathered one at a time, and `main()`
+# fails an entry here whose file is no longer tracked, so the list empties itself as each conversion
+# lands rather than accumulating dead grants.
+LEGACY = {
     "scripts/check-branch.sh": "converts to Python under #109 check-branch conversion (ADR 0017 rev 4)",
-    "scripts/validate-tree.sh": "deleted rather than converted, retiring the pending-TST-tier exception (ADR 0017 rev 4)",
+    "scripts/validate-tree.sh": "deleted rather than converted, when the first active TST item "
+    "retires the pending-tier exception it stands in for (#78; ADR 0017 rev 4)",
     "scripts/check-commit-msg.sh": "replaced by commitlint (ADR 0016 rev 3)",
     "scripts/check-eol.sh": "replaced by pre-commit as the local hook layer (ADR 0016 rev 3)",
     "scripts/check-adr-index.mjs": "converts to Python under #110 Node check conversion (ADR 0017 rev 4)",
@@ -136,7 +136,7 @@ def main():
     for name in files:
         # A file grandfathered by path is judged first: sh and mjs are not declared extensions, so
         # the named legacy files pass here and a new one in either language falls through and fails.
-        if name in LEGACY_AUTHORED:
+        if name in LEGACY:
             judged += 1
             continue
         suffix = Path(name).suffix
@@ -155,7 +155,7 @@ def main():
         else:
             judged += 1
 
-    stale = sorted(set(LEGACY_AUTHORED) - set(files))
+    stale = sorted(set(LEGACY) - set(files))
     problems.extend(
         f"{name}: grandfathered as legacy but no longer tracked — its disposition landed, so the "
         f"entry goes with it" for name in stale
