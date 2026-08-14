@@ -46,6 +46,9 @@ jobs:
       - name: Every action is pinned to an immutable reference, and no workflow grants write at the top level
         run: node scripts/check-workflow-hardening.mjs
 
+      - name: Every tracked file is a declared authored or derived kind
+        run: python3 scripts/check-languages.py
+
       - name: Every `just verify` check runs in CI, and every token names a command its recipe runs
         run: node scripts/check-verify-ci-parity.mjs
 
