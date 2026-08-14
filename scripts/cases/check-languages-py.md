@@ -60,12 +60,19 @@ repository reports **211 tracked files**.
 - **The audience binding is not checked at all — only the set is.** `EXTENSIONS` is tree-wide and
   says nothing about where a file sits, while ADR 0017 rev 5's Decision table binds a language to an
   audience and states in as many words that TypeScript is product-only. So
-  `scripts/check-rogue.ts`, a repository check authored in TypeScript, **passes**: seeded and run,
-  `215 tracked files, every extension in the declared set`, exit 0. This is the largest thing the
+  `scripts/check-rogue.ts`, a repository check authored in TypeScript, **passes**: seeded and run, it
+  reports one file above the baseline of the tree it ran on and exits 0. This is the largest thing the
   check does not decide, and it is the reason `CONTRIBUTING.md` review checklist item 12,
   *Languages*, leads with audience rather than with the set. Closing it means binding each declared
   extension to the paths it may occupy, which is a second rule rather than a wider allowlist, and
   nothing has yet argued for one.
+- **A grandfather entry is a cheaper bypass than a declared extension, and nothing prices it.** A
+  path added to `LEGACY` is matched before any extension logic, so one line admits a file in any
+  language at all — no new extension, and nothing in the run distinguishes it from a disposition the
+  record actually granted. Seeded: `scripts/rogue.rs` with a `LEGACY` line and `EXTENSIONS` untouched
+  reports one file above baseline and exits 0. Both this and a new `EXTENSIONS` key are the same
+  residue for review, which is why item 12 names the grandfather list explicitly rather than saying
+  *the declared set*.
 - **Content is never read.** A no-extension or `LEGACY`-grandfathered file passes on its path alone,
   and an extension-bearing file passes on its suffix alone — nothing here notices `LICENSE` replaced
   with a shell script, `scripts/check-branch.sh` replaced with something that no longer does what its

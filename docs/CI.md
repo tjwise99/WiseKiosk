@@ -370,6 +370,10 @@ resolve, a citation to something that does not exist, an index that has drifted 
   **What this leaves unproven is whether a citation pinning the current rev still means what the ADR
   says.** The pin is gated and the claim hanging off it is not, so a sentence describing what an
   earlier rev said passes green. That is read at review — see § *What is not gated here*.
+  **A citation split across a line break is not judged at all**, in either direction: matching is
+  within one line, so a line ending in the bare keyword and the next opening with the number match
+  neither pattern, and that citation is exempt from the rule for as long as the wrap survives. It is
+  a hole a prose pass can *open*, since rewrapping is what one does. Held by review alone.
 - **Every tracked Markdown file is claimed by a row in the documentation index**, unless it sits under
   a top-level dot-directory, which holds machinery rather than documents. Both sides are derived from
   the repository rather than read from an inventory: adding a document without indexing it fails,

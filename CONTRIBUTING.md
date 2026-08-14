@@ -118,8 +118,9 @@ appended for the same reason; inserting one is permitted
     author a program for the wrong audience — a repository check in TypeScript passes on a declared
     extension? Is any file's content something other than the kind its path declares? Does it author
     control flow inside a derived format, a workflow `run:` block or a hook `entry:`, where no
-    extension changes at all? And does a new entry in that check's declared set arrive with the
-    revision of that record deciding it?
+    extension changes at all? And does a new entry in that check's declared **or grandfathered** set
+    arrive with the revision of that record deciding it? The grandfather list is the cheaper of those
+    two, needing no new extension at all.
 13. **Second enforcer.** Does the change add a second place enforcing a rule an ADR allocated to one —
     today the configuration schema, validated in the page alone
     ([ADR 0007 rev 2](docs/decisions/0007-config-validation-allocation.md))? Two enforcers drift, and
@@ -177,7 +178,10 @@ appended for the same reason; inserting one is permitted
     is the same list on demand. `just check-adr-revs` holds the pin and decides nothing about the
     claim. A rev that does not touch what a citation asserts is the ordinary case, so most of that
     list is sound — the failure is answering from having run the sweep rather than from having read
-    it.
+    it. **And has any reflow left a citation split across a line break?** Both checks match within one
+    line, so a citation wrapped after its keyword is invisible to each — permanently, not until the
+    next sweep. Treat one as an unbreakable token when rewrapping a paragraph; two such splits were
+    introduced here by prose passes and neither was reported by anything.
 22. **One home.** Is each fact the change states in prose stated in the document that guarantees it?
     The [index](docs/README.md) decides: a *Guarantees* cell is what a document may state, an
     *Excludes* cell is what it must cite instead. **The test is question 6 read one level up** — strip

@@ -99,8 +99,11 @@ matters.
   reported from neither direction; it was found by grepping for lines ending in the keyword, which is
   the only thing that sees it today. This is the one gap here a sweep can *create* rather than
   merely miss: re-wrapping is what a prose pass does, and every citation in this repository is
-  wrap-sensitive, so treat one as an unbreakable token when reflowing. Closing it means matching
-  across a line join — a change to what the population is, not to what the rule says.
+  wrap-sensitive. The obligation that follows binds every prose edit in the repository rather than
+  anyone running this check, so it is stated where a person reflowing a paragraph meets it —
+  `CONTRIBUTING.md` review checklist item 21, *Rev reach*, and `docs/CI.md` beside what this gate
+  leaves unproven. Closing the hole itself means matching across a line join — a change to what the
+  population is, not to what the rule says.
 - An illustrative example spelling a live ADR number is rejected as a stale citation. That is correct,
   and it cost three fixes: `docs/decisions/README.md`, this check's docstring, and the first draft of
   the tables above each named a real ADR while describing the citation form. A check that exempted

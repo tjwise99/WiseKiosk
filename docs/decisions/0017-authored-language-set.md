@@ -137,8 +137,8 @@ the files above written in a language that authors nothing plus the ones
 [ADR 0016 rev 3](0016-maintained-tools-for-standard-artifacts.md) disposes of in the same languages —
 the remainder of that record's list carries a declared extension and needs no entry. That copy is
 grandfathered by exact path and fails once a path stops being tracked, so a disposition that lands
-takes its grant with it. **The two copies are not compared with each other**, so a conversion empties
-the check's list and leaves this one saying the conversion is pending.
+takes its grant with it. **The two copies are not compared with each other**, so a conversion drops
+its entry from the check's list and leaves this one saying that conversion is pending.
 
 **The declared kinds are gated; the audience binding is not.**
 [`../../scripts/check-languages.py`](../../scripts/check-languages.py) fails any tracked file whose
@@ -148,8 +148,9 @@ and fails a run resolving no tracked file rather than reporting a clean tree. Wh
 which binds a language to an audience — is outside it: a repository check authored in TypeScript
 satisfies the gate on an extension this record declares for what ships, and TypeScript being
 product-only is not a claim any run makes. Outside it too are the content behind a declared path, a
-program embedded in a derived format, and whether a new declared entry arrived with the rev that
-decided it. A language outside this set is still a decision with a rejected alternative, so it
+program embedded in a derived format, and whether an entry added to the declared set — or to the
+grandfather list beside it, which needs no new extension and is the cheaper of the two — arrived with
+the rev that decided it. A language outside this set is still a decision with a rejected alternative, so it
 arrives as a rev of this record or an ADR superseding it, and the reviewer is the mechanism for
 everything the gate leaves —
 [`../../CONTRIBUTING.md`](../../CONTRIBUTING.md) review checklist item 12, *Languages*, added with this record.
