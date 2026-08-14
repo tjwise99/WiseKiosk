@@ -113,11 +113,13 @@ appended for the same reason; inserting one is permitted
 11. **Narrowed guards.** Where the change narrows a check so it stops rejecting legal input, is the
     narrowing reachable by the defect the check exists to catch? An exemption is the first place a
     bypass gets spelled, and the reasoning that produces one reads as caution.
-12. **Languages.** `check-languages` judges a file by path and extension and never opens one, so two
-    things are left: does the change author control flow inside a derived format — a workflow `run:`
-    block, a hook `entry:` — where no extension changes? And does a new entry in that check's declared
-    set arrive with the rev of
-    [ADR 0017 rev 5](docs/decisions/0017-authored-language-set.md) that decided it?
+12. **Languages.** Four things `check-languages` states it cannot reach
+    ([ADR 0017 rev 5](docs/decisions/0017-authored-language-set.md)), each one yours. Does the change
+    author a program for the wrong audience — a repository check in TypeScript passes on a declared
+    extension? Is any file's content something other than the kind its path declares? Does it author
+    control flow inside a derived format, a workflow `run:` block or a hook `entry:`, where no
+    extension changes at all? And does a new entry in that check's declared set arrive with the
+    revision of that record deciding it?
 13. **Second enforcer.** Does the change add a second place enforcing a rule an ADR allocated to one —
     today the configuration schema, validated in the page alone
     ([ADR 0007 rev 2](docs/decisions/0007-config-validation-allocation.md))? Two enforcers drift, and

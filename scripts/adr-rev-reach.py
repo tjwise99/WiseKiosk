@@ -16,8 +16,8 @@ that is identical across the two trees once every `rev N` token is masked, and d
 masking. That is a line whose sole edit was the pin. The tracked set is every file, not the Markdown
 in it: `scripts/check-adr-revs.py` holds a citation in a docstring or a comment to its rev exactly as
 it holds one in prose, so a sweep reaches there too. A file not decodable as text at either tree is
-named in the output rather than passed over, since a shrunken population reported as a whole one is
-the failure this tool exists to catch.
+named in the output rather than passed over, with which of the two reasons applies, since a shrunken
+population reported as a whole one is the failure this tool exists to catch.
 
 Not reported, each deliberately:
 
@@ -103,15 +103,20 @@ def listing(ref):
 
 
 def read(ref, path):
-    """One path's text at a ref, or None where it is absent or not decodable as text."""
+    """One path's text at a ref as (text, why-not), the two reasons kept apart.
+
+    A tracked path missing from disk and a tracked path holding bytes are different facts about the
+    population, and the worktree reaches the first: `git ls-files` lists a file deleted but not yet
+    staged, which a reader told it was undecodable would read as a wrong answer rather than a rebase.
+    """
     try:
         raw = (ROOT / path).read_bytes() if ref is None else git("show", f"{ref}:{path}")
     except (OSError, subprocess.CalledProcessError):
-        return None
+        return None, "tracked, but no content at this tree"
     try:
-        return raw.decode("utf-8")
+        return raw.decode("utf-8"), None
     except UnicodeDecodeError:
-        return None
+        return None, "not decodable as text"
 
 
 def masked(line):
@@ -196,9 +201,9 @@ def adrs(ref, problems):
         number = ADR_FILE.match(name)
         if not number:
             continue
-        text = read(ref, path)
+        text, why_not = read(ref, path)
         if text is None:
-            problems.append(f"{path} is not readable as text at {ref or 'the worktree'}")
+            problems.append(f"{path} at {ref or 'the worktree'}: {why_not}")
             continue
         heads = HEAD_REV.findall(text)
         if len(heads) != 1:
@@ -241,12 +246,12 @@ def pin_only(base, head, moved, problems):
         return work, unreadable
     at_head = set(listing(head))
     for path in sorted(at_head & set(listing(base))):
-        old, new = read(base, path), read(head, path)
+        (old, why_old), (new, why_new) = read(base, path), read(head, path)
         if old is None or new is None:
             # Named rather than skipped: the population this walks is the population
             # `check-adr-revs.py` holds to a rev, and a file dropped from it silently would shrink
             # the reach reported below without shrinking the sweep that produced it.
-            unreadable.append(path)
+            unreadable.append((path, why_old or why_new))
             continue
         old_lines, new_lines = old.split("\n"), new.split("\n")
         if not CITATION.search(old) and not CITATION.search(new):
@@ -302,9 +307,9 @@ def report(substantive, administrative, work, unreadable):
             "  nothing to re-read: the rev rewrote no claim a citation can be about"
         )
     if unreadable:
-        print("\nnot decodable as text at one of the two trees, so unjudged here:")
-        for path in unreadable:
-            print(f"  {path}")
+        print("\ntracked but unjudged here, each with why:")
+        for path, why_not in unreadable:
+            print(f"  {path}: {why_not}")
     total = len(substantive) + len(administrative)
     print(
         f"\n{total} ADR(s) revved; {items} citation(s) re-pinned by a sweep and not otherwise read"

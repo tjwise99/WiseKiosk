@@ -88,6 +88,19 @@ matters.
 
 **Known rejections and gaps.**
 
+- **A citation a line wrap splits after the keyword is invisible here, and so permanently exempt from
+  the rule.** `CITATION` is applied per line, so a line ending in the bare keyword and the next
+  opening with the number and its rev matches neither: the first carries no digits, the second no
+  keyword. **Two live instances were found this way, both in `scripts/cases/check-languages-py.md`,
+  and one of them had already gone stale** — it kept a superseded rev straight through a sweep of
+  that record while this check exited 0 over the whole tree. Joining the two lines and re-running
+  reports the stale pin, so the rule is sound and only its window is wrong.
+  `scripts/adr-rev-reach.py` is blind the same way and for the same reason, which is why the miss was
+  reported from neither direction; it was found by grepping for lines ending in the keyword, which is
+  the only thing that sees it today. This is the one gap here a sweep can *create* rather than
+  merely miss: re-wrapping is what a prose pass does, and every citation in this repository is
+  wrap-sensitive, so treat one as an unbreakable token when reflowing. Closing it means matching
+  across a line join — a change to what the population is, not to what the rule says.
 - An illustrative example spelling a live ADR number is rejected as a stale citation. That is correct,
   and it cost three fixes: `docs/decisions/README.md`, this check's docstring, and the first draft of
   the tables above each named a real ADR while describing the citation form. A check that exempted

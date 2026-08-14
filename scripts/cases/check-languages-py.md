@@ -26,9 +26,9 @@ repository reports **211 tracked files**.
   exact — on the extension's characters for a suffixed file, on the full repository-relative path for
   an extensionless one — so neither a spelling variant of a declared extension nor a declared
   no-extension name showing up somewhere else earns a pass by resemblance.
-- **The new-`.sh`/new-`.mjs` rows are the point of the whole exercise, not incidental cases.** ADR
-  0017 rev 4 names POSIX sh and Node as authoring *nothing* — the one pair of languages the decision
-  is most explicit about — so `sh`/`mjs` were deliberately kept out of `EXTENSIONS` and moved into the
+- **The new-`.sh`/new-`.mjs` rows are the point of the whole exercise, not incidental cases.**
+  ADR 0017 rev 5 names POSIX sh and Node as authoring *nothing* — the one pair of languages the
+  decision is most explicit about — so `sh`/`mjs` were kept out of `EXTENSIONS` and moved into the
   per-path `LEGACY` bucket instead, mirroring how ADR 0017 rev 5 itself treats the files that do not
   yet conform: "a disposition rather than an exemption," named one file at a time. A version of this
   check that allowlisted the extensions instead would pass both seeds here, which is exactly the
@@ -57,6 +57,15 @@ repository reports **211 tracked files**.
 
 **Known gaps.**
 
+- **The audience binding is not checked at all — only the set is.** `EXTENSIONS` is tree-wide and
+  says nothing about where a file sits, while ADR 0017 rev 5's Decision table binds a language to an
+  audience and states in as many words that TypeScript is product-only. So
+  `scripts/check-rogue.ts`, a repository check authored in TypeScript, **passes**: seeded and run,
+  `215 tracked files, every extension in the declared set`, exit 0. This is the largest thing the
+  check does not decide, and it is the reason `CONTRIBUTING.md` review checklist item 12,
+  *Languages*, leads with audience rather than with the set. Closing it means binding each declared
+  extension to the paths it may occupy, which is a second rule rather than a wider allowlist, and
+  nothing has yet argued for one.
 - **Content is never read.** A no-extension or `LEGACY`-grandfathered file passes on its path alone,
   and an extension-bearing file passes on its suffix alone — nothing here notices `LICENSE` replaced
   with a shell script, `scripts/check-branch.sh` replaced with something that no longer does what its
@@ -64,8 +73,8 @@ repository reports **211 tracked files**.
   asserts the tree's declared *shape*, and a mismatch between a file's declared kind and its actual
   content is the reviewer's, under `CONTRIBUTING.md` review checklist item 12, *Languages* — the same
   item ADR 0017 rev 5 names as the mechanism for a language decision this check cannot make.
-- **A `LEGACY` entry is not re-verified against the record that grants it.** If ADR 0017 rev 5 or ADR
-  0016 rev 3 were revved to change a disposition — say, a ticket number renumbered — nothing here would
-  notice the comment in `LEGACY` had gone stale, the way `check-adr-revs.py` notices a stale ADR
+- **A `LEGACY` entry is not re-verified against the record that grants it.** If a disposition changed
+  under ADR 0017 rev 5 or under ADR 0016 rev 3 — say, a ticket number renumbered — nothing here would
+  notice the comment in `LEGACY` had gone stale, the way `check-adr-revs.py` notices a stale
   citation elsewhere in this repository. The two checks do not overlap: this one is not itself prose
   citing an ADR by number in the form that check parses.
