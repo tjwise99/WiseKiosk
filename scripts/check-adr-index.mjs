@@ -5,6 +5,8 @@
 //
 // No dependencies: Node stdlib only, plain text scanning — matches
 // scripts/check-links.mjs's idiom.
+//
+// What this has been run against, in both directions: cases/check-adr-index-mjs.md
 
 import { readFileSync, readdirSync, statSync } from "node:fs";
 import { execSync } from "node:child_process";

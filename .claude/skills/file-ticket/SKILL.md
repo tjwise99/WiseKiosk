@@ -35,7 +35,7 @@ whose branch is being cut:
 ## Type, template and branch are one choice
 
 Picking the type picks the template and the branch prefix. They cannot diverge; a branch's type names
-the template its ticket was opened from ([ADR 0006 rev 2](../../../docs/decisions/0006-process-gates.md)).
+the template its ticket was opened from ([ADR 0006 rev 3](../../../docs/decisions/0006-process-gates.md)).
 
 | Type | Template | Branch |
 |---|---|---|

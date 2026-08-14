@@ -9,6 +9,8 @@
 // missing (or escaping) artifact, or a document with no markers at all.
 //
 // Run as the final step of `just arch-export`. No dependencies: Node stdlib only.
+//
+// What this has been run against, in both directions: cases/check-arch.md
 
 import { readFileSync, writeFileSync, existsSync, realpathSync, statSync } from "node:fs";
 import { execSync } from "node:child_process";

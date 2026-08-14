@@ -5,10 +5,13 @@
 write-scoped-token alternative supplies; gate path corrected by
 [ADR 0016 rev 3](0016-maintained-tools-for-standard-artifacts.md)
 **Decided:** 2026-07-22 (process-gates design discussion, ticket #27)
-**Rev:** 2
+**Rev:** 3
 
 ## Revisions
 
+- **rev 3** — 2026-08-13 — two *Consequences* the tree contradicted: a count of required CI checks
+  saying five against a workflow defining six, and a named legacy branch asserted as blocked which no
+  longer exists. Both replaced by the rule they were instances of; no gate changes (#145 prose pass).
 - **rev 2** — 2026-08-06 — drops the claim that the gate path is toolchain-free, recording that
   property under *Alternatives considered* as given up, and states gate 3's single-declaration
   property without the file glob that carried it; the four gates are unchanged (#126 absorb
@@ -92,13 +95,15 @@ mirrored locally by `just check-branch` and the advisory hooks `just install-hoo
   maintained tool and the local hook layer follows it there. What the property bought was a
   contributor needing nothing installed to run the gates; what it cost was an authored parser for a
   convention that already has a maintained implementation.
-  [ADR 0017 rev 3](0017-authored-language-set.md) ends what remains of it, moving the authored gates
+  [ADR 0017 rev 5](0017-authored-language-set.md) ends what remains of it, moving the authored gates
   to Python.
 
 ## Consequences
 
-- All five CI checks, `process` included, are required on `main` (strict, admins bound): PRs from
-  nonconforming branches cannot merge.
-- The in-flight legacy branch (`feat/21-docs-site`) is blocked until renamed and its ticket
-  labeled.
+- Every gate job the workflow defines is required on `main`, `process` included (strict, admins
+  bound), so a PR from a nonconforming branch cannot merge. That the required set equals that job set
+  is [`../CI.md`](../CI.md) § *Gate wiring*'s to assert; a count here would be falsified by adding a
+  gate job, by someone with no reason to open this record.
+- A branch that predates this rule is blocked until renamed and its ticket labeled, the gate reading
+  the branch it is given rather than when it was created.
 - Dependabot is exempt from branch shape; its PR titles already conform (`build(deps): …`).

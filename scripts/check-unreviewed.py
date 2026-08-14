@@ -17,6 +17,8 @@ is `doorstop review <uid>` — the same act, performed deliberately.
 A link counts as unreviewed when its own stamp is absent, and when the item holding it is: a stamp
 is a digest of the parent's content, so nothing reading the tree tells a copied one from an earned
 one. Every document is checked, found by walking for `.doorstop.yml`, and each must yield an item.
+
+What this has been run against, in both directions: cases/the-requirements-tree-checks.md
 """
 
 import sys

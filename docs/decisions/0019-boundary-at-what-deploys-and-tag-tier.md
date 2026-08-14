@@ -114,7 +114,7 @@ in the tree.** The corollary above does not reach this on its own:
 an accepted item obliges
 precisely such an exchange, so "exchanges something with it" would admit an upstream element today.
 What defers it is that an upstream belongs to the module that reads it —
-[ADR 0012 rev 1](0012-module-requirements-in-tree.md) decomposes a module need by *its upstream* — and
+[ADR 0012 rev 2](0012-module-requirements-in-tree.md) decomposes a module need by *its upstream* — and
 no module need is written, so nothing yet names one. The Context level therefore carries no external
 system and gains one per upstream as each module's need lands.
 
@@ -190,7 +190,7 @@ dependency direction, under which framework code "is shared code from the moment
 configuration-schema fragment composes into the one schema the frontend validates against. Part 6 is
 tests, which run nowhere in either container and are [`../TESTING.md`](../TESTING.md)'s.
 
-**Only the framework half is drawn.** [ADR 0012 rev 1](0012-module-requirements-in-tree.md) makes a
+**Only the framework half is drawn.** [ADR 0012 rev 2](0012-module-requirements-in-tree.md) makes a
 module a need, and the tree holds no module need, so nothing obliges a module component. This is the
 ground for deferring an upstream element, reached one level down and by the same route: the roster in
 [`../../README.md`](../../README.md) names all five modules, and naming them is not what earns them a
@@ -411,7 +411,7 @@ validation, the rejection contract, and the stall and exhaustion limits — woul
 **Per-module components immediately.** Architecturally these are real components and they will be
 drawn: five modules, five payload shapes, five configuration fragments, and the contract states their
 interface precisely. Rejected on sequencing.
-[ADR 0012 rev 1](0012-module-requirements-in-tree.md) makes a module a need and none is written, so each
+[ADR 0012 rev 2](0012-module-requirements-in-tree.md) makes a module a need and none is written, so each
 box would trace to nothing — the same position the upstreams met, answered the same way. **Premise that
 would reopen it:** the first module need lands.
 

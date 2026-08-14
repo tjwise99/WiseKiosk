@@ -9,6 +9,8 @@ is a property of the specification rather than of the repository, so it is state
 
 The permitted set is an allowlist: a list of characters to reject fails open on the one nobody
 enumerated.
+
+What this has been run against, in both directions: cases/the-requirements-tree-checks.md
 """
 
 import re

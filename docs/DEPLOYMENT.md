@@ -51,8 +51,8 @@ the permissions the file needs are stated where an operator sets them.
 
 ## The deployment recipe
 
-The recipe is a **sample carrying opinionated defaults**. What ships is a starting point: a default
-costs one line to override, and its absence costs an operator knowing to add it. The obligation is on
+The recipe is a **sample carrying opinionated defaults**, a starting point an operator edits
+([ADR 0020 rev 1](decisions/0020-release-artifact-set-and-operator-tooling.md)). The obligation is on
 what ships, never on what runs — an operator who edits the recipe, or deploys without it, has made
 their own choice, and WiseKiosk has no way to override it.
 
@@ -71,8 +71,9 @@ secrets out of client output, and the recipe is incomplete in that respect until
 
 ## The health signal
 
-The image declares a `HEALTHCHECK` against the constant service port: healthy while the backend is
-serving, unhealthy when it is not, including when the process is alive but wedged.
+The image declares a `HEALTHCHECK` against the constant service port
+([ADR 0020 rev 1](decisions/0020-release-artifact-set-and-operator-tooling.md)): healthy while the
+backend is serving, unhealthy when it is not, including when the process is alive but wedged.
 
 **Nothing acts on the status.** Docker and Compose restart a container whose process exits, not one
 reporting unhealthy, so an unhealthy kiosk stays unhealthy until somebody intervenes.

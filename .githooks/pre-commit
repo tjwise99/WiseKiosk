@@ -1,0 +1,22 @@
+#!/bin/sh
+# Advisory fast feedback; the binding gate is CI's required `secret-scan` job.
+#
+# core.hooksPath is one directory rather than a search path, so this repo pointing at .githooks/
+# replaces whatever a global core.hooksPath holds instead of adding to it. Where that global
+# directory carries a pre-commit hook, this runs it: without this file, opting into the repo's hooks
+# silently drops the global one, and a repo that never opted in keeps a scan this one loses.
+set -eu
+
+repo_hooks=$(git rev-parse --show-toplevel)/.githooks
+global=$(git config --global --get core.hooksPath 2>/dev/null || true)
+[ -n "$global" ] || exit 0
+
+case "$global" in
+    "~"|"~/"*) global="$HOME${global#\~}" ;;
+esac
+
+# Guard against a global path that resolves back here, which would recurse.
+[ "$global" != "$repo_hooks" ] || exit 0
+[ -x "$global/pre-commit" ] || exit 0
+
+exec "$global/pre-commit" "$@"

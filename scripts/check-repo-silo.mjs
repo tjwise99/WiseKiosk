@@ -6,6 +6,8 @@
 //
 // No dependencies: Node stdlib only, plain text scanning (no YAML parser) —
 // matches scripts/check-verify-ci-parity.mjs's idiom.
+//
+// What this has been run against, in both directions: cases/check-repo-silo-mjs.md
 
 import { readFileSync, readdirSync } from "node:fs";
 import { execSync } from "node:child_process";

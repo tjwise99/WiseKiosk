@@ -7,6 +7,8 @@
 //
 // No dependencies: Node stdlib only, plain text scanning — matches
 // scripts/check-adr-index.mjs's idiom.
+//
+// What this has been run against, in both directions: cases/check-docs-index-mjs.md
 
 import { readFileSync } from "node:fs";
 import { execSync } from "node:child_process";

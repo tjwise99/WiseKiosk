@@ -9,7 +9,7 @@ normative: true
 rationale: |
   The failure state is a framework universal while a success state is not: what a module displays
   differs per module and is that module's own need, but a module whose upstream is unavailable looks
-  the same whichever module it is (ADR 0012 rev 1). So this is stated once, here, and not per module.
+  the same whichever module it is (ADR 0012 rev 2). So this is stated once, here, and not per module.
   Containment is the second half - four other regions going blank because one source is down is the
   disproportionate degradation SYS001<!-- Failure is legible and proportionate --> forbids. The
   shape of the payload that carries the failure is
@@ -28,7 +28,7 @@ rationale: |
   healthy siblings - the containment clause would then oblige nothing about them, or oblige the
   impossible. The isolation is to the module's own place within whatever region it was given.
 ref: ''
-reviewed: qoZWflC-JkoPH4aAyupFcU-3tkO34_ce_Gv_tp69z_k=
+reviewed: jfQCR15F0ANV13TK2fUGcOIUvG9YYXs6ZkI_NRpf-1s=
 status: accepted
 text: |
   When a module's data request fails, the backend shall report the failure distinct to its cause, and

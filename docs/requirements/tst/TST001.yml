@@ -4,7 +4,7 @@ header: |
   Pending: upstream-failure error payload test
 level: 1.1
 links:
-- SRS001: LTQHmIb2r8J9C8oynE26q7VV0bBwnH11A-XGXuhWyH8=
+- SRS001: iIq9vPNcDGir8vgRpbRiGf8R1APbJi1H9PLpdd9sLBg=
 normative: true
 rationale: |
   Driven from the static route registration list rather than a hand-written route set, so coverage

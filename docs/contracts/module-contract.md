@@ -50,9 +50,11 @@ Parts 1, 2 and 5 apply to upstream-backed modules only. Parts 3, 4 and 6 apply t
    and nothing recomposes it
    ([ADR 0008 rev 2](../decisions/0008-boundary-contract-openapi-codegen.md)). This is what makes the
    module's generated payload type exist.
-6. **Tests.** Unit tests for the shaping library and a render test for the component, both wired into
-   CI. What they must cover, where they sit, and the standing obligation they discharge are
-   [`TESTING.md`](../TESTING.md)'s — a per-module test obligation is stated there, not here.
+6. **Tests.** A render test for the component, and — for an upstream-backed module — unit tests for
+   the shaping library. What they must cover and the standing obligation they discharge are
+   [`TESTING.md`](../TESTING.md)'s — a per-module test obligation is stated there, not here; that
+   they exist and sit where the runner reaches them is gated
+   ([`CI.md § Module and framework structure`](../CI.md#module-and-framework-structure)).
 
 ## Dependency direction
 
@@ -76,7 +78,7 @@ an operator-tunable configuration key.
 
 First, write the module's need and its decomposition in the requirements tree — one `SYS` for the
 user-facing want, `SRS` items for what is specific to this module
-([ADR 0012 rev 1](../decisions/0012-module-requirements-in-tree.md)). The steps below build against it.
+([ADR 0012 rev 2](../decisions/0012-module-requirements-in-tree.md)). The steps below build against it.
 
 Steps 1, 3, 4 and 6 apply to upstream-backed modules only. Steps 2, 5, 7 and 8 apply to every
 module — a local module's component renders from configuration or the browser rather than from a

@@ -50,7 +50,7 @@ adding a lint would stay a specification change and the specification would stil
 convention existed, one tier down. Only a destination outside the tree delivers the check edit. The
 need that would otherwise carry them goes too: it obliged the repository rather than the software, and
 it would be a hat over its own thirteen children — the enumerates-its-own-children tell that
-[ADR 0012 rev 1](0012-module-requirements-in-tree.md) names.
+[ADR 0012 rev 2](0012-module-requirements-in-tree.md) names.
 
 **A judgement obligation moved to the checklist gains an activation path.** This is not a soft
 deletion. An `inspection` item nobody is prompted to perform is a dead letter — that absence is what

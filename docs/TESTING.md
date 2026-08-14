@@ -2,10 +2,8 @@
 
 A **specification**, not a description. It is written before the tests exist, so it says what tests
 must *prove* — not what some accumulated suite happens to do. A strategy written first is
-enforceable; one reverse-engineered from existing tests only ratifies whatever accumulated.
-
-It is reviewed on a schedule (see [Review cadence](#review-cadence)), because tests resist deletion
-more strongly than code does and the review will not arise on its own.
+enforceable; one reverse-engineered from existing tests only ratifies whatever accumulated. It is
+reviewed on a schedule (see [Review cadence](#review-cadence)).
 
 ---
 
@@ -27,42 +25,37 @@ code left out of the schema is exactly the value that crosses unproven.
 
 ### Where the Contract tier runs, and how it reaches upstream
 
-**Decided 2026-07-28 by the owner: shapes 1 and 3, composed.** Recorded here because this is the tier
-designer's decision and this document is where tier strategy lives.
+**Decided 2026-07-28 by the owner: shapes 1 and 3, composed.** Recorded here because this is the
+tier designer's decision and this document is where tier strategy lives. What the tier must prove is
+unchanged: **an upstream API still returns what the shaping library expects.**
 
-What the tier must prove is unchanged: **an upstream API still returns what the shaping library
-expects.**
+- **Recorded fixtures, replayed in CI, on every commit.** Each upstream's response is captured and
+  the shaping library asserted against it. No credential anywhere, and it gates every change like
+  every other tier. Its limit is inherent: a fixture is a snapshot, so it detects drift only when
+  someone re-records.
+- **A scheduled live run, off the pull-request gate.** Credentialed, against the real APIs. This is
+  what catches the drift fixtures cannot — and because it is off the merge path, an upstream having
+  a bad afternoon fails a nightly rather than somebody's change.
 
-- **Recorded fixtures, replayed in CI, on every commit.** Each upstream's response is captured and the
-  shaping library asserted against it. No credential anywhere, and it gates every change like every
-  other tier. Its limit is inherent: a fixture is a snapshot, so it detects drift only when someone
-  re-records.
-- **A scheduled live run, off the pull-request gate.** Credentialed, against the real APIs, on a
-  schedule. This is what catches the drift fixtures cannot — and because it is off the merge path, an
-  upstream having a bad afternoon fails a nightly rather than somebody's change.
-
-The two compose deliberately: fixtures decide merges, the scheduled run decides whether the fixtures
-still describe reality. Neither alone is sufficient — fixtures alone go stale silently, and a live
-run alone either blocks merges on somebody else's uptime or does not gate at all.
+They compose deliberately, and neither alone is sufficient: fixtures decide merges, and the
+scheduled run decides whether the fixtures still describe reality.
 
 **Rejected: an encrypted CI secret scoped to one workflow, running live on every pull request.** It
 costs quota against a rate limit nobody watches, and it inherits upstream availability on the merge
-path, which trains an author to ignore red. Only one of the three upstream sources needs a
-credential — OpenMeteo and themeparks.wiki are keyless, CheckWX is not, and the clock and compliments
-modules are local and fetch nothing — so this would have been a general solution to a case of one.
-
-The scheduled run holds a credential, deliberately. Confining it to a job off the merge path is the
-narrower answer to the nested module
+path, which trains an author to ignore red. Few upstream sources need a credential at all — which
+ones is the [module roster](../README.md)'s and each module's registration entry — so this would have
+been a general solution to a narrow case. Confining the credentialed job to the schedule, off the merge
+path, is the narrower answer to the nested module
 [ADR 0010 rev 1](decisions/0010-runtime-materialised-gate-fixtures.md) found leaky.
 
 **Decided 2026-07-28 by the owner: no requirement.** Nothing WiseKiosk does can violate "an upstream
 still returns what we expect" — that obligation is on somebody else's API. The half that *is* ours,
-what the product does when an upstream returns something the shaping library did not expect, is
-already **SRS001<!-- A failed module shows why, and only that module -->**, and
-`TST001`<!-- Pending: upstream-failure error payload test --> names malformed payload as one of its
-failure classes. A tree item here would restate it. What is left is machinery: recording a fixture
-is a procedure an author follows, and a scheduled credentialed job is a repository-facing check, so
-both sit in [`CI.md § Upstream contract checks`](CI.md#upstream-contract-checks)
+what the product does when an upstream returns what the shaping library did not expect, is already
+**SRS001<!-- A failed module shows why, and only that module -->**, whose
+`TST001`<!-- Pending: upstream-failure error payload test --> names malformed payload as a failure
+class, so a tree item here would restate it. What is left is machinery — recording a fixture is a
+procedure an author follows, a scheduled credentialed job is a repository-facing check — so both sit
+in [`CI.md § Upstream contract checks`](CI.md#upstream-contract-checks)
 ([ADR 0011 rev 1](decisions/0011-requirement-or-convention.md)).
 
 ---
@@ -70,42 +63,41 @@ both sit in [`CI.md § Upstream contract checks`](CI.md#upstream-contract-checks
 ## The Boundary tier is generated, not hand-written
 
 The backend is Go and the frontend is TypeScript, so they share no types
-([ADR 0001 rev 1](decisions/0001-backend-language-go.md)). The Boundary tier therefore is not a pair of
+([ADR 0001 rev 1](decisions/0001-backend-language-go.md)). The tier is therefore not a pair of
 hand-maintained type declarations checked for agreement by a test — it is **one schema, with both
-sides generated from it**. The tier's job in CI is to prove the generation is real and current:
+sides generated from it**, and the tier's job in CI is to prove the generation is real and current:
 
 - Generation from the one schema by the codegen mechanism
-  ([ADR 0008 rev 2](decisions/0008-boundary-contract-openapi-codegen.md)), the CI drift gate that fails on
-  committed output differing from a fresh regeneration, and version-pinning of the generators so
-  regeneration is deterministic. Generation from one schema is
-  **SRS015<!-- One schema, all boundary value classes -->** and the drift gate is verified under
-  **SRS016<!-- Both sides consume the generated types -->**; the version pin itself is no
-  requirement's — it is a repository convention, in
-  [`CI.md § Publishing and provenance`](CI.md#publishing-and-provenance).
+  ([ADR 0008 rev 2](decisions/0008-boundary-contract-openapi-codegen.md)), the CI drift gate failing
+  on committed output that differs from a fresh regeneration, and version-pinned generators so
+  regeneration is deterministic. Generation is
+  **SRS015<!-- One schema, all boundary value classes -->**, the drift gate is verified under
+  **SRS016<!-- Both sides consume the generated types -->**, and the version pin is no requirement's
+  — a repository convention, in [`CI.md § Publishing and
+  provenance`](CI.md#publishing-and-provenance).
 - That the generated types are the ones actually *used* on both sides, including the per-module
   error-render path, rather than shadowed by a hand-declared twin —
   **SRS016<!-- Both sides consume the generated types -->**, under
   **SYS005<!-- Single-definition internal contract -->**.
 - That the frontend adds no second, runtime validator over proxied payloads, so agreement rests on
   the schema and the drift gate rather than a bundled re-check —
-  [ADR 0008 rev 2](decisions/0008-boundary-contract-openapi-codegen.md). No requirement states this: it was
-  deleted as a prohibition against a case that does not exist, and the ADR carries the decision and
-  the premise it rests on.
+  [ADR 0008 rev 2](decisions/0008-boundary-contract-openapi-codegen.md), which carries the decision
+  and its premise. No requirement states this: it was deleted as a prohibition against a case that
+  does not exist.
 
-A value that must agree across the boundary but can be *neither* generated from the schema *nor* proven
-to agree by a test is **a finding about the architecture**, not something to paper over with a comment.
-This tier exists specifically to make that impossible.
+A value that must agree across the boundary but can be *neither* generated from the schema *nor*
+proven to agree by a test is **a finding about the architecture**, not something to paper over with
+a comment.
 
 ---
 
 ## Standing obligations
 
-Gate on these — they name what must be proven. Not on a coverage number. Each is stated here in the
-short form a test author needs, and cited to whatever governs it: an item in the
-[requirements tree](requirements/README.md) where the obligation is on the running software, and the
-module contract or [`DEPLOYMENT.md`](DEPLOYMENT.md) where it is not
-([ADR 0011 rev 1](decisions/0011-requirement-or-convention.md)). What every one has is a home that can be
-checked against, rather than prose alone.
+Gate on these — they name what must be proven. Not on a coverage number. Each is stated in the short
+form a test author needs and cited to whatever governs it: the [requirements
+tree](requirements/README.md) where the obligation is on the running software, the module contract
+or [`DEPLOYMENT.md`](DEPLOYMENT.md) where it is not
+([ADR 0011 rev 1](decisions/0011-requirement-or-convention.md)).
 
 - **Every value crossing the frontend/backend boundary is generated from one definition** →
   SYS005<!-- Single-definition internal contract --> /
@@ -115,29 +107,24 @@ checked against, rather than prose alone.
 - **Every module supplies a render test for its component, and — where it registers against an
   external source — unit tests for its shaping library.** A module with no registration entry is a
   local module and is not expected to have one. A module missing either is an incomplete module, not
-  a passing one. That the files exist and sit where the runner reaches them is gated by
-  [`CI.md § Module and framework structure`](CI.md#module-and-framework-structure); what they must
-  cover is stated here. The module contract lists tests as part 6 of what a module supplies and
-  defers to this section for what they prove.
+  a passing one. What they must cover is stated here; that the files exist and sit where the runner
+  reaches them is gated by [`CI.md § Module and framework
+  structure`](CI.md#module-and-framework-structure).
 - **Every config schema rejects a realistic malformed input, in a test** →
-  SRS002<!-- A module-scoped configuration error is reported at that module --> (a config error
-  isolatable to one module is reported there and never silently worked around). The operator is not
-  the author, so validation failing correctly and legibly is a product feature, and it is tested as
-  one.
-- **Repo-wide checks live at repo level** — see [Where a check belongs](#where-a-check-belongs),
-  below.
-- **A verification item's fit against its parent is re-read when the item is activated.** Every `TST`
-  item is `active: false` until the code it checks exists, and Doorstop skips inactive items
-  entirely — so its suspect-link mechanism, which is what normally flags a check whose parent moved
-  beneath it, is inert across the whole tier. `check-suspect-links.py` restores that one signal
-  ([`requirements/README.md § Running the gate`](requirements/README.md#running-the-gate)), so a
-  parent rewritten under a
-  pending check fails a gate in the commit that rewrites it rather than waiting for activation. What
-  it cannot decide is the question activation exists to ask, and that stays a human read: does this
-  check still assert a clause its parent still states?
+  SRS002<!-- A module-scoped configuration error is reported at that module -->. The operator is not
+  the author, so validation failing correctly and legibly is a product feature and is tested as one.
+- **Repo-wide checks live at repo level** — see [Where a check belongs](#where-a-check-belongs).
+- **A verification item's fit against its parent is re-read when the item is activated.** Every
+  `TST` item is `active: false` until the code it checks exists, and Doorstop skips inactive items
+  entirely, so the suspect-link mechanism that normally flags a check whose parent moved beneath it
+  is inert across the whole tier. `check-suspect-links.py` restores that one signal
+  ([`requirements/README.md § Running the gate`](requirements/README.md#running-the-gate)): a parent
+  rewritten under a pending check fails a gate in the commit that rewrites it. What it cannot decide
+  is the question activation exists to ask, and that stays a human read — does this check still
+  assert a clause its parent still states?
 - **Every test and check in the repository is executed by CI** — the whole-tree discovery and
-  verify/CI parity gates are [`CI.md`](CI.md)'s (§ Gate wiring), not the tree's. A test no runner
-  reaches is a false signal, so a new test is wired in by its location alone.
+  verify/CI parity gates are [`CI.md § Gate wiring`](CI.md#gate-wiring)'s, not the tree's. A test no
+  runner reaches is a false signal, so a new test is wired in by its location alone.
 
 ---
 
@@ -145,13 +132,13 @@ checked against, rather than prose alone.
 
 Coverage is **diagnostic, never evidence.** A line can be fully covered while the invariant that
 matters — that two things agree, that a control functions where deployed — is untested by
-construction. A high number buys confidence it has not earned.
+construction, so a high number buys confidence it has not earned.
 
-Report coverage. Read it to find untested areas. Gate on the standing obligations above. No gate
-fails a merge on a coverage percentage treated as a quality threshold; the coverage gate, where one
+Report it, read it to find untested areas, and gate on the standing obligations above. No gate fails
+a merge on a coverage percentage treated as a quality threshold; the coverage gate, where one
 exists, fails only on uncovered source that is neither exempted nor justified — coverage as
-traceability closure, gate 3 of [ADR 0005 rev 1](decisions/0005-traceability-gating.md), never as a chosen
-quality bar.
+traceability closure, gate 3 of [ADR 0005 rev 1](decisions/0005-traceability-gating.md), never as a
+chosen quality bar.
 
 ---
 
@@ -173,10 +160,8 @@ is a defect in the suite's architecture, not a neutral choice.
 ## Review cadence
 
 The test architecture is reviewed **whenever a module is added** and **whenever the boundary
-transport** (the OpenAPI schema / codegen mechanism, [ADR 0008 rev 2](decisions/0008-boundary-contract-openapi-codegen.md))
-**changes**. This is scheduled deliberately: removing or reshaping a test feels like a regression even
-when the test proves nothing, so without a scheduled review the suite silently becomes permanent
-architecture nobody revisits. Code gets that review by default; tests must be given it explicitly.
-The module-add trigger's other half is the [module contract](contracts/module-contract.md), which
-carries a resolving link back to this section (see [Adding a module, step
-8](contracts/module-contract.md#adding-a-module)).
+transport** (the OpenAPI schema / codegen mechanism,
+[ADR 0008 rev 2](decisions/0008-boundary-contract-openapi-codegen.md)) **changes**. This is
+scheduled deliberately: removing or reshaping a test feels like a regression even when the test
+proves nothing, so without a scheduled review the suite silently becomes permanent architecture
+nobody revisits. Code gets that review by default; tests must be given it explicitly.

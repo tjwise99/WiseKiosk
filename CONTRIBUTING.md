@@ -24,7 +24,7 @@ where deployed.
 
 ```sh
 just              # the gate roster: every check, beside what it asserts
-just verify       # run every check the PR gate runs
+just verify       # every check the PR gate runs that has a local form
 just install-hooks  # once per clone: advisory commit-msg and pre-push hooks
 ```
 
@@ -33,7 +33,7 @@ What each gate is allowed to let through, and why, is [`docs/CI.md`](docs/CI.md)
 ## Tickets, branches, and titles
 
 Open an issue from a template first: the branch name is derived from it. Enforced by the `process` CI
-check ([ADR 0006 rev 2](docs/decisions/0006-process-gates.md)). The `pre-push` hook from
+check ([ADR 0006 rev 3](docs/decisions/0006-process-gates.md)). The `pre-push` hook from
 `just install-hooks` checks the shape only — not the issue conditions below — and only at push, when
 the branch and its commits already exist. **Nothing checks the name at `git switch -c`**, which is
 where it is chosen and where it goes wrong, so this section is in the file
@@ -49,7 +49,8 @@ design_119-c4_model_completion
 
 `main` and Dependabot branches are exempt. Every other branch must also satisfy all of:
 
-- the issue is **open**, **type-labelled**, and **milestoned**;
+- the issue is **open**, **milestoned**, and carries **exactly one** type label — a second one makes
+  the branch type ambiguous ([ADR 0013 rev 3](docs/decisions/0013-work-tracking-invariants.md));
 - its **parent matches the PR base** — a sub-issue's PR targets its integration branch, a top-level
   issue's targets `main`, and the gate asserts that in both directions;
 - the PR's **Development field links the ticket**: `Closes #N` in the body writes that record on a
@@ -78,7 +79,7 @@ reviewer is the mechanism ([ADR 0011 rev 1](docs/decisions/0011-requirement-or-c
 **Cite a question by number *and* name** — `question 8, *Generality*`. A bare number resolves silently
 to whatever occupies it after a renumber, in documents no sweep reliably reaches. New questions are
 appended for the same reason; inserting one is permitted
-([ADR 0017 rev 3](docs/decisions/0017-authored-language-set.md)) and renumbers everything below.
+([ADR 0017 rev 5](docs/decisions/0017-authored-language-set.md)) and renumbers everything below.
 
 **Documentation**
 
@@ -112,9 +113,14 @@ appended for the same reason; inserting one is permitted
 11. **Narrowed guards.** Where the change narrows a check so it stops rejecting legal input, is the
     narrowing reachable by the defect the check exists to catch? An exemption is the first place a
     bypass gets spelled, and the reasoning that produces one reads as caution.
-12. **Languages.** Does the change author a program outside the set
-    [ADR 0017 rev 3](docs/decisions/0017-authored-language-set.md) states, and if so has that language
-    been through an ADR?
+12. **Languages.** Four things `check-languages` states it cannot reach
+    ([ADR 0017 rev 5](docs/decisions/0017-authored-language-set.md)), each one yours. Does the change
+    author a program for the wrong audience — a repository check in TypeScript passes on a declared
+    extension? Is any file's content something other than the kind its path declares? Does it author
+    control flow inside a derived format, a workflow `run:` block or a hook `entry:`, where no
+    extension changes at all? And does a new entry in that check's declared **or grandfathered** set
+    arrive with the revision of that record deciding it? The grandfather list is the cheaper of those
+    two, needing no new extension at all.
 13. **Second enforcer.** Does the change add a second place enforcing a rule an ADR allocated to one —
     today the configuration schema, validated in the page alone
     ([ADR 0007 rev 2](docs/decisions/0007-config-validation-allocation.md))? Two enforcers drift, and
@@ -127,14 +133,14 @@ appended for the same reason; inserting one is permitted
 14. **Module universals.** Does a module requirement the change adds or edits state something already
     obliged of every module — failure rendering, secret delivery, caching, request rejection? A
     module's requirements carry what is true of that module and nothing else
-    ([ADR 0012 rev 1](docs/decisions/0012-module-requirements-in-tree.md)).
+    ([ADR 0012 rev 2](docs/decisions/0012-module-requirements-in-tree.md)).
 15. **Named resources.** Does a requirement name a file, endpoint, package or tool rather than the
     property the software must have? Naming one swallows a design decision into the specification,
     where it cannot change without a specification change.
 
 **Checks**
 
-16. **Recorded cases.** Does [`scripts/README.md`](scripts/README.md) record what a changed check was
+16. **Recorded cases.** Does that check's file under [`scripts/cases/`](scripts/README.md) record what it was
     run against, in both directions — the defect it must catch, and the legal input it must not
     reject? Seed the defect and name the commit each case ran against: a row pointing at what the tree
     happens to hold reads as a passing check that should fail, the moment the tree moves.
@@ -166,3 +172,20 @@ appended for the same reason; inserting one is permitted
     constraint it records, a limitation it accepts — has that reason been tested against the tree, or
     only read? Testing it is usually cheaper than the accommodation, and a stated reason that no
     longer holds is how a workaround gets written for a problem nobody has.
+21. **Rev reach.** Where the change revs an ADR, has each citation the sweep re-pinned **without
+    touching the sentence around it** been read against what that rev actually changed?
+    The `pre-push` hook prints them, per file and line, whenever a branch revs one; `just rev-reach`
+    is the same list on demand. `just check-adr-revs` holds the pin and decides nothing about the
+    claim. A rev that does not touch what a citation asserts is the ordinary case, so most of that
+    list is sound — the failure is answering from having run the sweep rather than from having read
+    it. **Separately, and whether or not the change revs anything: has a reflow left a citation split
+    across a line break?** Both checks match within one line, so a citation wrapped after its keyword
+    is invisible to each — permanently, not until the next sweep. Treat one as an unbreakable token
+    when rewrapping a paragraph. Both splits found here were introduced by prose passes that revved
+    no ADR at all, which is why this question does not sit behind the condition above.
+22. **One home.** Is each fact the change states in prose stated in the document that guarantees it?
+    The [index](docs/README.md) decides: a *Guarantees* cell is what a document may state, an
+    *Excludes* cell is what it must cite instead. **The test is question 6 read one level up** — strip
+    the citation out of the sentence, and if what remains still asserts what the cited document
+    asserts, it restates rather than cites. Summarizing and citing is permitted; a second independent
+    statement is what goes stale in one copy while the other stays right, with nothing comparing them.

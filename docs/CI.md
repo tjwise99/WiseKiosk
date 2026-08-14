@@ -59,6 +59,23 @@ that reports without failing degrades to noise within a release.
 
 Unbuilt; owned by #67 security and supply-chain CI gates.
 
+## Generated boundary types
+
+The one OpenAPI schema is hand-authored and both sides' types are generated from it
+([ADR 0008 rev 2](decisions/0008-boundary-contract-openapi-codegen.md)). The gate regenerates the Go
+and TypeScript types and fails on any difference, so a schema edit that reaches neither side, and a
+hand-edit of either, both fail.
+
+- Each side seeded independently — the committed types edited away from what the schema produces, one
+  language at a time, each asserted to exit non-zero. Regenerating both and re-running exits zero.
+- **A run that regenerates nothing fails** rather than reporting agreement over an empty comparison,
+  which is what a missing generator or a schema path that resolves to no file would otherwise read as.
+
+**What it leaves unproven** is whether the schema says what the boundary actually carries; the gate
+compares the schema against its own output and nothing against the running system.
+
+Unbuilt; owned by #7 boundary-contract codegen.
+
 ## In-code prose
 
 Comments state mechanism. Reason, history and evaluative judgement are authored in a documentation
@@ -184,18 +201,16 @@ a posture resting on this section. Until #77 fences this document, read it as in
   the manifest**, which are separate metadata with separate readers
   ([ADR 0015 rev 2](decisions/0015-container-toolchain-and-image-annotations.md)). Both are read: a check
   reading one reports nothing about the other. No value is a `LABEL` line in the Dockerfile, and one
-  is bound rather than merely present: **`.revision` is the commit the job published**, which is what
-  a hardcoded value fails. A missing key, an empty value or that binding failing exits non-zero;
-  presence alone passes on a stale hardcoded value. The check covers the config-label surface and
-  every annotation level the publish workflow declares, reading that set from the declaration rather
-  than restating it here, so adding a level extends the gate instead of escaping it. A surface it
-  cannot read fails rather than being skipped; so does a declared level it never inspected; and so
-  does resolving no surface at all, since a run that inspected nothing reports the same success as
-  one with nothing to report.
-  **What no check here decides:** `.description` and `.licenses` resolve from
-  repository metadata rather than from the commit, so either can change with no commit and nothing
-  reports it. Nor is `.created` anything but the time the build ran: this project makes no
-  bit-identical-rebuild claim, so nothing here constrains it. The emission is #54's.
+  is bound rather than merely present — **`.revision` is the commit the job published**, so presence
+  alone passes on a stale hardcoded value while the binding is what fails it. The check reads the
+  annotation levels from the publish workflow's own declaration rather than a restatement here, so
+  adding a level extends the gate instead of escaping it. A missing key, an empty value, a surface it
+  cannot read, a declared level it never inspected, and resolving no surface at all each fail rather
+  than being skipped.
+  **What no check here decides:** `.description` and `.licenses` resolve from repository metadata
+  rather than from the commit, so either can change with no commit and nothing reports it; and
+  `.created` is the time the build ran, this project making no bit-identical-rebuild claim. The
+  emission is #54's.
 - **Base images are pinned** to a `@sha256:` digest rather than a floating tag, for every base and
   stage in the Dockerfile.
 - **The code generators are pinned** to an exact version, so a toolchain bump cannot present as
@@ -255,14 +270,11 @@ broken, and the answer is to take the patch or take a different dependency. The 
 standing threshold with a decision per finding.
 
 Each entry names the specific advisory, states why no fix is available, states **why no alternative
-dependency or base image is viable**, and carries a review date no more than 90 days out.
-
-The third is what makes an entry a decision rather than a suppression. An entry that cannot state it
-is an entry that should have been a version bump or a replacement.
-
-**Entries expire.** A register without expiry is where vulnerabilities go to be forgotten — it turns
-*accepted for now* into *accepted permanently* with no moment at which anyone looks again. An entry
-past its review date fails, which puts every live exception in front of a person quarterly.
+dependency or base image is viable**, and carries a review date no more than 90 days out. The third
+is what makes an entry a decision rather than a suppression: an entry that cannot state it should
+have been a version bump or a replacement. The fourth is what stops *accepted for now* becoming
+*accepted permanently* with no moment at which anyone looks again — an entry past its review date
+fails, which puts every live exception in front of a person quarterly.
 
 The gate asserts: every entry is complete and current; every finding suppressed in scan output has a
 matching entry; no entry matches a first-party finding; and no entry exists for an advisory no scan
@@ -280,6 +292,13 @@ resolve, a citation to something that does not exist, an index that has drifted 
   fails, because following the link is what the invariant is about. All three syntaxes carrying a
   relative path are read: the inline form, a link-reference definition, and a raw HTML anchor's
   `href`. A destination may be angle-bracketed or carry a title; neither is part of the path.
+  **A link inside a fenced block is let through deliberately** — a fence is a sample rather than a
+  reference, and allowlisting a host to satisfy a code sample would put it in the register on the
+  strength of an example. The population is the tracked set, so an unstaged document is invisible to a
+  local run; CI checks out committed state and is unaffected.
+  **What no check here decides: that a fragment names a real heading.** The fragment is split off
+  before resolution runs and never read again, so a link whose path resolves and whose fragment names
+  no heading in the target still passes — only the path half of the destination is proven.
 - Every absolute `http` or `https` link in tracked documentation names a host on the committed
   upstream-documentation allowlist, and every allowlist entry names the tool or service it serves.
   This extends the link checker above rather than adding a second tool.
@@ -303,15 +322,15 @@ resolve, a citation to something that does not exist, an index that has drifted 
   possessive clitic may sit between the two; whitespace may not, because a browser strips the comment
   and leaves the space, which then reads as a gap before whatever punctuation follows. Closing the
   junction also removes the one place a line could break inside a citation, which is what once split
-  paragraphs on the rendered page. A citation may still wrap after the comment opens: a line break,
-  and the blockquote marker continuing it, are whitespace inside the header rather than text
-  separating it. A number is only a handle: a renumber rewrites
-  `links:` and leaves the sentence pointing at whatever now occupies it, still reading as correct.
-  The header is what turns that drift into a mismatch a machine can see. An ADR number carries no
+  paragraphs on the rendered page. A citation may still wrap **after** the comment opens: the reader
+  normalises whitespace inside the header, so a break and any blockquote marker continuing it are
+  inside the header rather than text separating it. A number is only a handle — a renumber rewrites
+  `links:` and leaves the sentence pointing at whatever now occupies it, still reading as correct —
+  and the header is what turns that drift into a mismatch a machine can see. An ADR number carries no
   header, and the rev beside it pins the version rather than the identity: numbers are reusable, so
-  what holds is that the check below fails the instant a number is freed, and every citation of it
-  must move in the same change. A citation written on a branch across a freeing and a re-taking of
-  the same number is the case that leaves — nothing here decides it.
+  what holds is that the check fails the instant a number is freed. A citation written on a branch
+  across a freeing and a re-taking of the same number is the case that leaves, and nothing here
+  decides it.
 - **A header in an HTML comment does not open a line that continues a paragraph.** CommonMark reads
   a line-initial `<!--` as an HTML block, which interrupts the paragraph and splits it in two on the
   rendered page while the source still reads as one. Nothing else reports it: the comment is a
@@ -333,27 +352,28 @@ resolve, a citation to something that does not exist, an index that has drifted 
   error — legal Markdown this rejects, in exchange for a reader that cannot be stepped around.
   **The prose reader recognises more than it accepts, so that each spelling can be rejected rather
   than passed over**: `ADR` or `ADRs`, any case, up to three of space, underscore, hash or hyphen,
-  then one to four digits. Only `ADR NNNN rev M` is accepted; everything else that set reaches is
-  reported. A reference-style link or a raw `<a href>` at an ADR is reported as a form carrying no
-  rev. That set is stated here literally rather than as a universal because a citation the reader
-  does not reach leaves the population and is then reported success over — so what the set *is* is
-  the reviewable claim, and a separator outside it is a gap to close rather than a rule already
-  broken.
-  The ADR's own head is authoritative for its rev, the index table's column is checked against it,
-  and its *Revisions* section carries one changelog line per rev from 1 — so a rev cannot be taken
-  without recording what changed. An ADR declaring no rev, or two, fails rather than being read as
-  rev zero. **Two empty-population guards, one per reader:** a run resolving no ADR at all fails, and
-  so does one judging no prose citation or no link citation, because the tree exercises both and
-  either falling to zero means that reader stopped seeing them while the other kept the run green.
-  **One exemption, and it drops staleness alone:** a changelog line, and any indented line continuing
-  it, records what a rev did at the moment it did it — so a citation there is not held to the ADR's
-  current rev. It is held to everything else. It must name an ADR that exists and must carry a rev;
-  only the comparison is dropped, so an unpinned citation or a bare-titled link inside a *Revisions*
-  section fails exactly as it would anywhere. Ordinary prose in that section continues nothing and is
-  judged outright. An index row's leading self-link is dropped for the same reason and no further:
-  the row's *Decision* cell is free prose and is judged.
-  What this leaves unproven is whether a citation pinning the current rev still means what the ADR
-  says; that is read at review.
+  then one to four digits. Only the canonical form is accepted; everything else that set reaches is
+  reported, a reference-style link or a raw `<a href>` at an ADR among them. That set is stated
+  literally rather than as a universal because a citation the reader does not reach leaves the
+  population and is then reported success over — so what the set *is* is the reviewable claim, and a
+  separator outside it is a gap to close rather than a rule already broken.
+  The ADR's own head is authoritative for its rev, the index table's column is checked against it, its
+  title's number must match its filename's, and its *Revisions* section carries one changelog line per
+  rev from 1 — so a rev cannot be taken without recording what changed, and a number two files carry
+  is a collision rather than a silent choice between them. An ADR declaring no rev, or two, fails
+  rather than being read as rev zero. **Three empty-population guards, one per reader**, because
+  either reader falling to zero means it stopped seeing citations while the other kept the run green.
+  **One exemption, and it drops staleness alone:** a changelog line and any line continuing it records
+  what a rev did at the moment it did it, so a citation there is not held to the current rev. It is
+  held to everything else — it must name an ADR that exists and must carry a rev. An index row's
+  leading self-link is dropped for the same reason and no further.
+  **What this leaves unproven is whether a citation pinning the current rev still means what the ADR
+  says.** The pin is gated and the claim hanging off it is not, so a sentence describing what an
+  earlier rev said passes green. That is read at review — see § *What is not gated here*.
+  **A citation split across a line break is not judged at all**, in either direction: matching is
+  within one line, so a line ending in the bare keyword and the next opening with the number match
+  neither pattern, and that citation is exempt from the rule for as long as the wrap survives. It is
+  a hole a prose pass can *open*, since rewrapping is what one does. Held by review alone.
 - **Every tracked Markdown file is claimed by a row in the documentation index**, unless it sits under
   a top-level dot-directory, which holds machinery rather than documents. Both sides are derived from
   the repository rather than read from an inventory: adding a document without indexing it fails,
@@ -379,6 +399,11 @@ resolve, a citation to something that does not exist, an index that has drifted 
   byte-identical to what is committed and the staleness diff alone cannot see one; and the diff is
   taken after `git add --intent-to-add`, without which a regenerated artifact nobody committed is
   untracked and so invisible to it — a view whose diagram never reaches the document, reported green.
+  **The comparison is the commit against the worktree, so the index is never a party to it**, and the
+  export rewrites the worktree before the diff runs: staged content diverging from the worktree is
+  let through, and a plain commit then lands the index the gate never read. It is a **local false
+  green only** — CI checks out a tree whose index equals its commit, so the divergent state cannot
+  arise there — reachable by staging work before running the gate locally.
 - Every requirement identifier tagged in the architecture model names an item that exists, is active
   and accepted, and is spelled canonically; every declared tag is applied to something. A tag
   carrying anything other than an identifier fails rather than being passed over — the model's tags
@@ -408,7 +433,11 @@ resolve, a citation to something that does not exist, an index that has drifted 
   unproven is the same thing the direction above leaves unproven, and it is the cheaper pressure this
   rule creates: an item can be tagged onto an element it does not oblige, and the check reads that as
   bound. Held by review alone.
-- The documentation site builds under Sphinx with warnings-as-errors.
+- The documentation site builds under Sphinx with warnings-as-errors. **That is what it asserts, and
+  not that the site is internally consistent**: `conf.py` suppresses the missing-cross-reference
+  warning, so the MyST reference forms are silently dropped where Sphinx's own role still fails, and
+  the index's globbed toctrees adopt any new top-level document so nothing orphan-warns. Both are
+  configuration choices; the link half of consistency is the link checker's above.
 
 **Considered and rejected:** a registry mapping each canonical document to the path globs it
 describes, failing a change that touches described code without touching its document. Its obligation
@@ -419,7 +448,24 @@ changed, which the citation resolver above decides without anyone declaring anyt
 
 ## Repository shape
 
-- No tracked text file has CRLF line endings.
+- **Every tracked file is a declared kind** — an authored program in the set
+  [ADR 0017 rev 5](decisions/0017-authored-language-set.md) states, a derived format a toolchain
+  requires, data an authored check reads, or documentation. **A file type nobody has decided about
+  fails**, which is the point: closing that failure is a person deciding which side it falls on. A run
+  resolving no tracked file fails rather than reporting a clean tree.
+  **The languages that author nothing are not declared extensions.** `sh` and `mjs` author nothing
+  under that record, so a *new* file in either fails; the files predating the decision are
+  grandfathered **one path at a time**, each naming the record that gives it a disposition, and a
+  grandfathered path that stops being tracked fails too — its disposition landed, so its entry goes
+  with it. Declaring the extension instead would let the next such file through forever, which is the
+  one thing this check exists to prevent.
+  **What it leaves unproven** is whether a declared file is classified *correctly*: a Python program
+  labelled derived passes, and only a reader catches that.
+- **No file git treats as text has CRLF line endings**, and `.gitattributes` decides which those are.
+  A glob given the `binary` attribute is exempt from CRLF→LF normalisation at add time *and* skipped
+  by the search, so CRLF-terminated text under one commits and survives a fresh clone unseen. The
+  attribute is declared on the image, font and PDF globs, which is the attribute used as intended; a
+  *text* glob given it is the reachable case, and the owner ruled on 2026-08-02 not to gate it.
 - The branch is named `type_number-snake_name`, links an open issue labelled with its type, and its
   default-base pull request records the ticket linkage.
 - That issue carries a milestone and **exactly one** type label. The type set is read from
@@ -478,7 +524,7 @@ top-level blocks are what a check can see, and they are what the rule above cons
 
 These keep a module self-contained and the shared framework ignorant of it. They were verification
 items in the tree until the extensibility need above them dissolved — its children were architecture
-([ADR 0012 rev 1](decisions/0012-module-requirements-in-tree.md)) — and nothing the running kiosk does can
+([ADR 0012 rev 2](decisions/0012-module-requirements-in-tree.md)) — and nothing the running kiosk does can
 violate any of them, so they are checks here rather than obligations there.
 
 - **Shared framework code names no module.** No shared framework source names any module outside the
@@ -537,10 +583,11 @@ what runs where, and what each is allowed to let through, is here.
   path.** It is the only thing that detects the drift above. It fails a scheduled run, never
   somebody's change: upstream availability is not a merge condition, and a gate that goes red because
   a third party is having a bad afternoon is a gate authors learn to ignore.
-- **That scheduled job holds one upstream credential, and it is the only job that does.** Of the
-  three upstream sources — the clock and compliments modules are local and fetch nothing — only
-  CheckWX requires one; OpenMeteo and themeparks.wiki are keyless. The credential is scoped to that
-  workflow and reaches no other job, and no fixture, log or failure output carries its value —
+- **That scheduled job holds every upstream credential the module roster needs, and it is the only
+  job that does.** Which upstreams those are is [`../README.md`](../README.md)'s roster and each
+  module's registration entry; a count here would be falsified by adding a module, by someone with no
+  reason to open this document. The credentials are scoped to that workflow and reach no other job,
+  and no fixture, log or failure output carries a value —
   [`../SECURITY.md`](../SECURITY.md) rests on that, and
   SRS008<!-- No secret value in any backend output --> obliges the running system to the same rule.
 
@@ -561,22 +608,26 @@ already decided, which is what makes it a check and not a want.
   per command, and the tokens are held against the recipe body with `just <recipe>` expanded in
   place: a token naming no command its recipe runs fails, and a command no token covers fails. A
   `#!` recipe is one script rather than a list of commands, so its lines are not mapped
-  individually. A token is sought only where a step runs
-  one: neither a comment nor a step's own `name:` satisfies it, or deleting a step and leaving its
-  name behind would pass. **What it compares is command text, not the ability to run it.** A command
-  naming a venv or `node_modules` executable is proved present in both places while the toolchain
-  providing it is installed per job, by steps this deliberately skips — so a check can be wired
-  identically in both and still be unable to execute in one. Nothing maps a check to the toolchain
-  its job installs. A tool a check *invokes internally* is further out of reach still: no gate here
-  reads a check's source, so a dependency written inside one is declared nowhere any of them look.
-  `just` is the live instance — two of these scripts read its dump. The justfile names `just` where a
-  recipe delegates to another, and nothing there says the scripts themselves require it.
+  individually. A token is sought only where a step runs one: neither a comment nor a step's own
+  `name:` satisfies it, or deleting a step and leaving its name behind would pass.
+  **What it compares is command text, not the ability to run it.** A command naming a venv or
+  `node_modules` executable is proved present in both places while the toolchain providing it is
+  installed per job by steps this deliberately skips, so a check can be wired identically in both and
+  still be unable to execute in one. **Nothing maps a check to the toolchain its job installs.** A
+  tool a check *invokes internally* is further out of reach
+  still: no gate here reads a check's source, so a dependency written inside one is declared nowhere
+  any of them look. `just` is the live instance — two of these scripts read its dump, and nothing
+  says so where a gate would see it.
 - Every committed test file falls under a configured runner's reach; a file excluded by skip, build
   tag, glob gap, or wrong directory fails. The requirements tier is covered by `doorstop --error-all`
   and is deliberately not re-encoded here. Unbuilt until a runner exists to detect anything: #82
   dead-test detector.
 - The default branch's required status checks equal the gate jobs the workflow defines — a gate job
-  absent from the required set fails, and so does a required entry naming no defined job.
+  absent from the required set fails, and so does a required entry naming no defined job. **The
+  protection is strict, and administrators are bound by it**: a branch behind the default branch
+  cannot merge on a stale green, and there is no role that merges past a red gate. Both are repository
+  settings rather than files, so no check here decides them — the same standing as the secret-scanning
+  settings above, and this line rather than a gate is what records it.
 
 The requirements tree's own integrity checks run here too, but what they assert is a property of the
 specification rather than of the repository, so they are stated where the specification is:
@@ -584,11 +635,17 @@ specification rather than of the repository, so they are stated where the specif
 
 ## What is not gated here
 
-**Review obligations.** Four questions cannot be decided by a machine and are answered by a reader,
-in [`../CONTRIBUTING.md`](../CONTRIBUTING.md)'s checklist: whether a change updated the document that
-describes the code it touched, whether an architecture element's model link points at its
-implementation, whether each added comment states mechanism rather than reason, and whether a comment
-citing an identifier restates it. The pull-request template points there.
+**Review obligations.** An obligation on an author that leaves no artifact is answered by a reader, in
+[`../CONTRIBUTING.md`](../CONTRIBUTING.md)'s checklist, rather than by anything here
+([ADR 0011 rev 1](decisions/0011-requirement-or-convention.md)). The pull-request template points
+there. Two of those questions have a mechanical artifact to read from, deliberately: the documentation
+index this document's gates hold to the tree, and the list of every ADR citation a change re-pinned
+without touching the sentence around it, which the `pre-push` hook prints whenever a branch revs one
+and `just rev-reach` gives on demand. Neither is a gate — the second reports and exits zero, sits
+outside `just verify`, and is named so that it does not read as one. A blocking form was weighed and
+refused: a rev that does not touch what a citation asserts is the ordinary case, so failing every
+pin-only edit is fail-closed on legal input, and the exemption list it would grow is where a bypass
+gets spelled.
 
 **The product's obligations.** What the software must do is in
 [`requirements/`](requirements/README.md), verified by tests that trace to it. A gate here can block a

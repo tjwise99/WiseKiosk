@@ -3,10 +3,24 @@
 **Status:** accepted
 **Decided:** 2026-08-04 (#60 authored-language set, taken after
 [ADR 0016 rev 3](0016-maintained-tools-for-standard-artifacts.md) settled which authored checks survive at all)
-**Rev:** 3
+**Rev:** 5
 
 ## Revisions
 
+- **rev 5** — 2026-08-13 — `scripts/check-languages.py` gates the declared extension set, which
+  falsifies two claims rev 4 made: *"Nothing here is gated"*, and the rejected alternative *Gate the
+  set with a check* refusing one on the ground that "one residual obligation does not earn a gate of
+  its own". That alternative keeps its reasoning and gains the condition that changed. What the gate
+  does **not** reach is stated rather than assumed — the audience binding, content behind a declared
+  path, a program embedded in a derived format, and a declared entry added without a rev — and review
+  checklist item 12 narrows to exactly that. The disposition list here is still a snapshot: the
+  check holds a second copy and nothing compares the two. The language set, the audience rule and the
+  derivation rule are unchanged (#145 prose pass).
+- **rev 4** — 2026-08-13 — three claims the tree contradicted: a count of Python check scripts and the
+  *reads-the-tree* split drawn from it, a line count for the one sh file, and a closed ticket carrying
+  the argument that this disposition ends rather than grandfathers. Each replaced by the rule it was
+  an instance of; the language set, the derivation rule and every rejected alternative are unchanged
+  (#145 prose pass).
 - **rev 3** — 2026-08-08 — drops the append-only placement constraint on the review checklist: a
   citation carries the question's name beside its number, so a renumber no longer strands one. The
   language set is unchanged (#129 retire the desk configuration validator).
@@ -41,9 +55,10 @@ indefinitely. Node does not leave the repository either way — LikeC4
 ([ADR 0018 rev 1](0018-frontend-svelte-vite-static-spa.md)) make it unconditional as an invoked toolchain. The
 asymmetry is about which layer owes which interpreter, not about which language is present.
 
-Symmetrically, every one of the six Python check scripts imports `doorstop` or `yaml`, so the split
-at the time of this decision is exactly *reads the requirements tree* against *does not*. The Node
-dependency is habit; the Python one is the Doorstop silo.
+Symmetrically, a Python check that reads the requirements tree imports `doorstop` or `yaml` and so
+pays no interpreter this repository was not already installing. The Node dependency is habit; the
+Python one is the Doorstop silo. A Python check that reads something else — the decisions directory,
+say — imports neither and still pays nothing, which is the asymmetry rather than an exception to it.
 
 ## Decision
 
@@ -66,10 +81,11 @@ rather than a shell script wearing a recipe's clothes.
 
 **A program embedded in a derived format is still an authored program**, and the rule above reaches
 it: a workflow `run:` block or a hook `entry:` carrying control flow is authored sh whatever file it
-sits in. Only the `justfile` leg of this has a check behind it; the rest is the reviewer's, under
-[`../../CONTRIBUTING.md`](../../CONTRIBUTING.md) review checklist item 12, *Languages*, and it is the one place
-where this decision's reason for refusing a gate — that a new language is a new file extension, the
-loudest thing in a diff — does not hold.
+sits in. Only the `justfile` leg of this has a check behind it; an embedded program is one of the
+things the gate below cannot see, and so the reviewer's, under
+[`../../CONTRIBUTING.md`](../../CONTRIBUTING.md) review checklist item 12, *Languages*. It is the one
+place where the argument that a new language arrives as a new file extension, the loudest thing in a
+diff, does not hold at all.
 
 Nothing above needs revising when a tool arrives with a format not yet seen here — which is the
 point, since [ADR 0016 rev 3](0016-maintained-tools-for-standard-artifacts.md) adopts four such tools.
@@ -99,24 +115,44 @@ reads the tree is a different artifact from one that reads the repository.
 exemption:** `scripts/check-branch.sh` converts (#109 check-branch conversion); the four index, silo
 and splice checks in Node convert (#110 Node check conversion); `scripts/check-verify-ci-parity.mjs`
 waits on #101 CI invoking just recipes directly, because that ticket may delete it (#111 parity-check
-conversion); and `scripts/validate-tree.sh` is **deleted rather than converted**, by #78 retire the
+conversion); and `scripts/validate-tree.sh` is **deleted rather than converted**, retiring the
 pending-TST-tier exception, which drops the wrapper and restores the bare `doorstop` call it stands
-in for. Tree validation is not what goes; the exception is.
+in for. Tree validation is not what goes; the exception is. The wrapper itself names where that
+retirement is tracked, and says so in the message it prints on the run that makes it unnecessary.
 
-**#78 is committed but unscheduled, and that has a cost worth stating:** it fires when the first
-`TST` item activates, so until then sh remains an authored language in this tree for one 34-line
-file — a classifier arm and its fixtures, which is exactly the price the grandfathering alternative
-was rejected for paying. The disposition is deletion rather than conversion because converting a
-script another ticket deletes is the waste this decision's own sequencing avoids elsewhere; the cost
-is accepted, not overlooked. The difference from grandfathering is that this ends, and #78 is where
-it is decided that it has not — if that ticket stalls, conversion is the remedy and this record needs
+**That deletion is conditional, and the cost of the condition is worth stating:** the wrapper goes
+when the first `TST` item activates and the exception it stands in for stops being needed, so until
+then sh remains an authored language in this tree for exactly one file — a classifier arm and its
+fixtures, which is the price the grandfathering alternative was rejected for paying. The disposition
+is deletion rather than conversion because converting a script another change deletes is the waste
+this decision's own sequencing avoids elsewhere; the cost is accepted, not overlooked. The difference
+from grandfathering is that this ends on a condition the tree decides rather than on anyone's
+intention — and if that condition proves unreachable, conversion is the remedy and this record needs
 no rev for it.
 
 That list is a snapshot taken on the decision date, not a standing inventory — no check compares it
 against the tree, and the rule above is what governs anything written after it.
+[`../../scripts/check-languages.py`](../../scripts/check-languages.py) keeps a second copy of it, of
+the files above written in a language that authors nothing plus the ones
+[ADR 0016 rev 3](0016-maintained-tools-for-standard-artifacts.md) disposes of in the same languages —
+the remainder of that record's list carries a declared extension and needs no entry. That copy is
+grandfathered by exact path and fails once a path stops being tracked, so a disposition that lands
+takes its grant with it. **The two copies are not compared with each other**, so a conversion drops
+its entry from the check's list and leaves this one saying that conversion is pending.
 
-**Nothing here is gated.** A language outside this set is a decision with a rejected alternative, so
-it arrives as a rev of this record or an ADR superseding it, and the reviewer is the mechanism —
+**The declared kinds are gated; the audience binding is not.**
+[`../../scripts/check-languages.py`](../../scripts/check-languages.py) fails any tracked file whose
+extension is outside the declared set, or whose exact path is undeclared where it has no extension,
+and fails a run resolving no tracked file rather than reporting a clean tree. What it holds is that
+*set*, tree-wide. It judges a file by path and extension and never opens one, so the table above —
+which binds a language to an audience — is outside it: a repository check authored in TypeScript
+satisfies the gate on an extension this record declares for what ships, and TypeScript being
+product-only is not a claim any run makes. Outside it too are the content behind a declared path, a
+program embedded in a derived format, and whether an entry added to the declared set — or to the
+grandfather list beside it, which needs no new extension and is the cheaper of the two — arrived with
+the rev that decided it. A language outside this set is still a decision with a rejected alternative, so it
+arrives as a rev of this record or an ADR superseding it, and the reviewer is the mechanism for
+everything the gate leaves —
 [`../../CONTRIBUTING.md`](../../CONTRIBUTING.md) review checklist item 12, *Languages*, added with this record.
 #59 comment-discipline gate's coverage registry is **not** this decision's enforcement: it exists so
 that gate cannot go silently blind on a language it has no arm for, and it would fail-closed on an
@@ -156,6 +192,13 @@ unregistered language whatever this record said.
   the case as a residue, which is the condition under which the second reaches it at all. The
   checklist question is what 0011 requires so the obligation is not a dead letter; a gate on top of it
   would be ceremony.
+  **Adopted at rev 5**, for less than it was refused on. What the arithmetic priced was a gate bought
+  against one residual obligation; built, it also makes the declared set an artifact in the tree, each
+  entry naming what it serves and which record grants it, and gives the grandfather list a
+  fails-when-stale property no reviewer reading a diff can supply. It adds no toolchain this
+  repository was not already installing. The rejection's own reasoning survives adoption rather than
+  being overturned by it — a new extension is the loud case, and gating it is what leaves review a
+  residue small enough to state, which is why item 12 narrows rather than retires.
 
 ## Consequences
 
@@ -163,7 +206,7 @@ unregistered language whatever this record said.
   verified by re-running the cases [`../../scripts/README.md`](../../scripts/README.md) records for
   the original, in both directions, because a conversion that is verified by inspection is a rewrite
   with a clean-looking diff.
-- **`check-branch` loses `curl` and `jq` for `urllib` and `json`.** [ADR 0006 rev 2](0006-process-gates.md)'s
+- **`check-branch` loses `curl` and `jq` for `urllib` and `json`.** [ADR 0006 rev 3](0006-process-gates.md)'s
   *plain sh + curl + jq — no toolchain* property, already corrected by
   [ADR 0016 rev 3](0016-maintained-tools-for-standard-artifacts.md) when `commitlint` and `pre-commit` were
   adopted, ends completely. What replaces it is a weaker but real property: the interpreter the gates
