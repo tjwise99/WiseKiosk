@@ -3,8 +3,7 @@
 // row, every row resolves to a real file, and numbering is contiguous from 0001
 // with no duplicates. See docs/CI.md § Documentation integrity.
 //
-// No dependencies: Node stdlib only, plain text scanning — matches
-// scripts/check-links.mjs's idiom.
+// No dependencies: Node stdlib only, plain text scanning.
 //
 // What this has been run against, in both directions: cases/check-adr-index-mjs.md
 

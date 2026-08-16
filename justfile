@@ -5,11 +5,6 @@ default:
     @just --list
 
 [group('checks')]
-[doc('Every relative Markdown link resolves inside the repo, every absolute URL names an allowlisted host, and every allowlist entry says what it serves')]
-check-links:
-    node scripts/check-links.mjs
-
-[group('checks')]
 [doc('No tracked text file has CRLF line endings')]
 check-eol:
     sh scripts/check-eol.sh
@@ -135,5 +130,5 @@ check-languages:
     python3 scripts/check-languages.py
 
 [group('checks')]
-[doc('Run every check the PR gate runs that has a local form; secret scanning and the PR-title check are CI-only')]
-verify: check-links check-eol check-branch check-reqs check-citations check-arch check-arch-trace check-site check-adr-index check-adr-revs check-docs-index check-repo-silo check-workflow-hardening check-verify-ci-parity check-languages
+[doc('Run every check the PR gate runs that has a local form; secret scanning, the PR-title check and the link check (lychee, from a digest-pinned image) are CI-only')]
+verify: check-eol check-branch check-reqs check-citations check-arch check-arch-trace check-site check-adr-index check-adr-revs check-docs-index check-repo-silo check-workflow-hardening check-verify-ci-parity check-languages

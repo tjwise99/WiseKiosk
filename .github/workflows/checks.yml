@@ -25,8 +25,11 @@ jobs:
 
       - uses: extractions/setup-just@53165ef7e734c5c07cb06b3c8e7b647c5aa16db3 # v4
 
-      - name: Markdown links resolve inside the repo
-        run: node scripts/check-links.mjs
+      # lychee runs offline from the digest-pinned official image over the tracked Markdown set
+      # (ADR 0016 rev 3); docker is not assumed on a contributor machine, so the step is a named
+      # CI-only exception in scripts/check-verify-ci-parity.mjs rather than a `just verify` check.
+      - name: Every relative Markdown link resolves (lychee, offline)
+        run: git ls-files '*.md' | docker run --rm -i -v "$PWD:/repo:ro" -w /repo lycheeverse/lychee:0.24.2@sha256:e2d19e57cf6ab037026f20b8e449a1f30d9d7f81eef4194763aab2eab20bd28d --offline --no-progress --files-from -
 
       - name: No CRLF line endings in tracked text files
         run: sh scripts/check-eol.sh

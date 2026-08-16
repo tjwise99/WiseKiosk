@@ -1,4 +1,0 @@
-# Hosts an absolute link in tracked Markdown may name, one `host — what it serves` per line.
-# See docs/CI.md § Documentation integrity.
-
-github.com — the upstream project pages of the tools this repo runs, and this repository's own GitHub surfaces
