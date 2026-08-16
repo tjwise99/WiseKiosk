@@ -96,6 +96,9 @@ jobs:
       - name: Every header is non-empty, charset-safe and prefix-free
         run: docs/requirements/.venv/bin/python scripts/check-headers.py
 
+      - name: The proposed-item backlog prints, per tier (reports; not a gate)
+        run: docs/requirements/.venv/bin/python scripts/report-proposed.py
+
   docs-site:
     # Builds the docs site with -W: a broken cross-reference or orphaned page
     # fails the gate. Deploy is a separate workflow (pages.yml) so this job

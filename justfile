@@ -25,7 +25,7 @@ install-hooks:
     git config core.hooksPath .githooks
 
 [group('checks')]
-[doc('Requirements tree validates: refs resolve, no suspect/unreviewed/orphan items, methods consistent, headers non-empty and prefix-free, no identifier cited in an item statement')]
+[doc('Requirements tree validates: refs resolve, no suspect/unreviewed/orphan items, methods consistent, headers non-empty and prefix-free, no identifier cited in an item statement; the proposed backlog prints on a passing run (reports; not a gate)')]
 check-reqs:
     docs/requirements/.venv/bin/python scripts/check-unreviewed.py
     docs/requirements/.venv/bin/python scripts/check-suspect-links.py
@@ -33,6 +33,7 @@ check-reqs:
     docs/requirements/.venv/bin/python scripts/check-method-consistency.py
     docs/requirements/.venv/bin/python scripts/check-text-citations.py
     docs/requirements/.venv/bin/python scripts/check-headers.py
+    docs/requirements/.venv/bin/python scripts/report-proposed.py
 
 [group('checks')]
 [doc('Every requirement identifier and ADR number cited outside .claude/ resolves, and every requirement citation carries its item header')]
