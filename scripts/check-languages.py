@@ -52,7 +52,7 @@ EXTENSIONS = {
     "yml": "derived — a toolchain's own required input format: GitHub Actions workflow YAML, "
     "Doorstop item and silo config YAML, Dependabot YAML (ADR 0017 rev 5)",
     "yaml": "derived — a toolchain's own required input format: pre-commit's "
-    ".pre-commit-config.yaml (ADR 0016 rev 3)",
+    ".pre-commit-config.yaml (ADR 0016 rev 5)",
     "json": "derived — a toolchain's own required input format: npm's package.json and "
     "package-lock.json, Claude Code's settings.json",
     "likec4": "derived — LikeC4's own model format, named in ADR 0017 rev 5 "
@@ -95,9 +95,8 @@ LEGACY = {
     "scripts/check-branch.sh": "converts to Python under #109 check-branch conversion (ADR 0017 rev 5)",
     "scripts/validate-tree.sh": "deleted rather than converted, when the first active TST item "
     "retires the pending-tier exception it stands in for (#78; ADR 0017 rev 5)",
-    "scripts/check-commit-msg.sh": "replaced by commitlint (ADR 0016 rev 3)",
+    "scripts/check-commit-msg.sh": "replaced by commitlint (ADR 0016 rev 5)",
     "scripts/check-verify-ci-parity.mjs": "waits on #101, which may delete it, under #111 parity-check conversion (ADR 0017 rev 5)",
-    "scripts/check-workflow-hardening.mjs": "replaced by zizmor with actionlint alongside (ADR 0016 rev 3)",
 }
 
 

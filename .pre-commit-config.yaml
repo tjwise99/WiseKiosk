@@ -1,4 +1,4 @@
-# The local hook layer (ADR 0016 rev 3). `pre-commit install` wires the stages listed in
+# The local hook layer (ADR 0016 rev 5). `pre-commit install` wires the stages listed in
 # default_install_hook_types; CI runs the pre-commit stage over every tracked file via
 # `just check-hooks`. pre-commit skips a hook whose file set is empty and reports success; the
 # `local` hooks below carry `always_run` and do not read a file set.

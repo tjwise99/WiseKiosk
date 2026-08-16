@@ -289,14 +289,14 @@ resolve, a citation to something that does not exist, an index that has drifted 
 
 - Every relative Markdown link in every tracked file resolves inside the repository, decided by
   `lychee` run from its digest-pinned official image over the `git ls-files` Markdown set
-  ([ADR 0016 rev 3](decisions/0016-maintained-tools-for-standard-artifacts.md)). All three syntaxes
+  ([ADR 0016 rev 5](decisions/0016-maintained-tools-for-standard-artifacts.md)). All three syntaxes
   carrying a relative path are read — the inline form, a link-reference definition, and a raw HTML
   anchor's `href` — each held against the retired authored check's recorded cases, in both
   directions. A destination may be angle-bracketed or carry a title; neither is part of the path.
   **The gate runs `--offline`, and that is a decision rather than an inherited default.** Online
   checking makes third-party availability a merge condition, which § *Upstream contract checks*
   refuses for its own gates for the same reason; offline buys that stability by checking absolute
-  `http`/`https` links not at all. With the host allowlist retired (ADR 0016 rev 3), an absolute
+  `http`/`https` links not at all. With the host allowlist retired (ADR 0016 rev 5), an absolute
   link is entirely unconstrained: documentation may link outward, and nothing here reviews where to.
   **The gate is a CI-only exception rather than a `verify` check**: the image digest is the pin, a
   contributor machine is not assumed to run docker, and command-text parity between a local recipe
@@ -308,13 +308,13 @@ resolve, a citation to something that does not exist, an index that has drifted 
   fence is a sample rather than a reference. A fragment naming no heading in a target whose path
   resolves: fragment checking is off, so only the path half of the destination is proven. A
   destination that leaves the repository and lands on a file that exists, by `../` or through a
-  tracked symlink: the escape and symlink obligations are retired knowingly (ADR 0016 rev 3), and
+  tracked symlink: the escape and symlink obligations are retired knowingly (ADR 0016 rev 5), and
   the CI container failing such a link because only the checkout is mounted is incidental, not
   asserted. A fence that never closes runs to the end of its document under CommonMark, so nothing
   past it is scanned and the run reports clean — seeded and confirmed, and the Sphinx build passes
-  the same seed; no residue guard is kept, on ADR 0016 rev 3's own bar that one residual obligation
+  the same seed; no residue guard is kept, on ADR 0016 rev 5's own bar that one residual obligation
   does not earn a second gate beside an adopted tool. lychee itself reports success over an
-  empty input set — the ruling ADR 0016 rev 3 records for adopted tools — but the CI step
+  empty input set — the ruling ADR 0016 rev 5 records for adopted tools — but the CI step
   materialises the tracked-file list and fails on a failed or empty listing before lychee runs: a
   failed measurement is not an empty population, and a scan of nothing must not read as clean. A
   root-relative destination fails, with a message naming the missing root rather than a wrong
@@ -498,7 +498,7 @@ changed, which the citation resolver above decides without anyone declaring anyt
   zero by design (§ *What is not gated here*), so there is no verdict for an untracked file to
   escape.
 - **Every hook in the local hook layer passes.** `.pre-commit-config.yaml` is that layer
-  ([ADR 0016 rev 3](decisions/0016-maintained-tools-for-standard-artifacts.md)): no private key, no
+  ([ADR 0016 rev 5](decisions/0016-maintained-tools-for-standard-artifacts.md)): no private key, no
   file over `check-added-large-files`' threshold, every YAML and JSON file parses, no merge-conflict
   marker committed while a merge is in progress (outside one, `check-merge-conflict` judges nothing —
   a bare `=======` is also a Markdown setext underline), no file mixing line-ending kinds — plus the
@@ -511,7 +511,7 @@ changed, which the citation resolver above decides without anyone declaring anyt
   Locally the layer is
   advisory fast feedback at commit and push (`pre-commit install`, once per clone); the binding run
   is CI's, over every tracked file. **A hook whose file set is empty is skipped and reports
-  success** — pre-commit's own behaviour, which ADR 0016 rev 3's empty-population ruling permits;
+  success** — pre-commit's own behaviour, which ADR 0016 rev 5's empty-population ruling permits;
   the authored hook runs regardless of the file set (`always_run`) and reports success over an empty
   tracked tree, under the same ruling. pre-commit itself is pinned in `scripts/requirements-dev.txt`
   — installed into `scripts/.venv` by `just hooks-install` and by CI's install step, and covered by
@@ -548,24 +548,43 @@ changed, which the citation resolver above decides without anyone declaring anyt
 
 ## Action pins and workflow privilege
 
-The workflows are themselves a supply chain and themselves privileged. Both are decidable from the
-files, which is why they are gates here rather than settings recorded elsewhere.
+The workflows are themselves a supply chain and themselves privileged. Both are audited from the
+files by two maintained tools ([ADR 0016 rev 5](decisions/0016-maintained-tools-for-standard-artifacts.md)),
+each run in CI from a digest-pinned official image over the `.github/workflows` input set: `zizmor`
+at the `pedantic` persona for what a workflow may do — action pinning, permission grants, credential
+persistence and template injection among its audit set — and `actionlint` for whether a workflow is
+well-formed at all: schema, expression and reference errors, with `shellcheck` and `pyflakes` over
+`run:` scripts. The audit is CI-only (§ *Gate wiring*): the images run in CI, and no local install
+channel is decided.
 
-- **Every action is pinned to an immutable reference, and names the version that reference is** — a
-  commit SHA, or an image digest where the action is a container. A tag is a pointer its owner can
-  move after anyone reviewed it; neither of those is. The version comment is what tells a reader what
-  the SHA stands for and what Dependabot rewrites when it bumps one, so a pin without one is a pin
-  nobody can review. A `uses:` beginning `./` is exempt: a repository-local action or reusable
-  workflow moves with the commit that calls it, so there is no upstream to pin.
-- **No workflow grants a write permission at the top level.** Every workflow declares a top-level
-  `permissions:` block and every grant in it is `read` or `none`; a job needing more elevates in its
-  own block, which is what confines `pages.yml`'s `pages: write` and `id-token: write` to the deploy
-  job. Declaring no block at all fails rather than passing, because what it would inherit is a
-  repository setting no check here can see.
-- **A layout the check cannot read fails, and so does discovering no workflow file at all.** A scan
-  that skips what it does not recognise, or finds nothing to inspect, reports the same success as one
-  with nothing to report — so an unreadable `uses:` value, and an unreadable line inside a top-level
-  `permissions:` block, are failures rather than skips.
+- **Every action is pinned to an immutable reference** — a commit SHA, or an image digest where the
+  step is a container. A tag is a pointer its owner can move after anyone reviewed it; neither of
+  those is. A `uses:` beginning `./` is exempt: a repository-local action or reusable workflow moves
+  with the commit that calls it, so there is no upstream to pin.
+- **No workflow grants a write permission at the top level, and no grant goes unexplained.**
+  `excessive-permissions` fails a top-level write grant, and fails a workflow declaring no
+  `permissions:` block at all — confirmed by seeded fixture
+  ([recorded](../scripts/cases/workflow-audit.md)) rather than assumed — because what an
+  undeclared block would inherit is a repository setting no check here can see. A job needing more
+  elevates in its own block, which is what confines `pages.yml`'s `pages: write` and `id-token:
+  write` to the deploy job. The gate is stricter than the authored check it replaced, and the
+  repository adapts rather than configuring the tool down: `permissions: read-all` is refused as
+  excessive; every grant other than a bare `contents: read` — read grants included — carries an
+  explanatory comment beside it; every checkout sets `persist-credentials: false`; every job carries
+  a `name:`, and every workflow a `concurrency:` group.
+- **An unreadable workflow fails rather than being skipped.** Both tools parse real YAML, so a layout
+  that cannot be read is a syntax error, not a skip — GitHub itself would refuse the same file. A run
+  discovering no workflow at all fails too, as `zizmor`'s own behaviour (`no inputs collected`)
+  rather than an obligation on it (ADR 0016 rev 5's empty-population ruling).
+
+**What the gate deliberately lets through.** The `# vN` version comment beside a pin is retired as an
+obligation (ADR 0016 rev 5): a stale or absent comment passes, and Dependabot maintains the comments
+only on the bumps it performs. Everything outside `.github/workflows` is outside the input set —
+`.github/dependabot.yml` in particular, so `zizmor`'s `dependabot-cooldown` audit does not gate here.
+The audits needing the GitHub API (`known-vulnerable-actions` and `ref-version-mismatch` among them)
+do not run: the gate runs the offline audit set, deterministically, so a verdict moves only when a
+workflow or a pinned image does. And the pinned image digests themselves are bumped by hand —
+Dependabot's `github-actions` ecosystem does not rewrite a `docker://` reference.
 
 **The repository-level default is not decidable here either.** `GITHUB_TOKEN`'s default permission
 sits behind the same admin-only API as the settings in § *Secret scanning*. It is read-only; the

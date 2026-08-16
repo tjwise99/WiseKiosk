@@ -7,7 +7,7 @@
 ## Revisions
 
 - **rev 3** — 2026-08-16 — spells the exclusions-list form as text rather than a link to
-  `scripts/upstream-hosts.txt`, which ADR 0016 rev 3 retires; what claims a document is unchanged
+  `scripts/upstream-hosts.txt`, which ADR 0016 rev 5 retires; what claims a document is unchanged
   (#106 adopt lychee).
 - **rev 2** — 2026-08-12 — deletes the exclusions list from the Decision. The *What is not a document
   is derived too* paragraph already said there is none and the Alternatives record why — it was built,

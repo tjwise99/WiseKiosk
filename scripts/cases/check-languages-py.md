@@ -83,7 +83,7 @@ repository reports **221 tracked files**.
   content is the reviewer's, under `CONTRIBUTING.md` review checklist item 12, *Languages* — the same
   item ADR 0017 rev 5 names as the mechanism for a language decision this check cannot make.
 - **A `LEGACY` entry is not re-verified against the record that grants it.** If a disposition changed
-  under ADR 0017 rev 5 or under ADR 0016 rev 3 — say, a ticket number renumbered — nothing here would
+  under ADR 0017 rev 5 or under ADR 0016 rev 5 — say, a ticket number renumbered — nothing here would
   notice the comment in `LEGACY` had gone stale, the way `check-adr-revs.py` notices a stale
   citation elsewhere in this repository. The two checks do not overlap: this one is not itself prose
   citing an ADR by number in the form that check parses.

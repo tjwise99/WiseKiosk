@@ -2,8 +2,8 @@
 // Every check `just verify` depends on must also run in
 // .github/workflows/checks.yml, and every named CI step must be either one of
 // those checks or an enumerated CI-only exception (secret scanning; the
-// PR-title Conventional-Commit check; the lychee link check). See
-// docs/CI.md § Gate wiring.
+// PR-title Conventional-Commit check; the lychee link check; the zizmor
+// and actionlint workflow audits). See docs/CI.md § Gate wiring.
 //
 // No dependencies: Node stdlib only, plain text scanning (no YAML parser).
 //
@@ -55,7 +55,6 @@ const CHECK_TOKENS = {
   "check-adr-index": ["python3 scripts/check-adr-index.py"],
   "check-docs-index": ["python3 scripts/check-docs-index.py"],
   "check-repo-silo": ["python3 scripts/check-repo-silo.py"],
-  "check-workflow-hardening": ["node scripts/check-workflow-hardening.mjs"],
   "check-verify-ci-parity": ["node scripts/check-verify-ci-parity.mjs"],
 };
 
@@ -64,6 +63,8 @@ const CI_ONLY_ALLOWLIST = [
   "gitleaks", // secret-scan job: needs full git history, not part of `just verify`
   "scripts/check-commit-msg.sh", // PR-title Conventional-Commit check: no PR title exists locally
   "lycheeverse/lychee", // link check, run from a digest-pinned image: docker is not assumed locally
+  "zizmor", // workflow audit, run from a digest-pinned image: no local install channel is decided
+  "actionlint", // workflow lint, run from a digest-pinned image: same standing as zizmor
 ];
 
 // Recipes are read from `just`'s own dump rather than parsed out of the justfile, so a recipe's
