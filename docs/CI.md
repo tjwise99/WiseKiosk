@@ -294,8 +294,9 @@ resolve, a citation to something that does not exist, an index that has drifted 
   `href`. A destination may be angle-bracketed or carry a title; neither is part of the path.
   **A link inside a fenced block is let through deliberately** — a fence is a sample rather than a
   reference, and allowlisting a host to satisfy a code sample would put it in the register on the
-  strength of an example. The population is the tracked set, so an unstaged document is invisible to a
-  local run; CI checks out committed state and is unaffected.
+  strength of an example. The population is the tracked set, and an untracked Markdown file fails
+  the gate rather than sitting invisibly outside it — § *Repository shape*'s untracked-file rule,
+  guarded here as well as by the preflight.
   **What no check here decides: that a fragment names a real heading.** The fragment is split off
   before resolution runs and never read again, so a link whose path resolves and whose fragment names
   no heading in the target still passes — only the path half of the destination is proven.
@@ -466,6 +467,20 @@ changed, which the citation resolver above decides without anyone declaring anyt
   by the search, so CRLF-terminated text under one commits and survives a fresh clone unseen. The
   attribute is declared on the image, font and PDF globs, which is the attribute used as intended; a
   *text* glob given it is the reachable case, and the owner ruled on 2026-08-02 not to gate it.
+- **No untracked, non-ignored file is present when a `git ls-files`-population gate runs.** Those
+  gates read tracked state only, so an untracked file is invisible to every one of them — a defect
+  in exactly the file most likely to carry a fresh mistake passes a local run and fails in CI once
+  committed. Two mechanisms, deliberately redundant: a preflight, `just check-untracked`, fails on
+  any untracked, non-ignored file in the tree, and each gate whose population is `git ls-files`
+  independently fails on an untracked file of the kind it inspects — so neither protection rests on
+  remembering to run the other. The remedy is `git add`, after which the gates judge the file, or a
+  gitignore entry, which declares it not material. A CI checkout holds only tracked files and every
+  build artifact is gitignored, so neither mechanism fires there; what they gate is the local run,
+  the one place an untracked file exists. `check-adr-index` carries no guard: it reads the
+  decisions directory rather than the tracked set, so an untracked ADR is judged, not skipped.
+  `adr-rev-reach.py` also reads the tracked set and carries no guard either — it reports and exits
+  zero by design (§ *What is not gated here*), so there is no verdict for an untracked file to
+  escape.
 - The branch is named `type_number-snake_name`, links an open issue labelled with its type, and its
   default-base pull request records the ticket linkage.
 - That issue carries a milestone and **exactly one** type label. The type set is read from

@@ -13,6 +13,15 @@ if [ -z "$(git ls-files -- . | head -n 1)" ]; then
     exit 1
 fi
 
+# Untracked files sit outside a tracked-set search, so they are reported rather than silently
+# unsearched.
+untracked=$(git ls-files --others --exclude-standard -- .)
+if [ -n "$untracked" ]; then
+    printf '%s\n' "$untracked" >&2
+    echo "untracked, so this check cannot search them — git add or gitignore each." >&2
+    exit 1
+fi
+
 matches=$(git grep -lIP '\r$' -- .) && status=0 || status=$?
 
 case "$status" in

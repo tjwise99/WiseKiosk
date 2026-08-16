@@ -45,6 +45,18 @@ tracked = {
     if name
 }
 
+# Untracked Markdown is outside the population above, so it is reported rather than silently unread.
+for name in (
+    subprocess.run(
+        ["git", "ls-files", "--others", "--exclude-standard", "-z", "*.md"],
+        cwd=ROOT, capture_output=True, check=True,
+    )
+    .stdout.decode()
+    .split("\0")
+):
+    if name:
+        problems.append(f"{name}: untracked, so this check cannot read it — git add or gitignore it")
+
 file_claims = set()
 subtree_claims = []
 claimed = set()
