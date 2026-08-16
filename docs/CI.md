@@ -509,14 +509,31 @@ changed, which the citation resolver above decides without anyone declaring anyt
   `git ls-files`, so it carries the untracked guard of the bullet above — an untracked, non-ignored
   file is reported as unsearchable and fails, beside any CRLF finding rather than in place of one.
   Locally the layer is
-  advisory fast feedback at commit and push (`pre-commit install`, once per clone); the binding run
-  is CI's, over every tracked file. **A hook whose file set is empty is skipped and reports
+  advisory fast feedback at commit, on the commit message, and at push (`pre-commit install`, once
+  per clone); the binding run for the file-scanning hooks is CI's, over every tracked file — the
+  commitlint hooks of the bullet below run at their own stages, not in that run. **A hook whose file set is empty is skipped and reports
   success** — pre-commit's own behaviour, which ADR 0016 rev 5's empty-population ruling permits;
   the authored hook runs regardless of the file set (`always_run`) and reports success over an empty
   tracked tree, under the same ruling. pre-commit itself is pinned in `scripts/requirements-dev.txt`
   — installed into `scripts/.venv` by `just hooks-install` and by CI's install step, and covered by
   Dependabot's pip ecosystem; each hook repository is pinned by commit SHA in the config, which no
   Dependabot ecosystem covers, so `pre-commit autoupdate`, run by hand, is its updater.
+- **The pull-request title is a Conventional Commit, and so is each local commit message** — one
+  obligation at two stages, delegated to `commitlint`
+  ([ADR 0016 rev 5](decisions/0016-maintained-tools-for-standard-artifacts.md); the gate itself is
+  [ADR 0006 rev 3](decisions/0006-process-gates.md)'s). Both stages run through the hook layer's
+  `repo: local` hooks and one base configuration, `.commitlintrc.json` —
+  `@commitlint/config-conventional` with its defaults unconfigured. The `commit-msg` hook is the
+  advisory local stage: its `defaultIgnores` pass `fixup!`/`squash!`/merge subjects, whose text the
+  squash discards. The manual-stage `commitlint-pr-title` hook, run only by CI's `process` job,
+  reads `.commitlintrc-pr-title.json`, which extends the base with `defaultIgnores` off, because
+  the squash makes the title the commit on `main` — the same string accepted at one stage and
+  refused at the other, recorded in both directions in
+  [`../scripts/cases/commitlint.md`](../scripts/cases/commitlint.md), beside what the defaults let
+  through that the retired regex refused: an empty or an uppercase scope. The npm packages are
+  pinned by exact version in the hooks' `additional_dependencies`, written once as a YAML anchor;
+  neither Dependabot nor `pre-commit autoupdate` reaches such a pin, so those versions are updated
+  by hand, beside the hook-repository revs `autoupdate` does move.
 - The branch is named `type_number-snake_name`, links an open issue labelled with its type, and its
   default-base pull request records the ticket linkage.
 - That issue carries a milestone and **exactly one** type label. The type set is read from

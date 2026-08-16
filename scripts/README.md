@@ -41,7 +41,7 @@ when a link breaks. Nothing enforces this — a wrong success line fails no buil
 | `check-site` | [cases](cases/check-site.md) |
 | `the seven requirements-tree checks` | [cases](cases/the-requirements-tree-checks.md) |
 | `report-proposed.py` | [cases](cases/report-proposed-py.md) |
-| `check-commit-msg.sh` | [cases](cases/check-commit-msg-sh.md) |
+| the Conventional-Commit gate (`commitlint`, both stages) | [cases](cases/commitlint.md) |
 | `adr-rev-reach.py` | [cases](cases/adr-rev-reach-py.md) |
 
 ## Running a case

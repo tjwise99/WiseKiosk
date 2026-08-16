@@ -1,8 +1,9 @@
 # The local hook layer (ADR 0016 rev 5). `pre-commit install` wires the stages listed in
 # default_install_hook_types; CI runs the pre-commit stage over every tracked file via
 # `just check-hooks`. pre-commit skips a hook whose file set is empty and reports success; the
-# `local` hooks below carry `always_run` and do not read a file set.
-default_install_hook_types: [pre-commit, pre-push]
+# `local` hooks below carry `always_run`, and none reads the staged-file set — the commitlint
+# hooks read the commit-message file, at their own stages rather than check-hooks' run.
+default_install_hook_types: [pre-commit, commit-msg, pre-push]
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: 3e8a8703264a2f4a69428a0aa4dcb512790b2c8c # v6.0.0
@@ -37,3 +38,26 @@ repos:
         pass_filenames: false
         stages: [pre-push]
         verbose: true
+      # The Conventional-Commit gate at both of its stages (ADR 0016 rev 5), one base
+      # configuration: .commitlintrc.json, which the pull-request-title configuration extends with
+      # `defaultIgnores` off — fixup!/squash!/merge subjects pass at commit-msg because the squash
+      # discards them, and are refused on the title because the squash makes it the commit on main.
+      # The anchor writes the npm pins once; neither Dependabot nor `pre-commit autoupdate` reaches
+      # an additional_dependencies pin, so these versions are updated by hand.
+      - id: commitlint
+        name: commit message is a Conventional Commit (.commitlintrc.json)
+        entry: commitlint --edit
+        language: node
+        additional_dependencies: &commitlint-pins
+          - "@commitlint/cli@21.2.2"
+          - "@commitlint/config-conventional@21.2.2"
+        always_run: true
+        stages: [commit-msg]
+      - id: commitlint-pr-title
+        name: PR title is a Conventional Commit (.commitlintrc-pr-title.json)
+        entry: commitlint --config .commitlintrc-pr-title.json --env COMMITLINT_TITLE_FILE
+        language: node
+        additional_dependencies: *commitlint-pins
+        always_run: true
+        pass_filenames: false
+        stages: [manual]
