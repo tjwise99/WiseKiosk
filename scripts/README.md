@@ -73,7 +73,7 @@ md5sum "$d/scripts/<check>"                # assert against the section's pin be
 ( cd "$d" && git init -q . && git add -A && git commit -qm fixture )   # citation scans read git ls-files
 ```
 
-Seven standing traps, each hit at least once:
+Eight standing traps, each hit at least once:
 
 - **Confirm the seed applied before reading the result.** A seed that fails to land looks exactly like
   a working check. Seeding into a tree: `git diff --quiet <path>` first, and read a clean diff as the
@@ -102,6 +102,12 @@ Seven standing traps, each hit at least once:
   [`../CONTRIBUTING.md`](../CONTRIBUTING.md) says must never be cleared by re-running. All seven tree
   checks pass on one unseeded copy, which is what makes it a fixture rather than an approximation;
   `git status --short docs/requirements/` afterwards is the proof no case escaped.
+- **A step added to a check must be re-run against every case the check already passed**, not only the
+  case it was added for. Where the steps share mutable state a new one can undo what an existing one
+  produces: on `check-arch` a `git add --intent-to-add` added to catch an uncommitted artifact
+  re-opened the orphan case `HEAD` had closed, the two acting on one index in opposite directions
+  ([cases/check-arch.md](cases/check-arch.md)). Delete each step and re-run every case to prove it
+  necessary, recording the grid rather than a list of passing rows.
 
 ## Confirming a gate in CI rather than locally
 
