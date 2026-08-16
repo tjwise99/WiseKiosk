@@ -1,4 +1,4 @@
-# `check-repo-silo.mjs`
+# `check-repo-silo.py`
 
 The inputs this check has been run against, in both directions. What it *asserts*, and why, is
 [`docs/CI.md`](../../docs/CI.md)'s; how to run a case is [`../README.md`](../README.md)'s.

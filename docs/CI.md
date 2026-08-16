@@ -287,21 +287,38 @@ Unbuilt; owned by #67 security and supply-chain CI gates.
 The documentation set is checked for the failures that make it untrustworthy: a link that does not
 resolve, a citation to something that does not exist, an index that has drifted from what it indexes.
 
-- Every relative Markdown link in every tracked file resolves inside the repository — **and lands
-  there**: a destination whose path text stays inside but which reaches outside through a symlink
-  fails, because following the link is what the invariant is about. All three syntaxes carrying a
-  relative path are read: the inline form, a link-reference definition, and a raw HTML anchor's
-  `href`. A destination may be angle-bracketed or carry a title; neither is part of the path.
-  **A link inside a fenced block is let through deliberately** — a fence is a sample rather than a
-  reference, and allowlisting a host to satisfy a code sample would put it in the register on the
-  strength of an example. The population is the tracked set, so an unstaged document is invisible to a
-  local run; CI checks out committed state and is unaffected.
-  **What no check here decides: that a fragment names a real heading.** The fragment is split off
-  before resolution runs and never read again, so a link whose path resolves and whose fragment names
-  no heading in the target still passes — only the path half of the destination is proven.
-- Every absolute `http` or `https` link in tracked documentation names a host on the committed
-  upstream-documentation allowlist, and every allowlist entry names the tool or service it serves.
-  This extends the link checker above rather than adding a second tool.
+- Every relative Markdown link in every tracked file resolves inside the repository, decided by
+  `lychee` run from its digest-pinned official image over the `git ls-files` Markdown set
+  ([ADR 0016 rev 3](decisions/0016-maintained-tools-for-standard-artifacts.md)). All three syntaxes
+  carrying a relative path are read — the inline form, a link-reference definition, and a raw HTML
+  anchor's `href` — each held against the retired authored check's recorded cases, in both
+  directions. A destination may be angle-bracketed or carry a title; neither is part of the path.
+  **The gate runs `--offline`, and that is a decision rather than an inherited default.** Online
+  checking makes third-party availability a merge condition, which § *Upstream contract checks*
+  refuses for its own gates for the same reason; offline buys that stability by checking absolute
+  `http`/`https` links not at all. With the host allowlist retired (ADR 0016 rev 3), an absolute
+  link is entirely unconstrained: documentation may link outward, and nothing here reviews where to.
+  **The gate is a CI-only exception rather than a `verify` check**: the image digest is the pin, a
+  contributor machine is not assumed to run docker, and command-text parity between a local recipe
+  and the pinned image cannot hold. A local run is the same invocation — piping `git ls-files
+  '*.md'` into `lychee --offline --no-progress --files-from -` — against a release binary of the
+  image's version. The population is the tracked set; an untracked Markdown file is outside it, and
+  the untracked-file preflight (§ *Repository shape*) is what fails it rather than this gate.
+  **What this gate lets through, measured rather than assumed.** A link inside a fenced block — a
+  fence is a sample rather than a reference. A fragment naming no heading in a target whose path
+  resolves: fragment checking is off, so only the path half of the destination is proven. A
+  destination that leaves the repository and lands on a file that exists, by `../` or through a
+  tracked symlink: the escape and symlink obligations are retired knowingly (ADR 0016 rev 3), and
+  the CI container failing such a link because only the checkout is mounted is incidental, not
+  asserted. A fence that never closes runs to the end of its document under CommonMark, so nothing
+  past it is scanned and the run reports clean — seeded and confirmed, and the Sphinx build passes
+  the same seed; no residue guard is kept, on ADR 0016 rev 3's own bar that one residual obligation
+  does not earn a second gate beside an adopted tool. lychee itself reports success over an
+  empty input set — the ruling ADR 0016 rev 3 records for adopted tools — but the CI step
+  materialises the tracked-file list and fails on a failed or empty listing before lychee runs: a
+  failed measurement is not an empty population, and a scan of nothing must not read as clean. A
+  root-relative destination fails, with a message naming the missing root rather than a wrong
+  reason.
 - Every citation to a requirement ID or ADR number names an item or decision that exists — in
   tracked documentation outside `.claude/`, and in every item's `rationale` and
   `verification-justification`. Fenced code blocks are skipped; an identifier in inline code is a
@@ -379,13 +396,13 @@ resolve, a citation to something that does not exist, an index that has drifted 
   the repository rather than read from an inventory: adding a document without indexing it fails,
   retiring one fails until its row goes, and there is no exclusions list to append to — excluding
   anything that is not machinery by that rule takes a change to the check itself
-  ([ADR 0014 rev 2](decisions/0014-documentation-index-claims-documents.md)). A row whose *Document* cell
+  ([ADR 0014 rev 3](decisions/0014-documentation-index-claims-documents.md)). A row whose *Document* cell
   renders with a trailing slash claims the subtree beneath it, which is how `decisions/`,
   `requirements/`, `contracts/`, `architecture/` and `site/` are covered by one row each. Every row's
   link resolves to a tracked file, one rendered path carries one row, a row names a tracked document
   or a directory holding one, no row indexes a dot-directory, and no *Guarantees* or *Excludes* cell
   is empty. The index does not index itself. A new top-level dot-directory is excluded the moment it
-  exists, with no edit anywhere — the trade ADR 0014 rev 2 records, which is why the check names the
+  exists, with no edit anywhere — the trade ADR 0014 rev 3 records, which is why the check names the
   machinery directories it skipped on every run. A dot-prefixed file at the repository root is not a
   directory and must be indexed like any other document. Scope is Markdown: the tree's items are
   claimed by the tree and gated by `check-reqs`, and code is claimed by nothing here.
@@ -466,15 +483,32 @@ changed, which the citation resolver above decides without anyone declaring anyt
   by the search, so CRLF-terminated text under one commits and survives a fresh clone unseen. The
   attribute is declared on the image, font and PDF globs, which is the attribute used as intended; a
   *text* glob given it is the reachable case, and the owner ruled on 2026-08-02 not to gate it.
+- **No untracked, non-ignored file is present when a `git ls-files`-population gate runs.** Those
+  gates read tracked state only, so an untracked file is invisible to every one of them — a defect
+  in exactly the file most likely to carry a fresh mistake passes a local run and fails in CI once
+  committed. Two mechanisms, deliberately redundant: a preflight, `just check-untracked`, fails on
+  any untracked, non-ignored file in the tree, and each gate whose population is `git ls-files`
+  independently fails on an untracked file of the kind it inspects — so neither protection rests on
+  remembering to run the other. The remedy is `git add`, after which the gates judge the file, or a
+  gitignore entry, which declares it not material. A CI checkout holds only tracked files and every
+  build artifact is gitignored, so neither mechanism fires there; what they gate is the local run,
+  the one place an untracked file exists. `check-adr-index` carries no guard: it reads the
+  decisions directory rather than the tracked set, so an untracked ADR is judged, not skipped.
+  `adr-rev-reach.py` also reads the tracked set and carries no guard either — it reports and exits
+  zero by design (§ *What is not gated here*), so there is no verdict for an untracked file to
+  escape.
 - **Every hook in the local hook layer passes.** `.pre-commit-config.yaml` is that layer
   ([ADR 0016 rev 3](decisions/0016-maintained-tools-for-standard-artifacts.md)): no private key, no
   file over `check-added-large-files`' threshold, every YAML and JSON file parses, no merge-conflict
   marker committed while a merge is in progress (outside one, `check-merge-conflict` judges nothing —
   a bare `=======` is also a Markdown setext underline), no file mixing line-ending kinds — plus the
   authored `check-eol` hook, which carries the
-  tracked-tree CRLF scan of the bullet above, scoped to what `mixed-line-ending` cannot reach: that
-  hook judges only the files pre-commit hands it and counts one uniform ending kind as unmixed, so a
-  committed-but-unstaged CRLF file and a uniformly-CRLF file both pass it. Locally the layer is
+  tracked-tree CRLF scan of the CRLF bullet above, scoped to what `mixed-line-ending` cannot reach:
+  that hook judges only the files pre-commit hands it and counts one uniform ending kind as unmixed,
+  so a committed-but-unstaged CRLF file and a uniformly-CRLF file both pass it. Its population is
+  `git ls-files`, so it carries the untracked guard of the bullet above — an untracked, non-ignored
+  file is reported as unsearchable and fails, beside any CRLF finding rather than in place of one.
+  Locally the layer is
   advisory fast feedback at commit and push (`pre-commit install`, once per clone); the binding run
   is CI's, over every tracked file. **A hook whose file set is empty is skipped and reports
   success** — pre-commit's own behaviour, which ADR 0016 rev 3's empty-population ruling permits;

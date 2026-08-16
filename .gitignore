@@ -55,3 +55,8 @@ Thumbs.db
 # document guarantees. The layering is CLAUDE.md's. (`*.local` above does not
 # reach this: it matches names ending in `.local`, not `.local.md`.)
 CLAUDE.local.md
+
+# Claude Code's per-machine permission grants — written by the tool, never
+# committed. (`*.local` misses `.local.json` the same way it misses `.local.md`,
+# and an unignored copy reds `check-untracked` while being unaddable.)
+.claude/settings.local.json

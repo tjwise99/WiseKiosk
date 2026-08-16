@@ -16,9 +16,12 @@ passed where this fails.
 | Must fail | a committed CRLF file with nothing staged *(gap: `mixed-line-ending` is handed only the staged set, so the same state passed it)* |
 | Must fail | a uniformly-CRLF file *(gap: `mixed-line-ending` counts one ending kind as unmixed and passed the same file; it fails only a genuinely mixed one, which was seeded separately to prove it can fail)* |
 | Must fail | the search failing rather than finding nothing — run outside a repository, where git exits 128 and the status is propagated |
+| Must fail | an untracked CRLF file — reported by the untracked guard as unsearchable, not judged by the search |
+| Must fail | an untracked all-LF file — same guard: visibility, not content, is what fails |
+| Must fail | an untracked file beside a tracked CRLF file — one run reports both: the guard accumulates alongside the search rather than short-circuiting it |
 | Must pass | an all-LF tree |
 | Must pass | a binary file containing CR — excluded by `-I` |
-| Must pass | a genuinely untracked CRLF file |
+| Must pass | the untracked all-LF file from above, once tracked — the guard is silent and the search judges it |
 | Must pass | CR appearing mid-line, where the line still ends in LF |
 | Must pass | a repository with no tracked file — the retired population guard, exercised to confirm the ruling's side, not to guard: ADR 0016 rev 3's owner ruling is that an empty scan may report success |
 

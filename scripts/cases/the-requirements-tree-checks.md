@@ -102,7 +102,9 @@ topology it never occurs without a distinct second error line from the active ti
 | Must fail | an `ADR` number naming no file |
 | Must fail | a **lowercase** identifier, cited or not |
 | Must fail | a mixed-case identifier |
+| Must fail | an untracked `.md` — the untracked guard names it as unreadable, whatever it contains |
 | Must pass | an identifier or ADR number inside a fenced code block |
+| Must pass | an untracked `.md` under `.claude/` — outside this gate's population, so outside its guard |
 | Must pass | a word merely containing an identifier |
 | Must pass | a correct uppercase citation with its verbatim header |
 

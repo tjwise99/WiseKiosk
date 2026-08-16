@@ -26,17 +26,17 @@ when a link breaks. Nothing enforces this — a wrong success line fails no buil
 
 | Check | Record |
 |---|---|
+| `check-untracked.py` | [cases](cases/check-untracked-py.md) |
 | `check-workflow-hardening.mjs` | [cases](cases/check-workflow-hardening-mjs.md) |
-| `check-repo-silo.mjs` | [cases](cases/check-repo-silo-mjs.md) |
+| `check-repo-silo.py` | [cases](cases/check-repo-silo-py.md) |
 | `check-verify-ci-parity.mjs` | [cases](cases/check-verify-ci-parity-mjs.md) |
-| `check-docs-index.mjs` | [cases](cases/check-docs-index-mjs.md) |
+| `check-docs-index.py` | [cases](cases/check-docs-index-py.md) |
 | `check-branch.sh` | [cases](cases/check-branch-sh.md) |
 | `branch-shape.py` | [cases](cases/branch-shape-py.md) |
-| `check-links.mjs` | [cases](cases/check-links-mjs.md) |
 | `check-eol.py` | [cases](cases/check-eol-py.md) |
-| `check-adr-index.mjs` | [cases](cases/check-adr-index-mjs.md) |
+| `check-adr-index.py` | [cases](cases/check-adr-index-py.md) |
 | `check-adr-revs.py` | [cases](cases/check-adr-revs-py.md) |
-| `check-arch / splice-arch-diagrams.mjs` | [cases](cases/check-arch.md) |
+| `check-arch / splice-arch-diagrams.py` | [cases](cases/check-arch.md) |
 | `check-arch-trace.py` | [cases](cases/check-arch-trace-py.md) |
 | `check-site` | [cases](cases/check-site.md) |
 | `the seven requirements-tree checks` | [cases](cases/the-requirements-tree-checks.md) |
@@ -54,8 +54,8 @@ reads from; a case for another check writes that check's input in place of the w
 case_run () { # $1 label   $2 expect (pass|fail)   $3 file contents
   d=$(mktemp -d); mkdir -p "$d/.github/workflows"
   printf '%s\n' "$3" > "$d/.github/workflows/w.yml"
+  cp scripts/check-workflow-hardening.mjs "$d/"       # before the add: several checks fail on an untracked file
   ( cd "$d" && git init -q . && git add -A )
-  cp scripts/check-workflow-hardening.mjs "$d/"
   ( cd "$d" && node check-workflow-hardening.mjs >/dev/null 2>&1 )
   [ $? -eq 0 ] && got=pass || got=fail
   [ "$got" = "$2" ] && echo "ok   $1" || echo "WRONG $1 (got $got)"

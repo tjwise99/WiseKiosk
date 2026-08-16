@@ -108,7 +108,7 @@ repos/tjwise99/WiseKiosk/issues/<parent-number>/sub_issue -F sub_issue_id=$child
   number *and* name — for a ticket. The same holds for requirement identifiers: `SRS026
   backend-unreachable state`, never bare, because a renumber rewrites `links:` and leaves prose
   pointing at whatever now occupies the number.
-- **Every relative link must resolve inside the repository** — issue bodies are not checked by
-  `just check-links`, so a `../blob/main/…` link is on you.
+- **Every relative link must resolve inside the repository** — issue bodies are outside the link
+  gate's population (it reads tracked Markdown), so a `../blob/main/…` link is on you.
 - State what authorizes the work and what is already decided, so the ticket does not re-litigate
   settled ground when it is finally worked.

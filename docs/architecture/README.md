@@ -76,7 +76,7 @@ one.
 
 GitHub cannot transclude an external `.mmd` file into Markdown, so [`../ARCHITECTURE.md`](../ARCHITECTURE.md)
 carries an inline `mermaid` fence per diagram — **generated, not hand-maintained**: the final step of
-`arch-export` ([`../../scripts/splice-arch-diagrams.mjs`](../../scripts/splice-arch-diagrams.mjs))
+`arch-export` ([`../../scripts/splice-arch-diagrams.py`](../../scripts/splice-arch-diagrams.py))
 rewrites the region between each `arch-export:begin/end <file>` marker pair from the named artifact
 in `generated/`. Hand edits inside a marker region are overwritten on the next export and caught by
 the staleness gate; the prose around the markers is yours to edit.

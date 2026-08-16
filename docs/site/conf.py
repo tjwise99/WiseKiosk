@@ -56,8 +56,9 @@ needs_id_regex = "^[A-Z]+[0-9]+$"
 # A handful of canonical links point at a directory with no document to
 # resolve to (Doorstop's sys/srs/tst dirs, the LikeC4 codegen output dir).
 # Unfixable without editing those files; the underlying invariant is already
-# covered by the more precise check-links gate, so this category is
-# suppressed rather than a second, redundant source of truth.
+# covered by the more precise link gate (lychee, docs/CI.md § Documentation
+# integrity), so this category is suppressed rather than a second, redundant
+# source of truth.
 suppress_warnings = ["myst.xref_missing"]
 
 # furo has no "always expanded" nav option, but each section with children

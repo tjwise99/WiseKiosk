@@ -4,7 +4,7 @@
 // read is a failure rather than a skip. See docs/CI.md § Action pins and workflow privilege.
 //
 // No dependencies: Node stdlib only, plain text scanning (no YAML parser) — matches
-// scripts/check-repo-silo.mjs's idiom.
+// scripts/check-verify-ci-parity.mjs's idiom.
 //
 // What this has been run against, in both directions: cases/check-workflow-hardening-mjs.md
 
@@ -25,6 +25,16 @@ const workflows = execSync("git ls-files .github/workflows", { encoding: "utf8" 
 if (workflows.length === 0) {
   console.error("check-workflow-hardening: no workflow file discovered under .github/workflows");
   process.exit(1);
+}
+
+// An untracked workflow is outside the population above, so it is reported rather than
+// silently unread. `-z` keeps a non-ASCII path unquoted, where the suffix match would drop it.
+for (const name of execSync("git ls-files --others --exclude-standard -z .github/workflows", {
+  encoding: "utf8",
+})
+  .split("\0")
+  .filter((path) => /\.ya?ml$/.test(path))) {
+  problems.push(`${name}: untracked, so this check cannot read it — git add or gitignore it`);
 }
 
 const SHA = /@[0-9a-f]{40}$/;

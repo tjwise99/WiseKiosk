@@ -1,4 +1,4 @@
-# `check-docs-index.mjs`
+# `check-docs-index.py`
 
 The inputs this check has been run against, in both directions. What it *asserts*, and why, is
 [`docs/CI.md`](../../docs/CI.md)'s; how to run a case is [`../README.md`](../README.md)'s.
@@ -19,12 +19,15 @@ its own premise and the tree cannot drift out from under it.
 | Must fail | a subtree row over a directory holding no tracked document (`ghost/`) |
 | Must fail | a row indexing a dot-directory, which holds machinery rather than documents |
 | Must fail | a dot-prefixed file at the repository root (`.HIDDEN.md`) — a dot-*file* is not a dot-*directory* |
+| Must fail | an untracked `.md` — the untracked guard names it as unreadable, whatever it contains |
+| Must fail | an untracked `.md` under a dot-directory — the guard is deliberately wider than the claims rule, which lets the same file through once tracked |
 | Must pass | a new ADR under `docs/decisions/`, claimed by the subtree row without a row of its own |
 | Must pass | a second tracked `.md` added under `docs/architecture/` |
 | Must pass | an `.md` nested two levels under a subtree row |
 | Must pass | an `.md` added under a dot-directory (`.github/`) |
 | Must pass | a **new** top-level dot-directory (`.notes/NOTES.md`) — the accepted trade below |
 | Must pass | a row whose rendered text and link target differ |
+| Must pass | an untracked file that is not `.md` — outside this gate's population, so outside its guard |
 
 The must-fail rows exercise six distinct reporting paths, not one — the spread is the point, since a
 check reporting through a single path would pass most of them while asserting nothing else.
@@ -45,9 +48,10 @@ rather than being a defect in it.
 Two constraints on `docs/README.md` follow from the second row: it may hold exactly one table, and no
 fenced example containing one, every `|`-leading line being read as an index row.
 
-**A documented divergence.** `docs/CI.md` and ADR 0014 rev 2 both say a *Document* cell *renders* as a
+**A documented divergence.** `docs/CI.md` and ADR 0014 rev 3 both say a *Document* cell *renders* as a
 path; the check requires a Markdown link whose text is a backticked path. The prose is looser than the
 code.
 
-What this gate lets through — a new top-level dot-directory, and documents not yet staged — is
-[`docs/CI.md`](../../docs/CI.md)'s, and the trade behind it is ADR 0014 rev 2's.
+What this gate lets through — a new top-level dot-directory — is
+[`docs/CI.md`](../../docs/CI.md)'s, and the trade behind it is ADR 0014 rev 3's; an untracked
+document fails the untracked guard rather than passing unread.
