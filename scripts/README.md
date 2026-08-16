@@ -28,18 +28,19 @@ when a link breaks. Nothing enforces this — a wrong success line fails no buil
 |---|---|
 | `check-untracked.py` | [cases](cases/check-untracked-py.md) |
 | `check-workflow-hardening.mjs` | [cases](cases/check-workflow-hardening-mjs.md) |
-| `check-repo-silo.mjs` | [cases](cases/check-repo-silo-mjs.md) |
+| `check-repo-silo.py` | [cases](cases/check-repo-silo-py.md) |
 | `check-verify-ci-parity.mjs` | [cases](cases/check-verify-ci-parity-mjs.md) |
-| `check-docs-index.mjs` | [cases](cases/check-docs-index-mjs.md) |
+| `check-docs-index.py` | [cases](cases/check-docs-index-py.md) |
 | `check-branch.sh` | [cases](cases/check-branch-sh.md) |
 | `check-links.mjs` | [cases](cases/check-links-mjs.md) |
 | `check-eol.sh` | [cases](cases/check-eol-sh.md) |
-| `check-adr-index.mjs` | [cases](cases/check-adr-index-mjs.md) |
+| `check-adr-index.py` | [cases](cases/check-adr-index-py.md) |
 | `check-adr-revs.py` | [cases](cases/check-adr-revs-py.md) |
-| `check-arch / splice-arch-diagrams.mjs` | [cases](cases/check-arch.md) |
+| `check-arch / splice-arch-diagrams.py` | [cases](cases/check-arch.md) |
 | `check-arch-trace.py` | [cases](cases/check-arch-trace-py.md) |
 | `check-site` | [cases](cases/check-site.md) |
 | `the seven requirements-tree checks` | [cases](cases/the-requirements-tree-checks.md) |
+| `report-proposed.py` | [cases](cases/report-proposed-py.md) |
 | `check-commit-msg.sh` | [cases](cases/check-commit-msg-sh.md) |
 | `adr-rev-reach.py` | [cases](cases/adr-rev-reach-py.md) |
 

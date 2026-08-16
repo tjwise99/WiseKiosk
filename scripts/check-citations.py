@@ -55,12 +55,12 @@ def markdown_sources():
 
 def untracked_markdown():
     """Untracked Markdown, less `.claude/` — the population above cannot see it, so it is reported
-    rather than silently unread."""
+    rather than silently unread. `-z` keeps a path with a space or non-ASCII bytes one name."""
     others = run(
-        ["git", "ls-files", "--others", "--exclude-standard", "*.md"],
+        ["git", "ls-files", "--others", "--exclude-standard", "-z", "*.md"],
         cwd=ROOT, capture_output=True, text=True, check=True,
-    ).stdout.split()
-    return [name for name in others if not name.startswith(".claude/")]
+    ).stdout.split("\0")
+    return [name for name in others if name and not name.startswith(".claude/")]
 
 
 def blank_fences(text):

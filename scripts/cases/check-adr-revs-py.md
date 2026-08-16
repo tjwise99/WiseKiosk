@@ -62,7 +62,7 @@ What the cases prove, beyond what the table shows on its own:
   *the exemption is narrow* are indistinguishable.
 - **The title-number rows are the collision rule's other half** — a collision asks which of two
   files a number names, a wrong title asks whether the one file naming it agrees.
-  `check-adr-index.mjs` derives every number from a filename or an index row and never opens a body,
+  `check-adr-index.py` derives every number from a filename or an index row and never opens a body,
   so it passed a tree where one ADR's title named a different number.
 - **The whole-tree title seed is the population guard**: respelling every title at once reports
   twenty problems, and correcting one title and re-running exits 0 — the satisfiability control the
@@ -124,7 +124,7 @@ matters.
 **The two ADR checks disagree about strays, and the line between them is the `.md` suffix.** Observed,
 one stray at a time:
 
-| Stray in `docs/decisions/` | `check-adr-revs.py` | `check-adr-index.mjs` |
+| Stray in `docs/decisions/` | `check-adr-revs.py` | `check-adr-index.py` |
 |---|---|---|
 | `notes.txt` | exit 1 | **exit 0** |
 | an editor backup ending `~` | exit 1 | **exit 0** |
@@ -132,8 +132,9 @@ one stray at a time:
 | `draft-supersede-0007.md` | exit 1 | exit 1 |
 
 Directory scope is `current_revs()`'s rather than one rule's, reading the filesystem rather than
-tracked state. The consequence is wider than a stray — **an untracked file reds `just verify` locally
-while CI stays green**, because `actions/checkout` gives CI committed state. Measured on one tree, one
+tracked state; the untracked guard reports the same files from the other side, which is why each row
+below carries two problems. **An untracked file reds `just verify` locally while CI stays green**,
+because `actions/checkout` gives CI committed state. Measured on one tree, one
 file at a time:
 
 | Untracked in `docs/decisions/` | Reported locally |
@@ -143,6 +144,6 @@ file at a time:
 
 An archive of the same `HEAD`, which is what CI gets, exits 0 for both. For a stray, the fix is to
 rename or remove the file. The draft is the case with no stray to remove, and its answer differs: the
-index row is genuinely owed, `check-adr-index.mjs` reds on the same file with the same remedy, and
+index row is genuinely owed, `check-adr-index.py` reds on the same file with the same remedy, and
 nothing here gates a commit — both hooks in `.githooks/` are advisory and neither runs `verify`. What
 the local run buys is notice before the push, not enforcement.

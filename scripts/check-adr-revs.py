@@ -21,7 +21,7 @@ cannot scan:
   smaller than the directory. The directory read above is what lets this see an entry no commit has
   yet introduced.
 - Each ADR's *Revisions* section carries one changelog line per rev, numbered 1 to that head rev.
-- No two files carry one number. Uniqueness is `scripts/check-adr-index.mjs`'s to enforce; it is
+- No two files carry one number. Uniqueness is `scripts/check-adr-index.py`'s to enforce; it is
   reported here because a number two documents carry has no one rev to hold a citation of it to.
 - Every `ADR NNNN` in prose is followed by `rev M`, and M is that ADR's current rev.
 - Every markdown link resolving to an ADR file is titled `ADR NNNN rev M` likewise. The link rule is
@@ -34,7 +34,7 @@ cannot scan:
 That an ADR's rev was raised for a good reason, and that a citation pinning the current rev still
 means what the ADR says, is decided by nothing here.
 
-Whether every index row has a file, and numbering is contiguous, is `scripts/check-adr-index.mjs`.
+Whether every index row has a file, and numbering is contiguous, is `scripts/check-adr-index.py`.
 An ADR carrying no row is reported here as well, because the table assertion above is then the thing
 with nothing to compare. It is not that such an ADR goes unjudged: the rev is read from the head, so
 the title, changelog, collision and citation rules all still hold it, and deleting the table check

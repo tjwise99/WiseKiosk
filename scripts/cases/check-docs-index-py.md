@@ -1,4 +1,4 @@
-# `check-docs-index.mjs`
+# `check-docs-index.py`
 
 The inputs this check has been run against, in both directions. What it *asserts*, and why, is
 [`docs/CI.md`](../../docs/CI.md)'s; how to run a case is [`../README.md`](../README.md)'s.
@@ -20,6 +20,7 @@ its own premise and the tree cannot drift out from under it.
 | Must fail | a row indexing a dot-directory, which holds machinery rather than documents |
 | Must fail | a dot-prefixed file at the repository root (`.HIDDEN.md`) — a dot-*file* is not a dot-*directory* |
 | Must fail | an untracked `.md` — the untracked guard names it as unreadable, whatever it contains |
+| Must fail | an untracked `.md` under a dot-directory — the guard is deliberately wider than the claims rule, which lets the same file through once tracked |
 | Must pass | a new ADR under `docs/decisions/`, claimed by the subtree row without a row of its own |
 | Must pass | a second tracked `.md` added under `docs/architecture/` |
 | Must pass | an `.md` nested two levels under a subtree row |

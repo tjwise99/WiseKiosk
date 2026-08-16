@@ -23,9 +23,10 @@ const mdFiles = execSync("git ls-files '*.md'", { encoding: "utf8" })
 
 const problems = [];
 
-// Untracked Markdown is outside the population above, so it is reported rather than silently unread.
-for (const name of execSync("git ls-files --others --exclude-standard '*.md'", { encoding: "utf8" })
-  .split("\n")
+// Untracked Markdown is outside the population above, so it is reported rather than silently
+// unread. `-z` reports a non-ASCII path unquoted.
+for (const name of execSync("git ls-files --others --exclude-standard -z '*.md'", { encoding: "utf8" })
+  .split("\0")
   .filter(Boolean)) {
   problems.push(`${name}  ->  untracked, so this check cannot read it — git add or gitignore it`);
 }

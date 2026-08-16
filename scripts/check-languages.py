@@ -57,7 +57,7 @@ EXTENSIONS = {
     "likec4": "derived — LikeC4's own model format, named in ADR 0017 rev 5 "
     "(ADR 0003 rev 2)",
     "mmd": "derived — generated Mermaid output of the LikeC4 export/splice toolchain "
-    "(scripts/splice-arch-diagrams.mjs), never hand-authored",
+    "(scripts/splice-arch-diagrams.py), never hand-authored",
     "txt": "derived — a toolchain's own required input format (pip's requirements-dev.txt), or "
     "data an authored check reads and does not itself author "
     "(scripts/upstream-hosts.txt, read by check-links.mjs)",
@@ -98,10 +98,6 @@ LEGACY = {
     "retires the pending-tier exception it stands in for (#78; ADR 0017 rev 5)",
     "scripts/check-commit-msg.sh": "replaced by commitlint (ADR 0016 rev 3)",
     "scripts/check-eol.sh": "replaced by pre-commit as the local hook layer (ADR 0016 rev 3)",
-    "scripts/check-adr-index.mjs": "converts to Python under #110 Node check conversion (ADR 0017 rev 5)",
-    "scripts/check-docs-index.mjs": "converts to Python under #110 Node check conversion (ADR 0017 rev 5)",
-    "scripts/check-repo-silo.mjs": "converts to Python under #110 Node check conversion (ADR 0017 rev 5)",
-    "scripts/splice-arch-diagrams.mjs": "converts to Python under #110 Node check conversion (ADR 0017 rev 5)",
     "scripts/check-verify-ci-parity.mjs": "waits on #101, which may delete it, under #111 parity-check conversion (ADR 0017 rev 5)",
     "scripts/check-links.mjs": "replaced by lychee (ADR 0016 rev 3)",
     "scripts/check-workflow-hardening.mjs": "replaced by zizmor with actionlint alongside (ADR 0016 rev 3)",
