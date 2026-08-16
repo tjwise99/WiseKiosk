@@ -523,14 +523,16 @@ changed, which the citation resolver above decides without anyone declaring anyt
   ([ADR 0016 rev 5](decisions/0016-maintained-tools-for-standard-artifacts.md); the gate itself is
   [ADR 0006 rev 3](decisions/0006-process-gates.md)'s). Both stages run through the hook layer's
   `repo: local` hooks and one base configuration, `.commitlintrc.json` —
-  `@commitlint/config-conventional` with its defaults unconfigured. The `commit-msg` hook is the
+  `@commitlint/config-conventional`, plus a `scope-case` rule restoring the retired check's
+  lowercase-scope refusal, which the preset does not carry. The `commit-msg` hook is the
   advisory local stage: its `defaultIgnores` pass `fixup!`/`squash!`/merge subjects, whose text the
   squash discards. The manual-stage `commitlint-pr-title` hook, run only by CI's `process` job,
   reads `.commitlintrc-pr-title.json`, which extends the base with `defaultIgnores` off, because
   the squash makes the title the commit on `main` — the same string accepted at one stage and
   refused at the other, recorded in both directions in
-  [`../scripts/cases/commitlint.md`](../scripts/cases/commitlint.md), beside what the defaults let
-  through that the retired regex refused: an empty or an uppercase scope. The npm packages are
+  [`../scripts/cases/commitlint.md`](../scripts/cases/commitlint.md), beside what the rules let
+  through that the retired regex refused: an empty scope, which no rule can refuse without also
+  refusing a scopeless header. The npm packages are
   pinned by exact version in the hooks' `additional_dependencies`, written once as a YAML anchor;
   neither Dependabot nor `pre-commit autoupdate` reaches such a pin, so those versions are updated
   by hand, beside the hook-repository revs `autoupdate` does move.

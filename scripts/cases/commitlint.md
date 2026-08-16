@@ -29,7 +29,7 @@ COMMITLINT_TITLE_FILE="$f" scripts/.venv/bin/pre-commit run commitlint-pr-title 
 | Must fail | `Fix: a thing` | fail (`type-case`, `type-enum`) | fail (same) |
 | Must fail | `feat a thing` | fail (`type-empty`, `subject-empty`) | fail (same) |
 | Must fail | `feat(): a thing` | **pass — gap, see note** | **pass — gap, see note** |
-| Must fail | `feat(CI): a thing` | **pass — gap, see note** | **pass — gap, see note** |
+| Must fail | `feat(CI): a thing` | fail (`scope-case`) | fail (same) |
 | Must fail | `feat: ` | fail (`header-trim`, `subject-empty`) | fail (same) |
 | Must fail | `feats: a thing` | fail (`type-enum`) | fail (same) |
 | Must pass | `fix: a thing` | pass | pass |
@@ -44,12 +44,14 @@ the other, from one base configuration — the property the retired `--pr-title`
 
 Three notes the rows cannot carry alone:
 
-- **Two must-fail rows are given up: empty scope and uppercase scope.** `config-conventional`
-  carries no `scope-empty` or `scope-case` rule, so `feat(): x` and `feat(CI): x` pass both stages
-  where the retired regex refused them. The defaults stand unconfigured
-  (ADR 0016 rev 5: practice adapts to the tool, not the reverse); adding a `scope-case` rule to
-  [`.commitlintrc.json`](../../.commitlintrc.json) is the one-line remedy if either gap proves
-  worth closing.
+- **The uppercase-scope row is restored, not given up.** `config-conventional` carries no
+  `scope-case` rule, so `feat(CI): x` passed both stages where the retired regex refused it; the
+  base configuration adds `scope-case: [2, always, lower-case]`, which restores the refusal at both
+  stages with every must-pass row above — the hyphenated scope included — re-run and still passing.
+- **One must-fail row is given up: empty scope.** `feat(): x` passes both stages, and no one-line
+  rule closes it: the parser hands a scopeless header and an empty-parens header the same empty
+  scope, so `scope-empty: [2, never]` — the obvious rule — also rejects the must-pass
+  `fix: a thing` (both measured). The gap stays recorded here, deferred to the owner.
 - **Legal input the adopted tool rejects**, each measured: `fix: Sentence case subject` fails
   `subject-case`, `fix: a thing.` fails `subject-full-stop`, and a 105-character header fails
   `header-max-length` (100) — the tightening ADR 0016 rev 5 accepts, titles adapting rather than
