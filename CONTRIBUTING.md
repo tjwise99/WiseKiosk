@@ -193,3 +193,9 @@ appended for the same reason; inserting one is permitted
     alternatives, a `rationale`, or prose — carry `(owner, YYYY-MM-DD)` or a direct quote where the
     owner ruled it? An unattributed decision reads as an owner ruling but may be a session's
     invention; the convention is [`docs/decisions/README.md`](docs/decisions/README.md)'s.
+
+**Deletions**
+
+24. **Orphaned names.** Where the change removes a recipe, check, or workflow step, does any
+    operator-facing reference to its name survive that no gate reaches — a justfile `[doc()]`, a
+    workflow step `name:`, `--help` text?
