@@ -17,3 +17,12 @@ CI's `process` check.
 | Must pass | `main` — exempt: the mainline is not a work branch |
 | Must pass | `dependabot/pip/foo-1.2.3` — exempt: Dependabot names its own branches |
 | Must pass | a detached HEAD — no branch is checked out, so there is nothing to judge |
+| Must pass | `epic_7-name` against a seeded two-line regex file whose second line admits it — each non-blank line is a pattern, the reading `check-branch.py` shares |
+| Must fail | `nodashes` against the same two-line file, matching neither line |
+| Must fail | `nodashes` against a regex file carrying a trailing blank line — a blank line is dropped, not read as an empty pattern matching every name |
+| Must pass | `task_1-ok` against the same trailing-blank file |
+
+The two-line must-pass row is the one that separates the readings: a reader taking the whole file as
+one regex rejects a branch either line admits, splitting this hook's verdict from `check-branch.py`'s
+on the same name. Seeded rows run against a copy of the script and the seeded file in a scratch
+repository with the case's branch checked out.

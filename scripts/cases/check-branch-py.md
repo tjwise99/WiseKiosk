@@ -4,7 +4,9 @@ The inputs this check has been run against, in both directions. What it *asserts
 [`docs/CI.md`](../../docs/CI.md)'s; how to run a case is [`../README.md`](../README.md)'s. The rows
 were recorded against the sh form this check converts from (#109 check-branch conversion) and re-run
 against the Python form with the sh form beside it on identical inputs, stdout, stderr and exit
-status compared byte-for-byte — every row except the two recorded as unrun for both forms.
+status compared byte-for-byte — every row except the two recorded as unrun for both forms. The
+trailing-blank rows are the one deliberate deviation: `grep -Ef` reads a blank pattern line as
+matching everything, and the Python form drops it instead of failing open.
 
 Covers the ticket-metadata and epic-membership assertions
 ([ADR 0013 rev 3](../../docs/decisions/0013-work-tracking-invariants.md)) and the branch-shape, exemption
@@ -54,10 +56,14 @@ script misreading rather than the ticket being wrong:
 | Must fail | a `branch-shape.regex` carrying a second pattern line, so the type set no longer has one answer while the branch still matches |
 | Must fail | a single-line regex holding a top-level alternation, so one group is extracted, the branch matches through the other alternative, and the extracted set does not hold the branch's type |
 | Must pass | the same copy with the real regex restored |
+| Must fail | a `branch-shape.regex` carrying a trailing blank line, against a branch matching nothing — a blank line is dropped, not read as an empty pattern matching every name |
+| Must pass | a conforming branch against the same trailing-blank copy |
 | Must fail | the GraphQL `parent` selection returning `databaseId` instead of `number`, against an issue that **has** a parent, so the response is error-free and every enclosing object present |
 | Must pass | the unmodified query against the same issue |
 
-Two guards stand over the regex file rather than one because a top-level alternation satisfies the
+The trailing-blank must-fail row is a fail-open the one-answer guard cannot see: a blank line yields
+no type group, so the count stays at one while an empty pattern would admit every name. Two guards
+stand over the regex file rather than one because a top-level alternation satisfies the
 group count, and only the membership check rejects it. The `databaseId` row needs a parented issue:
 against an unparented one the check correctly passes, so reading that pass as evidence would record
 the opposite of what the row claims. Without the parent-key assertion, the no-parent default would

@@ -34,10 +34,12 @@ def fail(message):
 
 
 def read_patterns():
-    """Each line of branch-shape.regex is a pattern; a name matches if any line does,
-    which is grep -f's reading of the file and what the one-answer guard below judges."""
+    """Each non-blank line of branch-shape.regex is a pattern; a name matches if any
+    line does, which is what the one-answer guard below judges. A blank line is dropped
+    rather than read: an empty pattern matches every name, and the guard cannot see one
+    because a blank yields no type group."""
     text = (SCRIPTS_DIR / "branch-shape.regex").read_text()
-    return text.splitlines()
+    return [line for line in text.splitlines() if line.strip()]
 
 
 def matches_shape(name, patterns):
