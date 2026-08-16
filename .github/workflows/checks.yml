@@ -13,10 +13,12 @@ on:
 permissions:
   contents: read
 
-# A superseded pull-request head cancels its own run; a push run is never cancelled — the secret
-# scan walks the commits its own event carries, so cancelling one would leave that push unscanned.
+# A superseded pull-request head cancels its own run. A push run gets a group of its own, keyed on
+# the sha: in a shared group a newly queued run replaces the pending one even with cancel-in-progress
+# false, and a replaced push run is a push whose commits the secret scan never walks. `queue: max`
+# would keep a shared group safe, but the pinned actionlint's schema rejects the key.
 concurrency:
-  group: checks-${{ github.ref }}
+  group: checks-${{ github.event_name == 'pull_request' && github.ref || github.sha }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:

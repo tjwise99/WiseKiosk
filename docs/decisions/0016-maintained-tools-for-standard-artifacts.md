@@ -13,8 +13,10 @@
   live workflows — audits introduced across v1.10.0–v1.16.0 — plus `dependabot-cooldown` against
   `.github/dependabot.yml` when the input is the whole tree, and `artipacked` reports at Low rather
   than Medium since v1.17.0; a seeded fixture confirms zizmor does report a workflow declaring no
-  `permissions:` block, answering the question left open below; the adoptions are unchanged
-  (#105 adopt zizmor and actionlint).
+  `permissions:` block, answering the question left open below — the re-run of the retired check's
+  recorded cases against the adopted pair, that fixture among them, is recorded in
+  [`../../scripts/cases/workflow-audit.md`](../../scripts/cases/workflow-audit.md); the adoptions are
+  unchanged (#105 adopt zizmor and actionlint).
 - **rev 3** — 2026-08-06 — states where ADR 0006 rev 3 carries the gate-path correction, in place of a
   claim that the correction would land in this record's own change; the adoptions are unchanged
   (#126 absorb amendment blocks).

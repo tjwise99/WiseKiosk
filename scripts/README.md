@@ -26,6 +26,7 @@ when a link breaks. Nothing enforces this — a wrong success line fails no buil
 
 | Check | Record |
 |---|---|
+| the workflow audit (`zizmor` + `actionlint`) | [cases](cases/workflow-audit.md) |
 | `check-repo-silo.mjs` | [cases](cases/check-repo-silo-mjs.md) |
 | `check-verify-ci-parity.mjs` | [cases](cases/check-verify-ci-parity-mjs.md) |
 | `check-docs-index.mjs` | [cases](cases/check-docs-index-mjs.md) |

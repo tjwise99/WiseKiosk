@@ -512,7 +512,8 @@ channel is decided.
   with the commit that calls it, so there is no upstream to pin.
 - **No workflow grants a write permission at the top level, and no grant goes unexplained.**
   `excessive-permissions` fails a top-level write grant, and fails a workflow declaring no
-  `permissions:` block at all — confirmed by seeded fixture rather than assumed — because what an
+  `permissions:` block at all — confirmed by seeded fixture
+  ([recorded](../scripts/cases/workflow-audit.md)) rather than assumed — because what an
   undeclared block would inherit is a repository setting no check here can see. A job needing more
   elevates in its own block, which is what confines `pages.yml`'s `pages: write` and `id-token:
   write` to the deploy job. The gate is stricter than the authored check it replaced, and the
