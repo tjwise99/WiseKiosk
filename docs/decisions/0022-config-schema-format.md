@@ -38,8 +38,9 @@ The demand is for a tooling ecosystem, not for an elegant type. The schema has m
   configuration.
 
 SYS005<!-- Single-definition internal contract --> does not bind here: it scopes itself out of the
-configuration explicitly ("the configuration format is shared with the operator and governed by
-SYS003"), so the internal define-once-and-generate rule is not imposed on this artifact.
+configuration explicitly — the configuration format is shared with the operator and governed by
+SYS003<!-- A deployment is parameterised from outside the image --> — so the internal
+define-once-and-generate rule is not imposed on this artifact.
 [ADR 0008 rev 2](0008-boundary-contract-openapi-codegen.md) already names the direction — JSON
 Schema 2020-12 is the dialect the configuration schema and the boundary schema would share once
 OpenAPI reaches 3.1.
@@ -91,7 +92,8 @@ rejected:
 `{ "region": "centre", "twentyFourHour": false }` validates; `{ "region": "middle" }` is rejected —
 `region` is not one of the allowed values, and `additionalProperties: false` rejects an unknown key
 the same way. This is the acceptance property demonstrated, not a wired product test: that test
-enumerates the composed schema's keys and lands with the frontend skeleton (TST016, #10), and the
+enumerates the composed schema's keys and lands with the frontend skeleton
+(TST016<!-- Pending: every schema key is varied by a fixture and renders -->, #10), and the
 malformed-input obligation is already recorded against
 SRS002<!-- A module-scoped configuration error is reported at that module -->.
 
