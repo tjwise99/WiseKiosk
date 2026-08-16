@@ -14,6 +14,7 @@ this check's failure case — and 1 is none, which over an empty tracked tree re
 What this has been run against, in both directions: cases/check-eol-py.md
 """
 
+import os
 import subprocess
 import sys
 from pathlib import Path
@@ -30,7 +31,10 @@ def main():
     )
     if result.returncode == 0:
         sys.stdout.write(result.stdout)
-        print("CRLF found in the files above; the repo is LF-only (.gitattributes).", file=sys.stderr)
+        if os.environ.get("GITHUB_ACTIONS"):
+            print("::error::CRLF line endings found in the files above; the repo is LF-only (.gitattributes).")
+        else:
+            print("CRLF found in the files above; the repo is LF-only (.gitattributes).", file=sys.stderr)
         return 1
     if result.returncode == 1:
         print("No CRLF line endings in the tracked tree.")
