@@ -28,6 +28,16 @@ const tracked = new Set(
     .filter(Boolean),
 );
 
+// Untracked Markdown is outside the population above, so it is reported rather than silently unread.
+for (const name of execSync("git ls-files --others --exclude-standard -z '*.md'", {
+  cwd: repoRoot,
+  encoding: "utf8",
+})
+  .split("\0")
+  .filter(Boolean)) {
+  problems.push(`${name}: untracked, so this check cannot read it — git add or gitignore it`);
+}
+
 const fileClaims = new Set();
 const subtreeClaims = [];
 const claimed = new Set();

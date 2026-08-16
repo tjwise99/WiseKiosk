@@ -7,7 +7,8 @@ every document citing it — each is then updated or re-decided rather than left
 ADR's current rev does not make.
 
 Assertions. The ADR set is read from `docs/decisions/` itself, so an uncommitted file is judged; the
-citation scan reads the tracked set:
+citation scan reads the tracked set, and fails on any untracked, non-ignored path it therefore
+cannot scan:
 
 - Each ADR's head carries `**Rev:** N`, and the index table in `docs/decisions/README.md` agrees
   with it. The head is authoritative; the table is checked against it, never trusted.
@@ -91,6 +92,16 @@ def tracked():
         ["git", "ls-files", "-z"], cwd=ROOT, capture_output=True, check=True
     ).stdout
     return [ROOT / name.decode() for name in listing.split(b"\0") if name]
+
+
+def untracked():
+    """Untracked, non-ignored paths — outside the citation scan's population, so reported rather
+    than silently unscanned."""
+    listing = subprocess.run(
+        ["git", "ls-files", "--others", "--exclude-standard", "-z"],
+        cwd=ROOT, capture_output=True, check=True,
+    ).stdout
+    return [name.decode() for name in listing.split(b"\0") if name]
 
 
 def adr_links(line):
@@ -366,7 +377,10 @@ def judge(revs, collided, where, number, cited, pinned, context, historical=Fals
 
 
 def main():
-    problems = []
+    problems = [
+        f"{name}: untracked, so the citation scan cannot read it — git add or gitignore it"
+        for name in untracked()
+    ]
     revs, collided = current_revs(problems)
     judged = 0
     if revs:

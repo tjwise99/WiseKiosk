@@ -27,6 +27,16 @@ if (workflows.length === 0) {
   process.exit(1);
 }
 
+// An untracked workflow is outside the population above, so it is reported rather than
+// silently unread.
+for (const name of execSync("git ls-files --others --exclude-standard .github/workflows", {
+  encoding: "utf8",
+})
+  .split("\n")
+  .filter((path) => /\.ya?ml$/.test(path))) {
+  problems.push(`${name}: untracked, so this check cannot read it — git add or gitignore it`);
+}
+
 const SHA = /@[0-9a-f]{40}$/;
 const DIGEST = /@sha256:[0-9a-f]{64}$/;
 // `uses:` as a mapping key: at the head of a block entry, or inside a flow mapping. Both anchored —

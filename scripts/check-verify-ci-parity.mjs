@@ -24,6 +24,7 @@ const fail = (msg) => {
 // Each `just verify` check → one token per command its recipe runs, each carrying that command
 // whole. See docs/CI.md § Gate wiring.
 const CHECK_TOKENS = {
+  "check-untracked": ["python3 scripts/check-untracked.py"],
   "check-languages": ["python3 scripts/check-languages.py"],
   "check-links": ["node scripts/check-links.mjs"],
   "check-eol": ["sh scripts/check-eol.sh"],

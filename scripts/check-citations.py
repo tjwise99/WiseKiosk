@@ -53,6 +53,16 @@ def markdown_sources():
         yield (name, *blank_fences((ROOT / name).read_text()))
 
 
+def untracked_markdown():
+    """Untracked Markdown, less `.claude/` — the population above cannot see it, so it is reported
+    rather than silently unread."""
+    others = run(
+        ["git", "ls-files", "--others", "--exclude-standard", "*.md"],
+        cwd=ROOT, capture_output=True, text=True, check=True,
+    ).stdout.split()
+    return [name for name in others if not name.startswith(".claude/")]
+
+
 def blank_fences(text):
     """Fenced code blocks replaced by spaces of equal length, so offsets still name the right line."""
     out, fence = [], None
@@ -163,6 +173,8 @@ def main():
     adrs = adr_numbers()
 
     problems = []
+    for name in untracked_markdown():
+        problems.append(f"{name}  untracked, so this check cannot read it — `git add` or gitignore it")
     for name, text, unterminated in markdown_sources():
         if unterminated:
             problems.append(f"{name}  a code fence is never closed, so everything below it goes unread")

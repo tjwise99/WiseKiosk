@@ -126,11 +126,26 @@ def tracked():
     return [name.decode() for name in listing.split(b"\0") if name]
 
 
+def untracked():
+    """Untracked, non-ignored paths — outside the population above, so reported rather than
+    silently unjudged."""
+    listing = subprocess.run(
+        ["git", "ls-files", "--others", "--exclude-standard", "-z"],
+        cwd=ROOT, capture_output=True, check=True,
+    ).stdout
+    return [name.decode() for name in listing.split(b"\0") if name]
+
+
 def main():
     problems = []
     files = tracked()
     if not files:
         return fail(["no tracked file was resolved — an empty population is not a clean run"])
+
+    problems.extend(
+        f"{name}: untracked, so this check cannot judge it — git add or gitignore it"
+        for name in untracked()
+    )
 
     judged = 0
     for name in files:
