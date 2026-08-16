@@ -23,18 +23,20 @@ where deployed.
 ## Running the checks
 
 ```sh
-just              # the gate roster: every check, beside what it asserts
-just verify       # every check the PR gate runs that has a local form
-just install-hooks  # once per clone: advisory commit-msg and pre-push hooks
+just               # the gate roster: every check, beside what it asserts
+just verify        # every check the PR gate runs that has a local form
+pre-commit install  # once per clone: advisory hooks at commit and push (.pre-commit-config.yaml)
 ```
 
-What each gate is allowed to let through, and why, is [`docs/CI.md`](docs/CI.md).
+What each gate is allowed to let through, and why, is [`docs/CI.md`](docs/CI.md). `pre-commit
+install` refuses while `core.hooksPath` is set — a clone carrying that config runs
+`git config --unset core.hooksPath` first.
 
 ## Tickets, branches, and titles
 
 Open an issue from a template first: the branch name is derived from it. Enforced by the `process` CI
-check ([ADR 0006 rev 3](docs/decisions/0006-process-gates.md)). The `pre-push` hook from
-`just install-hooks` checks the shape only — not the issue conditions below — and only at push, when
+check ([ADR 0006 rev 3](docs/decisions/0006-process-gates.md)). The `branch-shape` pre-push hook
+from `pre-commit install` checks the shape only — not the issue conditions below — and only at push, when
 the branch and its commits already exist. **Nothing checks the name at `git switch -c`**, which is
 where it is chosen and where it goes wrong, so this section is in the file
 [`.claude/settings.json`](.claude/settings.json) injects at session start.

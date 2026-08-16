@@ -25,11 +25,14 @@ jobs:
 
       - uses: extractions/setup-just@53165ef7e734c5c07cb06b3c8e7b647c5aa16db3 # v4
 
+      - name: Install pre-commit
+        run: pipx install pre-commit==4.6.2
+
       - name: Markdown links resolve inside the repo
         run: node scripts/check-links.mjs
 
-      - name: No CRLF line endings in tracked text files
-        run: sh scripts/check-eol.sh
+      - name: Every pre-commit hook passes over every tracked file
+        run: pre-commit run --all-files
 
       - name: The decisions directory and its index table agree
         run: node scripts/check-adr-index.mjs

@@ -466,6 +466,22 @@ changed, which the citation resolver above decides without anyone declaring anyt
   by the search, so CRLF-terminated text under one commits and survives a fresh clone unseen. The
   attribute is declared on the image, font and PDF globs, which is the attribute used as intended; a
   *text* glob given it is the reachable case, and the owner ruled on 2026-08-02 not to gate it.
+- **Every hook in the local hook layer passes.** `.pre-commit-config.yaml` is that layer
+  ([ADR 0016 rev 3](decisions/0016-maintained-tools-for-standard-artifacts.md)): no private key, no
+  file over `check-added-large-files`' threshold, every YAML and JSON file parses, no merge-conflict
+  marker committed while a merge is in progress (outside one, `check-merge-conflict` judges nothing —
+  a bare `=======` is also a Markdown setext underline), no file mixing line-ending kinds — plus the
+  authored `check-eol` hook, which carries the
+  tracked-tree CRLF scan of the bullet above, scoped to what `mixed-line-ending` cannot reach: that
+  hook judges only the files pre-commit hands it and counts one uniform ending kind as unmixed, so a
+  committed-but-unstaged CRLF file and a uniformly-CRLF file both pass it. Locally the layer is
+  advisory fast feedback at commit and push (`pre-commit install`, once per clone); the binding run
+  is CI's, over every tracked file. **A hook whose file set is empty is skipped and reports
+  success** — pre-commit's own behaviour, which ADR 0016 rev 3's empty-population ruling permits;
+  the authored hook runs regardless of the file set (`always_run`) and reports success over an empty
+  tracked tree, under the same ruling. pre-commit itself is pinned by version where CI installs it,
+  and each hook repository by commit SHA in the config; no Dependabot ecosystem covers either, so
+  `pre-commit autoupdate` is the updater, run by hand.
 - The branch is named `type_number-snake_name`, links an open issue labelled with its type, and its
   default-base pull request records the ticket linkage.
 - That issue carries a milestone and **exactly one** type label. The type set is read from

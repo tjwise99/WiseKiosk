@@ -26,7 +26,7 @@ const fail = (msg) => {
 const CHECK_TOKENS = {
   "check-languages": ["python3 scripts/check-languages.py"],
   "check-links": ["node scripts/check-links.mjs"],
-  "check-eol": ["sh scripts/check-eol.sh"],
+  "check-hooks": ["pre-commit run --all-files"],
   "check-branch": ["sh scripts/check-branch.sh"],
   "check-reqs": [
     "docs/requirements/.venv/bin/python scripts/check-unreviewed.py",

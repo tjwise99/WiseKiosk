@@ -24,8 +24,7 @@ outlive the conversion it was grandfathering.
 A file with no extension is judged the same way, by its exact repository-relative path in
 `NO_EXTENSION` — `justfile`, `LICENSE` and `.gitignore` serve nothing in common, and a shared
 no-extension bucket would wave through the next one just as silently as an unbounded extension set
-would. The three `.githooks/` hooks are POSIX sh with no extension, so they are grandfathered in
-`LEGACY` rather than `NO_EXTENSION`, on the same reasoning as the `.sh` entries there.
+would.
 
 Population is `git ls-files`. An empty population fails rather than passing: a run that resolved no
 tracked file judged nothing, and this repository's whole review checklist turns on that not reading
@@ -52,6 +51,8 @@ EXTENSIONS = {
     # Derived — a toolchain's own required input format (ADR 0017 rev 5 Decision).
     "yml": "derived — a toolchain's own required input format: GitHub Actions workflow YAML, "
     "Doorstop item and silo config YAML, Dependabot YAML (ADR 0017 rev 5)",
+    "yaml": "derived — a toolchain's own required input format: pre-commit's "
+    ".pre-commit-config.yaml (ADR 0016 rev 3)",
     "json": "derived — a toolchain's own required input format: npm's package.json and "
     "package-lock.json, Claude Code's settings.json",
     "likec4": "derived — LikeC4's own model format, named in ADR 0017 rev 5 "
@@ -62,8 +63,8 @@ EXTENSIONS = {
     "data an authored check reads and does not itself author "
     "(scripts/upstream-hosts.txt, read by check-links.mjs)",
     "regex": "derived — data an authored check reads and does not itself author: the "
-    "single-source-of-truth pattern check-branch.sh, check-commit-msg.sh and the matching git "
-    "hook each read instead of restating it (docs/CI.md)",
+    "single-source-of-truth pattern check-branch.sh, check-commit-msg.sh and branch-shape.py "
+    "each read instead of restating it (docs/CI.md)",
     # Documentation, and the assets a documentation build serves — ADR 0017 rev 5 states this
     # decision does not reach them.
     "md": "documentation — not an authored program; ADR 0017 rev 5 does not reach documentation",
@@ -97,7 +98,6 @@ LEGACY = {
     "scripts/validate-tree.sh": "deleted rather than converted, when the first active TST item "
     "retires the pending-tier exception it stands in for (#78; ADR 0017 rev 5)",
     "scripts/check-commit-msg.sh": "replaced by commitlint (ADR 0016 rev 3)",
-    "scripts/check-eol.sh": "replaced by pre-commit as the local hook layer (ADR 0016 rev 3)",
     "scripts/check-adr-index.mjs": "converts to Python under #110 Node check conversion (ADR 0017 rev 5)",
     "scripts/check-docs-index.mjs": "converts to Python under #110 Node check conversion (ADR 0017 rev 5)",
     "scripts/check-repo-silo.mjs": "converts to Python under #110 Node check conversion (ADR 0017 rev 5)",
@@ -105,9 +105,6 @@ LEGACY = {
     "scripts/check-verify-ci-parity.mjs": "waits on #101, which may delete it, under #111 parity-check conversion (ADR 0017 rev 5)",
     "scripts/check-links.mjs": "replaced by lychee (ADR 0016 rev 3)",
     "scripts/check-workflow-hardening.mjs": "replaced by zizmor with actionlint alongside (ADR 0016 rev 3)",
-    ".githooks/commit-msg": "replaced by pre-commit as the local hook layer (ADR 0016 rev 3)",
-    ".githooks/pre-commit": "replaced by pre-commit as the local hook layer (ADR 0016 rev 3)",
-    ".githooks/pre-push": "replaced by pre-commit as the local hook layer (ADR 0016 rev 3)",
 }
 
 
