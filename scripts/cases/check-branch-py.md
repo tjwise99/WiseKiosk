@@ -62,13 +62,12 @@ group count, and only the membership check rejects it. The `databaseId` row need
 against an unparented one the check correctly passes, so reading that pass as evidence would record
 the opposite of what the row claims. Without the parent-key assertion, the no-parent default would
 erase the difference between *no parent* and *a stopped query*, printing a conclusion the run never
-read — the
-assertion reaches the scalar the code consumes: an aliased `parent` on the issue node, then a
-selection returning `databaseId`, a plausible edit since the sub-issues REST endpoint wants the
-database id.
+read — the assertion reaches the scalar the code consumes: an aliased `parent` on the issue node,
+then a selection returning `databaseId`, a plausible edit since the sub-issues REST endpoint wants
+the database id.
 
-The epic-membership assertion needs a pull request, so its cases ran against PR #88 by re-running the
-`process` job against mutated live state:
+The epic-membership assertion needs a pull request, so its cases ran against PR #88 for the sh form
+and PR #166 for the Python form, by re-running the `process` job against mutated live state:
 
 | Direction | Input |
 |---|---|
