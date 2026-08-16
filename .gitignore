@@ -31,6 +31,10 @@ docs/site/.venv/
 docs/site/generated/
 docs/site/_build/
 
+# Python dev tooling — pre-commit runs from a local venv siloed beside the
+# hook scripts it invokes (scripts/).
+scripts/.venv/
+
 # Coverage / logs
 coverage/
 *.log

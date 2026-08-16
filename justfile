@@ -9,10 +9,16 @@ default:
 check-links:
     node scripts/check-links.mjs
 
+[group('setup')]
+[doc('First-time setup: install the pinned pre-commit toolchain into scripts/')]
+hooks-install:
+    python3 -m venv scripts/.venv
+    scripts/.venv/bin/pip install -r scripts/requirements-dev.txt
+
 [group('checks')]
 [doc('Every hook in .pre-commit-config.yaml passes over every tracked file: no private key, no oversized file, YAML and JSON parse, no merge-conflict marker mid-merge, no mixed line endings, no CRLF in the tracked tree')]
 check-hooks:
-    pre-commit run --all-files
+    scripts/.venv/bin/pre-commit run --all-files
 
 [group('checks')]
 [doc('Branch is named type_number-snake_name; its issue is open, type-labeled, milestoned, and parented to match the PR base; the PR records the linkage')]

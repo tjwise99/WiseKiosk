@@ -479,9 +479,10 @@ changed, which the citation resolver above decides without anyone declaring anyt
   is CI's, over every tracked file. **A hook whose file set is empty is skipped and reports
   success** — pre-commit's own behaviour, which ADR 0016 rev 3's empty-population ruling permits;
   the authored hook runs regardless of the file set (`always_run`) and reports success over an empty
-  tracked tree, under the same ruling. pre-commit itself is pinned by version where CI installs it,
-  and each hook repository by commit SHA in the config; no Dependabot ecosystem covers either, so
-  `pre-commit autoupdate` is the updater, run by hand.
+  tracked tree, under the same ruling. pre-commit itself is pinned in `scripts/requirements-dev.txt`
+  — installed into `scripts/.venv` by `just hooks-install` and by CI's install step, and covered by
+  Dependabot's pip ecosystem; each hook repository is pinned by commit SHA in the config, which no
+  Dependabot ecosystem covers, so `pre-commit autoupdate`, run by hand, is its updater.
 - The branch is named `type_number-snake_name`, links an open issue labelled with its type, and its
   default-base pull request records the ticket linkage.
 - That issue carries a milestone and **exactly one** type label. The type set is read from

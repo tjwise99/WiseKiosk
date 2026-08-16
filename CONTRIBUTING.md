@@ -23,9 +23,10 @@ where deployed.
 ## Running the checks
 
 ```sh
-just               # the gate roster: every check, beside what it asserts
-just verify        # every check the PR gate runs that has a local form
-pre-commit install  # once per clone: advisory hooks at commit and push (.pre-commit-config.yaml)
+just                # the gate roster: every check, beside what it asserts
+just verify         # every check the PR gate runs that has a local form
+just hooks-install  # once per clone: the pinned pre-commit toolchain, into scripts/.venv
+scripts/.venv/bin/pre-commit install  # once per clone: advisory hooks at commit and push
 ```
 
 What each gate is allowed to let through, and why, is [`docs/CI.md`](docs/CI.md). `pre-commit
