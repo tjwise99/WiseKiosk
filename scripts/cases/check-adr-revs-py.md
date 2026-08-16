@@ -145,5 +145,6 @@ file at a time:
 An archive of the same `HEAD`, which is what CI gets, exits 0 for both. For a stray, the fix is to
 rename or remove the file. The draft is the case with no stray to remove, and its answer differs: the
 index row is genuinely owed, `check-adr-index.py` reds on the same file with the same remedy, and
-nothing here gates a commit — both hooks in `.githooks/` are advisory and neither runs `verify`. What
+nothing here gates a commit — the local hook layer (`.pre-commit-config.yaml`) is advisory and no
+hook in it runs `verify`. What
 the local run buys is notice before the push, not enforcement.

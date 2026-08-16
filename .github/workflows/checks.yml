@@ -25,6 +25,11 @@ jobs:
 
       - uses: extractions/setup-just@53165ef7e734c5c07cb06b3c8e7b647c5aa16db3 # v4
 
+      - name: Install pre-commit into a local venv (siloed under scripts/)
+        run: |
+          python3 -m venv scripts/.venv
+          scripts/.venv/bin/pip install -r scripts/requirements-dev.txt
+
       - name: No untracked, non-ignored file is present
         run: python3 scripts/check-untracked.py
 
@@ -39,8 +44,8 @@ jobs:
           test -s "$RUNNER_TEMP/tracked-md"
           docker run --rm -i -v "$PWD:/repo:ro" -w /repo lycheeverse/lychee:0.24.2@sha256:e2d19e57cf6ab037026f20b8e449a1f30d9d7f81eef4194763aab2eab20bd28d --offline --no-progress --files-from - < "$RUNNER_TEMP/tracked-md"
 
-      - name: No CRLF line endings in tracked text files
-        run: sh scripts/check-eol.sh
+      - name: Every pre-commit hook passes over every tracked file
+        run: scripts/.venv/bin/pre-commit run --all-files
 
       - name: The decisions directory and its index table agree
         run: python3 scripts/check-adr-index.py

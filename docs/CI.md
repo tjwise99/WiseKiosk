@@ -497,6 +497,26 @@ changed, which the citation resolver above decides without anyone declaring anyt
   `adr-rev-reach.py` also reads the tracked set and carries no guard either — it reports and exits
   zero by design (§ *What is not gated here*), so there is no verdict for an untracked file to
   escape.
+- **Every hook in the local hook layer passes.** `.pre-commit-config.yaml` is that layer
+  ([ADR 0016 rev 3](decisions/0016-maintained-tools-for-standard-artifacts.md)): no private key, no
+  file over `check-added-large-files`' threshold, every YAML and JSON file parses, no merge-conflict
+  marker committed while a merge is in progress (outside one, `check-merge-conflict` judges nothing —
+  a bare `=======` is also a Markdown setext underline), no file mixing line-ending kinds — plus the
+  authored `check-eol` hook, which carries the
+  tracked-tree CRLF scan of the CRLF bullet above, scoped to what `mixed-line-ending` cannot reach:
+  that hook judges only the files pre-commit hands it and counts one uniform ending kind as unmixed,
+  so a committed-but-unstaged CRLF file and a uniformly-CRLF file both pass it. Its population is
+  `git ls-files`, so it carries the untracked guard of the bullet above — an untracked, non-ignored
+  file is reported as unsearchable and fails, beside any CRLF finding rather than in place of one.
+  Locally the layer is
+  advisory fast feedback at commit and push (`pre-commit install`, once per clone); the binding run
+  is CI's, over every tracked file. **A hook whose file set is empty is skipped and reports
+  success** — pre-commit's own behaviour, which ADR 0016 rev 3's empty-population ruling permits;
+  the authored hook runs regardless of the file set (`always_run`) and reports success over an empty
+  tracked tree, under the same ruling. pre-commit itself is pinned in `scripts/requirements-dev.txt`
+  — installed into `scripts/.venv` by `just hooks-install` and by CI's install step, and covered by
+  Dependabot's pip ecosystem; each hook repository is pinned by commit SHA in the config, which no
+  Dependabot ecosystem covers, so `pre-commit autoupdate`, run by hand, is its updater.
 - The branch is named `type_number-snake_name`, links an open issue labelled with its type, and its
   default-base pull request records the ticket linkage.
 - That issue carries a milestone and **exactly one** type label. The type set is read from

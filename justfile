@@ -9,20 +9,21 @@ default:
 check-untracked:
     python3 scripts/check-untracked.py
 
+[group('setup')]
+[doc('First-time setup: install the pinned pre-commit toolchain into scripts/')]
+hooks-install:
+    python3 -m venv scripts/.venv
+    scripts/.venv/bin/pip install -r scripts/requirements-dev.txt
+
 [group('checks')]
-[doc('No tracked text file has CRLF line endings')]
-check-eol:
-    sh scripts/check-eol.sh
+[doc('Every hook in .pre-commit-config.yaml passes over every tracked file: no private key, no oversized file, YAML and JSON parse, no merge-conflict marker mid-merge, no mixed line endings, no CRLF in the tracked tree')]
+check-hooks:
+    scripts/.venv/bin/pre-commit run --all-files
 
 [group('checks')]
 [doc('Branch is named type_number-snake_name; its issue is open, type-labeled, milestoned, and parented to match the PR base; the PR records the linkage')]
 check-branch:
     sh scripts/check-branch.sh
-
-[group('setup')]
-[doc('Point git at the repo hooks (.githooks/): advisory commit-msg and pre-push')]
-install-hooks:
-    git config core.hooksPath .githooks
 
 [group('checks')]
 [doc('Requirements tree validates: refs resolve, no suspect/unreviewed/orphan items, methods consistent, headers non-empty and prefix-free, no identifier cited in an item statement; the proposed backlog prints on a passing run (reports; not a gate)')]
@@ -136,4 +137,4 @@ check-languages:
 
 [group('checks')]
 [doc('Run every check the PR gate runs that has a local form; secret scanning, the PR-title check and the link check (lychee, from a digest-pinned image) are CI-only')]
-verify: check-untracked check-eol check-branch check-reqs check-citations check-arch check-arch-trace check-site check-adr-index check-adr-revs check-docs-index check-repo-silo check-workflow-hardening check-verify-ci-parity check-languages
+verify: check-untracked check-hooks check-branch check-reqs check-citations check-arch check-arch-trace check-site check-adr-index check-adr-revs check-docs-index check-repo-silo check-workflow-hardening check-verify-ci-parity check-languages

@@ -26,7 +26,7 @@ const fail = (msg) => {
 const CHECK_TOKENS = {
   "check-untracked": ["python3 scripts/check-untracked.py"],
   "check-languages": ["python3 scripts/check-languages.py"],
-  "check-eol": ["sh scripts/check-eol.sh"],
+  "check-hooks": ["scripts/.venv/bin/pre-commit run --all-files"],
   "check-branch": ["sh scripts/check-branch.sh"],
   "check-reqs": [
     "docs/requirements/.venv/bin/python scripts/check-unreviewed.py",
