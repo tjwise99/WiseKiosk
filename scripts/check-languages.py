@@ -61,7 +61,7 @@ EXTENSIONS = {
     "(scripts/splice-arch-diagrams.py), never hand-authored",
     "txt": "derived — a toolchain's own required input format (pip's requirements-dev.txt)",
     "regex": "derived — data an authored check reads and does not itself author: the "
-    "single-source-of-truth branch pattern check-branch.sh and branch-shape.py "
+    "single-source-of-truth branch pattern check-branch.py and branch-shape.py "
     "each read instead of restating it (docs/CI.md)",
     # Documentation, and the assets a documentation build serves — ADR 0017 rev 5 states this
     # decision does not reach them.
@@ -92,7 +92,6 @@ NO_EXTENSION = {
 # fails an entry here whose file is no longer tracked, so the list empties itself as each conversion
 # lands rather than accumulating dead grants.
 LEGACY = {
-    "scripts/check-branch.sh": "converts to Python under #109 check-branch conversion (ADR 0017 rev 5)",
     "scripts/validate-tree.sh": "deleted rather than converted, when the first active TST item "
     "retires the pending-tier exception it stands in for (#78; ADR 0017 rev 5)",
     "scripts/check-verify-ci-parity.mjs": "waits on #101, which may delete it, under #111 parity-check conversion (ADR 0017 rev 5)",

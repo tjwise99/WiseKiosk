@@ -23,7 +23,7 @@ check-hooks:
 [group('checks')]
 [doc('Branch is named type_number-snake_name; its issue is open, type-labeled, milestoned, and parented to match the PR base; the PR records the linkage')]
 check-branch:
-    sh scripts/check-branch.sh
+    python3 scripts/check-branch.py
 
 [group('checks')]
 [doc('Requirements tree validates: refs resolve, no suspect/unreviewed/orphan items, methods consistent, headers non-empty and prefix-free, no identifier cited in an item statement; the proposed backlog prints on a passing run (reports; not a gate)')]

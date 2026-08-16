@@ -236,7 +236,7 @@ jobs:
           HEAD_REF: ${{ github.head_ref }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: sh scripts/check-branch.sh "$HEAD_REF"
+        run: python3 scripts/check-branch.py "$HEAD_REF"
 
       - name: Install pre-commit into a local venv (siloed under scripts/)
         run: |
