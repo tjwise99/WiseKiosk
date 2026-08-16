@@ -36,7 +36,8 @@ home. It is the *delivery* record; [ADR 0023 rev 1](0023-secret-output-containme
 
 ## Decision
 
-**A secret is delivered as a file, named by an environment variable, and by no other path.** For a
+**A secret is delivered as a file, named by an environment variable, and by no other path**
+(owner, 2026-07-24, on #35). For a
 secret identified as `<NAME>`, the backend resolves it by reading the file whose path is the value of
 the `<NAME>_FILE` environment variable. The resolved value is the file's contents with trailing
 whitespace stripped. Resolution happens when handling a request for the source that needs the secret,
@@ -63,7 +64,7 @@ this ADR now states.
 ## Alternatives considered
 
 **A bare `<NAME>` environment variable carrying the value.** The env-var fallback sketch #35
-superseded. Rejected: a file path and an environment variable for the same secret can both be present,
+superseded (owner, 2026-07-24). Rejected: a file path and an environment variable for the same secret can both be present,
 and resolution would then have to choose between them — shadowing that makes "where did this secret
 come from" ambiguous and its answer environment-dependent. One delivery path keeps resolution
 unambiguous. An environment variable holding the value directly also tends to leak more readily — into
