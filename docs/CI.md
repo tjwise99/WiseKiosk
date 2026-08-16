@@ -313,10 +313,12 @@ resolve, a citation to something that does not exist, an index that has drifted 
   asserted. A fence that never closes runs to the end of its document under CommonMark, so nothing
   past it is scanned and the run reports clean — seeded and confirmed, and the Sphinx build passes
   the same seed; no residue guard is kept, on ADR 0016 rev 3's own bar that one residual obligation
-  does not earn a second gate beside an adopted tool. An empty input set reports success — the
-  ruling ADR 0016 rev 3 records for adopted tools — so an invocation misconfigured into scanning
-  nothing reads as a clean run. A root-relative destination fails, with a message naming the missing
-  root rather than a wrong reason.
+  does not earn a second gate beside an adopted tool. lychee itself reports success over an
+  empty input set — the ruling ADR 0016 rev 3 records for adopted tools — but the CI step
+  materialises the tracked-file list and fails on a failed or empty listing before lychee runs: a
+  failed measurement is not an empty population, and a scan of nothing must not read as clean. A
+  root-relative destination fails, with a message naming the missing root rather than a wrong
+  reason.
 - Every citation to a requirement ID or ADR number names an item or decision that exists — in
   tracked documentation outside `.claude/`, and in every item's `rationale` and
   `verification-justification`. Fenced code blocks are skipped; an identifier in inline code is a
