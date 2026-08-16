@@ -11,9 +11,9 @@ deferred rather than default to a canary)
 
 ## Context
 
-SRS008<!-- No secret value in any backend output --> obliges that no secret value appear in any HTTP
-response body or header, nor in any log line, produced by the backend — where output must refer to a
-secret it does so by name, never value. [`../../SECURITY.md`](../../SECURITY.md) rests on that rule.
+SRS008<!-- No secret value in any backend output --> obliges the backend to keep every secret *value*
+out of its HTTP responses and its logs, naming a secret rather than showing it where output must refer
+to one at all. [`../../SECURITY.md`](../../SECURITY.md) rests on that rule.
 What was left open is *how the obligation is proven*, and the `SRS` pass of #69 recorded the opening
 deliberately: the mechanism is a milestone-2 decision and **must not default to a canary test**. The
 candidate table then had nowhere to live but the pending note of
@@ -48,11 +48,11 @@ Neither proves the obligation alone; each closes the other's gap.
 
 **A secret is a distinct type that cannot be emitted.** Its underlying value is unexported; it exposes
 no exported field; its `String()` and `GoString()` return a fixed redaction rather than the value; it
-declares no marshaller, so neither `encoding/json` nor `encoding/text` can reach the value through the
-standard interfaces; and the sole call site that unwraps it to the raw value is linted, so an unwrap
-is explicit and reviewable rather than incidental. A secret held as this type therefore cannot be
-formatted into a response, serialised into a body, or interpolated into a log line without a reviewer
-seeing the unwrap. This is the type the [`../CI.md`](../CI.md) § *Module and framework structure*
+implements neither `json.Marshaler` nor `encoding.TextMarshaler`, so the standard `encoding/json` and
+text-encoding paths cannot reach the value; and the sole call site that unwraps it to the raw value is
+guarded by a lint, so an unwrap is explicit and reviewable rather than incidental. A secret held as
+this type therefore cannot be formatted into a response, serialised into a body, or interpolated into
+a log line without a reviewer seeing the unwrap. This is the type the [`../CI.md`](../CI.md) § *Module and framework structure*
 checks already name: the shaping packages are pure by construction and no exported shaping function
 takes the secret type, so a secret cannot travel into the code that shapes client output in the first
 place.
@@ -87,12 +87,13 @@ asserting it a different way.
 
 **Taint analysis (CodeQL) as the proof.** Rejected as *the* mechanism, kept as a backstop. Its
 false negatives through reflection and interface indirection make it unsound to rest the obligation
-on — a soundness the requirement needs and a whole-graph scan of this shape cannot give. It already
-runs over first-party Go ([`../CI.md`](../CI.md) § *First-party source scanning*, failing on any
-finding at any severity), so it remains a general net at no added cost; the obligation simply does not
-depend on it, and this
-decision neither extends it to a secret-specific source-to-sink configuration nor treats its silence
-as evidence of absence.
+on — a soundness the requirement needs and a whole-graph scan of this shape cannot give. The
+first-party source scan (#67, [`../CI.md`](../CI.md) § *First-party source scanning*) runs over
+first-party Go and fails on any finding at any severity, so it stands as a general net whether or not
+this obligation exists; the obligation does not depend on it, and this decision neither extends it to
+a secret-specific source-to-sink configuration nor treats its silence as evidence of absence. Were #67
+to descope the Go scan, the rejection would stand unchanged — the mechanism above is type confinement
+and the canary, not this scan.
 
 **Canary alone.** Rejected, and the #69 pass rejected it first: it is behavioural, exercises only the
 paths a test drives, and offers no structural totality, so a leak on an unexercised route passes
@@ -109,6 +110,10 @@ why the two are composed rather than either chosen.
   singular and linted for the structural claim to hold. The [`../CI.md`](../CI.md) § *Module and
   framework structure* check that names the type is what keeps a shaping function from quietly
   accepting it.
+- **The type and its unwrap-site lint are built with the backend skeleton (#9), and are unbuilt until
+  then.** The type-parameter exclusion has an owning [`../CI.md`](../CI.md) check; the single-unwrap
+  lint does not yet, and needs a check row or ticket when #9 lands the type — until it exists, review
+  is the control for the unwrap property, as it is for the other structure checks this record leans on.
 - **The obligation is proven, not merely asserted.** The requirement gains a mechanism with a structural half
   that cannot be sampled around and a behavioural half that can fail — the falsifiable edge #69 asked
   for without pre-choosing.
