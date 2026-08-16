@@ -77,7 +77,7 @@ repository reports **221 tracked files**.
   *the declared set*.
 - **Content is never read.** A no-extension or `LEGACY`-grandfathered file passes on its path alone,
   and an extension-bearing file passes on its suffix alone — nothing here notices `LICENSE` replaced
-  with a shell script, `scripts/check-branch.sh` replaced with something that no longer does what its
+  with a shell script, `scripts/validate-tree.sh` replaced with something that no longer does what its
   grandfathering describes, or a `.py` file that is not valid Python. That is deliberate: this check
   asserts the tree's declared *shape*, and a mismatch between a file's declared kind and its actual
   content is the reviewer's, under `CONTRIBUTING.md` review checklist item 12, *Languages* — the same

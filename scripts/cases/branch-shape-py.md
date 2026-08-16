@@ -2,7 +2,7 @@
 
 The inputs this hook has been run against, in both directions. What it *asserts* is the branch shape
 [`docs/CI.md`](../../docs/CI.md) § *Repository shape* states; the pattern is read from
-[`branch-shape.regex`](../branch-shape.regex), shared with `check-branch.sh`, which resolves the
+[`branch-shape.regex`](../branch-shape.regex), shared with `check-branch.py`, which resolves the
 issue conditions this hook deliberately does not. Advisory: it runs as the `branch-shape` local
 pre-push hook in [`.pre-commit-config.yaml`](../../.pre-commit-config.yaml), and the binding gate is
 CI's `process` check.

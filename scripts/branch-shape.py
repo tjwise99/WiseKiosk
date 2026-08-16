@@ -4,7 +4,7 @@
 Runs as the `branch-shape` local pre-push hook in `.pre-commit-config.yaml` — advisory fast
 feedback; the binding gate is CI's `process` check (`just check-branch`), which also resolves the
 issue via the API. The pattern is defined once in scripts/branch-shape.regex, shared with
-check-branch.sh. `main` and `dependabot/*` are exempt, and a detached HEAD names no branch to judge.
+check-branch.py. `main` and `dependabot/*` are exempt, and a detached HEAD names no branch to judge.
 
 What this has been run against, in both directions: cases/branch-shape-py.md
 """
