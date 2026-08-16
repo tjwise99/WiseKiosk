@@ -1,4 +1,4 @@
-# `check-adr-index.mjs`
+# `check-adr-index.py`
 
 The inputs this check has been run against, in both directions. What it *asserts*, and why, is
 [`docs/CI.md`](../../docs/CI.md)'s; how to run a case is [`../README.md`](../README.md)'s.
@@ -22,11 +22,11 @@ The inputs this check has been run against, in both directions. What it *asserts
 | Must pass | A 4-space indented example row | not a table row, because it does not start with `\|` |
 | Must pass | A row in a Markdown file outside `docs/decisions/` | only the index is read |
 
-The directory row is the one that matters: `readdirSync` reports *names*, so an entry counted as an
+The directory row is the one that matters: `os.listdir` reports *names*, so an entry counted as an
 ADR on the strength of its name alone needed only a matching row to be reported as fully agreeing.
-`statSync().isFile()` closes it.
+`Path.is_file()` closes it.
 
 **Known rejections.** A row inside a fenced code block is read as a real index row — there is no fence
-blanking — so `docs/decisions/README.md` may not carry a fenced example table. `name.endsWith(".md")`
+blanking — so `docs/decisions/README.md` may not carry a fenced example table. `name.endswith(".md")`
 is case-sensitive, so an ADR named with an uppercase extension is invisible rather than rejected; no
 such file exists, and the naming rule would reject one on sight.
