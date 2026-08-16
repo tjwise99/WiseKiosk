@@ -35,6 +35,7 @@ const CHECK_TOKENS = {
     "docs/requirements/.venv/bin/python scripts/check-method-consistency.py",
     "docs/requirements/.venv/bin/python scripts/check-text-citations.py",
     "docs/requirements/.venv/bin/python scripts/check-headers.py",
+    "docs/requirements/.venv/bin/python scripts/report-proposed.py",
   ],
   "check-citations": ["docs/requirements/.venv/bin/python scripts/check-citations.py"],
   "check-arch": [
