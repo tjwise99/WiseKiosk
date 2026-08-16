@@ -4,7 +4,7 @@
 // read is a failure rather than a skip. See docs/CI.md § Action pins and workflow privilege.
 //
 // No dependencies: Node stdlib only, plain text scanning (no YAML parser) — matches
-// scripts/check-repo-silo.mjs's idiom.
+// scripts/check-verify-ci-parity.mjs's idiom.
 //
 // What this has been run against, in both directions: cases/check-workflow-hardening-mjs.md
 

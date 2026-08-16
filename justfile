@@ -43,7 +43,7 @@ check-citations:
 [group('checks')]
 [doc('The decisions directory and its index table agree: every ADR has a row, every row a file, numbering contiguous')]
 check-adr-index:
-    node scripts/check-adr-index.mjs
+    python3 scripts/check-adr-index.py
 
 [group('checks')]
 [doc('Every ADR citation pins that ADR current rev, in prose and in a link title; the index rev column matches each ADR own head')]
@@ -53,12 +53,12 @@ check-adr-revs:
 [group('checks')]
 [doc('Every tracked document outside a top-level dot-directory is claimed by a row in the documentation index, every row links a tracked file, and no cell is empty')]
 check-docs-index:
-    node scripts/check-docs-index.mjs
+    python3 scripts/check-docs-index.py
 
 [group('checks')]
 [doc('No manifest or .venv/ at the repository root, no recipe is a shell script, github-actions is covered, and every other Dependabot entry resolves to a non-root directory holding its manifest')]
 check-repo-silo:
-    node scripts/check-repo-silo.mjs
+    python3 scripts/check-repo-silo.py
 
 [group('checks')]
 [doc('Every action is pinned to an immutable reference naming its version, and no workflow grants a write permission at the top level')]
@@ -102,7 +102,7 @@ arch-export:
     docs/architecture/node_modules/.bin/likec4 validate docs/architecture/model
     rm -rf docs/architecture/generated
     docs/architecture/node_modules/.bin/likec4 codegen mermaid docs/architecture/model -o docs/architecture/generated
-    node scripts/splice-arch-diagrams.mjs
+    python3 scripts/splice-arch-diagrams.py
 
 # `add --intent-to-add` reaches regenerated artifacts that are untracked; the diff is taken against
 # HEAD because that same `git add` stages the deletion `arch-export` makes of an orphan, which an
