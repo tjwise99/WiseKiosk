@@ -1,7 +1,7 @@
 # 0024 — Deliver every secret as the file named by `<NAME>_FILE`, and by no other path
 
 **Status:** accepted
-**Decided:** 2026-07-24 (#35 secrets-handling domain — the `_FILE`-only delivery choice, taken there
+**Decided:** 2026-07-23 (#35 secrets-handling domain — the `_FILE`-only delivery choice, taken there
 superseding an env-var fallback sketch; this ADR is where it is finally recorded)
 **Rev:** 1
 
@@ -27,9 +27,10 @@ decision that had no phase to live in, which is the growth [ADR 0011 rev 1](0011
 exists to prevent. The mechanism survives today only by presumption:
 SRS006<!-- Unresolvable secret surfaces as that source's upstream failure --> names `<NAME>_FILE` and
 "empty after trailing-whitespace stripping" inside its *failure* clause, and
-TST014<!-- Pending: secret-resolution unit tests --> and
-TST017<!-- Pending: unresolvable-secret failure-path test --> assert the read and the bare-`<NAME>`
-exclusion — but no document states the positive delivery rule, the exclusion of every other path, or
+TST014<!-- Pending: secret-resolution unit tests --> asserts the read and the bare-`<NAME>`
+exclusion, and TST017<!-- Pending: unresolvable-secret failure-path test --> exercises the
+unresolvable-secret failure path over it — but no document states the positive delivery rule, the
+exclusion of every other path, or
 the substitutability the choice buys. Those checks verify an obligation nobody stated. This ADR is its
 home. It is the *delivery* record; [ADR 0023 rev 1](0023-secret-output-containment.md) is its
 *containment* counterpart, and already names #73 as this half.
@@ -37,7 +38,7 @@ home. It is the *delivery* record; [ADR 0023 rev 1](0023-secret-output-containme
 ## Decision
 
 **A secret is delivered as a file, named by an environment variable, and by no other path**
-(owner, 2026-07-24, on #35). For a
+(owner, 2026-07-23, on #35). For a
 secret identified as `<NAME>`, the backend resolves it by reading the file whose path is the value of
 the `<NAME>_FILE` environment variable. The resolved value is the file's contents with trailing
 whitespace stripped. Resolution happens when handling a request for the source that needs the secret,
@@ -64,7 +65,7 @@ this ADR now states.
 ## Alternatives considered
 
 **A bare `<NAME>` environment variable carrying the value.** The env-var fallback sketch #35
-superseded (owner, 2026-07-24). Rejected: a file path and an environment variable for the same secret can both be present,
+superseded (owner, 2026-07-23). Rejected: a file path and an environment variable for the same secret can both be present,
 and resolution would then have to choose between them — shadowing that makes "where did this secret
 come from" ambiguous and its answer environment-dependent. One delivery path keeps resolution
 unambiguous. An environment variable holding the value directly also tends to leak more readily — into
