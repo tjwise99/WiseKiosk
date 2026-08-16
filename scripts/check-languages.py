@@ -58,9 +58,7 @@ EXTENSIONS = {
     "(ADR 0003 rev 2)",
     "mmd": "derived — generated Mermaid output of the LikeC4 export/splice toolchain "
     "(scripts/splice-arch-diagrams.py), never hand-authored",
-    "txt": "derived — a toolchain's own required input format (pip's requirements-dev.txt), or "
-    "data an authored check reads and does not itself author "
-    "(scripts/upstream-hosts.txt, read by check-links.mjs)",
+    "txt": "derived — a toolchain's own required input format (pip's requirements-dev.txt)",
     "regex": "derived — data an authored check reads and does not itself author: the "
     "single-source-of-truth pattern check-branch.sh, check-commit-msg.sh and the matching git "
     "hook each read instead of restating it (docs/CI.md)",
@@ -99,7 +97,6 @@ LEGACY = {
     "scripts/check-commit-msg.sh": "replaced by commitlint (ADR 0016 rev 3)",
     "scripts/check-eol.sh": "replaced by pre-commit as the local hook layer (ADR 0016 rev 3)",
     "scripts/check-verify-ci-parity.mjs": "waits on #101, which may delete it, under #111 parity-check conversion (ADR 0017 rev 5)",
-    "scripts/check-links.mjs": "replaced by lychee (ADR 0016 rev 3)",
     "scripts/check-workflow-hardening.mjs": "replaced by zizmor with actionlint alongside (ADR 0016 rev 3)",
     ".githooks/commit-msg": "replaced by pre-commit as the local hook layer (ADR 0016 rev 3)",
     ".githooks/pre-commit": "replaced by pre-commit as the local hook layer (ADR 0016 rev 3)",

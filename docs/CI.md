@@ -287,22 +287,38 @@ Unbuilt; owned by #67 security and supply-chain CI gates.
 The documentation set is checked for the failures that make it untrustworthy: a link that does not
 resolve, a citation to something that does not exist, an index that has drifted from what it indexes.
 
-- Every relative Markdown link in every tracked file resolves inside the repository — **and lands
-  there**: a destination whose path text stays inside but which reaches outside through a symlink
-  fails, because following the link is what the invariant is about. All three syntaxes carrying a
-  relative path are read: the inline form, a link-reference definition, and a raw HTML anchor's
-  `href`. A destination may be angle-bracketed or carry a title; neither is part of the path.
-  **A link inside a fenced block is let through deliberately** — a fence is a sample rather than a
-  reference, and allowlisting a host to satisfy a code sample would put it in the register on the
-  strength of an example. The population is the tracked set, and an untracked Markdown file fails
-  the gate rather than sitting invisibly outside it — § *Repository shape*'s untracked-file rule,
-  guarded here as well as by the preflight.
-  **What no check here decides: that a fragment names a real heading.** The fragment is split off
-  before resolution runs and never read again, so a link whose path resolves and whose fragment names
-  no heading in the target still passes — only the path half of the destination is proven.
-- Every absolute `http` or `https` link in tracked documentation names a host on the committed
-  upstream-documentation allowlist, and every allowlist entry names the tool or service it serves.
-  This extends the link checker above rather than adding a second tool.
+- Every relative Markdown link in every tracked file resolves inside the repository, decided by
+  `lychee` run from its digest-pinned official image over the `git ls-files` Markdown set
+  ([ADR 0016 rev 3](decisions/0016-maintained-tools-for-standard-artifacts.md)). All three syntaxes
+  carrying a relative path are read — the inline form, a link-reference definition, and a raw HTML
+  anchor's `href` — each held against the retired authored check's recorded cases, in both
+  directions. A destination may be angle-bracketed or carry a title; neither is part of the path.
+  **The gate runs `--offline`, and that is a decision rather than an inherited default.** Online
+  checking makes third-party availability a merge condition, which § *Upstream contract checks*
+  refuses for its own gates for the same reason; offline buys that stability by checking absolute
+  `http`/`https` links not at all. With the host allowlist retired (ADR 0016 rev 3), an absolute
+  link is entirely unconstrained: documentation may link outward, and nothing here reviews where to.
+  **The gate is a CI-only exception rather than a `verify` check**: the image digest is the pin, a
+  contributor machine is not assumed to run docker, and command-text parity between a local recipe
+  and the pinned image cannot hold. A local run is the same invocation — piping `git ls-files
+  '*.md'` into `lychee --offline --no-progress --files-from -` — against a release binary of the
+  image's version. The population is the tracked set; an untracked Markdown file is outside it, and
+  the untracked-file preflight (§ *Repository shape*) is what fails it rather than this gate.
+  **What this gate lets through, measured rather than assumed.** A link inside a fenced block — a
+  fence is a sample rather than a reference. A fragment naming no heading in a target whose path
+  resolves: fragment checking is off, so only the path half of the destination is proven. A
+  destination that leaves the repository and lands on a file that exists, by `../` or through a
+  tracked symlink: the escape and symlink obligations are retired knowingly (ADR 0016 rev 3), and
+  the CI container failing such a link because only the checkout is mounted is incidental, not
+  asserted. A fence that never closes runs to the end of its document under CommonMark, so nothing
+  past it is scanned and the run reports clean — seeded and confirmed, and the Sphinx build passes
+  the same seed; no residue guard is kept, on ADR 0016 rev 3's own bar that one residual obligation
+  does not earn a second gate beside an adopted tool. lychee itself reports success over an
+  empty input set — the ruling ADR 0016 rev 3 records for adopted tools — but the CI step
+  materialises the tracked-file list and fails on a failed or empty listing before lychee runs: a
+  failed measurement is not an empty population, and a scan of nothing must not read as clean. A
+  root-relative destination fails, with a message naming the missing root rather than a wrong
+  reason.
 - Every citation to a requirement ID or ADR number names an item or decision that exists — in
   tracked documentation outside `.claude/`, and in every item's `rationale` and
   `verification-justification`. Fenced code blocks are skipped; an identifier in inline code is a
@@ -380,13 +396,13 @@ resolve, a citation to something that does not exist, an index that has drifted 
   the repository rather than read from an inventory: adding a document without indexing it fails,
   retiring one fails until its row goes, and there is no exclusions list to append to — excluding
   anything that is not machinery by that rule takes a change to the check itself
-  ([ADR 0014 rev 2](decisions/0014-documentation-index-claims-documents.md)). A row whose *Document* cell
+  ([ADR 0014 rev 3](decisions/0014-documentation-index-claims-documents.md)). A row whose *Document* cell
   renders with a trailing slash claims the subtree beneath it, which is how `decisions/`,
   `requirements/`, `contracts/`, `architecture/` and `site/` are covered by one row each. Every row's
   link resolves to a tracked file, one rendered path carries one row, a row names a tracked document
   or a directory holding one, no row indexes a dot-directory, and no *Guarantees* or *Excludes* cell
   is empty. The index does not index itself. A new top-level dot-directory is excluded the moment it
-  exists, with no edit anywhere — the trade ADR 0014 rev 2 records, which is why the check names the
+  exists, with no edit anywhere — the trade ADR 0014 rev 3 records, which is why the check names the
   machinery directories it skipped on every run. A dot-prefixed file at the repository root is not a
   directory and must be indexed like any other document. Scope is Markdown: the tree's items are
   claimed by the tree and gated by `check-reqs`, and code is claimed by nothing here.

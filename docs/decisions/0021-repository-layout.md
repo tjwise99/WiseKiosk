@@ -174,7 +174,7 @@ the second one to be invented would have to argue against the first rather than 
   [`../CI.md`](../CI.md) § *Repository shape* requires every non-`github-actions` entry to resolve to a
   directory holding its manifest, so an entry added ahead of the code fails the gate it belongs to.
 - **A `README.md` in any of these roots needs a row in [`README.md`](../README.md).** Under
-  [ADR 0014 rev 2](0014-documentation-index-claims-documents.md) a row is the only thing that claims a
+  [ADR 0014 rev 3](0014-documentation-index-claims-documents.md) a row is the only thing that claims a
   document, the sole exception being a top-level dot-directory, and none of these roots is one. A new
   top-level directory is cheap; a document inside one is not, and that is deliberate.
 - **A base-image Dependabot entry has no home under the rule above.** A `docker` ecosystem entry

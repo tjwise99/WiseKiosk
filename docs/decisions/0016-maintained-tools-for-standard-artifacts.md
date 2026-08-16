@@ -21,7 +21,7 @@ when this was decided; the roster is `just --list`, and no count written here is
 every obligation they assert was authored here, and that was never a decision. The gate records argue
 at length about *which hand-rolled form* a check should take — [ADR 0005 rev 1](0005-traceability-gating.md) on
 where evidence lives, [ADR 0006 rev 3](0006-process-gates.md) on what the gate reads,
-[ADR 0014 rev 2](0014-documentation-index-claims-documents.md) on whether a list may be hand-maintained — and
+[ADR 0014 rev 3](0014-documentation-index-claims-documents.md) on whether a list may be hand-maintained — and
 never about whether to author one at all.
 
 The exceptions show the question has an answer whenever it is actually asked, and there are four of
@@ -116,7 +116,7 @@ decision adopts away. **Every empty-population guard in a check that stays autho
 sentence is the whole protection: it is universal, so it reaches guards this record never saw and guards
 written after it. The table below is **examples, not an inventory** — deliberately, because a
 hand-maintained list of code in an immutable document is the drift
-[ADR 0014 rev 2](0014-documentation-index-claims-documents.md) refuses from the other direction, and no check
+[ADR 0014 rev 3](0014-documentation-index-claims-documents.md) refuses from the other direction, and no check
 compares this one against the tree. Including:
 
 | Guard | Source |

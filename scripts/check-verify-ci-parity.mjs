@@ -2,10 +2,10 @@
 // Every check `just verify` depends on must also run in
 // .github/workflows/checks.yml, and every named CI step must be either one of
 // those checks or an enumerated CI-only exception (secret scanning; the
-// PR-title Conventional-Commit check). See docs/CI.md § Gate wiring.
+// PR-title Conventional-Commit check; the lychee link check). See
+// docs/CI.md § Gate wiring.
 //
-// No dependencies: Node stdlib only, plain text scanning (no YAML parser) —
-// matches scripts/check-links.mjs's idiom.
+// No dependencies: Node stdlib only, plain text scanning (no YAML parser).
 //
 // What this has been run against, in both directions: cases/check-verify-ci-parity-mjs.md
 
@@ -26,7 +26,6 @@ const fail = (msg) => {
 const CHECK_TOKENS = {
   "check-untracked": ["python3 scripts/check-untracked.py"],
   "check-languages": ["python3 scripts/check-languages.py"],
-  "check-links": ["node scripts/check-links.mjs"],
   "check-eol": ["sh scripts/check-eol.sh"],
   "check-branch": ["sh scripts/check-branch.sh"],
   "check-reqs": [
@@ -64,6 +63,7 @@ const CHECK_TOKENS = {
 const CI_ONLY_ALLOWLIST = [
   "gitleaks", // secret-scan job: needs full git history, not part of `just verify`
   "scripts/check-commit-msg.sh", // PR-title Conventional-Commit check: no PR title exists locally
+  "lycheeverse/lychee", // link check, run from a digest-pinned image: docker is not assumed locally
 ];
 
 // Recipes are read from `just`'s own dump rather than parsed out of the justfile, so a recipe's

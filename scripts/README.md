@@ -32,7 +32,6 @@ when a link breaks. Nothing enforces this — a wrong success line fails no buil
 | `check-verify-ci-parity.mjs` | [cases](cases/check-verify-ci-parity-mjs.md) |
 | `check-docs-index.py` | [cases](cases/check-docs-index-py.md) |
 | `check-branch.sh` | [cases](cases/check-branch-sh.md) |
-| `check-links.mjs` | [cases](cases/check-links-mjs.md) |
 | `check-eol.sh` | [cases](cases/check-eol-sh.md) |
 | `check-adr-index.py` | [cases](cases/check-adr-index-py.md) |
 | `check-adr-revs.py` | [cases](cases/check-adr-revs-py.md) |
