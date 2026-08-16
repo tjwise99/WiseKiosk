@@ -6,7 +6,7 @@ The inputs this check has been run against, in both directions. What it *asserts
 Seeded state is described rather than committed, and never spells a live ADR number — this check
 reads one as a citation like any other.
 
-Exercised at `864c5ea`, script md5 `8a1737e7c68314cdb713ccb211ed0ba7`, where a passing run reports
+Exercised at `4e81f38`, script md5 `c343afdf169354ef1d18ffaf9b9572cd`, where a passing run reports
 **24 ADRs** — read that count before any row whose input is spelled *every ADR*. The headline
 title-number row is the state at `128ff83` and is reachable from no later commit, the rename that
 caused it and the correction that ended it both being on that branch; extract it literally.
