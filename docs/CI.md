@@ -634,6 +634,17 @@ The requirements tree's own integrity checks run here too, but what they assert 
 specification rather than of the repository, so they are stated where the specification is:
 [`requirements/README.md`](requirements/README.md).
 
+**A passing `check-reqs` run also prints the proposed-item backlog** — the count of `proposed` items
+and their identifiers, per tier, against the population each tier holds.
+[ADR 0005 rev 1](decisions/0005-traceability-gating.md) makes the tree the backlog and the backlog a
+report, never a blocking failure, so this line reports and exits zero whatever the tree holds — like
+`just rev-reach` below, it is not a gate, and what the tree holds never moves the run's exit status.
+Two shapes it asserts against its own output: a tier with nothing proposed prints its zero rather
+than dropping the line, because a message that disappears at zero cannot be told from a report that
+did not run; and an item whose `status` sits outside the stored vocabulary is listed rather than
+silently counted as baselined, though failing on one is `check-arch-trace`'s to do and only for the
+obliging tiers.
+
 ## What is not gated here
 
 **Review obligations.** An obligation on an author that leaves no artifact is answered by a reader, in

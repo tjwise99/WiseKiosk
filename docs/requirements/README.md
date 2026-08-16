@@ -242,6 +242,11 @@ Each is a property of the specification, which is why they are stated here rathe
 [`../CI.md`](../CI.md) with the repository's checks — that document says they run and block, this one
 says what they mean.
 
+The recipe's last command is a report rather than a check: `report-proposed.py` prints the
+`proposed` backlog per tier and exits zero whatever it counts. Making the backlog visible on a green
+run is a property of the process rather than of the specification, so what that output asserts is
+stated in [`../CI.md`](../CI.md) § Gate wiring.
+
 The browsable, click-through traceability view of this tree (needtables, link graphs, matrices) is
 built by the documentation site silo, [`../site/README.md`](../site/README.md) (ADR 0004 rev 1); this
 directory is the requirements' canonical source and gate, not its presentation.
