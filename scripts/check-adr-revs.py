@@ -7,7 +7,8 @@ every document citing it — each is then updated or re-decided rather than left
 ADR's current rev does not make.
 
 Assertions. The ADR set is read from `docs/decisions/` itself, so an uncommitted file is judged; the
-citation scan reads the tracked set:
+citation scan reads the tracked set, and fails on any untracked, non-ignored path it therefore
+cannot scan:
 
 - Each ADR's head carries `**Rev:** N`, and the index table in `docs/decisions/README.md` agrees
   with it. The head is authoritative; the table is checked against it, never trusted.
@@ -20,7 +21,7 @@ citation scan reads the tracked set:
   smaller than the directory. The directory read above is what lets this see an entry no commit has
   yet introduced.
 - Each ADR's *Revisions* section carries one changelog line per rev, numbered 1 to that head rev.
-- No two files carry one number. Uniqueness is `scripts/check-adr-index.mjs`'s to enforce; it is
+- No two files carry one number. Uniqueness is `scripts/check-adr-index.py`'s to enforce; it is
   reported here because a number two documents carry has no one rev to hold a citation of it to.
 - Every `ADR NNNN` in prose is followed by `rev M`, and M is that ADR's current rev.
 - Every markdown link resolving to an ADR file is titled `ADR NNNN rev M` likewise. The link rule is
@@ -33,7 +34,7 @@ citation scan reads the tracked set:
 That an ADR's rev was raised for a good reason, and that a citation pinning the current rev still
 means what the ADR says, is decided by nothing here.
 
-Whether every index row has a file, and numbering is contiguous, is `scripts/check-adr-index.mjs`.
+Whether every index row has a file, and numbering is contiguous, is `scripts/check-adr-index.py`.
 An ADR carrying no row is reported here as well, because the table assertion above is then the thing
 with nothing to compare. It is not that such an ADR goes unjudged: the rev is read from the head, so
 the title, changelog, collision and citation rules all still hold it, and deleting the table check
@@ -91,6 +92,16 @@ def tracked():
         ["git", "ls-files", "-z"], cwd=ROOT, capture_output=True, check=True
     ).stdout
     return [ROOT / name.decode() for name in listing.split(b"\0") if name]
+
+
+def untracked():
+    """Untracked, non-ignored paths — outside the citation scan's population, so reported rather
+    than silently unscanned."""
+    listing = subprocess.run(
+        ["git", "ls-files", "--others", "--exclude-standard", "-z"],
+        cwd=ROOT, capture_output=True, check=True,
+    ).stdout
+    return [name.decode() for name in listing.split(b"\0") if name]
 
 
 def adr_links(line):
@@ -366,7 +377,10 @@ def judge(revs, collided, where, number, cited, pinned, context, historical=Fals
 
 
 def main():
-    problems = []
+    problems = [
+        f"{name}: untracked, so the citation scan cannot read it — git add or gitignore it"
+        for name in untracked()
+    ]
     revs, collided = current_revs(problems)
     judged = 0
     if revs:

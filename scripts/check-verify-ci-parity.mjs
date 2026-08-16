@@ -24,6 +24,7 @@ const fail = (msg) => {
 // Each `just verify` check → one token per command its recipe runs, each carrying that command
 // whole. See docs/CI.md § Gate wiring.
 const CHECK_TOKENS = {
+  "check-untracked": ["python3 scripts/check-untracked.py"],
   "check-languages": ["python3 scripts/check-languages.py"],
   "check-eol": ["sh scripts/check-eol.sh"],
   "check-branch": ["sh scripts/check-branch.sh"],
@@ -41,7 +42,7 @@ const CHECK_TOKENS = {
     "docs/architecture/node_modules/.bin/likec4 validate docs/architecture/model",
     "rm -rf docs/architecture/generated",
     "docs/architecture/node_modules/.bin/likec4 codegen mermaid docs/architecture/model -o docs/architecture/generated",
-    "node scripts/splice-arch-diagrams.mjs",
+    "python3 scripts/splice-arch-diagrams.py",
     "git add --intent-to-add -- docs/architecture/",
     "git diff --exit-code HEAD -- docs/architecture/ docs/ARCHITECTURE.md",
   ],
@@ -51,9 +52,9 @@ const CHECK_TOKENS = {
     "docs/site/.venv/bin/sphinx-build -W -b html -c docs/site docs docs/site/_build/html",
   ],
   "check-adr-revs": ["python3 scripts/check-adr-revs.py"],
-  "check-adr-index": ["node scripts/check-adr-index.mjs"],
-  "check-docs-index": ["node scripts/check-docs-index.mjs"],
-  "check-repo-silo": ["node scripts/check-repo-silo.mjs"],
+  "check-adr-index": ["python3 scripts/check-adr-index.py"],
+  "check-docs-index": ["python3 scripts/check-docs-index.py"],
+  "check-repo-silo": ["python3 scripts/check-repo-silo.py"],
   "check-workflow-hardening": ["node scripts/check-workflow-hardening.mjs"],
   "check-verify-ci-parity": ["node scripts/check-verify-ci-parity.mjs"],
 };

@@ -26,6 +26,7 @@ The inputs this check has been run against, in both directions. What it *asserts
 | Must fail | No top-level block | the workflow declares none |
 | Must fail | Block with nothing under it | `permissions:` followed by the next top-level key |
 | Must fail | No workflow discovered | a repository with no file under `.github/workflows` |
+| Must fail | Untracked workflow file | a hardened `.yml` under `.github/workflows`, never added — named by the untracked guard, whatever it contains |
 | Must pass | SHA pin | `uses: actions/checkout@<sha> # v7.0.1` |
 | Must pass | Quoted SHA pin | the same with the reference in double quotes |
 | Must pass | Digest-pinned container action | `uses: docker://alpine@sha256:<64 hex>` |
@@ -48,6 +49,8 @@ The inputs this check has been run against, in both directions. What it *asserts
 | Must pass | Comment inside the block | a comment line between `permissions:` and its grants |
 | Must pass | Job-level elevation | `pages: write` and `id-token: write` in a job's own block |
 | Must pass | Block placed after `jobs:` | the top-level block declared below the jobs it governs |
+| Must pass | The untracked workflow from above, tracked | the guard is silent and the file is judged |
+| Must pass | An untracked file outside `.github/workflows` | outside this gate's population, so outside its guard |
 
 **Known rejections.** Legal YAML this rejects, each failing loudly by file and line, each needing a
 spelling this repository does not use. Closing them means another cut at the matcher and every

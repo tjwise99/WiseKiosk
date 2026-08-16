@@ -302,8 +302,8 @@ resolve, a citation to something that does not exist, an index that has drifted 
   contributor machine is not assumed to run docker, and command-text parity between a local recipe
   and the pinned image cannot hold. A local run is the same invocation — piping `git ls-files
   '*.md'` into `lychee --offline --no-progress --files-from -` — against a release binary of the
-  image's version. The population is the tracked set, so an unstaged document is invisible to a
-  local run; CI checks out committed state and is unaffected.
+  image's version. The population is the tracked set; an untracked Markdown file is outside it, and
+  the untracked-file preflight (§ *Repository shape*) is what fails it rather than this gate.
   **What this gate lets through, measured rather than assumed.** A link inside a fenced block — a
   fence is a sample rather than a reference. A fragment naming no heading in a target whose path
   resolves: fragment checking is off, so only the path half of the destination is proven. A
@@ -483,6 +483,20 @@ changed, which the citation resolver above decides without anyone declaring anyt
   by the search, so CRLF-terminated text under one commits and survives a fresh clone unseen. The
   attribute is declared on the image, font and PDF globs, which is the attribute used as intended; a
   *text* glob given it is the reachable case, and the owner ruled on 2026-08-02 not to gate it.
+- **No untracked, non-ignored file is present when a `git ls-files`-population gate runs.** Those
+  gates read tracked state only, so an untracked file is invisible to every one of them — a defect
+  in exactly the file most likely to carry a fresh mistake passes a local run and fails in CI once
+  committed. Two mechanisms, deliberately redundant: a preflight, `just check-untracked`, fails on
+  any untracked, non-ignored file in the tree, and each gate whose population is `git ls-files`
+  independently fails on an untracked file of the kind it inspects — so neither protection rests on
+  remembering to run the other. The remedy is `git add`, after which the gates judge the file, or a
+  gitignore entry, which declares it not material. A CI checkout holds only tracked files and every
+  build artifact is gitignored, so neither mechanism fires there; what they gate is the local run,
+  the one place an untracked file exists. `check-adr-index` carries no guard: it reads the
+  decisions directory rather than the tracked set, so an untracked ADR is judged, not skipped.
+  `adr-rev-reach.py` also reads the tracked set and carries no guard either — it reports and exits
+  zero by design (§ *What is not gated here*), so there is no verdict for an untracked file to
+  escape.
 - The branch is named `type_number-snake_name`, links an open issue labelled with its type, and its
   default-base pull request records the ticket linkage.
 - That issue carries a milestone and **exactly one** type label. The type set is read from

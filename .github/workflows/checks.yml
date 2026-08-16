@@ -25,6 +25,9 @@ jobs:
 
       - uses: extractions/setup-just@53165ef7e734c5c07cb06b3c8e7b647c5aa16db3 # v4
 
+      - name: No untracked, non-ignored file is present
+        run: python3 scripts/check-untracked.py
+
       # lychee runs offline from the digest-pinned official image over the tracked Markdown set
       # (ADR 0016 rev 3); docker is not assumed on a contributor machine, so the step is a named
       # CI-only exception in scripts/check-verify-ci-parity.mjs rather than a `just verify` check.
@@ -40,16 +43,16 @@ jobs:
         run: sh scripts/check-eol.sh
 
       - name: The decisions directory and its index table agree
-        run: node scripts/check-adr-index.mjs
+        run: python3 scripts/check-adr-index.py
 
       - name: Every ADR citation pins that ADR's current rev
         run: python3 scripts/check-adr-revs.py
 
       - name: Every tracked document outside a dot-directory is claimed by the documentation index
-        run: node scripts/check-docs-index.mjs
+        run: python3 scripts/check-docs-index.py
 
       - name: No manifest at the repository root, no recipe is a shell script, and every Dependabot entry resolves to its manifest
-        run: node scripts/check-repo-silo.mjs
+        run: python3 scripts/check-repo-silo.py
 
       - name: Every action is pinned to an immutable reference, and no workflow grants write at the top level
         run: node scripts/check-workflow-hardening.mjs
@@ -166,7 +169,7 @@ jobs:
           docs/architecture/node_modules/.bin/likec4 validate docs/architecture/model
           rm -rf docs/architecture/generated
           docs/architecture/node_modules/.bin/likec4 codegen mermaid docs/architecture/model -o docs/architecture/generated
-          node scripts/splice-arch-diagrams.mjs
+          python3 scripts/splice-arch-diagrams.py
           git add --intent-to-add -- docs/architecture/
           git diff --exit-code HEAD -- docs/architecture/ docs/ARCHITECTURE.md
 

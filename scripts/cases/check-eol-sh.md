@@ -12,9 +12,14 @@ separated and the population is established before a clean result means anything
 | Must fail | a tracked file containing CRLF, in `.txt` and in `.md` |
 | Must fail | the search failing rather than finding nothing — run outside a repository, where git exits 128 |
 | Must fail | a repository with no tracked file, where git exits 1 over an empty pathspec |
+| Must fail | an untracked CRLF file — reported by the untracked guard as unsearchable, not judged by the search |
+| Must fail | an untracked all-LF file — same guard: visibility, not content, is what fails |
+
+The untracked guard exits before the CRLF search runs, deliberately: a shell script accumulates
+nothing, and an untracked file beside a CRLF defect is two visits either way.
 | Must pass | an all-LF tree |
 | Must pass | a binary file containing CR — excluded by `-I` |
-| Must pass | a genuinely untracked CRLF file |
+| Must pass | the untracked all-LF file from above, once tracked — the guard is silent and the search judges it |
 | Must pass | CR appearing mid-line, where the line still ends in LF |
 
 **What it does not catch: a file whose `.gitattributes` sets the `binary` attribute.** That attribute
