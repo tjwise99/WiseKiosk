@@ -30,9 +30,9 @@ The demand is for a tooling ecosystem, not for an elegant type. The schema has m
   machine-readable statement of what is offered" — so the format must be introspectable as data, not
   only executable as a check.
 - **Composed from per-module fragments.** [The module contract](../contracts/module-contract.md)
-  puts a configuration-schema fragment under each module, composed into the one schema the page
-  validates; the format must compose named fragments into one document without a recomposition stage
-  that turns the schema into generated output.
+  puts a configuration-schema fragment under each module, recomposed into the one schema the page
+  validates; the format must let a per-module fragment be authored on its own and composed into that
+  single schema.
 - **Read by tools that are not the page.** The configuration generator (#70 configuration generator)
   and any future config editor read the schema as data to produce or drive a form over a valid
   configuration.
@@ -52,18 +52,20 @@ the one-in-page-enforcer this ADR builds on.)
 ## Decision
 
 - **The configuration schema is authored as JSON Schema, draft 2020-12** — a data document, not
-  TypeScript code and not a generated artifact. This is the ecosystem the readers above need: a
-  standard the generator, a future editor, the docsite renderer, and validators in any language can
-  consume without executing the project's own code.
-- **Per-module fragments compose into one schema.** Each module authors a JSON Schema document
-  (its configuration-schema fragment); the one configuration schema references them with `$ref` into
-  `$defs`. What this shares with the boundary schema is that both stay *authored* rather than
-  recomposed into a generated artifact — not the form: [ADR 0008 rev 2](0008-boundary-contract-openapi-codegen.md)
-  keeps boundary payloads as named components inside the one schema file and rejects a
-  file-per-module recomposition, while the configuration schema, which no drift gate merges and which
-  never crosses the wire, carries its fragments as separate documents referenced into the composed
-  schema. The fragments and the composed schema live where
-  [ADR 0021 rev 1](0021-repository-layout.md) places the frontend package's files.
+  TypeScript code and not emitted from a code-level schema builder. This is the ecosystem the readers
+  above need: a standard the generator, a future editor, the docsite renderer, and validators in any
+  language can consume without executing the project's own code.
+- **Per-module fragments recompose into one schema.** Each module authors its configuration-schema
+  fragment as a JSON Schema document; the fragments recompose into the one configuration schema under
+  `src/config/` ([ADR 0021 rev 1](0021-repository-layout.md)) — a committed artifact a drift gate
+  regenerates and checks unchanged, the same regenerate-and-compare shape the boundary schema's
+  generated code is held to
+  ([`docs/CI.md` § Module and framework structure](../CI.md#module-and-framework-structure)). This is
+  the file-per-module composition [ADR 0008 rev 2](0008-boundary-contract-openapi-codegen.md) rejected
+  for the boundary — there, to keep the single OpenAPI file authored rather than recomposed. The
+  configuration schema accepts it: its fragments belong beside the modules that declare them, with no
+  single authored file to keep, and the recomposition drift gate is the cost of that placement. The
+  authored unit is the fragment; the composed schema is derived from the fragments, not hand-edited.
 - **Exactly one validator enforces it, bundled and in the page**, 2020-12-capable, run at apply
   time. This ADR fixes the *format*, not the library: the concrete validator — a 2020-12 runtime
   such as ajv's 2020 build or `@cfworker/json-schema`, or a build-time standalone-compiled
@@ -72,8 +74,8 @@ the one-in-page-enforcer this ADR builds on.)
   (#10) is built, against a bundle that does not exist yet. Whatever is chosen, there is one of it
   ([ADR 0007 rev 2](0007-config-validation-allocation.md)).
 - **The configuration-object TypeScript types are generated from the schema**, drift-gated, so the
-  schema stays the single authored source of the configuration's shape without the schema itself
-  being code.
+  schema is the one source of the configuration's shape and that shape lives as data rather than as
+  code.
 
 A fragment is an ordinary 2020-12 document — a good configuration validates, a malformed one is
 rejected:
@@ -126,7 +128,7 @@ SRS002<!-- A module-scoped configuration error is reported at that module -->.
 
 ## Consequences
 
-- One authored data document with a broad ecosystem: the generator (#70 configuration generator), a
+- One data document with a broad ecosystem: the generator (#70 configuration generator), a
   future editor, and the docsite all read it as data, and the key enumeration
   SRS024<!-- Every offered configuration key is exercised at a non-default value --> asks for is a
   walk over a standard document rather than over a library's internals.
