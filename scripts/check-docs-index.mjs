@@ -3,7 +3,7 @@
 // docs/README.md's index; one rendered path carries one row; a row names a tracked
 // document, or a directory holding one; every row's link resolves to a tracked file;
 // and no Guarantees or Excludes cell is empty. A row rendering with a trailing slash
-// claims the subtree beneath it. See docs/CI.md § Documentation integrity and ADR 0014 rev 2.
+// claims the subtree beneath it. See docs/CI.md § Documentation integrity and ADR 0014 rev 3.
 //
 // No dependencies: Node stdlib only, plain text scanning — matches
 // scripts/check-adr-index.mjs's idiom.
@@ -81,7 +81,7 @@ for (const line of readFileSync(resolve(repoRoot, INDEX), "utf8").split("\n")) {
 }
 
 // Independently sourced — the git index against the index file — so a parse that stops
-// matching cannot take both to zero at once. See ADR 0014 rev 2.
+// matching cannot take both to zero at once. See ADR 0014 rev 3.
 if (!rows) problems.push(`${INDEX}: no index row parsed — the table's shape has moved`);
 if (!tracked.size) problems.push("git ls-files reported no tracked Markdown file");
 
@@ -89,7 +89,7 @@ const machinery = new Set();
 for (const path of [...tracked].sort()) {
   if (path === INDEX) continue; // The index does not index itself.
   if (path.startsWith(".") && path.includes("/")) {
-    machinery.add(path.slice(0, path.indexOf("/") + 1)); // A top-level dot-directory holds machinery. ADR 0014 rev 2.
+    machinery.add(path.slice(0, path.indexOf("/") + 1)); // A top-level dot-directory holds machinery. ADR 0014 rev 3.
     continue;
   }
   if (fileClaims.has(path)) continue;
@@ -102,7 +102,7 @@ if (problems.length) {
   for (const problem of problems) console.error("  " + problem);
   process.exit(1);
 }
-// Naming them is what makes ADR 0014 rev 2's accepted trade reviewable: a directory appearing
+// Naming them is what makes ADR 0014 rev 3's accepted trade reviewable: a directory appearing
 // here without an index row is the whole of what the rule lets through unremarked.
 console.log(
   `every tracked document is claimed: ${rows} index row(s), ${tracked.size} document(s).\n` +
