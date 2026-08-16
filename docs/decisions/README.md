@@ -63,6 +63,7 @@ on.
 | [0021](0021-repository-layout.md) | 1 | 2026-08-12 | The top level projects the containers: a Go module root, an npm package root, the boundary schema owned by neither, and the release material outside both; a module's files split across the packages that run them, under one name |
 | [0022](0022-config-schema-format.md) | 1 | 2026-08-15 | Configuration schema authored as JSON Schema 2020-12: per-module fragments composed into one document, enforced by a single in-page validator, TypeScript types generated from it |
 | [0023](0023-secret-output-containment.md) | 1 | 2026-08-15 | Secrets kept out of client output and logs by type confinement — a distinct secret type that cannot be formatted, serialised, or unwrapped without a single linted call site — proven at the edge by a canary; the secret type is specified in this ADR, not in the tree |
+| [0024](0024-secret-file-delivery.md) | 1 | 2026-07-23 | Every secret delivered as the file named by `<NAME>_FILE` and by no other path — value trailing-whitespace-stripped, read per resolution not cached, a bare `<NAME>` env var ignored; the mechanism is specified in this ADR, not in the tree |
 
 ## Revisions
 

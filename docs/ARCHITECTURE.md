@@ -239,8 +239,9 @@ configuration is a static file bind-mounted into the served tree
 (SRS018<!-- One generic published image -->), validated in the page and nowhere else at apply time,
 where a module-scoped error is reported at that module
 (SRS002<!-- A module-scoped configuration error is reported at that module -->). A secret reaches the
-backend only as the file named by `<NAME>_FILE` — never through configuration, and never through a bare
-`<NAME>` environment variable (SRS007<!-- Configuration schema offers no secret-bearing key -->).
+backend only as the file named by `<NAME>_FILE`, never through a bare `<NAME>` environment variable
+([ADR 0024 rev 1](decisions/0024-secret-file-delivery.md)) — and never through the configuration, which
+offers no secret-bearing key (SRS007<!-- Configuration schema offers no secret-bearing key -->).
 
 ## Deployment
 
