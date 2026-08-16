@@ -56,3 +56,8 @@ Three notes the rows cannot carry alone:
   the tool being configured around them.
 - **A misconfigured pull-request-title invocation fails closed:** the `commitlint-pr-title` hook
   run with `COMMITLINT_TITLE_FILE` unset exits non-zero rather than judging nothing and passing.
+
+**Fail-direction in CI:** the PR-title step runs on the `pull_request` `edited` event, so the gate
+was exercised on PR #167 adopt commitlint's own pull request by retitling it to `fixup! feat: x` —
+the `process` job failed on the title step (`type-empty`, `subject-empty`; run 31974529685) — and
+retitling it back, after which the job went green (run 31974593500).
