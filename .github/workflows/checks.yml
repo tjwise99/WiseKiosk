@@ -235,7 +235,7 @@ jobs:
           HEAD_REF: ${{ github.head_ref }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: sh scripts/check-branch.sh "$HEAD_REF"
+        run: python3 scripts/check-branch.py "$HEAD_REF"
 
       - name: PR title is a Conventional Commit (the squash-merge commit on main)
         env:
