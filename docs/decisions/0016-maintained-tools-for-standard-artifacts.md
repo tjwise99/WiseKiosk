@@ -3,10 +3,16 @@
 **Status:** accepted
 **Decided:** 2026-08-03 (#103 authored-vs-adopted check trade, measured against the cases recorded in
 [`../../scripts/README.md`](../../scripts/README.md))
-**Rev:** 4
+**Rev:** 5
 
 ## Revisions
 
+- **rev 5** — 2026-08-16 — extends the empty-population ruling to every check: an empty population
+  reports success, authored checks included, collapsing this wave's three readings of the ruling to
+  one. The boundary that stays: a failed or unreadable population enumeration is not an empty
+  population and must fail — the materialised-list fix in PR #162 adopt lychee and the untracked-file
+  guards of PR #159 fail-ls-files-gates-closed are that boundary, not exceptions to the ruling. The
+  adoptions are unchanged (owner ruling recorded on PR #161, 2026-08-16).
 - **rev 4** — 2026-08-16 — corrects the zizmor measurements, which were bound to a pre-v1.10.0
   zizmor without recording a version: on the adopted release (v1.29.0) the `pedantic` persona also
   reports `anonymous-definition`, `undocumented-permissions` and `concurrency-limits` against the
@@ -31,7 +37,7 @@ when this was decided; the roster is `just --list`, and no count written here is
 every obligation they assert was authored here, and that was never a decision. The gate records argue
 at length about *which hand-rolled form* a check should take — [ADR 0005 rev 1](0005-traceability-gating.md) on
 where evidence lives, [ADR 0006 rev 3](0006-process-gates.md) on what the gate reads,
-[ADR 0014 rev 2](0014-documentation-index-claims-documents.md) on whether a list may be hand-maintained — and
+[ADR 0014 rev 3](0014-documentation-index-claims-documents.md) on whether a list may be hand-maintained — and
 never about whether to author one at all.
 
 The exceptions show the question has an answer whenever it is actually asked, and there are four of
@@ -119,14 +125,16 @@ Measurement incidentally shows `zizmor` exits 3 with `no inputs collected` on an
 obligation, so neither constrains the implementation.
 **Cost:** a misconfigured invocation that silently scans nothing reports the same success as a clean run.
 
-**The ruling is bounded twice over.** It covers an *empty* population, not one silently *shrunk* — the
-unterminated-fence guard in `check-links.mjs`, which exists because a fence that never closes blanks the
-rest of the file, is a different failure and is left open below. And it reaches only the checks this
-decision adopts away. **Every empty-population guard in a check that stays authored is untouched.** That
-sentence is the whole protection: it is universal, so it reaches guards this record never saw and guards
-written after it. The table below is **examples, not an inventory** — deliberately, because a
+**The ruling reaches every check, and its bound is what kind of nothing was seen** (rev 5). An empty
+population reports success, in authored checks as in adopted tools. **A failed or unreadable
+population enumeration is not an empty population and must fail** — a materialised file list that
+cannot be read, a parse producing nothing from input that exists, and a population silently *shrunk*:
+the unterminated-fence case, where a fence that never closes blanks the rest of the file, is that
+failure and not an empty scan, and is left open below. The guards in the table assert that an
+enumeration worked, which the ruling keeps — not that the population was non-empty, which it
+releases. The table below is **examples, not an inventory** — deliberately, because a
 hand-maintained list of code in an immutable document is the drift
-[ADR 0014 rev 2](0014-documentation-index-claims-documents.md) refuses from the other direction, and no check
+[ADR 0014 rev 3](0014-documentation-index-claims-documents.md) refuses from the other direction, and no check
 compares this one against the tree. Including:
 
 | Guard | Source |

@@ -6,8 +6,8 @@ The inputs this check has been run against, in both directions. What it *asserts
 Seeded state is described rather than committed, and never spells a live ADR number — this check
 reads one as a citation like any other.
 
-Exercised at `66d168f`, script md5 `c816ba0d4e721b862efec9d363128b38`, where a passing run reports
-**20 ADRs** — read that count before any row whose input is spelled *all twenty*. The headline
+Exercised at `4e81f38`, script md5 `c343afdf169354ef1d18ffaf9b9572cd`, where a passing run reports
+**24 ADRs** — read that count before any row whose input is spelled *every ADR*. The headline
 title-number row is the state at `128ff83` and is reachable from no later commit, the rename that
 caused it and the correction that ended it both being on that branch; extract it literally.
 
@@ -31,7 +31,7 @@ caused it and the correction that ended it both being on that branch; extract it
 | Must fail | A reference-style link or a raw `<a href>` to an ADR | each appended to `docs/TESTING.md` |
 | Must fail | A link to an ADR whose title carries brackets | a bracketed phrase inside the title, over an ADR target |
 | Must fail | A link to an ADR wrapped across two lines | the opening bracket on the line above |
-| Must fail | The head format changed everywhere, so nothing parses | `**Rev:**` renamed in all twenty ADRs |
+| Must fail | The head format changed everywhere, so nothing parses | `**Rev:**` renamed in every ADR |
 | Must fail | The prose citation spelling drifted, so none is recognised | `CITATION` altered not to match |
 | Must fail | The link spelling drifted, so none is recognised | `TARGET` altered not to match |
 | Must fail | An ADR revved with one citation left behind | one ADR to rev 2, every citation but one moved |
@@ -42,9 +42,11 @@ caused it and the correction that ended it both being on that branch; extract it
 | Must fail | Two ADRs' title numbers swapped | the set of title numbers is still contiguous from 0001 — **2 problems**, one per file |
 | Must fail | A title number of the wrong digit count | one title line cut to three digits |
 | Must fail | An ADR with no title line | the first line of one ADR deleted |
-| Must fail | The title format changed everywhere, so no number parses | the space after `#` dropped in all twenty — 20 problems, not silence |
+| Must fail | The title format changed everywhere, so no number parses | the space after `#` dropped in every ADR — one problem per ADR, not silence |
 | Must fail | An entry named outside `NNNN-<lowercase-slug>.md` | a copy of an ADR under a mixed-case slug |
+| Must fail | An untracked file anywhere in the tree | the untracked guard names it as unscannable, whatever it holds |
 | Must pass | The tree as it stands | — |
+| Must pass | The untracked file from above, tracked | the guard is silent and the citation scan reads it |
 | Must pass | An ADR revved with everything moved with it | one ADR to rev 2: head, index row, a new changelog line, and all its citations |
 | Must pass | A changelog line pinning a rev that is not current | a supersession line on that same rev-2 ADR |
 | Must pass | An indented continuation of one, pinning a stale rev | the wrapped form of the same line |
@@ -60,7 +62,7 @@ What the cases prove, beyond what the table shows on its own:
   *the exemption is narrow* are indistinguishable.
 - **The title-number rows are the collision rule's other half** — a collision asks which of two
   files a number names, a wrong title asks whether the one file naming it agrees.
-  `check-adr-index.mjs` derives every number from a filename or an index row and never opens a body,
+  `check-adr-index.py` derives every number from a filename or an index row and never opens a body,
   so it passed a tree where one ADR's title named a different number.
 - **The whole-tree title seed is the population guard**: respelling every title at once reports
   twenty problems, and correcting one title and re-running exits 0 — the satisfiability control the
@@ -122,7 +124,7 @@ matters.
 **The two ADR checks disagree about strays, and the line between them is the `.md` suffix.** Observed,
 one stray at a time:
 
-| Stray in `docs/decisions/` | `check-adr-revs.py` | `check-adr-index.mjs` |
+| Stray in `docs/decisions/` | `check-adr-revs.py` | `check-adr-index.py` |
 |---|---|---|
 | `notes.txt` | exit 1 | **exit 0** |
 | an editor backup ending `~` | exit 1 | **exit 0** |
@@ -130,17 +132,19 @@ one stray at a time:
 | `draft-supersede-0007.md` | exit 1 | exit 1 |
 
 Directory scope is `current_revs()`'s rather than one rule's, reading the filesystem rather than
-tracked state. The consequence is wider than a stray — **an untracked file reds `just verify` locally
-while CI stays green**, because `actions/checkout` gives CI committed state. Measured on one tree, one
+tracked state; the untracked guard reports the same files from the other side, which is why each row
+below carries two problems. **An untracked file reds `just verify` locally while CI stays green**,
+because `actions/checkout` gives CI committed state. Measured on one tree, one
 file at a time:
 
 | Untracked in `docs/decisions/` | Reported locally |
 |---|---|
-| `notes.txt` | the naming rule — 1 problem |
-| an ADR drafted the ordinary way, at rev 1 with its changelog line | **1 problem, from neither** — `check_index()`, finding the number carries no index row |
+| `notes.txt` | the naming rule, and the untracked guard — 2 problems |
+| an ADR drafted the ordinary way, at rev 1 with its changelog line | 2 problems — the untracked guard naming the file, and `check_index()` finding the number carries no index row |
 
 An archive of the same `HEAD`, which is what CI gets, exits 0 for both. For a stray, the fix is to
 rename or remove the file. The draft is the case with no stray to remove, and its answer differs: the
-index row is genuinely owed, `check-adr-index.mjs` reds on the same file with the same remedy, and
-nothing here gates a commit — both hooks in `.githooks/` are advisory and neither runs `verify`. What
+index row is genuinely owed, `check-adr-index.py` reds on the same file with the same remedy, and
+nothing here gates a commit — the local hook layer (`.pre-commit-config.yaml`) is advisory and no
+hook in it runs `verify`. What
 the local run buys is notice before the push, not enforcement.

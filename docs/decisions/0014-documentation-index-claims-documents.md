@@ -2,10 +2,13 @@
 
 **Status:** accepted
 **Decided:** 2026-08-02 (#90 documentation-index claim check)
-**Rev:** 2
+**Rev:** 3
 
 ## Revisions
 
+- **rev 3** — 2026-08-16 — spells the exclusions-list form as text rather than a link to
+  `scripts/upstream-hosts.txt`, which ADR 0016 rev 5 retires; what claims a document is unchanged
+  (#106 adopt lychee).
 - **rev 2** — 2026-08-12 — deletes the exclusions list from the Decision. The *What is not a document
   is derived too* paragraph already said there is none and the Alternatives record why — it was built,
   two one-line edits to it hid a document, and it was removed rather than patched — so the Decision
@@ -80,7 +83,7 @@ declaration. The sentence is amended to describe what was built; it was never lo
 described a check nobody ran.
 
 **A committed exclusions list** naming the silos nothing indexes, one `entry — what it serves` per
-line in the [`../../scripts/upstream-hosts.txt`](../../scripts/upstream-hosts.txt) form. This was
+line in the `scripts/upstream-hosts.txt` form. This was
 built and carried through review before being removed, so the reasons are measured rather than
 predicted. Two entries — `.claude/` and `.github/` — were ever needed. Two one-line edits to that
 file hid a document: appending a silo over a directory whose row had just gone, and appending one

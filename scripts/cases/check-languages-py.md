@@ -4,8 +4,8 @@ The inputs this check has been run against, in both directions. What it *asserts
 [ADR 0017 rev 5](../../docs/decisions/0017-authored-language-set.md)'s;
 how to run a case is [`../README.md`](../README.md)'s.
 
-Exercised at `fb8f193`, script md5 `52e8c34e023e508b20fb6c067cf91471`, where a passing run over this
-repository reports **211 tracked files**.
+Exercised at `4e81f38`, script md5 `b2b4132c5c3a3b8ffa674949f12776d9`, where a passing run over this
+repository reports **221 tracked files**.
 
 | Direction | Case | Input |
 |---|---|---|
@@ -17,6 +17,8 @@ repository reports **211 tracked files**.
 | Must fail | A **new** `.mjs` file, same reasoning | `scripts/rogue.mjs` added to the tree |
 | Must fail | A `LEGACY`-grandfathered file deleted, leaving its entry stale | `scripts/check-eol.sh` removed from the tree, the entry left in `LEGACY` |
 | Must fail | The population is empty | a freshly `git init`'d repository with nothing added, so `git ls-files` resolves nothing |
+| Must fail | An untracked file, whatever its kind | `scripts/rogue.rs` present but never added — the untracked guard names it as unjudgeable |
+| Must fail | An untracked file of a declared kind | an untracked, well-formed `.md` — visibility, not the declared set, is what fails |
 | Must pass | The tree as it stands | — |
 | Must pass | A new file with an already-declared extension | `scripts/new-check.py`, a placeholder script, added to the tree |
 
@@ -81,7 +83,7 @@ repository reports **211 tracked files**.
   content is the reviewer's, under `CONTRIBUTING.md` review checklist item 12, *Languages* — the same
   item ADR 0017 rev 5 names as the mechanism for a language decision this check cannot make.
 - **A `LEGACY` entry is not re-verified against the record that grants it.** If a disposition changed
-  under ADR 0017 rev 5 or under ADR 0016 rev 4 — say, a ticket number renumbered — nothing here would
+  under ADR 0017 rev 5 or under ADR 0016 rev 5 — say, a ticket number renumbered — nothing here would
   notice the comment in `LEGACY` had gone stale, the way `check-adr-revs.py` notices a stale
   citation elsewhere in this repository. The two checks do not overlap: this one is not itself prose
   citing an ADR by number in the form that check parses.

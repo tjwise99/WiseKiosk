@@ -23,18 +23,27 @@ where deployed.
 ## Running the checks
 
 ```sh
-just              # the gate roster: every check, beside what it asserts
-just verify       # every check the PR gate runs that has a local form
-just install-hooks  # once per clone: advisory commit-msg and pre-push hooks
+just                # the gate roster: every check, beside what it asserts
+just verify         # every check the PR gate runs that has a local form
+just hooks-install  # once per clone: the pinned pre-commit toolchain, into scripts/.venv
+scripts/.venv/bin/pre-commit install  # once per clone: advisory hooks at commit and push
 ```
 
-What each gate is allowed to let through, and why, is [`docs/CI.md`](docs/CI.md).
+What each gate is allowed to let through, and why, is [`docs/CI.md`](docs/CI.md). `pre-commit
+install` refuses while the **resolved** `core.hooksPath` is set, whichever scope sets it. A clone
+whose **local** scope points at repo hooks clears that one scope only — `git config --local --unset
+core.hooksPath`, which exits 5 when the value is already absent and has then done its job — and
+clearing it restores whatever hooks the machine configures globally. **Never unset a global
+`core.hooksPath` to satisfy pre-commit**: a global hooks directory can carry a machine-wide hook,
+such as a secrets scan, and unsetting it disarms that everywhere. On such a machine `pre-commit
+install` stays refused by design, and the supported state is the global hooks running at commit as
+configured, this repo's hook layer on demand via `just check-hooks`, and the binding run in CI.
 
 ## Tickets, branches, and titles
 
 Open an issue from a template first: the branch name is derived from it. Enforced by the `process` CI
-check ([ADR 0006 rev 3](docs/decisions/0006-process-gates.md)). The `pre-push` hook from
-`just install-hooks` checks the shape only — not the issue conditions below — and only at push, when
+check ([ADR 0006 rev 3](docs/decisions/0006-process-gates.md)). The `branch-shape` pre-push hook
+from `pre-commit install` checks the shape only — not the issue conditions below — and only at push, when
 the branch and its commits already exist. **Nothing checks the name at `git switch -c`**, which is
 where it is chosen and where it goes wrong, so this section is in the file
 [`.claude/settings.json`](.claude/settings.json) injects at session start.

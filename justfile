@@ -5,27 +5,28 @@ default:
     @just --list
 
 [group('checks')]
-[doc('Every relative Markdown link resolves inside the repo, every absolute URL names an allowlisted host, and every allowlist entry says what it serves')]
-check-links:
-    node scripts/check-links.mjs
+[doc('No untracked, non-ignored file in the tree — the git ls-files-based gates cannot see one, so it must be tracked or gitignored before a local run means anything')]
+check-untracked:
+    python3 scripts/check-untracked.py
+
+[group('setup')]
+[doc('First-time setup: install the pinned pre-commit toolchain into scripts/')]
+hooks-install:
+    python3 -m venv scripts/.venv
+    scripts/.venv/bin/pip install -r scripts/requirements-dev.txt
 
 [group('checks')]
-[doc('No tracked text file has CRLF line endings')]
-check-eol:
-    sh scripts/check-eol.sh
+[doc('Every hook in .pre-commit-config.yaml passes over every tracked file: no private key, no oversized file, YAML and JSON parse, no merge-conflict marker mid-merge, no mixed line endings, no CRLF in the tracked tree')]
+check-hooks:
+    scripts/.venv/bin/pre-commit run --all-files
 
 [group('checks')]
 [doc('Branch is named type_number-snake_name; its issue is open, type-labeled, milestoned, and parented to match the PR base; the PR records the linkage')]
 check-branch:
     sh scripts/check-branch.sh
 
-[group('setup')]
-[doc('Point git at the repo hooks (.githooks/): advisory commit-msg and pre-push')]
-install-hooks:
-    git config core.hooksPath .githooks
-
 [group('checks')]
-[doc('Requirements tree validates: refs resolve, no suspect/unreviewed/orphan items, methods consistent, headers non-empty and prefix-free, no identifier cited in an item statement')]
+[doc('Requirements tree validates: refs resolve, no suspect/unreviewed/orphan items, methods consistent, headers non-empty and prefix-free, no identifier cited in an item statement; the proposed backlog prints on a passing run (reports; not a gate)')]
 check-reqs:
     docs/requirements/.venv/bin/python scripts/check-unreviewed.py
     docs/requirements/.venv/bin/python scripts/check-suspect-links.py
@@ -33,6 +34,7 @@ check-reqs:
     docs/requirements/.venv/bin/python scripts/check-method-consistency.py
     docs/requirements/.venv/bin/python scripts/check-text-citations.py
     docs/requirements/.venv/bin/python scripts/check-headers.py
+    docs/requirements/.venv/bin/python scripts/report-proposed.py
 
 [group('checks')]
 [doc('Every requirement identifier and ADR number cited outside .claude/ resolves, and every requirement citation carries its item header')]
@@ -42,7 +44,7 @@ check-citations:
 [group('checks')]
 [doc('The decisions directory and its index table agree: every ADR has a row, every row a file, numbering contiguous')]
 check-adr-index:
-    node scripts/check-adr-index.mjs
+    python3 scripts/check-adr-index.py
 
 [group('checks')]
 [doc('Every ADR citation pins that ADR current rev, in prose and in a link title; the index rev column matches each ADR own head')]
@@ -52,12 +54,12 @@ check-adr-revs:
 [group('checks')]
 [doc('Every tracked document outside a top-level dot-directory is claimed by a row in the documentation index, every row links a tracked file, and no cell is empty')]
 check-docs-index:
-    node scripts/check-docs-index.mjs
+    python3 scripts/check-docs-index.py
 
 [group('checks')]
 [doc('No manifest or .venv/ at the repository root, no recipe is a shell script, github-actions is covered, and every other Dependabot entry resolves to a non-root directory holding its manifest')]
 check-repo-silo:
-    node scripts/check-repo-silo.mjs
+    python3 scripts/check-repo-silo.py
 
 [group('checks')]
 [doc('Every `just verify` check runs in CI, every CI step is one of them or a named exception, and every token names a command its recipe runs')]
@@ -96,7 +98,7 @@ arch-export:
     docs/architecture/node_modules/.bin/likec4 validate docs/architecture/model
     rm -rf docs/architecture/generated
     docs/architecture/node_modules/.bin/likec4 codegen mermaid docs/architecture/model -o docs/architecture/generated
-    node scripts/splice-arch-diagrams.mjs
+    python3 scripts/splice-arch-diagrams.py
 
 # `add --intent-to-add` reaches regenerated artifacts that are untracked; the diff is taken against
 # HEAD because that same `git add` stages the deletion `arch-export` makes of an orphan, which an
@@ -129,5 +131,5 @@ check-languages:
     python3 scripts/check-languages.py
 
 [group('checks')]
-[doc('Run every check the PR gate runs that has a local form; secret scanning, the PR-title check, and the workflow audit (zizmor, actionlint) are CI-only')]
-verify: check-links check-eol check-branch check-reqs check-citations check-arch check-arch-trace check-site check-adr-index check-adr-revs check-docs-index check-repo-silo check-verify-ci-parity check-languages
+[doc('Run every check the PR gate runs that has a local form; secret scanning, the PR-title check, the link check (lychee, from a digest-pinned image) and the workflow audit (zizmor, actionlint) are CI-only')]
+verify: check-untracked check-hooks check-branch check-reqs check-citations check-arch check-arch-trace check-site check-adr-index check-adr-revs check-docs-index check-repo-silo check-verify-ci-parity check-languages

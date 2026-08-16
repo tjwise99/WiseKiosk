@@ -1,0 +1,39 @@
+# The local hook layer (ADR 0016 rev 5). `pre-commit install` wires the stages listed in
+# default_install_hook_types; CI runs the pre-commit stage over every tracked file via
+# `just check-hooks`. pre-commit skips a hook whose file set is empty and reports success; the
+# `local` hooks below carry `always_run` and do not read a file set.
+default_install_hook_types: [pre-commit, pre-push]
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: 3e8a8703264a2f4a69428a0aa4dcb512790b2c8c # v6.0.0
+    hooks:
+      - id: detect-private-key
+      - id: check-added-large-files
+      - id: check-yaml
+      - id: check-json
+      - id: check-merge-conflict
+      - id: mixed-line-ending
+        args: [--fix=no]
+  - repo: local
+    hooks:
+      - id: check-eol
+        name: no CRLF line ending in the tracked tree
+        entry: python3 scripts/check-eol.py
+        language: system
+        always_run: true
+        pass_filenames: false
+      - id: branch-shape
+        name: branch named type_number-snake_name (scripts/branch-shape.regex)
+        entry: python3 scripts/branch-shape.py
+        language: system
+        always_run: true
+        pass_filenames: false
+        stages: [pre-push]
+      - id: rev-reach
+        name: ADR citations re-pinned with the sentence untouched (reports)
+        entry: python3 scripts/adr-rev-reach.py
+        language: system
+        always_run: true
+        pass_filenames: false
+        stages: [pre-push]
+        verbose: true

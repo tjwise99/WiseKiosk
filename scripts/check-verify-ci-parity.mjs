@@ -2,11 +2,10 @@
 // Every check `just verify` depends on must also run in
 // .github/workflows/checks.yml, and every named CI step must be either one of
 // those checks or an enumerated CI-only exception (secret scanning; the
-// PR-title Conventional-Commit check; the zizmor and actionlint workflow
-// audits). See docs/CI.md § Gate wiring.
+// PR-title Conventional-Commit check; the lychee link check; the zizmor
+// and actionlint workflow audits). See docs/CI.md § Gate wiring.
 //
-// No dependencies: Node stdlib only, plain text scanning (no YAML parser) —
-// matches scripts/check-links.mjs's idiom.
+// No dependencies: Node stdlib only, plain text scanning (no YAML parser).
 //
 // What this has been run against, in both directions: cases/check-verify-ci-parity-mjs.md
 
@@ -25,9 +24,9 @@ const fail = (msg) => {
 // Each `just verify` check → one token per command its recipe runs, each carrying that command
 // whole. See docs/CI.md § Gate wiring.
 const CHECK_TOKENS = {
+  "check-untracked": ["python3 scripts/check-untracked.py"],
   "check-languages": ["python3 scripts/check-languages.py"],
-  "check-links": ["node scripts/check-links.mjs"],
-  "check-eol": ["sh scripts/check-eol.sh"],
+  "check-hooks": ["scripts/.venv/bin/pre-commit run --all-files"],
   "check-branch": ["sh scripts/check-branch.sh"],
   "check-reqs": [
     "docs/requirements/.venv/bin/python scripts/check-unreviewed.py",
@@ -36,13 +35,14 @@ const CHECK_TOKENS = {
     "docs/requirements/.venv/bin/python scripts/check-method-consistency.py",
     "docs/requirements/.venv/bin/python scripts/check-text-citations.py",
     "docs/requirements/.venv/bin/python scripts/check-headers.py",
+    "docs/requirements/.venv/bin/python scripts/report-proposed.py",
   ],
   "check-citations": ["docs/requirements/.venv/bin/python scripts/check-citations.py"],
   "check-arch": [
     "docs/architecture/node_modules/.bin/likec4 validate docs/architecture/model",
     "rm -rf docs/architecture/generated",
     "docs/architecture/node_modules/.bin/likec4 codegen mermaid docs/architecture/model -o docs/architecture/generated",
-    "node scripts/splice-arch-diagrams.mjs",
+    "python3 scripts/splice-arch-diagrams.py",
     "git add --intent-to-add -- docs/architecture/",
     "git diff --exit-code HEAD -- docs/architecture/ docs/ARCHITECTURE.md",
   ],
@@ -52,9 +52,9 @@ const CHECK_TOKENS = {
     "docs/site/.venv/bin/sphinx-build -W -b html -c docs/site docs docs/site/_build/html",
   ],
   "check-adr-revs": ["python3 scripts/check-adr-revs.py"],
-  "check-adr-index": ["node scripts/check-adr-index.mjs"],
-  "check-docs-index": ["node scripts/check-docs-index.mjs"],
-  "check-repo-silo": ["node scripts/check-repo-silo.mjs"],
+  "check-adr-index": ["python3 scripts/check-adr-index.py"],
+  "check-docs-index": ["python3 scripts/check-docs-index.py"],
+  "check-repo-silo": ["python3 scripts/check-repo-silo.py"],
   "check-verify-ci-parity": ["node scripts/check-verify-ci-parity.mjs"],
 };
 
@@ -62,6 +62,7 @@ const CHECK_TOKENS = {
 const CI_ONLY_ALLOWLIST = [
   "gitleaks", // secret-scan job: needs full git history, not part of `just verify`
   "scripts/check-commit-msg.sh", // PR-title Conventional-Commit check: no PR title exists locally
+  "lycheeverse/lychee", // link check, run from a digest-pinned image: docker is not assumed locally
   "zizmor", // workflow audit, run from a digest-pinned image: no local install channel is decided
   "actionlint", // workflow lint, run from a digest-pinned image: same standing as zizmor
 ];
