@@ -51,7 +51,7 @@ the one-in-page-enforcer this ADR builds on.)
 
 ## Decision
 
-- **The configuration schema is authored as JSON Schema, draft 2020-12** — a data document, not
+- **The configuration schema is written in JSON Schema, draft 2020-12** — a data document, not
   TypeScript code and not emitted from a code-level schema builder. This is the ecosystem the readers
   above need: a standard the generator, a future editor, the docsite renderer, and validators in any
   language can consume without executing the project's own code.
