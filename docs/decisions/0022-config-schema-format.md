@@ -29,10 +29,10 @@ The demand is for a tooling ecosystem, not for an elegant type. The schema has m
   ranges *over the schema* to enumerate every offered key — "the schema is the finite
   machine-readable statement of what is offered" — so the format must be introspectable as data, not
   only executable as a check.
-- **Composed from per-module fragments.** The module contract puts a configuration-schema fragment
-  under each module, composed into the one schema the page validates; the format must compose named
-  fragments into one document without a recomposition stage that turns the schema into generated
-  output.
+- **Composed from per-module fragments.** [The module contract](../contracts/module-contract.md)
+  puts a configuration-schema fragment under each module, composed into the one schema the page
+  validates; the format must compose named fragments into one document without a recomposition stage
+  that turns the schema into generated output.
 - **Read by tools that are not the page.** The configuration generator (#70 configuration generator)
   and any future config editor read the schema as data to produce or drive a form over a valid
   configuration.
@@ -57,8 +57,12 @@ the one-in-page-enforcer this ADR builds on.)
   consume without executing the project's own code.
 - **Per-module fragments compose into one schema.** Each module authors a JSON Schema document
   (its configuration-schema fragment); the one configuration schema references them with `$ref` into
-  `$defs`, the same authored-not-recomposed shape [ADR 0008 rev 2](0008-boundary-contract-openapi-codegen.md)
-  uses for boundary payload components. The fragments and the composed schema live where
+  `$defs`. What this shares with the boundary schema is that both stay *authored* rather than
+  recomposed into a generated artifact — not the form: [ADR 0008 rev 2](0008-boundary-contract-openapi-codegen.md)
+  keeps boundary payloads as named components inside the one schema file and rejects a
+  file-per-module recomposition, while the configuration schema, which no drift gate merges and which
+  never crosses the wire, carries its fragments as separate documents referenced into the composed
+  schema. The fragments and the composed schema live where
   [ADR 0021 rev 1](0021-repository-layout.md) places the frontend package's files.
 - **Exactly one validator enforces it, bundled and in the page**, 2020-12-capable, run at apply
   time. This ADR fixes the *format*, not the library: the concrete validator — a 2020-12 runtime
