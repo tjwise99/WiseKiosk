@@ -14,6 +14,7 @@ The inputs this check has been run against, in both directions. What it *asserts
 | Must fail | Unterminated code fence | a fence that never closes, which would blank the rest of the file |
 | Must fail | HTML anchor to a missing file | a raw HTML anchor whose `href` names no file |
 | Must fail | Reference definition to a missing file | a link-reference definition whose destination names no file |
+| Must fail | Untracked Markdown file | the untracked guard names it as unreadable, whatever it contains |
 | Must pass | Valid relative link | an inline link resolving to a tracked file |
 | Must pass | Link with an anchor | the same destination carrying a heading fragment |
 | Must pass | Pure in-page anchor | a destination that is a fragment and nothing else |
@@ -26,6 +27,7 @@ The inputs this check has been run against, in both directions. What it *asserts
 | Must pass | Valid HTML anchor and reference definition | the same three syntaxes, resolving |
 | Must pass | In-repo symlink | a symlink whose target is inside the repository |
 | Must pass | Prose that resembles a definition | a sentence opening with a bracketed label and a colon |
+| Must pass | The untracked file from above, tracked | the guard is silent, and its broken link is then reported on content |
 
 The symlink pair and the three-syntax rows are each a pair: one proves the check follows a link, the
 other that it reads every syntax carrying a relative path.
@@ -47,5 +49,5 @@ The root-relative row is accepted rather than fixed: a document that must resolv
 use a path rooted at a server, so the rejection is right even though the message names the wrong
 reason.
 
-What this gate lets through — fenced blocks, and documents not yet staged — is
-[`docs/CI.md`](../../docs/CI.md)'s.
+What this gate lets through — fenced blocks — is [`docs/CI.md`](../../docs/CI.md)'s; an untracked
+document fails the untracked guard rather than passing unread.
