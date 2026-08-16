@@ -13,11 +13,21 @@ on:
 permissions:
   contents: read
 
+# A superseded pull-request head cancels its own run; a push run is never cancelled — the secret
+# scan walks the commits its own event carries, so cancelling one would leave that push unscanned.
+concurrency:
+  group: checks-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
 jobs:
+  # Every job's `name:` equals its id: required status checks key on the displayed name.
   docs-and-hygiene:
+    name: docs-and-hygiene
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
 
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
@@ -43,8 +53,13 @@ jobs:
       - name: No manifest at the repository root, no recipe is a shell script, and every Dependabot entry resolves to its manifest
         run: node scripts/check-repo-silo.mjs
 
-      - name: Every action is pinned to an immutable reference, and no workflow grants write at the top level
-        run: node scripts/check-workflow-hardening.mjs
+      - name: Workflow supply-chain and privilege audit (zizmor, pedantic persona, offline audit set)
+        uses: docker://ghcr.io/zizmorcore/zizmor@sha256:863026d54f91271b10b60b67ad8054cb37120167e162482597db102b3026a284 # 1.29.0
+        with:
+          args: --persona=pedantic .github/workflows
+
+      - name: Workflow schema and expression lint (actionlint)
+        uses: docker://rhysd/actionlint@sha256:b1934ee5f1c509618f2508e6eb47ee0d3520686341fec936f3b79331f9315667 # 1.7.12
 
       - name: Every tracked file is a declared authored or derived kind
         run: python3 scripts/check-languages.py
@@ -53,6 +68,7 @@ jobs:
         run: node scripts/check-verify-ci-parity.mjs
 
   requirements:
+    name: requirements
     # Validates the Doorstop requirements tree: every TST reference resolves, no
     # suspect/unreviewed/orphan items, no item claims a verification method its
     # children do not support, and no item's statement cites another item by
@@ -65,6 +81,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
 
       - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
         with:
@@ -97,12 +115,15 @@ jobs:
         run: docs/requirements/.venv/bin/python scripts/check-headers.py
 
   docs-site:
+    name: docs-site
     # Builds the docs site with -W: a broken cross-reference or orphaned page
     # fails the gate. Deploy is a separate workflow (pages.yml) so this job
     # stays read-only.
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
 
       - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
         with:
@@ -119,6 +140,7 @@ jobs:
           docs/site/.venv/bin/sphinx-build -W -b html -c docs/site docs docs/site/_build/html
 
   architecture:
+    name: architecture
     # Validates the LikeC4 architecture model and regenerates every generated
     # output — the artifacts under docs/architecture/ and the diagrams spliced
     # into docs/ARCHITECTURE.md — then fails on any drift (`git diff
@@ -133,6 +155,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
 
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
@@ -163,6 +187,7 @@ jobs:
         run: docs/requirements/.venv/bin/python scripts/check-arch-trace.py
 
   process:
+    name: process
     # Process gates (ADR 0006 rev 3): the branch is named type_number-snake_name and
     # links an open issue labeled with its type; the PR title — the commit that
     # reaches main under squash-merge — is a Conventional Commit. Runs the exact
@@ -181,6 +206,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
 
       - name: Branch named type_number-snake_name, its issue open, type-labeled, milestoned and parented to match the PR base
         env:
@@ -197,10 +224,12 @@ jobs:
           sh scripts/check-commit-msg.sh --pr-title "$RUNNER_TEMP/pr-title"
 
   secret-scan:
+    name: secret-scan
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
+          persist-credentials: false
           fetch-depth: 0 # the scan walks a commit range, which a shallow clone does not carry
       - name: gitleaks
         uses: gitleaks/gitleaks-action@e0c47f4f8be36e29cdc102c57e68cb5cbf0e8d1e # v3.0.0

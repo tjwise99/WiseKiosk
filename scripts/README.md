@@ -26,7 +26,6 @@ when a link breaks. Nothing enforces this — a wrong success line fails no buil
 
 | Check | Record |
 |---|---|
-| `check-workflow-hardening.mjs` | [cases](cases/check-workflow-hardening-mjs.md) |
 | `check-repo-silo.mjs` | [cases](cases/check-repo-silo-mjs.md) |
 | `check-verify-ci-parity.mjs` | [cases](cases/check-verify-ci-parity-mjs.md) |
 | `check-docs-index.mjs` | [cases](cases/check-docs-index-mjs.md) |
@@ -46,15 +45,15 @@ when a link breaks. Nothing enforces this — a wrong success line fails no buil
 
 A case is a throwaway repository, so it cannot pollute the tree under test and a seeded
 credential-shaped string never reaches a remote. Run from the repository root, which is where the `cp`
-reads from; a case for another check writes that check's input in place of the workflow file.
+reads from; each check's case writes that check's own input paths in place of the placeholders.
 
 ```sh
 case_run () { # $1 label   $2 expect (pass|fail)   $3 file contents
-  d=$(mktemp -d); mkdir -p "$d/.github/workflows"
-  printf '%s\n' "$3" > "$d/.github/workflows/w.yml"
+  d=$(mktemp -d); mkdir -p "$d/<input dir>"
+  printf '%s\n' "$3" > "$d/<input dir>/<input file>"
   ( cd "$d" && git init -q . && git add -A )
-  cp scripts/check-workflow-hardening.mjs "$d/"
-  ( cd "$d" && node check-workflow-hardening.mjs >/dev/null 2>&1 )
+  cp scripts/<check> "$d/"
+  ( cd "$d" && node <check> >/dev/null 2>&1 )
   [ $? -eq 0 ] && got=pass || got=fail
   [ "$got" = "$2" ] && echo "ok   $1" || echo "WRONG $1 (got $got)"
   rm -rf "$d"

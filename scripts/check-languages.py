@@ -96,18 +96,17 @@ LEGACY = {
     "scripts/check-branch.sh": "converts to Python under #109 check-branch conversion (ADR 0017 rev 5)",
     "scripts/validate-tree.sh": "deleted rather than converted, when the first active TST item "
     "retires the pending-tier exception it stands in for (#78; ADR 0017 rev 5)",
-    "scripts/check-commit-msg.sh": "replaced by commitlint (ADR 0016 rev 3)",
-    "scripts/check-eol.sh": "replaced by pre-commit as the local hook layer (ADR 0016 rev 3)",
+    "scripts/check-commit-msg.sh": "replaced by commitlint (ADR 0016 rev 4)",
+    "scripts/check-eol.sh": "replaced by pre-commit as the local hook layer (ADR 0016 rev 4)",
     "scripts/check-adr-index.mjs": "converts to Python under #110 Node check conversion (ADR 0017 rev 5)",
     "scripts/check-docs-index.mjs": "converts to Python under #110 Node check conversion (ADR 0017 rev 5)",
     "scripts/check-repo-silo.mjs": "converts to Python under #110 Node check conversion (ADR 0017 rev 5)",
     "scripts/splice-arch-diagrams.mjs": "converts to Python under #110 Node check conversion (ADR 0017 rev 5)",
     "scripts/check-verify-ci-parity.mjs": "waits on #101, which may delete it, under #111 parity-check conversion (ADR 0017 rev 5)",
-    "scripts/check-links.mjs": "replaced by lychee (ADR 0016 rev 3)",
-    "scripts/check-workflow-hardening.mjs": "replaced by zizmor with actionlint alongside (ADR 0016 rev 3)",
-    ".githooks/commit-msg": "replaced by pre-commit as the local hook layer (ADR 0016 rev 3)",
-    ".githooks/pre-commit": "replaced by pre-commit as the local hook layer (ADR 0016 rev 3)",
-    ".githooks/pre-push": "replaced by pre-commit as the local hook layer (ADR 0016 rev 3)",
+    "scripts/check-links.mjs": "replaced by lychee (ADR 0016 rev 4)",
+    ".githooks/commit-msg": "replaced by pre-commit as the local hook layer (ADR 0016 rev 4)",
+    ".githooks/pre-commit": "replaced by pre-commit as the local hook layer (ADR 0016 rev 4)",
+    ".githooks/pre-push": "replaced by pre-commit as the local hook layer (ADR 0016 rev 4)",
 }
 
 

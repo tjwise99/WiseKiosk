@@ -60,11 +60,6 @@ check-repo-silo:
     node scripts/check-repo-silo.mjs
 
 [group('checks')]
-[doc('Every action is pinned to an immutable reference naming its version, and no workflow grants a write permission at the top level')]
-check-workflow-hardening:
-    node scripts/check-workflow-hardening.mjs
-
-[group('checks')]
 [doc('Every `just verify` check runs in CI, every CI step is one of them or a named exception, and every token names a command its recipe runs')]
 check-verify-ci-parity:
     node scripts/check-verify-ci-parity.mjs
@@ -134,5 +129,5 @@ check-languages:
     python3 scripts/check-languages.py
 
 [group('checks')]
-[doc('Run every check the PR gate runs that has a local form; secret scanning and the PR-title check are CI-only')]
-verify: check-links check-eol check-branch check-reqs check-citations check-arch check-arch-trace check-site check-adr-index check-adr-revs check-docs-index check-repo-silo check-workflow-hardening check-verify-ci-parity check-languages
+[doc('Run every check the PR gate runs that has a local form; secret scanning, the PR-title check, and the workflow audit (zizmor, actionlint) are CI-only')]
+verify: check-links check-eol check-branch check-reqs check-citations check-arch check-arch-trace check-site check-adr-index check-adr-revs check-docs-index check-repo-silo check-verify-ci-parity check-languages

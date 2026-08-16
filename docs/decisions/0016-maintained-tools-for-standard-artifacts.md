@@ -3,10 +3,18 @@
 **Status:** accepted
 **Decided:** 2026-08-03 (#103 authored-vs-adopted check trade, measured against the cases recorded in
 [`../../scripts/README.md`](../../scripts/README.md))
-**Rev:** 3
+**Rev:** 4
 
 ## Revisions
 
+- **rev 4** — 2026-08-16 — corrects the zizmor measurements, which were bound to a pre-v1.10.0
+  zizmor without recording a version: on the adopted release (v1.29.0) the `pedantic` persona also
+  reports `anonymous-definition`, `undocumented-permissions` and `concurrency-limits` against the
+  live workflows — audits introduced across v1.10.0–v1.16.0 — plus `dependabot-cooldown` against
+  `.github/dependabot.yml` when the input is the whole tree, and `artipacked` reports at Low rather
+  than Medium since v1.17.0; a seeded fixture confirms zizmor does report a workflow declaring no
+  `permissions:` block, answering the question left open below; the adoptions are unchanged
+  (#105 adopt zizmor and actionlint).
 - **rev 3** — 2026-08-06 — states where ADR 0006 rev 3 carries the gate-path correction, in place of a
   claim that the correction would land in this record's own change; the adoptions are unchanged
   (#126 absorb amendment blocks).
@@ -158,8 +166,8 @@ later.
   per gate, *what it is allowed to let through*, and no adopted tool ships that sentence. Rejected
   because the sentence survives adoption — what `zizmor --persona=pedantic` lets through is as
   statable as what a script lets through — while the measurements went the other way on substance.
-  Against the live workflows `zizmor` reported **seven medium findings the authored check cannot see**
-  (`artipacked`, credential persistence on every checkout), and against seeded defects it caught the
+  Against the live workflows `zizmor` reported **seven `artipacked` findings the authored check
+  cannot see** (credential persistence on every checkout), and against seeded defects it caught the
   unpinned reference at High severity and both write-permission spellings.
 - **Adopt only where the tool is a strict superset, keeping a residue check for the remainder.** The
   shape this decision was expected to take. Rejected, but not uniformly: the version comment and the
@@ -170,8 +178,9 @@ later.
 - **`zizmor` at the default persona.** Rejected: it does not report top-level write grants at all,
   which would preserve most of `check-workflow-hardening.mjs` for a narrower reason than it was
   written for. `pedantic` was measured against the live workflows and produced **zero
-  excessive-permissions findings** — including no complaint about `pages.yml`'s job-level `pages:
-  write` and `id-token: write` elevation.
+  `excessive-permissions` findings** — the job-level `pages: write` and `id-token: write` elevation
+  in `pages.yml` is not excessive to it, though the separate `undocumented-permissions` audit
+  (v1.13.0) requires an explanatory comment beside every grant other than a bare `contents: read`.
 - **Suppressing `pedantic`'s disagreement over `permissions: read-all` rather than adopting it
   plainly.** `zizmor` reports `read-all`; `check-workflow-hardening.mjs` explicitly permits it and its
   own failure message recommends it. That is a genuine least-privilege disagreement, not a tool error.
@@ -236,9 +245,9 @@ later.
 - Whether an under-scan needs a guard, distinct from the empty scan the ruling above settles.
   `check-links.mjs` guards an unterminated fence because it blanks the rest of the file; under CommonMark
   such a fence runs to end of document, so `lychee` would extract no links past it and report clean.
-  `check-workflow-hardening.mjs` likewise fails a workflow declaring no `permissions:` block at all,
-  which the live measurement cannot confirm `zizmor` reports because both workflows declare one. Each is
-  one seeded fixture away from an answer.
+  `check-workflow-hardening.mjs` likewise fails a workflow declaring no `permissions:` block at all;
+  a seeded fixture confirms `zizmor` reports it (`excessive-permissions`). The fence case remains one
+  seeded fixture away from an answer.
 
 **Premise that would reopen this:** an adopted tool is abandoned, or changes its defaults so that it
 no longer covers the obligation it was adopted for; or a repository convention appears that the tool
