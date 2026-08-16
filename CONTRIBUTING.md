@@ -26,7 +26,7 @@ where deployed.
 just                # the gate roster: every check, beside what it asserts
 just verify         # every check the PR gate runs that has a local form
 just hooks-install  # once per clone: the pinned pre-commit toolchain, into scripts/.venv
-scripts/.venv/bin/pre-commit install  # once per clone: advisory hooks at commit and push
+scripts/.venv/bin/pre-commit install  # once per clone: advisory hooks at commit, commit message and push
 ```
 
 What each gate is allowed to let through, and why, is [`docs/CI.md`](docs/CI.md). `pre-commit
@@ -66,7 +66,8 @@ design_119-c4_model_completion
   default-base PR, an integration or epic base needs it linked by hand.
 
 **PR titles are Conventional Commits** — the repo squash-merges, so the title becomes the commit
-on `main`.
+on `main`. A `fixup!`/`squash!`/merge subject passes as a commit message, whose text the squash
+discards, and is refused as a title.
 
 ## Getting a change merged
 

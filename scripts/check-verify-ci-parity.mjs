@@ -61,7 +61,7 @@ const CHECK_TOKENS = {
 // CI steps with no local equivalent — exempted by name, not mapped from `just verify`.
 const CI_ONLY_ALLOWLIST = [
   "gitleaks", // secret-scan job: needs full git history, not part of `just verify`
-  "scripts/check-commit-msg.sh", // PR-title Conventional-Commit check: no PR title exists locally
+  "pre-commit run commitlint-pr-title", // PR-title Conventional-Commit check (commitlint, via the hook layer): no PR title exists locally
   "lycheeverse/lychee", // link check, run from a digest-pinned image: docker is not assumed locally
   "zizmor", // workflow audit, run from a digest-pinned image: no local install channel is decided
   "actionlint", // workflow lint, run from a digest-pinned image: same standing as zizmor

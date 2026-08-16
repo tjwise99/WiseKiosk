@@ -16,7 +16,7 @@ hooks-install:
     scripts/.venv/bin/pip install -r scripts/requirements-dev.txt
 
 [group('checks')]
-[doc('Every hook in .pre-commit-config.yaml passes over every tracked file: no private key, no oversized file, YAML and JSON parse, no merge-conflict marker mid-merge, no mixed line endings, no CRLF in the tracked tree')]
+[doc('Every pre-commit-stage hook in .pre-commit-config.yaml passes over every tracked file: no private key, no oversized file, YAML and JSON parse, no merge-conflict marker mid-merge, no mixed line endings, no CRLF in the tracked tree; the commitlint hooks run at their own stages, not here')]
 check-hooks:
     scripts/.venv/bin/pre-commit run --all-files
 
@@ -131,5 +131,5 @@ check-languages:
     python3 scripts/check-languages.py
 
 [group('checks')]
-[doc('Run every check the PR gate runs that has a local form; secret scanning, the PR-title check, the link check (lychee, from a digest-pinned image) and the workflow audit (zizmor, actionlint) are CI-only')]
+[doc('Run every check the PR gate runs that has a local form; secret scanning, the PR-title check (commitlint, via the hook layer), the link check (lychee, from a digest-pinned image) and the workflow audit (zizmor, actionlint) are CI-only')]
 verify: check-untracked check-hooks check-branch check-reqs check-citations check-arch check-arch-trace check-site check-adr-index check-adr-revs check-docs-index check-repo-silo check-verify-ci-parity check-languages
