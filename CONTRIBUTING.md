@@ -189,10 +189,13 @@ appended for the same reason; inserting one is permitted
     the citation out of the sentence, and if what remains still asserts what the cited document
     asserts, it restates rather than cites. Summarizing and citing is permitted; a second independent
     statement is what goes stale in one copy while the other stays right, with nothing comparing them.
+
+**Decisions**
+
 23. **Attributed decisions.** Does each decision the change records as settled — in an ADR's
-    alternatives, a `rationale`, or prose — carry `(owner, YYYY-MM-DD)` or a direct quote where the
+    alternatives, a `rationale`, or prose — carry its owner attribution, or a direct quote where the
     owner ruled it? An unattributed decision reads as an owner ruling but may be a session's
-    invention; the convention is [`docs/decisions/README.md`](docs/decisions/README.md)'s.
+    invention — the marker is [`docs/decisions/README.md`](docs/decisions/README.md)'s.
 
 **Deletions**
 
