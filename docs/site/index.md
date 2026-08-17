@@ -33,6 +33,7 @@ security
 :caption: Contracts
 
 ../contracts/module-contract
+../contracts/display-styling-contract
 ```
 
 ```{toctree}
