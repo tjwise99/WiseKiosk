@@ -1,12 +1,21 @@
 # 0017 — Authored language follows the artifact's audience: Go and TypeScript ship, Python checks the repository
 
 **Status:** accepted
-**Decided:** 2026-08-04 (#60 authored-language set, taken after
+**Decided:** 2026-08-16 (CSS's product-stylesheet disposition added; the audience rule itself taken
+2026-08-04 in #60 authored-language set, taken after
 [ADR 0016 rev 5](0016-maintained-tools-for-standard-artifacts.md) settled which authored checks survive at all)
-**Rev:** 5
+**Rev:** 6
 
 ## Revisions
 
+- **rev 6** — 2026-08-16 — `.css` gains a second disposition alongside the existing docs-site Furo
+  override: [the display styling contract](../contracts/display-styling-contract.md) introduces
+  `frontend/src/app.css` as a shared product stylesheet, which is authored CSS for what ships rather
+  than a documentation asset. The Decision table's first row gains CSS beside Go, TypeScript and the
+  Svelte component format; `scripts/check-languages.py`'s `.css` entry is updated to name both
+  dispositions. This changes what the table's first row names, so the `Decided` date moves with it;
+  the rest of the language set, the audience rule and the derivation rule are unchanged (#154 display
+  design).
 - **rev 5** — 2026-08-13 — `scripts/check-languages.py` gates the declared extension set, which
   falsifies two claims rev 4 made: *"Nothing here is gated"*, and the rejected alternative *Gate the
   set with a check* refusing one on the ground that "one residual obligation does not earn a gate of
@@ -67,8 +76,15 @@ authors **programs** in.
 
 | Artifact | Authored in |
 |---|---|
-| What ships to a user or an operator — the kiosk, and the tools an operator runs | Go, TypeScript, and the Svelte component format ([ADR 0018 rev 1](0018-frontend-svelte-vite-static-spa.md)) |
+| What ships to a user or an operator — the kiosk, and the tools an operator runs | Go, TypeScript, the Svelte component format ([ADR 0018 rev 1](0018-frontend-svelte-vite-static-spa.md)), and CSS for the shared product stylesheet ([the display styling contract](../contracts/display-styling-contract.md)) |
 | What checks this repository | Python, standard library only |
+
+**CSS carries a second, unrelated disposition beside the row above: a Furo theme override that is
+documentation rather than a program**, an asset the Sphinx docs-site build serves and outside this
+decision's reach on that ground alone
+([`../../scripts/check-languages.py`](../../scripts/check-languages.py) records both dispositions
+under the one extension). A product stylesheet is different: it ships to an operator, styling what
+they see, and is authored the same way the table's other product formats are.
 
 **Everything else present in the tree is derived, not enumerated.** A toolchain's own required input
 format — its configuration, its model, the items it stores — is part of invoking that toolchain
@@ -199,6 +215,13 @@ unregistered language whatever this record said.
   repository was not already installing. The rejection's own reasoning survives adoption rather than
   being overturned by it — a new extension is the loud case, and gating it is what leaves review a
   residue small enough to state, which is why item 12 narrows rather than retires.
+- **Keep every product style rule inside a `.svelte` `<style>` block, authoring no standalone
+  `.css`.** [the display styling contract](../contracts/display-styling-contract.md) had this as a live
+  option — CSS inside a component's `<style>` block, root-component globals included, was already
+  sanctioned without touching this record at all. Rejected there in favour of a shared token
+  stylesheet; the reasoning for that choice is that record's, not restated here. What follows for
+  this record is only the consequence: had the alternative been chosen, CSS would need no new
+  disposition and this rev would not exist.
 
 ## Consequences
 
@@ -230,6 +253,11 @@ unregistered language whatever this record said.
   nothing gating the citation. That constraint does not bind a later change:
   [`../../CONTRIBUTING.md`](../../CONTRIBUTING.md) requires a citation to carry the question's name
   beside its number, so a renumbered citation still names what it meant.
+- **`.css` now carries two dispositions under one declared extension.**
+  [`../../scripts/check-languages.py`](../../scripts/check-languages.py) judges by extension alone
+  and never opens a file, so it cannot tell a docs-site override from a product stylesheet apart; its
+  one `css` entry names both rather than splitting the extension, the same shape the audience binding
+  already takes for every other row in the Decision table above.
 
 **Premise that would reopen this:** an artifact appears that neither audience covers — something that
 must run where neither Python nor a shipped toolchain is reachable — or Python stops being
