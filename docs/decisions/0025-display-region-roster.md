@@ -40,12 +40,6 @@ reflow, no horizontal scroll, at narrower widths -->'s disjointness and reflow o
 roster the page lays out. Which region a given module is assigned is a per-deployment configuration
 choice; the roster itself is not.
 
-  **Open — the string dialect.** Region names are an operator-written configuration key, and whether
-  the schema spells them `top_left` (underscored) or `top-left` (the hyphenated form
-  [ADR 0022 rev 1](0022-config-schema-format.md)'s illustrative fragment happened to use) is
-  undecided. Halt-and-ask, carried to whichever ticket authors the schema; it settles the strings,
-  never the roster this record fixes.
-
 ## Alternatives considered
 
 - **An operator-configurable region grid**, letting a deployment declare its own regions rather than
@@ -53,7 +47,7 @@ choice; the roster itself is not.
   non-default value -->'s per-key enumeration needs a finite, machine-readable set to range over, and
   a grid an operator can reshape is not one. It is also generality with no second consumer — no
   deployment has asked for a region this roster does not already name — which
-  [`../../CONTRIBUTING.md`](../../CONTRIBUTING.md) *Before you build anything* already refuses:
+  [`../../CONTRIBUTING.md`](../../CONTRIBUTING.md) _Before you build anything_ already refuses:
   "no abstraction without a second consumer."
 
 ## Consequences
@@ -61,4 +55,3 @@ choice; the roster itself is not.
 - **The configuration schema's `region` enum is fixed to these thirteen names.** A per-deployment
   need for a region outside this set is not something the schema can accept; it revisits this record
   rather than being authored around it.
-- **The region-name string dialect stays open**, carried to whichever ticket authors the schema.
