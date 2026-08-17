@@ -211,4 +211,7 @@ appended for the same reason; inserting one is permitted
 
 24. **Orphaned names.** Where the change removes a recipe, check, or workflow step, does any
     operator-facing reference to its name survive that no gate reaches — a justfile `[doc()]`, a
-    workflow step `name:`, `--help` text?
+    workflow step `name:`, `--help` text? No check resolves a script name in prose against the tree;
+    the owner ruled this stays a review habit rather than a check (owner, 2026-08-17, #160
+    post-adoption-wave sweep) — a check here would have to tell operative prose from a rev-pinned
+    historical record, which is judgment.
