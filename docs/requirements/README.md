@@ -204,10 +204,10 @@ just check-reqs   # the tree's own checks, in the order the recipe lists them
 just verify       # runs check-reqs alongside the other repo gates
 ```
 
-`just check-reqs` runs the **exact** commands CI runs, in that order (job `requirements` in
-[`checks.yml`](../../.github/workflows/checks.yml)), and `check-verify-ci-parity` asserts that
-recipe-to-CI correspondence one command at a time, so a command added to the recipe and not to CI
-fails rather than passing unseen. The `--error-all` flag `validate-tree.sh` passes to Doorstop
+`just check-reqs` is the **same** invocation CI makes (job `requirements` in
+[`checks.yml`](../../.github/workflows/checks.yml) runs the recipe itself), so the local run and the
+gate are one spelling — a command added to the recipe is a command CI runs, with no second text to
+fall behind. The `--error-all` flag `validate-tree.sh` passes to Doorstop
 promotes its suspect / unreviewed / orphan / unresolved-reference warnings to errors, so the process
 exits non-zero and the gate actually blocks — plain `doorstop` only warns.
 

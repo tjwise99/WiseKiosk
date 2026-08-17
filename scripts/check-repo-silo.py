@@ -4,8 +4,7 @@ repository root holds no manifest or environment directory, and every
 Dependabot entry that is not github-actions names a non-root directory holding
 the manifest its ecosystem implies. See docs/CI.md § Repository shape.
 
-No dependencies: Python stdlib only, plain text scanning (no YAML parser) —
-matches scripts/check-verify-ci-parity.mjs's idiom.
+No dependencies: Python stdlib only, plain text scanning (no YAML parser).
 
 What this has been run against, in both directions: cases/check-repo-silo-py.md
 """

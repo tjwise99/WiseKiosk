@@ -123,7 +123,7 @@ or [`DEPLOYMENT.md`](DEPLOYMENT.md) where it is not
   is the question activation exists to ask, and that stays a human read — does this check still
   assert a clause its parent still states?
 - **Every test and check in the repository is executed by CI** — the whole-tree discovery and
-  verify/CI parity gates are [`CI.md § Gate wiring`](CI.md#gate-wiring)'s, not the tree's. A test no
+  verify/CI wiring gates are [`CI.md § Gate wiring`](CI.md#gate-wiring)'s, not the tree's. A test no
   runner reaches is a false signal, so a new test is wired in by its location alone.
 
 ---

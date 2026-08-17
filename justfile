@@ -1,4 +1,4 @@
-# WiseKiosk task runner. `just` lists recipes; recipes mirror what CI runs.
+# WiseKiosk task runner. `just` lists recipes; the check recipes are what CI runs.
 
 # Show available recipes.
 default:
@@ -22,8 +22,8 @@ check-hooks:
 
 [group('checks')]
 [doc('Branch is named type_number-snake_name; its issue is open, type-labeled, milestoned, and parented to match the PR base; the PR records the linkage')]
-check-branch:
-    python3 scripts/check-branch.py
+check-branch *ref:
+    python3 scripts/check-branch.py {{ref}}
 
 [group('checks')]
 [doc('Requirements tree validates: refs resolve, no suspect/unreviewed/orphan items, methods consistent, headers non-empty and prefix-free, no identifier cited in an item statement; the proposed backlog prints on a passing run (reports; not a gate)')]
@@ -61,18 +61,12 @@ check-docs-index:
 check-repo-silo:
     python3 scripts/check-repo-silo.py
 
-[group('checks')]
-[doc('Every `just verify` check runs in CI, every CI step is one of them or a named exception, and every token names a command its recipe runs')]
-check-verify-ci-parity:
-    node scripts/check-verify-ci-parity.mjs
-
 [group('docs')]
 [doc('First-time setup: install the pinned Sphinx toolchain into docs/site/')]
 site-install:
     python3 -m venv docs/site/.venv
     docs/site/.venv/bin/pip install -r docs/site/requirements-dev.txt
 
-# CI inlines these two commands byte-for-byte.
 [group('docs')]
 [doc('Regenerate the needs pages from Doorstop and build the docs site (warnings-as-errors)')]
 site-build:
@@ -132,4 +126,4 @@ check-languages:
 
 [group('checks')]
 [doc('Run every check the PR gate runs that has a local form; secret scanning, the PR-title check (commitlint, via the hook layer), the link check (lychee, from a digest-pinned image) and the workflow audit (zizmor, actionlint) are CI-only')]
-verify: check-untracked check-hooks check-branch check-reqs check-citations check-arch check-arch-trace check-site check-adr-index check-adr-revs check-docs-index check-repo-silo check-verify-ci-parity check-languages
+verify: check-untracked check-hooks check-branch check-reqs check-citations check-arch check-arch-trace check-site check-adr-index check-adr-revs check-docs-index check-repo-silo check-languages

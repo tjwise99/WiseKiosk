@@ -94,7 +94,6 @@ NO_EXTENSION = {
 LEGACY = {
     "scripts/validate-tree.sh": "deleted rather than converted, when the first active TST item "
     "retires the pending-tier exception it stands in for (#78; ADR 0017 rev 5)",
-    "scripts/check-verify-ci-parity.mjs": "waits on #101, which may delete it, under #111 parity-check conversion (ADR 0017 rev 5)",
 }
 
 

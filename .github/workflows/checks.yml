@@ -23,6 +23,9 @@ concurrency:
 
 jobs:
   # Every job's `name:` equals its id: required status checks key on the displayed name.
+  # Every check with a local form runs as its `just` recipe — the recipe body is the one
+  # spelling of what runs here and locally (docs/CI.md § Gate wiring) — and every setup-just
+  # step pins `just-version:`, so the executor CI depends on is a decided version, not a float.
   docs-and-hygiene:
     name: docs-and-hygiene
     runs-on: ubuntu-latest
@@ -31,11 +34,9 @@ jobs:
         with:
           persist-credentials: false
 
-      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
-        with:
-          node-version: 24
-
       - uses: extractions/setup-just@53165ef7e734c5c07cb06b3c8e7b647c5aa16db3 # v4
+        with:
+          just-version: "1.58.0"
 
       - name: Install pre-commit into a local venv (siloed under scripts/)
         run: |
@@ -43,11 +44,11 @@ jobs:
           scripts/.venv/bin/pip install -r scripts/requirements-dev.txt
 
       - name: No untracked, non-ignored file is present
-        run: python3 scripts/check-untracked.py
+        run: just check-untracked
 
       # lychee runs offline from the digest-pinned official image over the tracked Markdown set
       # (ADR 0016 rev 5); docker is not assumed on a contributor machine, so the step is a named
-      # CI-only exception in scripts/check-verify-ci-parity.mjs rather than a `just verify` check.
+      # CI-only exception (docs/CI.md § Gate wiring) rather than a `just verify` check.
       # The file list is materialised and tested non-empty before lychee runs: a failed or empty
       # listing has judged nothing and must not read as a clean scan.
       - name: Every relative Markdown link resolves (lychee, offline)
@@ -57,19 +58,19 @@ jobs:
           docker run --rm -i -v "$PWD:/repo:ro" -w /repo lycheeverse/lychee:0.24.2@sha256:e2d19e57cf6ab037026f20b8e449a1f30d9d7f81eef4194763aab2eab20bd28d --offline --no-progress --files-from - < "$RUNNER_TEMP/tracked-md"
 
       - name: Every pre-commit-stage hook passes over every tracked file
-        run: scripts/.venv/bin/pre-commit run --all-files
+        run: just check-hooks
 
       - name: The decisions directory and its index table agree
-        run: python3 scripts/check-adr-index.py
+        run: just check-adr-index
 
       - name: Every ADR citation pins that ADR's current rev
-        run: python3 scripts/check-adr-revs.py
+        run: just check-adr-revs
 
       - name: Every tracked document outside a dot-directory is claimed by the documentation index
-        run: python3 scripts/check-docs-index.py
+        run: just check-docs-index
 
       - name: No manifest at the repository root, no recipe is a shell script, and every Dependabot entry resolves to its manifest
-        run: python3 scripts/check-repo-silo.py
+        run: just check-repo-silo
 
       - name: Workflow supply-chain and privilege audit (zizmor, pedantic persona, offline audit set)
         uses: docker://ghcr.io/zizmorcore/zizmor@sha256:863026d54f91271b10b60b67ad8054cb37120167e162482597db102b3026a284 # 1.29.0
@@ -80,20 +81,16 @@ jobs:
         uses: docker://rhysd/actionlint@sha256:b1934ee5f1c509618f2508e6eb47ee0d3520686341fec936f3b79331f9315667 # 1.7.12
 
       - name: Every tracked file is a declared authored or derived kind
-        run: python3 scripts/check-languages.py
-
-      - name: Every `just verify` check runs in CI, and every token names a command its recipe runs
-        run: node scripts/check-verify-ci-parity.mjs
+        run: just check-languages
 
   requirements:
     name: requirements
     # Validates the Doorstop requirements tree: every TST reference resolves, no
     # suspect/unreviewed/orphan items, no item claims a verification method its
     # children do not support, and no item's statement cites another item by
-    # identifier. Runs every command `just check-reqs` runs and the one
-    # `just check-citations` runs, which reads the tree through the same venv;
-    # check-verify-ci-parity asserts that per command and not by order, so adding
-    # one to a recipe without adding it here fails. The tool is siloed under
+    # identifier. Runs `just check-reqs` and `just check-citations`, the recipes
+    # the local gate runs, which read the tree through the same venv; which
+    # commands those are is the recipes' own bodies. The tool is siloed under
     # docs/requirements/ with the feature it serves. No secrets: pure tree
     # validation.
     runs-on: ubuntu-latest
@@ -106,34 +103,20 @@ jobs:
         with:
           python-version: "3.12"
 
+      - uses: extractions/setup-just@53165ef7e734c5c07cb06b3c8e7b647c5aa16db3 # v4
+        with:
+          just-version: "1.58.0"
+
       - name: Install Doorstop into a local venv (siloed under docs/requirements/)
         run: |
           python -m venv docs/requirements/.venv
           docs/requirements/.venv/bin/pip install -r docs/requirements/requirements-dev.txt
 
-      - name: No item carries a review fingerprint nobody wrote
-        run: docs/requirements/.venv/bin/python scripts/check-unreviewed.py
-
-      - name: No inactive item's parent moved after the link was reviewed
-        run: docs/requirements/.venv/bin/python scripts/check-suspect-links.py
-
-      - name: Requirements tree validates (refs resolve, no suspect/unreviewed/orphan)
-        run: sh scripts/validate-tree.sh
-
-      - name: Verification methods are consistent parent to child
-        run: docs/requirements/.venv/bin/python scripts/check-method-consistency.py
-
-      - name: No item's statement cites another item by identifier
-        run: docs/requirements/.venv/bin/python scripts/check-text-citations.py
+      - name: Every requirements-tree check passes, and the proposed-item backlog prints (reports; not a gate)
+        run: just check-reqs
 
       - name: Every citation resolves and carries its item header
-        run: docs/requirements/.venv/bin/python scripts/check-citations.py
-
-      - name: Every header is non-empty, charset-safe and prefix-free
-        run: docs/requirements/.venv/bin/python scripts/check-headers.py
-
-      - name: The proposed-item backlog prints, per tier (reports; not a gate)
-        run: docs/requirements/.venv/bin/python scripts/report-proposed.py
+        run: just check-citations
 
   docs-site:
     name: docs-site
@@ -150,15 +133,17 @@ jobs:
         with:
           python-version: "3.12"
 
+      - uses: extractions/setup-just@53165ef7e734c5c07cb06b3c8e7b647c5aa16db3 # v4
+        with:
+          just-version: "1.58.0"
+
       - name: Install the docs-site toolchain into a local venv (siloed under docs/site/)
         run: |
           python -m venv docs/site/.venv
           docs/site/.venv/bin/pip install -r docs/site/requirements-dev.txt
 
-      - name: Regenerate needs pages from Doorstop and build the docs site (mirrors `just site-build`)
-        run: |
-          docs/site/.venv/bin/python docs/site/doorstop_to_needs.py
-          docs/site/.venv/bin/sphinx-build -W -b html -c docs/site docs docs/site/_build/html
+      - name: Regenerate needs pages from Doorstop and build the docs site (warnings-as-errors)
+        run: just check-site
 
   architecture:
     name: architecture
@@ -187,6 +172,10 @@ jobs:
         with:
           python-version: "3.12"
 
+      - uses: extractions/setup-just@53165ef7e734c5c07cb06b3c8e7b647c5aa16db3 # v4
+        with:
+          just-version: "1.58.0"
+
       - name: Install LikeC4 into the silo (docs/architecture/), locked
         run: npm --prefix docs/architecture ci
 
@@ -196,23 +185,17 @@ jobs:
           docs/requirements/.venv/bin/pip install -r docs/requirements/requirements-dev.txt
 
       - name: Architecture model validates and generated artifacts are neither stale, orphaned, nor uncommitted
-        run: |
-          docs/architecture/node_modules/.bin/likec4 validate docs/architecture/model
-          rm -rf docs/architecture/generated
-          docs/architecture/node_modules/.bin/likec4 codegen mermaid docs/architecture/model -o docs/architecture/generated
-          python3 scripts/splice-arch-diagrams.py
-          git add --intent-to-add -- docs/architecture/
-          git diff --exit-code HEAD -- docs/architecture/ docs/ARCHITECTURE.md
+        run: just check-arch
 
       - name: Every tagged identifier resolves to an accepted item, and every accepted, active item is tagged
-        run: docs/requirements/.venv/bin/python scripts/check-arch-trace.py
+        run: just check-arch-trace
 
   process:
     name: process
     # Process gates (ADR 0006 rev 3): the branch is named type_number-snake_name and
     # links an open issue labeled with its type; the PR title — the commit that
     # reaches main under squash-merge — is a Conventional Commit. The branch check
-    # is the exact script `just check-branch` runs, reading its pattern from
+    # is `just check-branch`, handed the PR's head ref, reading its pattern from
     # scripts/branch-shape.regex; the title runs through the hook layer's pinned
     # commitlint (ADR 0016 rev 5) against the pull-request-title configuration,
     # which drops the fixup!/squash!/merge allowances that never reach main.
@@ -231,12 +214,16 @@ jobs:
         with:
           persist-credentials: false
 
+      - uses: extractions/setup-just@53165ef7e734c5c07cb06b3c8e7b647c5aa16db3 # v4
+        with:
+          just-version: "1.58.0"
+
       - name: Branch named type_number-snake_name, its issue open, type-labeled, milestoned and parented to match the PR base
         env:
           HEAD_REF: ${{ github.head_ref }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: python3 scripts/check-branch.py "$HEAD_REF"
+        run: just check-branch "$HEAD_REF"
 
       - name: Install pre-commit into a local venv (siloed under scripts/)
         run: |

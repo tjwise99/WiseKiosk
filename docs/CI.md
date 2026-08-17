@@ -298,9 +298,8 @@ resolve, a citation to something that does not exist, an index that has drifted 
   refuses for its own gates for the same reason; offline buys that stability by checking absolute
   `http`/`https` links not at all. With the host allowlist retired (ADR 0016 rev 5), an absolute
   link is entirely unconstrained: documentation may link outward, and nothing here reviews where to.
-  **The gate is a CI-only exception rather than a `verify` check**: the image digest is the pin, a
-  contributor machine is not assumed to run docker, and command-text parity between a local recipe
-  and the pinned image cannot hold. A local run is the same invocation — piping `git ls-files
+  **The gate is a CI-only exception rather than a `verify` check**: the image digest is the pin,
+  and a contributor machine is not assumed to run docker. A local run is the same invocation — piping `git ls-files
   '*.md'` into `lychee --offline --no-progress --files-from -` — against a release binary of the
   image's version. The population is the tracked set; an untracked Markdown file is outside it, and
   the untracked-file preflight (§ *Repository shape*) is what fails it rather than this gate.
@@ -693,21 +692,30 @@ Unbuilt; owned by #99 upstream contract checks.
 These assert that the regime is real rather than declared. Each states a property of machinery
 already decided, which is what makes it a check and not a want.
 
-- Every check `just verify` depends on also runs in CI, and every named CI step is one of those
-  checks or an enumerated CI-only exception. A recipe running more than one command lists one token
-  per command, and the tokens are held against the recipe body with `just <recipe>` expanded in
-  place: a token naming no command its recipe runs fails, and a command no token covers fails. A
-  `#!` recipe is one script rather than a list of commands, so its lines are not mapped
-  individually. A token is sought only where a step runs one: neither a comment nor a step's own
-  `name:` satisfies it, or deleting a step and leaving its name behind would pass.
-  **What it compares is command text, not the ability to run it.** A command naming a venv or
-  `node_modules` executable is proved present in both places while the toolchain providing it is
-  installed per job by steps this deliberately skips, so a check can be wired identically in both and
-  still be unable to execute in one. **Nothing maps a check to the toolchain its job installs.** A
-  tool a check *invokes internally* is further out of reach
-  still: no gate here reads a check's source, so a dependency written inside one is declared nowhere
-  any of them look. `just` is the live instance — two of these scripts read its dump, and nothing
-  says so where a gate would see it.
+- Every check `just verify` depends on runs in CI **as its recipe**: a job step invokes
+  `just <recipe>`, after an explicit `Install …` step per toolchain and a `setup-just` step carrying
+  a `just-version:` pin, so the executor CI depends on is a decided version rather than a float. The
+  recipe body is the single spelling of each check — what runs locally and what runs in CI are one
+  text, so the two-spellings drift an inspection gate would re-verify cannot arise, there being no
+  second spelling to drift (#101 CI-invokes-just, which retired the authored comparison check with
+  that defect class). What enforces the wiring is execution itself: a step invoking a recipe the
+  justfile does not define fails its job loudly, and a recipe edit is an edit to what CI runs.
+  **Five CI steps are exceptions with no local form**, named here and machine-checked nowhere:
+  secret scanning (gitleaks — walks history a checkout's tree does not carry), the PR-title
+  commitlint run (no PR title exists locally), the lychee link check, and the zizmor and actionlint
+  workflow audits (each run from a digest-pinned image; docker is not assumed on a contributor
+  machine, and no local install channel is decided).
+  **What watches the justfile is CI itself and nothing else** — an accepted, recorded loss of the
+  retirement. A recipe edit changes what CI runs with no independent reader to disagree, and a CI
+  step added outside both categories — recipe invocation and the exceptions above — fails nothing
+  and is caught at review or not at all.
+  **What execution does not decide:** nothing maps a recipe to the toolchain its job installs — the
+  `Install …` steps must still be right, per job — though a toolchain a recipe needs and a job lacks
+  fails the run rather than passing a text comparison. A tool a check *invokes internally* is still
+  declared nowhere any gate looks: `check-repo-silo.py` reads `just`'s dump, and only its job's own
+  setup step says so. And the pinned CI `just` is compared against nothing local — a contributor's
+  `just` is whatever they installed, and skew between the two surfaces only where execution
+  semantics differ.
 - Every committed test file falls under a configured runner's reach; a file excluded by skip, build
   tag, glob gap, or wrong directory fails. The requirements tier is covered by `doorstop --error-all`
   and is deliberately not re-encoded here. Unbuilt until a runner exists to detect anything: #82
