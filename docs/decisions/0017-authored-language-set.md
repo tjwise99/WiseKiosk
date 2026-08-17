@@ -43,7 +43,7 @@ facility, which costs a classifier arm and a fixture suite per language, and its
 fails on a language that has neither. A set nobody bounded is an obligation nobody can size.
 
 **One of the candidates is already owed and the other is not.** Python is unconditional here for
-reasons that have nothing to do with checks: Doorstop ([ADR 0002 rev 1](0002-requirements-management-doorstop.md))
+reasons that have nothing to do with checks: Doorstop ([ADR 0002 rev 2](0002-requirements-management-doorstop.md))
 and Sphinx ([ADR 0004 rev 1](0004-docs-site-sphinx-needs.md)) both require it, and CI installs it for two jobs
 whatever the check scripts are written in. Nothing obliges Node in the repository-checks layer at
 all — all seven `.mjs` scripts import only `node:fs`, `node:child_process` and `node:path`, and five
@@ -182,7 +182,7 @@ unregistered language whatever this record said.
   [ADR 0016 rev 5](0016-maintained-tools-for-standard-artifacts.md) adopts four tools that bring TOML and a
   JavaScript-or-JSON-or-YAML configuration between them. An ADR revved one ticket after it is written
   was written too early.
-- **Gate the set with a check.** Machine-decidable, and [ADR 0011 rev 1](0011-requirement-or-convention.md)
+- **Gate the set with a check.** Machine-decidable, and [ADR 0011 rev 2](0011-requirement-or-convention.md)
   routes a machine-decidable convention to a check — which is why this was the drafted answer.
   Rejected: a new authored language usually arrives as a new file extension in a diff's file list,
   which is the loudest thing a review sees — the embedded case named in the Decision above is the
@@ -206,7 +206,7 @@ unregistered language whatever this record said.
   verified by re-running the cases [`../../scripts/README.md`](../../scripts/README.md) records for
   the original, in both directions, because a conversion that is verified by inspection is a rewrite
   with a clean-looking diff.
-- **`check-branch` loses `curl` and `jq` for `urllib` and `json`.** [ADR 0006 rev 3](0006-process-gates.md)'s
+- **`check-branch` loses `curl` and `jq` for `urllib` and `json`.** [ADR 0006 rev 4](0006-process-gates.md)'s
   *plain sh + curl + jq — no toolchain* property, already corrected by
   [ADR 0016 rev 5](0016-maintained-tools-for-standard-artifacts.md) when `commitlint` and `pre-commit` were
   adopted, ends completely. What replaces it is a weaker but real property: the interpreter the gates
@@ -220,11 +220,11 @@ unregistered language whatever this record said.
   exclusion under that gate's own rule. Bounded is the claim, not small: what the bound buys is that
   the population changes only by an ADR.
 - **No requirement item states any of this.** The decision constrains the repository, and
-  [ADR 0011 rev 1](0011-requirement-or-convention.md) makes a repository constraint a check or a checklist
+  [ADR 0011 rev 2](0011-requirement-or-convention.md) makes a repository constraint a check or a checklist
   question, never a tree item.
 - **The review checklist gains a question, *Languages***, appended to its *Code* section rather than
   placed beside the dependency question it most resembles. Inserting it there would have renumbered
-  the questions below it, against [ADR 0002 rev 1](0002-requirements-management-doorstop.md),
+  the questions below it, against [ADR 0002 rev 2](0002-requirements-management-doorstop.md),
   [ADR 0003 rev 2](0003-architecture-as-code-likec4.md) and
   [ADR 0016 rev 5](0016-maintained-tools-for-standard-artifacts.md), which cite one by number with
   nothing gating the citation. That constraint does not bind a later change:
@@ -233,7 +233,7 @@ unregistered language whatever this record said.
 
 **Premise that would reopen this:** an artifact appears that neither audience covers — something that
 must run where neither Python nor a shipped toolchain is reachable — or Python stops being
-unconditional here, which means both Doorstop ([ADR 0002 rev 1](0002-requirements-management-doorstop.md)) and
+unconditional here, which means both Doorstop ([ADR 0002 rev 2](0002-requirements-management-doorstop.md)) and
 Sphinx ([ADR 0004 rev 1](0004-docs-site-sphinx-needs.md)) leaving. A single script that would have been shorter
 in another language is not that premise; it is the argument this decision rejected. Absent either, do
 not relitigate.

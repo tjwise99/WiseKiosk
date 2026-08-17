@@ -5,7 +5,7 @@ What CI does for this repository, and what it refuses to let through.
 **None of this is a requirement.** A requirement obliges the running software, and every gate below
 constrains the repository instead — its source hygiene, its dependencies, its documentation, its own
 wiring. The product's obligations live in [`requirements/`](requirements/README.md) and are failed
-against there ([ADR 0011 rev 1](decisions/0011-requirement-or-convention.md)). Adding or retiring a gate is
+against there ([ADR 0011 rev 2](decisions/0011-requirement-or-convention.md)). Adding or retiring a gate is
 an edit here and a change to the check, not a specification change.
 
 **Most of what follows is not built yet.** The gates are described in the tense they will run in;
@@ -81,24 +81,15 @@ Unbuilt; owned by #7 boundary-contract codegen.
 Comments state mechanism. Reason, history and evaluative judgement are authored in a documentation
 home and cited from the comment.
 
-- A classifier decides which comments belong to a language's documentation facility. Its fixture
-  suite proves, per covered language, that a narrative comment is flagged and that a documentation
-  comment never is.
-- A language-coverage registry fails on any tracked file resolving to no language, or to a language
-  with neither a classifier arm nor a recorded exclusion — so adding a language cannot silently
-  disable the gate for it.
-- A multi-line comment outside a documentation facility fails; an arbitrarily long doc comment inside
-  one passes.
-- A change adding more comment lines outside a documentation facility than the configured bound
-  allows fails, with the bound read from configuration rather than from the checking code.
-- A bare deferred-work marker fails; one naming a tracked issue passes.
-- A requirement ID or ADR number cited in a comment that names no existing item or decision fails.
+- A requirement ID or ADR number cited in a comment that names no existing item or decision fails —
+  `check-citations` runs tree-wide, code comments included.
 
-**Why volume is gated at all.** The failure mode is not one bad comment, it is prose accreting until
-the code is read through a narrator. A bound on added volume is the only form of that which a machine
-can decide; whether a specific comment earns its place is a review question, below.
-
-Unbuilt; owned by #59 comment-discipline gate.
+Whether a comment is narrative rather than mechanism, and whether added comment volume earns its
+place, is a review habit rather than a gate: #59 comment-discipline gate closed not-planned (owner,
+2026-08-16). The defect class it targeted is carried by the `review-diff.py` Stop hook, which surfaces
+[`CONTRIBUTING.md`](../CONTRIBUTING.md)'s *Comments* checklist questions at write time, and by
+independent review — across the five-PR ADR 0016 rev 5 adoption wave this produced zero
+comment-discipline findings. Reopens if a narrative block or comment bloat reaches `main` past both.
 
 ## Dependency vulnerabilities
 
@@ -395,13 +386,13 @@ resolve, a citation to something that does not exist, an index that has drifted 
   the repository rather than read from an inventory: adding a document without indexing it fails,
   retiring one fails until its row goes, and there is no exclusions list to append to — excluding
   anything that is not machinery by that rule takes a change to the check itself
-  ([ADR 0014 rev 3](decisions/0014-documentation-index-claims-documents.md)). A row whose *Document* cell
+  ([ADR 0014 rev 4](decisions/0014-documentation-index-claims-documents.md)). A row whose *Document* cell
   renders with a trailing slash claims the subtree beneath it, which is how `decisions/`,
   `requirements/`, `contracts/`, `architecture/` and `site/` are covered by one row each. Every row's
   link resolves to a tracked file, one rendered path carries one row, a row names a tracked document
   or a directory holding one, no row indexes a dot-directory, and no *Guarantees* or *Excludes* cell
   is empty. The index does not index itself. A new top-level dot-directory is excluded the moment it
-  exists, with no edit anywhere — the trade ADR 0014 rev 3 records, which is why the check names the
+  exists, with no edit anywhere — the trade ADR 0014 rev 4 records, which is why the check names the
   machinery directories it skipped on every run. A dot-prefixed file at the repository root is not a
   directory and must be indexed like any other document. Scope is Markdown: the tree's items are
   claimed by the tree and gated by `check-reqs`, and code is claimed by nothing here.
@@ -520,7 +511,7 @@ changed, which the citation resolver above decides without anyone declaring anyt
 - **The pull-request title is a Conventional Commit, and so is each local commit message** — one
   obligation at two stages, delegated to `commitlint`
   ([ADR 0016 rev 5](decisions/0016-maintained-tools-for-standard-artifacts.md); the gate itself is
-  [ADR 0006 rev 3](decisions/0006-process-gates.md)'s). Both stages run through the hook layer's
+  [ADR 0006 rev 4](decisions/0006-process-gates.md)'s). Both stages run through the hook layer's
   `repo: local` hooks and one base configuration, `.commitlintrc.json` —
   `@commitlint/config-conventional`, plus a `scope-case` rule restoring the retired check's
   lowercase-scope refusal, which the preset does not carry. The `commit-msg` hook is the
@@ -542,7 +533,7 @@ changed, which the citation resolver above decides without anyone declaring anyt
   behind. A second type label makes the branch type ambiguous, and an unmilestoned ticket is absent
   from the phase axis that carries the definition of done. This is detected at merge, on the change
   whose ticket is wrong, rather than at filing: GitHub cannot refuse to create a malformed issue, and
-  CI does not write ([ADR 0013 rev 3](decisions/0013-work-tracking-invariants.md)).
+  CI does not write ([ADR 0013 rev 4](decisions/0013-work-tracking-invariants.md)).
 - A pull request's base and its issue's parent agree. A parent implies a non-default base; an
   integration branch implies membership in the ticket anchoring it; and a non-default base that is
   not itself a conforming branch fails rather than skips, because an anchor the check cannot resolve
@@ -746,7 +737,7 @@ obliging tiers.
 
 **Review obligations.** An obligation on an author that leaves no artifact is answered by a reader, in
 [`../CONTRIBUTING.md`](../CONTRIBUTING.md)'s checklist, rather than by anything here
-([ADR 0011 rev 1](decisions/0011-requirement-or-convention.md)). The pull-request template points
+([ADR 0011 rev 2](decisions/0011-requirement-or-convention.md)). The pull-request template points
 there. Two of those questions have a mechanical artifact to read from, deliberately: the documentation
 index this document's gates hold to the tree, and the list of every ADR citation a change re-pinned
 without touching the sentence around it, which the `pre-push` hook prints whenever a branch revs one
@@ -761,7 +752,7 @@ gets spelled.
 merge; only the tree can say the system is wrong.
 
 **How work is tracked, beyond the ticket a branch names.** Three things were weighed and deliberately
-left ungated ([ADR 0013 rev 3](decisions/0013-work-tracking-invariants.md)). Ordering lives in GitHub's
+left ungated ([ADR 0013 rev 4](decisions/0013-work-tracking-invariants.md)). Ordering lives in GitHub's
 native dependency edges and never in a `⛔ Blocked by:` line in a body: the practice is adopted, but a
 literal-string ban flags the very documents that forbid the line, and is respelled for free — what
 enforces it is that there is no second place to write ordering. Whether a ticket should be rescoped

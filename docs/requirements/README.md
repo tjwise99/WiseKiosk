@@ -5,7 +5,7 @@ Git-native requirements-management tool that gives every requirement a **stable 
 stakeholder needs into testable software requirements and then into verification items, and **fails
 CI** when a change leaves the trace stale ([what that comes to](#running-the-gate)). Why this exists
 and why Doorstop specifically:
-[ADR 0002 rev 1](../decisions/0002-requirements-management-doorstop.md).
+[ADR 0002 rev 2](../decisions/0002-requirements-management-doorstop.md).
 
 ## The three documents
 
@@ -46,7 +46,7 @@ Beyond Doorstop's native fields, every item carries four stored attributes
 delivers it is not the item's. Nothing decides this mechanically, so it is question 15, *Named
 resources*, on [`../../CONTRIBUTING.md`](../../CONTRIBUTING.md)'s review checklist, where every
 obligation that leaves no artifact is carried
-([ADR 0011 rev 1](../decisions/0011-requirement-or-convention.md)).
+([ADR 0011 rev 2](../decisions/0011-requirement-or-convention.md)).
 
 **A `TST` item is a verification obligation, not a test function.** It states what must be proven, so
 several items may be discharged by one test and one item may need several. Counting `TST` items
@@ -259,7 +259,7 @@ Run all commands with the venv (`docs/requirements/.venv/bin/doorstop …`).
 |---|---|---|
 | Add an item | `doorstop add SRS` | Creates the next `SRS0NN.yml`. Edit its `text` to a single "shall" statement; write a `header` summarising it |
 | Link it up | `doorstop link SRS0NN SYS0MM` (child first, parent second) | Every `SRS` needs a `SYS` parent and every `TST` a `SRS` parent, or the gate flags an orphan |
-| Point a `TST` at its check | add a `references` list entry `{path: <repo-relative-file>, type: file}` | The path must resolve to a real tracked file. **Doorstop cannot reference a file under a dot-directory** (e.g. anything in `.github/`) — see ADR 0002 rev 1; cite such wiring in the item's `text` instead |
+| Point a `TST` at its check | add a `references` list entry `{path: <repo-relative-file>, type: file}` | The path must resolve to a real tracked file. **Doorstop cannot reference a file under a dot-directory** (e.g. anything in `.github/`) — see ADR 0002 rev 2; cite such wiring in the item's `text` instead |
 | Re-bless a child after editing its parent | `doorstop clear <UID>`, then `doorstop review <UID>` | `clear` updates the stored parent fingerprint in the child's `links:`; `review` alone re-stamps the item but leaves the link suspect. Re-blessing is the human act of re-reading a downstream item after its parent moved — do not script it blindly |
 | Re-bless an item after moving it to a different parent | `doorstop review <UID>` | `clear` is not enough: the item's parent UIDs are inside its own stamp, so the item itself is unreviewed. Read it against the parent it now has. `--error-all` reports it as `unreviewed changes` until you do |
 | Baseline a round | — | Its `SYS`/`SRS` items land `accepted` + `active: true`, reviewed in the same change; only items awaiting decomposition or a verifying artifact stay `active: false` (see *Pending* above). "Active" and "reviewed" arrive together — an active-but-unreviewed item fails `--error-all` — so a domain's requirements are never left `proposed`/inactive, which would leave them un-baselined and outside the gate |

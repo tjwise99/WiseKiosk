@@ -6,7 +6,7 @@ What a deployment must do to reach a running kiosk, and to move from one publish
 operator assembles from what the project publishes, and every obligation below is on what ships or on
 the procedure that documents it — not on the running system, which cannot violate any of them. The
 product's obligations live in [`requirements/`](requirements/README.md)
-([ADR 0011 rev 1](decisions/0011-requirement-or-convention.md)).
+([ADR 0011 rev 2](decisions/0011-requirement-or-convention.md)).
 
 **What asserts each of these is [`CI.md`](CI.md).** An obligation is stated here; the check that
 decides it is described there, which is where every check on this repository is described.

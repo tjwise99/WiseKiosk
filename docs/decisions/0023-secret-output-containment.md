@@ -23,7 +23,7 @@ records the secret *delivery* mechanism; this is its *containment* counterpart.
 
 **The tree already presumes half the answer.** [`../CI.md`](../CI.md) § *Module and framework
 structure* — checks that live outside the requirements tree under
-[ADR 0011 rev 1](0011-requirement-or-convention.md) — asserts that *no exported shaping function's
+[ADR 0011 rev 2](0011-requirement-or-convention.md) — asserts that *no exported shaping function's
 parameters include the secret type*. That check names a **distinct secret type** as a thing it can
 refer to, but no document specifies the type or gives it a home. The live question is therefore two
 halves: whether that type should be specified anywhere, and which mechanism proves that obligation
@@ -58,7 +58,7 @@ takes the secret type, so a secret cannot travel into the code that shapes clien
 place.
 
 **Where the type is specified — the narrowed question, answered.** Under
-[ADR 0011 rev 1](0011-requirement-or-convention.md), *"there is a distinct secret type"* is a
+[ADR 0011 rev 2](0011-requirement-or-convention.md), *"there is a distinct secret type"* is a
 structural convention a machine settles — the existing check — not an obligation on what the running
 software does, so it is **not a new requirement**, and adding one would reintroduce the tree growth
 that ADR removed. **This ADR is the type's specification**; [`../CI.md`](../CI.md) § *Module and
@@ -123,6 +123,6 @@ why the two are composed rather than either chosen.
   `verification-justification` already records, not a new gap this introduces.
 - **The type's shape is specified here and nowhere in the tree.** A later reader asking *"what is the
   secret type?"* is sent to this ADR by the check that names it, not to a requirement — which is the
-  [ADR 0011 rev 1](0011-requirement-or-convention.md) division working as intended, and the thing that
+  [ADR 0011 rev 2](0011-requirement-or-convention.md) division working as intended, and the thing that
   would reopen this record is a change to that division or a secret shape the confined type cannot
   carry.

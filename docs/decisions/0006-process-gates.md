@@ -1,14 +1,18 @@
 # 0006 — Gate branch shape, ticket linkage, and PR titles in CI
 
 **Status:** accepted; ticket-metadata obligations extended and the parent-ticket definition added by
-[ADR 0013 rev 3](0013-work-tracking-invariants.md), whose read-only stance this ADR's rejected
+[ADR 0013 rev 4](0013-work-tracking-invariants.md), whose read-only stance this ADR's rejected
 write-scoped-token alternative supplies; gate path corrected by
 [ADR 0016 rev 5](0016-maintained-tools-for-standard-artifacts.md)
 **Decided:** 2026-07-22 (process-gates design discussion, ticket #27)
-**Rev:** 3
+**Rev:** 4
 
 ## Revisions
 
+- **rev 4** — 2026-08-17 — corrects the local mirror of the advisory hooks: `just install-hooks`
+  named a recipe that no longer exists, renamed `just hooks-install` (toolchain install) with
+  `pre-commit install` as the separate step that wires the hooks, when #108 pre-commit adoption
+  landed; no gate changes (#160 post-adoption-wave sweep).
 - **rev 3** — 2026-08-13 — two *Consequences* the tree contradicted: a count of required CI checks
   saying five against a workflow defining six, and a named legacy branch asserted as blocked which no
   longer exists. Both replaced by the rule they were instances of; no gate changes (#145 prose pass).
@@ -30,7 +34,8 @@ repo and run where the repo runs.
 ## Decision
 
 Four gates, enforced by a `process` CI job on `pull_request` (to become a required check) and
-mirrored locally by `just check-branch` and the advisory hooks `just install-hooks` installs:
+mirrored locally by `just check-branch` and the advisory hooks `pre-commit install` wires, once
+`just hooks-install` has put the toolchain in place:
 
 1. **Branch shape.** Branches are named `type_number-snake_name` — `type` one of `task`, `bug`,
    `design`, `module`; `number` a GitHub issue number; `snake_name` lowercase snake_case. The full

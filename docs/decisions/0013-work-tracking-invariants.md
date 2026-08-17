@@ -2,10 +2,12 @@
 
 **Status:** accepted
 **Decided:** 2026-08-02 (work-tracking invariants discussion, ticket #64 work-tracking invariants)
-**Rev:** 3
+**Rev:** 4
 
 ## Revisions
 
+- **rev 4** — 2026-08-17 — renames `scripts/check-branch.sh` to `scripts/check-branch.py` throughout,
+  converted by #109 check-branch conversion; no ground changes (#160 post-adoption-wave sweep).
 - **rev 3** — 2026-08-06 — drops the appended restatement of the advisory half's grounds; the ground
   that holds for any filer is stated once, under *Consequences* (#126 absorb amendment blocks).
 - **rev 2** — 2026-08-05 — corrects a ground that named the retired amendment mechanism; the CI-mutation stance is unchanged (#118 ADR revisions).
@@ -13,8 +15,8 @@
 
 ## Context
 
-[ADR 0006 rev 3](0006-process-gates.md) specifies exactly one property of a ticket — that it is open and
-type-labelled — and only because `scripts/check-branch.sh` can decide it. Everything else about how
+[ADR 0006 rev 4](0006-process-gates.md) specifies exactly one property of a ticket — that it is open and
+type-labelled — and only because `scripts/check-branch.py` can decide it. Everything else about how
 work is tracked was convention, and convention drifted twice in five days. On 2026-07-24, ten of
 sixteen open tickets could not legally be branched on: unlabeled, or carrying stock `enhancement` in
 type duty, which is not a branch type. Four days after that cleanup, #70 configuration generator
@@ -36,7 +38,7 @@ anything.
 
 ## Decision
 
-Four candidates were weighed. Two are gated in `check-branch.sh`, one is recorded ungated, one is
+Four candidates were weighed. Two are gated in `check-branch.py`, one is recorded ungated, one is
 dropped.
 
 **Gated: the ticket a branch names carries a milestone and exactly one type label.** The type set is
@@ -45,12 +47,12 @@ label rule behind; an unreadable set fails rather than counting zero. A second t
 branch type ambiguous — the branch type is supposed to name the template the ticket was opened from,
 and two candidates break that correspondence. An unmilestoned ticket is absent from the phase axis
 that carries the definition of done. Both read fields already present in the issue payload
-`check-branch.sh` fetches, so neither costs an API call.
+`check-branch.py` fetches, so neither costs an API call.
 
 **Gated: a sub-issue means a shared merge target.** A parent ticket exists *iff* there is an
 integration branch, and a ticket is that parent's sub-issue *iff* its pull request targets that
 branch. All other grouping is the milestone's. This is forced rather than chosen: an integration
-branch is a branch, so under ADR 0006 rev 3 it links an open type-labelled issue of its own, and that issue
+branch is a branch, so under ADR 0006 rev 4 it links an open type-labelled issue of its own, and that issue
 cannot close until the branch merges. It also separates the two progress bars — the milestone answers
 *is the phase done*, the parent answers *is this branch ready for the mainline*. The gate asserts the
 biconditional in both directions, and a non-default base that is not itself a conforming branch fails
@@ -65,7 +67,7 @@ edges they mirrored. It is not gated; see below.
 GitHub's `-is:blocked` behaviour given edges that exist, not an obligation on anyone. It states no
 proposition, so nothing can fail it, and recording it in [`../CI.md`](../CI.md) would put a
 non-decidable statement into the document that exists to hold the decidable ones —
-[ADR 0011 rev 1](0011-requirement-or-convention.md)'s mistake, one level up from where it usually happens.
+[ADR 0011 rev 2](0011-requirement-or-convention.md)'s mistake, one level up from where it usually happens.
 
 Enforcement is at merge and read-only. It fires on the change whose ticket is wrong, never on an
 unrelated one, and it refuses a merge rather than annotating an issue.
@@ -73,7 +75,7 @@ unrelated one, and it refuses a merge rather than annotating an issue.
 ## Alternatives considered
 
 - **Detect-and-flag on `issues:` events** — an Action labelling `orphan`/`needs-triage`, which is
-  what #64 work-tracking invariants proposed. Rejected: it needs `issues: write`, and ADR 0006 rev 3
+  what #64 work-tracking invariants proposed. Rejected: it needs `issues: write`, and ADR 0006 rev 4
   rejected CI mutation on the ground that gates verify rather than mutate. That stance is **held
   here, not revisited**. The underlying argument is narrower than its wording — what it forbids is CI
   writing the evidence a gate then reads, which a flagger does not do — but the owner chose to keep
@@ -95,14 +97,14 @@ unrelated one, and it refuses a merge rather than annotating an issue.
   second is imminent, and the historical record already holds an instance the gate would have caught
   — PR #79 merged into `design_18-closing_review` while its ticket #69 tree rebuild was never a
   sub-issue of that branch's anchor.
-- **Writing these as requirements in the tree.** Rejected under ADR 0011 rev 1: nothing the running kiosk
+- **Writing these as requirements in the tree.** Rejected under ADR 0011 rev 2: nothing the running kiosk
   does can violate any of them.
 
 ## Consequences
 
 - **A ticket nobody works is never seen.** The gate reaches an issue only when a branch names it, so
   a malformed ticket left in the backlog stays malformed and stays absent from its milestone's
-  progress. This is the cost of holding ADR 0006 rev 3's read-only line, and it is accepted knowingly.
+  progress. This is the cost of holding ADR 0006 rev 4's read-only line, and it is accepted knowingly.
 - **#64 work-tracking invariants' own timing argument is overturned rather than ignored.** It held
   that a branch-side gate fires too late, when the context that would have made the ticket correct is
   gone. That is sound for body *content*, which decays; it is weak for a milestone and a type label,
@@ -112,7 +114,7 @@ unrelated one, and it refuses a merge rather than annotating an issue.
   silently drops it and the safe path produces an unbranchable ticket again.
 - **The write-time half is advisory by construction.** Nothing at filing time refuses a malformed
   ticket: GitHub cannot decline to create one, and CI does not write. That is why the merge gate is
-  the half with teeth, and the pairing is ADR 0006 rev 3's own — an advisory `commit-msg` hook beside a
+  the half with teeth, and the pairing is ADR 0006 rev 4's own — an advisory `commit-msg` hook beside a
   required title check.
 - **Judgment stays judgment.** Whether a ticket should be rescoped or closed, which close-reason
   applies, whether a scope is correct, and whether a body's acceptance condition is any good are not

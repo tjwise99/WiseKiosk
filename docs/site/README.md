@@ -5,7 +5,7 @@ in-source directives — see [ADR 0004 rev 1](../decisions/0004-docs-site-sphinx
 files (`README.md`, `CONTRIBUTING.md`, `SECURITY.md`) via thin include shims, and a
 generated, click-through view of the Doorstop requirements tree
 ([`../requirements/`](../requirements/README.md),
-[ADR 0002 rev 1](../decisions/0002-requirements-management-doorstop.md)).
+[ADR 0002 rev 2](../decisions/0002-requirements-management-doorstop.md)).
 
 **Dev-only and siloed here** (per [`CI.md`](../CI.md)'s repository-shape gate): its pinned
 requirements file and venv live in this directory; nothing depends on it at app build or runtime.

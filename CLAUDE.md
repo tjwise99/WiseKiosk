@@ -6,7 +6,7 @@ the rules layered on top, which is why it is short: a rule stated in another doc
 here as well.
 
 **Where an obligation lives is decided by
-[ADR 0011 rev 1](docs/decisions/0011-requirement-or-convention.md)**, not by which document is convenient.
+[ADR 0011 rev 2](docs/decisions/0011-requirement-or-convention.md)**, not by which document is convenient.
 
 ## Halt and ask
 

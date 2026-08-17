@@ -24,7 +24,7 @@ The tree constrains what the image carries and who it runs as —
 SRS018<!-- One generic published image --> and
 SRS025<!-- No secret material in the published image --> bar content,
 SRS020<!-- Non-root container user --> fixes the user — and says nothing about its metadata. Under
-[ADR 0011 rev 1](0011-requirement-or-convention.md) it cannot: an annotation is baked by the publishing
+[ADR 0011 rev 2](0011-requirement-or-convention.md) it cannot: an annotation is baked by the publishing
 pipeline, and no behaviour of the running kiosk can violate one. So this is a repository-facing
 convention, checked, and no requirement item is written for it.
 

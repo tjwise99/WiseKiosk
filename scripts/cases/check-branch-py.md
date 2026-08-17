@@ -9,7 +9,7 @@ trailing-blank rows are the one deliberate deviation: `grep -Ef` reads a blank p
 matching everything, and the Python form drops it instead of failing open.
 
 Covers the ticket-metadata and epic-membership assertions
-([ADR 0013 rev 3](../../docs/decisions/0013-work-tracking-invariants.md)) and the branch-shape, exemption
+([ADR 0013 rev 4](../../docs/decisions/0013-work-tracking-invariants.md)) and the branch-shape, exemption
 and issue-resolution assertions. Shape and exemption cases reach no network: the branch name is passed
 as the sole argument and both paths return before the first API call.
 

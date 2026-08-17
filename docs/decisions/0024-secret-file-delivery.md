@@ -23,7 +23,7 @@ rebuild for unrelated items and are deliberately not named here.)
 
 **The removal exposed that secrets never had an ADR.** The `_FILE` decision was taken on #35 and
 recorded *inside a requirement*, because there was nowhere else — the tree absorbing an architecture
-decision that had no phase to live in, which is the growth [ADR 0011 rev 1](0011-requirement-or-convention.md)
+decision that had no phase to live in, which is the growth [ADR 0011 rev 2](0011-requirement-or-convention.md)
 exists to prevent. The mechanism survives today only by presumption:
 SRS006<!-- Unresolvable secret surfaces as that source's upstream failure --> names `<NAME>_FILE` and
 "empty after trailing-whitespace stripping" inside its *failure* clause, and
@@ -47,7 +47,7 @@ cache-missing resolution with no restart. No other delivery path is honoured; in
 variable can never both claim to be the secret.
 
 **What stays in the tree, and what is specified here.** Under
-[ADR 0011 rev 1](0011-requirement-or-convention.md), the *observable obligations* remain requirements:
+[ADR 0011 rev 2](0011-requirement-or-convention.md), the *observable obligations* remain requirements:
 SRS006<!-- Unresolvable secret surfaces as that source's upstream failure --> obliges per-request
 resolution and the legible per-source failure when a secret is unresolvable, and
 SRS008<!-- No secret value in any backend output --> obliges that no value leaks into output. The
@@ -101,7 +101,7 @@ file interface subsumes them all without importing any of their SDKs.
 - **No requirements-tree growth.** A later reader asking "what is the delivery mechanism?" is sent
   here by the failure clause of SRS006<!-- Unresolvable secret surfaces as that source's upstream
   failure -->, not to a requirement that restates the mechanism — the
-  [ADR 0011 rev 1](0011-requirement-or-convention.md) division working as intended. What would reopen
+  [ADR 0011 rev 2](0011-requirement-or-convention.md) division working as intended. What would reopen
   this record is a change to that division, or a deployment target the file interface cannot serve.
 - **This is the delivery half of a two-part secrets story.**
   [ADR 0023 rev 1](0023-secret-output-containment.md) is the containment half: this ADR decides how a

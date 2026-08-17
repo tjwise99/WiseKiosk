@@ -56,7 +56,7 @@ what the product does when an upstream returns what the shaping library did not 
 class, so a tree item here would restate it. What is left is machinery — recording a fixture is a
 procedure an author follows, a scheduled credentialed job is a repository-facing check — so both sit
 in [`CI.md § Upstream contract checks`](CI.md#upstream-contract-checks)
-([ADR 0011 rev 1](decisions/0011-requirement-or-convention.md)).
+([ADR 0011 rev 2](decisions/0011-requirement-or-convention.md)).
 
 ---
 
@@ -97,7 +97,7 @@ Gate on these — they name what must be proven. Not on a coverage number. Each 
 form a test author needs and cited to whatever governs it: the [requirements
 tree](requirements/README.md) where the obligation is on the running software, the module contract
 or [`DEPLOYMENT.md`](DEPLOYMENT.md) where it is not
-([ADR 0011 rev 1](decisions/0011-requirement-or-convention.md)).
+([ADR 0011 rev 2](decisions/0011-requirement-or-convention.md)).
 
 - **Every value crossing the frontend/backend boundary is generated from one definition** →
   SYS005<!-- Single-definition internal contract --> /
