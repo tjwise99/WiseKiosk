@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""The branch name must follow type_number-snake_name (ADR 0006 rev 3): the shape is
+"""The branch name must follow type_number-snake_name (ADR 0006 rev 4): the shape is
 defined once in scripts/branch-shape.regex, shared with the branch-shape pre-push hook;
 the number resolves via the GitHub API to an open issue carrying a milestone
-and exactly one type label, which is the branch type (ADR 0013 rev 3). main and
+and exactly one type label, which is the branch type (ADR 0013 rev 4). main and
 dependabot/* are exempt. When an open PR exists, its Development field
 (closingIssuesReferences) must link the branch's issue — any base; body
 keywords only write the record against the default branch, so other bases
@@ -255,7 +255,7 @@ def main():
                 f"issue #{number} is a sub-issue of #{parent}, but PR #{pr_number} "
                 "targets the default branch — sub-issue membership means a shared merge "
                 "target, not topical grouping; the milestone is what groups "
-                "(ADR 0013 rev 3)"
+                "(ADR 0013 rev 4)"
             )
         print(
             f"Issue #{number} has no parent, and PR #{pr_number} targets the default "
@@ -266,7 +266,7 @@ def main():
             fail(
                 f"PR #{pr_number}'s base '{base_ref}' is neither the default branch "
                 "nor a conforming integration branch — an integration branch is a "
-                "branch, so it links a ticket of its own (ADR 0006 rev 3)"
+                "branch, so it links a ticket of its own (ADR 0006 rev 4)"
             )
         anchor = base_ref.partition("_")[2].partition("-")[0]
         if not parent:
@@ -274,7 +274,7 @@ def main():
                 f"PR #{pr_number} targets integration branch '{base_ref}' but issue "
                 f"#{number} has no parent — a ticket whose PR targets an integration "
                 f"branch is a sub-issue of that branch's anchor #{anchor} "
-                "(ADR 0013 rev 3)"
+                "(ADR 0013 rev 4)"
             )
         if parent != anchor:
             fail(

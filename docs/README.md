@@ -5,7 +5,7 @@ document may cite or summarize that fact, but never restates it as independent c
 that referenceable definition, and [`CI.md`](CI.md)'s documentation-integrity gates hold it to that:
 a citation resolves, and every tracked document is claimed by a row here unless it sits under a
 top-level dot-directory, which holds machinery rather than documents. There is no exclusions list
-([ADR 0014 rev 3](decisions/0014-documentation-index-claims-documents.md)); excluding anything else
+([ADR 0014 rev 4](decisions/0014-documentation-index-claims-documents.md)); excluding anything else
 takes an edit to the check.
 
 The scope is facts *about WiseKiosk*. How a particular piece of code works is a fact about that code,

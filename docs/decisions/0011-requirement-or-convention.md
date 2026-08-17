@@ -2,10 +2,14 @@
 
 **Status:** accepted
 **Decided:** 2026-07-26 (`SRS` pass of the tree rebuild #69)
-**Rev:** 1
+**Rev:** 2
 
 ## Revisions
 
+- **rev 2** — 2026-08-17 — corrects the recorded remedy for gate 3's given-up property:
+  `scripts/check-verify-ci-parity.mjs` retired under #101 CI-invokes-just, so the remedy naming it no
+  longer names a real vehicle; states the gap's current standing instead (#160 post-adoption-wave
+  sweep).
 - **rev 1** — 2026-08-05 — revision tracking begins; text as merged (#118 ADR revisions).
 
 ## Context
@@ -81,8 +85,11 @@ four gates:
 - **What this gives up, stated rather than implied.** Doorstop validates `references`, so an active
   `TST` naming a deleted script used to fail the tree gate independently of the workflow. Repository
   checks no longer have that: deleting a check's script and its workflow step in one change is
-  invisible to every gate. The remedy, if one is wanted, is to make `CI.md` an input to
-  `scripts/check-verify-ci-parity.mjs`, not to put the items back.
+  invisible to every gate. `scripts/check-verify-ci-parity.mjs` retired under #101 CI-invokes-just: CI
+  now runs each check as `just <recipe>` directly, so a step naming a deleted recipe fails the job
+  outright rather than passing unseen — closing this gap for the two-spellings class it targeted.
+  What remains open is broader: whether `CI.md`'s prose still describes the workflow it names at all,
+  which #77 gate CI.md against the workflow it describes carries with no remedy recorded yet.
 
 **A rule the pass establishes is recorded here, not in the ticket.** The thread holds the trail — one
 comment per ruling, at the moment it is taken. Anything that will govern the next pass is an ADR, or

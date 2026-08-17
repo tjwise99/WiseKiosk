@@ -137,7 +137,7 @@ versioning the site, and this is the record that the exposure was chosen rather 
 
 **The tooling document dissolves**, and only half of that follows from an existing rule. Every
 assertion about a check goes to [`../CI.md`](../CI.md), which is
-[ADR 0011 rev 1](0011-requirement-or-convention.md)'s. The remainder does not: that record's table is
+[ADR 0011 rev 2](0011-requirement-or-convention.md)'s. The remainder does not: that record's table is
 closed over the requirements tree, `CI.md` and the review checklist, and an obligation on what ships
 beside the image is none of the three. It goes to [`../DEPLOYMENT.md`](../DEPLOYMENT.md), which claims
 deploying rather than tooling — **an allocation taken here rather than inherited**, and the gap it

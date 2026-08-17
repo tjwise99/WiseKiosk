@@ -290,7 +290,7 @@ consequences follow.
   produced any one of them.
 - An element or relationship no accepted item obliges carries none: the bundle-serving edge has no
   tag, because who serves the bundle is a decision under
-  [ADR 0011 rev 1](0011-requirement-or-convention.md) rather than a property of the running software.
+  [ADR 0011 rev 2](0011-requirement-or-convention.md) rather than a property of the running software.
   Static serving carries no tag at all for the same reason, what it does being obliged of the backend
   generally or of the image.
 - An item whose obligation reaches something **permanently** outside the model is not a tag here,

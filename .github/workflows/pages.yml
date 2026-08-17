@@ -32,15 +32,17 @@ jobs:
         with:
           python-version: "3.12"
 
+      - uses: extractions/setup-just@53165ef7e734c5c07cb06b3c8e7b647c5aa16db3 # v4
+        with:
+          just-version: "1.58.0"
+
       - name: Install the docs-site toolchain into a local venv (siloed under docs/site/)
         run: |
           python -m venv docs/site/.venv
           docs/site/.venv/bin/pip install -r docs/site/requirements-dev.txt
 
-      - name: Regenerate needs pages from Doorstop and build the docs site (mirrors `just site-build`)
-        run: |
-          docs/site/.venv/bin/python docs/site/doorstop_to_needs.py
-          docs/site/.venv/bin/sphinx-build -W -b html -c docs/site docs docs/site/_build/html
+      - name: Regenerate needs pages from Doorstop and build the docs site
+        run: just site-build
 
       - uses: actions/configure-pages@45bfe0192ca1faeb007ade9deae92b16b8254a0d # v6.0.0
 

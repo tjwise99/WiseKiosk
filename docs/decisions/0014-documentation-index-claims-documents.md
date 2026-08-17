@@ -2,10 +2,13 @@
 
 **Status:** accepted
 **Decided:** 2026-08-02 (#90 documentation-index claim check)
-**Rev:** 3
+**Rev:** 4
 
 ## Revisions
 
+- **rev 4** — 2026-08-17 — renames `check-adr-index.mjs` to `check-adr-index.py` (#110 Node-to-Python
+  conversion) and corrects the #77 remedy note: it named `check-verify-ci-parity.mjs`, retired under
+  #101 CI-invokes-just; what claims a document is unchanged (#160 post-adoption-wave sweep).
 - **rev 3** — 2026-08-16 — spells the exclusions-list form as text rather than a link to
   `scripts/upstream-hosts.txt`, which ADR 0016 rev 5 retires; what claims a document is unchanged
   (#106 adopt lychee).
@@ -32,10 +35,10 @@ that publishes claims [`../../SECURITY.md`](../../SECURITY.md) rests on carried 
 machinery nobody had written.
 
 This is unrelated to [ADR 0005 rev 1](0005-traceability-gating.md)'s retired gate 4, which
-[ADR 0011 rev 1](0011-requirement-or-convention.md) closed on 2026-07-26 for having no possible subject.
+[ADR 0011 rev 2](0011-requirement-or-convention.md) closed on 2026-07-26 for having no possible subject.
 That gate asked an Inspection-method item to claim files; this decision does not reopen it, does not
 supersede anything, and puts no obligation back in the tree. Which document holds which fact is
-repository-facing under ADR 0011 rev 1's test — no behaviour of the running kiosk can violate it — so it is
+repository-facing under ADR 0011 rev 2's test — no behaviour of the running kiosk can violate it — so it is
 a check, and this ADR records how that check decides.
 
 ## Decision
@@ -120,10 +123,12 @@ the intended price. It is also why the rule is stated here: nothing else in the 
 dot-directory holds machinery.
 
 The check reads rendered table structure, so reformatting the index — changing its columns, or
-moving it off a Markdown table — breaks it. `check-adr-index.mjs` has carried the same exposure since
-it was written, with the same remedy: it fails loudly rather than reporting zero rows.
+moving it off a Markdown table — breaks it. `check-adr-index.py` has carried the same exposure since
+it was written (`check-adr-index.mjs` before its #110 Node-to-Python conversion), with the same
+remedy: it fails loudly rather than reporting zero rows.
 
 One instance of a `../CI.md` section describing machinery that does not exist is closed. The class is
 not: `../CI.md` still describes gates nobody has built, and nothing fails when a described gate leaves
-the workflow. That remains #77 gate CI.md against the workflow it describes, whose recorded remedy is
-to make `../CI.md` an input to `check-verify-ci-parity.mjs`.
+the workflow. That remains #77 gate CI.md against the workflow it describes, whose recorded remedy
+named `check-verify-ci-parity.mjs`; that check retired under #101 CI-invokes-just, so #77 needs a
+different vehicle, not yet recorded.

@@ -48,10 +48,10 @@ rather than being a defect in it.
 Two constraints on `docs/README.md` follow from the second row: it may hold exactly one table, and no
 fenced example containing one, every `|`-leading line being read as an index row.
 
-**A documented divergence.** `docs/CI.md` and ADR 0014 rev 3 both say a *Document* cell *renders* as a
+**A documented divergence.** `docs/CI.md` and ADR 0014 rev 4 both say a *Document* cell *renders* as a
 path; the check requires a Markdown link whose text is a backticked path. The prose is looser than the
 code.
 
 What this gate lets through — a new top-level dot-directory — is
-[`docs/CI.md`](../../docs/CI.md)'s, and the trade behind it is ADR 0014 rev 3's; an untracked
+[`docs/CI.md`](../../docs/CI.md)'s, and the trade behind it is ADR 0014 rev 4's; an untracked
 document fails the untracked guard rather than passing unread.

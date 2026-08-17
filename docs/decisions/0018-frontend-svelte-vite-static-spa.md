@@ -82,7 +82,7 @@ invoked toolchain under that decision, not an authoring language.
   consumes generated boundary types ([ADR 0008 rev 2](0008-boundary-contract-openapi-codegen.md)), so the
   TypeScript toolchain is unconditional here whatever else changes.
 - **No requirement item states any of this.** The stack constrains the repository rather than the
-  running software, which [ADR 0011 rev 1](0011-requirement-or-convention.md) routes to a check —
+  running software, which [ADR 0011 rev 2](0011-requirement-or-convention.md) routes to a check —
   [`../CI.md`](../CI.md)'s, above.
 
 **Premise that would reopen this:** the product grows a genuinely interactive surface, of which **a

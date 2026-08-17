@@ -34,7 +34,7 @@ Not reported, each deliberately:
 Not decidable here, and the reason this reports rather than fails: whether the claim survived. A rev
 that does not touch what a citation asserts is legal and ordinary — most of a sweep is that — so a
 gate failing every pin-only edit would fail closed on legal input, and the exemption list it would
-grow is where a bypass gets spelled ([ADR 0011 rev 1](../docs/decisions/0011-requirement-or-convention.md)
+grow is where a bypass gets spelled ([ADR 0011 rev 2](../docs/decisions/0011-requirement-or-convention.md)
 routes a judgement obligation to the review checklist instead).
 
 What this has been run against, in both directions: cases/adr-rev-reach-py.md

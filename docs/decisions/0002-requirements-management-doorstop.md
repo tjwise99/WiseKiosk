@@ -2,10 +2,13 @@
 
 **Status:** accepted; Test-method linkage mechanism superseded by [ADR 0005 rev 1](0005-traceability-gating.md)
 **Decided:** 2026-07-21 (requirements-system spike, issue #14)
-**Rev:** 1
+**Rev:** 2
 
 ## Revisions
 
+- **rev 2** — 2026-08-17 — drops the named exemplar in the dot-directory consequence, which went
+  stale a second time (`scripts/check-links.mjs`, retired by [ADR 0016 rev 5](0016-maintained-tools-for-standard-artifacts.md));
+  the point about the wiring pattern is unchanged (#160 post-adoption-wave sweep).
 - **rev 1** — 2026-08-05 — revision tracking begins; text as merged (#118 ADR revisions).
 
 ## Context
@@ -61,9 +64,9 @@ requirements it serves, not at the repo root; it is dev tooling only, no applica
 - **Doorstop cannot reference files under dot-directories.** Its reference finder skips any path with
   a dot-prefixed component, so a `type: file` reference to `.github/workflows/checks.yml` (or anything
   under `.github/`, `.venv/`, etc.) does not resolve. Where a requirement is verified by CI wiring
-  that lives only under `.github/`, the resolvable artifact (e.g. `scripts/check-links.mjs`) is the
-  machine-checked `references` entry and the CI wiring is cited in the item's prose. Items using the
-  pattern cite this decision; naming an exemplar here would invert that and go stale when the
-  exemplar moves, which is what happened to the item this sentence once named.
+  that lives only under `.github/`, the resolvable artifact is the machine-checked `references` entry
+  pointing at the script the wiring runs, and the CI wiring itself is cited in the item's prose. Items
+  using the pattern cite this decision rather than naming an exemplar here, which would invert that
+  dependency and go stale when the exemplar moves — as it has now done twice.
 - **Reviewing is a manual discipline.** `doorstop review` re-blesses a child after its parent moved;
   blindly scripting it away would defeat the re-validation the tool exists to provide.
