@@ -160,17 +160,16 @@ is held`" .-> WisekioskBackend.UpstreamClient
 
 <!-- arch-export:end generated/backendComponents.mmd -->
 
-### Cache and rate-limit defaults
-
-A route's cache and rate-limit values live in its registration entry and nowhere else
-([the module contract](contracts/module-contract.md)); these are the defaults each entry carries,
-chosen once here with the reasoning behind them. A route refines them against its source — the
-success-response TTL paired with that module's poll cadence — but they are code constants, not
+**Cache and rate-limit defaults.** These are the defaults each route's registration entry carries for
+the cache and rate-limit policies named above, chosen once here with the reasoning behind them. A
+route refines them against its source — the success-response TTL paired with that module's poll cadence
+([the module contract](contracts/module-contract.md)) — but they are code constants, not
 configuration: the bound they hold is SRS011's<!-- Upstream request rate is bounded, and the bound is not operator-tunable -->, which forbids raising it from outside the image.
 
 - **Success-response cache TTL — 10 minutes.** The fresh end of the display's tolerance for stale
   data. A `(source, query)` reaches upstream at most once per TTL however many clients ask and however
-  often, so the TTL, not the rate limit, is what principally holds the upstream request rate down.
+  often; on a route serving few distinct queries, the TTL — not the route-global rate limit — is what
+  principally holds the upstream request rate down.
 - **Negative-response cache TTL — 60 seconds.** Shorter than the success TTL, so a transient upstream
   failure clears within about a minute of the source recovering, yet long enough that a burst of
   requests during an outage collapses to one retry per minute against a source already failing.
