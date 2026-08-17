@@ -1,7 +1,7 @@
 # `check-languages.py`
 
 The inputs this check has been run against, in both directions. What it *asserts*, and why, is
-[ADR 0017 rev 5](../../docs/decisions/0017-authored-language-set.md)'s;
+[ADR 0017 rev 6](../../docs/decisions/0017-authored-language-set.md)'s;
 how to run a case is [`../README.md`](../README.md)'s.
 
 Exercised at `4e81f38`, script md5 `b2b4132c5c3a3b8ffa674949f12776d9`, where a passing run over this
@@ -13,7 +13,7 @@ repository reports **221 tracked files**.
 | Must fail | A declared extension spelled in a different case | `scripts/rogue.PY`, a copy of a real check, added beside it |
 | Must fail | A file with no extension and no declared entry for its exact path | `scripts/rogue-noext` added to the tree |
 | Must fail | A declared no-extension basename reused at a path that is not declared | `scripts/decoy/LICENSE`, a copy of the real `LICENSE`, added under a subdirectory |
-| Must fail | A **new** `.sh` file, the language ADR 0017 rev 5 says authors nothing | `scripts/rogue.sh` added to the tree |
+| Must fail | A **new** `.sh` file, the language ADR 0017 rev 6 says authors nothing | `scripts/rogue.sh` added to the tree |
 | Must fail | A **new** `.mjs` file, same reasoning | `scripts/rogue.mjs` added to the tree |
 | Must fail | A `LEGACY`-grandfathered file deleted, leaving its entry stale | `scripts/check-eol.sh` removed from the tree, the entry left in `LEGACY` |
 | Must fail | The population is empty | a freshly `git init`'d repository with nothing added, so `git ls-files` resolves nothing |
@@ -29,13 +29,13 @@ repository reports **221 tracked files**.
   an extensionless one — so neither a spelling variant of a declared extension nor a declared
   no-extension name showing up somewhere else earns a pass by resemblance.
 - **The new-`.sh`/new-`.mjs` rows are the point of the whole exercise, not incidental cases.**
-  ADR 0017 rev 5 names POSIX sh and Node as authoring *nothing* — the one pair of languages the
+  ADR 0017 rev 6 names POSIX sh and Node as authoring *nothing* — the one pair of languages the
   decision is most explicit about — so `sh`/`mjs` were kept out of `EXTENSIONS` and moved into the
-  per-path `LEGACY` bucket instead, mirroring how ADR 0017 rev 5 itself treats the files that do not
+  per-path `LEGACY` bucket instead, mirroring how ADR 0017 rev 6 itself treats the files that do not
   yet conform: "a disposition rather than an exemption," named one file at a time. A version of this
   check that allowlisted the extensions instead would pass both seeds here, which is exactly the
   failure mode these two rows exist to catch.
-- **The stale-`LEGACY`-entry row is the other half of that mirroring.** ADR 0017 rev 5 says the
+- **The stale-`LEGACY`-entry row is the other half of that mirroring.** ADR 0017 rev 6 says the
   disposition list it gives "ends" per file as each conversion lands, not that the population is
   grandfathered forever; `main()` fails an entry whose file is no longer tracked so the allowlist
   cannot silently outlive what it was declared for. Without this row, deleting `check-eol.sh` after
@@ -55,12 +55,12 @@ repository reports **221 tracked files**.
 - A declared extension spelled with different case (`.PY` beside `.py`) is rejected rather than
   folded in. That is intentional, not an oversight of case-insensitive filesystems: a case variant is
   an undecided spelling exactly as much as a new extension is, and folding case would quietly widen
-  the declared set past what ADR 0017 rev 5 names.
+  the declared set past what ADR 0017 rev 6 names.
 
 **Known gaps.**
 
 - **The audience binding is not checked at all — only the set is.** `EXTENSIONS` is tree-wide and
-  says nothing about where a file sits, while ADR 0017 rev 5's Decision table binds a language to an
+  says nothing about where a file sits, while ADR 0017 rev 6's Decision table binds a language to an
   audience and states in as many words that TypeScript is product-only. So
   `scripts/check-rogue.ts`, a repository check authored in TypeScript, **passes**: seeded and run, it
   reports one file above the baseline of the tree it ran on and exits 0. This is the largest thing the
@@ -81,9 +81,9 @@ repository reports **221 tracked files**.
   grandfathering describes, or a `.py` file that is not valid Python. That is deliberate: this check
   asserts the tree's declared *shape*, and a mismatch between a file's declared kind and its actual
   content is the reviewer's, under `CONTRIBUTING.md` review checklist item 12, *Languages* — the same
-  item ADR 0017 rev 5 names as the mechanism for a language decision this check cannot make.
+  item ADR 0017 rev 6 names as the mechanism for a language decision this check cannot make.
 - **A `LEGACY` entry is not re-verified against the record that grants it.** If a disposition changed
-  under ADR 0017 rev 5 or under ADR 0016 rev 5 — say, a ticket number renumbered — nothing here would
+  under ADR 0017 rev 6 or under ADR 0016 rev 5 — say, a ticket number renumbered — nothing here would
   notice the comment in `LEGACY` had gone stale, the way `check-adr-revs.py` notices a stale
   citation elsewhere in this repository. The two checks do not overlap: this one is not itself prose
   citing an ADR by number in the form that check parses.
