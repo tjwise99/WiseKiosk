@@ -9,7 +9,7 @@
 ## Revisions
 
 - **rev 6** — 2026-08-16 — `.css` gains a second disposition alongside the existing docs-site Furo
-  override: [ADR 0025 rev 1](0025-display-region-roster.md) authors
+  override: [the display styling contract](../contracts/display-styling-contract.md) introduces
   `frontend/src/app.css` as a shared product stylesheet, which is authored CSS for what ships rather
   than a documentation asset. The Decision table's first row gains CSS beside Go, TypeScript and the
   Svelte component format; `scripts/check-languages.py`'s `.css` entry is updated to name both
@@ -76,7 +76,7 @@ authors **programs** in.
 
 | Artifact | Authored in |
 |---|---|
-| What ships to a user or an operator — the kiosk, and the tools an operator runs | Go, TypeScript, the Svelte component format ([ADR 0018 rev 1](0018-frontend-svelte-vite-static-spa.md)), and CSS for the shared product stylesheet ([ADR 0025 rev 1](0025-display-region-roster.md)) |
+| What ships to a user or an operator — the kiosk, and the tools an operator runs | Go, TypeScript, the Svelte component format ([ADR 0018 rev 1](0018-frontend-svelte-vite-static-spa.md)), and CSS for the shared product stylesheet ([the display styling contract](../contracts/display-styling-contract.md)) |
 | What checks this repository | Python, standard library only |
 
 **CSS carries a second, unrelated disposition beside the row above: a Furo theme override that is
@@ -216,7 +216,7 @@ unregistered language whatever this record said.
   being overturned by it — a new extension is the loud case, and gating it is what leaves review a
   residue small enough to state, which is why item 12 narrows rather than retires.
 - **Keep every product style rule inside a `.svelte` `<style>` block, authoring no standalone
-  `.css`.** [ADR 0025 rev 1](0025-display-region-roster.md) had this as a live
+  `.css`.** [the display styling contract](../contracts/display-styling-contract.md) had this as a live
   option — CSS inside a component's `<style>` block, root-component globals included, was already
   sanctioned without touching this record at all. Rejected there in favour of a shared token
   stylesheet; the reasoning for that choice is that record's, not restated here. What follows for

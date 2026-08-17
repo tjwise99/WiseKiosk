@@ -48,7 +48,7 @@ EXTENSIONS = {
     "ts": "authored — TypeScript, what ships (ADR 0017 rev 6)",
     "svelte": "authored — the Svelte component format, what ships "
     "(ADR 0018 rev 1, ADR 0017 rev 6)",
-    "css": "authored — the shared product stylesheet, what ships (ADR 0025 rev 1, ADR 0017 rev 6); "
+    "css": "authored — the shared product stylesheet, what ships (the display styling contract, ADR 0017 rev 6); "
     "also documentation — an asset the Sphinx docs-site build serves, a Furo theme override "
     "(ADR 0017 rev 6)",
     # Authored — what checks the repository (ADR 0017 rev 6 Decision table).
