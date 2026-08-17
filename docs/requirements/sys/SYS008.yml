@@ -22,11 +22,14 @@ rationale: |
   operator can name a region but never a geometry, so an area carrying no region is unreachable. Its
   one leak is overflow from a neighbour. It was withdrawn because the guarantee is not wanted, not
   because it failed.
-  The clause reads "negligibly" rather than "at minimum emission", which forbade a hairline rule and
-  a dark grouping tint along with the panels and scrims it was aimed at. Nothing obliges either, and
-  forbidding them decides a design question the need has no business deciding.
+  The clause reads "negligibly" rather than "at minimum emission", which would forbid a hairline rule
+  and a dark grouping tint along with the panels and scrims it was aimed at. Calibrated against its
+  child's ceiling, "negligibly" forbids only a mark rendered above it -
+  SRS030<!-- Only content is rendered above the emission ceiling --> already permits a grouping stroke
+  or fill that stays below, and forbidding it here too would decide a design question the need has no
+  business deciding. Nothing obliges one: the surface stays bare by default (owner, 2026-08-16).
 ref: ''
-reviewed: zoHGPjESkjdbrPSGNpJblk74Ko1jiq1dr8C48O-pyCk=
+reviewed: yHbwtUcyAR7LdbMyfZRlaonYa4iMEHmgqruc4r5TVSM=
 status: accepted
 text: |
   Wherever the display carries no content it shall emit negligibly.
