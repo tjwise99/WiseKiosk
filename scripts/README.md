@@ -29,7 +29,6 @@ when a link breaks. Nothing enforces this — a wrong success line fails no buil
 | the workflow audit (`zizmor` + `actionlint`) | [cases](cases/workflow-audit.md) |
 | `check-untracked.py` | [cases](cases/check-untracked-py.md) |
 | `check-repo-silo.py` | [cases](cases/check-repo-silo-py.md) |
-| `check-verify-ci-parity.mjs` | [cases](cases/check-verify-ci-parity-mjs.md) |
 | `check-docs-index.py` | [cases](cases/check-docs-index-py.md) |
 | `check-branch.py` | [cases](cases/check-branch-py.md) |
 | `branch-shape.py` | [cases](cases/branch-shape-py.md) |
@@ -84,10 +83,10 @@ Eight standing traps, each hit at least once:
   one afternoon on `check-arch-trace.py` — one never wrote the file, one selected lines by indentation
   and moved 11 of 18, one used an input another case already satisfied. Each reported the verdict its
   row expected.
-- **`git init` the scratch tree and run the script from inside it.** Every `.mjs` check resolves its
-  root with `git rev-parse --show-toplevel` and several build their file list with `git ls-files`. In a
-  bare directory `rev-parse` climbs out or fails and `ls-files` returns nothing, so the check reads no
-  files and prints success — the fail-open this file exists to catch, wearing a passing case's costume.
+- **`git init` the scratch tree and run the script from inside it.** Several checks build their file
+  list with `git ls-files`, and a root resolved with `git rev-parse --show-toplevel` climbs out of a
+  bare directory or fails. Either way the check reads no files, or the wrong tree, and prints success
+  — the fail-open this file exists to catch, wearing a passing case's costume.
 - **Copy the script under test into the scratch tree**, not the other way round: the Python checks
   derive the tree they read from their own `__file__`.
 - **Copy it in fresh each time and assert its md5.** A `git archive` fixture carries the scripts as
