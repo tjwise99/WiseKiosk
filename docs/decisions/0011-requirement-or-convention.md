@@ -89,8 +89,7 @@ four gates:
   now runs each check as `just <recipe>` directly, so a step naming a deleted recipe fails the job
   outright rather than passing unseen — closing this gap for the two-spellings class it targeted.
   What remains open is broader: whether `CI.md`'s prose still describes the workflow it names at all,
-  which #77 gate CI.md against the workflow it describes carries with no remedy recorded yet, not to
-  put the items back.
+  which #77 gate CI.md against the workflow it describes carries with no remedy recorded yet.
 
 **A rule the pass establishes is recorded here, not in the ticket.** The thread holds the trail — one
 comment per ruling, at the moment it is taken. Anything that will govern the next pass is an ADR, or
