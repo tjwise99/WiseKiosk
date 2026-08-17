@@ -159,6 +159,29 @@ is held`" .-> WisekioskBackend.UpstreamClient
 ```
 
 <!-- arch-export:end generated/backendComponents.mmd -->
+
+**Cache and rate-limit defaults.** These are the defaults each route's registration entry carries for
+the cache and rate-limit policies named above, chosen once here with the reasoning behind them. A
+route refines them against its source — the success-response TTL paired with that module's poll cadence
+([the module contract](contracts/module-contract.md)) — but they are code constants, not
+configuration: the bound they hold is SRS011's<!-- Upstream request rate is bounded, and the bound is not operator-tunable -->, which forbids raising it from outside the image.
+
+- **Success-response cache TTL — 10 minutes.** The fresh end of the display's tolerance for stale
+  data. A `(source, query)` reaches upstream at most once per TTL however many clients ask and however
+  often; on a route serving few distinct queries, the TTL — not the route-global rate limit — is what
+  principally holds the upstream request rate down.
+- **Negative-response cache TTL — 60 seconds.** Shorter than the success TTL, so a transient upstream
+  failure clears within about a minute of the source recovering, yet long enough that a burst of
+  requests during an outage collapses to one retry per minute against a source already failing.
+- **Per-route rate limit — 10 requests per minute.** A route-global ceiling on requests that reach
+  upstream; a cache hit is neither counted against it nor rejected. Steady state is roughly one
+  upstream fetch per TTL, so the ceiling sits well above legitimate traffic — headroom for several
+  clients missing cache together at start-up — while still rejecting a client stuck in a fast retry
+  loop. It reinforces the TTL bound rather than replacing it.
+
+These values cannot be proven against a source until one exists; each is a starting default a module
+revisits when its upstream lands.
+
 ## Frontend
 
 _To be documented as it is built._ Its source root is `frontend/`, the npm package root, holding the
