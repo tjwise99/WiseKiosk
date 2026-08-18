@@ -75,7 +75,7 @@ def main():
 
         session = payload.get("session_id") or ""
         key = content_key(git_dir, command, session)
-        if key is not None and not claim(key):
+        if key is None or not claim(key):
             return 0
 
         questions.sort(key=lambda q: q[0])
@@ -91,24 +91,38 @@ def main():
         return 0
 
 
-SEPARATORS = {"&&", "||", "|", ";", "&", "\n"}
+SEPARATORS = {"&&", "||", "|", ";", "&"}
 GIT_OPTS_WITH_VALUE = {"-C", "-c", "--git-dir", "--work-tree", "--namespace", "--exec-path"}
+
+
+def tokenize(line):
+    """Shell-tokenise one line, with `;` `&&` `||` `|` `&` as their own tokens.
+
+    `punctuation_chars` makes the operators separate tokens rather than gluing
+    them to an adjacent word (`status;git` would otherwise tokenise as one word);
+    newlines are split by the caller, since shlex treats a newline as ordinary
+    whitespace and would fold two commands into one.
+    """
+    lex = shlex.shlex(line, posix=True, punctuation_chars=True)
+    lex.whitespace_split = True
+    return list(lex)
 
 
 def commits(command):
     """True when a simple-command in `command` is a git commit that writes one.
 
-    Tokenises with shlex so `commit` inside a quoted argument of another command
-    — an echo, a `-m` message — is never mistaken for the git subcommand.
+    Tokenises so `commit` inside a quoted argument of another command — an echo,
+    a `-m` message — is never mistaken for the git subcommand, and so a commit on
+    its own line or after `;`/`&&` is still seen.
     """
-    try:
-        tokens = shlex.split(command, comments=True)
-    except ValueError:
-        return False
-
-    for segment in split_simple_commands(tokens):
-        if segment_is_commit(segment):
-            return True
+    for line in command.splitlines():
+        try:
+            tokens = tokenize(line)
+        except ValueError:
+            continue
+        for segment in split_simple_commands(tokens):
+            if segment_is_commit(segment):
+                return True
     return False
 
 
@@ -197,13 +211,28 @@ def committed_paths(git_dir, command):
 
 
 def stages_all(command):
-    """True when the commit carries -a / --all (including combined short flags)."""
-    for token in command.split():
-        if token.startswith("--"):
-            if token == "--all":
-                return True
+    """True when the git-commit simple-command carries -a / --all.
+
+    Scoped to the commit segment: an earlier command's flag (`ls -la && git
+    commit`) is a different segment and does not count.
+    """
+    for line in command.splitlines():
+        try:
+            tokens = tokenize(line)
+        except ValueError:
             continue
-        if token.startswith("-") and "a" in token[1:]:
+        for segment in split_simple_commands(tokens):
+            if segment_is_commit(segment) and segment_stages_all(segment):
+                return True
+    return False
+
+
+def segment_stages_all(segment):
+    """True when a commit segment's own flags carry -a / --all (combined short too)."""
+    for token in segment:
+        if token == "--all":
+            return True
+        if token.startswith("-") and not token.startswith("--") and "a" in token[1:]:
             return True
     return False
 
