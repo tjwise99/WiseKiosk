@@ -4,10 +4,16 @@
 **Decided:** 2026-08-16 (CSS's product-stylesheet disposition added; the audience rule itself taken
 2026-08-04 in #60 authored-language set, taken after
 [ADR 0016 rev 5](0016-maintained-tools-for-standard-artifacts.md) settled which authored checks survive at all)
-**Rev:** 6
+**Rev:** 7
 
 ## Revisions
 
+- **rev 7** — 2026-08-17 — the Go toolchain's manifest and lockfile formats join the Decision's
+  illustrative list of derived formats, and `scripts/check-languages.py` declares `mod` and `sum`
+  beside them: the boundary codegen's Go module root introduces both, and an entry added to the
+  declared set arrives with the rev that decided it. The audience rule, the derivation rule and the
+  language set itself are unchanged, so the `Decided` date does not move (#7 boundary-contract
+  codegen).
 - **rev 6** — 2026-08-16 — `.css` gains a second disposition alongside the existing docs-site Furo
   override: [the display styling contract](../contracts/display-styling-contract.md) introduces
   `frontend/src/app.css` as a shared product stylesheet, which is authored CSS for what ships rather
@@ -89,11 +95,12 @@ they see, and is authored the same way the table's other product formats are.
 **Everything else present in the tree is derived, not enumerated.** A toolchain's own required input
 format — its configuration, its model, the items it stores — is part of invoking that toolchain
 rather than authoring in it. The workflow YAML, the Doorstop item files under `docs/requirements/`,
-the `.likec4` models, a `lychee` TOML, a `commitlint` configuration and the Dockerfile a container
-build will need are each that, and so is `docs/site/conf.py`, which is Python because Sphinx's
-configuration format is Python. The `justfile` is the same thing for `just`, which is why
-[`../CI.md`](../CI.md)'s no-shebang rule matters here: it is what keeps a recipe a list of commands
-rather than a shell script wearing a recipe's clothes.
+the `.likec4` models, a `lychee` TOML, a `commitlint` configuration, the Go toolchain's `go.mod` and
+`go.sum`, and the Dockerfile a container build will need are each that, and so is
+`docs/site/conf.py`, which is Python because Sphinx's configuration format is Python. The
+`justfile` is the same thing for `just`, which is why [`../CI.md`](../CI.md)'s no-shebang rule
+matters here: it is what keeps a recipe a list of commands rather than a shell script wearing a
+recipe's clothes.
 
 **A program embedded in a derived format is still an authored program**, and the rule above reaches
 it: a workflow `run:` block or a hook `entry:` carrying control flow is authored sh whatever file it

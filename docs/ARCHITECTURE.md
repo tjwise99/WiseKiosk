@@ -251,8 +251,18 @@ and the status codes the frontend discriminates on.
 
 The one schema is `boundary/openapi.yaml`, and the types generated from it are committed inside the
 package that compiles them ([ADR 0021 rev 1](decisions/0021-repository-layout.md)). What the drift
-gate asserts, and what it leaves unproven, is [`CI.md`](CI.md) § *Generated boundary types*; the
-structure the generate step lands in is drawn here once it is built (#7 boundary-contract codegen).
+gate asserts, and what it leaves unproven, is [`CI.md`](CI.md) § *Generated boundary types*.
+
+The generate step reads that one file twice. `oapi-codegen`, pinned by the Go module's `tool`
+directive and configured for types only, emits `backend/internal/boundary/`; `openapi-typescript`,
+pinned to an exact version in the frontend package, emits `frontend/src/lib/boundary/`. Neither
+generator knows about the other, and neither package's build reaches across — what the two sides
+share is the schema and nothing else, which is the whole of the arrangement. `just codegen` runs
+both; `just check-boundary` clears the two generated directories, runs both again and fails on any
+difference against what is committed, so the committed types cannot drift from the schema without a
+gate saying so. The error bodies the schema carries are
+[ADR 0026 rev 1](decisions/0026-boundary-error-body-shape.md)'s; a module's payload joins them as a
+named component of the same file.
 
 ## Config and secrets
 

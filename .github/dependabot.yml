@@ -55,4 +55,25 @@ updates:
       npm:
         patterns: ["*"]
 
-  # The gomod ecosystem is added here once go.mod exists.
+  # Go modules (the code generator pinned by the tool directive, and what the
+  # backend will import) — siloed under backend/ with the package it serves.
+  # Grouped like the blocks above so a week's bumps land as one PR.
+  - package-ecosystem: gomod
+    directory: "/backend"
+    schedule:
+      interval: weekly
+    groups:
+      gomod:
+        patterns: ["*"]
+
+  # Node packages for the application frontend — siloed under frontend/ with
+  # the package it serves, and separate from the architecture silo's block so
+  # each root's bumps arrive against the root they belong to. Grouped like the
+  # blocks above so a week's bumps land as one PR.
+  - package-ecosystem: npm
+    directory: "/frontend"
+    schedule:
+      interval: weekly
+    groups:
+      npm:
+        patterns: ["*"]

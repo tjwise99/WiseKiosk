@@ -66,15 +66,19 @@ The one OpenAPI schema is hand-authored and both sides' types are generated from
 and TypeScript types and fails on any difference, so a schema edit that reaches neither side, and a
 hand-edit of either, both fail.
 
-- Each side seeded independently — the committed types edited away from what the schema produces, one
-  language at a time, each asserted to exit non-zero. Regenerating both and re-running exits zero.
+- The gate clears both generated directories, regenerates, and fails on any difference from the
+  committed output (`git diff --exit-code`). Clearing before regenerating is what makes a missing
+  generator visible: absent output reads as a deletion in the diff rather than as a stale file
+  byte-identical to what is committed. That the gate can fail — a committed type moved away from the
+  schema, each side seeded independently — is proven once against a throwaway copy and recorded in
+  [`../scripts/cases/check-boundary.md`](../scripts/cases/check-boundary.md), the way every check's
+  fallibility is recorded here; it is not re-tested by a standing meta-gate.
 - **A run that regenerates nothing fails** rather than reporting agreement over an empty comparison,
-  which is what a missing generator or a schema path that resolves to no file would otherwise read as.
+  which is what a missing generator or a schema path that resolves to no file would otherwise read as
+  — a non-empty assertion on each output is the half of that the clear-and-diff does not cover.
 
 **What it leaves unproven** is whether the schema says what the boundary actually carries; the gate
 compares the schema against its own output and nothing against the running system.
-
-Unbuilt; owned by #7 boundary-contract codegen.
 
 ## In-code prose
 
@@ -456,7 +460,7 @@ changed, which the citation resolver above decides without anyone declaring anyt
 ## Repository shape
 
 - **Every tracked file is a declared kind** — an authored program in the set
-  [ADR 0017 rev 6](decisions/0017-authored-language-set.md) states, a derived format a toolchain
+  [ADR 0017 rev 7](decisions/0017-authored-language-set.md) states, a derived format a toolchain
   requires, data an authored check reads, or documentation. **A file type nobody has decided about
   fails**, which is the point: closing that failure is a person deciding which side it falls on. A run
   resolving no tracked file fails rather than reporting a clean tree.
