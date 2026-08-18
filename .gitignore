@@ -60,3 +60,7 @@ CLAUDE.local.md
 # committed. (`*.local` misses `.local.json` the same way it misses `.local.md`,
 # and an unignored copy reds `check-untracked` while being unaddable.)
 .claude/settings.local.json
+
+# Playwright's own output — the render tier's traces, reports and per-test artifacts.
+frontend/test-results/
+frontend/playwright-report/

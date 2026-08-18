@@ -115,6 +115,11 @@ arch-dev:
     docs/architecture/node_modules/.bin/likec4 start docs/architecture/model
 
 [group('setup')]
+[doc('First-time setup: install the browser the render tier drives')]
+render-install:
+    frontend/node_modules/.bin/playwright install --with-deps chromium
+
+[group('setup')]
 [doc('First-time setup: install the pinned boundary code generators into the package roots they belong to')]
 boundary-install:
     go -C backend mod download
@@ -159,6 +164,11 @@ check-build:
 [doc('The frontend unit tier passes (Vitest); needs `just boundary-install`')]
 check-unit:
     frontend/node_modules/.bin/vitest run --root frontend
+
+[group('checks')]
+[doc('The frontend render tier passes at each supported viewport (Playwright); needs `just boundary-install` and `just render-install`')]
+check-render:
+    frontend/node_modules/.bin/playwright test --config frontend/playwright.config.ts
 
 [group('config')]
 [doc('Regenerate the configuration-object TypeScript types from the configuration schema')]

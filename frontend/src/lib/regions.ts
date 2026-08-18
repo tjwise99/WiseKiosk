@@ -18,10 +18,12 @@ export interface RegionPlacement {
  * The frame's tracks. The three bands of the centre column each take an equal share of what the
  * bars and the corner rows leave, which is what makes `upper_third`, `middle_center` and
  * `lower_third` thirds; every other row is sized to its content, so a row whose regions hold
- * nothing takes no height.
+ * nothing takes no height. The bands are `minmax(0, 1fr)` rather than `1fr`: a bare `fr` track has
+ * an automatic minimum and grows to its content, which would make a third as tall as whatever it
+ * was given.
  */
-export const FRAME_COLUMNS = '1fr 1fr 1fr';
-export const FRAME_ROWS = 'auto auto 1fr 1fr 1fr auto auto';
+export const FRAME_COLUMNS = 'minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr)';
+export const FRAME_ROWS = 'auto auto minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr) auto auto';
 
 /**
  * Every region in the roster, anchored to the edge, corner or third its name states. The keys are

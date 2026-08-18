@@ -47,7 +47,10 @@
   .frame {
     display: grid;
     box-sizing: border-box;
-    min-height: 100vh;
+    /* A definite height, not a minimum: in an auto-height grid an `fr` track is sized to its
+       content, so the three bands would grow to whatever they were given instead of dividing the
+       display. Content larger than its band then leaves the frame, which is what it must do. */
+    height: 100vh;
     padding: var(--edge-band);
   }
 
@@ -56,6 +59,10 @@
     display: flex;
     flex-direction: column;
     gap: var(--space-lg);
+    /* A grid item's automatic minimum is its content, which would grow a region past the track it
+       was given and leave the content inside it. The region holds its track; the content leaves. */
+    min-width: 0;
+    min-height: 0;
   }
 
   .unknown {
