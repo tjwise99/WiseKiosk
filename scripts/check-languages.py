@@ -79,7 +79,7 @@ EXTENSIONS = {
     "html": "documentation — an asset the Sphinx docs-site build serves (ADR 0017 rev 7: "
     "'the assets a documentation build serves')",
     "png": "documentation — a rendered figure a Markdown document embeds and an asset the Sphinx "
-    "docs-site build serves (ADR 0017 rev 6: 'the assets a documentation build serves')",
+    "docs-site build serves (ADR 0017 rev 7: 'the assets a documentation build serves')",
 }
 
 # Exact repository-relative path -> which kind it is and what it serves, for a file with no
