@@ -4,9 +4,8 @@ The inputs this check has been run against, in both directions. What it *asserts
 [ADR 0017 rev 7](../../docs/decisions/0017-authored-language-set.md)'s;
 how to run a case is [`../README.md`](../README.md)'s.
 
-Exercised on this branch's tree, script md5 `1931604846a79f2f15b5589c0e7f5312`, where a passing run
-reports **221 tracked files** — `origin/main` has 218, and this branch adds three (the study document
-and its two rendered figures).
+Exercised at `PIN_COMMIT`, script md5 `PIN_MD5`, where a passing run over this repository reports
+**PIN_COUNT tracked files**.
 
 | Direction | Case | Input |
 |---|---|---|
@@ -24,6 +23,8 @@ and its two rendered figures).
 | Must pass | A new file with an already-declared extension | `scripts/new-check.py`, a placeholder script, added to the tree |
 | Must pass | A rendered PNG figure a Markdown document embeds | `docs/design/display-design-study.md`'s two `.png` figures, in the tree as it stands |
 | Must fail | An undeclared image extension, `png` being declared but `svg` not | a seeded `docs/design/decoy.svg` |
+| Must pass | A second file in the newly declared Go manifest format | `backend/second.mod` added beside `backend/go.mod` |
+| Must pass | A second file in the newly declared Go lockfile format | `backend/second.sum` added beside `backend/go.sum` |
 
 **What the cases prove, beyond what the table shows on its own.**
 
@@ -49,6 +50,10 @@ and its two rendered figures).
   was hit once while building this fixture, from a script placed at the fixture root instead of under
   `scripts/`, and is why the case above is seeded with the script correctly placed and a genuinely
   empty index, not a broken `cwd`.
+- **The two Go-format rows prove a declared extension rather than a grandfathered path.** `mod` and
+  `sum` entered `EXTENSIONS`, not `LEGACY`, so a *second* file in either format passes wherever it
+  sits — which is the claim, the formats being the Go toolchain's rather than one file's. A
+  path-grandfathered disposition would fail both rows.
 - **The tree-as-it-stands row is what makes every other row mean something.** Everything else here is
   a targeted seed; this one is the population `just verify` actually runs the check against, and it is
   the row that would catch the allowlist itself being wrong rather than the check's logic.
