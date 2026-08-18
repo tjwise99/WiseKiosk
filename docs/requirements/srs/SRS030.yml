@@ -15,7 +15,7 @@ rationale: |
   design and makes a fourth device a specification change. A hairline divider and a grouping tint
   dark enough sit under the ceiling, a lit card or a scrim does not, and how dark is dark enough is
   calibrated against the glass in
-  TST045<!-- Pending: emitting-surface test --> rather than fixed here. It is stated over emission
+  TST045<!-- Emitting-surface test --> rather than fixed here. It is stated over emission
   rather than over the surface no content occupies, since occupancy is read from element boxes and a
   scrim would remove its own area from the population measured.
   The exemption is text and imagery, and it is the page's rather than a module's: a configuration
@@ -26,7 +26,7 @@ rationale: |
   What this permits is a large bright image rendered as content, which takes the mirror as surely as
   a scrim does. That is a module's design, and no item in this tree obliges otherwise.
 ref: ''
-reviewed: 3Y7EQMCnyY049HPPKTkR8PsiojAGNlbx2aoLGvQl3rs=
+reviewed: uFrxStk4Awji5w8o3z5LXz6quTzSYE7Wx2bIhqBNjFY=
 status: accepted
 text: |
   Only the text and imagery the display page presents as content shall be rendered above a stated

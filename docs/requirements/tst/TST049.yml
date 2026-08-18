@@ -1,20 +1,22 @@
-active: false
+active: true
 derived: false
 header: |
-  Pending: edge inset clearance test
+  Edge inset clearance test
 level: 71
 links:
 - SRS034: 96VREki6BjZQFirPt3EsMEtOPDO9h1HjiqsF_JSv7pU=
 normative: true
 rationale: ''
 ref: ''
-reviewed: KVYBgoCdHkf_1vFbZGwLUpw0SLXP7GpuGTNGbQEcNfc=
-status: proposed
+references:
+- path: frontend/tests/render/edge-clearance.spec.ts
+  type: file
+reviewed: A4npRvFMun42UwrLAdE9P0i7zrXnHtYdMGElNuBm0ko=
+status: accepted
 text: |
-  Pending: read each laid-out region's geometry against the viewport, asserting no region enters the
-  band the configuration declares, on any edge, over configurations chosen to load the display rather
-  than a single fixture. Lands with the frontend skeleton (#10); activated and given a references
-  entry then.
+  Read each laid-out region's geometry against the viewport, asserting no region enters the band
+  the configuration declares, on any edge, over configurations chosen to load the display rather
+  than a single fixture.
 verification-justification: |
   Settles that the layout keeps clear of the band it was told about, which is a band the software
   cannot observe being masked. Leaves unproven that the declared depth clears the mask actually

@@ -89,7 +89,7 @@ reviewer is the mechanism ([ADR 0011 rev 2](docs/decisions/0011-requirement-or-c
 **Cite a question by number *and* name** — `question 8, *Generality*`. A bare number resolves silently
 to whatever occupies it after a renumber, in documents no sweep reliably reaches. New questions are
 appended for the same reason; inserting one is permitted
-([ADR 0017 rev 7](docs/decisions/0017-authored-language-set.md)) and renumbers everything below.
+([ADR 0017 rev 8](docs/decisions/0017-authored-language-set.md)) and renumbers everything below.
 
 **Documentation**
 
@@ -124,7 +124,7 @@ appended for the same reason; inserting one is permitted
     narrowing reachable by the defect the check exists to catch? An exemption is the first place a
     bypass gets spelled, and the reasoning that produces one reads as caution.
 12. **Languages.** Four things `check-languages` states it cannot reach
-    ([ADR 0017 rev 7](docs/decisions/0017-authored-language-set.md)), each one yours. Does the change
+    ([ADR 0017 rev 8](docs/decisions/0017-authored-language-set.md)), each one yours. Does the change
     author a program for the wrong audience — a repository check in TypeScript passes on a declared
     extension? Is any file's content something other than the kind its path declares? Does it author
     control flow inside a derived format, a workflow `run:` block or a hook `entry:`, where no
