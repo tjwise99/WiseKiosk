@@ -155,6 +155,18 @@ check-boundary:
     git add --intent-to-add -- backend/internal/boundary/ frontend/src/lib/boundary/
     git diff --exit-code HEAD -- backend/internal/boundary/ frontend/src/lib/boundary/
 
+[group('run')]
+[doc('Serve the display page on a local dev server; the page fetches /config.json, which a deployment bind-mounts into the served tree and a local run reads from the gitignored frontend/public/config.json')]
+dev:
+    frontend/node_modules/.bin/vite frontend
+
+# Depends on `check-build` so what is served is a bundle that exists and is current, rather than
+# whatever a previous run left in `dist/`.
+[group('run')]
+[doc('Serve the built static bundle rather than the dev server — what a deployment ships, including the compiled configuration validator')]
+preview: check-build
+    frontend/node_modules/.bin/vite preview frontend
+
 [group('checks')]
 [doc('The frontend builds to a static single-page bundle; needs `just boundary-install`')]
 check-build:
