@@ -155,6 +155,11 @@ check-boundary:
 check-build:
     frontend/node_modules/.bin/vite build frontend
 
+[group('checks')]
+[doc('The frontend unit tier passes (Vitest); needs `just boundary-install`')]
+check-unit:
+    frontend/node_modules/.bin/vitest run --root frontend
+
 [group('config')]
 [doc('Regenerate the configuration-object TypeScript types from the configuration schema')]
 config-codegen:
