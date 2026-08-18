@@ -2,11 +2,16 @@
   "name": "wisekiosk-frontend",
   "version": "0.0.0",
   "private": true,
+  "type": "module",
   "description": "The WiseKiosk frontend package root. Its boundary types under src/lib/boundary/ are generated from the one boundary schema and committed; openapi-typescript is pinned exact so a toolchain bump cannot present as schema drift.",
   "engines": {
     "node": "24"
   },
   "devDependencies": {
-    "openapi-typescript": "7.13.0"
+    "@sveltejs/vite-plugin-svelte": "7.3.0",
+    "openapi-typescript": "7.13.0",
+    "svelte": "5.56.9",
+    "typescript": "5.9.3",
+    "vite": "8.2.1"
   }
 }

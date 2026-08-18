@@ -150,6 +150,11 @@ check-boundary:
     git add --intent-to-add -- backend/internal/boundary/ frontend/src/lib/boundary/
     git diff --exit-code HEAD -- backend/internal/boundary/ frontend/src/lib/boundary/
 
+[group('checks')]
+[doc('The frontend builds to a static single-page bundle; needs `just boundary-install`')]
+check-build:
+    frontend/node_modules/.bin/vite build frontend
+
 [group('review')]
 [doc('List every ADR citation this branch re-pinned without touching the sentence around it, per file and line (reports; not a gate)')]
 rev-reach *ref:
