@@ -5,8 +5,8 @@ The inputs this check has been run against, in both directions. What it *asserts
 how to run a case is [`../README.md`](../README.md)'s.
 
 Exercised on this branch's tree, script md5 `1931604846a79f2f15b5589c0e7f5312`, where a passing run
-reports **222 tracked files** — `origin/main` has 218, and this branch adds four (the study document,
-its two rendered figures, and the source page it was rendered from).
+reports **221 tracked files** — `origin/main` has 218, and this branch adds three (the study document
+and its two rendered figures).
 
 | Direction | Case | Input |
 |---|---|---|
