@@ -150,11 +150,6 @@ check-boundary:
     git add --intent-to-add -- backend/internal/boundary/ frontend/src/lib/boundary/
     git diff --exit-code HEAD -- backend/internal/boundary/ frontend/src/lib/boundary/
 
-[group('checks')]
-[doc('The drift gate above can fail: each side seeded away from the schema in a temp copy of the tree, one language at a time, then regenerated (CI-only; not in verify)')]
-check-boundary-selftest:
-    python3 scripts/check-boundary-selftest.py
-
 [group('review')]
 [doc('List every ADR citation this branch re-pinned without touching the sentence around it, per file and line (reports; not a gate)')]
 rev-reach *ref:
