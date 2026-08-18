@@ -9,6 +9,8 @@
 openapi: 3.0.3
 info:
   title: WiseKiosk boundary contract
+  # OpenAPI requires this field. Nothing reads it: neither generator emits it, no release is cut
+  # against it, and the two sides ship in one image, so it tracks nothing and gates nothing.
   version: 0.1.0
 paths: {}
 components:

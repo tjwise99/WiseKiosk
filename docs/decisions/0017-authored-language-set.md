@@ -96,10 +96,11 @@ they see, and is authored the same way the table's other product formats are.
 format — its configuration, its model, the items it stores — is part of invoking that toolchain
 rather than authoring in it. The workflow YAML, the Doorstop item files under `docs/requirements/`,
 the `.likec4` models, a `lychee` TOML, a `commitlint` configuration, the Go toolchain's `go.mod` and
-`go.sum` and the Dockerfile a container build will need are each that, and so is
-`docs/site/conf.py`, which is Python because Sphinx's configuration format is Python. The `justfile` is the same thing for `just`, which is why
-[`../CI.md`](../CI.md)'s no-shebang rule matters here: it is what keeps a recipe a list of commands
-rather than a shell script wearing a recipe's clothes.
+`go.sum`, and the Dockerfile a container build will need are each that, and so is
+`docs/site/conf.py`, which is Python because Sphinx's configuration format is Python. The
+`justfile` is the same thing for `just`, which is why [`../CI.md`](../CI.md)'s no-shebang rule
+matters here: it is what keeps a recipe a list of commands rather than a shell script wearing a
+recipe's clothes.
 
 **A program embedded in a derived format is still an authored program**, and the rule above reaches
 it: a workflow `run:` block or a hook `entry:` carrying control flow is authored sh whatever file it

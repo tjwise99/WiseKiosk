@@ -74,8 +74,6 @@ hand-edit of either, both fail.
 **What it leaves unproven** is whether the schema says what the boundary actually carries; the gate
 compares the schema against its own output and nothing against the running system.
 
-Unbuilt; owned by #7 boundary-contract codegen.
-
 ## In-code prose
 
 Comments state mechanism. Reason, history and evaluative judgement are authored in a documentation
