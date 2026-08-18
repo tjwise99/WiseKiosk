@@ -71,11 +71,50 @@ reason: it is what survives the panel changing.
 | body | `2.2vh` | 500–600 | primary readable content lines |
 | caption | `1.7vh` | 600 | secondary or meta text — labels, units, timestamps |
 
-SRS033's<!-- Text holds a minimum size against the display, at every resolution --> floor itself is not a number this contract can cite: it is calibrated where its check
-activates, not fixed in the requirement text, so a value pinned here could still go stale against
-it. These five steps are authored well clear of any plausible floor, `caption` — the smallest —
-included; an author who needs a step below `caption` halts and asks rather than assuming headroom
-this contract cannot confirm.
+The floor beneath these five steps is chosen under **Calibrated bounds** below, rather than left to
+the check that will assert it — this contract is its origin. Every step sits above the floor;
+`caption` — the smallest — is authored near it deliberately, as glanced meta-text, while the reading
+steps sit well above. An author who needs a step below `caption` checks it against that figure rather
+than assuming headroom this contract cannot confirm.
+
+## Calibrated bounds
+
+Two numeric bounds the design language above is written against — one value each, fixed for the
+product rather than supplied per installation. This contract is where they are chosen;
+recalibrating one edits its figure here and the check that asserts it re-asserts against the new
+value — it is not a change to the requirement served, which is why
+SRS030<!-- Only content is rendered above the emission ceiling --> and
+SRS033<!-- Text holds a minimum size against the display, at every resolution --> both keep saying "a
+stated fraction" and name no number. How each was calibrated — the in-situ photographs, the arcminute
+model, the retired luminance ramp — is the
+[display design study](../design/display-design-study.md); what follows is the figure that study
+settles on, with the reasoning in brief.
+
+**Design distance.** Both figures below are calibrated at the viewing distance the
+[design study](../design/display-design-study.md) establishes and records, measured at the deployed
+installation. It is not configuration; the software never reads it.
+
+**Type-size floor — 1.4% of the display's height**, read as computed `font-size` ÷ viewport height
+(font-size, not cap height). This is the owner-reported *marginal* edge of legibility at the nominal
+6 ft — the smallest a glyph may be, not a comfortable size — so every step of the type scale above
+clears it, `caption` (1.7vh) by ≈21%. A floor set at the *comfortable* size instead would sit above
+`caption` and force the scale up; the floor guarantees legibility, and `caption` —
+glanced meta-text — is deliberately authored near it, sustained reading sitting at the larger steps.
+Stated as a fraction of height so it survives a change of panel or resolution, which a size fixed in
+device pixels does not.
+
+**Emission ceiling — 6% of the display's maximum emission**, measured as relative (linear) luminance
+of the composited surface — a fraction of the luminance of full white, not of an sRGB code value.
+Everything the page draws but content stays below it
+(SRS030<!-- Only content is rendered above the emission ceiling -->), so the grouping vocabulary's
+dim stroke and below-ceiling fill live in the band beneath, while readable content emits at full
+white (SRS032<!-- Readable text is carried at full emission -->) far above. 6% admits a dim stroke
+around `#444` and holds every named step of the display's retired luminance ramp — `#fff`, `#aaa`,
+`#999`, `#666` at ≈13% luminance, the last swallowed by the glass in situ — above the ceiling, so a
+dimmed tier cannot return as decoration. Below it a mark reads over the dark reflection the mirror
+(SYS008<!-- The surface carrying no content is a mirror -->) is designed around and vanishes over a
+bright one, which is correct: grouping is an enhancement over dark ground, never a load-bearing
+contrast device.
 
 ## Spacing scale and the edge band
 

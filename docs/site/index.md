@@ -38,6 +38,13 @@ security
 
 ```{toctree}
 :hidden:
+:caption: Design
+
+../design/display-design-study
+```
+
+```{toctree}
+:hidden:
 :caption: Requirements & traceability
 :glob:
 

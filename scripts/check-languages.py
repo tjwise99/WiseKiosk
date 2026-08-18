@@ -73,6 +73,8 @@ EXTENSIONS = {
     "md": "documentation — not an authored program; ADR 0017 rev 6 does not reach documentation",
     "html": "documentation — an asset the Sphinx docs-site build serves (ADR 0017 rev 6: "
     "'the assets a documentation build serves')",
+    "png": "documentation — a rendered figure a Markdown document embeds and an asset the Sphinx "
+    "docs-site build serves (ADR 0017 rev 6: 'the assets a documentation build serves')",
 }
 
 # Exact repository-relative path -> which kind it is and what it serves, for a file with no
