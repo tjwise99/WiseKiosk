@@ -149,10 +149,10 @@ wrong twice — it projected from the module's box rather than the string, infla
 The record is kept because a confident geometric impossibility is exactly the kind of claim that
 survives unexamined into a rebuild.
 
-The collision that eventually eats the reserve is not hypothetical. The deployed layout leaves a
-200 px gap between the clock and the top of the park stack — one module of headroom; a seventh park,
-or the compliments module the roster includes and this configuration omits, meets the clock. The
-failure is already reproducible at 1280×800, not a future risk.
+Independent of the width budget above, a vertical overflow is not hypothetical either. The deployed
+layout leaves a 200 px gap between the clock and the top of the park stack — one module of headroom;
+a seventh park, or the compliments module the roster includes and this configuration omits, grows
+into the clock. The failure is already reproducible at 1280×800, not a future risk.
 
 ## What belongs in the specification
 
