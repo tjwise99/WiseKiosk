@@ -4,8 +4,8 @@ The inputs this check has been run against, in both directions. What it *asserts
 [ADR 0017 rev 7](../../docs/decisions/0017-authored-language-set.md)'s;
 how to run a case is [`../README.md`](../README.md)'s.
 
-Exercised at `PIN_COMMIT`, script md5 `PIN_MD5`, where a passing run over this repository reports
-**PIN_COUNT tracked files**.
+Exercised at `57fdd4e`, script md5 `cdf16aa8fefac64effc439dc29be1db9`, where a passing run over this
+repository reports **232 tracked files**.
 
 | Direction | Case | Input |
 |---|---|---|
