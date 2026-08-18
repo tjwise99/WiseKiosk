@@ -86,8 +86,8 @@ home and cited from the comment.
 
 Whether a comment is narrative rather than mechanism, and whether added comment volume earns its
 place, is a review habit rather than a gate: #59 comment-discipline gate closed not-planned (owner,
-2026-08-16). The defect class it targeted is carried by the `review-diff.py` Stop hook, which surfaces
-[`CONTRIBUTING.md`](../CONTRIBUTING.md)'s *Comments* checklist questions at write time, and by
+2026-08-16). The defect class it targeted is carried by the `review-diff.py` pre-commit hook, which
+surfaces [`CONTRIBUTING.md`](../CONTRIBUTING.md)'s *Comments* checklist questions before a commit, and by
 independent review — across the five-PR ADR 0016 rev 5 adoption wave this produced zero
 comment-discipline findings. Reopens if a narrative block or comment bloat reaches `main` past both.
 

@@ -1,26 +1,34 @@
 #!/usr/bin/env python3
-"""Stop hook: surface review-checklist questions scoped to what the turn changed.
+"""PreToolUse hook: make the model self-review before a commit.
 
-Reads CONTRIBUTING.md's "## Review checklist" section, groups its numbered
-questions under their **Group** heading, and maps the paths the turn changed
-to those groups (union — a path can pull in more than one group). Prints the
-matching questions, deduped, one line per question as number and name only,
-to stderr and exits 2 so the model reads them before the turn ends.
+Fires on Bash `git *` calls, returns immediately unless the command commits.
+For a commit, reads CONTRIBUTING.md's "## Review checklist" section, groups its
+numbered questions under their **Group** heading, maps the paths about to be
+committed to those groups (union — a path can pull in more than one group), and
+exits 2 with the matching questions on stderr. Claude Code blocks the commit and
+feeds that text to the model, which answers the questions and re-runs the commit.
+No prompt reaches the human. Fires the same way inside subagents.
 
-Fires at most once per prompt_id: there is no documented stop_hook_active
-field for the Stop event, so a marker file under the system temp dir is the
-loop guard. Never fails the session on its own error — any internal problem
-exits 0 silently rather than raising.
+A marker keyed on the staged content (`git write-tree`, plus the unstaged tracked
+diff under `-a`) is the loop guard: the first attempt at a given content-state
+blocks, the retry of that same state is allowed through. Changing files in
+response yields a new state, which blocks again for a fresh review.
+
+The population is the staged set (`git diff --cached`), plus the tracked-unstaged
+set when the commit stages it itself (`-a`/`--all`). No changes in scope, no group
+selected, or any internal error allows the commit silently rather than raising.
 """
 
+import hashlib
 import json
 import os
 import re
+import shlex
 import subprocess
 import sys
 import tempfile
 
-GUARD_DIR = os.path.join(tempfile.gettempdir(), "claude-review-diff-hook")
+GUARD_DIR = os.path.join(tempfile.gettempdir(), "claude-review-commit-hook")
 
 
 def main():
@@ -29,17 +37,21 @@ def main():
     except Exception:
         return 0
 
-    prompt_id = payload.get("prompt_id") if isinstance(payload, dict) else None
-    if not isinstance(prompt_id, str) or not prompt_id:
+    if not isinstance(payload, dict):
         return 0
 
-    if not claim_prompt_id(prompt_id):
+    if payload.get("tool_name") != "Bash":
+        return 0
+
+    command = (payload.get("tool_input") or {}).get("command")
+    if not isinstance(command, str) or not commits(command):
         return 0
 
     try:
-        repo_root = os.environ.get("CLAUDE_PROJECT_DIR") or payload.get("cwd") or "."
+        git_dir = payload.get("cwd") or os.environ.get("CLAUDE_PROJECT_DIR") or "."
+        docs_root = os.environ.get("CLAUDE_PROJECT_DIR") or payload.get("cwd") or "."
 
-        changed = changed_paths(repo_root)
+        changed = committed_paths(git_dir, command)
         if not changed:
             return 0
 
@@ -47,7 +59,7 @@ def main():
         if not groups_needed:
             return 0
 
-        groups = parse_checklist(os.path.join(repo_root, "CONTRIBUTING.md"))
+        groups = parse_checklist(os.path.join(docs_root, "CONTRIBUTING.md"))
 
         seen = set()
         questions = []
@@ -61,20 +73,99 @@ def main():
         if not questions:
             return 0
 
+        session = payload.get("session_id") or ""
+        key = content_key(git_dir, command, session)
+        if key is not None and not claim(key):
+            return 0
+
         questions.sort(key=lambda q: q[0])
         lines = [f"{number}. {title}" for _, number, title in questions]
-        message = "Review checklist questions for what this turn changed:\n" + "\n".join(lines)
-        sys.stderr.write(message + "\n")
+        header = (
+            f"Before this commit — walk these review-checklist questions against "
+            f"the {len(changed)} staged path(s), fix anything that fails, then re-run "
+            "the commit (an unchanged re-run is allowed through):"
+        )
+        sys.stderr.write(header + "\n" + "\n".join(lines) + "\n")
         return 2
     except Exception:
         return 0
 
 
-def claim_prompt_id(prompt_id):
-    """Return True the first time this prompt_id is seen, False every time after."""
+SEPARATORS = {"&&", "||", "|", ";", "&", "\n"}
+GIT_OPTS_WITH_VALUE = {"-C", "-c", "--git-dir", "--work-tree", "--namespace", "--exec-path"}
+
+
+def commits(command):
+    """True when a simple-command in `command` is a git commit that writes one.
+
+    Tokenises with shlex so `commit` inside a quoted argument of another command
+    — an echo, a `-m` message — is never mistaken for the git subcommand.
+    """
+    try:
+        tokens = shlex.split(command, comments=True)
+    except ValueError:
+        return False
+
+    for segment in split_simple_commands(tokens):
+        if segment_is_commit(segment):
+            return True
+    return False
+
+
+def split_simple_commands(tokens):
+    segment = []
+    for token in tokens:
+        if token in SEPARATORS:
+            if segment:
+                yield segment
+            segment = []
+        else:
+            segment.append(token)
+    if segment:
+        yield segment
+
+
+def segment_is_commit(segment):
+    i = 0
+    while i < len(segment) and re.match(r"^\w+=", segment[i]):
+        i += 1
+    if i >= len(segment):
+        return False
+    word = segment[i]
+    if word != "git" and not word.endswith("/git"):
+        return False
+
+    i += 1
+    while i < len(segment):
+        token = segment[i]
+        if token in GIT_OPTS_WITH_VALUE:
+            i += 2
+            continue
+        if token.startswith("-"):
+            i += 1
+            continue
+        return token == "commit" and "--dry-run" not in segment
+    return False
+
+
+def content_key(git_dir, command, session):
+    """Stable digest of the content this commit would record, or None if unknown."""
+    tree = run_git(git_dir, ["write-tree"])
+    if tree is None:
+        return None
+    material = session + "\0" + tree.strip()
+    if stages_all(command):
+        unstaged = run_git(git_dir, ["diff"])
+        if unstaged is not None:
+            material += "\0" + unstaged
+    return hashlib.sha256(material.encode("utf-8", "replace")).hexdigest()
+
+
+def claim(key):
+    """Return True the first time this content-state is seen, False every time after."""
     try:
         os.makedirs(GUARD_DIR, exist_ok=True)
-        marker = os.path.join(GUARD_DIR, prompt_id)
+        marker = os.path.join(GUARD_DIR, key)
         fd = os.open(marker, os.O_CREAT | os.O_EXCL | os.O_WRONLY)
         os.close(fd)
         return True
@@ -84,41 +175,44 @@ def claim_prompt_id(prompt_id):
         return False
 
 
-def changed_paths(repo_root):
-    """Union of git status --porcelain, git diff --name-only, and its staged form."""
+def committed_paths(git_dir, command):
+    """Paths this commit would record: staged, plus tracked-unstaged under -a."""
     paths = set()
 
-    status = run_git(repo_root, ["status", "--porcelain"])
-    if status is not None:
-        for line in status.splitlines():
-            if len(line) <= 3:
-                continue
-            entry = line[3:]
-            paths.update(split_rename(entry))
-
-    for diff_args in (["diff", "--name-only"], ["diff", "--name-only", "--staged"]):
-        out = run_git(repo_root, diff_args)
-        if out is None:
-            continue
-        for line in out.splitlines():
-            if line:
+    staged = run_git(git_dir, ["diff", "--cached", "--name-only"])
+    if staged is not None:
+        for line in staged.splitlines():
+            if line.strip():
                 paths.add(line.strip())
+
+    if stages_all(command):
+        tracked = run_git(git_dir, ["diff", "--name-only"])
+        if tracked is not None:
+            for line in tracked.splitlines():
+                if line.strip():
+                    paths.add(line.strip())
 
     paths.discard("")
     return paths
 
 
-def split_rename(entry):
-    if " -> " in entry:
-        return [p.strip().strip('"') for p in entry.split(" -> ")]
-    return [entry.strip().strip('"')]
+def stages_all(command):
+    """True when the commit carries -a / --all (including combined short flags)."""
+    for token in command.split():
+        if token.startswith("--"):
+            if token == "--all":
+                return True
+            continue
+        if token.startswith("-") and "a" in token[1:]:
+            return True
+    return False
 
 
-def run_git(repo_root, args):
+def run_git(git_dir, args):
     try:
         result = subprocess.run(
             ["git", *args],
-            cwd=repo_root,
+            cwd=git_dir,
             capture_output=True,
             text=True,
             timeout=10,
