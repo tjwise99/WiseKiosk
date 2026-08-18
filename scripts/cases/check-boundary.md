@@ -4,7 +4,7 @@ The inputs these have been run against, in both directions. What they *assert*, 
 [`docs/CI.md`](../../docs/CI.md) § *Generated boundary types*'s; how to run a case is
 [`../README.md`](../README.md)'s.
 
-Exercised at `40a06fc`, self-test md5 `71090a75c4dd020979f851e1cc6cc04b`. The commit is pinned as
+Exercised at `efda030`, self-test md5 `71090a75c4dd020979f851e1cc6cc04b`. The commit is pinned as
 well as the script: four of the six rows seed the `check-boundary` recipe, which the script's own
 hash cannot see.
 
