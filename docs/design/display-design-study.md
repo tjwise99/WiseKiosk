@@ -111,14 +111,15 @@ timestamp — is authored near it deliberately; sustained reading sits at the la
 ## The mirror is the product
 
 The largest contiguous unlit rectangle in the deployed layout is **940 × 939 px — a 401 × 401 mm
-square, 42.6 % of the surface**; lit modules cover only 23 %. The photographs confirm what that buys:
+square, 42.6 % of the surface**; lit modules cover only 23 % — both measured from the deployed layout,
+not from the schematic figure below. The photographs confirm what that buys:
 a bright, sharp reflection of a person and the room at conversational distance. And the reserve is
 computable rather than a matter of taste — a plane mirror of extent E shows an object of extent 2E,
 **independent of viewing distance**, so 401 mm of reserve shows 802 mm of a person, head to roughly
 the waist. A check can measure it from module geometry; the threshold is a decision about how much of
 a person the product intends to show.
 
-![Kiosk layout — the reserved unlit mirror region and the four occupied quadrants](display-design-study-reserve.png)
+![Kiosk layout, schematic — the reserved unlit mirror region and the four occupied quadrants; module boxes are placed, not sized to scale](display-design-study-reserve.png)
 
 The reserve is a by-product of the four-corner composition rather than an intent. The park stack is
 bottom-anchored and grows upward, so content volume — not viewport width — is what eventually eats it.

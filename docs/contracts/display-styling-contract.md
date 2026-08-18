@@ -79,8 +79,8 @@ than assuming headroom this contract cannot confirm.
 
 ## Calibrated bounds
 
-Two numeric bounds the design language above is written against, each a single figure chosen once to
-hold across every installation the product is built for. This contract is where they are chosen;
+Two numeric bounds the design language above is written against — one value each, fixed for the
+product rather than supplied per installation. This contract is where they are chosen;
 recalibrating one edits its figure here and the check that asserts it re-asserts against the new
 value — it is not a change to the requirement served, which is why
 SRS030<!-- Only content is rendered above the emission ceiling --> and
@@ -91,15 +91,14 @@ model, the retired luminance ramp — is the
 settles on, with the reasoning in brief.
 
 **Design distance.** Both figures below are calibrated at the viewing distance the
-[design study](../design/display-design-study.md) establishes — 6 ft nominal, 9 ft outer bound
-(≈1.8–2.7 m), measured at the deployed installation. It is not configuration; the software never reads
-it.
+[design study](../design/display-design-study.md) establishes and records, measured at the deployed
+installation. It is not configuration; the software never reads it.
 
 **Type-size floor — 1.4% of the display's height**, read as computed `font-size` ÷ viewport height
 (font-size, not cap height). This is the owner-reported *marginal* edge of legibility at the nominal
 6 ft — the smallest a glyph may be, not a comfortable size — so every step of the type scale above
-clears it, `caption` (1.7vh) by ≈21%. A floor set at the *comfortable* size (1.85% here) instead
-would sit above `caption` and force the scale up; the floor guarantees legibility, and `caption` —
+clears it, `caption` (1.7vh) by ≈21%. A floor set at the *comfortable* size instead would sit above
+`caption` and force the scale up; the floor guarantees legibility, and `caption` —
 glanced meta-text — is deliberately authored near it, sustained reading sitting at the larger steps.
 Stated as a fraction of height so it survives a change of panel or resolution, which a size fixed in
 device pixels does not.

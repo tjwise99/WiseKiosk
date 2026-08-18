@@ -27,6 +27,7 @@ import shlex
 import subprocess
 import sys
 import tempfile
+import time
 
 GUARD_DIR = os.path.join(tempfile.gettempdir(), "claude-review-commit-hook")
 
@@ -108,6 +109,31 @@ def tokenize(line):
     return list(lex)
 
 
+HEREDOC = re.compile(r"<<-?\s*(['\"]?)([A-Za-z_]\w*)\1")
+
+
+def command_lines(command):
+    """Yield each line, skipping the body of a heredoc.
+
+    A `<<DELIM` redirection makes the following lines data until a line equal to
+    DELIM, so the per-line pass must not read them as commands — otherwise a
+    `cat <<EOF` whose body contains `git commit …` reads as a commit. Over-skipping
+    (a `<<` inside a quoted argument) at worst misses a commit, which is the
+    fail-open direction.
+    """
+    lines = command.splitlines()
+    i = 0
+    while i < len(lines):
+        yield lines[i]
+        match = HEREDOC.search(lines[i])
+        i += 1
+        if match:
+            delim = match.group(2)
+            while i < len(lines) and lines[i].strip() != delim:
+                i += 1
+            i += 1  # the closing delimiter line is not a command either
+
+
 def commit_segments(command):
     """Yield the git-commit simple-commands in `command`.
 
@@ -118,7 +144,7 @@ def commit_segments(command):
     a line whose quote spans the break simply fails to parse there and was already
     covered by the whole-command pass.
     """
-    for text in (command, *command.splitlines()):
+    for text in (command, *command_lines(command)):
         try:
             tokens = tokenize(text)
         except ValueError:
@@ -192,6 +218,7 @@ def claim(key):
     """Return True the first time this content-state is seen, False every time after."""
     try:
         os.makedirs(GUARD_DIR, exist_ok=True)
+        prune_markers()
         marker = os.path.join(GUARD_DIR, key)
         fd = os.open(marker, os.O_CREAT | os.O_EXCL | os.O_WRONLY)
         os.close(fd)
@@ -200,6 +227,23 @@ def claim(key):
         return False
     except Exception:
         return False
+
+
+def prune_markers():
+    """Drop markers older than a day so the guard directory does not grow without
+    bound; a block and its retry happen within seconds, so this never removes a
+    marker that is still guarding a live retry."""
+    cutoff = time.time() - 86400
+    try:
+        for name in os.listdir(GUARD_DIR):
+            path = os.path.join(GUARD_DIR, name)
+            try:
+                if os.path.getmtime(path) < cutoff:
+                    os.unlink(path)
+            except OSError:
+                pass
+    except OSError:
+        pass
 
 
 def committed_paths(git_dir, command):
