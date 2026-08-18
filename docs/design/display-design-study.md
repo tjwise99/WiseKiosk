@@ -122,9 +122,10 @@ a person the product intends to show.
 
 The reserve is a by-product of the four-corner composition rather than an intent. The park stack is
 bottom-anchored and grows upward, so content volume — not viewport width — is what eventually eats it.
-The dashed inset the figure marks *safe area · 5.6 %* is this installation's own bezel allowance, not
-a design default: SRS035<!-- The masked edge band is the deployment's to declare --> makes the edge
-band the deployment's to declare, and the styling contract defaults it to zero where none is supplied.
+The safe-area inset the deployed layout holds its regions clear of — 5.6 % of display height, the
+dashed frame in the figure — is this installation's own bezel allowance, not a design default:
+SRS035<!-- The masked edge band is the deployment's to declare --> makes the edge band the
+deployment's to declare, and the styling contract defaults it to zero where none is supplied.
 
 ## What the two constraints do together
 
