@@ -4,10 +4,19 @@
 **Decided:** 2026-08-16 (CSS's product-stylesheet disposition added; the audience rule itself taken
 2026-08-04 in #60 authored-language set, taken after
 [ADR 0016 rev 5](0016-maintained-tools-for-standard-artifacts.md) settled which authored checks survive at all)
-**Rev:** 7
+**Rev:** 8
 
 ## Revisions
 
+- **rev 8** — 2026-08-18 — the carve-out for what a build serves is stated over *a* build rather
+  than a documentation build, and `scripts/check-languages.py` declares `woff2` under it: the
+  frontend skeleton bundles the Inter variable font [the display styling
+  contract](../contracts/display-styling-contract.md) states, which is a third-party binary nobody
+  here authors and which no existing kind reached. `html` gains a second disposition beside its
+  docs-site one, `frontend/index.html` being Vite's own required entry format rather than a
+  documentation asset — the two-dispositions-under-one-extension shape `.css` already carries. The
+  audience rule, the derivation rule and the authored language set are unchanged, so the `Decided`
+  date does not move (#10 frontend skeleton).
 - **rev 7** — 2026-08-17 — the Go toolchain's manifest and lockfile formats join the Decision's
   illustrative list of derived formats, and `scripts/check-languages.py` declares `mod` and `sum`
   beside them: the boundary codegen's Go module root introduces both, and an entry added to the
@@ -113,8 +122,11 @@ diff, does not hold at all.
 Nothing above needs revising when a tool arrives with a format not yet seen here — which is the
 point, since [ADR 0016 rev 5](0016-maintained-tools-for-standard-artifacts.md) adopts four such tools.
 
-**Documentation, and the assets a documentation build serves, are not authored programs and this
-decision does not reach them.**
+**Documentation, and the assets a build serves, are not authored programs and this decision does not
+reach them.** Which build is not the distinguishing fact — a rendered figure the docs site serves and
+a bundled font the product serves are both third-party or generated material that nobody here
+authors, and a carve-out naming only the documentation build would have refused the second for a
+reason that never applied to it.
 
 **Node is an invoked toolchain and never an authoring language.** LikeC4
 ([ADR 0003 rev 2](0003-architecture-as-code-likec4.md)) and Vite are invoked; so is whatever an adopted hook

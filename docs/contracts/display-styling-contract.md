@@ -165,13 +165,13 @@ Shared design tokens — the scales above — live as `:root` custom properties 
 [ADR 0021 rev 1](../decisions/0021-repository-layout.md)); this contract states their values, not
 the file. A module's own styling — its layout, its use of these tokens — stays in that module's own
 Svelte `<style>` block, never in a standalone stylesheet of its own. A standalone product `.css`
-file is a disposition [ADR 0017 rev 7](../decisions/0017-authored-language-set.md) grants; this
+file is a disposition [ADR 0017 rev 8](../decisions/0017-authored-language-set.md) grants; this
 contract's shared tokens are what it holds.
 
 **Considered and set aside:**
 
 - All shared styling in the root component's global `<style>` block — real, and needs no
-  [ADR 0017 rev 7](../decisions/0017-authored-language-set.md) disposition at all, but couples
+  [ADR 0017 rev 8](../decisions/0017-authored-language-set.md) disposition at all, but couples
   every module to `App.svelte` rather than to a token sheet each imports from.
 - A utility-first CSS framework (Tailwind or similar) — extra weight against the bundle ceiling
   SRS021<!-- Frontend runs on a Pi Zero-class browser host --> holds the frontend to, for a handful

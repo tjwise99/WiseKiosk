@@ -1,0 +1,67 @@
+/* The shared design tokens, and the base layer that applies the ground and the typeface to the
+   page. Every value here is stated by docs/contracts/display-styling-contract.md; this file is where
+   they are delivered. A module's own styling stays in that module's Svelte <style> block. */
+
+/* Inter, Latin subset, weight axis — bundled and served from the backend's own origin.
+   @fontsource-variable/inter 5.3.0's `inter-latin-wght-normal.woff2`; Inter is licensed under the
+   SIL Open Font License 1.1. `block` holds text unpainted until the face loads, so no fallback face
+   is ever composited. */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: block;
+  src: url('./assets/inter-latin-wght-normal.woff2') format('woff2');
+}
+
+:root {
+  color-scheme: dark;
+
+  --font-family: 'Inter', sans-serif;
+
+  /* Type scale, sized against the display's own height. */
+  --type-display: 16vh;
+  --type-display-weight: 700;
+  --type-headline: 10vh;
+  --type-headline-weight: 700;
+  --type-section-header: 1.9vh;
+  --type-section-header-weight: 700;
+  --type-section-header-tracking: 0.12em;
+  --type-body: 2.2vh;
+  --type-body-weight: 600;
+  --type-caption: 1.7vh;
+  --type-caption-weight: 600;
+
+  /* Spacing scale, in the same unit as the type scale. */
+  --space-xs: 0.5vh;
+  --space-sm: 1vh;
+  --space-md: 1.5vh;
+  --space-lg: 2.5vh;
+
+  /* Emission. Content is full white; everything else the page draws sits below the ceiling —
+     #444 is at 5.78% relative luminance and #2a2a2a at 2.32%, against a ceiling of 6%. */
+  --emission-content: #fff;
+  --emission-ground: #000;
+  --emission-stroke: #444;
+  --emission-fill: #2a2a2a;
+
+  /* The band every laid-out region stays clear of, on all four edges. The configuration's
+     depth replaces this default; none supplied leaves it at none. */
+  --edge-band: 0px;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  background: var(--emission-ground);
+}
+
+body {
+  color: var(--emission-content);
+  font-family: var(--font-family);
+  font-size: var(--type-body);
+  font-weight: var(--type-body-weight);
+  font-feature-settings: 'zero' 1;
+}
