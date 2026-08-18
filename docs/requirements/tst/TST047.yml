@@ -1,19 +1,21 @@
-active: false
+active: true
 derived: false
 header: |
-  Pending: content emission level test
+  Content emission level test
 level: 69
 links:
 - SRS032: cHNeQT9cdI9R9g3_Suh2dWqPFL2Yy8OJGWQZQeUMIQI=
 normative: true
 rationale: ''
 ref: ''
-reviewed: 1gxA61j6-xa46merTDWv95-J65EL391ChQ8fummL9MI=
-status: proposed
+references:
+- path: frontend/tests/render/content-emission.spec.ts
+  type: file
+reviewed: QiO_F3_JEtQtjvy1CvmZSp_Xfxq7-h5bX-7N03Eznz8=
+status: accepted
 text: |
-  Pending: read the rendered value of every text element the page presents for reading, asserting
-  each sits at the display's maximum rather than a reduced level. Lands with the frontend skeleton
-  (#10); activated and given a references entry then.
+  Read the rendered value of every text element the page presents for reading, asserting each sits
+  at the display's maximum rather than a reduced level.
 verification-justification: |
   Settles the one variable the software owns. Leaves unproven legibility itself, which depends on
   what the room reflects behind each glyph - a computed ratio against the rendered background would

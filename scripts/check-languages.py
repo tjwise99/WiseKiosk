@@ -106,10 +106,7 @@ NO_EXTENSION = {
 # exemption" in ADR 0017 rev 8's own words — so they are grandfathered one at a time, and `main()`
 # fails an entry here whose file is no longer tracked, so the list empties itself as each conversion
 # lands rather than accumulating dead grants.
-LEGACY = {
-    "scripts/validate-tree.sh": "deleted rather than converted, when the first active TST item "
-    "retires the pending-tier exception it stands in for (#78; ADR 0017 rev 8)",
-}
+LEGACY: dict[str, str] = {}
 
 
 def fail(problems):

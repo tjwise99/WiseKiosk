@@ -26,7 +26,7 @@ reverted. `passed`/`failed` are the counts the run reported.
 | Must pass | The tree as it stands | — | 90 passed across the three viewports |
 
 **The emission seeds are tests rather than seeds.** Each of the seven devices
-TST045<!-- Pending: emitting-surface test --> names is a stub module the emission spec places and
+TST045<!-- Emitting-surface test --> names is a stub module the emission spec places and
 then asserts the scan reports, so the check's own fallibility is re-run on every CI run instead of
 being a procedure somebody remembers. The legal direction runs beside them: the grouping vocabulary
 at its stated emission, and the two things the exemption exists for — text at full emission and an
@@ -46,7 +46,7 @@ went green.
   16px UA default, which sits above the floor and so passed while measuring the wrong thing. Fixed by
   reading only elements the page renders.
 - **A fixture asserted the wrong obligation.**
-  TST035's<!-- Pending: viewport-driven layout render test --> fixture put the whole type scale in a third
+  TST035's<!-- Viewport-driven layout render test --> fixture put the whole type scale in a third
   it does not fit, so the containment read failed on a page overflowing exactly as
   SRS031<!-- Content too large for its region overflows --> obliges. That item's own fixture is the
   one that overflows; this one fits, which is what its text asks for.

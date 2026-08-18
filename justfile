@@ -30,7 +30,7 @@ check-branch *ref:
 check-reqs:
     docs/requirements/.venv/bin/python scripts/check-unreviewed.py
     docs/requirements/.venv/bin/python scripts/check-suspect-links.py
-    sh scripts/validate-tree.sh
+    docs/requirements/.venv/bin/doorstop --error-all --no-reformat
     docs/requirements/.venv/bin/python scripts/check-method-consistency.py
     docs/requirements/.venv/bin/python scripts/check-text-citations.py
     docs/requirements/.venv/bin/python scripts/check-headers.py

@@ -9,7 +9,7 @@ normative: true
 rationale: |
   Decomposes SYS002's<!-- The display's rendering keeps nothing from a viewer --> kiosk-primary,
   desktop-secondary distinction, fixing no viewports itself: the figures are
-  TST035's<!-- Pending: viewport-driven layout render test --> so tuning one does not touch the
+  TST035's<!-- Viewport-driven layout render test --> so tuning one does not touch the
   specification. What is owed is a reflowing layout, not a responsive-design programme. Phone widths
   are deliberately not a requirement (owner decision 2026-07-22) - if wanted later, support arrives
   as its own reviewed system need, not a clause here.
@@ -21,7 +21,7 @@ rationale: |
   SRS031<!-- Content too large for its region overflows --> carries that, and what it permits -
   content crossing a region, or leaving the display - is not a breach of the bounds stated here.
 ref: ''
-reviewed: _iHtlmpQYy3UXc9Y7Rn6gNoOBeS-LUwBWb6ksDZ3KGM=
+reviewed: 8y1uTAi-zjC_udhWur1hLcj6rDb08Yn8xJN_ZN3_BF4=
 status: accepted
 text: |
   The display page shall lay out its regions across a single full-screen display, no two overlapping

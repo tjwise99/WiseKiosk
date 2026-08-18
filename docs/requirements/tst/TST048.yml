@@ -1,19 +1,21 @@
-active: false
+active: true
 derived: false
 header: |
-  Pending: relative text size and resolution invariance test
+  Relative text size and resolution invariance test
 level: 70
 links:
 - SRS033: HsUijkZUPwMFSFLdVGe6hgviqzK6iejblFsEcxaOy1M=
 normative: true
 rationale: ''
 ref: ''
-reviewed: caMhzA55dPtWYwb0tBoQlkaLNI-VOihimO95PHMH9mw=
-status: proposed
+references:
+- path: frontend/tests/render/type-size.spec.ts
+  type: file
+reviewed: ykhNIy8djfwXROPy9MKeBthDBI6dYqtgpCGjCjfbP9c=
+status: accepted
 text: |
-  Pending: render at more than one resolution and read each text element's size as a fraction of
-  viewport height, asserting every element clears the floor at each. Lands with the frontend
-  skeleton (#10); activated and given a references entry then.
+  Render at more than one resolution and read each text element's size as a fraction of viewport
+  height, asserting every element clears the floor at each.
 verification-justification: |
   Settles that every text element clears the floor at each resolution rendered, which is what a size
   fixed in device pixels fails as resolution rises. The obligation quantifies over every resolution
