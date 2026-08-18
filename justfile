@@ -160,6 +160,13 @@ check-boundary:
 check-build:
     frontend/node_modules/.bin/vite build frontend
 
+# Depends on `check-build` rather than assuming an emitted tree: what it reads is what that build
+# emitted, and `just` runs a dependency once per invocation, so `verify` does not build twice.
+[group('checks')]
+[doc('The frontend build emits a static single-page bundle: one HTML entry with an empty mount, no server half, no SSR target or adapter declared, and every npm package in the emitted module graph allowlisted')]
+check-static-bundle: check-build
+    python3 scripts/check-static-bundle.py
+
 [group('checks')]
 [doc('The frontend unit tier passes (Vitest); needs `just boundary-install`')]
 check-unit:
@@ -201,4 +208,4 @@ check-languages:
 
 [group('checks')]
 [doc('Run every check the PR gate runs that has a local form; secret scanning, the PR-title check (commitlint, via the hook layer), the link check (lychee, from a digest-pinned image) and the workflow audit (zizmor, actionlint) are CI-only')]
-verify: check-untracked check-hooks check-branch check-reqs check-citations check-arch check-arch-trace check-boundary check-site check-adr-index check-adr-revs check-docs-index check-repo-silo check-languages
+verify: check-untracked check-hooks check-branch check-reqs check-citations check-arch check-arch-trace check-boundary check-config-types check-build check-static-bundle check-unit check-render check-site check-adr-index check-adr-revs check-docs-index check-repo-silo check-languages

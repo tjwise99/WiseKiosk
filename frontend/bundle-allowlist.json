@@ -1,0 +1,3 @@
+{
+  "svelte": "the compiler's client runtime — the only framework code the static single-page bundle admits (ADR 0018 rev 1)"
+}
