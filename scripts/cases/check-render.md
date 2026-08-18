@@ -11,23 +11,25 @@ for the tier's stubs. Each fixture is a configuration the test fulfils on the `c
 one server serves every case and each test states the configuration it asserts against.
 
 Each seed below is applied to the working tree, the recipe run at the kiosk viewport, and the seed
-reverted. `passed`/`failed` are the counts the run reported.
+reverted. `passed`/`failed` are the counts the run reported, taken at `b2ab5fc`. A seed that trips
+more than one read reports more than one failure, which is why several rows name the reads they
+moved — a count that drops when a read is deleted is the first sign the seed stopped covering it.
 
 | Direction | Case | Input | Result |
 |---|---|---|---|
-| Must fail | Every region resolves to one cell of the frame | `placementStyle` returns `middle_center`'s placement whatever it is asked for | 1 failed, 4 passed — the disjointness read |
-| Must fail | Every module is assembled into one region | the frame groups every placement under `top_bar` | 3 failed, 2 passed — occupancy, containment and disjointness |
+| Must fail | Every region resolves to one cell of the frame | `placementStyle` returns `middle_center`'s placement whatever it is asked for | 2 failed, 4 passed — the disjointness and anchoring reads |
+| Must fail | Every module is assembled into one region | the frame groups every placement under `top_bar` | 4 failed, 2 passed — occupancy, containment, disjointness and anchoring |
 | Must fail | A region clips what leaves it | `overflow: hidden` on `.region` | 1 failed, 2 passed |
 | Must fail | A region scrolls what leaves it | `overflow: auto` on `.region` | 1 failed, 2 passed |
 | Must fail | A region clips by a route that is not `overflow` | `clip-path: inset(0)` on `.region` | 1 failed, 2 passed |
-| Must fail | Content anchored to the wrong side of its region | the two axis properties in `placementStyle` crossed | 1 failed, 6 passed — the anchoring read |
+| Must fail | Content anchored to the wrong side of its region | the two axis properties in `placementStyle` crossed | 1 failed, 5 passed — the anchoring read |
 | Must fail | A surface above the ceiling spelled outside sRGB | a stub grounded in `oklch(0.95 0 0)`, against the sRGB-only token reader | 1 failed, 9 passed |
 | Must fail | Content is carried below full emission | `--emission-content: #ccc` | 2 failed |
 | Must fail | A type step is fixed in device pixels | `--type-caption: 12px` | 3 failed |
 | Must fail | The declared band is ignored | `edgeBandLength` returns `0px` whatever it is given | 4 failed (clearance), 3 failed 1 passed (depth) |
 | Must fail | A band is compiled in where none is declared | `edgeBandLength` returns `3vh` for an absent depth | 1 failed, 3 passed |
-| Must fail | Any emitting surface clears the ceiling | seven stub modules, one per device the ceiling refuses — a lit panel, a card's border, a region fill, an outline, a shadow scrim, and the fill and the scrim spelled as gradients | each is a standing test rather than a reverted seed |
-| Must pass | The tree as it stands | — | 90 passed across the three viewports |
+| Must fail | Any emitting surface clears the ceiling | eight stub modules, one per device the ceiling refuses — a lit panel, a card's border, a region fill, an outline, a shadow scrim, the fill and the scrim spelled as gradients, and a ground spelled outside sRGB | each is a standing test rather than a reverted seed |
+| Must pass | The tree as it stands | — | 96 passed across the three viewports |
 
 **The emission seeds are tests rather than seeds.** Each device
 TST045<!-- Emitting-surface test --> names is a stub module the emission spec places and then asserts
@@ -89,8 +91,21 @@ green.
   SRS031<!-- Content too large for its region overflows --> obliges. That item's own fixture is the
   one that overflows; this one fits, which is what its text asks for.
 
+**A `background-image` carrying no colour is reported, and wants a person.** The scan reads colour
+tokens, so a gradient is measured stop by stop while `url(...)` imagery yields none — that value is
+returned as `unreadable` and fails, rather than passing as though it had been judged. This is
+deliberate and it is where a module author under #12 first module end-to-end will meet the check: a
+picture drawn behind a block of text is exactly the call
+SRS030's<!-- Only content is rendered above the emission ceiling --> own
+`verification-justification` says the check cannot make — above the ceiling it "must still decide
+whether a surface is text or imagery rendered as content". The message names the element and the
+value; deciding whether that image is content or decoration is the author's, and if it is content it
+belongs in an element the imagery exemption reaches rather than behind one.
+
 **What it does not catch.** The obligations quantify over every viewport and every resolution the
 display supports while this renders three, so a layout that first overlaps, or a step that first
 drops below the floor, at an unsampled size passes. Nothing here reaches what the panel emits or what
 a viewer sees over the reflected room: backlight, gamma and the half-silvered surface all lie past
-the value read.
+the value read. The scan reads only what the page renders — an element hidden by `display: none` or
+`visibility: hidden` is skipped, so a surface above the ceiling that is revealed by a later state
+change is unjudged until something renders it.
