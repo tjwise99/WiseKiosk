@@ -27,6 +27,24 @@ const FIXTURE: Fixture = {
   ],
 };
 
+/**
+ * Where a region's name says its content sits, read off the name itself. ADR 0025 rev 2 fixes the
+ * roster as names that "anchor to a corner or edge of the display", so this is the obligation stated
+ * independently of the frame that implements it — reading it out of `REGION_PLACEMENTS` instead would
+ * compare that map against itself.
+ */
+function anchorOf(region: string) {
+  return {
+    horizontal: region.endsWith('_left') ? 'start' : region.endsWith('_right') ? 'end' : 'center',
+    vertical:
+      region.startsWith('top_') || region === 'upper_third'
+        ? 'start'
+        : region.startsWith('bottom_') || region === 'lower_third'
+          ? 'end'
+          : 'center',
+  };
+}
+
 /** What the fixture says each region holds, read from the fixture rather than written out again. */
 const EXPECTED = FIXTURE.modules.reduce((byRegion, placement) => {
   byRegion.set(placement.region, [...(byRegion.get(placement.region) ?? []), placement.module]);
@@ -82,6 +100,47 @@ test.describe('the assembled page', () => {
     expect(contained.length).toBeGreaterThan(0);
     for (const { where, inside } of contained) {
       expect(inside, where).toBe(true);
+    }
+  });
+
+  test('anchors each module to the edge or corner its region is named for', async ({ page }) => {
+    const measured = await page.evaluate(() =>
+      [...document.querySelectorAll('[data-region]')].map((region) => {
+        const outer = region.getBoundingClientRect();
+        const inner = region.querySelector('[data-stub]')!.getBoundingClientRect();
+        return {
+          region: region.getAttribute('data-region') ?? '',
+          outer: { left: outer.left, right: outer.right, top: outer.top, bottom: outer.bottom },
+          inner: { left: inner.left, right: inner.right, top: inner.top, bottom: inner.bottom },
+        };
+      }),
+    );
+
+    expect(measured).toHaveLength(EXPECTED.size);
+    for (const { region, outer, inner } of measured) {
+      const { horizontal, vertical } = anchorOf(region);
+
+      if (horizontal === 'start') {
+        expect(inner.left, `${region} content left`).toBeCloseTo(outer.left, 0);
+      } else if (horizontal === 'end') {
+        expect(inner.right, `${region} content right`).toBeCloseTo(outer.right, 0);
+      } else {
+        expect((inner.left + inner.right) / 2, `${region} content centre`).toBeCloseTo(
+          (outer.left + outer.right) / 2,
+          0,
+        );
+      }
+
+      if (vertical === 'start') {
+        expect(inner.top, `${region} content top`).toBeCloseTo(outer.top, 0);
+      } else if (vertical === 'end') {
+        expect(inner.bottom, `${region} content bottom`).toBeCloseTo(outer.bottom, 0);
+      } else {
+        expect((inner.top + inner.bottom) / 2, `${region} content middle`).toBeCloseTo(
+          (outer.top + outer.bottom) / 2,
+          0,
+        );
+      }
     }
   });
 

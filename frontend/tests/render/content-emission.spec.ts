@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test';
 
-import { readTextElements } from './emission';
+import { readEmission } from './emission';
 import { render, type Fixture } from './harness';
 
 /**
@@ -19,12 +19,17 @@ const FIXTURE: Fixture = {
 test('renders every text element at full emission', async ({ page }) => {
   await render(page, FIXTURE);
 
-  const text = await readTextElements(page);
+  const { text, unreadable } = await readEmission(page);
   expect(text.length).toBeGreaterThan(0);
+  expect(unreadable, JSON.stringify(unreadable, null, 2)).toHaveLength(0);
 
+  // Asserted on the emission rather than on the spelling: `rgb(255, 255, 255)` and `oklch(1 0 0)`
+  // are the same white, and the obligation is about the value the page renders at.
   for (const element of text) {
-    expect(element.colour, `${element.element}: ${element.text}`).toBe('rgb(255, 255, 255)');
-    expect(element.luminance, element.element).toBeCloseTo(1, 6);
+    expect(element.luminance, `${element.element}: ${element.text} (${element.colour})`).toBeCloseTo(
+      1,
+      6,
+    );
   }
 });
 
@@ -34,9 +39,9 @@ test('renders the configuration report at full emission too', async ({ page }) =
   await render(page, { modules: [{ region: 'nowhere', module: 'fits' }] }, 'configuration-error');
 
   await expect(page.locator('[data-configuration-error="rejected"]')).toBeVisible();
-  const text = await readTextElements(page);
+  const { text } = await readEmission(page);
   expect(text.length).toBeGreaterThan(0);
   for (const element of text) {
-    expect(element.colour, element.element).toBe('rgb(255, 255, 255)');
+    expect(element.luminance, `${element.element} (${element.colour})`).toBeCloseTo(1, 6);
   }
 });

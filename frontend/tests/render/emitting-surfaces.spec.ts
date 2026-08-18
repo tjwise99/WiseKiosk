@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test';
 
-import { surfacesAboveCeiling } from './emission';
+import { EMISSION_CEILING, readEmission } from './emission';
 import { render, type Fixture } from './harness';
 
 /**
@@ -28,13 +28,21 @@ const SEEDS: { name: string; module: string; surface: string }[] = [
   { name: 'a scrim lifting a glyph off its background', module: 'scrim', surface: 'box-shadow' },
   { name: 'that fill spelled as a gradient', module: 'gradient-fill', surface: 'background-image' },
   { name: 'that scrim spelled as a gradient', module: 'gradient-scrim', surface: 'background-image' },
+  {
+    name: 'a ground spelled in a colour space that is not sRGB',
+    module: 'modern-colour',
+    surface: 'background-color',
+  },
 ];
 
 test('nothing the page draws clears the ceiling, over the design as it is stated', async ({ page }) => {
   await render(page, LEGAL);
 
-  const above = await surfacesAboveCeiling(page);
+  const { above, unreadable } = await readEmission(page);
   expect(above, JSON.stringify(above, null, 2)).toHaveLength(0);
+  // A value the reader could not resolve is a failure rather than a skip: a scan that shrank its own
+  // population would report this same empty result over what was left of it.
+  expect(unreadable, JSON.stringify(unreadable, null, 2)).toHaveLength(0);
 });
 
 test('the page still draws the two things the exemption is for', async ({ page }) => {
@@ -50,10 +58,11 @@ for (const seed of SEEDS) {
   test(`reports ${seed.name}`, async ({ page }) => {
     await render(page, { modules: [{ region: 'middle_center', module: seed.module }] });
 
-    const above = await surfacesAboveCeiling(page);
+    const { above, unreadable } = await readEmission(page);
     expect(above.map((surface) => surface.property)).toContain(seed.surface);
     for (const surface of above) {
-      expect(surface.luminance).toBeGreaterThan(0.06);
+      expect(surface.luminance).toBeGreaterThan(EMISSION_CEILING);
     }
+    expect(unreadable, JSON.stringify(unreadable, null, 2)).toHaveLength(0);
   });
 }

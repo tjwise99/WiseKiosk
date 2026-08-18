@@ -11,8 +11,10 @@ declared:
   emitted tree, and inside its `body` no text and no nesting outside the tags that carry no
   content — so the mount element is empty and nothing was pre-rendered into it.
 - **No server-entry chunk**, and no directory of one.
-- **No SSR target or adapter declared in the build configuration**, read over the Vite configuration
-  and the plugin modules it is composed from.
+- **No SSR target or adapter declared in the build configuration** — read over the Vite
+  configuration and every local module it transitively imports, a population derived by walking
+  those imports rather than listed, so a plugin file added and wired in is judged without anyone
+  remembering to name it.
 - **Every npm package in the emitted module graph is in the committed allowlist.** An allowlist
   rather than a denylist of named routers and meta-frameworks, which fails open the first time
   somebody hand-rolls a hash router: any new runtime dependency fails here until it is reviewed.
@@ -40,8 +42,13 @@ DIST = FRONTEND / "dist"
 MODULE_GRAPH = FRONTEND / ".vite" / "module-graph.json"
 ALLOWLIST = FRONTEND / "bundle-allowlist.json"
 
-# The build configuration: the Vite configuration and the plugin modules it is composed from.
-BUILD_CONFIG = ["vite.config.ts", "vite-plugin-config-validator.ts", "vite-plugin-module-graph.ts"]
+# The build configuration's entry point. The rest of the population is derived from it — see
+# `build_configuration` — rather than listed, so a plugin module added and wired in is judged
+# without anyone remembering to name it here.
+BUILD_ENTRY = "vite.config.ts"
+
+# A relative import in the build configuration, from either spelling.
+LOCAL_IMPORT = re.compile(r"""(?:from|import)\s*\(?\s*['"](\.[^'"]*)['"]""")
 
 # A declaration that would make this something other than a static single-page bundle.
 SERVER_RENDERING = re.compile(r"\bssr\b|\badapter\b|@sveltejs/kit", re.IGNORECASE)
@@ -117,21 +124,53 @@ def check_no_server_half(problems):
             problems.append(f"frontend/dist/{path.relative_to(DIST)} is named as a server entry")
 
 
+def build_configuration(problems):
+    """The Vite configuration and every local module it transitively imports.
+
+    Derived by walking the imports rather than listed, because a hand-kept list is a population an
+    added plugin file falls outside of with nothing reporting it. An import that cannot be resolved
+    is a problem rather than a skip: a module this cannot open is a module it did not judge.
+    """
+    entry = FRONTEND / BUILD_ENTRY
+    if not entry.is_file():
+        problems.append(f"frontend/{BUILD_ENTRY} is absent — this judged no build configuration")
+        return []
+
+    found, pending = {}, [entry]
+    while pending:
+        path = pending.pop()
+        if path in found:
+            continue
+        text = path.read_text(encoding="utf-8")
+        found[path] = text
+        for spec in LOCAL_IMPORT.findall(text):
+            target = (path.parent / spec).resolve()
+            candidates = [target] if target.suffix else [
+                target.with_suffix(".ts"), target / "index.ts"
+            ]
+            resolved = next((one for one in candidates if one.is_file()), None)
+            if resolved is None:
+                problems.append(
+                    f"{path.relative_to(ROOT)} imports {spec!r}, which resolves to no file — "
+                    f"this cannot judge a module it cannot open"
+                )
+            else:
+                pending.append(resolved)
+    return sorted(found.items())
+
+
 def check_configuration(problems):
     """No SSR target or adapter declared anywhere the build is configured from."""
-    read = 0
-    for name in BUILD_CONFIG:
-        path = FRONTEND / name
-        if not path.is_file():
-            problems.append(f"frontend/{name} is named as build configuration but is not a file")
-            continue
-        read += 1
-        for number, line in enumerate(path.read_text(encoding="utf-8").split("\n"), start=1):
+    population = build_configuration(problems)
+    if not population:
+        problems.append("no build configuration file was read — this judged no declaration")
+        return
+    for path, text in population:
+        where = path.relative_to(ROOT)
+        for number, line in enumerate(text.split("\n"), start=1):
             found = SERVER_RENDERING.search(line)
             if found:
-                problems.append(f"frontend/{name}:{number} declares {found.group(0)!r}")
-    if read == 0:
-        problems.append("no build configuration file was read — this judged no declaration")
+                problems.append(f"{where}:{number} declares {found.group(0)!r}")
 
 
 def check_module_graph(problems):

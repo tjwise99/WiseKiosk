@@ -23,6 +23,10 @@
       title: 'The configuration was rejected',
       advice: 'Every fault is listed below. Correct them and reload.',
     },
+    unreadable: {
+      title: 'The configuration could not be applied',
+      advice: `${CONFIGURATION_URL} was read but applying it failed unexpectedly. Check it against the schema and reload.`,
+    },
   };
 
   const headline = $derived(HEADLINES[outcome.kind]);

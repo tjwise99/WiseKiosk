@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test';
+import { expect, test, type Page } from '@playwright/test';
 
 import { render, type Fixture } from './harness';
 
@@ -14,7 +14,7 @@ import { render, type Fixture } from './harness';
 const OVERFLOWING: Fixture = { modules: [{ region: 'middle_center', module: 'overflows' }] };
 const FITTING: Fixture = { modules: [{ region: 'middle_center', module: 'fits' }] };
 
-async function measure(page: import('@playwright/test').Page) {
+async function measure(page: Page) {
   return page.evaluate(() => {
     const region = document.querySelector('[data-region="middle_center"]');
     const stub = document.querySelector('[data-stub]');
@@ -24,14 +24,24 @@ async function measure(page: import('@playwright/test').Page) {
     const outer = region.getBoundingClientRect();
     const inner = stub.getBoundingClientRect();
     const line = stub.querySelector('p');
+
+    // Hit-testing just below the region's own bottom edge. This is the one reading that survives a
+    // clip: `getBoundingClientRect` reports the same geometry whether content is painted or hidden,
+    // and a region that clipped or scrolled its content would answer with the frame behind it. The
+    // point is held inside the viewport, hit-testing outside it returning nothing at all.
+    const probeY = Math.min(outer.bottom + 20, window.innerHeight - 2);
+    const painted = document.elementFromPoint((outer.left + outer.right) / 2, probeY);
+
     return {
       regionHeight: outer.height,
+      regionBottom: outer.bottom,
       contentHeight: inner.height,
       exceeds: inner.height > outer.height + 0.5 || inner.width > outer.width + 0.5,
       lineFontSizePx: line ? Number.parseFloat(getComputedStyle(line).fontSize) : 0,
-      regionOverflow: getComputedStyle(region).overflow,
+      paintedBelowRegion: painted ? stub.contains(painted) : false,
       lastLineBottom: [...stub.querySelectorAll('p')].at(-1)?.getBoundingClientRect().bottom ?? 0,
       documentScrollHeight: document.documentElement.scrollHeight,
+      viewportHeight: window.innerHeight,
     };
   });
 }
@@ -51,6 +61,10 @@ test('content that fits its region is not reported as overflowing', async ({ pag
   const fitting = await measure(page);
 
   expect(fitting.exceeds).toBe(false);
+  // The other direction of the reading below: content that fits paints nothing past its region, so
+  // a check that answered "painted" unconditionally would fail here rather than passing everywhere.
+  expect(fitting.paintedBelowRegion).toBe(false);
+  expect(fitting.documentScrollHeight).toBeLessThanOrEqual(fitting.viewportHeight);
 });
 
 test('the overflow is neither clipped nor scrolled away nor scaled down', async ({ page }) => {
@@ -60,13 +74,17 @@ test('the overflow is neither clipped nor scrolled away nor scaled down', async 
   await render(page, OVERFLOWING);
   const overflowing = await measure(page);
 
-  // Not clipped: the region does not hide what leaves it, and the document grew to carry it.
-  expect(overflowing.regionOverflow).toBe('visible');
-  expect(overflowing.documentScrollHeight).toBeGreaterThan(overflowing.regionHeight);
+  // Not clipped and not shut inside a scroller: the module's own content is what the browser hits
+  // below the region's bottom edge. A region set to `hidden` or `auto` answers with the frame.
+  expect(overflowing.paintedBelowRegion).toBe(true);
 
-  // Not reachable only by scrolling the region: the last line sits past the region's own bottom
-  // rather than inside a scroller.
-  expect(overflowing.lastLineBottom).toBeGreaterThan(overflowing.regionHeight);
+  // The document grew to carry what left the region, which is what a scroller inside the region
+  // would have absorbed instead.
+  expect(overflowing.documentScrollHeight).toBeGreaterThan(overflowing.viewportHeight);
+
+  // The last line sits past the region's own bottom edge, read against that edge rather than
+  // against the region's height.
+  expect(overflowing.lastLineBottom).toBeGreaterThan(overflowing.regionBottom);
 
   // Not scaled: a line renders at the size it renders at when the content fits.
   expect(overflowing.lineFontSizePx).toBeCloseTo(fitting.lineFontSizePx, 2);

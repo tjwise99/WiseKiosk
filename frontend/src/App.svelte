@@ -4,10 +4,20 @@
   import RegionFrame from './lib/RegionFrame.svelte';
 
   // Started once, at mount: the display never navigates, so there is nothing to re-run or tear down.
+  // The rejection arm is not unreachable: `loadConfiguration` maps every failure it anticipates onto
+  // an outcome, and anything it does not — a throw from inside the validator — would otherwise leave
+  // the page on its loading state for as long as the display runs.
   let outcome: ConfigurationOutcome | undefined = $state();
-  loadConfiguration().then((result) => {
-    outcome = result;
-  });
+  loadConfiguration()
+    .then((result) => {
+      outcome = result;
+    })
+    .catch((cause: unknown) => {
+      outcome = {
+        kind: 'unreadable',
+        detail: cause instanceof Error ? cause.message : String(cause),
+      };
+    });
 </script>
 
 {#if outcome === undefined}

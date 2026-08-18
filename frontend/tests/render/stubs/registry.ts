@@ -7,6 +7,7 @@ import GradientFill from './GradientFill.svelte';
 import GradientScrim from './GradientScrim.svelte';
 import Grouped from './Grouped.svelte';
 import LitPanel from './LitPanel.svelte';
+import ModernColour from './ModernColour.svelte';
 import Outlined from './Outlined.svelte';
 import Overflows from './Overflows.svelte';
 import RegionFill from './RegionFill.svelte';
@@ -33,4 +34,5 @@ export const modules: Record<string, Component> = {
   scrim: Scrim,
   'gradient-fill': GradientFill,
   'gradient-scrim': GradientScrim,
+  'modern-colour': ModernColour,
 };
