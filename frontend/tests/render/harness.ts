@@ -19,6 +19,10 @@ export async function render(
   fixture: unknown,
   expected: Rendered = 'frame',
 ): Promise<void> {
+  // Matched as a glob rather than by importing `CONFIGURATION_URL`: a spec file runs in Node, and
+  // that constant's module reaches the validator's virtual module, which only Vite can resolve. The
+  // two spellings are held together by construction — disagree and the frame never renders, failing
+  // every test in the tier rather than one.
   await page.route('**/config.json', (route) =>
     route.fulfill({ contentType: 'application/json', body: JSON.stringify(fixture) }),
   );

@@ -15,8 +15,10 @@
   here authors and which no existing kind reached. `html` gains a second disposition beside its
   docs-site one, `frontend/index.html` being Vite's own required entry format rather than a
   documentation asset — the two-dispositions-under-one-extension shape `.css` already carries. The
-  audience rule, the derivation rule and the authored language set are unchanged, so the `Decided`
-  date does not move (#10 frontend skeleton).
+  same change discharges `scripts/validate-tree.sh`'s disposition — the wrapper is deleted and sh
+  now authors nothing here — so the paragraphs describing that deletion as pending are rewritten to
+  record that it landed. The audience rule, the derivation rule and the authored language set are
+  unchanged, so the `Decided` date does not move (#10 frontend skeleton).
 - **rev 7** — 2026-08-17 — the Go toolchain's manifest and lockfile formats join the Decision's
   illustrative list of derived formats, and `scripts/check-languages.py` declares `mod` and `sum`
   beside them: the boundary codegen's Go module root introduces both, and an entry added to the
@@ -150,20 +152,20 @@ reads the tree is a different artifact from one that reads the repository.
 exemption:** `scripts/check-branch.sh` converts (#109 check-branch conversion); the four index, silo
 and splice checks in Node convert (#110 Node check conversion); `scripts/check-verify-ci-parity.mjs`
 waits on #101 CI invoking just recipes directly, because that ticket may delete it (#111 parity-check
-conversion); and `scripts/validate-tree.sh` is **deleted rather than converted**, retiring the
-pending-TST-tier exception, which drops the wrapper and restores the bare `doorstop` call it stands
-in for. Tree validation is not what goes; the exception is. The wrapper itself names where that
-retirement is tracked, and says so in the message it prints on the run that makes it unnecessary.
+conversion); and `scripts/validate-tree.sh` was **deleted rather than converted**, retiring the
+pending-TST-tier exception, which dropped the wrapper and restored the bare `doorstop` call it stood
+in for. Tree validation was not what went; the exception was.
 
-**That deletion is conditional, and the cost of the condition is worth stating:** the wrapper goes
-when the first `TST` item activates and the exception it stands in for stops being needed, so until
-then sh remains an authored language in this tree for exactly one file — a classifier arm and its
-fixtures, which is the price the grandfathering alternative was rejected for paying. The disposition
-is deletion rather than conversion because converting a script another change deletes is the waste
-this decision's own sequencing avoids elsewhere; the cost is accepted, not overlooked. The difference
-from grandfathering is that this ends on a condition the tree decides rather than on anyone's
-intention — and if that condition proves unreachable, conversion is the remedy and this record needs
-no rev for it.
+**That deletion was conditional, and the condition is discharged.** The wrapper was to go when the
+first `TST` item activated and the exception it stood in for stopped being needed — which happened
+under #10 frontend skeleton, in the same change that activated the first seven verification items, so
+sh now authors nothing in this tree and `LEGACY` in
+[`../../scripts/check-languages.py`](../../scripts/check-languages.py) is empty. Until then sh
+remained an authored language here for exactly one file — a classifier arm and its fixtures, which is
+the price the grandfathering alternative was rejected for paying. The disposition was deletion rather
+than conversion because converting a script another change deletes is the waste this decision's own
+sequencing avoids elsewhere. The difference from grandfathering is that it ended on a condition the
+tree decided rather than on anyone's intention.
 
 That list is a snapshot taken on the decision date, not a standing inventory — no check compares it
 against the tree, and the rule above is what governs anything written after it.

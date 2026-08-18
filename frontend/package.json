@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "type": "module",
-  "description": "The WiseKiosk frontend package root. Its boundary types under src/lib/boundary/ are generated from the one boundary schema and committed; openapi-typescript is pinned exact so a toolchain bump cannot present as schema drift.",
+  "description": "The WiseKiosk frontend package root: the display page, its configuration schema and the two test tiers. Its boundary types under src/lib/boundary/ and its configuration types under src/config/ are generated and committed; every generator is pinned exact so a toolchain bump cannot present as schema drift.",
   "engines": {
     "node": "24"
   },

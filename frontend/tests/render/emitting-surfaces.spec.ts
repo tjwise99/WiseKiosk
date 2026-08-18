@@ -24,7 +24,7 @@ const SEEDS: { name: string; module: string; surface: string }[] = [
   { name: 'a lit panel behind a block of text', module: 'lit-panel', surface: 'background-color' },
   { name: 'a card', module: 'card', surface: 'border-top-color' },
   { name: "a fill marking a region's bounds", module: 'region-fill', surface: 'background-color' },
-  { name: 'an outline around a block of content', module: 'outlined', surface: 'outline-color' },
+  { name: 'an outline above the ceiling', module: 'outlined', surface: 'outline-color' },
   { name: 'a scrim lifting a glyph off its background', module: 'scrim', surface: 'box-shadow' },
   { name: 'that fill spelled as a gradient', module: 'gradient-fill', surface: 'background-image' },
   { name: 'that scrim spelled as a gradient', module: 'gradient-scrim', surface: 'background-image' },

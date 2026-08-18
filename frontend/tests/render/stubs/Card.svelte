@@ -6,7 +6,7 @@
 <style>
   .stub {
     padding: var(--space-sm);
-    border:0.2vh solid #999;
+    border: 0.2vh solid #999;
   }
 
   .line {

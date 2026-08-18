@@ -13,5 +13,5 @@
     "allowImportingTsExtensions": true,
     "skipLibCheck": true
   },
-  "include": ["src", "tests", "vite.config.ts", "vite-plugin-config-validator.ts"]
+  "include": ["src", "tests", "*.config.ts", "vite-plugin-*.ts"]
 }

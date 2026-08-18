@@ -56,6 +56,10 @@ test('holds the floor as a fraction rather than as a pixel count', async ({ page
   const { text } = await readEmission(page);
   const smallest = Math.min(...text.map((element) => element.fontSizePx));
 
-  // 1.7vh of the viewport rendered, which is a different pixel count at each of the three.
-  expect(smallest).toBeCloseTo(viewportHeight * 0.017, 1);
+  // The smallest step is `--type-caption` rendered against this viewport, read from the token rather
+  // than from a third copy of its figure — a different pixel count at each of the three viewports.
+  const caption = await page.evaluate(() =>
+    Number.parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--type-caption')),
+  );
+  expect(smallest).toBeCloseTo((viewportHeight * caption) / 100, 1);
 });

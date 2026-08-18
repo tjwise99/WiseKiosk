@@ -6,7 +6,7 @@
 <style>
   .stub {
     padding: var(--space-sm);
-    background:#888;
+    background: #888;
   }
 
   .line {
