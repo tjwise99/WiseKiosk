@@ -258,14 +258,15 @@ time to a standalone validation function, so the bundle carries a function speci
 than a schema evaluator ([ADR 0028 rev 1](decisions/0028-bundled-config-validator.md)). The
 configuration-object TypeScript types are generated from the same file and drift-gated, so the
 schema is the one statement of the configuration's shape and the region roster
-([ADR 0025 rev 1](decisions/0025-display-region-roster.md)) has one machine-readable form that both
+([ADR 0025 rev 2](decisions/0025-display-region-roster.md)) has one machine-readable form that both
 the validator and the layout read.
 
 **The frame is a grid the region names anchor into, not a set of cells content fills.** Three columns
 and seven rows: the two bars span the width at top and bottom, the corner rows anchor their three
-columns, the centre column's three bands take equal shares of what the bars leave, and the two
-fullscreen names span every track as layers over and under the frame. A region the configuration names
-no module for is not laid out at all. The bands are bounded rather than content-sized, so content too
+columns, and the centre column's three bands take equal shares of what the bars leave. Every region
+is laid out beside the others rather than over them
+([ADR 0025 rev 2](decisions/0025-display-region-roster.md)), and a region the configuration names no
+module for is not laid out at all. The bands are bounded rather than content-sized, so content too
 large for one leaves it rather than growing it
 (SRS031<!-- Content too large for its region overflows -->).
 

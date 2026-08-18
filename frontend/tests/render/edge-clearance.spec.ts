@@ -42,13 +42,15 @@ const LOADED: { name: string; fixture: Fixture }[] = [
     },
   },
   {
-    name: 'a fullscreen layer over an occupied frame',
+    name: 'several modules sharing one region',
     fixture: {
       edge_band: BAND,
       modules: [
         { region: 'top_bar', module: 'fits' },
         { region: 'bottom_bar', module: 'fits' },
-        { region: 'fullscreen_above', module: 'fits' },
+        { region: 'middle_center', module: 'grouped' },
+        { region: 'middle_center', module: 'grouped' },
+        { region: 'middle_center', module: 'fits' },
       ],
     },
   },

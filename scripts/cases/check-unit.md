@@ -12,7 +12,7 @@ reading the tree rather than `git ls-files`.
 
 | Direction | Case | Input |
 |---|---|---|
-| Must fail | The frame lays out fewer regions than the schema offers | delete `bottom_bar` from `REGION_PLACEMENTS` — two tests fail, the roster comparison naming the twelve it found against the thirteen offered |
+| Must fail | The frame lays out fewer regions than the schema offers | delete `bottom_bar` from `REGION_PLACEMENTS` — two tests fail, the roster comparison naming the ten it found against the eleven offered |
 | Must fail | The schema offers a region the frame cannot lay out | append `sneaky_region` to the schema's `region` enum — the same two tests fail, so the agreement is decided in both directions rather than one |
 | Must fail | No test file is found at all | run the recipe with a filter matching nothing — Vitest exits 1 with `No test files found`, so a run that measured nothing does not read as a clean tier |
 | Must pass | The tree as it stands | — |

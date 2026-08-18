@@ -19,9 +19,7 @@ export type Region =
   | "bottom_left"
   | "bottom_center"
   | "bottom_right"
-  | "bottom_bar"
-  | "fullscreen_above"
-  | "fullscreen_below";
+  | "bottom_bar";
 /**
  * The name of the module to render, as the page registers it.
  */

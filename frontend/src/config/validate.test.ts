@@ -56,7 +56,7 @@ describe('the configuration validator', () => {
       return;
     }
     expect(result.faults[0].what).toContain('top_bar');
-    expect(result.faults[0].what).toContain('fullscreen_below');
+    expect(result.faults[0].what).toContain('bottom_bar');
   });
 
   it('rejects a document that is not an object at all', () => {

@@ -7,14 +7,15 @@ import { overlaps, regionBoxes, render, type Fixture } from './harness';
  * region the configuration names for it, no region holds a module named elsewhere, the laid-out
  * regions are pairwise disjoint, and the document does not scroll sideways.
  *
- * The fixture places nothing in `fullscreen_above` or `fullscreen_below`. Those two are layers over
- * the frame by construction, so a fixture placing one would overlap every other region and be
- * asserting against the geometry rather than about it.
+ * Every region in the roster is one the frame lays out beside the others
+ * ([ADR 0025 rev 2](../../../docs/decisions/0025-display-region-roster.md)), so the disjointness
+ * read below covers the whole roster rather than a subset of it.
  */
 const FIXTURE: Fixture = {
   modules: [
     { region: 'top_bar', module: 'fits' },
     { region: 'top_left', module: 'fits' },
+    { region: 'top_center', module: 'fits' },
     { region: 'top_right', module: 'grouped' },
     { region: 'upper_third', module: 'fits' },
     { region: 'middle_center', module: 'grouped' },

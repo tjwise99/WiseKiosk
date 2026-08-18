@@ -17,13 +17,6 @@ describe('the region roster', () => {
       expect(style).toContain('grid-row:');
     }
   });
-
-  it('puts the two fullscreen names on their own layers, and everything else on the frame', () => {
-    for (const [region, placement] of Object.entries(REGION_PLACEMENTS)) {
-      const expected = region === 'fullscreen_above' ? 1 : region === 'fullscreen_below' ? -1 : 0;
-      expect(placement.layer, region).toBe(expected);
-    }
-  });
 });
 
 describe('the edge band', () => {

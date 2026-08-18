@@ -55,5 +55,4 @@ went green.
 display supports while this renders three, so a layout that first overlaps, or a step that first
 drops below the floor, at an unsampled size passes. Nothing here reaches what the panel emits or what
 a viewer sees over the reflected room: backlight, gamma and the half-silvered surface all lie past
-the value read. And no fixture places a module in `fullscreen_above` or `fullscreen_below` for the
-disjointness read, those two being layers over the frame by construction.
+the value read.

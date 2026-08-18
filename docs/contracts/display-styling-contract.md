@@ -11,7 +11,7 @@ module's own component styles against once it exists. Neither restates the other
 ## Region frame
 
 The page lays modules out into the fixed named-region roster
-([ADR 0025 rev 1](../decisions/0025-display-region-roster.md)) — not a
+([ADR 0025 rev 2](../decisions/0025-display-region-roster.md)) — not a
 configurable grid. Each name anchors its region to a corner or edge of the display and sizes it to
 what the configuration puts there — it is not a cell in a grid the frame divides in advance. The
 operator-facing string form of each name (underscored, hyphenated, or otherwise) is the
