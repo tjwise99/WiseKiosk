@@ -4,9 +4,9 @@ The inputs this check has been run against, in both directions. What it *asserts
 [ADR 0017 rev 6](../../docs/decisions/0017-authored-language-set.md)'s;
 how to run a case is [`../README.md`](../README.md)'s.
 
-Exercised on `7de568e` plus the `svg` declaration this file records, script md5
-`89b0d8a7beaf853d8d02d85abf6e02c3`, where a passing run over this repository reports **221 tracked
-files**.
+Exercised on this branch's tree, script md5 `1931604846a79f2f15b5589c0e7f5312`, where a passing run
+reports **222 tracked files** — `origin/main` has 218, and this branch adds four (the study document,
+its two rendered figures, and the source page it was rendered from).
 
 | Direction | Case | Input |
 |---|---|---|
@@ -22,8 +22,8 @@ files**.
 | Must fail | An untracked file of a declared kind | an untracked, well-formed `.md` — visibility, not the declared set, is what fails |
 | Must pass | The tree as it stands | — |
 | Must pass | A new file with an already-declared extension | `scripts/new-check.py`, a placeholder script, added to the tree |
-| Must pass | An SVG figure a Markdown document embeds | `docs/contracts/display-design-study.md`'s two `.svg` figures, in the tree as it stands |
-| Must fail | An undeclared image extension, `svg` being declared but `png` not | a seeded `docs/contracts/decoy.png` |
+| Must pass | A rendered PNG figure a Markdown document embeds | `docs/design/display-design-study.md`'s two `.png` figures, in the tree as it stands |
+| Must fail | An undeclared image extension, `png` being declared but `svg` not | a seeded `docs/design/decoy.svg` |
 
 **What the cases prove, beyond what the table shows on its own.**
 

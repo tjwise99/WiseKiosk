@@ -11,7 +11,7 @@ SRS032<!-- Readable text is carried at full emission -->,
 SRS033<!-- Text holds a minimum size against the display, at every resolution -->,
 SRS034<!-- The laid-out regions keep clear of the display edge --> and
 SRS035<!-- The masked edge band is the deployment's to declare --> — each carrying its own rationale.
-The design language they shape is the [display styling contract](display-styling-contract.md), whose
+The design language they shape is the [display styling contract](../contracts/display-styling-contract.md), whose
 **Calibrated bounds** section states the two figures this study derives (the type-size floor and the
 emission ceiling) and is their canonical home. This document owns only the demonstrations and the
 derivation.
@@ -50,7 +50,7 @@ Top row is the deployed treatment — 15 px at `#999`, weight 300 for the park a
 weight 300 for the ride. Bottom row is the corrected treatment at full emission and a heavier stroke.
 Read across, not down: the only variable is the ground.
 
-![The same data row over three reflected grounds — deployed treatment on top, corrected below](display-design-study-grounds.svg)
+![The same data row over three reflected grounds — deployed treatment on top, corrected below](display-design-study-grounds.png)
 
 The grounds are approximations of what the glass returns in the photographs, not measurements; the
 demonstration is the ordering, which is unambiguous in the originals. The hours line is the first
@@ -91,13 +91,14 @@ Modelled cap height in arcminutes, on the deployed 37″ visible image (461 mm t
 
 At 14 ft the clock reads at 15.6′ and nothing else exceeds 7.2′, which is exactly what the owner
 reports. At 6 ft the smallest tier is 8.4′ and is called viewable — "fairly", which reads as the edge.
-So the floor sits near **10 arcminutes**, and the design distance is **6 ft nominal, 9 ft outer
-bound**. Stated model-free so it survives any uncertainty in panel geometry: at the deployed panel and
-6 ft, **1.85 % of display height reads comfortably and 1.39 % is marginal**. Expressed as a fraction
-of display height the floor is resolution-independent — it survives a 4K panel and an overscan change
-without a second set of figures, which the deployed fixed-pixel design cannot. The styling contract's
-**Calibrated bounds** pins the operative figure at the marginal end: the floor is the last legible
-size, and comfort is the type scale's job.
+So the floor sits at that marginal edge — about **8½ arcminutes** at the nominal 6 ft — and the design
+distance is **6 ft nominal, 9 ft outer bound**. Stated model-free so it survives any uncertainty in
+panel geometry: at the deployed panel and 6 ft, **1.85 % of display height reads comfortably and
+1.39 % is marginal**. Expressed as a fraction of display height the floor is resolution-independent —
+it survives a 4K panel and an overscan change without a second set of figures, which the deployed
+fixed-pixel design cannot. The styling contract's **Calibrated bounds** pins the operative figure at
+that marginal end: the floor guarantees legibility, not comfort. Glanced meta-text — a unit, a
+timestamp — is authored near it deliberately; sustained reading sits at the larger steps, well above.
 
 ## The mirror is the product
 
@@ -109,10 +110,13 @@ computable rather than a matter of taste — a plane mirror of extent E shows an
 the waist. A check can measure it from module geometry; the threshold is a decision about how much of
 a person the product intends to show.
 
-![Kiosk layout — the reserved unlit mirror region and the four occupied quadrants](display-design-study-reserve.svg)
+![Kiosk layout — the reserved unlit mirror region and the four occupied quadrants](display-design-study-reserve.png)
 
 The reserve is a by-product of the four-corner composition rather than an intent. The park stack is
 bottom-anchored and grows upward, so content volume — not viewport width — is what eventually eats it.
+The dashed inset the figure marks *safe area · 5.6 %* is this installation's own bezel allowance, not
+a design default: SRS035<!-- The masked edge band is the deployment's to declare --> makes the edge
+band the deployment's to declare, and the styling contract defaults it to zero where none is supplied.
 
 ## What the two constraints do together
 
@@ -123,8 +127,8 @@ because that is what shows a person's height, so content belongs in side columns
 full-width band — the two constraints trade against each other in *width*, the dimension the mirror
 has to spare.
 
-The longest label, *Hagrid's Magical Creatures Motorbike Adventure™*, inks 396 px today and 667 px at
-a legible size in a heavier weight; a row carrying it needs roughly 620 px including its wait-time
+The longest label, *Hagrid's Magical Creatures Motorbike Adventure™*, inks 396 px in the deployed
+design and 667 px at a legible size in a heavier weight; a row carrying it needs roughly 620 px including its wait-time
 column. A reserve sized for head and shoulders — about 550 px — leaves 625 px columns on both sides.
 It fits, with little to spare. **Label length is a budget, not a prohibition:** long names cost column
 width, which comes out of mirror width, the slack dimension — not mirror height, which is what
@@ -132,7 +136,7 @@ determines how much of a person the glass returns.
 
 An earlier draft of this study asserted a 46-character label could not exist on this display. That was
 wrong twice — it projected from the module's box rather than the string, inflating the requirement by
-40 %, and it treated the 940 px reserve that happens to exist today as though it were the obligation.
+40 %, and it treated the 940 px reserve the deployed layout happens to leave as though it were the obligation.
 The record is kept because a confident geometric impossibility is exactly the kind of claim that
 survives unexamined into a rebuild.
 

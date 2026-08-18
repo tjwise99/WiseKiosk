@@ -26,9 +26,7 @@ hold; the frame here only names the roster and where each region anchors.
 The emission and colour rule for readable text is
 SRS032<!-- Readable text is carried at full emission -->'s. What it leaves an author is the type
 scale below as the whole vocabulary of hierarchy: reach for a bigger step or a heavier weight before
-reaching for anything that would dim a glyph. Weight belongs in that vocabulary as a legibility lever,
-not a stylistic flourish: stroke thickness is photons per character, so a thin weight is the first
-thing a bright reflection swallows.
+reaching for anything that would dim a glyph.
 
 ## Grouping vocabulary
 
@@ -74,35 +72,35 @@ reason: it is what survives the panel changing.
 | caption | `1.7vh` | 600 | secondary or meta text — labels, units, timestamps |
 
 The floor beneath these five steps is chosen under **Calibrated bounds** below, rather than left to
-the check that will assert it — this contract is its origin, not a copy that could drift. All five
-are authored well clear of it, `caption` — the smallest — included; an author who needs a step below
-`caption` checks it against that figure rather than assuming headroom this contract cannot confirm.
-And prefer a larger step to a smaller one for a reason beyond the floor: the reflected room supplies
-its own detail at roughly the spatial frequency of small, thin type, so shrinking a glyph to gain
-space moves it *toward* the reflection rather than away from it. Type is the wrong thing to shrink.
+the check that will assert it — this contract is its origin. Every step sits above the floor;
+`caption` — the smallest — is authored near it deliberately, as glanced meta-text, while the reading
+steps sit well above. An author who needs a step below `caption` checks it against that figure rather
+than assuming headroom this contract cannot confirm.
 
 ## Calibrated bounds
 
 Two numeric bounds the design language above is written against, each a single figure chosen once to
-hold across every installation the product is built for. They are chosen here and asserted by their
-checks — recalibrating one is a change to that check, not to this contract or to the requirement it
-serves, which is why SRS030<!-- Only content is rendered above the emission ceiling --> and
+hold across every installation the product is built for. This contract is where they are chosen;
+recalibrating one edits its figure here and the check that asserts it re-asserts against the new
+value — it is not a change to the requirement served, which is why
+SRS030<!-- Only content is rendered above the emission ceiling --> and
 SRS033<!-- Text holds a minimum size against the display, at every resolution --> both keep saying "a
-stated fraction" and name no number. How each was calibrated — the in-situ photographs, the
-arcminute model, the retired luminance ramp — is the
-[display design study](display-design-study.md); what follows is the figure that study settles on,
-with the reasoning in brief.
+stated fraction" and name no number. How each was calibrated — the in-situ photographs, the arcminute
+model, the retired luminance ramp — is the
+[display design study](../design/display-design-study.md); what follows is the figure that study
+settles on, with the reasoning in brief.
 
-**Viewing distance — 6 ft nominal, 9 ft outer bound (≈1.8–2.7 m).** The basis both figures below are
-calibrated against, measured at the deployed installation (owner). It is not configuration: the
-software never reads it. Neither figure is interpretable without it, which is why it is recorded here
-beside them.
+**Design distance.** Both figures below are calibrated at the viewing distance the
+[design study](../design/display-design-study.md) establishes — 6 ft nominal, 9 ft outer bound
+(≈1.8–2.7 m), measured at the deployed installation. It is not configuration; the software never reads
+it.
 
 **Type-size floor — 1.4% of the display's height**, read as computed `font-size` ÷ viewport height
 (font-size, not cap height). This is the owner-reported *marginal* edge of legibility at the nominal
 6 ft — the smallest a glyph may be, not a comfortable size — so every step of the type scale above
-clears it, `caption` (1.7vh) by ≈21%. A floor set at the comfortable size instead would sit above
-`caption` and force the scale up; the floor is the last legible size, and comfort is the scale's job.
+clears it, `caption` (1.7vh) by ≈21%. A floor set at the *comfortable* size (1.85% here) instead
+would sit above `caption` and force the scale up; the floor guarantees legibility, and `caption` —
+glanced meta-text — is deliberately authored near it, sustained reading sitting at the larger steps.
 Stated as a fraction of height so it survives a change of panel or resolution, which a size fixed in
 device pixels does not.
 
@@ -112,9 +110,9 @@ Everything the page draws but content stays below it
 (SRS030<!-- Only content is rendered above the emission ceiling -->), so the grouping vocabulary's
 dim stroke and below-ceiling fill live in the band beneath, while readable content emits at full
 white (SRS032<!-- Readable text is carried at full emission -->) far above. 6% admits a dim stroke
-around `#444` and holds every step of the display's retired luminance ramp — down to `#666` at ≈13%
-luminance, which the glass swallowed in situ — above the ceiling, so a dimmed tier cannot return as
-decoration. Below it a mark reads over the dark reflection the mirror
+around `#444` and holds every named step of the display's retired luminance ramp — `#fff`, `#aaa`,
+`#999`, `#666` at ≈13% luminance, the last swallowed by the glass in situ — above the ceiling, so a
+dimmed tier cannot return as decoration. Below it a mark reads over the dark reflection the mirror
 (SYS008<!-- The surface carrying no content is a mirror -->) is designed around and vanishes over a
 bright one, which is correct: grouping is an enhancement over dark ground, never a load-bearing
 contrast device.
