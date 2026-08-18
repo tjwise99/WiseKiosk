@@ -36,12 +36,19 @@ Three constraints decide it, and none of them is about validation features.
 **ajv's 2020-12 build compiles the schema at build time, and only the code it emits ships.**
 
 - `frontend/src/config/schema.json` is compiled by ajv's 2020-12 build during the Vite build, through
-  ajv's standalone code generation, and the emitted ES module — a plain function over a value — is
-  what the bundle carries.
+  ajv's standalone code generation, and the emitted ES module — a function specialised to this one
+  schema — is what the bundle carries.
 - **ajv is a devDependency and no source imports it.** It is part of building the bundle, not part of
-  the bundle, so the emitted module graph carries no schema evaluator and no copy of the schema
-  document. The npm allowlist manifest [`../CI.md`](../CI.md) § *Module and framework structure*
-  gates that module graph against is what holds this mechanically rather than by intent.
+  the bundle, so no schema *evaluator* reaches the device. The npm allowlist manifest
+  [`../CI.md`](../CI.md) § *Module and framework structure* gates the emitted module graph against is
+  what holds this mechanically rather than by intent.
+- **The schema document ships beside the emitted function, and that is a cost rather than a
+  surprise.** ajv's standalone output embeds the schema as a constant, because the error objects it
+  reports draw their parameters from it — an `enum` failure carries the allowed values, and every
+  failure carries a pointer into the schema. Measured at the decision: the emitted function is about
+  6.4 kB before minification, against 161.7 kB minified and 41.1 kB gzipped for ajv's 2020 build
+  bundled as a runtime dependency over the same schema. What compiling buys is the compiler's
+  absence, not the document's.
 - **Every error is collected, not the first.** The page renders the full validation report in
   operator language ([ADR 0007 rev 2](0007-config-validation-allocation.md)), so a validator that
   stopped at the first failure would make the operator's second problem invisible until they had
@@ -56,15 +63,15 @@ Three constraints decide it, and none of them is about validation features.
   load. The ordinary way to use it, and it keeps the schema loadable as data at run time. Rejected on
   weight against SRS021<!-- Frontend runs on a Pi Zero-class browser host -->: it ships a
   general-purpose schema compiler *and* the schema document to a device that will compile one known
-  schema, once, every time it boots. Every byte of the compiler's generality is spent on a
-  configurability the deployment does not have.
+  schema, once, every time it boots — 161.7 kB minified where the compiled function is 6.4 kB.
+  Every byte of the compiler's generality is spent on a configurability the deployment does not have.
 - **`@cfworker/json-schema`.** 2020-12 capable and far smaller than ajv, which is what makes it the
   honest rival — it was the candidate ADR 0022 rev 1 named beside ajv. Rejected because it is a
-  runtime *evaluator*: it walks the schema document to decide each value, so the bundle carries the
-  evaluator and the document both. That is smaller than shipping ajv and still strictly more than
-  shipping neither, which is what compiling to a function buys. Its real advantage — validating a
-  schema not known until run time — is a capability this product does not have, the schema being
-  built into the bundle beside the code.
+  runtime *evaluator*: it walks the schema document to decide each value, so the bundle carries a
+  general evaluator on top of the document that ships either way. Compiling carries the document and
+  no evaluator at all, which is strictly less however small the evaluator is. Its real advantage —
+  validating a schema not known until run time — is a capability this product does not have, the
+  schema being built into the bundle beside the code.
 - **Hand-written validation, no library at all.** The smallest possible bundle, no dependency, and
   the page would still be the one enforcer. Rejected because the schema is authored as data precisely
   so that readers other than the page consume it
@@ -75,14 +82,18 @@ Three constraints decide it, and none of them is about validation features.
 
 ## Consequences
 
-- **The device never sees a validator.** What ships is a function specialised to one schema; ajv's
-  compiler, its dialect machinery and the schema document all stay on the build machine.
+- **The device never sees a schema compiler.** ajv's compiler and its dialect machinery stay on the
+  build machine; what ships is one function and the schema constants that function reports errors
+  from.
 - **A schema that cannot compile fails the build**, not the display. Compilation moves from page load
   to `check-build`, which is the earliest point it can be found and the only one where nobody is
   standing in front of a wall.
-- **The bundle stops tracking the schema's size in the way a runtime validator would.** A schema that
-  grows as per-module fragments arrive (#12 first module end-to-end, #156 config-schema fragment
-  composer) grows the emitted function rather than adding a second copy of itself beside an evaluator.
+- **The schema's own prose is bundle weight.** Its `title` and `description` text is embedded with the
+  document, and those exist for the readers ADR 0022 rev 1 names rather than for the page. That is
+  accepted: they are what makes the schema an operator-facing artifact, and dropping them to save
+  bytes would trade the reason the format was chosen for a fraction of one gzipped kilobyte. It is
+  worth re-reading when per-module fragments arrive (#12 first module end-to-end, #156 config-schema
+  fragment composer), because the emitted function grows with the composed document.
 - **ajv joins the frontend's devDependencies**, so it is inside the npm dependency gate #67 security
   and supply-chain CI gates builds, and outside the allowlist the module-graph gate holds the bundle
   to. Those are two different populations on purpose: a build-time dependency is reviewed for what it

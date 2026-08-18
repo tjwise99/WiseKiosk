@@ -155,6 +155,25 @@ check-boundary:
 check-build:
     frontend/node_modules/.bin/vite build frontend
 
+[group('config')]
+[doc('Regenerate the configuration-object TypeScript types from the configuration schema')]
+config-codegen:
+    frontend/node_modules/.bin/json2ts --input frontend/src/config/schema.json --output frontend/src/config/types.ts --additionalProperties false
+
+# The same clear-regenerate-assert-diff shape as `check-boundary`, and for the same reasons: the
+# generator is resolved before the committed output is deleted, absent output then reads as a
+# deletion rather than as a stale file byte-identical to what is committed, and the non-empty
+# assertion catches the emitted-but-empty case the diff does not.
+[group('checks')]
+[doc('The committed configuration types are what the configuration schema generates; needs `just boundary-install`')]
+check-config-types:
+    test -x frontend/node_modules/.bin/json2ts
+    rm -f frontend/src/config/types.ts
+    just config-codegen
+    test -s frontend/src/config/types.ts
+    git add --intent-to-add -- frontend/src/config/types.ts
+    git diff --exit-code HEAD -- frontend/src/config/types.ts
+
 [group('review')]
 [doc('List every ADR citation this branch re-pinned without touching the sentence around it, per file and line (reports; not a gate)')]
 rev-reach *ref:

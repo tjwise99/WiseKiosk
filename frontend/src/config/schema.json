@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://wisekiosk.example/config/config.schema.json",
+  "title": "WiseKiosk display configuration",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["modules"],
+  "properties": {
+    "modules": {
+      "title": "Modules",
+      "description": "Every module this deployment displays, each with the region it is laid out into. A region may carry several modules, and a region no entry names holds nothing.",
+      "type": "array",
+      "items": {
+        "title": "Module placement",
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["region", "module"],
+        "properties": {
+          "region": {
+            "title": "Region",
+            "description": "The region of the display this module is laid out into, from the fixed roster.",
+            "type": "string",
+            "enum": [
+              "top_bar",
+              "top_left",
+              "top_center",
+              "top_right",
+              "upper_third",
+              "middle_center",
+              "lower_third",
+              "bottom_left",
+              "bottom_center",
+              "bottom_right",
+              "bottom_bar",
+              "fullscreen_above",
+              "fullscreen_below"
+            ]
+          },
+          "module": {
+            "title": "Module",
+            "description": "The name of the module to render, as the page registers it.",
+            "type": "string"
+          }
+        }
+      }
+    },
+    "edge_band": {
+      "title": "Edge band",
+      "description": "Depth of the masked band every laid-out region keeps clear of, on all four edges, as a percentage of the display's height — the same unit the type and spacing scales are stated in. Omit it where the display presents its own edge; nothing is assumed in its absence.",
+      "type": "integer"
+    }
+  }
+}
