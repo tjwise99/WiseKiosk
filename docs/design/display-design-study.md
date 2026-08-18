@@ -44,6 +44,12 @@ dissolve into the scene, while large forms survive the identical background at a
 not contain. Content has to differ from the room in **scale**, not only in brightness — which makes
 tightening the type the exact wrong response to a legibility problem.
 
+And where the bright reflection falls is luck: it moves with the room, the hour and where the viewer
+stands. In the all-lights photograph it landed squarely on the six-park stack — the smallest,
+thinnest and most numerous text on the display. Nothing in the design can rely on placement; a dim
+tier cannot be parked where the reflection is dark, because where the reflection is dark is not
+knowable.
+
 ## The same row, three grounds
 
 Top row is the deployed treatment — 15 px at `#999`, weight 300 for the park and hours; 20 px at
@@ -92,7 +98,9 @@ Modelled cap height in arcminutes, on the deployed 37″ visible image (461 mm t
 At 14 ft the clock reads at 15.6′ and nothing else exceeds 7.2′, which is exactly what the owner
 reports. At 6 ft the smallest tier is 8.4′ and is called viewable — "fairly", which reads as the edge.
 So the floor sits at that marginal edge — about **8½ arcminutes** at the nominal 6 ft — and the design
-distance is **6 ft nominal, 9 ft outer bound**. Stated model-free so it survives any uncertainty in
+distance is **6 ft nominal, 9 ft outer bound**. A photograph from 9 ft confirms that outer bound is a
+genuine edge rather than a comfortable margin — the weather block, the largest type on the screen, is
+about all that survives it. Stated model-free so it survives any uncertainty in
 panel geometry: at the deployed panel and 6 ft, **1.85 % of display height reads comfortably and
 1.39 % is marginal**. Expressed as a fraction of display height the floor is resolution-independent —
 it survives a 4K panel and an overscan change without a second set of figures, which the deployed
@@ -129,7 +137,7 @@ has to spare.
 
 The longest label, *Hagrid's Magical Creatures Motorbike Adventure™*, inks 396 px in the deployed
 design and 667 px at a legible size in a heavier weight; a row carrying it needs roughly 620 px including its wait-time
-column. A reserve sized for head and shoulders — about 550 px — leaves 625 px columns on both sides.
+column. A reserve sized for head and shoulders — half a shoulder span, about 550 px — leaves 625 px columns on both sides.
 It fits, with little to spare. **Label length is a budget, not a prohibition:** long names cost column
 width, which comes out of mirror width, the slack dimension — not mirror height, which is what
 determines how much of a person the glass returns.
@@ -139,6 +147,11 @@ wrong twice — it projected from the module's box rather than the string, infla
 40 %, and it treated the 940 px reserve the deployed layout happens to leave as though it were the obligation.
 The record is kept because a confident geometric impossibility is exactly the kind of claim that
 survives unexamined into a rebuild.
+
+The collision that eventually eats the reserve is not hypothetical. The deployed layout leaves a
+200 px gap between the clock and the top of the park stack — one module of headroom; a seventh park,
+or the compliments module the roster includes and this configuration omits, meets the clock. The
+failure is already reproducible at 1280×800, not a future risk.
 
 ## What belongs in the specification
 
@@ -169,5 +182,7 @@ largest empty rectangle computed over module boxes. Angular figures assume a 37�
 461 mm tall, and a 0.70 em cap height; the legibility floor is calibrated to the owner's reports at
 14 ft and 6 ft rather than adopted from a standard. Five photographs of the kiosk in situ — at 3, 6
 and 9 ft, one with the backlight physically blocked, one with every room light on — supersede an
-earlier constant-veiling-contrast model that assumed a uniform ground and was wrong. Panel dimensions
-and viewing distances are the owner's.
+earlier constant-veiling-contrast model that assumed a uniform ground and was wrong. The photographs
+render the display's white cold against the room's warm light; the owner does not perceive that in the
+room, so it is a camera artifact rather than a property of the display. Panel dimensions, viewing
+distances and the confirmation that content sits inside the frame are the owner's.
