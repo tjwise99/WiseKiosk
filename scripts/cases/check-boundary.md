@@ -4,7 +4,9 @@ The inputs these have been run against, in both directions. What they *assert*, 
 [`docs/CI.md`](../../docs/CI.md) § *Generated boundary types*'s; how to run a case is
 [`../README.md`](../README.md)'s.
 
-Exercised at `e17491f`, self-test md5 `e0c89cfba86746285c2a9304aff3249e`.
+Exercised at `40a06fc`, self-test md5 `71090a75c4dd020979f851e1cc6cc04b`. The commit is pinned as
+well as the script: four of the six rows seed the `check-boundary` recipe, which the script's own
+hash cannot see.
 
 **The subject here is a gate that tests a gate**, so the cases below are one level up from the usual:
 `check-boundary-selftest` already seeds drift into `check-boundary`, and what these rows seed is
@@ -20,6 +22,8 @@ of that name and the link is committed, which is how the first run of these case
 | Must fail | The gate cannot see drift at all | `git diff --exit-code HEAD` deleted from the `check-boundary` recipe |
 | Must fail | The gate sees one language and not the other | the diff's pathspec narrowed to `backend/internal/boundary/` |
 | Must fail | A generator does not run, so nothing is regenerated | the `openapi-typescript` invocation pointed at a binary that does not exist |
+| Must fail | `check-boundary` with the toolchain absent **destroys nothing** | the fixture built with no `frontend/node_modules` at all, `just check-boundary` run directly |
+| Must pass | The clear-then-regenerate step deleted from the recipe | `rm -rf backend/internal/boundary frontend/src/lib/boundary` removed — the known gap below, recorded as a passing row so it is measured rather than assumed |
 | Must pass | The tree as it stands | — |
 
 **What the cases prove, beyond what the table shows on its own.**
@@ -33,9 +37,15 @@ of that name and the link is committed, which is how the first run of these case
   the gate once against an unseeded copy before it seeds anything, and exits on a non-zero result
   with a message saying the fixture measured nothing. Without that first run, a gate broken badly
   enough to fail on everything would report both drift seeds as "correctly rejected" and pass.
+- **The toolchain-absent row asserts what was *not* done, which is the whole of it.** `git status
+  --porcelain` is empty after the run: the gate exits non-zero having deleted nothing. Before the
+  generator-resolution step this row failed — exit 127 with `frontend/src/lib/boundary/schema.ts`
+  staged as a deletion, because the recipe cleared the generated directories before discovering it
+  could not refill them. Both directions were run; the row is the fix, and the reproduction is what
+  says the fix was needed.
 - **The seed is committed, not written into the working tree.** `check-boundary` clears the
   generated directories and regenerates them before it diffs, so a seed left uncommitted is deleted
-  by the gate's own first step and the gate then passes — the first version of this self-test did
+  by the gate's own clear step and the gate then passes — the first version of this self-test did
   exactly that and reported the gate healthy. What the gate compares is a regeneration against
   `HEAD`, which is what a seed has to move.
 
