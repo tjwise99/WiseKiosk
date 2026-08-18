@@ -34,6 +34,7 @@ security
 
 ../contracts/module-contract
 ../contracts/display-styling-contract
+../contracts/display-design-study
 ```
 
 ```{toctree}

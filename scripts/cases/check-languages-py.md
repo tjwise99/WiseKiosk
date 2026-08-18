@@ -4,8 +4,9 @@ The inputs this check has been run against, in both directions. What it *asserts
 [ADR 0017 rev 6](../../docs/decisions/0017-authored-language-set.md)'s;
 how to run a case is [`../README.md`](../README.md)'s.
 
-Exercised at `4e81f38`, script md5 `b2b4132c5c3a3b8ffa674949f12776d9`, where a passing run over this
-repository reports **221 tracked files**.
+Exercised on `7de568e` plus the `svg` declaration this file records, script md5
+`89b0d8a7beaf853d8d02d85abf6e02c3`, where a passing run over this repository reports **221 tracked
+files**.
 
 | Direction | Case | Input |
 |---|---|---|
@@ -21,6 +22,8 @@ repository reports **221 tracked files**.
 | Must fail | An untracked file of a declared kind | an untracked, well-formed `.md` — visibility, not the declared set, is what fails |
 | Must pass | The tree as it stands | — |
 | Must pass | A new file with an already-declared extension | `scripts/new-check.py`, a placeholder script, added to the tree |
+| Must pass | An SVG figure a Markdown document embeds | `docs/contracts/display-design-study.md`'s two `.svg` figures, in the tree as it stands |
+| Must fail | An undeclared image extension, `svg` being declared but `png` not | a seeded `docs/contracts/decoy.png` |
 
 **What the cases prove, beyond what the table shows on its own.**
 
