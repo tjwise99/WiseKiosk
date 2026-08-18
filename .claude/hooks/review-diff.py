@@ -108,21 +108,34 @@ def tokenize(line):
     return list(lex)
 
 
-def commits(command):
-    """True when a simple-command in `command` is a git commit that writes one.
+def commit_segments(command):
+    """Yield the git-commit simple-commands in `command`.
 
-    Tokenises so `commit` inside a quoted argument of another command — an echo,
-    a `-m` message — is never mistaken for the git subcommand, and so a commit on
-    its own line or after `;`/`&&` is still seen.
+    Parses the whole command first — so a message whose quoting spans a newline
+    (the multi-line `-m`/trailer form) stays a single token — then each line, so
+    an *unquoted* newline separating two commands is still a boundary. shlex folds
+    an unquoted newline into whitespace, which is why the per-line pass is needed;
+    a line whose quote spans the break simply fails to parse there and was already
+    covered by the whole-command pass.
     """
-    for line in command.splitlines():
+    for text in (command, *command.splitlines()):
         try:
-            tokens = tokenize(line)
+            tokens = tokenize(text)
         except ValueError:
             continue
         for segment in split_simple_commands(tokens):
             if segment_is_commit(segment):
-                return True
+                yield segment
+
+
+def commits(command):
+    """True when a simple-command in `command` is a git commit that writes one.
+
+    `commit` inside a quoted argument of another command — an echo, a `-m`
+    message — is never mistaken for the git subcommand.
+    """
+    for _ in commit_segments(command):
+        return True
     return False
 
 
@@ -216,15 +229,7 @@ def stages_all(command):
     Scoped to the commit segment: an earlier command's flag (`ls -la && git
     commit`) is a different segment and does not count.
     """
-    for line in command.splitlines():
-        try:
-            tokens = tokenize(line)
-        except ValueError:
-            continue
-        for segment in split_simple_commands(tokens):
-            if segment_is_commit(segment) and segment_stages_all(segment):
-                return True
-    return False
+    return any(segment_stages_all(segment) for segment in commit_segments(command))
 
 
 def segment_stages_all(segment):
