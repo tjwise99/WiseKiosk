@@ -1,0 +1,12 @@
+{
+  "name": "wisekiosk-frontend",
+  "version": "0.0.0",
+  "private": true,
+  "description": "The WiseKiosk frontend package root. Its boundary types under src/lib/boundary/ are generated from the one boundary schema and committed; openapi-typescript is pinned exact so a toolchain bump cannot present as schema drift.",
+  "engines": {
+    "node": "24"
+  },
+  "devDependencies": {
+    "openapi-typescript": "7.13.0"
+  }
+}
