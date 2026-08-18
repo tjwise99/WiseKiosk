@@ -114,21 +114,34 @@ check-arch-trace:
 arch-dev:
     docs/architecture/node_modules/.bin/likec4 start docs/architecture/model
 
+[group('setup')]
+[doc('First-time setup: install the pinned boundary code generators into the package roots they belong to')]
+boundary-install:
+    go -C backend mod download
+    npm --prefix frontend ci
+
 [group('boundary')]
 [doc('Regenerate the Go and TypeScript boundary types from the one schema')]
 codegen:
     cd backend && go tool oapi-codegen -config oapi-codegen.yaml ../boundary/openapi.yaml
     frontend/node_modules/.bin/openapi-typescript boundary/openapi.yaml -o frontend/src/lib/boundary/schema.ts
 
-# The generated directories are cleared before `codegen`, which overwrites but never creates what a
-# generator did not emit: absent output then reads as a deletion in the diff below, where a stale
+# Both generators are resolved before anything is deleted: the clear below removes committed source,
+# so a toolchain that cannot run must fail with the tree intact rather than after emptying it. The
+# Go check runs the tool the generate step runs, which is what makes it a resolution rather than a
+# guess; `just boundary-install` is what a failure of either wants.
+#
+# The generated directories are then cleared before `codegen`, which overwrites but never creates
+# what a generator did not emit: absent output reads as a deletion in the diff below, where a stale
 # file left in place would be byte-identical to what is committed. The non-empty assertions are the
 # other half — an emitted-but-empty file is a deletion the diff does see, and neither catches the
 # case the other does. `add --intent-to-add` reaches regenerated output that is untracked, and the
 # diff is against HEAD because that same `git add` stages the deletion a missing generator makes.
 [group('checks')]
-[doc('The committed boundary types are what the schema generates, and the generated Go compiles')]
+[doc('The committed boundary types are what the schema generates, and the generated Go compiles; needs `just boundary-install`')]
 check-boundary:
+    go -C backend tool oapi-codegen -version
+    test -x frontend/node_modules/.bin/openapi-typescript
     rm -rf backend/internal/boundary frontend/src/lib/boundary
     just codegen
     test -s backend/internal/boundary/boundary.gen.go

@@ -95,7 +95,16 @@ def seed(destination, name):
 
 
 def gate(destination):
-    return subprocess.run(GATE, cwd=destination, capture_output=True, text=True).returncode
+    return subprocess.run(GATE, cwd=destination, capture_output=True, text=True)
+
+
+def report(label, outcome):
+    """The run's own output. Captured so a passing self-test is quiet, and printed whenever a
+    result is not the expected one — a bare verdict in a CI log says nothing about why."""
+    print(f"--- {label}: `{' '.join(outcome.args)}` exited {outcome.returncode}", file=sys.stderr)
+    for stream in (outcome.stdout, outcome.stderr):
+        if stream:
+            print(stream, end="" if stream.endswith("\n") else "\n", file=sys.stderr)
 
 
 def main():
@@ -107,7 +116,9 @@ def main():
 
         # The baseline first: with an unseeded copy failing, every seeded run below would report
         # non-zero for a reason that has nothing to do with the seed.
-        if gate(destination) != 0:
+        outcome = gate(destination)
+        if outcome.returncode != 0:
+            report("unseeded copy", outcome)
             sys.exit(
                 "the gate fails on an unseeded copy of the tree, so this fixture measures nothing "
                 "— fix `just check-boundary` before reading any result below"
@@ -115,19 +126,28 @@ def main():
 
         for name in (GO_TYPES, TS_TYPES):
             seed(destination, name)
-            if gate(destination) == 0:
+            outcome = gate(destination)
+            if outcome.returncode == 0:
                 failures.append(f"{name} committed away from the schema, and the gate passed")
+                report(f"{name} seeded", outcome)
             git(destination, "reset", "--hard", "-q", baseline)
 
         # Both sides seeded, then regenerated and committed: what the gate reports afterwards is the
         # half saying drift is clearable rather than only detectable.
         for name in (GO_TYPES, TS_TYPES):
             seed(destination, name)
-        subprocess.run(["just", "codegen"], cwd=destination, check=True, capture_output=True)
+        regeneration = subprocess.run(
+            ["just", "codegen"], cwd=destination, capture_output=True, text=True
+        )
+        if regeneration.returncode != 0:
+            report("regeneration", regeneration)
+            sys.exit("`just codegen` failed, so the regeneration case measured nothing")
         git(destination, "add", "-A")
         git(destination, *IDENTITY, "commit", "-qm", "regenerate both sides")
-        if gate(destination) != 0:
+        outcome = gate(destination)
+        if outcome.returncode != 0:
             failures.append("both sides regenerated from the schema, and the gate still failed")
+            report("regenerated", outcome)
 
     if failures:
         print(f"{len(failures)} problem(s) with the boundary drift gate:", file=sys.stderr)
