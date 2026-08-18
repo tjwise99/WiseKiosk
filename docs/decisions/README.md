@@ -65,6 +65,7 @@ on.
 | [0023](0023-secret-output-containment.md) | 1 | 2026-08-15 | Secrets kept out of client output and logs by type confinement — a distinct secret type that cannot be formatted, serialised, or unwrapped without a single linted call site — proven at the edge by a canary; the secret type is specified in this ADR, not in the tree |
 | [0024](0024-secret-file-delivery.md) | 1 | 2026-07-23 | Every secret delivered as the file named by `<NAME>_FILE` and by no other path — value trailing-whitespace-stripped, read per resolution not cached, a bare `<NAME>` env var ignored; the mechanism is specified in this ADR, not in the tree |
 | [0025](0025-display-region-roster.md) | 1 | 2026-08-16 | Display region roster: a fixed named set, not an operator-configurable grid |
+| [0026](0026-boundary-error-body-shape.md) | 1 | 2026-08-17 | Boundary error bodies are two compact custom components of required strings, `cause` left open; not RFC 7807 and not a closed enum |
 
 ## Revisions
 
