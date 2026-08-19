@@ -658,6 +658,26 @@ violate any of them, so they are checks here rather than obligations there.
   the secret type ([ADR 0023 rev 1](decisions/0023-secret-output-containment.md)) or the URL-builder's
   output type, and the shaping unit tests run against a transport
   that panics on use (#12).
+- **Exactly one non-test reference unwraps the confined secret type.**
+  [ADR 0023 rev 1](decisions/0023-secret-output-containment.md) makes the secret type unemittable and
+  then rests the structural half of that on the unwrap being singular and reviewable — *"the sole call
+  site that unwraps it to the raw value is guarded by a lint"*. This is that lint: over the tracked,
+  non-`_test.go` Go files under `backend/`, references to the type's unwrap method are counted and any
+  count other than one fails, naming every site. Test files are exempt by decision — the unit tier
+  proving the redaction paths cannot do so without unwrapping — which is also the gate's widest hole:
+  a leak reachable only from a test file is outside the population. The match reaches a method *value*
+  as well as a call, so an unwrap aliased behind a variable is counted rather than escaping the count,
+  and it is textual, so a mention in a comment or a string literal fails rather than passes.
+  **Two empty-population cases fail rather than reading clean**: no non-test Go file under `backend/`,
+  and a tree in which the method is not declared at all — a check keyed on a name finds nothing once
+  the name is renamed, and that is indistinguishable from a compliant tree unless it is refused.
+  Recorded in [`../scripts/cases/check-secret-unwrap.md`](../scripts/cases/check-secret-unwrap.md).
+  **What it leaves unproven**: that a secret is not emitted. This counts unwrap sites and reads
+  nothing about what the one site does with the value — redaction through every formatting path is the
+  `secret` package's own tests', and the behavioural edge is the canary
+  ([ADR 0023 rev 1](decisions/0023-secret-output-containment.md) composes the two). It also decides
+  nothing about *where* the site sits: singularity is what the ADR obliges, so moving the unwrap to
+  another package passes, and only a second one fails.
 - **The configuration schema recomposes from its fragments.** Recomposing from the module fragments
   leaves the committed schema unchanged; module directories and fragments stand in bijection, with no
   registered module lacking a fragment and no orphan fragment; each fragment file is the unique

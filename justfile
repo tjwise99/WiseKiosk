@@ -166,6 +166,11 @@ check-go:
     go -C backend vet ./...
     go -C backend test ./...
 
+[group('checks')]
+[doc('Exactly one non-test reference in the backend unwraps the confined secret type to its raw value; test files are exempt')]
+check-secret-unwrap:
+    python3 scripts/check-secret-unwrap.py
+
 [group('run')]
 [doc('Serve the display page on a local dev server; the page fetches /config.json, which a deployment bind-mounts into the served tree and a local run reads from the gitignored frontend/public/config.json')]
 dev:
@@ -231,4 +236,4 @@ check-languages:
 
 [group('checks')]
 [doc('Run every check the PR gate runs that has a local form; secret scanning, the PR-title check (commitlint, via the hook layer), the link check (lychee, from a digest-pinned image) and the workflow audit (zizmor, actionlint) are CI-only')]
-verify: check-untracked check-hooks check-branch check-reqs check-citations check-arch check-arch-trace check-boundary check-go check-config-types check-build check-static-bundle check-unit check-render check-site check-adr-index check-adr-revs check-docs-index check-repo-silo check-languages
+verify: check-untracked check-hooks check-branch check-reqs check-citations check-arch check-arch-trace check-boundary check-go check-secret-unwrap check-config-types check-build check-static-bundle check-unit check-render check-site check-adr-index check-adr-revs check-docs-index check-repo-silo check-languages

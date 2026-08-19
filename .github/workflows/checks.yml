@@ -294,7 +294,8 @@ jobs:
 
   backend-tests:
     name: backend-tests
-    # Runs `just check-go` (docs/CI.md § Backend build, vet and tests). A job of its own rather than
+    # Runs `just check-go` (docs/CI.md § Backend build, vet and tests) and `just check-secret-unwrap`
+    # (docs/CI.md § Module and framework structure). A job of its own rather than
     # a step on `boundary`, which already carries the drift gate: one job answers with one check-run,
     # so a shared one gives the two gates a single name to be required on and a single verdict. The
     # `cmd` package's bounded-footprint soak runs inside `go test ./...` and is ~2min of this job. No
@@ -318,6 +319,9 @@ jobs:
 
       - name: The backend Go tree builds, passes vet, and its package tests pass
         run: just check-go
+
+      - name: Exactly one non-test reference unwraps the confined secret type
+        run: just check-secret-unwrap
 
   process:
     name: process
