@@ -460,7 +460,7 @@ changed, which the citation resolver above decides without anyone declaring anyt
 ## Repository shape
 
 - **Every tracked file is a declared kind** — an authored program in the set
-  [ADR 0017 rev 7](decisions/0017-authored-language-set.md) states, a derived format a toolchain
+  [ADR 0017 rev 8](decisions/0017-authored-language-set.md) states, a derived format a toolchain
   requires, data an authored check reads, or documentation. **A file type nobody has decided about
   fails**, which is the point: closing that failure is a person deciding which side it falls on. A run
   resolving no tracked file fails rather than reporting a clean tree.
@@ -639,7 +639,26 @@ violate any of them, so they are checks here rather than obligations there.
   configuration, and the npm packages in the emitted module graph a subset of a committed allowlist
   manifest. The allowlist is deliberate: a denylist of named routers and meta-frameworks fails open
   the first time someone hand-rolls a hash router, and any new runtime dependency should fail until
-  it is reviewed (#10).
+  it is reviewed. **It is read in both directions**: a granted package that reaches no emitted module
+  fails too, so a grant cannot outlive the dependency it was made for.
+  The module graph is Rollup's, written out by the build — the emitted chunks carry no package names,
+  so a check reading only the emitted tree could not decide which packages ship, and *no graph* and
+  *an empty graph* are failures rather than skips, a subset test over nothing being satisfied by
+  every allowlist there is. That the gate can fail, in each of those directions, is proven once and
+  recorded in [`../scripts/cases/check-static-bundle-py.md`](../scripts/cases/check-static-bundle-py.md).
+  **What it leaves unproven**: the SSR reading is textual, over the Vite configuration and the plugin
+  modules it is composed from, so a target injected from outside that set is outside the population;
+  and the allowlist is a package set, saying nothing about how much of a granted package ships.
+- **The committed configuration types are what the configuration schema generates.** The
+  configuration-object TypeScript types are generated from `frontend/src/config/schema.json` and
+  committed ([ADR 0022 rev 1](decisions/0022-config-schema-format.md)), so the gate regenerates and
+  fails on any difference — the same clear-regenerate-assert-diff shape § *Generated boundary types*
+  runs one layer over, and for the same reason: the generator is resolved before the committed output
+  is cleared, absent output then reads as a deletion rather than as a stale file, and a non-empty
+  assertion catches the emitted-but-empty case the diff does not. Recorded in
+  [`../scripts/cases/check-config-types.md`](../scripts/cases/check-config-types.md).
+  This is the *envelope* schema's gate; recomposition from module fragments is the bullet above,
+  and unbuilt.
 - **No backend code builds an upstream URL outside a module's shaping library.** The URL a module
   fetches is that module's to construct; shared framework code constructing one is shared code
   holding module knowledge (#9).

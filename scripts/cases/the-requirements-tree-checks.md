@@ -48,17 +48,18 @@ checks. This is #80's pending-population gap, and the owner ruled on 2026-07-30 
 re-stamp on every placeholder edit is the most common act in a tree pass, and the CLI cannot reach an
 inactive item.
 
-## `validate-tree.sh`
+## `doorstop --error-all --no-reformat`
 
 | Direction | Input |
 |---|---|
 | Must fail | a link naming a parent UID the tree does not hold, on an **active** item |
-| Must fail | a `TST` item activated — the pending-tier exception reports itself dead |
-| Must fail | the venv's `doorstop` absent — named as missing, not diagnosed as a live tier |
 | Must pass | the tree as it stands |
 
-The *no items* message collides between *all items inactive* and *no items exist*; in this tree's
-topology it never occurs without a distinct second error line from the active tiers.
+The wrapper this ran behind is retired: it existed for a `TST` tier in which every item was pending,
+which Doorstop reports as *no items* and returns on before every other check of that document. The
+tier holds active items from #10 frontend skeleton, so the exception it stood in for is gone and the
+recipe calls Doorstop directly. Its own last case — *a `TST` item activated, the exception reports
+itself dead* — is what the activation ran, and closing it is what deleted the wrapper.
 
 ## `check-method-consistency.py`
 

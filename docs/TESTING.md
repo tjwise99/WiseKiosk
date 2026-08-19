@@ -19,6 +19,22 @@ Each tier states what it **guarantees** and when it runs.
 | **Render** | Each module renders from its props; the page assembles with a known-good config; and the assembled page is read for the values a viewer depends on: which region each module landed in, emission, type scale, region geometry, the configured edge band, reflow, and overflow | [module contract](contracts/module-contract.md), part 3 / SRS017<!-- Full-screen assembly at kiosk; reflow, no horizontal scroll, at narrower widths --> / SRS031<!-- Content too large for its region overflows --> / SRS030<!-- Only content is rendered above the emission ceiling --> / SRS032<!-- Readable text is carried at full emission --> / SRS033<!-- Text holds a minimum size against the display, at every resolution --> / SRS034<!-- The laid-out regions keep clear of the display edge --> / SRS035<!-- The masked edge band is the deployment's to declare --> | Every commit, in CI |
 | **Contract** | Upstream APIs still return what the shaping libraries expect | this document | Fixtures every commit, in CI; a live run on a schedule, off the merge path |
 
+### Where a frontend test goes
+
+Which runner executes each tier is
+[ADR 0027 rev 1](decisions/0027-frontend-test-runners.md)'s; where a test *sits* is here, because
+"a new test is wired in by its location alone" is only actionable if the location is stated.
+
+- **Unit** — `frontend/src/**/*.test.ts`, beside the source it exercises. Vitest's configured
+  population is that glob, so a file matching it is reached and a file outside it is not.
+- **Render** — `frontend/tests/render/*.spec.ts`, one file per obligation, with the stub components
+  a fixture places under `frontend/tests/render/stubs/`. Playwright's `testDir` is that directory.
+
+A module's own two tests sit with the module ([the module contract](contracts/module-contract.md),
+part 6; [ADR 0021 rev 1](decisions/0021-repository-layout.md) fixes the directory), which is inside
+the unit glob for a shaping library's tests and is why the render runner's directory is stated
+separately — a module's render test is reached by the same runner from a different place.
+
 The Boundary row enumerates the value classes deliberately: "payload shape and parameter name" reads
 narrower than SRS015<!-- One schema, all boundary value classes -->, and an error body or a status
 code left out of the schema is exactly the value that crosses unproven.

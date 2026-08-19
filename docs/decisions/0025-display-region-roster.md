@@ -1,11 +1,23 @@
 # 0025 — Display region roster: a fixed named set, not an operator-configurable grid
 
 **Status:** accepted
-**Decided:** 2026-08-16 (#154 display design)
-**Rev:** 1
+**Decided:** 2026-08-18 (the two fullscreen names dropped, #10 frontend skeleton; the roster itself
+taken 2026-08-16 in #154 display design)
+**Rev:** 2
 
 ## Revisions
 
+- **rev 2** — 2026-08-18 — `fullscreen_above` and `fullscreen_below` are dropped and the roster is
+  eleven names (owner, 2026-08-18). Building the frame surfaced that the two were named and never
+  defined: the only reading their names support is a layer covering the display, and a region
+  covering the display overlaps every other one, which
+  SRS017<!-- Full-screen assembly at kiosk; reflow, no horizontal scroll, at narrower widths -->
+  forbids and TST035<!-- Viewport-driven layout render test --> reads. A configuration cannot express
+  a geometry, so nothing downstream could have refused the combination either. Given a choice between
+  inventing a meaning for two names nothing asks for and dropping them, they are dropped — no
+  deployment has wanted one, which is the same absent-second-consumer ground the rejected alternative
+  below already stands on. This changes what was chosen, so the `Decided` date moves with it
+  (#10 frontend skeleton).
 - **rev 1** — 2026-08-16 — first written (#154 display design).
 
 ## Context
@@ -29,9 +41,9 @@ record cites that contract rather than restating any of it.
 
 ## Decision
 
-**The region roster is a fixed named set, not an operator-configurable grid.** Thirteen names:
+**The region roster is a fixed named set, not an operator-configurable grid.** Eleven names:
 `top_bar`, `top_left`, `top_center`, `top_right`, `upper_third`, `middle_center`, `lower_third`,
-`bottom_left`, `bottom_center`, `bottom_right`, `bottom_bar`, `fullscreen_above`, `fullscreen_below`.
+`bottom_left`, `bottom_center`, `bottom_right`, `bottom_bar`.
 Each is an enum member the configuration schema offers as a module's `region` value, the same shape
 [ADR 0022 rev 1](0022-config-schema-format.md)'s illustrative fragment shows for one key;
 SRS024<!-- Every offered configuration key is exercised at a non-default value -->'s per-key
@@ -52,6 +64,11 @@ choice; the roster itself is not.
 
 ## Consequences
 
-- **The configuration schema's `region` enum is fixed to these thirteen names.** A per-deployment
+- **The configuration schema's `region` enum is fixed to these eleven names.** A per-deployment
   need for a region outside this set is not something the schema can accept; it revisits this record
   rather than being authored around it.
+- **Every region in the roster is one the frame lays out beside the others**, so
+  SRS017<!-- Full-screen assembly at kiosk; reflow, no horizontal scroll, at narrower widths -->'s
+  disjointness holds across the whole roster rather than across a subset of it. That is what rev 2
+  bought, and it is why a later request for a display-covering region is a decision to take here —
+  it reopens the conflict rev 2 removed, and the record of what that costs is the paragraph above.

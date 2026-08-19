@@ -184,7 +184,7 @@ revisits when its upstream lands.
 
 ## Frontend
 
-_To be documented as it is built._ Its source root is `frontend/`, the npm package root, holding the
+Its source root is `frontend/`, the npm package root, holding the
 framework half under `src/lib/`, each module's component and configuration-schema fragment under
 `src/modules/<name>/`, and the configuration schema those fragments compose into under `src/config/`
 ([ADR 0021 rev 1](decisions/0021-repository-layout.md)). Svelte 5 + Vite, a static single-page bundle
@@ -236,6 +236,52 @@ rest`" .-> Viewer
 ```
 
 <!-- arch-export:end generated/frontendComponents.mmd -->
+
+**One load, then nothing.** The page mounts, fetches the configuration once, and renders. There is no
+router, no navigation and no second load path: a configuration change applies at the next page load
+and by no other route, which is what
+SRS003<!-- A configuration change applies no later than the next page load --> asks for and what lets
+the shell hold no lifecycle beyond that one fetch. The fetch bypasses every HTTP cache, because the
+conventional server-side fix is a header on a configuration path and the backend has no such path
+([ADR 0007 rev 2](decisions/0007-config-validation-allocation.md)).
+
+**Every outcome of that load renders something.** The four failure classes
+SRS004<!-- Page renders a legible error state for every configuration failure class --> names — the
+file absent, unfetchable, unparsable, or rejected by the schema — each render their own plain-language
+state, and the load itself renders as a load. A rejected configuration lists every fault the schema
+found rather than the first, which is why the validator collects them all
+([ADR 0028 rev 1](decisions/0028-bundled-config-validator.md)).
+
+**The configuration schema is enforced once, by code the schema generates.** The schema is authored as
+JSON Schema 2020-12 ([ADR 0022 rev 1](decisions/0022-config-schema-format.md)) and compiled at build
+time to a standalone validation function, so the bundle carries a function specialised to it rather
+than a schema evaluator ([ADR 0028 rev 1](decisions/0028-bundled-config-validator.md)). The
+configuration-object TypeScript types are generated from the same file and drift-gated, so the
+schema is the one statement of the configuration's shape and the region roster
+([ADR 0025 rev 2](decisions/0025-display-region-roster.md)) has one machine-readable form that both
+the validator and the layout read.
+
+**The frame is a grid the region names anchor into, not a set of cells content fills.** Three columns
+and seven rows: the two bars span the width at top and bottom, the corner rows anchor their three
+columns, and the centre column's three bands take equal shares of what the bars leave. Every region
+is laid out beside the others rather than over them
+([ADR 0025 rev 2](decisions/0025-display-region-roster.md)), and a region the configuration names no
+module for is not laid out at all. The bands are bounded rather than content-sized, so content too
+large for one leaves it rather than growing it
+(SRS031<!-- Content too large for its region overflows -->).
+
+**Layout assembly places what it is handed and fetches nothing.** A configuration entry's module name
+resolves through a registry in `src/lib/`, which is empty until the first module lands (#12 first
+module end-to-end); a name it cannot resolve renders as that region's own state rather than as an
+empty region. The render tier substitutes its own registry for that one, which is the only thing it
+replaces.
+
+**Shared design tokens are delivered as `:root` custom properties** in `src/app.css`, whose values are
+[the display styling contract](contracts/display-styling-contract.md)'s. The edge band is one of them:
+the configuration's depth is a percentage of the display's height, joined to a CSS length in one
+place, and absent means none is assumed
+(SRS035<!-- The masked edge band is the deployment's to declare -->).
+
 ## The boundary contract
 
 One schema definition, both sides generated from it — the load-bearing structural constraint of the

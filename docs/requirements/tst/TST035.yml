@@ -1,23 +1,26 @@
-active: false
+active: true
 derived: false
 header: |
-  Pending: viewport-driven layout render test
+  Viewport-driven layout render test
 level: 1.41
 links:
-- SRS017: n8xaUm3pOaOCC44dX72TnvTc65GF_6GuCUlah0jSynU=
+- SRS017: KTjtaRkAEv-i2ROHcZQJDfaNdkT_ZOxHjhO7kck2KBU=
 normative: true
 rationale: ''
 ref: ''
-reviewed: ndToM7D8fMSc0sJ9w9u-8eRLeZ1HStYdo--BMeUEDWs=
-status: proposed
+references:
+- path: frontend/tests/render/region-layout.spec.ts
+  type: file
+reviewed: ZgFPF4uhMYvlm07ywW3-HhiHgVILpewutghBmGRCWsw=
+status: accepted
 text: |
-  Pending: viewport-driven render test asserting that every module the fixture configuration names
-  renders inside the region the configuration names for it, and that no region holds a module the
+  Viewport-driven render test asserting that every module the fixture configuration names renders
+  inside the region the configuration names for it, and that no region holds a module the
   configuration did not name there, with the module set and its region assignments read from the
   parsed fixture rather than a hand-written list; and asserting the laid-out regions are pairwise
   disjoint and the document does not scroll horizontally, at the kiosk viewport (1920x1080) and at
-  the desktop viewports (1280x800 and 1440x900), over a fixture whose content fits the regions it is
-  given. Lands with the frontend skeleton (#10); activated and given a references entry then.
+  the desktop viewports (1280x800 and 1440x900), over a fixture whose content fits the regions it
+  is given.
 verification-justification: |
   Settles that every configured module renders in the region named for it, that no region carries a
   module named elsewhere, and that the regions the page lays out neither overlap nor scroll sideways

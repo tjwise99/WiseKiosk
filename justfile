@@ -30,7 +30,7 @@ check-branch *ref:
 check-reqs:
     docs/requirements/.venv/bin/python scripts/check-unreviewed.py
     docs/requirements/.venv/bin/python scripts/check-suspect-links.py
-    sh scripts/validate-tree.sh
+    docs/requirements/.venv/bin/doorstop --error-all --no-reformat
     docs/requirements/.venv/bin/python scripts/check-method-consistency.py
     docs/requirements/.venv/bin/python scripts/check-text-citations.py
     docs/requirements/.venv/bin/python scripts/check-headers.py
@@ -115,6 +115,11 @@ arch-dev:
     docs/architecture/node_modules/.bin/likec4 start docs/architecture/model
 
 [group('setup')]
+[doc('First-time setup: install the browser the render tier drives')]
+render-install:
+    frontend/node_modules/.bin/playwright install --with-deps chromium
+
+[group('setup')]
 [doc('First-time setup: install the pinned boundary code generators into the package roots they belong to')]
 boundary-install:
     go -C backend mod download
@@ -150,6 +155,59 @@ check-boundary:
     git add --intent-to-add -- backend/internal/boundary/ frontend/src/lib/boundary/
     git diff --exit-code HEAD -- backend/internal/boundary/ frontend/src/lib/boundary/
 
+[group('run')]
+[doc('Serve the display page on a local dev server; the page fetches /config.json, which a deployment bind-mounts into the served tree and a local run reads from the gitignored frontend/public/config.json')]
+dev:
+    frontend/node_modules/.bin/vite frontend
+
+# Depends on `check-build` so what is served is a bundle that exists and is current, rather than
+# whatever a previous run left in `dist/`.
+[group('run')]
+[doc('Serve the built static bundle rather than the dev server — what a deployment ships, including the compiled configuration validator')]
+preview: check-build
+    frontend/node_modules/.bin/vite preview frontend
+
+[group('checks')]
+[doc('The frontend builds to a static single-page bundle; needs `just boundary-install`')]
+check-build:
+    frontend/node_modules/.bin/vite build frontend
+
+# Depends on `check-build` rather than assuming an emitted tree: what it reads is what that build
+# emitted, and `just` runs a dependency once per invocation, so `verify` does not build twice.
+[group('checks')]
+[doc('The frontend build emits a static single-page bundle: one HTML entry with an empty mount, no server half, no SSR target or adapter declared, and every npm package in the emitted module graph allowlisted')]
+check-static-bundle: check-build
+    python3 scripts/check-static-bundle.py
+
+[group('checks')]
+[doc('The frontend unit tier passes (Vitest); needs `just boundary-install`')]
+check-unit:
+    frontend/node_modules/.bin/vitest run --root frontend
+
+[group('checks')]
+[doc('The frontend render tier passes at each supported viewport (Playwright); needs `just boundary-install` and `just render-install`')]
+check-render:
+    frontend/node_modules/.bin/playwright test --config frontend/playwright.config.ts
+
+[group('config')]
+[doc('Regenerate the configuration-object TypeScript types from the configuration schema')]
+config-codegen:
+    frontend/node_modules/.bin/json2ts --input frontend/src/config/schema.json --output frontend/src/config/types.ts --additionalProperties false
+
+# The same clear-regenerate-assert-diff shape as `check-boundary`, and for the same reasons: the
+# generator is resolved before the committed output is deleted, absent output then reads as a
+# deletion rather than as a stale file byte-identical to what is committed, and the non-empty
+# assertion catches the emitted-but-empty case the diff does not.
+[group('checks')]
+[doc('The committed configuration types are what the configuration schema generates; needs `just boundary-install`')]
+check-config-types:
+    test -x frontend/node_modules/.bin/json2ts
+    rm -f frontend/src/config/types.ts
+    just config-codegen
+    test -s frontend/src/config/types.ts
+    git add --intent-to-add -- frontend/src/config/types.ts
+    git diff --exit-code HEAD -- frontend/src/config/types.ts
+
 [group('review')]
 [doc('List every ADR citation this branch re-pinned without touching the sentence around it, per file and line (reports; not a gate)')]
 rev-reach *ref:
@@ -162,4 +220,4 @@ check-languages:
 
 [group('checks')]
 [doc('Run every check the PR gate runs that has a local form; secret scanning, the PR-title check (commitlint, via the hook layer), the link check (lychee, from a digest-pinned image) and the workflow audit (zizmor, actionlint) are CI-only')]
-verify: check-untracked check-hooks check-branch check-reqs check-citations check-arch check-arch-trace check-boundary check-site check-adr-index check-adr-revs check-docs-index check-repo-silo check-languages
+verify: check-untracked check-hooks check-branch check-reqs check-citations check-arch check-arch-trace check-boundary check-config-types check-build check-static-bundle check-unit check-render check-site check-adr-index check-adr-revs check-docs-index check-repo-silo check-languages

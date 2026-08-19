@@ -149,10 +149,6 @@ excluded from reference and review checking; each is activated and given a real 
 its test lands. A `SRS` parent whose child is pending surfaces an informational `no item with UID:
 TST00x` line during validation — Doorstop noting a stubbed verification, not a failure.
 
-**A tier in which every item is pending is a different case, and it does not validate clean.** That is
-the tier the `TST` document is in until the first test lands, and it is why the gate runs Doorstop
-behind [`validate-tree.sh`](#running-the-gate) rather than directly.
-
 ### Pending decomposition
 
 The same idiom extends upward: a `SYS` or `SRS` item whose decomposition round has not yet arrived is
@@ -207,18 +203,9 @@ just verify       # runs check-reqs alongside the other repo gates
 `just check-reqs` is the **same** invocation CI makes (job `requirements` in
 [`checks.yml`](../../.github/workflows/checks.yml) runs the recipe itself), so the local run and the
 gate are one spelling — a command added to the recipe is a command CI runs, with no second text to
-fall behind. The `--error-all` flag `validate-tree.sh` passes to Doorstop
+fall behind. The `--error-all` flag the recipe passes to Doorstop
 promotes its suspect / unreviewed / orphan / unresolved-reference warnings to errors, so the process
 exits non-zero and the gate actually blocks — plain `doorstop` only warns.
-
-**Why Doorstop runs behind a wrapper: one exception, and it expires by itself.** Doorstop's
-`Document.items` is active-only, so a document whose items are *all* pending yields `no items` and
-returns **before every other check on that document**. Every `TST` item is pending until the code it
-checks exists, so under `--error-all` the whole verification tier is at once fatal and unvalidated.
-`validate-tree.sh` tolerates that one error and nothing else. It also fails when the error stops
-appearing — an active `TST` item means the exception is dead, and a dead exception that passes
-quietly is how a suppression becomes permanent ([`../CI.md § The exception
-register`](../CI.md#the-exception-register) refuses the same shape). Retiring it is #78.
 
 **`check-unreviewed.py` runs first because Doorstop writes.** Validating the tree stamps a review
 fingerprint into any item that has none, and into any link carrying no stamp — whether or not a

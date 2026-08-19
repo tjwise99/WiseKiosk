@@ -228,6 +228,70 @@ jobs:
       - name: The committed boundary types are what the schema generates, and the generated Go compiles
         run: just check-boundary
 
+  frontend:
+    name: frontend
+    # Builds the static single-page bundle, then holds it to what ADR 0018 rev 1 decided: one HTML
+    # entry with an empty mount, no server half, no SSR target or adapter declared, and every npm
+    # package in the emitted module graph in the committed allowlist. Then the configuration types
+    # are regenerated from the configuration schema and diffed, the same staleness gate the boundary
+    # job runs one layer over. Every generator and runner is pinned in the silo it belongs to,
+    # through frontend/package-lock.json. No secrets: build, comparison and static assertion.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 24
+
+      - uses: extractions/setup-just@53165ef7e734c5c07cb06b3c8e7b647c5aa16db3 # v4
+        with:
+          just-version: "1.58.0"
+
+      - name: Install the frontend toolchain into the silo (frontend/), locked
+        run: npm --prefix frontend ci
+
+      - name: The frontend build emits a static single-page bundle
+        run: just check-static-bundle
+
+      - name: The committed configuration types are what the configuration schema generates
+        run: just check-config-types
+
+  frontend-tests:
+    name: frontend-tests
+    # The frontend's two test tiers (ADR 0027 rev 1): Vitest over the unit tier, and Playwright over
+    # the render tier at each of the three supported viewports. The render tier needs a browser that
+    # computes layout and paint, which is what `just render-install` provisions — the one step here
+    # that is a setup recipe rather than a gate. No secrets: the render tier drives a local dev
+    # server and reaches no network origin.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 24
+
+      - uses: extractions/setup-just@53165ef7e734c5c07cb06b3c8e7b647c5aa16db3 # v4
+        with:
+          just-version: "1.58.0"
+
+      - name: Install the frontend toolchain into the silo (frontend/), locked
+        run: npm --prefix frontend ci
+
+      - name: Install the browser the render tier drives
+        run: just render-install
+
+      - name: The frontend unit tier passes
+        run: just check-unit
+
+      - name: The frontend render tier passes at each supported viewport
+        run: just check-render
+
   process:
     name: process
     # Process gates (ADR 0006 rev 4): the branch is named type_number-snake_name and
