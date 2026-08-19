@@ -1,5 +1,6 @@
 // Package secret confines a secret value to a type that cannot be emitted
-// (ADR 0023) and resolves one from the file named by <NAME>_FILE (ADR 0024).
+// (ADR 0023 rev 1) and resolves one from the file named by <NAME>_FILE
+// (ADR 0024 rev 1).
 package secret
 
 import (
@@ -41,7 +42,7 @@ func (s Secret) GoString() string {
 // Reveal returns the raw secret value. It is the single lint-guarded unwrap
 // site and must have exactly one call site across the backend: the outbound
 // HTTP client, which is the one legitimate caller. Any other use defeats the
-// containment ADR 0023 rests on.
+// containment ADR 0023 rev 1 rests on.
 func (s Secret) Reveal() string {
 	return s.value
 }
