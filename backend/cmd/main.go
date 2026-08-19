@@ -10,6 +10,8 @@ import (
 	"os"
 
 	"github.com/tjwise99/WiseKiosk/backend/internal/health"
+	"github.com/tjwise99/WiseKiosk/backend/internal/registry"
+	"github.com/tjwise99/WiseKiosk/backend/internal/router"
 	"github.com/tjwise99/WiseKiosk/backend/internal/staticserve"
 )
 
@@ -37,7 +39,8 @@ func main() {
 		return
 	}
 
-	log.Fatal(http.ListenAndServe(addr, newServer(staticserve.New(http.Dir(*root)), nil)))
+	api := router.NewRouter(registry.Entries)
+	log.Fatal(http.ListenAndServe(addr, newServer(staticserve.New(http.Dir(*root)), api)))
 }
 
 // newServer assembles the routes: liveness, the API, and the served tree for
