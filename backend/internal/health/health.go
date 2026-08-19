@@ -6,10 +6,19 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"time"
 )
 
 // body is what a serving process answers with.
 const body = "ok"
+
+// checkTimeout bounds one probe end to end. The probe is a loopback request to
+// a handler that consults nothing, so it answers in microseconds or not at all.
+const checkTimeout = 2 * time.Second
+
+// checker is the client Check probes with, bounded where http.DefaultClient is
+// not.
+var checker = &http.Client{Timeout: checkTimeout}
 
 // Handler reports that the process is serving and nothing else: it reads no
 // configuration and consults no dependency (ADR 0007 rev 2).
@@ -20,10 +29,12 @@ func Handler() http.Handler {
 }
 
 // Check asks the instance at url whether it is serving, returning nil for a
-// 200 and an error for anything else — no response, or a response carrying
-// another status.
+// 200 and an error for anything else — no response, a response carrying another
+// status, or no answer within checkTimeout. The last is a process alive but
+// wedged, which Check reports itself rather than leaving to a deployment
+// artifact to bound.
 func Check(url string) error {
-	response, err := http.Get(url)
+	response, err := checker.Get(url)
 	if err != nil {
 		return fmt.Errorf("health check %s: %w", url, err)
 	}

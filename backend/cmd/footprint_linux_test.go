@@ -70,16 +70,19 @@ var requests = []struct {
 // TestRunningFootprintStaysBounded drives the assembled server under sustained
 // load, samples resident memory, open descriptors and the goroutine count at a
 // fixed interval, and judges the post-warmup series with the three predicates
-// beside it. An idle sample taken before load starts is what the descriptor
-// margin is measured against.
+// beside it. An idle sample taken before anything has issued a request is what
+// the descriptor margin is measured against.
 // TODO (#25): TST004, TST043, TST044
 func TestRunningFootprintStaysBounded(t *testing.T) {
 	plant(t)
 	source := newKeyedSource(t)
 	server := newServer(staticserve.New(http.Dir(servedTree(t))), router.NewRouter([]router.Entry{keyedEntry(source)}))
 
-	preflight(t, server)
+	// Before preflight, not after: preflight's two upstream calls leave pooled
+	// sockets behind, and a baseline holding them counts them into itself
+	// rather than against the descriptor margin.
 	baseline := takeSample(t, 0)
+	preflight(t, server)
 
 	var issued atomic.Int64
 	stop := make(chan struct{})

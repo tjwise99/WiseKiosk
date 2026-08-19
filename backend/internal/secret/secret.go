@@ -39,10 +39,10 @@ func (s Secret) GoString() string {
 	return redaction
 }
 
-// Reveal returns the raw secret value. It is the single lint-guarded unwrap
-// site and must have exactly one call site across the backend: the outbound
-// HTTP client, which is the one legitimate caller. Any other use defeats the
-// containment ADR 0023 rev 1 rests on.
+// Reveal returns the raw secret value, and is the only method that does. The
+// check-secret-unwrap gate counts the references to it in the non-test backend
+// tree and fails on anything but one, so a second call site is a red gate
+// rather than a review someone has to catch (docs/CI.md).
 func (s Secret) Reveal() string {
 	return s.value
 }

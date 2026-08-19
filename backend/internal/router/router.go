@@ -147,8 +147,8 @@ type route struct {
 
 // ServeHTTP validates the request's parameters, then asks the pipeline for the
 // answer under the canonicalised query string. A rejection is answered before
-// any upstream call; the pipeline's error means this caller's context ended, so
-// nothing is written.
+// any upstream call; the pipeline's error means this caller's context ended,
+// and is answered as this module's failure.
 func (rt *route) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	params, err := url.ParseQuery(r.URL.RawQuery)
 	if err != nil {
@@ -162,6 +162,12 @@ func (rt *route) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	result, err := rt.proxy.Do(r.Context(), rt.entry.Source, params.Encode(), rt.fetch(params))
 	if err != nil {
+		// The pipeline errors only where this caller's context ended: a client
+		// that has gone, or a server shutting down under one still connected.
+		// The second is written the boundary failure body (ADR 0026 rev 1),
+		// where returning unwritten emits an empty 200. The first reads
+		// neither.
+		rt.fail(w, http.StatusServiceUnavailable, causeUpstreamFailure, "this source could not be served")
 		return
 	}
 	rt.respond(w, result)
@@ -193,10 +199,39 @@ func (rt *route) fetch(params url.Values) upstream.Fetcher {
 
 		response, err := outbound.Do(request)
 		if err != nil {
-			return nil, err
+			return nil, rt.outboundFailed(err)
 		}
 		return &upstream.Response{Status: response.StatusCode, Body: response.Body}, nil
 	}
+}
+
+// outboundError is a failed outbound call, naming the source and carrying the
+// cause beneath it.
+type outboundError struct {
+	source string
+	cause  error
+}
+
+func (e *outboundError) Error() string {
+	return "source " + e.source + ": outbound call failed: " + e.cause.Error()
+}
+
+// Unwrap keeps the cause reachable to the errors.Is the pipeline classifies a
+// deadline with.
+func (e *outboundError) Unwrap() error {
+	return e.cause
+}
+
+// outboundFailed replaces the *url.Error net/http returns, whose Error text
+// renders the request URL, with one carrying the cause and no URL. An entry's
+// injector may place its secret in the query string, and this error is held in
+// Result.Err for the negative TTL (ADR 0023 rev 1).
+func (rt *route) outboundFailed(err error) error {
+	var wrapped *url.Error
+	if errors.As(err, &wrapped) {
+		err = wrapped.Err
+	}
+	return &outboundError{source: rt.entry.Source, cause: err}
 }
 
 // respond writes the boundary body the result calls for: the shaped payload on
@@ -228,7 +263,7 @@ func (rt *route) succeed(w http.ResponseWriter, body []byte) {
 		rt.fail(w, http.StatusBadGateway, causeMalformedPayload, malformedMessage)
 		return
 	}
-	writeJSON(w, http.StatusOK, json.RawMessage(encoded))
+	writeEncoded(w, http.StatusOK, encoded)
 }
 
 // failure names the status, cause and message for a result that carries no
@@ -290,7 +325,11 @@ func writeJSON(w http.ResponseWriter, status int, value any) {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
+	writeEncoded(w, status, encoded)
+}
 
+// writeEncoded writes an already-encoded body under status.
+func writeEncoded(w http.ResponseWriter, status int, encoded []byte) {
 	w.Header().Set("Content-Type", contentTypeJSON)
 	w.WriteHeader(status)
 	w.Write(encoded)

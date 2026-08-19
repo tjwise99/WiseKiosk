@@ -82,13 +82,27 @@ type Response struct {
 // classifies nothing. It must be safe for concurrent use.
 type Fetcher func(ctx context.Context) (*Response, error)
 
-// Config is the policy one Proxy runs. Every value is required; there are no
-// defaults here, because a route's policies are its registration entry's.
+// The cache and rate-limit defaults a route's registration entry starts from,
+// defined here so the figure and the reasoning docs/ARCHITECTURE.md § Cache and
+// rate-limit defaults records for it are one value rather than two that agree
+// today.
+const (
+	// DefaultSuccessTTL is the default SuccessTTL.
+	DefaultSuccessTTL = 10 * time.Minute
+	// DefaultNegativeTTL is the default NegativeTTL.
+	DefaultNegativeTTL = 60 * time.Second
+	// DefaultRequestsPerMinute is the default RequestsPerMinute.
+	DefaultRequestsPerMinute = 10
+)
+
+// Config is the policy one Proxy runs, and every value is required. The three
+// with a default above are still stated per entry, because a route refines them
+// against its source. Burst, Timeout and MaxBytes have no default here or in
+// the tree: no document names a value for them, so each entry decides its own.
 type Config struct {
 	// SuccessTTL is how long a Success is served from cache.
 	SuccessTTL time.Duration
-	// NegativeTTL is how long a failure is served from cache, so a sustained
-	// outage costs one outbound call per window rather than one per request.
+	// NegativeTTL is how long a failure is served from cache.
 	NegativeTTL time.Duration
 	// RequestsPerMinute is the rate each source's bucket refills at.
 	RequestsPerMinute int

@@ -1,6 +1,7 @@
 package router
 
 import (
+	"context"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -41,17 +42,15 @@ func (s *logSink) text() string {
 }
 
 // captureLog points the standard logger at a sink for the test's duration and
-// restores the output and flags it replaced.
+// restores the writer it replaced, which is not necessarily os.Stderr: an outer
+// harness redirecting the logger keeps its redirect.
 func captureLog(t *testing.T) *logSink {
 	t.Helper()
 
 	sink := &logSink{}
-	flags := log.Flags()
+	previous := log.Writer()
 	log.SetOutput(sink)
-	t.Cleanup(func() {
-		log.SetOutput(os.Stderr)
-		log.SetFlags(flags)
-	})
+	t.Cleanup(func() { log.SetOutput(previous) })
 	return sink
 }
 
@@ -207,6 +206,42 @@ func TestNoSecretValueReachesAnyResponseOrLog(t *testing.T) {
 				sweep(t, "the echoed upstream error", recorder, canary)
 			})
 		}
+	})
+
+	t.Run("a transport failure carries no URL-placed secret", func(t *testing.T) {
+		plant(t)
+		source := newCanarySource(t)
+		proxy := upstream.New(testConfig(), newFakeClock().now)
+		rt := &route{entry: canaryEntry(source, "keyed"), proxy: proxy}
+		params := url.Values{"station": {"one"}}
+
+		// The live call first, so the sweep below is known to be sweeping an
+		// error raised over a URL that carried the secret.
+		if _, err := rt.fetch(params)(context.Background()); err != nil {
+			t.Fatalf("the live call: %v", err)
+		}
+		if _, query := source.placements(); query != canary {
+			t.Fatalf("upstream saw parameter %s = %q, want the planted value", canaryQuery, query)
+		}
+
+		source.server.Close()
+		result, err := proxy.Do(context.Background(), "keyed", params.Encode(), rt.fetch(params))
+		if err != nil {
+			t.Fatalf("the pipeline returned %v, want a result", err)
+		}
+		if result.Kind != upstream.Unreachable {
+			t.Fatalf("kind = %v, want %v against a closed listener", result.Kind, upstream.Unreachable)
+		}
+		if result.Err == nil {
+			t.Fatal("the unreachable result carries no error to sweep")
+		}
+		if rendered := fmt.Sprintf("%v", result.Err); strings.Contains(rendered, canary) {
+			t.Errorf("the cached result's error carries the secret value: %q", rendered)
+		}
+
+		recorder := httptest.NewRecorder()
+		rt.respond(recorder, result)
+		sweep(t, "the transport failure", recorder, canary)
 	})
 
 	t.Run("an unresolvable secret is named and never shown", func(t *testing.T) {

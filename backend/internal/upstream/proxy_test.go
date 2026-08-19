@@ -70,14 +70,14 @@ func fails(err error) func(context.Context) (*Response, error) {
 	}
 }
 
-// testConfig is the policy these tests run against. The four cache and
-// rate-limit values are the architecture's defaults; the timeout and the size
-// bound are fixtures.
+// testConfig is the policy these tests run against. The three values carrying a
+// package default take it, so a test asserting behaviour at the default moves
+// with the default; the burst, the timeout and the size bound are fixtures.
 func testConfig() Config {
 	return Config{
-		SuccessTTL:        10 * time.Minute,
-		NegativeTTL:       60 * time.Second,
-		RequestsPerMinute: 10,
+		SuccessTTL:        DefaultSuccessTTL,
+		NegativeTTL:       DefaultNegativeTTL,
+		RequestsPerMinute: DefaultRequestsPerMinute,
 		Burst:             10,
 		Timeout:           5 * time.Second,
 		MaxBytes:          1 << 20,

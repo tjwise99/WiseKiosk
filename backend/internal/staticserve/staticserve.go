@@ -1,6 +1,7 @@
-// Package staticserve serves a filesystem tree as bytes, interpreting none of
-// it: the configuration file in that tree is opened, read and written back
-// like every other file (ADR 0007 rev 2, ADR 0019 rev 5).
+// Package staticserve answers a request with the bytes of the file its path
+// names under one filesystem root. It holds no name it treats specially beyond
+// a directory's index, so the configuration file in the tree takes the same
+// path through it as any asset (ADR 0007 rev 2, ADR 0019 rev 5).
 package staticserve
 
 import (

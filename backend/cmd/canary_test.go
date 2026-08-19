@@ -15,6 +15,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/tjwise99/WiseKiosk/backend/internal/canarytest"
 	"github.com/tjwise99/WiseKiosk/backend/internal/router"
 	"github.com/tjwise99/WiseKiosk/backend/internal/staticserve"
 	"github.com/tjwise99/WiseKiosk/backend/internal/upstream"
@@ -22,7 +23,7 @@ import (
 
 const (
 	// canary is the value planted through the delivery path and swept for.
-	canary = "canary-3f8a-not-in-any-output"
+	canary = canarytest.Value
 	// canarySecret is the logical name the keyed entry declares.
 	canarySecret = "WISEKIOSK_TEST_SERVER_KEY"
 	// canaryHeader is where the keyed entry places the value.
@@ -54,17 +55,15 @@ func (l *canaryLog) text() string {
 }
 
 // captureLog points the standard logger at a sink for the test's duration and
-// restores the output and flags it replaced.
+// restores the writer it replaced, which is not necessarily os.Stderr: an outer
+// harness redirecting the logger keeps its redirect.
 func captureLog(t *testing.T) *canaryLog {
 	t.Helper()
 
 	sink := &canaryLog{}
-	flags := log.Flags()
+	previous := log.Writer()
 	log.SetOutput(sink)
-	t.Cleanup(func() {
-		log.SetOutput(os.Stderr)
-		log.SetFlags(flags)
-	})
+	t.Cleanup(func() { log.SetOutput(previous) })
 	return sink
 }
 

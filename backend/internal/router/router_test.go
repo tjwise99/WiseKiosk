@@ -17,6 +17,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/tjwise99/WiseKiosk/backend/internal/canarytest"
 	"github.com/tjwise99/WiseKiosk/backend/internal/secret"
 	"github.com/tjwise99/WiseKiosk/backend/internal/upstream"
 )
@@ -228,7 +229,7 @@ func TestAnIdenticalRequestIsServedFromCacheUntilTheTTLExpires(t *testing.T) {
 	}
 }
 
-// TODO (#25): TST026, TST029
+// TODO (#25): TST029
 func TestNonConformingParametersAreRejectedWithNoUpstreamCall(t *testing.T) {
 	fake := newUpstreamFake(t)
 	handler := newRouter([]Entry{testEntry(fake, "readings")}, newFakeClock().now)
@@ -247,7 +248,7 @@ const (
 	// secretHeader is where the keyed test entry places the value.
 	secretHeader = "X-Test-Source-Key"
 	// canary is the value planted through the delivery path and swept for.
-	canary = "canary-3f8a-not-in-any-output"
+	canary = canarytest.Value
 )
 
 // keyedEntry is a test entry needing secretName, placed as a header.
@@ -260,18 +261,59 @@ func keyedEntry(fake *upstreamFake, source string) Entry {
 	return entry
 }
 
+// writeSecretFile writes contents to a named file under a fresh directory at
+// the given mode and returns the path. The mode is the case's subject where it
+// denies the read, so it is set on the write rather than after it.
+func writeSecretFile(t *testing.T, name, contents string, mode os.FileMode) string {
+	t.Helper()
+
+	path := filepath.Join(t.TempDir(), name)
+	if err := os.WriteFile(path, []byte(contents), mode); err != nil {
+		t.Fatalf("writing %s: %v", path, err)
+	}
+	return path
+}
+
 // TODO (#25): TST017
 func TestAnUnresolvableSecretFailsOnlyItsOwnSource(t *testing.T) {
-	cases := map[string]string{
-		// Empty rather than absent: the variable is then unset for Resolve
-		// however the ambient environment is set, and restored when the test
-		// ends.
-		"the path is unset":   "",
-		"the file is missing": filepath.Join(t.TempDir(), "no-such-secret"),
+	// One row per cause secret.Resolve distinguishes, so a cause given its own
+	// handling later cannot lose its route behaviour. setUp returns the path the
+	// delivery variable is pointed at, empty where the case leaves it unset.
+	cases := []struct {
+		name  string
+		setUp func(t *testing.T) string
+	}{
+		{
+			// Empty rather than absent: the variable is then unset for Resolve
+			// however the ambient environment is set, and restored when the
+			// subtest ends.
+			name:  "the path is unset",
+			setUp: func(t *testing.T) string { return "" },
+		},
+		{
+			name:  "the file is missing",
+			setUp: func(t *testing.T) string { return filepath.Join(t.TempDir(), "no-such-secret") },
+		},
+		{
+			name: "the file is unreadable",
+			setUp: func(t *testing.T) string {
+				if os.Geteuid() == 0 {
+					t.Skip("running as root: mode bits do not deny a read")
+				}
+				return writeSecretFile(t, "unreadable", canary, 0o000)
+			},
+		},
+		{
+			name: "the file is empty after trailing-whitespace stripping",
+			setUp: func(t *testing.T) string {
+				return writeSecretFile(t, "blank", " \t\r\n\n", 0o600)
+			},
+		},
 	}
 
-	for name, path := range cases {
-		t.Run(name, func(t *testing.T) {
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			path := c.setUp(t)
 			t.Setenv(secretName+"_FILE", path)
 
 			fake := newUpstreamFake(t)
@@ -284,6 +326,11 @@ func TestAnUnresolvableSecretFailsOnlyItsOwnSource(t *testing.T) {
 			}
 			if path != "" && strings.Contains(failed.Body.String(), path) {
 				t.Errorf("the failure carries the path the secret was looked for at: %q", failed.Body)
+			}
+			// The unreadable case's file holds the canary, so this is the
+			// contents of an unresolvable secret reaching the wire.
+			if strings.Contains(failed.Body.String(), canary) {
+				t.Errorf("the failure carries the contents of the file: %q", failed.Body)
 			}
 			if calls := fake.count(); calls != 0 {
 				t.Errorf("upstream calls for the keyed source = %d, want none", calls)
@@ -378,6 +425,12 @@ func TestARouteAnswersGetOnly(t *testing.T) {
 	if calls := fake.count(); calls != 0 {
 		t.Errorf("upstream calls = %d, want none", calls)
 	}
+
+	// The 405 above advertises HEAD, so a route that did not serve it would be
+	// advertising a method it refuses.
+	if served := ask(handler, http.MethodHead, "/api/readings?station=one"); served.Code != http.StatusOK {
+		t.Errorf("HEAD: status = %d, want %d (%s)", served.Code, http.StatusOK, served.Body)
+	}
 }
 
 // TODO (#25): TST029
@@ -446,6 +499,34 @@ func TestASourceThatCannotBeReachedIsThisModulesFailure(t *testing.T) {
 		http.StatusBadGateway, "readings", causeUnreachable)
 }
 
+// TestACallerWhoseContextEndedIsStillAnswered covers the shutdown case rather
+// than the disconnected one: a still-connected client whose context the server
+// ended must get a body it can classify, where returning unwritten would emit
+// an empty 200.
+func TestACallerWhoseContextEndedIsStillAnswered(t *testing.T) {
+	fake := newUpstreamFake(t)
+	entry := testEntry(fake, "readings")
+
+	// The flight holds here, so the pipeline has no result to hand back and the
+	// ended context is what decides the answer.
+	held := make(chan struct{})
+	t.Cleanup(func() { close(held) })
+	entry.BuildURL = func(url.Values) (string, error) {
+		<-held
+		return fake.server.URL, nil
+	}
+
+	rt := &route{entry: entry, proxy: upstream.New(entry.Config, newFakeClock().now)}
+	ended, cancel := context.WithCancel(context.Background())
+	cancel()
+
+	recorder := httptest.NewRecorder()
+	request := httptest.NewRequest(http.MethodGet, "/api/readings?station=one", nil).WithContext(ended)
+	rt.ServeHTTP(recorder, request)
+
+	wantFailure(t, recorder, http.StatusServiceUnavailable, "readings", causeUpstreamFailure)
+}
+
 // TODO (#25): TST029
 func TestEveryOutcomeCarriesItsOwnStatusAndCause(t *testing.T) {
 	// The path the secret was looked for at, which the wire message must not
@@ -503,8 +584,9 @@ func TestEveryOutcomeCarriesItsOwnStatusAndCause(t *testing.T) {
 // TODO (#25): TST029
 func TestAnOutcomeNoCaseNamesIsStillRenderable(t *testing.T) {
 	var logged bytes.Buffer
+	previous := log.Writer()
 	log.SetOutput(&logged)
-	t.Cleanup(func() { log.SetOutput(os.Stderr) })
+	t.Cleanup(func() { log.SetOutput(previous) })
 
 	rt := &route{entry: testEntry(newUpstreamFake(t), "readings")}
 
