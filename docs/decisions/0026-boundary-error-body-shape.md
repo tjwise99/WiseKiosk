@@ -22,7 +22,7 @@ they were defined nowhere.
 Two things are being decided at once and they separate cleanly. **What fields the bodies carry** is
 this record's. **Which values `cause` takes** is not: the failure causes are
 TST001<!-- Pending: upstream-failure error payload test -->'s and the rejection causes
-TST029<!-- Pending: rejected-request client-contract test -->'s, each written where a fifth cause
+TST029<!-- Rejected-request client-contract test -->'s, each written where a fifth cause
 edits a check rather than a specification. Fixing the enumeration here would move that decision to
 a place neither item can reach.
 
@@ -62,7 +62,7 @@ optional `module` would make the containment obligation above unreadable from th
   missed case a compile error rather than a fallback branch. It is the stronger contract and it is
   deferred rather than refused: the causes belong to
   TST001<!-- Pending: upstream-failure error payload test --> and
-  TST029<!-- Pending: rejected-request client-contract test -->, neither of which is written, and
+  TST029<!-- Rejected-request client-contract test -->, neither of which is written, and
   enumerating them here would settle by guess what those items settle by evidence. The open string
   is what lets those items land without a schema change being the thing that blocks them.
 - **One component with an optional `module`.** Fewer components, one renderer. Rejected on the

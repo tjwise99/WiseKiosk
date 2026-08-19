@@ -15,11 +15,11 @@ rationale: |
   SRS015<!-- One schema, all boundary value classes --> owns and which admits no second definition
   site. This item fixes that a rejection is distinct to its cause, that it happens before any
   upstream call, and that it is separable from an upstream failure. The particular status codes live
-  in TST029<!-- Pending: rejected-request client-contract test --> and
+  in TST029<!-- Rejected-request client-contract test --> and
   TST032<!-- Pending: boundary schema is single and complete -->, where they can change without a
   specification edit.
 ref: ''
-reviewed: QURg9lVDP0HO63xPg46OKM3-syOOV1KE1nrUEK-zogU=
+reviewed: EgtLU_ze9fWZ3erXPOwqxbeA6n9kn-EkoNnXnOW_bQg=
 status: accepted
 text: |
   A request the backend rejects before making any upstream call shall return a client-error

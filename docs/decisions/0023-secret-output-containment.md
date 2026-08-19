@@ -17,7 +17,7 @@ to one at all. [`../../SECURITY.md`](../../SECURITY.md) rests on that rule.
 What was left open is *how the obligation is proven*, and the `SRS` pass of #69 recorded the opening
 deliberately: the mechanism is a milestone-2 decision and **must not default to a canary test**. The
 candidate table then had nowhere to live but the pending note of
-TST022<!-- Pending: canary-secret leak test -->, an `active: false` item Doorstop skips entirely, so
+TST022<!-- Canary-secret leak test -->, an `active: false` item Doorstop skips entirely, so
 the record sat in a field nothing reads. This ADR is the decision that note was waiting for. #73
 records the secret *delivery* mechanism; this is its *containment* counterpart.
 
@@ -65,7 +65,7 @@ that ADR removed. **This ADR is the type's specification**; [`../CI.md`](../CI.m
 framework structure* is its enforcement. The requirement stays sole: it states the observable
 obligation — no secret value in output — which the canary verifies. No requirements-tree edit is made.
 
-**The canary is the falsifiable edge, not the proof.** TST022<!-- Pending: canary-secret leak test -->
+**The canary is the falsifiable edge, not the proof.** TST022<!-- Canary-secret leak test -->
 plants a known secret value through the delivery path and asserts that value appears in no response
 body, header, or log line across every route — including the unresolvable-secret failure paths, where
 an upstream error is most likely to be echoed. That echoed-upstream-error case is exactly where a

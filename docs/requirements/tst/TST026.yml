@@ -1,21 +1,19 @@
-active: false
+active: true
 derived: false
 header: |
-  Pending: parameter-validation rejection test
+  Parameter-validation rejection test
 level: 1.23
 links:
 - SRS012: QoqXkrFrDwXVpdPJxRVRk1n5GFk0us9g2wR3N9V_Agk=
 normative: true
 rationale: ''
 ref: ''
-reviewed: Xaf68nMZmaM-gsAfggpwiMOiMAA2eIvhxqzxoymK1NI=
+reviewed: 27KusWPMTUSY27Zzrpc75JO-KptPKmX2rTc-RxFXBSk=
 status: proposed
 text: |
-  Pending: test asserting, for every registered source, that a request whose
-  parameters do not match the pattern that source declares is rejected with no
-  upstream call — driven from the registered set so a source added later cannot
-  escape the sweep. Lands with the backend skeleton (#9); activated
-  and given a references entry then.
+  Test asserting, for every registered source, that a request whose parameters do not match the
+  pattern that source declares is rejected with no upstream call, driven from the registered set so
+  a source added later cannot escape the sweep.
 verification-justification: |
   Settles that a non-conforming request is rejected with no upstream call, for every registered
   source. Leaves unproven that a source's declared pattern matches what that source accepts - a

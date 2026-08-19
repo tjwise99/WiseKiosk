@@ -7,7 +7,7 @@ links:
 - SRS009: _LSoBg6stNpwO5YqGg8wjdn-KUW9TMTUBlvr4f-jcGw=
 normative: true
 rationale: |
-  Cache-hit/miss behaviour is TST025's<!-- Pending: TTL cache-behaviour test (liveness canary) -->,
+  Cache-hit/miss behaviour is TST025's<!-- TTL cache-behaviour test (liveness canary) -->,
   so this item settles payload determinism without asserting whether an upstream call occurred.
 ref: ''
 reviewed: 1aeeyHXA6YIaE3R-2jZmvZ1DJB8nzDJz-wo0eX1fWmg=

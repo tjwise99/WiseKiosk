@@ -1,21 +1,19 @@
-active: false
+active: true
 derived: false
 header: |
-  Pending: rejected-request client-contract test
+  Rejected-request client-contract test
 level: 1.26
 links:
-- SRS013: mArvbQtT94aaQlia1NlPV32qvmMeYulTIq0Y2Tog5Hc=
+- SRS013: X6Ms9rGBH5Dm-XIEnqmhsPiSZp7_T1e0VN5IFFNI2_s=
 normative: true
 rationale: ''
 ref: ''
-reviewed: RuOriNMGTE_jeBf8mCqhchHSF1jkvYZ5i9TXXTIv8HM=
+reviewed: yBOZ-p19iBTYFX_jSweHUfvjDfk5FdJIlHNLesjFkqs=
 status: proposed
 text: |
-  Pending: test asserting the backend returns 400 (invalid parameter), 404
-  (unknown source), 405 (non-GET method), and 429 (over rate limit) with a
-  renderable body distinct from the upstream-failure shape, each without
-  an upstream call. Lands with the backend skeleton (#9); activated and given a
-  references entry then.
+  Test asserting the backend returns 400 (invalid parameter), 404 (unknown source), 405 (non-GET
+  method), and 429 (over rate limit), each with a renderable body distinct from the
+  upstream-failure shape and each without an upstream call.
 verification-justification: |
   Settles that each rejection cause produces its own status with a renderable body, before any
   upstream call. Leaves unproven that a person reading the rendered rejection can act on it.
