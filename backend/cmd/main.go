@@ -16,8 +16,8 @@ import (
 )
 
 const (
-	// addr is the constant service port every deployment serves on
-	// (ADR 0020 rev 1).
+	// addr is the service port, fixed by ADR 0020 rev 2 along with the two
+	// flags main reads.
 	addr = ":8080"
 	// healthPath is where liveness is answered, and what the self-check asks.
 	healthPath = "/healthz"

@@ -1,11 +1,15 @@
-# 0020 — A release is an image in the registry and two files on a tag, and carries no operator tooling program
+# 0020 — A release is an image in the registry and two files on a tag; it carries no operator tooling program, and the operator's interface to the binary is a fixed port and two flags
 
 **Status:** accepted
-**Decided:** 2026-08-09 (design discussion, #71 release artifact set)
-**Rev:** 1
+**Decided:** 2026-08-19 (#9 backend skeleton, extending the 2026-08-09 design discussion on #71 release artifact set)
+**Rev:** 2
 
 ## Revisions
 
+- **rev 2** — 2026-08-19 — extends the decision to the operator interface the skeleton built: a
+  fixed `:8080` and the two flags on the one binary, housed here so the code and
+  [`../DEPLOYMENT.md`](../DEPLOYMENT.md) cite them rather than each asserting them (#9 backend
+  skeleton).
 - **rev 1** — 2026-08-09 — first written (#71 release artifact set).
 
 ## Context
@@ -39,6 +43,15 @@ container runtime is per-host work the project does not want; configuring the di
 the page depends on particulars of an operator's network that no shipped script can know. What
 remained — pull the image, bind a configuration, run it under a restart policy — is what a compose
 file is.
+
+**What rev 1 left open.** Ruling out a separate tooling program says what the operator interface is
+*not*, and nothing said what it is. #9 backend skeleton then built one — a listening port and two
+flags — with no record to put it in, so the port lived as a constant whose comment cited this ADR for
+a claim rev 1 does not make, `DEPLOYMENT.md` named a *constant service port* without a value, and
+`ARCHITECTURE.md` asserted the port was fixed with nothing behind it. Three documents describing one
+observable, none of them deciding it. The flags are the sharper case: they are what a Dockerfile will
+be written against, so leaving them unhoused means #54 container build and publish inherits choices
+nobody took.
 
 ## Decision
 
@@ -84,6 +97,20 @@ avoidable step the recipe's restart policy exists to remove.
 edits, so a default costs one line to override and its absence costs knowing to add it. The obligation
 is on what ships and never on what runs.
 
+**The service listens on `:8080`, fixed in the binary and not a deployment's to set.** Every
+deployment serves on that port. It is an internal number two things have to agree on — the binary and
+the image's `HEALTHCHECK` — and a container publishes it at whatever host port the operator wants, so
+what an operator chooses is the mapping rather than the number.
+
+**The operator interface to the binary is its flags, and there are two.** `-static-root` names the
+directory served as the frontend bundle and defaults to `frontend/dist`, so a run from the repository
+root needs no argument and a container points it at its own path. `-health-check` asks the local
+instance for liveness and exits on the answer, which is what lets the image declare a `HEALTHCHECK`
+without carrying an HTTP client beside the binary. Nothing else is read at start-up
+([ADR 0007 rev 2](0007-config-validation-allocation.md)). This is the positive half of *no separate
+operator-tooling program*: the operator surface is flags on the one binary that already ships, so
+there is one program and it is the one being deployed.
+
 ## Alternatives considered
 
 **A tooling bundle as a release asset**, which is the shape #71 release artifact set was filed
@@ -111,6 +138,15 @@ problem an HTTP client solves.
 
 **Versioning the documentation site per release.** Rejected as more machinery than the drift justifies,
 but the drift is real and is recorded below rather than left to be discovered.
+
+**An operator-configurable port**, as an environment variable or a third flag. Rejected on two
+grounds. The backend reads no configuration at all
+([ADR 0007 rev 2](0007-config-validation-allocation.md)), and a port read at start-up is runtime
+configuration however it is spelled, so this would be the first exception to a property stated
+without one. And it has no consumer: a container maps the internal port to whatever host port the
+operator wants, so the tunable would let them change a number nothing outside the image reads. What
+it would add is a second place the port can be wrong — a binary told one number and an image
+healthchecking another — in exchange for a choice nobody is waiting to make.
 
 **A configuration editor served as a second frontend bundle.** Not rejected — deferred. It is the only
 form of a configuration tool that can validate what it produces, because it runs where the one engine
@@ -157,6 +193,16 @@ SYS003<!-- A deployment is parameterised from outside the image --> obliges them
 deployment environment, and the recipe must carry whatever channel that turns out to be, but the
 mechanism is #73 secret delivery mechanism and #74 keeping secrets out of client output. The recipe
 ships incomplete in that respect until they land.
+
+**One record decides the port, and three places point at it.** `backend/cmd/main.go` holds the
+constant it compiles to, [`../DEPLOYMENT.md`](../DEPLOYMENT.md) names the port the `HEALTHCHECK`
+reaches, and [`../ARCHITECTURE.md`](../ARCHITECTURE.md) states it is fixed rather than a deployment's
+to set — each citing this record rather than standing the value up on its own.
+
+**#54 container build and publish inherits a target rather than a set of guesses.** The image
+publishes `:8080`, its `HEALTHCHECK` runs the binary's `-health-check`, and it points `-static-root`
+at wherever it puts the bundle. Changing any of the three is a rev of this record rather than an edit
+to a Dockerfile.
 
 **Premise that would reopen this:** a helper appears with work to do that a compose file cannot
 express — which today means the display host becoming reachable by a shipped script, or a

@@ -124,8 +124,9 @@ handler from the route registration list and the served tree from the directory 
 mounts the two beside liveness on one multiplexer — `/healthz`, `/api/`, and every other path served as
 a file from that tree. Nothing is read at start-up but its own flags, so there is no configuration to
 parse, no state held between requests and nothing to reload
-([ADR 0007 rev 2](decisions/0007-config-validation-allocation.md)); the port is fixed in the binary
-rather than a deployment's to set, and the wiring around it is [`DEPLOYMENT.md`](DEPLOYMENT.md)'s. A
+([ADR 0007 rev 2](decisions/0007-config-validation-allocation.md)); the port and those flags are
+[ADR 0020 rev 2](decisions/0020-release-artifact-set-and-operator-tooling.md)'s, and the wiring around
+them is [`DEPLOYMENT.md`](DEPLOYMENT.md)'s. A
 path the served tree does not hold answers 404 rather than the single-page bundle: the page is fetched
 once and navigates nowhere ([ADR 0018 rev 1](decisions/0018-frontend-svelte-vite-static-spa.md)), so an
 index fallback would serve a route nothing requests, at the cost of rendering a missing bundle as a
@@ -136,15 +137,14 @@ serving, which is the one thing a single-host runtime can act on; it reaches no 
 that is down is that module's failure on the display rather than an unhealthy container. The same
 binary asks the question of a running instance from inside the image, which is what lets the image
 declare a `HEALTHCHECK` without carrying an HTTP client beside it
-([ADR 0020 rev 1](decisions/0020-release-artifact-set-and-operator-tooling.md)).
+([ADR 0020 rev 2](decisions/0020-release-artifact-set-and-operator-tooling.md)).
 
 **Adding a route is adding one element to a list.** The registration list is a package holding a
 literal, read by the bootstrap and by nothing else, and the framework refuses an entry it cannot
-serve — one naming no source, missing a validator, a URL builder or a shaping function, mismatching
-the secret it names against the injector placing it, or duplicating another entry's source — where the
-routes are built rather than at the first request that would fail. An incomplete registration
-therefore stops the process at start-up instead of leaving one that boots, looks healthy and serves
-one broken route.
+serve — an incomplete or internally inconsistent one, or a second entry for a source another already
+claims — where the routes are built rather than at the first request that would fail. An incomplete
+registration therefore stops the process at start-up instead of leaving one that boots, looks healthy
+and serves one broken route.
 
 **Every request runs the same three bounds in the same order: cache, budget, call.** The pipeline
 answers from the held response where there is one, spends one of that source's tokens where there is
@@ -221,27 +221,38 @@ is held`" .-> WisekioskBackend.UpstreamClient
 
 <!-- arch-export:end generated/backendComponents.mmd -->
 
-**Cache and rate-limit defaults.** These are the defaults each route's registration entry carries for
-the cache and rate-limit policies named above, chosen once here with the reasoning behind them. A
-route refines them against its source — the success-response TTL paired with that module's poll cadence
-([the module contract](contracts/module-contract.md)) — but they are code constants, not
-configuration: the bound they hold is SRS011's<!-- Upstream request rate is bounded, and the bound is not operator-tunable -->, which forbids raising it from outside the image.
+**Cache and rate-limit defaults.** Three of the policies named above start from a default, and the
+defaults are the `upstream` package's exported constants — `DefaultSuccessTTL`, `DefaultNegativeTTL`
+and `DefaultRequestsPerMinute`. **The value lives there and only there;** what is here is what each
+one is for, so a figure and its reasoning are one thing described twice rather than two figures that
+agree today. A route refines them against its source — the success-response TTL paired with that
+module's poll cadence ([the module contract](contracts/module-contract.md)) — but they are code
+constants, not configuration: the bound they hold is SRS011's<!-- Upstream request rate is bounded, and the bound is not operator-tunable -->, which forbids raising it from outside the image.
 
-- **Success-response cache TTL — 10 minutes.** The fresh end of the display's tolerance for stale
-  data. A `(source, query)` reaches upstream at most once per TTL however many clients ask and however
-  often; on a route serving few distinct queries, the TTL — not the route-global rate limit — is what
+- **`DefaultSuccessTTL` — the fresh end of the display's tolerance for stale data.** A
+  `(source, query)` reaches upstream at most once per TTL however many clients ask and however often;
+  on a route serving few distinct queries, the TTL — not the route-global rate limit — is what
   principally holds the upstream request rate down.
-- **Negative-response cache TTL — 60 seconds.** Shorter than the success TTL, so a transient upstream
-  failure clears within about a minute of the source recovering, yet long enough that a burst of
-  requests during an outage collapses to one retry per minute against a source already failing.
-- **Per-route rate limit — 10 requests per minute.** A route-global ceiling on requests that reach
-  upstream; a cache hit is neither counted against it nor rejected. Steady state is roughly one
-  upstream fetch per TTL, so the ceiling sits well above legitimate traffic — headroom for several
-  clients missing cache together at start-up — while still rejecting a client stuck in a fast retry
-  loop. It reinforces the TTL bound rather than replacing it.
+- **`DefaultNegativeTTL` — deliberately shorter than the success TTL**, so a transient upstream
+  failure clears soon after the source recovers, yet long enough that a burst of requests during an
+  outage collapses to one retry per window against a source already failing.
+- **`DefaultRequestsPerMinute` — a route-global ceiling on requests that reach upstream**; a cache hit
+  is neither counted against it nor rejected. Steady state is roughly one upstream fetch per success
+  TTL, so the ceiling sits well above legitimate traffic — headroom for several clients missing cache
+  together at start-up — while still rejecting a client stuck in a fast retry loop. It reinforces the
+  TTL bound rather than replacing it.
 
-These values cannot be proven against a source until one exists; each is a starting default a module
-revisits when its upstream lands.
+**The outbound timeout, the response size ceiling and the bucket's burst have no default, and that is
+the decision rather than an omission.** No document in the tree names a value or a range for any of
+the three, so there is nothing for a constant to hold; `upstream.Config` records the same from the
+code side. Each registration entry therefore states its own, and a module author chooses rather than
+inherits. Nothing in the framework supplies one or checks that an entry did — the deadline and the
+ceiling SRS014<!-- No single upstream exchange can stall or exhaust the backend --> obliges rest on
+the entry declaring them, which is a gap a first real module either closes or gives a value worth
+defaulting.
+
+None of the three defaults can be proven against a source until one exists; each is a starting point a
+module revisits when its upstream lands.
 
 ## Frontend
 

@@ -1,5 +1,5 @@
 // Package health answers process liveness over HTTP, and asks the same of a
-// running instance from inside the image (ADR 0020 rev 1).
+// running instance from inside the image (ADR 0020 rev 2).
 package health
 
 import (

@@ -190,7 +190,7 @@ enabled, and this paragraph rather than a check is what records it.
 What a release publishes and what CI asserts about it. Verification runs against the published digest
 in a separate job that pulls from the registry, reads only the registry and the public transparency
 log, and holds no credential. Unbuilt; owned by #67 security and supply-chain gates, against the set
-[ADR 0020 rev 1](decisions/0020-release-artifact-set-and-operator-tooling.md) decides.
+[ADR 0020 rev 2](decisions/0020-release-artifact-set-and-operator-tooling.md) decides.
 
 **Nothing decides the no-credential property.** It is a proposal for a check, not an asserted
 guarantee: no gate compares the verification job's permissions against it, and SECURITY.md publishes
@@ -211,7 +211,7 @@ a posture resting on this section. Until #77 fences this document, read it as in
   **What no check here decides:** the documentation site is deployed from the default branch rather
   than from a tag, so it is not a release asset and nothing asserts any correspondence between what it
   describes and the digest an operator is running. That drift is chosen rather than overlooked, and
-  ADR 0020 rev 1 records the choice.
+  ADR 0020 rev 2 records the choice.
 - **Signature.** Keyless `cosign` verification against the published digest, with the expected
   certificate identity and OIDC issuer, exits zero; against a deliberately wrong identity it exits
   non-zero.
@@ -267,7 +267,7 @@ What each of these obligations *is*, and why, is [`DEPLOYMENT.md`](DEPLOYMENT.md
   policy is absent. **It gates that one key deliberately and no others**: the key is the residue of a
   requirement deleted on #69 tree rebuild, not the beginning of a recipe linter. Every other value in
   the recipe is a sample default an operator is expected to weigh and change
-  ([ADR 0020 rev 1](decisions/0020-release-artifact-set-and-operator-tooling.md)), and gating one would
+  ([ADR 0020 rev 2](decisions/0020-release-artifact-set-and-operator-tooling.md)), and gating one would
   assert a recommendation as an obligation.
 - **The image reports its health in both directions.** An integration test runs the image and reads
   the reported status while the backend serves and while it does not. A test that only ever observes
