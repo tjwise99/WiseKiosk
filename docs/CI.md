@@ -59,6 +59,36 @@ that reports without failing degrades to noise within a release.
 
 Unbuilt; owned by #67 security and supply-chain CI gates.
 
+## Backend build, vet and tests
+
+The Go tree compiles, `go vet`'s default analyser set reports nothing over it, and the backend
+package tests pass. Three steps in one recipe, ordered cheapest-failure-first: `go build` reads the
+non-test tree alone, so a compile error is reported against it rather than buried under the test
+files' copy of the same error.
+
+- Each step is seeded independently — an undefined identifier, a `printf` argument `vet` rejects and
+  the compiler accepts, and a passing-`vet` change that breaks a test — because a step is reached only
+  when the ones before it passed, so a seed failing at `build` proves nothing about the two behind it.
+  Recorded in [`../scripts/cases/check-go.md`](../scripts/cases/check-go.md).
+
+- **A tree holding no Go package fails**, on `vet` rather than on `build`: `go build ./...` warns that
+  the pattern matched nothing and exits zero, where `go vet ./...` refuses an empty package set. So a
+  backend that resolves to nothing is a failure rather than a clean run, and it is the second step
+  that decides it.
+
+**What it leaves unproven.** `go vet` is a fixed analyser set rather than a linter; a configured Go
+linter is § *Lint and type checks*'s, unbuilt and owned by #67 security and supply-chain CI gates. And
+**a package with no test in it passes** — `go test` reports one as a non-failure, so a test lost to a
+build tag, a wrong directory or a deletion is invisible here, and the whole test set deleted from a
+backend that still builds exits zero, measured rather than inferred. Refusing an empty package set
+does not reach that: the packages are present and it is the tests that are gone. Closing it is §
+*Gate wiring*'s whole-tree discovery gate, #82 dead-test detector, and this gate is no substitute for
+it.
+
+What those tests must *prove* is [`TESTING.md`](TESTING.md)'s and the obligations they answer are the
+tree's; what is decided here is only that the tree builds, that `vet` is clean over it, and that the
+tier is executed on the merge path rather than declared.
+
 ## Generated boundary types
 
 The one OpenAPI schema is hand-authored and both sides' types are generated from it

@@ -155,6 +155,17 @@ check-boundary:
     git add --intent-to-add -- backend/internal/boundary/ frontend/src/lib/boundary/
     git diff --exit-code HEAD -- backend/internal/boundary/ frontend/src/lib/boundary/
 
+# `go build` compiles the non-test tree alone, where `vet` and `test` compile the test files with it,
+# so a compile error common to both is reported against the smaller of the two first. A step runs only
+# where the one before it exited zero; what the three together assert is docs/CI.md § Backend build,
+# vet and tests.
+[group('checks')]
+[doc('The backend Go tree builds, passes vet, and its package tests pass; needs `just boundary-install`')]
+check-go:
+    go -C backend build ./...
+    go -C backend vet ./...
+    go -C backend test ./...
+
 [group('run')]
 [doc('Serve the display page on a local dev server; the page fetches /config.json, which a deployment bind-mounts into the served tree and a local run reads from the gitignored frontend/public/config.json')]
 dev:
@@ -220,4 +231,4 @@ check-languages:
 
 [group('checks')]
 [doc('Run every check the PR gate runs that has a local form; secret scanning, the PR-title check (commitlint, via the hook layer), the link check (lychee, from a digest-pinned image) and the workflow audit (zizmor, actionlint) are CI-only')]
-verify: check-untracked check-hooks check-branch check-reqs check-citations check-arch check-arch-trace check-boundary check-config-types check-build check-static-bundle check-unit check-render check-site check-adr-index check-adr-revs check-docs-index check-repo-silo check-languages
+verify: check-untracked check-hooks check-branch check-reqs check-citations check-arch check-arch-trace check-boundary check-go check-config-types check-build check-static-bundle check-unit check-render check-site check-adr-index check-adr-revs check-docs-index check-repo-silo check-languages
