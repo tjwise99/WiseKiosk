@@ -2,8 +2,8 @@
 
 The living structural description of WiseKiosk **as built**. It grows with the code.
 
-> **Status: modelled, not built.** No code exists, so the narrative sections carry _To be documented as
-> it is built._ until their part lands. The diagrams are the exception: they are generated from the
+> **Status: built as each part lands.** A narrative section carries _To be documented as it is built._
+> until the code it describes lands. The diagrams are the exception: they are generated from the
 > [architecture model](architecture/README.md), which is normative for structure
 > ([ADR 0003 rev 2](decisions/0003-architecture-as-code-likec4.md)). What `codegen mermaid` drops —
 > element descriptions, icons — is read in that model, and an element's responsibility statement stays
@@ -96,8 +96,8 @@ rest`" .-> Viewer
 
 <!-- arch-export:end generated/containers.mmd -->
 The Component level (C4 L3) is drawn per container, in the two sections below, and the Deployment level
-in [§ Deployment](#deployment). No element carries a `link` to the source implementing it, no code
-existing; where that source sits when it lands is
+in [§ Deployment](#deployment). The Backend container and each of its components carry a `link` to the
+source implementing it; where that source sits is
 [ADR 0021 rev 1](decisions/0021-repository-layout.md).
 
 **Every accepted, active `SYS` or `SRS` item binds somewhere in this model, and where one cannot, the
@@ -110,14 +110,75 @@ Deployment level, which is the level drawn to carry them.
 
 ## Backend
 
-_To be documented as it is built._ Its source root is `backend/`, the Go module root, holding the shared
-framework under `internal/` and each upstream-backed module's shaping library under
-`internal/modules/<name>/` ([ADR 0021 rev 1](decisions/0021-repository-layout.md)). Language and
+Its source root is `backend/`, the Go module root, holding the shared framework under `internal/` and
+each upstream-backed module's shaping library under `internal/modules/<name>/`
+([ADR 0021 rev 1](decisions/0021-repository-layout.md)). Language and
 boundary-contract decision: [ADR 0001 rev 1](decisions/0001-backend-language-go.md); config-blindness:
 [ADR 0007 rev 2](decisions/0007-config-validation-allocation.md). What the backend must do is the
 [requirements tree](requirements/README.md); which obligations bind this container is the
 [architecture model](architecture/README.md), as each is modelled (#119 C4 model completion). Neither is
 restated here.
+
+**One process, one port, three path spaces.** `cmd/` is the whole of the bootstrap: it builds the API
+handler from the route registration list and the served tree from the directory it is pointed at, then
+mounts the two beside liveness on one multiplexer — `/healthz`, `/api/`, and every other path served as
+a file from that tree. Nothing is read at start-up but its own flags, so there is no configuration to
+parse, no state held between requests and nothing to reload
+([ADR 0007 rev 2](decisions/0007-config-validation-allocation.md)); the port is fixed in the binary
+rather than a deployment's to set, and the wiring around it is [`DEPLOYMENT.md`](DEPLOYMENT.md)'s. A
+path the served tree does not hold answers 404 rather than the single-page bundle: the page is fetched
+once and navigates nowhere ([ADR 0018 rev 1](decisions/0018-frontend-svelte-vite-static-spa.md)), so an
+index fallback would serve a route nothing requests, at the cost of rendering a missing bundle as a
+working one.
+
+**Liveness answers for this process and for nothing behind it.** `/healthz` reports that the process is
+serving, which is the one thing a single-host runtime can act on; it reaches no upstream, so a source
+that is down is that module's failure on the display rather than an unhealthy container. The same
+binary asks the question of a running instance from inside the image, which is what lets the image
+declare a `HEALTHCHECK` without carrying an HTTP client beside it
+([ADR 0020 rev 1](decisions/0020-release-artifact-set-and-operator-tooling.md)).
+
+**Adding a route is adding one element to a list.** The registration list is a package holding a
+literal, read by the bootstrap and by nothing else, and the framework refuses an entry it cannot
+serve — one naming no source, missing a validator, a URL builder or a shaping function, mismatching
+the secret it names against the injector placing it, or duplicating another entry's source — where the
+routes are built rather than at the first request that would fail. An incomplete registration
+therefore stops the process at start-up instead of leaving one that boots, looks healthy and serves
+one broken route.
+
+**Every request runs the same three bounds in the same order: cache, budget, call.** The pipeline
+answers from the held response where there is one, spends one of that source's tokens where there is
+not, and only then makes the outbound call under a deadline and a size ceiling
+(SRS014<!-- No single upstream exchange can stall or exhaust the backend -->). A cache hit spends no
+token and is never rejected, so the two bounds compose rather than compete
+(SRS011<!-- Upstream request rate is bounded, and the bound is not operator-tunable -->), and each
+source's bucket is its own, so one source's traffic never consumes another's budget. Concurrent callers
+of one uncached `(source, query)` share a single outbound call and its result, which is what makes
+several clients missing cache together at start-up cost one upstream request rather than one each; the
+exchange belongs to the pipeline rather than to any caller, so a caller that goes away neither cancels
+it nor denies its result to the rest. A rate-limited request is not held, being a fact about this
+moment's budget rather than about the source.
+
+**Every outcome leaves as one named cause.** The pipeline classifies what happened — unreachable, timed
+out, a status outside 200–299, a body over the ceiling, no token — and the route handler maps that to
+the boundary body the schema defines for it, under the status the frontend discriminates on
+([ADR 0026 rev 1](decisions/0026-boundary-error-body-shape.md)). What the framework itself refused —
+parameters it rejected, a source it does not serve, a method that source does not answer, no token —
+leaves as a client rejection. Everything else leaves as that module's upstream failure carrying the
+module's name, the source's secret being unresolvable included: a fault in serving this source rather
+than in the request that asked for it. An outcome no case names is logged and answered under an
+undistinguished cause rather than quietly rendered as one of the others.
+
+**A secret is confined by the type holding it, not by a step that removes it.** A resolved secret is a
+value whose every formatting and serialising path yields a fixed redaction, with one guarded unwrap
+whose single call site is the outbound request
+([ADR 0023 rev 1](decisions/0023-secret-output-containment.md)) — so reaching a response body, a header
+or a log takes writing that unwrap, not forgetting an entry in a denylist. It is resolved per request
+from the file named by `<NAME>_FILE` and held nowhere, so a rotated file takes effect on the next
+request ([ADR 0024 rev 1](decisions/0024-secret-file-delivery.md)); one that cannot be resolved is that
+source's upstream failure, naming the secret and neither its value nor the path tried
+(SRS006<!-- Unresolvable secret surfaces as that source's upstream failure -->,
+SRS008<!-- No secret value in any backend output -->).
 
 **Components (C4 L3)**, diagrammed below; each box's responsibility is the model's, not restated here.
 A module's own half of this container is its shaping library, drawn when that module's need lands
