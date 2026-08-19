@@ -24,6 +24,7 @@ func writeSecretFile(t *testing.T, contents string) string {
 	return path
 }
 
+// TODO (#25): TST014
 func TestResolveStripsTrailingWhitespaceOnly(t *testing.T) {
 	const want = "  leading-space-kept\tand-inner"
 	writeSecretFile(t, want+" \t\r\n\n")
@@ -37,6 +38,7 @@ func TestResolveStripsTrailingWhitespaceOnly(t *testing.T) {
 	}
 }
 
+// TODO (#25): TST014
 func TestResolveIgnoresBareEnvironmentVariable(t *testing.T) {
 	const value = "value-from-bare-env-var"
 	t.Setenv(testName, value)
@@ -53,6 +55,7 @@ func TestResolveIgnoresBareEnvironmentVariable(t *testing.T) {
 	}
 }
 
+// TODO (#25): TST028
 func TestResolveRotationIsNotCached(t *testing.T) {
 	const first, second = "first-value", "second-value"
 	path := writeSecretFile(t, first+"\n")
@@ -78,6 +81,7 @@ func TestResolveRotationIsNotCached(t *testing.T) {
 	}
 }
 
+// TODO (#25): TST014
 func TestResolveUnresolvableCauses(t *testing.T) {
 	const unreadableContents = "unresolvable-case-file-contents"
 

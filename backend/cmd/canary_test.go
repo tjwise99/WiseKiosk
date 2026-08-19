@@ -198,6 +198,7 @@ func plant(t *testing.T) {
 // answers on — liveness, the served tree, the API route and its upstream
 // failure — for it, in every response body, every response header value and
 // the captured log output (ADR 0023 rev 1).
+// TODO (#25): TST022
 func TestNoSecretValueReachesAnyServedSurface(t *testing.T) {
 	plant(t)
 	logged := captureLog(t)

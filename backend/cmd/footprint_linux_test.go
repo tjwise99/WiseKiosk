@@ -72,6 +72,7 @@ var requests = []struct {
 // fixed interval, and judges the post-warmup series with the three predicates
 // beside it. An idle sample taken before load starts is what the descriptor
 // margin is measured against.
+// TODO (#25): TST004, TST043, TST044
 func TestRunningFootprintStaysBounded(t *testing.T) {
 	plant(t)
 	source := newKeyedSource(t)
