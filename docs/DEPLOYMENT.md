@@ -72,10 +72,11 @@ secrets out of client output, and the recipe is incomplete in that respect until
 
 ## The health signal
 
-The image declares a `HEALTHCHECK` against the service port and runs it through the self-check flag
-that [ADR 0020 rev 2](decisions/0020-release-artifact-set-and-operator-tooling.md) fixes — `:8080`
-and `-health-check`: healthy while the
-backend is serving, unhealthy when it is not, including when the process is alive but wedged.
+The image declares a `HEALTHCHECK` against the service port and runs it through the `-health-check`
+self-check flag. [ADR 0020 rev 2](decisions/0020-release-artifact-set-and-operator-tooling.md) fixes
+both, and is where the port's number is written — a recipe reads it there rather than carrying a
+copy that a later rev would leave behind. The check is healthy while the backend is serving,
+unhealthy when it is not, including when the process is alive but wedged.
 
 **The wedged case is answered within two seconds.** The self-check bounds its request at a two-second
 client timeout, so an instance that accepts a connection and never answers is *reported* unhealthy

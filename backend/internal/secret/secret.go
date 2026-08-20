@@ -1,5 +1,5 @@
 // Package secret confines a secret value to a type that cannot be emitted
-// (ADR 0023 rev 1) and resolves one from the file named by <NAME>_FILE
+// (ADR 0023 rev 2) and resolves one from the file named by <NAME>_FILE
 // (ADR 0024 rev 1).
 package secret
 

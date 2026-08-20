@@ -499,11 +499,10 @@ func TestASourceThatCannotBeReachedIsThisModulesFailure(t *testing.T) {
 		http.StatusBadGateway, "readings", causeUnreachable)
 }
 
-// TestACallerWhoseContextEndedIsStillAnswered covers the shutdown case rather
-// than the disconnected one: a still-connected client whose context the server
-// ended must get the 503 ADR 0026 rev 2 defines, where returning unwritten
-// would emit an empty 200 and reusing an upstream cause would blame an upstream
-// that was never called.
+// TestACallerWhoseContextEndedIsStillAnswered ends the context directly rather
+// than through a server, so it covers the outcome both paths share: the 503
+// ADR 0026 rev 3 defines, where returning unwritten would emit an empty 200 and
+// reusing an upstream cause would blame an upstream that was never called.
 func TestACallerWhoseContextEndedIsStillAnswered(t *testing.T) {
 	fake := newUpstreamFake(t)
 	entry := testEntry(fake, "readings")
@@ -579,6 +578,44 @@ func TestEveryOutcomeCarriesItsOwnStatusAndCause(t *testing.T) {
 			}
 			seen[cause] = c.name
 		})
+	}
+}
+
+// TODO (#25): TST029
+func TestNoTwoCausesShareASpelling(t *testing.T) {
+	// Every cause constant, compared against every other. The sweep above reads
+	// only what failure() returns, and causeShuttingDown and the rejection
+	// causes leave by other paths; each one's own test compares a response
+	// against the same constant it asserts, so consolidating two onto one
+	// string stays green everywhere but here (ADR 0026 rev 3).
+	all := []struct {
+		name  string
+		cause string
+	}{
+		{"causeInvalidParameters", causeInvalidParameters},
+		{"causeUnknownSource", causeUnknownSource},
+		{"causeMethodNotAllowed", causeMethodNotAllowed},
+		{"causeRateLimited", causeRateLimited},
+		{"causeUnreachable", causeUnreachable},
+		{"causeTimeout", causeTimeout},
+		{"causeUpstreamStatus", causeUpstreamStatus},
+		{"causeOversize", causeOversize},
+		{"causeSecretUnresolvable", causeSecretUnresolvable},
+		{"causeMalformedPayload", causeMalformedPayload},
+		{"causeUpstreamFailure", causeUpstreamFailure},
+		{"causeShuttingDown", causeShuttingDown},
+	}
+
+	seen := make(map[string]string, len(all))
+	for _, c := range all {
+		if c.cause == "" {
+			t.Errorf("%s is empty, so it names no outcome on the wire", c.name)
+			continue
+		}
+		if first, taken := seen[c.cause]; taken {
+			t.Errorf("%s and %s are both %q, so the two outcomes are not told apart", first, c.name, c.cause)
+		}
+		seen[c.cause] = c.name
 	}
 }
 

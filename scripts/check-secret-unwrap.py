@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Exactly one non-test reference to the secret type's unwrap method exists in the backend.
 
-ADR 0023 rev 1 confines a secret to a type that cannot be emitted, and rests the structural half of
+ADR 0023 rev 2 confines a secret to a type that cannot be emitted, and rests the structural half of
 that on one property a reader cannot check by reading a diff: the sole call site that unwraps it to
 the raw value is guarded by a lint. This is that lint. What it asserts is docs/CI.md § Module and
 framework structure.
@@ -88,7 +88,7 @@ def main():
             "no Reveal method is declared in the non-test backend tree. This check is keyed on that "
             "name and reports zero references over any tree that does not use it, so a rename must "
             "reach this check too — rename it here, or retire the check with the decision it "
-            "enforces (ADR 0023 rev 1).",
+            "enforces (ADR 0023 rev 2).",
             file=sys.stderr,
         )
         return 1
@@ -96,14 +96,14 @@ def main():
     if len(references) != 1:
         print(
             f"{len(references)} non-test reference(s) to the secret type's unwrap method; "
-            "ADR 0023 rev 1 obliges exactly one:",
+            "ADR 0023 rev 2 obliges exactly one:",
             file=sys.stderr,
         )
         for name, number, text in references:
             print(f"  {name}:{number}: {text}", file=sys.stderr)
         if not references:
             print(
-                "\nThe one legitimate unwrap site is gone. Restore it, or amend ADR 0023 rev 1 and "
+                "\nThe one legitimate unwrap site is gone. Restore it, or amend ADR 0023 rev 2 and "
                 "this check together.",
                 file=sys.stderr,
             )
@@ -111,7 +111,7 @@ def main():
             print(
                 "\nEvery secret must reach the outbound request as the confined type; unwrapping it "
                 "anywhere else defeats the containment. Remove the added site, or amend "
-                "ADR 0023 rev 1 and this check together.",
+                "ADR 0023 rev 2 and this check together.",
                 file=sys.stderr,
             )
         return 1

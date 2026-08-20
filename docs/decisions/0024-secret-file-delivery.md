@@ -32,7 +32,7 @@ exclusion, and TST017<!-- Unresolvable-secret failure-path test --> exercises th
 unresolvable-secret failure path over it — but no document states the positive delivery rule, the
 exclusion of every other path, or
 the substitutability the choice buys. Those checks verify an obligation nobody stated. This ADR is its
-home. It is the *delivery* record; [ADR 0023 rev 1](0023-secret-output-containment.md) is its
+home. It is the *delivery* record; [ADR 0023 rev 2](0023-secret-output-containment.md) is its
 *containment* counterpart, and already names #73 as this half.
 
 ## Decision
@@ -54,7 +54,7 @@ SRS008<!-- No secret value in any backend output --> obliges that no value leaks
 *mechanism* those obligations presume — that the path is named by `<NAME>_FILE`, the trailing-
 whitespace rule, and the exclusion of every other delivery path — is a structural choice, not a want,
 and is specified **here**. No requirements-tree edit is made, mirroring the division
-[ADR 0023 rev 1](0023-secret-output-containment.md) drew for the secret type. The pending
+[ADR 0023 rev 2](0023-secret-output-containment.md) drew for the secret type. The pending
 secret-resolution tests (TST014<!-- Secret-resolution unit tests -->,
 TST017<!-- Unresolvable-secret failure-path test -->,
 TST028<!-- Secret rotation-without-restart test -->) hang off
@@ -105,5 +105,5 @@ file interface subsumes them all without importing any of their SDKs.
   working as intended. What would reopen this record is a change to that division, or a deployment
   target the file interface cannot serve.
 - **This is the delivery half of a two-part secrets story.**
-  [ADR 0023 rev 1](0023-secret-output-containment.md) is the containment half: this ADR decides how a
+  [ADR 0023 rev 2](0023-secret-output-containment.md) is the containment half: this ADR decides how a
   secret *arrives*, that one decides how it is kept out of output once it has.

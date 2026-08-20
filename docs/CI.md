@@ -655,11 +655,11 @@ violate any of them, so they are checks here rather than obligations there.
 - **Shaping packages are pure by construction.** Each module's shaping package resolves a transitive
   import set that is a subset of a declared pure-package allowlist, so I/O is absent by construction
   rather than by a denylist of forbidden packages. No exported shaping function's parameters include
-  the secret type ([ADR 0023 rev 1](decisions/0023-secret-output-containment.md)) or the URL-builder's
+  the secret type ([ADR 0023 rev 2](decisions/0023-secret-output-containment.md)) or the URL-builder's
   output type, and the shaping unit tests run against a transport
   that panics on use (#12).
 - **Exactly one non-test reference unwraps the confined secret type.**
-  [ADR 0023 rev 1](decisions/0023-secret-output-containment.md) makes the secret type unemittable and
+  [ADR 0023 rev 2](decisions/0023-secret-output-containment.md) makes the secret type unemittable and
   then rests the structural half of that on the unwrap being singular and reviewable — *"the sole call
   site that unwraps it to the raw value is guarded by a lint"*. This is that lint: over the tracked,
   non-`_test.go` Go files under `backend/`, references to the type's unwrap method are counted and any
@@ -675,7 +675,7 @@ violate any of them, so they are checks here rather than obligations there.
   **What it leaves unproven**: that a secret is not emitted. This counts unwrap sites and reads
   nothing about what the one site does with the value — redaction through every formatting path is the
   `secret` package's own tests', and the behavioural edge is the canary
-  ([ADR 0023 rev 1](decisions/0023-secret-output-containment.md) composes the two). It also decides
+  ([ADR 0023 rev 2](decisions/0023-secret-output-containment.md) composes the two). It also decides
   nothing about *where* the site sits: singularity is what the ADR obliges, so moving the unwrap to
   another package passes, and only a second one fails.
 - **The configuration schema recomposes from its fragments.** Recomposing from the module fragments

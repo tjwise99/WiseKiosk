@@ -200,9 +200,9 @@ reaches, and [`../ARCHITECTURE.md`](../ARCHITECTURE.md) states it is fixed rathe
 to set — each citing this record rather than standing the value up on its own.
 
 **#54 container build and publish inherits a target rather than a set of guesses.** The image
-publishes `:8080`, its `HEALTHCHECK` runs the binary's `-health-check`, and it points `-static-root`
-at wherever it puts the bundle. Changing any of the three is a rev of this record rather than an edit
-to a Dockerfile.
+publishes the port fixed above, its `HEALTHCHECK` runs the binary's `-health-check`, and it points
+`-static-root` at wherever it puts the bundle. Changing any of the three is a rev of this record
+rather than an edit to a Dockerfile.
 
 **Premise that would reopen this:** a helper appears with work to do that a compose file cannot
 express — which today means the display host becoming reachable by a shipped script, or a

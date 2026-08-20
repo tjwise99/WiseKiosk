@@ -161,7 +161,7 @@ func plant(t *testing.T) {
 
 // TestNoSecretValueReachesAnyResponseOrLog plants a known value through the
 // <NAME>_FILE delivery path and sweeps every route's response body, every
-// response header value and the captured log output for it (ADR 0023 rev 1).
+// response header value and the captured log output for it (ADR 0023 rev 2).
 // TODO (#25): TST022
 func TestNoSecretValueReachesAnyResponseOrLog(t *testing.T) {
 	logged := captureLog(t)

@@ -162,19 +162,20 @@ moment's budget rather than about the source.
 **Every outcome leaves as one named cause.** The pipeline classifies what happened — unreachable, timed
 out, a status outside 200–299, a body over the ceiling, no token — and the route handler maps that to
 the boundary body the schema defines for it, under the status the frontend discriminates on
-([ADR 0026 rev 2](decisions/0026-boundary-error-body-shape.md)). What the framework itself refused —
+([ADR 0026 rev 3](decisions/0026-boundary-error-body-shape.md)). What the framework itself refused —
 parameters it rejected, a source it does not serve, a method that source does not answer, no token —
 leaves as a client rejection. Everything else leaves as that module's upstream failure carrying the
 module's name, the source's secret being unresolvable included: a fault in serving this source rather
-than in the request that asked for it. A request whose context ended before an answer — a shutdown
-under a client still connected — leaves that way too, under a 503 and a cause naming the shutdown.
+than in the request that asked for it. A request whose context ended before an answer leaves that way
+too, under a 503 and a cause naming the shutdown; a client disconnecting is the only thing that ends
+one until the server gains a shutdown call to do it.
 An outcome no case names is logged and answered under an undistinguished cause rather than quietly
 rendered as one of the others.
 
 **A secret is confined by the type holding it, not by a step that removes it.** A resolved secret is a
 value whose every formatting and serialising path yields a fixed redaction, with one guarded unwrap
 whose single call site is the outbound request
-([ADR 0023 rev 1](decisions/0023-secret-output-containment.md)) — so reaching a response body, a header
+([ADR 0023 rev 2](decisions/0023-secret-output-containment.md)) — so reaching a response body, a header
 or a log takes writing that unwrap, not forgetting an entry in a denylist. It is resolved per request
 from the file named by `<NAME>_FILE` and held nowhere, so a rotated file takes effect on the next
 request ([ADR 0024 rev 1](decisions/0024-secret-file-delivery.md)); one that cannot be resolved is that
@@ -252,6 +253,15 @@ inherits. Nothing in the framework supplies one or checks that an entry did — 
 ceiling SRS014<!-- No single upstream exchange can stall or exhaust the backend --> obliges rest on
 the entry declaring them, which is a gap a first real module either closes or gives a value worth
 defaulting.
+
+**Three of those figures multiply, which is the arithmetic a module author is choosing against.** The
+cache sweeps expired entries on every write, so what a route can hold is what it can write inside one
+success TTL: at most `RequestsPerMinute × SuccessTTL` entries of up to `MaxBytes` each. That product
+is the route's worst-case resident bytes, and it is where the two undefaulted figures land — a
+generous `MaxBytes` is multiplied by however many distinct queries the rate admits, not paid once.
+SRS022<!-- A bounded running footprint --> is met by the sweep whatever the values are; what the
+values decide is whether the bound sits inside the host
+SYS007<!-- The declared minimum host, and staying within it --> declares.
 
 None of the three defaults can be proven against a source until one exists; each is a starting point a
 module revisits when its upstream lands.
@@ -381,7 +391,7 @@ share is the schema and nothing else, which is the whole of the arrangement. `ju
 both; `just check-boundary` clears the two generated directories, runs both again and fails on any
 difference against what is committed, so the committed types cannot drift from the schema without a
 gate saying so. The error bodies the schema carries are
-[ADR 0026 rev 2](decisions/0026-boundary-error-body-shape.md)'s; a module's payload joins them as a
+[ADR 0026 rev 3](decisions/0026-boundary-error-body-shape.md)'s; a module's payload joins them as a
 named component of the same file.
 
 ## Config and secrets

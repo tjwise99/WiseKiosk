@@ -1,6 +1,6 @@
 // Package router serves the API from the route registration list: one route per
 // entry, and the request flow from parameter validation, through the upstream
-// pipeline, to the boundary body it answers with (ADR 0026 rev 2).
+// pipeline, to the boundary body it answers with (ADR 0026 rev 3).
 package router
 
 import (
@@ -81,7 +81,7 @@ const (
 	// rendered as.
 	causeUpstreamFailure = "upstream-failure"
 	// causeShuttingDown is the one failure no upstream call produced: this
-	// backend stopped serving before the answer was ready (ADR 0026 rev 2).
+	// backend stopped serving before the answer was ready (ADR 0026 rev 3).
 	causeShuttingDown = "shutting-down"
 )
 
@@ -166,9 +166,10 @@ func (rt *route) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	result, err := rt.proxy.Do(r.Context(), rt.entry.Source, params.Encode(), rt.fetch(params))
 	if err != nil {
 		// The pipeline errors only where this caller's context ended: a client
-		// that has gone, or a server shutting down under one still connected.
-		// The second is written the 503 outcome (ADR 0026 rev 2), where
-		// returning unwritten emits an empty 200. The first reads neither.
+		// that has gone, which is what ends one here, or a server shutting down
+		// under one still connected, once a shutdown call exists to do it. Both
+		// are written the 503 outcome (ADR 0026 rev 3), where returning
+		// unwritten emits an empty 200. Only the second reads it.
 		rt.fail(w, http.StatusServiceUnavailable, causeShuttingDown, "this backend stopped serving before this source could answer")
 		return
 	}
@@ -195,7 +196,7 @@ func (rt *route) fetch(params url.Values) upstream.Fetcher {
 				return nil, err
 			}
 			// Unwrapped here and handed straight to the entry's injector
-			// (ADR 0023 rev 1).
+			// (ADR 0023 rev 2).
 			rt.entry.InjectSecret(request, resolved.Reveal())
 		}
 
@@ -227,7 +228,7 @@ func (e *outboundError) Unwrap() error {
 // outboundFailed replaces the *url.Error net/http returns, whose Error text
 // renders the request URL, with one carrying the cause and no URL. An entry's
 // injector may place its secret in the query string, and this error is held in
-// Result.Err for the negative TTL (ADR 0023 rev 1).
+// Result.Err for the negative TTL (ADR 0023 rev 2).
 func (rt *route) outboundFailed(err error) error {
 	var wrapped *url.Error
 	if errors.As(err, &wrapped) {
@@ -315,7 +316,7 @@ func (f *fallback) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	reject(w, http.StatusNotFound, causeUnknownSource, "this backend serves no such source")
 }
 
-// reject writes the client-rejection body (ADR 0026 rev 2).
+// reject writes the client-rejection body (ADR 0026 rev 3).
 func reject(w http.ResponseWriter, status int, cause, message string) {
 	writeJSON(w, status, boundary.ClientRejection{Cause: cause, Message: message})
 }

@@ -2,14 +2,14 @@
 
 The inputs this check has been run against, in both directions. What it *asserts*, and why, is
 [`docs/CI.md`](../../docs/CI.md) § *Module and framework structure*'s and
-[ADR 0023 rev 1](../../docs/decisions/0023-secret-output-containment.md)'s; how to run a case is
+[ADR 0023 rev 2](../../docs/decisions/0023-secret-output-containment.md)'s; how to run a case is
 [`../README.md`](../README.md)'s.
 
 Each case is a `git archive 7f48366` copy of the tracked tree — the backend as it stood before this
 check existed — with the check copied in fresh over it, seeded in place, `git add -A` and committed so the
 population `git ls-files` returns is the seeded one, then `python3 scripts/check-secret-unwrap.py` run
-inside the copy. **The script under test is blob `5e42917391fd5e46c49c0771e681e31c595b60e0`**
-(`git hash-object scripts/check-secret-unwrap.py`), md5 `84dbaa52a5adb02397b7b7ca2ecbd6b7`, asserted
+inside the copy. **The script under test is blob `1c34a974ba6a797d01480e262e3a7f1639155c09`**
+(`git hash-object scripts/check-secret-unwrap.py`), md5 `d3153f6b407f2c42ae6f3ad35c390058`, asserted
 before every run: a `git archive` fixture otherwise carries the *fixture commit's* copy, so a case
 would exercise a script that predates the fix it is testing. Every seed is confirmed to have landed
 with `git diff --quiet HEAD` before the result is read, a clean diff read as the case failing.
@@ -49,7 +49,7 @@ rename would turn the check into one that passes over every tree there is.
 - **A second site reached by reflection passes.** `reflect.ValueOf(s).MethodByName("Reveal").Call(nil)`
   appended to `internal/upstream/proxy.go`, tracked and committed — the run reports the one site and
   exits 0. The match is on a selector; a name that reaches the method as a string is outside it. This
-  is inherent to a textual check and is why ADR 0023 rev 1 composes the structural half with a
+  is inherent to a textual check and is why ADR 0023 rev 2 composes the structural half with a
   behavioural canary rather than resting on either.
 - **A mention in a comment or a string literal counts.** Not measured as a row because it fails rather
   than passes — the direction that costs a false red, not a false green.

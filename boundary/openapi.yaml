@@ -4,7 +4,7 @@
 # `paths` is empty: no route exists until a module contributes one. A module contributes its payload
 # as a named component here rather than as a file of its own.
 #
-# The two error bodies below are the compact shapes ADR 0026 rev 2 decides. `cause` is an open
+# The two error bodies below are the compact shapes ADR 0026 rev 3 decides. `cause` is an open
 # string in both: which causes there are is a verification item's, not this schema's.
 openapi: 3.0.3
 info:

@@ -3,10 +3,13 @@
 **Status:** accepted
 **Decided:** 2026-08-19 (#9 backend skeleton, extending the 2026-08-17 decision on #7
 boundary-contract codegen)
-**Rev:** 2
+**Rev:** 3
 
 ## Revisions
 
+- **rev 3** — 2026-08-19 — states which of the two context-ending paths the binary has today, the
+  shutdown case being one this record defines ahead of; the decision is unchanged (#9 backend
+  skeleton).
 - **rev 2** — 2026-08-19 — decides the one outcome neither deferral below reaches: a request whose
   context ended mid-flight answers 503 under the cause `shutting-down`, in the module-carrying body
   (#9 backend skeleton).
@@ -30,12 +33,17 @@ TST029<!-- Rejected-request client-contract test -->'s, each written where a fif
 edits a check rather than a specification. Fixing the enumeration here would move that decision to
 a place neither item can reach.
 
-**One outcome belongs to neither of those two.** A request whose context ends mid-flight — a server
-closing connections under a client still holding one — leaves the handler with no result to answer
-from: no upstream exchange happened, so the pipeline classified nothing, and nothing about the
-request was refused. It is therefore among neither item's causes, and an outcome no record decides
-is left to whatever the handler does with it: returning unwritten, which `net/http` completes as an
-empty `200 OK`.
+**One outcome belongs to neither of those two.** A request whose context ends mid-flight leaves the
+handler with no result to answer from: no upstream exchange happened, so the pipeline classified
+nothing, and nothing about the request was refused. It is therefore among neither item's causes, and
+an outcome no record decides is left to whatever the handler does with it: returning unwritten,
+which `net/http` completes as an empty `200 OK`.
+
+Two paths end a request's context, and the binary has one of them. A client disconnecting is the one
+it has: the server is `http.ListenAndServe` and nothing calls `Server.Shutdown` or `Server.Close`. A
+server closing connections under a client still holding one is the one it gains when graceful
+shutdown lands. This record settles the outcome for both, ahead of the second existing, because the
+handler cannot tell them apart when it arrives.
 
 The frontend renders these bodies directly on a Raspberry-Pi-Zero-class browser and consumes the
 generated types only, with no runtime re-validation
@@ -99,8 +107,9 @@ the outcome neither item reaches, so deferring it defers it to nowhere.
   envelope, and the nesting is a level every renderer pays for.
 - **Answering the ended context with nothing at all** — the handler returns, having written no
   status and no body. It is the cheapest thing to write and it costs a dead connection nothing.
-  Rejected because the connection is not always dead: a shutdown ends the request's context under a
-  client still reading, and `net/http` completes an unwritten response as an empty `200 OK`. The
+  Rejected because the connection is not always dead: once graceful shutdown lands, a shutdown ends
+  the request's context under a client still reading, and `net/http` completes an unwritten response
+  as an empty `200 OK`. The
   frontend cannot tell that from a success whose payload it failed to parse, which is the one
   distinction every body in this record exists to make.
 - **Reusing `upstream-failure` for it**, the cause an unclassified outcome already carries, adding
@@ -135,6 +144,11 @@ the outcome neither item reaches, so deferring it defers it to nowhere.
 - **A caller that disconnected is written a body nobody reads.** The handler cannot tell it from the
   shutdown case, so both are answered; the cost is one marshal and one failed write per abandoned
   request, and the alternative is leaving the readable case unanswered.
+- **This settles the boundary, not the server's lifecycle.** Until graceful shutdown lands the only
+  path here is the disconnected caller above, so the whole cost is that marshal and no reader ever
+  sees the body. Nothing in this record is evidence that the binary drains in-flight requests on a
+  signal — a deployment declaring a stop grace period or a `STOPSIGNAL` is deciding that separately,
+  against the binary rather than against this shape.
 
 **Premise that would reopen this:** a consumer of either body that this repository does not generate
 types for — which is what RFC 7807's machinery exists to serve, and what the schema-shared-by-both
