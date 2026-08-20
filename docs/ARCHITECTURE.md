@@ -162,12 +162,14 @@ moment's budget rather than about the source.
 **Every outcome leaves as one named cause.** The pipeline classifies what happened — unreachable, timed
 out, a status outside 200–299, a body over the ceiling, no token — and the route handler maps that to
 the boundary body the schema defines for it, under the status the frontend discriminates on
-([ADR 0026 rev 1](decisions/0026-boundary-error-body-shape.md)). What the framework itself refused —
+([ADR 0026 rev 2](decisions/0026-boundary-error-body-shape.md)). What the framework itself refused —
 parameters it rejected, a source it does not serve, a method that source does not answer, no token —
 leaves as a client rejection. Everything else leaves as that module's upstream failure carrying the
 module's name, the source's secret being unresolvable included: a fault in serving this source rather
-than in the request that asked for it. An outcome no case names is logged and answered under an
-undistinguished cause rather than quietly rendered as one of the others.
+than in the request that asked for it. A request whose context ended before an answer — a shutdown
+under a client still connected — leaves that way too, under a 503 and a cause naming the shutdown.
+An outcome no case names is logged and answered under an undistinguished cause rather than quietly
+rendered as one of the others.
 
 **A secret is confined by the type holding it, not by a step that removes it.** A resolved secret is a
 value whose every formatting and serialising path yields a fixed redaction, with one guarded unwrap
@@ -379,7 +381,7 @@ share is the schema and nothing else, which is the whole of the arrangement. `ju
 both; `just check-boundary` clears the two generated directories, runs both again and fails on any
 difference against what is committed, so the committed types cannot drift from the schema without a
 gate saying so. The error bodies the schema carries are
-[ADR 0026 rev 1](decisions/0026-boundary-error-body-shape.md)'s; a module's payload joins them as a
+[ADR 0026 rev 2](decisions/0026-boundary-error-body-shape.md)'s; a module's payload joins them as a
 named component of the same file.
 
 ## Config and secrets

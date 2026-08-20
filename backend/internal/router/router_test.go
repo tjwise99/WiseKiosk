@@ -501,8 +501,9 @@ func TestASourceThatCannotBeReachedIsThisModulesFailure(t *testing.T) {
 
 // TestACallerWhoseContextEndedIsStillAnswered covers the shutdown case rather
 // than the disconnected one: a still-connected client whose context the server
-// ended must get a body it can classify, where returning unwritten would emit
-// an empty 200.
+// ended must get the 503 ADR 0026 rev 2 defines, where returning unwritten
+// would emit an empty 200 and reusing an upstream cause would blame an upstream
+// that was never called.
 func TestACallerWhoseContextEndedIsStillAnswered(t *testing.T) {
 	fake := newUpstreamFake(t)
 	entry := testEntry(fake, "readings")
@@ -524,7 +525,7 @@ func TestACallerWhoseContextEndedIsStillAnswered(t *testing.T) {
 	request := httptest.NewRequest(http.MethodGet, "/api/readings?station=one", nil).WithContext(ended)
 	rt.ServeHTTP(recorder, request)
 
-	wantFailure(t, recorder, http.StatusServiceUnavailable, "readings", causeUpstreamFailure)
+	wantFailure(t, recorder, http.StatusServiceUnavailable, "readings", causeShuttingDown)
 }
 
 // TODO (#25): TST029

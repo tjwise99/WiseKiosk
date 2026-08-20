@@ -1,6 +1,6 @@
 // Package router serves the API from the route registration list: one route per
 // entry, and the request flow from parameter validation, through the upstream
-// pipeline, to the boundary body it answers with (ADR 0026 rev 1).
+// pipeline, to the boundary body it answers with (ADR 0026 rev 2).
 package router
 
 import (
@@ -69,7 +69,7 @@ const (
 )
 
 // The causes a failed data request carries, one per outcome the pipeline
-// distinguishes plus the two the framework classifies itself.
+// distinguishes plus the three the framework classifies itself.
 const (
 	causeUnreachable        = "unreachable"
 	causeTimeout            = "timeout"
@@ -80,6 +80,9 @@ const (
 	// causeUpstreamFailure is what an outcome carrying no cause of its own is
 	// rendered as.
 	causeUpstreamFailure = "upstream-failure"
+	// causeShuttingDown is the one failure no upstream call produced: this
+	// backend stopped serving before the answer was ready (ADR 0026 rev 2).
+	causeShuttingDown = "shutting-down"
 )
 
 // malformedMessage is what a module's own reshaping failure renders as.
@@ -164,10 +167,9 @@ func (rt *route) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		// The pipeline errors only where this caller's context ended: a client
 		// that has gone, or a server shutting down under one still connected.
-		// The second is written the boundary failure body (ADR 0026 rev 1),
-		// where returning unwritten emits an empty 200. The first reads
-		// neither.
-		rt.fail(w, http.StatusServiceUnavailable, causeUpstreamFailure, "this source could not be served")
+		// The second is written the 503 outcome (ADR 0026 rev 2), where
+		// returning unwritten emits an empty 200. The first reads neither.
+		rt.fail(w, http.StatusServiceUnavailable, causeShuttingDown, "this backend stopped serving before this source could answer")
 		return
 	}
 	rt.respond(w, result)
@@ -313,7 +315,7 @@ func (f *fallback) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	reject(w, http.StatusNotFound, causeUnknownSource, "this backend serves no such source")
 }
 
-// reject writes the client-rejection body (ADR 0026 rev 1).
+// reject writes the client-rejection body (ADR 0026 rev 2).
 func reject(w http.ResponseWriter, status int, cause, message string) {
 	writeJSON(w, status, boundary.ClientRejection{Cause: cause, Message: message})
 }
