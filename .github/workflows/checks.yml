@@ -359,16 +359,18 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: just check-branch "$HEAD_REF"
 
-      # Dependabot authors its titles as `build(deps): Bump …`; the capital "Bump"
-      # is sentence-case, which subject-case forbids, and Dependabot has no knob to
-      # lowercase it. Exempt its titles as check-branch already exempts its branches
-      # — a machine author, gated on its dependency-update policy, not its prose.
+      # This venv exists only to run the title check below, so it carries the same
+      # Dependabot exemption.
       - name: Install pre-commit into a local venv (siloed under scripts/)
         if: github.event.pull_request.user.login != 'dependabot[bot]'
         run: |
           python3 -m venv scripts/.venv
           scripts/.venv/bin/pip install -r scripts/requirements-dev.txt
 
+      # Dependabot authors its titles as `build(deps): Bump …`; the capital "Bump"
+      # is sentence-case, which subject-case forbids, and Dependabot has no knob to
+      # lowercase it. Exempt its titles as check-branch already exempts its branches
+      # — a machine author, gated on its dependency-update policy, not its prose.
       - name: PR title is a Conventional Commit (the squash-merge commit on main)
         if: github.event.pull_request.user.login != 'dependabot[bot]'
         env:
