@@ -106,9 +106,8 @@ the outcome neither item reaches, so deferring it defers it to nowhere.
   status and no body. It is the cheapest thing to write and it costs a dead connection nothing.
   Rejected because the connection is not always dead: once graceful shutdown lands, a shutdown ends
   the request's context under a client still reading, and `net/http` completes an unwritten response
-  as an empty `200 OK`. The
-  frontend cannot tell that from a success whose payload it failed to parse, which is the one
-  distinction every body in this record exists to make.
+  as an empty `200 OK`. The frontend cannot tell that from a success whose payload it failed to
+  parse, which is the one distinction every body in this record exists to make.
 - **Reusing `upstream-failure` for it**, the cause an unclassified outcome already carries, adding
   no cause and no status pair. Rejected as a false statement on the wire: no upstream was called,
   so a body attributing the failure to one names a fault that did not occur, and an operator
