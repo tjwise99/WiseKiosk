@@ -155,6 +155,25 @@ check-boundary:
     git add --intent-to-add -- backend/internal/boundary/ frontend/src/lib/boundary/
     git diff --exit-code HEAD -- backend/internal/boundary/ frontend/src/lib/boundary/
 
+# `go build` compiles the non-test tree alone, where `vet` and `test` compile the test files with it,
+# so a compile error common to both is reported against the smaller of the two first. A step runs only
+# where the one before it exited zero; what the four together assert is docs/CI.md § Backend build,
+# vet and tests. The `-race` pass covers the concurrency-bearing packages under `internal/`; the
+# bounded-footprint soak in `cmd` is run once without it, because the detector's own allocation
+# perturbs the memory that soak measures.
+[group('checks')]
+[doc('The backend Go tree builds, passes vet, its package tests pass, and the internal packages are free of data races; needs `just boundary-install`')]
+check-go:
+    go -C backend build ./...
+    go -C backend vet ./...
+    go -C backend test ./...
+    go -C backend test -race ./internal/...
+
+[group('checks')]
+[doc('Exactly one non-test reference in the backend unwraps the confined secret type to its raw value; test files are exempt')]
+check-secret-unwrap:
+    python3 scripts/check-secret-unwrap.py
+
 [group('run')]
 [doc('Serve the display page on a local dev server; the page fetches /config.json, which a deployment bind-mounts into the served tree and a local run reads from the gitignored frontend/public/config.json')]
 dev:
@@ -220,4 +239,4 @@ check-languages:
 
 [group('checks')]
 [doc('Run every check the PR gate runs that has a local form; secret scanning, the PR-title check (commitlint, via the hook layer), the link check (lychee, from a digest-pinned image) and the workflow audit (zizmor, actionlint) are CI-only')]
-verify: check-untracked check-hooks check-branch check-reqs check-citations check-arch check-arch-trace check-boundary check-config-types check-build check-static-bundle check-unit check-render check-site check-adr-index check-adr-revs check-docs-index check-repo-silo check-languages
+verify: check-untracked check-hooks check-branch check-reqs check-citations check-arch check-arch-trace check-boundary check-go check-secret-unwrap check-config-types check-build check-static-bundle check-unit check-render check-site check-adr-index check-adr-revs check-docs-index check-repo-silo check-languages

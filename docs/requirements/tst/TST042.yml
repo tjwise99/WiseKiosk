@@ -4,7 +4,7 @@ header: |
   Pending: two clients, one request, one answer
 level: 66
 links:
-- SRS009: _LSoBg6stNpwO5YqGg8wjdn-KUW9TMTUBlvr4f-jcGw=
+- SRS009: yxCQ6Sq35MMzjfYjTcu91xUU_9xZ2rCE1LC4ZurN9B0=
 normative: true
 rationale: |
   SRS023's<!-- The backend establishes no client identity and gates no route on one --> three
@@ -14,15 +14,15 @@ rationale: |
   a forwarded header and varying its response sets no cookie, returns neither status, and registers
   no middleware, so it satisfies all three while breaking the clause this item verifies.
 ref: ''
-reviewed: lw10PxIoE4HZtXyRRf7pBoBPc43qdv18lPnwSawGI3w=
+reviewed: xhTaDHKgvgC1NkDRMTsmmrAzg-ga859nGdIp9DBVIRA=
 status: proposed
 text: |
   Pending: integration test issuing the same request to a source endpoint from two clients that differ
   in every way the transport exposes - source address, forwarded-for header, user agent, and
   connection - and asserting the response bodies are byte-identical and the response headers differ in
   no value derived from the caller. Repeated after an intervening request from one of the two, so that
-  a response varying with request history fails as well. Lands with the backend skeleton (#9);
-  activated and given a references entry then.
+  a response varying with request history fails as well. Lands with the first module end-to-end
+  (#12); activated and given a references entry then.
 verification-justification: |
   What the check settles is that the transport-level facts a backend could discriminate on do not
   change the answer. What it does not settle is discrimination on a fact the test does not vary - a

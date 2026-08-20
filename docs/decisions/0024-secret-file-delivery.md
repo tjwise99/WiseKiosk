@@ -27,12 +27,12 @@ decision that had no phase to live in, which is the growth [ADR 0011 rev 2](0011
 exists to prevent. The mechanism survives today only by presumption:
 SRS006<!-- Unresolvable secret surfaces as that source's upstream failure --> names `<NAME>_FILE` and
 "empty after trailing-whitespace stripping" inside its *failure* clause, and
-TST014<!-- Pending: secret-resolution unit tests --> asserts the read and the bare-`<NAME>`
-exclusion, and TST017<!-- Pending: unresolvable-secret failure-path test --> exercises the
+TST014<!-- Secret-resolution unit tests --> asserts the read and the bare-`<NAME>`
+exclusion, and TST017<!-- Unresolvable-secret failure-path test --> exercises the
 unresolvable-secret failure path over it — but no document states the positive delivery rule, the
 exclusion of every other path, or
 the substitutability the choice buys. Those checks verify an obligation nobody stated. This ADR is its
-home. It is the *delivery* record; [ADR 0023 rev 1](0023-secret-output-containment.md) is its
+home. It is the *delivery* record; [ADR 0023 rev 2](0023-secret-output-containment.md) is its
 *containment* counterpart, and already names #73 as this half.
 
 ## Decision
@@ -54,10 +54,10 @@ SRS008<!-- No secret value in any backend output --> obliges that no value leaks
 *mechanism* those obligations presume — that the path is named by `<NAME>_FILE`, the trailing-
 whitespace rule, and the exclusion of every other delivery path — is a structural choice, not a want,
 and is specified **here**. No requirements-tree edit is made, mirroring the division
-[ADR 0023 rev 1](0023-secret-output-containment.md) drew for the secret type. The pending
-secret-resolution tests (TST014<!-- Pending: secret-resolution unit tests -->,
-TST017<!-- Pending: unresolvable-secret failure-path test -->,
-TST028<!-- Pending: secret rotation-without-restart test -->) hang off
+[ADR 0023 rev 2](0023-secret-output-containment.md) drew for the secret type. The pending
+secret-resolution tests (TST014<!-- Secret-resolution unit tests -->,
+TST017<!-- Unresolvable-secret failure-path test -->,
+TST028<!-- Secret rotation-without-restart test -->) hang off
 SRS006<!-- Unresolvable secret surfaces as that source's upstream failure --> and verify the mechanism
 this ADR now states.
 
@@ -91,18 +91,19 @@ file interface subsumes them all without importing any of their SDKs.
 - **A rotated secret takes effect without a container restart.** Per-resolution reading — the
   surviving half of the removed re-read requirement, now carried by
   SRS006<!-- Unresolvable secret surfaces as that source's upstream failure --> and verified by
-  TST028<!-- Pending: secret rotation-without-restart test --> — means a changed file is picked up on
+  TST028<!-- Secret rotation-without-restart test --> — means a changed file is picked up on
   the next cache-missing resolution.
 - **The exclusion and the whitespace rule are now stated, not merely asserted in a check.**
-  TST014<!-- Pending: secret-resolution unit tests --> and
-  TST017<!-- Pending: unresolvable-secret failure-path test --> assert that a bare `<NAME>` is ignored
+  TST014<!-- Secret-resolution unit tests --> and
+  TST017<!-- Unresolvable-secret failure-path test --> assert that a bare `<NAME>` is ignored
   and that the value is trailing-whitespace-stripped; those assertions now verify an obligation this
   ADR states rather than one presumed nowhere.
 - **No requirements-tree growth.** A later reader asking "what is the delivery mechanism?" is sent
-  here by the failure clause of SRS006<!-- Unresolvable secret surfaces as that source's upstream
-  failure -->, not to a requirement that restates the mechanism — the
-  [ADR 0011 rev 2](0011-requirement-or-convention.md) division working as intended. What would reopen
-  this record is a change to that division, or a deployment target the file interface cannot serve.
+  here by the failure clause of
+  SRS006<!-- Unresolvable secret surfaces as that source's upstream failure -->, not to a requirement
+  that restates the mechanism — the [ADR 0011 rev 2](0011-requirement-or-convention.md) division
+  working as intended. What would reopen this record is a change to that division, or a deployment
+  target the file interface cannot serve.
 - **This is the delivery half of a two-part secrets story.**
-  [ADR 0023 rev 1](0023-secret-output-containment.md) is the containment half: this ADR decides how a
+  [ADR 0023 rev 2](0023-secret-output-containment.md) is the containment half: this ADR decides how a
   secret *arrives*, that one decides how it is kept out of output once it has.

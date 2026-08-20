@@ -1,20 +1,19 @@
-active: false
+active: true
 derived: false
 header: |
-  Pending: secret-resolution unit tests
+  Secret-resolution unit tests
 level: 1.15
 links:
 - SRS006: JxiHw1gLMgVhOl6lwIx5q3IteUyerEAbhXfRhoPZdK0=
 normative: true
 rationale: ''
 ref: ''
-reviewed: 5VZNDbeVlYKHPw1O70sBwYYCsH5jOZAfkMMZCB0OtSU=
+reviewed: PgMR91bDMZeNFWFXkK7oLFOQUkHu8RpCbLHSuMrePwo=
 status: proposed
 text: |
-  Pending: unit tests of secret resolution — value read from the file at
-  <NAME>_FILE; trailing whitespace stripped; a bare <NAME>
-  environment variable ignored. Lands with the backend skeleton (#9);
-  activated and given a references entry then.
+  Unit tests of secret resolution: the value is read from the file at <NAME>_FILE, trailing
+  whitespace is stripped while leading and inner whitespace is kept, and a bare <NAME>
+  environment variable is ignored rather than read as the value.
 verification-justification: |
   Settles the three resolution rules at unit level. Leaves unproven their behaviour under concurrent
   resolution of the same secret.

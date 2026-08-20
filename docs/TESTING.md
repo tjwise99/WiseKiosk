@@ -17,7 +17,43 @@ Each tier states what it **guarantees** and when it runs.
 | **Boundary** | The frontend and backend agree on every value that crosses: parameter names *and types*, success payloads, the structured upstream-failure body, the client-error rejection body, and every status code the frontend discriminates on | SYS005<!-- Single-definition internal contract --> / SRS015<!-- One schema, all boundary value classes --> | Every commit, in CI |
 | **Integration** | Routes serve; the TTL cache honours its TTL; parameter validation rejects bad input; config validation fails loudly on bad config | SRS009<!-- Every source reachable through the backend, statelessly --> / SRS011<!-- Upstream request rate is bounded, and the bound is not operator-tunable --> / SRS012<!-- Request parameters validated against known-good per-source patterns --> / SRS002<!-- A module-scoped configuration error is reported at that module --> | Every commit, in CI |
 | **Render** | Each module renders from its props; the page assembles with a known-good config; and the assembled page is read for the values a viewer depends on: which region each module landed in, emission, type scale, region geometry, the configured edge band, reflow, and overflow | [module contract](contracts/module-contract.md), part 3 / SRS017<!-- Full-screen assembly at kiosk; reflow, no horizontal scroll, at narrower widths --> / SRS031<!-- Content too large for its region overflows --> / SRS030<!-- Only content is rendered above the emission ceiling --> / SRS032<!-- Readable text is carried at full emission --> / SRS033<!-- Text holds a minimum size against the display, at every resolution --> / SRS034<!-- The laid-out regions keep clear of the display edge --> / SRS035<!-- The masked edge band is the deployment's to declare --> | Every commit, in CI |
+| **Secret canary** | A value planted as a source's secret reaches no backend output: not a success body, not an error body, not a response header, not a log line — swept across every route and across the failure path, not only the paths that succeed | SRS008<!-- No secret value in any backend output --> / [ADR 0023 rev 2](decisions/0023-secret-output-containment.md) | Every commit, in CI |
+| **Bounded footprint** | A backend driven under sustained mixed load — cached, uncached, rejected and failing requests together — ends where it started on memory, open descriptors and goroutines, so nothing it holds grows across a continuous run | SRS022<!-- A bounded running footprint --> | Every commit, in CI |
 | **Contract** | Upstream APIs still return what the shaping libraries expect | this document | Fixtures every commit, in CI; a live run on a schedule, off the merge path |
+
+The canary tier's guarantee rests on planting: a sweep that never proves the value *reached* the
+backend passes on a backend that never held one, so each canary case asserts the upstream saw the
+planted value before it asserts nothing else did. The footprint tier's rests on the reverse — a
+threshold loose enough to absorb the growth it is watching for reports a bound it did not measure, so
+what it can and cannot resolve belongs in the item, not in a comfortable margin.
+
+### Where a backend test goes
+
+Every backend test is a Go test, and the whole tier is one `go test ./...` inside `just check-go`,
+with the `internal/` packages run again under the race detector
+([`CI.md § Backend build, vet and tests`](CI.md#backend-build-vet-and-tests)). Nothing is held back
+behind a build tag or a short-mode skip, so a backend test runs by existing — which is what makes its
+*location* the thing an author has to get right. The one platform constraint is the footprint tier's
+sampling, which reads `/proc` and is confined to Linux by its filename; the predicates it judges with
+are not.
+
+- **Package mechanics** — beside the package, `backend/internal/<package>/*_test.go`. What one
+  package's own logic does, decided without a server: the cache against its clock, the rate limiter
+  against its bucket, the secret type against its own formatting paths.
+- **Route and integration behaviour** — `backend/internal/router/`. Anything answered in terms of a
+  request and a response: status, cause, which module a failure names, what reached upstream and what
+  did not. This is the altitude the pipeline's bounds compose at, so a test about cache *and* limit
+  *and* the outbound call sits here rather than with any one of them.
+- **Process level and soak** — `backend/cmd/`. Anything needing the assembled binary's own wiring —
+  the mounted path spaces, liveness, the self-check — and anything measuring the process as a whole
+  over time, which is where the footprint tier lives because a footprint is a property of a process
+  and not of a package.
+
+The canary tier is deliberately in two of those three places at once, `internal/router/` and `cmd/`,
+because the surfaces it sweeps are different: one is what a route returns, the other is what the
+assembled process emits. Their shared vocabulary — the planted value itself — is one exported
+constant rather than a literal in each, so the two tiers cannot drift into sweeping for different
+things while reading as one mechanism.
 
 ### Where a frontend test goes
 

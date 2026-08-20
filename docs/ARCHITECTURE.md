@@ -2,8 +2,8 @@
 
 The living structural description of WiseKiosk **as built**. It grows with the code.
 
-> **Status: modelled, not built.** No code exists, so the narrative sections carry _To be documented as
-> it is built._ until their part lands. The diagrams are the exception: they are generated from the
+> **Status: built as each part lands.** A narrative section carries _To be documented as it is built._
+> until the code it describes lands. The diagrams are the exception: they are generated from the
 > [architecture model](architecture/README.md), which is normative for structure
 > ([ADR 0003 rev 2](decisions/0003-architecture-as-code-likec4.md)). What `codegen mermaid` drops —
 > element descriptions, icons — is read in that model, and an element's responsibility statement stays
@@ -96,8 +96,8 @@ rest`" .-> Viewer
 
 <!-- arch-export:end generated/containers.mmd -->
 The Component level (C4 L3) is drawn per container, in the two sections below, and the Deployment level
-in [§ Deployment](#deployment). No element carries a `link` to the source implementing it, no code
-existing; where that source sits when it lands is
+in [§ Deployment](#deployment). The Backend container and each of its components carry a `link` to the
+source implementing it; where that source sits is
 [ADR 0021 rev 1](decisions/0021-repository-layout.md).
 
 **Every accepted, active `SYS` or `SRS` item binds somewhere in this model, and where one cannot, the
@@ -110,14 +110,78 @@ Deployment level, which is the level drawn to carry them.
 
 ## Backend
 
-_To be documented as it is built._ Its source root is `backend/`, the Go module root, holding the shared
-framework under `internal/` and each upstream-backed module's shaping library under
-`internal/modules/<name>/` ([ADR 0021 rev 1](decisions/0021-repository-layout.md)). Language and
+Its source root is `backend/`, the Go module root, holding the shared framework under `internal/` and
+each upstream-backed module's shaping library under `internal/modules/<name>/`
+([ADR 0021 rev 1](decisions/0021-repository-layout.md)). Language and
 boundary-contract decision: [ADR 0001 rev 1](decisions/0001-backend-language-go.md); config-blindness:
 [ADR 0007 rev 2](decisions/0007-config-validation-allocation.md). What the backend must do is the
 [requirements tree](requirements/README.md); which obligations bind this container is the
 [architecture model](architecture/README.md), as each is modelled (#119 C4 model completion). Neither is
 restated here.
+
+**One process, one port, three path spaces.** `cmd/` is the whole of the bootstrap: it builds the API
+handler from the route registration list and the served tree from the directory it is pointed at, then
+mounts the two beside liveness on one multiplexer — `/healthz`, `/api/`, and every other path served as
+a file from that tree. Nothing is read at start-up but its own flags, so there is no configuration to
+parse, no state held between requests and nothing to reload
+([ADR 0007 rev 2](decisions/0007-config-validation-allocation.md)); the port and those flags are
+[ADR 0020 rev 2](decisions/0020-release-artifact-set-and-operator-tooling.md)'s, and the wiring around
+them is [`DEPLOYMENT.md`](DEPLOYMENT.md)'s. A
+path the served tree does not hold answers 404 rather than the single-page bundle: the page is fetched
+once and navigates nowhere ([ADR 0018 rev 1](decisions/0018-frontend-svelte-vite-static-spa.md)), so an
+index fallback would serve a route nothing requests, at the cost of rendering a missing bundle as a
+working one.
+
+**Liveness answers for this process and for nothing behind it.** `/healthz` reports that the process is
+serving, which is the one thing a single-host runtime can act on; it reaches no upstream, so a source
+that is down is that module's failure on the display rather than an unhealthy container. The same
+binary asks the question of a running instance from inside the image, which is what lets the image
+declare a `HEALTHCHECK` without carrying an HTTP client beside it
+([ADR 0020 rev 2](decisions/0020-release-artifact-set-and-operator-tooling.md)).
+
+**Adding a route is adding one element to a list.** The registration list is a package holding a
+literal, read by the bootstrap and by nothing else, and the framework refuses an entry it cannot
+serve — an incomplete or internally inconsistent one, or a second entry for a source another already
+claims — where the routes are built rather than at the first request that would fail. An incomplete
+registration therefore stops the process at start-up instead of leaving one that boots, looks healthy
+and serves one broken route.
+
+**Every request runs the same three bounds in the same order: cache, budget, call.** The pipeline
+answers from the held response where there is one, spends one of that source's tokens where there is
+not, and only then makes the outbound call under a deadline and a size ceiling
+(SRS014<!-- No single upstream exchange can stall or exhaust the backend -->). A cache hit spends no
+token and is never rejected, so the two bounds compose rather than compete
+(SRS011<!-- Upstream request rate is bounded, and the bound is not operator-tunable -->), and each
+source's bucket is its own, so one source's traffic never consumes another's budget. Concurrent callers
+of one uncached `(source, query)` share a single outbound call and its result, which is what makes
+several clients missing cache together at start-up cost one upstream request rather than one each; the
+exchange belongs to the pipeline rather than to any caller, so a caller that goes away neither cancels
+it nor denies its result to the rest. A rate-limited request is not held, being a fact about this
+moment's budget rather than about the source.
+
+**Every outcome leaves as one named cause.** The pipeline classifies what happened — unreachable, timed
+out, a status outside 200–299, a body over the ceiling, no token — and the route handler maps that to
+the boundary body the schema defines for it, under the status the frontend discriminates on
+([ADR 0026 rev 2](decisions/0026-boundary-error-body-shape.md)). What the framework itself refused —
+parameters it rejected, a source it does not serve, a method that source does not answer, no token —
+leaves as a client rejection. Everything else leaves as that module's upstream failure carrying the
+module's name, the source's secret being unresolvable included: a fault in serving this source rather
+than in the request that asked for it. A request whose context ended before an answer leaves that way
+too, under a 503 and a cause naming the shutdown; a client disconnecting is the only thing that ends
+one until the server gains a shutdown call to do it.
+An outcome no case names is logged and answered under an undistinguished cause rather than quietly
+rendered as one of the others.
+
+**A secret is confined by the type holding it, not by a step that removes it.** A resolved secret is a
+value whose every formatting and serialising path yields a fixed redaction, with one guarded unwrap
+whose single call site is the outbound request
+([ADR 0023 rev 2](decisions/0023-secret-output-containment.md)) — so reaching a response body, a header
+or a log takes writing that unwrap, not forgetting an entry in a denylist. It is resolved per request
+from the file named by `<NAME>_FILE` and held nowhere, so a rotated file takes effect on the next
+request ([ADR 0024 rev 1](decisions/0024-secret-file-delivery.md)); one that cannot be resolved is that
+source's upstream failure, naming the secret and neither its value nor the path tried
+(SRS006<!-- Unresolvable secret surfaces as that source's upstream failure -->,
+SRS008<!-- No secret value in any backend output -->).
 
 **Components (C4 L3)**, diagrammed below; each box's responsibility is the model's, not restated here.
 A module's own half of this container is its shaping library, drawn when that module's need lands
@@ -160,27 +224,47 @@ is held`" .-> WisekioskBackend.UpstreamClient
 
 <!-- arch-export:end generated/backendComponents.mmd -->
 
-**Cache and rate-limit defaults.** These are the defaults each route's registration entry carries for
-the cache and rate-limit policies named above, chosen once here with the reasoning behind them. A
-route refines them against its source — the success-response TTL paired with that module's poll cadence
-([the module contract](contracts/module-contract.md)) — but they are code constants, not
-configuration: the bound they hold is SRS011's<!-- Upstream request rate is bounded, and the bound is not operator-tunable -->, which forbids raising it from outside the image.
+**Cache and rate-limit defaults.** Three of the policies named above start from a default, and the
+defaults are the `upstream` package's exported constants — `DefaultSuccessTTL`, `DefaultNegativeTTL`
+and `DefaultRequestsPerMinute`. **The value lives there and only there;** what is here is what each
+one is for, so a figure and its reasoning are one thing described twice rather than two figures that
+agree today. A route refines them against its source — the success-response TTL paired with that
+module's poll cadence ([the module contract](contracts/module-contract.md)) — but they are code
+constants, not configuration: the bound they hold is SRS011's<!-- Upstream request rate is bounded, and the bound is not operator-tunable -->, which forbids raising it from outside the image.
 
-- **Success-response cache TTL — 10 minutes.** The fresh end of the display's tolerance for stale
-  data. A `(source, query)` reaches upstream at most once per TTL however many clients ask and however
-  often; on a route serving few distinct queries, the TTL — not the route-global rate limit — is what
+- **`DefaultSuccessTTL` — the fresh end of the display's tolerance for stale data.** A
+  `(source, query)` reaches upstream at most once per TTL however many clients ask and however often;
+  on a route serving few distinct queries, the TTL — not the route-global rate limit — is what
   principally holds the upstream request rate down.
-- **Negative-response cache TTL — 60 seconds.** Shorter than the success TTL, so a transient upstream
-  failure clears within about a minute of the source recovering, yet long enough that a burst of
-  requests during an outage collapses to one retry per minute against a source already failing.
-- **Per-route rate limit — 10 requests per minute.** A route-global ceiling on requests that reach
-  upstream; a cache hit is neither counted against it nor rejected. Steady state is roughly one
-  upstream fetch per TTL, so the ceiling sits well above legitimate traffic — headroom for several
-  clients missing cache together at start-up — while still rejecting a client stuck in a fast retry
-  loop. It reinforces the TTL bound rather than replacing it.
+- **`DefaultNegativeTTL` — deliberately shorter than the success TTL**, so a transient upstream
+  failure clears soon after the source recovers, yet long enough that a burst of requests during an
+  outage collapses to one retry per window against a source already failing.
+- **`DefaultRequestsPerMinute` — a route-global ceiling on requests that reach upstream**; a cache hit
+  is neither counted against it nor rejected. Steady state is roughly one upstream fetch per success
+  TTL, so the ceiling sits well above legitimate traffic — headroom for several clients missing cache
+  together at start-up — while still rejecting a client stuck in a fast retry loop. It reinforces the
+  TTL bound rather than replacing it.
 
-These values cannot be proven against a source until one exists; each is a starting default a module
-revisits when its upstream lands.
+**The outbound timeout, the response size ceiling and the bucket's burst have no default, and that is
+the decision rather than an omission.** No document in the tree names a value or a range for any of
+the three, so there is nothing for a constant to hold; `upstream.Config` records the same from the
+code side. Each registration entry therefore states its own, and a module author chooses rather than
+inherits. Nothing in the framework supplies one or checks that an entry did — the deadline and the
+ceiling SRS014<!-- No single upstream exchange can stall or exhaust the backend --> obliges rest on
+the entry declaring them, which is a gap a first real module either closes or gives a value worth
+defaulting.
+
+**Three of those figures multiply, which is the arithmetic a module author is choosing against.** The
+cache sweeps expired entries on every write, so what a route can hold is what it can write inside one
+success TTL: at most `RequestsPerMinute × SuccessTTL` entries of up to `MaxBytes` each. That product
+is the route's worst-case resident bytes, and it is where the two undefaulted figures land — a
+generous `MaxBytes` is multiplied by however many distinct queries the rate admits, not paid once.
+SRS022<!-- A bounded running footprint --> is met by the sweep whatever the values are; what the
+values decide is whether the bound sits inside the host
+SYS007<!-- The declared minimum host, and staying within it --> declares.
+
+None of the three defaults can be proven against a source until one exists; each is a starting point a
+module revisits when its upstream lands.
 
 ## Frontend
 
@@ -307,7 +391,7 @@ share is the schema and nothing else, which is the whole of the arrangement. `ju
 both; `just check-boundary` clears the two generated directories, runs both again and fails on any
 difference against what is committed, so the committed types cannot drift from the schema without a
 gate saying so. The error bodies the schema carries are
-[ADR 0026 rev 1](decisions/0026-boundary-error-body-shape.md)'s; a module's payload joins them as a
+[ADR 0026 rev 2](decisions/0026-boundary-error-body-shape.md)'s; a module's payload joins them as a
 named component of the same file.
 
 ## Config and secrets
