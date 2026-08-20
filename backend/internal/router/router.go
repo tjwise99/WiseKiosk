@@ -1,6 +1,6 @@
 // Package router serves the API from the route registration list: one route per
 // entry, and the request flow from parameter validation, through the upstream
-// pipeline, to the boundary body it answers with (ADR 0026 rev 3).
+// pipeline, to the boundary body it answers with (ADR 0026 rev 2).
 package router
 
 import (
@@ -81,7 +81,7 @@ const (
 	// rendered as.
 	causeUpstreamFailure = "upstream-failure"
 	// causeShuttingDown is the one failure no upstream call produced: this
-	// backend stopped serving before the answer was ready (ADR 0026 rev 3).
+	// backend stopped serving before the answer was ready (ADR 0026 rev 2).
 	causeShuttingDown = "shutting-down"
 )
 
@@ -168,7 +168,7 @@ func (rt *route) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		// The pipeline errors only where this caller's context ended: a client
 		// that has gone, which is what ends one here, or a server shutting down
 		// under one still connected, once a shutdown call exists to do it. Both
-		// are written the 503 outcome (ADR 0026 rev 3), where returning
+		// are written the 503 outcome (ADR 0026 rev 2), where returning
 		// unwritten emits an empty 200. Only the second reads it.
 		rt.fail(w, http.StatusServiceUnavailable, causeShuttingDown, "this backend stopped serving before this source could answer")
 		return
@@ -316,7 +316,7 @@ func (f *fallback) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	reject(w, http.StatusNotFound, causeUnknownSource, "this backend serves no such source")
 }
 
-// reject writes the client-rejection body (ADR 0026 rev 3).
+// reject writes the client-rejection body (ADR 0026 rev 2).
 func reject(w http.ResponseWriter, status int, cause, message string) {
 	writeJSON(w, status, boundary.ClientRejection{Cause: cause, Message: message})
 }

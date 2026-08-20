@@ -501,7 +501,7 @@ func TestASourceThatCannotBeReachedIsThisModulesFailure(t *testing.T) {
 
 // TestACallerWhoseContextEndedIsStillAnswered ends the context directly rather
 // than through a server, so it covers the outcome both paths share: the 503
-// ADR 0026 rev 3 defines, where returning unwritten would emit an empty 200 and
+// ADR 0026 rev 2 defines, where returning unwritten would emit an empty 200 and
 // reusing an upstream cause would blame an upstream that was never called.
 func TestACallerWhoseContextEndedIsStillAnswered(t *testing.T) {
 	fake := newUpstreamFake(t)
@@ -587,7 +587,7 @@ func TestNoTwoCausesShareASpelling(t *testing.T) {
 	// only what failure() returns, and causeShuttingDown and the rejection
 	// causes leave by other paths; each one's own test compares a response
 	// against the same constant it asserts, so consolidating two onto one
-	// string stays green everywhere but here (ADR 0026 rev 3).
+	// string stays green everywhere but here (ADR 0026 rev 2).
 	all := []struct {
 		name  string
 		cause string

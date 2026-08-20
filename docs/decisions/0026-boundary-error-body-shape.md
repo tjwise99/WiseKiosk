@@ -3,13 +3,10 @@
 **Status:** accepted
 **Decided:** 2026-08-19 (#9 backend skeleton, extending the 2026-08-17 decision on #7
 boundary-contract codegen)
-**Rev:** 3
+**Rev:** 2
 
 ## Revisions
 
-- **rev 3** — 2026-08-19 — states which of the two context-ending paths the binary has today, the
-  shutdown case being one this record defines ahead of; the decision is unchanged (#9 backend
-  skeleton).
 - **rev 2** — 2026-08-19 — decides the one outcome neither deferral below reaches: a request whose
   context ended mid-flight answers 503 under the cause `shutting-down`, in the module-carrying body
   (#9 backend skeleton).
