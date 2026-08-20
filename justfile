@@ -157,14 +157,17 @@ check-boundary:
 
 # `go build` compiles the non-test tree alone, where `vet` and `test` compile the test files with it,
 # so a compile error common to both is reported against the smaller of the two first. A step runs only
-# where the one before it exited zero; what the three together assert is docs/CI.md § Backend build,
-# vet and tests.
+# where the one before it exited zero; what the four together assert is docs/CI.md § Backend build,
+# vet and tests. The `-race` pass covers the concurrency-bearing packages under `internal/`; the
+# bounded-footprint soak in `cmd` is run once without it, because the detector's own allocation
+# perturbs the memory that soak measures.
 [group('checks')]
-[doc('The backend Go tree builds, passes vet, and its package tests pass; needs `just boundary-install`')]
+[doc('The backend Go tree builds, passes vet, its package tests pass, and the internal packages are free of data races; needs `just boundary-install`')]
 check-go:
     go -C backend build ./...
     go -C backend vet ./...
     go -C backend test ./...
+    go -C backend test -race ./internal/...
 
 [group('checks')]
 [doc('Exactly one non-test reference in the backend unwraps the confined secret type to its raw value; test files are exempt')]

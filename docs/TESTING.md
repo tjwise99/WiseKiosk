@@ -29,7 +29,8 @@ what it can and cannot resolve belongs in the item, not in a comfortable margin.
 
 ### Where a backend test goes
 
-Every backend test is a Go test, and the whole tier is one `go test ./...` inside `just check-go`
+Every backend test is a Go test, and the whole tier is one `go test ./...` inside `just check-go`,
+with the `internal/` packages run again under the race detector
 ([`CI.md § Backend build, vet and tests`](CI.md#backend-build-vet-and-tests)). Nothing is held back
 behind a build tag or a short-mode skip, so a backend test runs by existing — which is what makes its
 *location* the thing an author has to get right. The one platform constraint is the footprint tier's

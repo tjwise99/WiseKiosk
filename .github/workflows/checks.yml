@@ -298,8 +298,9 @@ jobs:
     # (docs/CI.md § Module and framework structure). A job of its own rather than
     # a step on `boundary`, which already carries the drift gate: one job answers with one check-run,
     # so a shared one gives the two gates a single name to be required on and a single verdict. The
-    # `cmd` package's bounded-footprint soak runs inside `go test ./...` and is ~2min of this job. No
-    # secrets: the tests serve over loopback (`net/http/httptest`) and reach no network origin.
+    # `cmd` package's bounded-footprint soak runs inside `go test ./...` and is ~2min of this job, and
+    # is the one package the recipe's race-detector pass leaves out. No secrets: the tests serve over
+    # loopback (`net/http/httptest`) and reach no network origin.
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -317,7 +318,7 @@ jobs:
       - name: Install the Go module's dependencies into the silo (backend/), locked
         run: go -C backend mod download
 
-      - name: The backend Go tree builds, passes vet, and its package tests pass
+      - name: The backend Go tree builds, passes vet, its tests pass, and internal/ is race-free
         run: just check-go
 
       - name: Exactly one non-test reference unwraps the confined secret type
