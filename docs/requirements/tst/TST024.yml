@@ -4,16 +4,16 @@ header: |
   Pending: every external source has a proxy route
 level: 1.21
 links:
-- SRS009: _LSoBg6stNpwO5YqGg8wjdn-KUW9TMTUBlvr4f-jcGw=
+- SRS009: yxCQ6Sq35MMzjfYjTcu91xUU_9xZ2rCE1LC4ZurN9B0=
 normative: true
 rationale: ''
 ref: ''
-reviewed: IFEuxBoFDzpHNOPG4CqKWu_HGyd-MOphPeLVWRB7b7o=
+reviewed: cm6jusnmtWeduLt3Rcb3j5HlIS-SJUEbqbDXCnnDAp0=
 status: proposed
 text: |
   Pending: test asserting the set of external sources declared by upstream-backed modules equals the
   set of registered GET /api/<source> routes, in both directions, so no source is exempted from the
-  proxy and no route exists without a source. Lands with the backend skeleton (#9).
+  proxy and no route exists without a source. Lands with the first module end-to-end (#12).
 verification-justification: |
   Settles the source-to-route bijection in both directions. Leaves unproven that a registered route
   reaches the source it names - the sets match by name, and a misrouted entry matches too.

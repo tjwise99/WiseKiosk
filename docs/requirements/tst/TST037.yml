@@ -4,7 +4,7 @@ header: |
   Pending: refresh cadence is not configurable
 level: 1.43
 links:
-- SRS011: uYFYvPdpl7RwD5-lwsxocy1pCg7VCfFB3zlGeTo9MJI=
+- SRS011: UabgFxMxko3SOIEjl27IkRmu5gRG_1kzgzPSjqhK2B4=
 normative: true
 rationale: |
   The fake-timer cadence assertion was struck: it measured the frontend's poll interval against a

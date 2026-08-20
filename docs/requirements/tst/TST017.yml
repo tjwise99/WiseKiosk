@@ -1,23 +1,21 @@
-active: false
+active: true
 derived: false
 header: |
-  Pending: unresolvable-secret failure-path test
+  Unresolvable-secret failure-path test
 level: 1.16
 links:
 - SRS006: JxiHw1gLMgVhOl6lwIx5q3IteUyerEAbhXfRhoPZdK0=
 normative: true
 rationale: ''
 ref: ''
-reviewed: F7FWo2kmWeNtZhi0z-lsrXi7mOCjT54ZQ1SKAAIKFOs=
+reviewed: s-PlvMUswUj1vaqy3Xs3oH4g9_JvancNCB1Rht5gW3w=
 status: proposed
 text: |
-  Pending: proxy test asserting the backend boots with no secrets
-  delivered, and a request to a source whose secret is unresolvable
-  (<NAME>_FILE unset; file missing; file unreadable; file empty after
-  trailing-whitespace stripping) returns that source's legible
-  upstream-failure response naming the secret, while
-  other sources still serve. Lands with the backend skeleton (#9);
-  activated and given a references entry then.
+  Route test asserting the backend boots with no secrets delivered, and that a request to a source
+  whose secret is unresolvable (<NAME>_FILE unset; file missing; file unreadable; file empty after
+  trailing-whitespace stripping) returns that source's legible upstream-failure response naming the
+  secret and carrying neither the value nor the path it was looked for at, makes no upstream call,
+  and leaves other sources serving.
 verification-justification: |
   Settles boot independence and the per-source failure treatment across the four unresolvable cases
   the file interface makes reachable. Leaves unproven any fifth case, and whether an operator

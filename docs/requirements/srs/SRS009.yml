@@ -18,8 +18,14 @@ rationale: |
   (SRS011<!-- Upstream request rate is bounded, and the bound is not operator-tunable -->), keyed
   on the request itself, is not per-client state: it may determine whether a request is served from
   cache, but not the payload a client receives.
+
+  Verification lands with the first module end-to-end (#12) rather than with the backend skeleton:
+  every observable stated here — a source reachable, a payload determined by the request alone —
+  needs a registered source to observe, and a skeleton registers none. Until then this requirement
+  is decomposed but carries no active verifying item, a gap in evidence rather than in
+  decomposition.
 ref: ''
-reviewed: UDI8vwXOnVRXhjpKw4UNLnhPL8IqPxcmBMkh-KtB9xY=
+reviewed: qQWJuWiwctX4TEf7D56c-zI5RhzUuMLDGJEQbZVagJM=
 status: accepted
 text: |
   Every supported external source shall be reachable through the backend, by the

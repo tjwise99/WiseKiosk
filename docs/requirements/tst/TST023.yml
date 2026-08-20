@@ -4,13 +4,13 @@ header: |
   Pending: proxy endpoint & statelessness test
 level: '1.20'
 links:
-- SRS009: _LSoBg6stNpwO5YqGg8wjdn-KUW9TMTUBlvr4f-jcGw=
+- SRS009: yxCQ6Sq35MMzjfYjTcu91xUU_9xZ2rCE1LC4ZurN9B0=
 normative: true
 rationale: |
-  Cache-hit/miss behaviour is TST025's<!-- Pending: TTL cache-behaviour test (liveness canary) -->,
+  Cache-hit/miss behaviour is TST025's<!-- TTL cache-behaviour test (liveness canary) -->,
   so this item settles payload determinism without asserting whether an upstream call occurred.
 ref: ''
-reviewed: 1aeeyHXA6YIaE3R-2jZmvZ1DJB8nzDJz-wo0eX1fWmg=
+reviewed: qBrz6D89433jED6jLiynLJkUllYTu6mU8NABrN_8D48=
 status: proposed
 text: |
   Pending: backend integration test driving every endpoint the boundary contract
@@ -18,7 +18,7 @@ text: |
   contract-shaped payload and that every source is reachable; and that the payload
   for a request is determined solely by that request — no per-client or session
   state — with cache-hit/miss behaviour, whether an upstream call occurs,
-  covered separately. Lands with the backend skeleton (#9); activated
+  covered separately. Lands with the first module end-to-end (#12); activated
   and given a references entry then.
 verification-justification: |
   Settles that every declared endpoint returns a contract-shaped payload and every source is

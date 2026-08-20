@@ -1,24 +1,27 @@
-active: false
+active: true
 derived: false
 header: |
-  Pending: task count does not grow without bound
-level: 1.4
+  Task count does not grow without bound
+level: 1.8
 links:
 - SRS022: 538EqpdHbQ1nebfzQj8OBwdB2Xo-7GVRXa8mb1_IKWc=
 normative: true
 rationale: |
   A goroutine leak shows in neither resident memory nor handle count until it is far advanced, so
   neither sibling item catches it. Sampled in the run
-  TST004<!-- Pending: resident memory does not grow without bound --> describes.
+  TST004<!-- Resident memory does not grow without bound --> describes.
 ref: ''
-reviewed: WlE3mZT7Nqen6lv0UcNKpB7H-hHHphAi62trRvqmOng=
+reviewed: R3U6wQxrn_vwt0w84uFH3ZzpLjkQOSaNZ-mCUEqzArQ=
 status: proposed
 text: |
-  Pending: over the shared instrumented run, failing on any increase in the runtime's task count between
-  the first and last sample.
+  Over the shared instrumented run, failing on any increase in the runtime's task count between the
+  first and last judged sample. Each sample's count is the lowest of several readings taken a few
+  milliseconds apart, so a task serving a request in flight at one reading is not counted as one
+  that leaked.
 verification-justification: |
-  Settles that the task count does not end the sampled run above where it started. Leaves unproven the
-  timescale the obligation is about. Its predicate is absolute where its siblings carry thresholds: a
-  steady-state kiosk should return to its starting task count, and whether that survives contact with
-  a real backend is a question activation asks, not this item.
+  Settles that the task count does not end the judged samples above where it started. Its predicate
+  is absolute where its siblings carry thresholds: the load pool runs across both readings and
+  contributes the same tasks to each, so what an increase leaves is growth. Leaves unproven the
+  timescale the obligation is about: a two-minute run is a per-commit smoke test, not evidence about
+  a kiosk running for months.
 verification-method: test

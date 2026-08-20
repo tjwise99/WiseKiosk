@@ -1,31 +1,36 @@
-active: false
+active: true
 derived: false
 header: |
-  Pending: resident memory does not grow without bound
-level: 1.4
+  Resident memory does not grow without bound
+level: 1.6
 links:
 - SRS022: 538EqpdHbQ1nebfzQj8OBwdB2Xo-7GVRXa8mb1_IKWc=
 normative: true
 rationale: |
   One instrumented run serves this item,
-  TST043<!-- Pending: handle count does not grow without bound --> and
-  TST044<!-- Pending: task count does not grow without bound -->; the run's duration and sampling
+  TST043<!-- Handle count does not grow without bound --> and
+  TST044<!-- Task count does not grow without bound -->; the run's duration and sampling
   interval are stated here because this item is the first of the three. Splitting the resources
   across items rather than listing them in one keeps each threshold reviewable on its own, and makes
   a leak class found later a new item under SRS022<!-- A bounded running footprint --> rather than
   a longer sentence inside an existing one.
 ref: ''
-reviewed: SecLqPa40Cv9IQy-8fjXctR_dHSfSidhKJIY9HseLRI=
+reviewed: oLIeHQ3goNLSVZ4TIOnUQWUKSkyLetYIALkpgPBwutk=
 status: proposed
 text: |
-  Pending: bounded-growth observation over a continuous run of at least sixty minutes, sampling at
-  thirty-second intervals, failing on a monotonic increase in resident memory exceeding ten percent.
-  Duration, interval and the threshold are tunable here rather than in the requirement.
+  Bounded-growth observation over a continuous run under sustained load, two minutes long and
+  sampled every two seconds by default, discarding the first three samples as warm-up and requiring
+  at least eight judged samples for the run to be read at all. Resident memory fails on a rise from
+  the median of the judged series' first quartile to the median of its last quartile exceeding ten
+  percent. Duration, interval and the threshold are tunable here rather than in the requirement.
 verification-justification: |
-  Settles that resident memory does not grow monotonically past its threshold across the sampled
-  run. Leaves unproven the timescale the obligation is about - an hour is read as evidence about
-  months, and a leak slower than the window is invisible - and says nothing about any other
-  resource: SRS022<!-- A bounded running footprint --> names none, so what is sampled is only what
-  TST043<!-- Pending: handle count does not grow without bound --> and
-  TST044<!-- Pending: task count does not grow without bound --> add to this.
+  Settles that resident memory does not rise past its threshold across the judged samples of the
+  run. The comparison is between quartile medians rather than endpoints, so a single spike does not
+  fail it while a sustained rise does. What it does not settle is the timescale the obligation is
+  about: a two-minute run is a per-commit smoke test, and a leak slower than that window is
+  invisible to it - evidence about a kiosk running for months is a longer soak this does not
+  perform. It says nothing about any other resource either: SRS022<!-- A bounded running footprint -->
+  names none, so what is sampled is only what
+  TST043<!-- Handle count does not grow without bound --> and
+  TST044<!-- Task count does not grow without bound --> add to this.
 verification-method: test

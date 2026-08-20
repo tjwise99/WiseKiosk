@@ -6,6 +6,9 @@
 //
 // A tag parses only as the first entry of an element or relationship body.
 //
+// A `link` path resolves against this directory, the workspace LikeC4 is given,
+// rather than against the file carrying it.
+//
 // The boundary, what earns an element a place at each level, and where a tag sits
 // are ADR 0019 rev 5's.
 
@@ -92,6 +95,7 @@ model {
       #SRS014
       #SRS022
       #SRS028
+      link ../../../backend
       technology 'Go'
       icon tech:go
       description '''
@@ -102,6 +106,7 @@ model {
       '''
 
       staticServing = component 'Static serving' {
+        link ../../../backend/internal/staticserve
         description '''
           Serves the frontend bundle and the configuration file as bytes,
           interpreting neither. The configuration is not in the image and is
@@ -111,6 +116,7 @@ model {
 
       routeHandler = component 'Route handler' {
         #SRS009
+        link ../../../backend/internal/router
         description '''
           Serves one route per upstream source. Owns the order the other
           parts run in, and calls the module's shaping functions to build the
@@ -122,6 +128,7 @@ model {
       requestValidation = component 'Request validation' {
         #SRS012
         #SRS013
+        link ../../../backend/internal/router
         description '''
           Checks a request's parameters against the pattern that route's entry
           declares, before any upstream call is made, so the backend issues
@@ -134,6 +141,7 @@ model {
 
       responseCache = component 'Response cache' {
         #SRS011
+        link ../../../backend/internal/cache
         description '''
           Holds a route's last success and last failure, each for the interval
           that route's entry sets, so a display refresh no faster than the
@@ -146,6 +154,9 @@ model {
         #SRS006
         #SRS011
         #SRS014
+        link ../../../backend/internal/upstream
+        link ../../../backend/internal/ratelimit
+        link ../../../backend/internal/secret
         description '''
           Makes the outbound request a route calls for, under that route's
           timeout, response-size ceiling and request-rate bound, and

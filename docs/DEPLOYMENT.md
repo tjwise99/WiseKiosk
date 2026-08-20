@@ -11,10 +11,11 @@ product's obligations live in [`requirements/`](requirements/README.md)
 **What asserts each of these is [`CI.md`](CI.md).** An obligation is stated here; the check that
 decides it is described there, which is where every check on this repository is described.
 
-**None of it is built.** What a release consists of is
-[ADR 0020 rev 1](decisions/0020-release-artifact-set-and-operator-tooling.md); the material itself is
+**Almost none of it is built.** What a release consists of is
+[ADR 0020 rev 2](decisions/0020-release-artifact-set-and-operator-tooling.md); the material itself is
 published by #67 security and supply-chain gates and #54 container build and publish, and the
-procedure's literal commands wait on them.
+procedure's literal commands wait on them. The one exception is the backend's own side of the health
+signal below, which #9 backend skeleton built — the image that will run it has not.
 
 ## What an operator receives
 
@@ -52,7 +53,7 @@ the permissions the file needs are stated where an operator sets them.
 ## The deployment recipe
 
 The recipe is a **sample carrying opinionated defaults**, a starting point an operator edits
-([ADR 0020 rev 1](decisions/0020-release-artifact-set-and-operator-tooling.md)). The obligation is on
+([ADR 0020 rev 2](decisions/0020-release-artifact-set-and-operator-tooling.md)). The obligation is on
 what ships, never on what runs — an operator who edits the recipe, or deploys without it, has made
 their own choice, and WiseKiosk has no way to override it.
 
@@ -71,9 +72,20 @@ secrets out of client output, and the recipe is incomplete in that respect until
 
 ## The health signal
 
-The image declares a `HEALTHCHECK` against the constant service port
-([ADR 0020 rev 1](decisions/0020-release-artifact-set-and-operator-tooling.md)): healthy while the
-backend is serving, unhealthy when it is not, including when the process is alive but wedged.
+The image declares a `HEALTHCHECK` against the service port and runs it through the `-health-check`
+self-check flag. [ADR 0020 rev 2](decisions/0020-release-artifact-set-and-operator-tooling.md) fixes
+both, and is where the port's number is written — a recipe reads it there rather than carrying a
+copy that a later rev would leave behind. The check is healthy while the backend is serving,
+unhealthy when it is not, including when the process is alive but wedged.
+
+**The wedged case is answered within two seconds.** The self-check bounds its request at a two-second
+client timeout, so an instance that accepts a connection and never answers is *reported* unhealthy
+instead of leaving the check hanging with no verdict at all. The bound sits in the binary rather than
+in a `HEALTHCHECK --timeout` the recipe carries, because that is the difference between the promise
+above holding by construction and holding only where whoever wrote the declaration remembered a flag.
+Two seconds is read off what the probe does: a loopback request to a handler that reaches no upstream
+and consults no configuration answers in microseconds or does not answer at all, so anything slower
+is the wedge rather than a slow reply.
 
 **Nothing acts on the status.** Docker and Compose restart a container whose process exits, not one
 reporting unhealthy, so an unhealthy kiosk stays unhealthy until somebody intervenes.

@@ -59,6 +59,62 @@ that reports without failing degrades to noise within a release.
 
 Unbuilt; owned by #67 security and supply-chain CI gates.
 
+## Backend build, vet and tests
+
+The Go tree compiles, `go vet`'s default analyser set reports nothing over it, the backend package
+tests pass, and the packages under `internal/` pass a second time under the race detector. Four steps
+in one recipe, ordered cheapest-failure-first: `go build` reads the non-test tree alone, so a compile
+error is reported against it rather than buried under the test files' copy of the same error.
+
+- Each step is seeded independently — an undefined identifier, a `printf` argument `vet` rejects and
+  the compiler accepts, a passing-`vet` change that breaks a test, and a narrowed critical section no
+  test failure reaches — because a step is reached only when the ones before it passed, so a seed
+  failing at `build` proves nothing about the three behind it. Recorded in
+  [`../scripts/cases/check-go.md`](../scripts/cases/check-go.md).
+
+- **A tree holding no Go package fails**, on `vet` rather than on `build`: `go build ./...` warns that
+  the pattern matched nothing and exits zero, where `go vet ./...` refuses an empty package set. So a
+  backend that resolves to nothing is a failure rather than a clean run, and it is the second step
+  that decides it.
+
+- **The `-race` step makes the concurrency tests assert synchronisation rather than a count.**
+  `internal/ratelimit`'s mutex-guarded buckets and `internal/upstream`'s single flight are the
+  concurrency-bearing packages, and the tests over them create real contention rather than describing
+  it — 200 goroutines released at once onto one token bucket. A regression narrowing `Allow`'s
+  critical section so the bucket map stays guarded but the token arithmetic does not still returns the
+  right grant count: fifty consecutive executions of the seeded test pass without `-race`, where the
+  detector fails it on the first, reporting the unsynchronised read and write by source line. Counting
+  the outcome cannot separate a synchronised bucket from a lucky one; the detector reads the accesses
+  themselves. It is the recipe's one step needing a C toolchain — `-race` refuses to build under
+  `CGO_ENABLED=0`, exiting 2 with `-race requires cgo` — which `ubuntu-latest` carries and a local run
+  wants on `PATH`.
+
+- **The `cmd` soak is outside the `-race` step**, which is scoped to `./internal/...`. The detector's
+  shadow allocation inflates the resident set the bounded-footprint soak asserts is bounded, so
+  running it there would have the instrument move what it measures — and it would roughly double a
+  step already ~120s. `cmd` is covered once, by the plain `test ./...` before it.
+
+**What it leaves unproven.** `go vet` is a fixed analyser set rather than a linter; a configured Go
+linter is § *Lint and type checks*'s, unbuilt and owned by #67 security and supply-chain CI gates. And
+**a package with no test in it passes** — `go test` reports one as a non-failure, so a test lost to a
+build tag, a wrong directory or a deletion is invisible here, and the whole test set deleted from a
+backend that still builds exits zero, measured rather than inferred. Refusing an empty package set
+does not reach that: the packages are present and it is the tests that are gone. Closing it is §
+*Gate wiring*'s whole-tree discovery gate, #82 dead-test detector, and this gate is no substitute for
+it.
+
+**The race detector is a detector, not a proof.** It reports the unsynchronised accesses a run
+actually performs, so an unsynchronised path no test drives is invisible to it and a clean `-race` run
+is not a claim that the package is free of races. The step's value is borrowed entirely from the tests
+underneath it: run the seeded regression above under `-race` with every test but the concurrent one
+selected and it exits 0, the race present and undriven. It also says nothing about `cmd`, which the
+step excludes.
+
+What those tests must *prove* is [`TESTING.md`](TESTING.md)'s and the obligations they answer are the
+tree's; what is decided here is only that the tree builds, that `vet` is clean over it, that the tier
+is executed on the merge path rather than declared, and that the tier's concurrent packages executed
+without a detected race.
+
 ## Generated boundary types
 
 The one OpenAPI schema is hand-authored and both sides' types are generated from it
@@ -160,7 +216,7 @@ enabled, and this paragraph rather than a check is what records it.
 What a release publishes and what CI asserts about it. Verification runs against the published digest
 in a separate job that pulls from the registry, reads only the registry and the public transparency
 log, and holds no credential. Unbuilt; owned by #67 security and supply-chain gates, against the set
-[ADR 0020 rev 1](decisions/0020-release-artifact-set-and-operator-tooling.md) decides.
+[ADR 0020 rev 2](decisions/0020-release-artifact-set-and-operator-tooling.md) decides.
 
 **Nothing decides the no-credential property.** It is a proposal for a check, not an asserted
 guarantee: no gate compares the verification job's permissions against it, and SECURITY.md publishes
@@ -181,7 +237,7 @@ a posture resting on this section. Until #77 fences this document, read it as in
   **What no check here decides:** the documentation site is deployed from the default branch rather
   than from a tag, so it is not a release asset and nothing asserts any correspondence between what it
   describes and the digest an operator is running. That drift is chosen rather than overlooked, and
-  ADR 0020 rev 1 records the choice.
+  ADR 0020 rev 2 records the choice.
 - **Signature.** Keyless `cosign` verification against the published digest, with the expected
   certificate identity and OIDC issuer, exits zero; against a deliberately wrong identity it exits
   non-zero.
@@ -237,7 +293,7 @@ What each of these obligations *is*, and why, is [`DEPLOYMENT.md`](DEPLOYMENT.md
   policy is absent. **It gates that one key deliberately and no others**: the key is the residue of a
   requirement deleted on #69 tree rebuild, not the beginning of a recipe linter. Every other value in
   the recipe is a sample default an operator is expected to weigh and change
-  ([ADR 0020 rev 1](decisions/0020-release-artifact-set-and-operator-tooling.md)), and gating one would
+  ([ADR 0020 rev 2](decisions/0020-release-artifact-set-and-operator-tooling.md)), and gating one would
   assert a recommendation as an obligation.
 - **The image reports its health in both directions.** An integration test runs the image and reads
   the reported status while the backend serves and while it does not. A test that only ever observes
@@ -625,9 +681,29 @@ violate any of them, so they are checks here rather than obligations there.
 - **Shaping packages are pure by construction.** Each module's shaping package resolves a transitive
   import set that is a subset of a declared pure-package allowlist, so I/O is absent by construction
   rather than by a denylist of forbidden packages. No exported shaping function's parameters include
-  the secret type ([ADR 0023 rev 1](decisions/0023-secret-output-containment.md)) or the URL-builder's
+  the secret type ([ADR 0023 rev 2](decisions/0023-secret-output-containment.md)) or the URL-builder's
   output type, and the shaping unit tests run against a transport
   that panics on use (#12).
+- **Exactly one non-test reference unwraps the confined secret type.**
+  [ADR 0023 rev 2](decisions/0023-secret-output-containment.md) makes the secret type unemittable and
+  then rests the structural half of that on the unwrap being singular and reviewable — *"the sole call
+  site that unwraps it to the raw value is guarded by a lint"*. This is that lint: over the tracked,
+  non-`_test.go` Go files under `backend/`, references to the type's unwrap method are counted and any
+  count other than one fails, naming every site. Test files are exempt by decision — the unit tier
+  proving the redaction paths cannot do so without unwrapping — which is also the gate's widest hole:
+  a leak reachable only from a test file is outside the population. The match reaches a method *value*
+  as well as a call, so an unwrap aliased behind a variable is counted rather than escaping the count,
+  and it is textual, so a mention in a comment or a string literal fails rather than passes.
+  **Two empty-population cases fail rather than reading clean**: no non-test Go file under `backend/`,
+  and a tree in which the method is not declared at all — a check keyed on a name finds nothing once
+  the name is renamed, and that is indistinguishable from a compliant tree unless it is refused.
+  Recorded in [`../scripts/cases/check-secret-unwrap.md`](../scripts/cases/check-secret-unwrap.md).
+  **What it leaves unproven**: that a secret is not emitted. This counts unwrap sites and reads
+  nothing about what the one site does with the value — redaction through every formatting path is the
+  `secret` package's own tests', and the behavioural edge is the canary
+  ([ADR 0023 rev 2](decisions/0023-secret-output-containment.md) composes the two). It also decides
+  nothing about *where* the site sits: singularity is what the ADR obliges, so moving the unwrap to
+  another package passes, and only a second one fails.
 - **The configuration schema recomposes from its fragments.** Recomposing from the module fragments
   leaves the committed schema unchanged; module directories and fragments stand in bijection, with no
   registered module lacking a fragment and no orphan fragment; each fragment file is the unique

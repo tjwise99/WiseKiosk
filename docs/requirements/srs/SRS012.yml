@@ -14,8 +14,17 @@ rationale: |
   What a given source's pattern is — a code format, an enumerated identifier set — is that module's
   own obligation under ADR 0012 rev 2, not this one's; naming examples here would put two modules'
   requirements in a framework item.
+
+  Verification lands with the first module end-to-end (#12) rather than with the backend skeleton:
+  the rejection is against the pattern a source declares, and a skeleton registers no source to
+  declare one, so TST026<!-- Pending: parameter-validation rejection test --> is active from #12
+  and not before. Until then this requirement is decomposed but carries no active verifying item.
+  The gap is in the tree's record rather than in coverage: the skeleton does reject a non-conforming
+  request without issuing an upstream request, and a test asserting it runs on every commit — what
+  is missing is a verifying item that can name a declared pattern, not the behaviour or its
+  exercise.
 ref: ''
-reviewed: vnp3CCJlNSYmXbwifM9wyfPbvWUlZvbWK_BEuYkGrTg=
+reviewed: Z5qNQJtHpfyr3N4yrdVReMQsHVaMBG3kEvo01SxiqEM=
 status: accepted
 text: |
   The backend shall validate each request's parameters against the known-good

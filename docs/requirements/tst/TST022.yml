@@ -1,21 +1,19 @@
-active: false
+active: true
 derived: false
 header: |
-  Pending: canary-secret leak test
+  Canary-secret leak test
 level: 1.18
 links:
 - SRS008: zPNR94VDLVTvYhIrdW2Uhq-1ldORxMZEtF-Y1cLAbdc=
 normative: true
 rationale: ''
 ref: ''
-reviewed: 2RaVFFdj5dvnvryYjil16HhLKXwTlgX-tLCE8VZmu34=
+reviewed: xhH-kdq7MNqs9Jn_xoIZDfuWnY5irPzdhtLEIOqws-c=
 status: proposed
 text: |
-  Pending: canary test planting a known secret value through <NAME>_FILE
-  delivery, exercising every route including the unresolvable-secret failure paths,
-  and asserting the canary value appears in no response body, header, or
-  log line. Lands with the backend skeleton (#9); activated and given a
-  references entry then.
+  Canary test planting a known secret value through <NAME>_FILE delivery, exercising every route
+  including the unresolvable-secret failure paths, and asserting the canary value appears in no
+  response body, no response header, and no log line.
 verification-justification: |
   Settles that a planted canary appears in no body, header or log across every route including the
   failure paths. Leaves unproven a secret emitted after transformation - a hash or a prefix would

@@ -13,12 +13,12 @@ rationale: |
   SYS003's<!-- A deployment is parameterised from outside the image --> parameterisation is not
   meant to offer. Where the numbers live and how the bound is achieved - a TTL response cache keyed
   on the request, a token bucket, or both - is
-  TST025's<!-- Pending: TTL cache-behaviour test (liveness canary) -->, so tuning one does not
+  TST025's<!-- TTL cache-behaviour test (liveness canary) -->, so tuning one does not
   touch the specification. Two consequences worth stating: a cache hit is neither counted against
   the limit nor rejected by it, and a sustained upstream outage must not cause an upstream request
   on every incoming request.
 ref: ''
-reviewed: 1rKkz6_cqh1oePyo4OcEnjB0iM4wqke4aZuGSVj8_Dk=
+reviewed: 1l4vEOLPApefJZadU9YIeNu0QDDAN1eo0_wVYhWAkG0=
 status: accepted
 text: |
   The backend's rate of upstream requests to a source shall be bounded regardless of how many

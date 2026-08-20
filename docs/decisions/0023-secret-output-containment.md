@@ -3,10 +3,13 @@
 **Status:** accepted
 **Decided:** 2026-08-15 (#74 secret output containment, the phase-2 decision the `SRS` pass of #69
 deferred rather than default to a canary)
-**Rev:** 1
+**Rev:** 2
 
 ## Revisions
 
+- **rev 2** — 2026-08-19 — corrects the Consequences on the unwrap-site lint, which the skeleton
+  built: it has an owning check, so review is no longer the control and no ticket is owed (#9
+  backend skeleton).
 - **rev 1** — 2026-08-15 — first written (#74 secret output containment).
 
 ## Context
@@ -17,7 +20,7 @@ to one at all. [`../../SECURITY.md`](../../SECURITY.md) rests on that rule.
 What was left open is *how the obligation is proven*, and the `SRS` pass of #69 recorded the opening
 deliberately: the mechanism is a milestone-2 decision and **must not default to a canary test**. The
 candidate table then had nowhere to live but the pending note of
-TST022<!-- Pending: canary-secret leak test -->, an `active: false` item Doorstop skips entirely, so
+TST022<!-- Canary-secret leak test -->, an `active: false` item Doorstop skips entirely, so
 the record sat in a field nothing reads. This ADR is the decision that note was waiting for. #73
 records the secret *delivery* mechanism; this is its *containment* counterpart.
 
@@ -65,7 +68,7 @@ that ADR removed. **This ADR is the type's specification**; [`../CI.md`](../CI.m
 framework structure* is its enforcement. The requirement stays sole: it states the observable
 obligation — no secret value in output — which the canary verifies. No requirements-tree edit is made.
 
-**The canary is the falsifiable edge, not the proof.** TST022<!-- Pending: canary-secret leak test -->
+**The canary is the falsifiable edge, not the proof.** TST022<!-- Canary-secret leak test -->
 plants a known secret value through the delivery path and asserts that value appears in no response
 body, header, or log line across every route — including the unresolvable-secret failure paths, where
 an upstream error is most likely to be echoed. That echoed-upstream-error case is exactly where a
@@ -110,10 +113,12 @@ why the two are composed rather than either chosen.
   singular and linted for the structural claim to hold. The [`../CI.md`](../CI.md) § *Module and
   framework structure* check that names the type is what keeps a shaping function from quietly
   accepting it.
-- **The type and its unwrap-site lint are built with the backend skeleton (#9), and are unbuilt until
-  then.** The type-parameter exclusion has an owning [`../CI.md`](../CI.md) check; the single-unwrap
-  lint does not yet, and needs a check row or ticket when #9 lands the type — until it exists, review
-  is the control for the unwrap property, as it is for the other structure checks this record leans on.
+- **The type and its unwrap-site lint are built with the backend skeleton (#9).** Both halves of the
+  structural claim have an owning [`../CI.md`](../CI.md) § *Module and framework structure* check: the
+  type-parameter exclusion, and — as *Exactly one non-test reference unwraps the confined secret
+  type* — the single-unwrap lint, which counts references to the unwrap method across the tracked
+  non-test Go files and fails on any count other than one. The unwrap property is enforced rather
+  than reviewed for.
 - **The obligation is proven, not merely asserted.** The requirement gains a mechanism with a structural half
   that cannot be sampled around and a behavioural half that can fail — the falsifiable edge #69 asked
   for without pre-choosing.
