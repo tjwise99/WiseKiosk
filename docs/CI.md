@@ -100,8 +100,8 @@ linter is § *Lint and type checks*'s, unbuilt and owned by #67 security and sup
 build tag, a wrong directory or a deletion is invisible here, and the whole test set deleted from a
 backend that still builds exits zero, measured rather than inferred. Refusing an empty package set
 does not reach that: the packages are present and it is the tests that are gone. Closing it is §
-*Gate wiring*'s whole-tree discovery gate, #82 dead-test detector, and this gate is no substitute for
-it.
+*Gate wiring*'s whole-tree discovery gate, which reads the population from the tracked tree rather
+than from what a runner happened to execute, and this gate is no substitute for it.
 
 **The race detector is a detector, not a proof.** It reports the unsynchronised accesses a run
 actually performs, so an unsynchronised path no test drives is invisible to it and a clean `-race` run
@@ -808,8 +808,27 @@ already decided, which is what makes it a check and not a want.
   semantics differ.
 - Every committed test file falls under a configured runner's reach; a file excluded by skip, build
   tag, glob gap, or wrong directory fails. The requirements tier is covered by `doorstop --error-all`
-  and is deliberately not re-encoded here. Unbuilt until a runner exists to detect anything: #82
-  dead-test detector.
+  and is deliberately not re-encoded here.
+  **It is a discovery diff, not a second set of globs.** The population is the tracked files whose
+  *names* say they are tests — `*_test.go`, and the frontend's `*.test.ts`, `*.spec.ts`, `*.test.tsx`
+  and `*.spec.tsx` — repository-wide and deliberately broader than any runner's own configuration,
+  so a glob gap is a difference rather than a definition. The reach is the union of what each runner
+  answers when asked what it would discover: `go list -json`'s `TestGoFiles` and `XTestGoFiles`,
+  `vitest list --filesOnly`, and `playwright test --list`. Asking the runners is what makes the
+  answer faithful — a build tag, a host filename suffix and a config-level exclude are already
+  applied in what they say, where a check restating their globs would decide none of them.
+  A source-level `t.Skip` is outside this: the file still compiles and is still discovered, so it is
+  reached, and a test that skips at run time is the tier's business rather than this gate's.
+  **There is no per-file allowlist**, by [ADR 0010 rev 1](decisions/0010-runtime-materialised-gate-fixtures.md)
+  — a file that stops being reached is closed by wiring it to a runner or by deleting it, never by
+  an entry beside it.
+  **Both ends fail closed.** A discovery command that cannot run leaves the reach unmeasured, and
+  that is reported rather than a difference computed against a partial set: an unreachable runner
+  must read as neither a tree of dead files nor a clean one. A population that resolves to no test
+  file fails too, a run that judged nothing not being a clean tree. Recorded in
+  [`../scripts/cases/check-dead-test-py.md`](../scripts/cases/check-dead-test-py.md).
+  **What it leaves unproven** is that a reached test asserts anything: discovery decides that a
+  runner would execute the file, and what the tiers must guarantee is [`TESTING.md`](TESTING.md)'s.
 - The default branch's required status checks equal the gate jobs the workflow defines — a gate job
   absent from the required set fails, and so does a required entry naming no defined job. **The
   protection is strict, and administrators are bound by it**: a branch behind the default branch
