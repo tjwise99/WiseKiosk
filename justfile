@@ -213,6 +213,18 @@ check-render:
 check-dead-test:
     python3 scripts/check-dead-test.py
 
+# Outside `verify`, and invoked by a CI job of its own: this tier builds and runs the image, and
+# docs/CI.md § Gate wiring is what decides where a check needing Docker sits.
+[group('checks')]
+[doc('The container image builds, runs non-root, serves the configuration a deployment mounts and nothing in its place, carries no deployment content, keeps two instances independent, and holds nothing secret-shaped in any layer; needs Docker')]
+check-image:
+    docker buildx build --load --tag wisekiosk:citest .
+    python3 scripts/image/nonroot_uid.py wisekiosk:citest
+    python3 scripts/image/config_bind_mount.py wisekiosk:citest
+    python3 scripts/image/no_deployment_content.py wisekiosk:citest
+    python3 scripts/image/two_instances.py wisekiosk:citest
+    python3 scripts/image/layer_secret_scan.py wisekiosk:citest
+
 [group('config')]
 [doc('Regenerate the configuration-object TypeScript types from the configuration schema')]
 config-codegen:
@@ -243,5 +255,5 @@ check-languages:
     python3 scripts/check-languages.py
 
 [group('checks')]
-[doc('Run every check the PR gate runs that has a local form; secret scanning, the PR-title check (commitlint, via the hook layer), the link check (lychee, from a digest-pinned image) and the workflow audit (zizmor, actionlint) are CI-only')]
+[doc('Run every check the PR gate runs that has a local form and needs no Docker; secret scanning, the PR-title check (commitlint, via the hook layer), the link check (lychee, from a digest-pinned image) and the workflow audit (zizmor, actionlint) are CI-only, and the image tier is `just check-image`')]
 verify: check-untracked check-hooks check-branch check-reqs check-citations check-arch check-arch-trace check-boundary check-go check-secret-unwrap check-config-types check-build check-static-bundle check-unit check-render check-site check-adr-index check-adr-revs check-docs-index check-repo-silo check-languages check-dead-test

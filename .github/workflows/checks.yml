@@ -335,6 +335,31 @@ jobs:
       - name: Exactly one non-test reference unwraps the confined secret type
         run: just check-secret-unwrap
 
+  image-tests:
+    name: image-tests
+    # The image tier (docs/TESTING.md): builds the container image and holds the artifact to what
+    # the tree obliges of it — a non-root user, a configuration that comes from the mount and
+    # nowhere else, no deployment content, two instances sharing nothing, and no secret-shaped value
+    # in any layer. A job of its own rather than a step elsewhere because it is the one tier that
+    # needs Docker, which is why it is not a `just verify` dependency (docs/CI.md § Gate wiring:
+    # Docker is not assumed on a contributor machine). The recipe body is the one spelling of what
+    # runs, here and locally. No secrets: the image is built and run locally on the runner and is
+    # pushed nowhere — publishing is publish.yml's.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: docker/setup-buildx-action@37fe631027851001ddb9b187196cc803df7f5f0e # v4.3.0
+
+      - uses: extractions/setup-just@53165ef7e734c5c07cb06b3c8e7b647c5aa16db3 # v4
+        with:
+          just-version: "1.58.0"
+
+      - name: The image runs non-root, serves only a mounted configuration, carries no deployment content or secret material, and keeps two instances independent
+        run: just check-image
+
   process:
     name: process
     # Process gates (ADR 0006 rev 4): the branch is named type_number-snake_name and
