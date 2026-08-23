@@ -289,9 +289,10 @@ a posture resting on this section. Until #77 fences this document, read it as in
   **What no check here decides:** `.description` and `.licenses` resolve from repository metadata
   rather than from the commit, so either can change with no commit and nothing reports it; and
   `.created` is the time the build ran, this project making no bit-identical-rebuild claim.
-  **What emits them** is `publish.yml`'s `docker/metadata-action` step (#54): eight keys are that
-  action's own, `.revision` is the commit the job runs on, and `.documentation` is supplied as a
-  literal on both surfaces. The levels the check reads are declared in that step as
+  **What emits them** is `publish.yml`'s `docker/metadata-action` step (#54): eight of the nine are
+  that action's defaults, `.revision` among them and bound to the commit the job runs on, and
+  `.documentation` is supplied as a literal on both surfaces. The levels the check reads are
+  declared in that step as
   `DOCKER_METADATA_ANNOTATIONS_LEVELS: index,manifest`.
 - **Base images are pinned** to a `@sha256:` digest rather than a floating tag, for every base and
   stage in the Dockerfile — three stages, three digests in the committed file (#54).
@@ -347,8 +348,8 @@ What each of these obligations *is*, and why, is [`DEPLOYMENT.md`](DEPLOYMENT.md
 
 **Two are built and three are not.** The recipe and health-signal checks landed with #54 container
 build and publish, against the image and the recipe that ticket ships. The three that run against a
-published release are owned one ticket each — #138 bring-up check, #139 shipped-example-configuration
-check and #140 image-swap check — which is how this project records scoped work
+published release are owned one ticket each — #138 bring-up check, #139 example-configuration check
+and #140 image-swap check — which is how this project records scoped work
 ([ADR 0005 rev 1](decisions/0005-traceability-gating.md)); what each asserts was decided by #71
 release artifact set, which shipped no code.
 
