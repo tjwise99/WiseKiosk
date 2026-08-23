@@ -19,7 +19,8 @@ Not everything CI does is a gate. These produce material a person acts on.
 - **Grouped dependency update proposals.** Dependabot carries one entry per ecosystem present in the
   tree — `github-actions` at the root, and the `pip` and `npm` entries pointing at the silos holding
   the documentation toolchains' manifests; `gomod` and the application `npm` entry join them with the
-  manifests they need. Each carries a non-empty `groups` key, so an ecosystem's updates arrive as one
+  manifests they need, and `docker` names the root, where the `Dockerfile` carrying its base-image
+  pins sits ([ADR 0021 rev 1](decisions/0021-repository-layout.md)). Each carries a non-empty `groups` key, so an ecosystem's updates arrive as one
   reviewable change rather than a dozen. That the `github-actions` entry exists and every other entry
   resolves to its manifest is § *Repository shape*'s.
 - **Code-scanning results.** Every static-analysis finding is reported to the repository's
