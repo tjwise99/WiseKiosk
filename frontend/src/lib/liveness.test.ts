@@ -21,4 +21,15 @@ describe('the liveness check', () => {
 
     expect(await checkLiveness(refused)).toBe(false);
   });
+
+  it('carries a deadline, and reports it unreachable when the ask is cut off at one', async () => {
+    let deadline: AbortSignal | null | undefined;
+    const wedged: typeof fetch = (_input, init) => {
+      deadline = init?.signal;
+      return Promise.reject(new DOMException('signal timed out', 'TimeoutError'));
+    };
+
+    expect(await checkLiveness(wedged)).toBe(false);
+    expect(deadline).toBeInstanceOf(AbortSignal);
+  });
 });
