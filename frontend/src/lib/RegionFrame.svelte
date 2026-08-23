@@ -3,7 +3,17 @@
   import { modules } from './modules';
   import { FRAME_COLUMNS, FRAME_ROWS, placementStyle } from './regions';
 
-  const { configuration }: { configuration: WiseKioskDisplayConfiguration } = $props();
+  /**
+   * `reachable` is the page shell's answer about the backend, forwarded to every module and read by
+   * none of the frame's own layout: a module fed by the backend stands down while it is false, the
+   * page reporting the outage once, and a module fed by nothing ignores it
+   * (docs/contracts/module-contract.md § An unavailable module and an unreachable backend are
+   * different states).
+   */
+  const {
+    configuration,
+    reachable,
+  }: { configuration: WiseKioskDisplayConfiguration; reachable: boolean } = $props();
 
   /**
    * The regions the configuration names, each with the modules placed there in the order it names
@@ -31,7 +41,7 @@
       {#each names as name, index (index)}
         {@const Module = modules[name]}
         {#if Module}
-          <Module />
+          <Module {reachable} />
         {:else}
           <p class="unknown">No module named “{name}” — nothing renders here until one is added.</p>
         {/if}

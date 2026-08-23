@@ -52,7 +52,7 @@
     {#if !reachable}
       <BackendUnreachable />
     {/if}
-    <RegionFrame configuration={outcome.configuration} />
+    <RegionFrame {reachable} configuration={outcome.configuration} />
   </div>
 {:else}
   <ConfigurationError {outcome} />
