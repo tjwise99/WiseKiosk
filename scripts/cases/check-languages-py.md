@@ -11,6 +11,12 @@ ADR 0017 rev 8 declared `woff2` and gave `html` a second disposition: every must
 re-run against the widened set, and the row naming a second font extension was added there. A passing
 run over this branch's head reports **240 tracked files**.
 
+Re-exercised under #54 container image and publish, script md5 `d44a6cc60719298083fbeb2b6d455d40`,
+when the container build's two extensionless inputs — `Dockerfile` and `.dockerignore` — entered
+`NO_EXTENSION`: every must-fail row below was re-run against the widened set, and the row naming a
+`Dockerfile` at an undeclared path was added there, the `.dockerignore` half of the same claim run
+the same way. A passing run over this branch's head reports **315 tracked files**.
+
 | Direction | Case | Input |
 |---|---|---|
 | Must fail | A tracked file carries an extension outside the declared set | `scripts/rogue.rs` added to the tree |
@@ -18,6 +24,7 @@ run over this branch's head reports **240 tracked files**.
 | Must fail | A declared extension spelled in a different case | `scripts/rogue.PY`, a copy of a real check, added beside it |
 | Must fail | A file with no extension and no declared entry for its exact path | `scripts/rogue-noext` added to the tree |
 | Must fail | A declared no-extension basename reused at a path that is not declared | `scripts/decoy/LICENSE`, a copy of the real `LICENSE`, added under a subdirectory |
+| Must fail | The container build's `Dockerfile` at a path other than the declared one | `frontend/Dockerfile`, a copy of the root `Dockerfile`, added beside the frontend package root — declaring the root path admits that path and not the basename |
 | Must fail | A **new** `.sh` file, the language ADR 0017 rev 8 says authors nothing | `scripts/rogue.sh` added to the tree |
 | Must fail | A **new** `.mjs` file, same reasoning | `scripts/rogue.mjs` added to the tree |
 | Must fail | A `LEGACY`-grandfathered file deleted, leaving its entry stale | `scripts/check-eol.sh` removed from the tree, the entry left in `LEGACY` |
