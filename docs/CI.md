@@ -647,7 +647,10 @@ changed, which the citation resolver above decides without anyone declaring anyt
   must not read as success. Sub-issue membership means a shared merge target — topical grouping is
   the milestone's job.
 - The Docker build context excludes `.git` and `node_modules`, which the committed `.dockerignore`
-  does, along with the other trees a build of the two source silos reads nothing from. Neither is
+  does, along with `.github/`, `.claude/`, `docs/`, the frontend's build and test output, and the
+  `scripts/` virtualenv. That is the whole of what it excludes rather than everything a build of the
+  two source silos reads nothing from: `deploy/`, `boundary/`, `scripts/`, the justfile and the root's
+  Markdown are unread and in the context. Neither `.git` nor `node_modules` is
   secret material; both are build hygiene, and a smaller context is a faster and more predictable
   build. No gate reads that file — this line rather than a check is what records the exclusions, and
   what the image carries is decided by the tier over the built image instead

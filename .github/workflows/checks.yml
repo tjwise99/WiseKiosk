@@ -22,7 +22,10 @@ concurrency:
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
-  # Every job's `name:` equals its id: required status checks key on the displayed name.
+  # Every job's `name:` equals its id: required status checks key on the displayed name. A matrix
+  # job is the one exception the platform imposes — its displayed name carries its matrix values,
+  # `image-arch (linux/amd64)` and `image-arch (linux/arm64)` — so the required set names each leg
+  # rather than the job.
   # Every check with a local form runs as its `just` recipe — the recipe body is the one
   # spelling of what runs here and locally (docs/CI.md § Gate wiring) — and every setup-just
   # step pins `just-version:`, so the executor CI depends on is a decided version, not a float.

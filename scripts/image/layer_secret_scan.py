@@ -162,7 +162,12 @@ def check_canary(image, compiled, problems):
             docker("build", "--tag", CANARY_IMAGE, str(context))
             _, _, findings = scan(CANARY_IMAGE, compiled, problems)
         finally:
-            docker("image", "rm", "--force", CANARY_IMAGE)
+            # Removing the throwaway image is best effort: a removal that fails is not this scan's
+            # verdict, and raising here replaces the build or scan error with it.
+            try:
+                docker("image", "rm", "--force", CANARY_IMAGE)
+            except DockerError:
+                pass
 
     if not any(value == canary for _, _, _, value in findings):
         problems.append(

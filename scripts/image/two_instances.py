@@ -132,8 +132,10 @@ def healthcheck(image, problems):
 def check_isolation(image, fixtures, problems):
     """Each instance serves its own configuration, and stopping one leaves the other serving."""
     check = healthcheck(image, problems)
-    containers = [start(image, fixture) for fixture in fixtures]
+    containers = []
     try:
+        for fixture in fixtures:
+            containers.append(start(image, fixture))
         bases = [address(container) for container in containers]
         for base in bases:
             if not wait_ready(base, problems):
@@ -165,9 +167,14 @@ def check_isolation(image, fixtures, problems):
             except DockerError as error:
                 problems.append(f"the surviving instance failed its declared healthcheck: {error}")
         status, body = fetch(bases[0], CONFIG_URL)
-        if status != 200 or body != fixtures[0].read_bytes():
+        if status != 200:
             problems.append(
                 f"the surviving instance answered {status} at {CONFIG_URL} after the other stopped"
+            )
+        elif body != fixtures[0].read_bytes():
+            problems.append(
+                f"the surviving instance served {len(body)} byte(s) at {CONFIG_URL} that are not "
+                f"its own fixture's after the other stopped"
             )
     finally:
         for container in containers:
