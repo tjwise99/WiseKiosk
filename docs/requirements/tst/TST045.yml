@@ -11,7 +11,7 @@ ref: ''
 references:
 - path: frontend/tests/render/emitting-surfaces.spec.ts
   type: file
-reviewed: ivtzJvOnkchhvaMMjHl4L1sqGy-UUr5sXocNikZLPa4=
+reviewed: 5onnEZf9644h69-gI2XqWJaR5KagFXVD6o0FETxrlbk=
 status: accepted
 text: |
   Render a fixture configuration and read every emitting surface of every element the page draws -
@@ -22,8 +22,10 @@ text: |
   spelling that reads as legal. Must pass: text at the maximum emission its own obligation
   requires, and an image rendered as content brighter than the ceiling - the exemption is what
   these two exercise, and without them a check that dropped the exemption altogether would report
-  the right answer on every other case. Must pass too: a hairline rule under a module title, and a
-  grouping tint dark enough to clear the ceiling. The ceiling is calibrated against the glass, so
+  the right answer on every other case. Must pass too: a hairline rule under a module title, a
+  grouping tint dark enough to clear the ceiling, and the page in the state it raises when the
+  backend stops answering, which draws a surface of the page's own rather than a module's. The
+  ceiling is calibrated against the glass, so
   moving it changes this check and not the requirement.
 verification-justification: |
   Settles that nothing the page draws other than text and imagery clears the ceiling, whatever the
