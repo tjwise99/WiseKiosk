@@ -7,7 +7,7 @@ case is [`../README.md`](../README.md)'s.
 
 Every case runs the harness from the tracked tree against an image, so the seed is an **image** rather
 than a file: each failing row builds a throwaway image `FROM wisekiosk:citest` carrying the defect and
-hands that ref to the harness, and the two rows whose subject is the harness's own input instead patch
+hands that ref to the harness, and the five rows whose subject is the harness's own input instead patch
 a copy of the harness in a scratch directory. One row builds its image from a patched copy of the
 tracked tree instead, the defect it seeds being what the running handler serves rather than anything a
 layer on top can carry. One row seeds nothing at all: a ref no image answers to is what a leg that
