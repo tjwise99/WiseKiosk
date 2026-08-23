@@ -5,7 +5,7 @@ The inputs this check has been run against, in both directions. What it *asserts
 
 Covers both keys, both directions of each, the hook file's absence, and the guard that reports an
 unreadable block as unread rather than as a missing key. Script md5
-`ac0fefa077f6fb16adfdfde533fae3a9` at `cbc1378 name the backstop`; each row is a scratch tree holding
+`99a739253dcf0b3b4d873bebbb0e258b` at `8aea7a9 name the trigger`; each row is a scratch tree holding
 that script and a `docs/requirements/tst/.doorstop.yml` of its own, the passing row being the config
 this branch commits.
 
