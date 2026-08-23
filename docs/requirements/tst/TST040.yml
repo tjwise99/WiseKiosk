@@ -11,7 +11,7 @@ ref: ''
 references:
 - path: frontend/tests/render/backend-unreachable.spec.ts
   type: file
-reviewed: GomrVeLiIqF7jht-f_nw9bxiVvdvzq9O1Q9SMA6-gWQ=
+reviewed: jnz8MDtZEq9WhsLVWiXONf-T8ywB9zMmaI2H14SbeSY=
 status: proposed
 text: |
   Check that induces a backend outage with the page already served, and asserts the display renders
@@ -21,4 +21,7 @@ verification-justification: |
   Settles that one page-wide state replaces the per-module states and that it carries a remediation
   distinct from its diagnosis. Leaves unproven whether the remediation is the right advice - #71
   recommends it, no gate decides it.
+  The replacement half is asserted against nothing: no module carries an unavailable state yet, so
+  what the check reads is that the page raises one state, not that it raises one instead of several.
+  It is re-read when #12 first module end-to-end lands a module whose own failure is rendered.
 verification-method: test
