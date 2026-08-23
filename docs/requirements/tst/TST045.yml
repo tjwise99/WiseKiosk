@@ -11,14 +11,17 @@ ref: ''
 references:
 - keyword: nothing the page draws clears the ceiling, over the design as it is stated
   path: frontend/tests/render/emitting-surfaces.spec.ts
+  sha: f82bf4695e72e5dde12c3542dd4a6834d5de126e235461d43c211f867aad2c51
   type: file
 - keyword: the page still draws the two things the exemption is for
   path: frontend/tests/render/emitting-surfaces.spec.ts
+  sha: f82bf4695e72e5dde12c3542dd4a6834d5de126e235461d43c211f867aad2c51
   type: file
 - keyword: reports ${seed.name}
   path: frontend/tests/render/emitting-surfaces.spec.ts
+  sha: f82bf4695e72e5dde12c3542dd4a6834d5de126e235461d43c211f867aad2c51
   type: file
-reviewed: ivtzJvOnkchhvaMMjHl4L1sqGy-UUr5sXocNikZLPa4=
+reviewed: JYt9Kem5fLPz_XlM_qeRmToXHd6VzPQMYqQiIpvAsJM=
 status: accepted
 text: |
   Render a fixture configuration and read every emitting surface of every element the page draws -

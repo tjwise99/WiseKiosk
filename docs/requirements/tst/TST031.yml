@@ -11,8 +11,9 @@ ref: ''
 references:
 - keyword: TestFailureIsServedFromCacheForTheNegativeTTL
   path: backend/internal/upstream/proxy_test.go
+  sha: 6bc66b0b429c39ea710b836878de38b5fbfc95a491a8315a4c280c2b19dd52d6
   type: file
-reviewed: 3pHsQAhUW2troUGa6XkkCoPvRLYIj4pdbjdOFLxBZEA=
+reviewed: C80FThRwrkkevBmiSizFkZEz9xBLK8N25AgoY1pj-TQ=
 status: proposed
 text: |
   Test asserting an upstream failure is cached for a negative TTL shorter than the source's success

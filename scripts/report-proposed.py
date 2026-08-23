@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """The proposed-item backlog, printed on a passing run. Reports; not a gate.
 
-ADR 0005 rev 1 makes the tree the backlog: `proposed` items live on `main`, and the backlog is
+ADR 0005 rev 2 makes the tree the backlog: `proposed` items live on `main`, and the backlog is
 "reported as the work queue, never a blocking failure — a scoping-only session stays green." This is
 that report, and nothing more: what the tree holds decides the output and never the exit status, so
 the run it prints on stays exactly as green or red as its gates made it.

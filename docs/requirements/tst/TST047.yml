@@ -11,11 +11,13 @@ ref: ''
 references:
 - keyword: renders every text element at full emission
   path: frontend/tests/render/content-emission.spec.ts
+  sha: 27140a11188a2da66791f6981aaedc768d8eb478ee2436f454ffa660492f011a
   type: file
 - keyword: renders the configuration report at full emission too
   path: frontend/tests/render/content-emission.spec.ts
+  sha: 27140a11188a2da66791f6981aaedc768d8eb478ee2436f454ffa660492f011a
   type: file
-reviewed: QiO_F3_JEtQtjvy1CvmZSp_Xfxq7-h5bX-7N03Eznz8=
+reviewed: R1iQT8R0clfp1v07fxCJGlSG8TvRoP4d6uomAf0pQwM=
 status: accepted
 text: |
   Read the rendered value of every text element the page presents for reading, asserting each sits

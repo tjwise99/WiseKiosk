@@ -11,14 +11,17 @@ ref: ''
 references:
 - keyword: holds the regions ${depth}% of the display's height off every edge
   path: frontend/tests/render/edge-band-depth.spec.ts
+  sha: 0394c11023338a7fb026bc988e10137e42256ed55b594632120ed0337b37ee68
   type: file
 - keyword: the band tracks the depth rather than being one figure for both
   path: frontend/tests/render/edge-band-depth.spec.ts
+  sha: 0394c11023338a7fb026bc988e10137e42256ed55b594632120ed0337b37ee68
   type: file
 - keyword: assumes no band where the configuration declares none
   path: frontend/tests/render/edge-band-depth.spec.ts
+  sha: 0394c11023338a7fb026bc988e10137e42256ed55b594632120ed0337b37ee68
   type: file
-reviewed: gkTPi93iGccvyGalxwJRTN5AHH-S8a2ySGpMhyLOvCk=
+reviewed: R3sOA9IzLyvRZ6nPPqO5dLkjXqHd3hatg_7d7zG-oRw=
 status: accepted
 text: |
   Render a fixture configuration declaring the edge band at more than one depth and read each

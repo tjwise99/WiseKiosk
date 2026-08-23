@@ -11,14 +11,17 @@ ref: ''
 references:
 - keyword: TestHangingFetchEndsAtTheDeadline
   path: backend/internal/upstream/proxy_test.go
+  sha: 6bc66b0b429c39ea710b836878de38b5fbfc95a491a8315a4c280c2b19dd52d6
   type: file
 - keyword: TestOneHangingSourceDoesNotStallAnother
   path: backend/internal/upstream/proxy_test.go
+  sha: 6bc66b0b429c39ea710b836878de38b5fbfc95a491a8315a4c280c2b19dd52d6
   type: file
 - keyword: TestBodyOverTheSizeBoundFails
   path: backend/internal/upstream/proxy_test.go
+  sha: 6bc66b0b429c39ea710b836878de38b5fbfc95a491a8315a4c280c2b19dd52d6
   type: file
-reviewed: t3gPGZcldDLivNvljMhNOgzk0L10M4mhHEg4h2An1w0=
+reviewed: Yf4YboVGZh1_y2c50C3eOOGz9qCu_yvA--njyKBxa1Y=
 status: proposed
 text: |
   Test asserting an upstream that hangs past the outbound timeout, or returns a response over the

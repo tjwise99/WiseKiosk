@@ -11,8 +11,9 @@ ref: ''
 references:
 - keyword: TestResolveRotationIsNotCached
   path: backend/internal/secret/secret_test.go
+  sha: 7eda4dce4050addf16f18b5ee78571f07f33956676c17c697d21b1e7dd5ed1d0
   type: file
-reviewed: oiooUVpe45DlKq5a8wtJu5DrvE7JN5G1zc7NeJDhv_g=
+reviewed: XqFlioEjM32zU4ioD6oC27eQJm2FGSny2wwZgEdfdQw=
 status: proposed
 text: |
   Test asserting a secret value changed in the <NAME>_FILE file is reflected on the next resolution

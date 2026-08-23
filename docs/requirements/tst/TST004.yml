@@ -18,11 +18,13 @@ ref: ''
 references:
 - keyword: TestRunningFootprintStaysBounded
   path: backend/cmd/footprint_linux_test.go
+  sha: 26f9a7f047b2e7a183f65b3e39a016eb46a65422cf4ef34bf808c6d2a2dfc939
   type: file
 - keyword: TestFootprintPredicatesJudgeSyntheticSeries
   path: backend/cmd/footprint_test.go
+  sha: dcfd2cabc4df27ada8f0fa10bfb59c55dc1922f6e3b42f6d8ba57d65622b2806
   type: file
-reviewed: oLIeHQ3goNLSVZ4TIOnUQWUKSkyLetYIALkpgPBwutk=
+reviewed: 68AlEHT0wtZ86NsEVVT1A1O3Q-Kq0s-qhzM4Qkk4ZCo=
 status: proposed
 text: |
   Bounded-growth observation over a continuous run under sustained load, two minutes long and

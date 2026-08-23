@@ -15,8 +15,9 @@ rationale: |
 ref: ''
 references:
 - path: scripts/image/layer_secret_scan.py
+  sha: 1c9c1edc81561031f31dad507c8916c80a0e400e26d1fcdb40fb2cf250c61659
   type: file
-reviewed: GBERp9Fk-jmk8pVXV_crqgo_45ljtNe7VWF_kKpIiOo=
+reviewed: hLk4qrxmqHubmKM9lEBA9ynIJdJ9dDcihKI6R7nDKgI=
 status: accepted
 text: |
   Export the published image filesystem and every layer, asserting that no value matching the

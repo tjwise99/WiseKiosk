@@ -10,8 +10,9 @@ rationale: ''
 ref: ''
 references:
 - path: scripts/image/two_instances.py
+  sha: 76aba0858d6e12b7fc019f13e745e5ff16b8b78c0ea8456ccf0da682b037cf38
   type: file
-reviewed: c_OfU6zWl5qMxCwS9NBAVC0xJAA4F_YIZPGFzsLbB2w=
+reviewed: RTLsgKoOF7Kt8vncK90LV_7buxYlPpIdiRwGNHcOf-g=
 status: proposed
 text: |
   Start two containers from one image with two different bind-mounted configurations on two ports,
