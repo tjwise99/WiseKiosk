@@ -120,7 +120,8 @@ without a detected race.
 
 The container image is built from the tracked tree and the Image tier is run over it, in two jobs of
 their own: `image-tests` runs `just check-image` — the five property harnesses under
-`scripts/image/`, plus the health-signal check § *Deployment and bring-up* states — and `image-arch`
+`scripts/image/`, plus the health-signal check § *Deployment and bring-up* states and the
+liveness-path check below — and `image-arch`
 runs `just smoke-image` once per architecture. Both need Docker, which is why neither is a
 `just verify` dependency (§ *Gate wiring*).
 
@@ -137,6 +138,26 @@ runs `just smoke-image` once per architecture. Both need Docker, which is why ne
   handed a ref and asserts nothing about which platform produced it — what was smoke-tested is the
   leg's to decide, and the image's declared platform is printed rather than checked against a
   restatement here.
+- **The path the shipped bundle polls is the path the running mux answers.**
+  `scripts/image/liveness_path.py`, run by `just check-image`: the liveness path is spelled twice
+  across the client/server seam — `LIVENESS_URL` in `frontend/src/lib/liveness.ts`, which the page
+  polls to decide whether to report the backend unreachable, and `healthPath` in
+  `backend/cmd/main.go`, which the mux registers liveness at — and each side's own tier agrees with
+  itself: the render tier mocks the route from the frontend constant and the backend tests assert
+  the mux from the Go constant, so a rename of either alone passes every other gate and ships a
+  kiosk reporting an outage against a backend that is serving. The check reads the path from the
+  frontend constant, requires that literal in a script the image ships, and asks a running container
+  for it: a 404 is the divergence, and an answer equal to the served index is the path reaching the
+  static tree rather than the liveness handler. **The seam is judged over the built image**, not
+  over the two source files — a string comparison between two constants would pass on a bundle that
+  never carried either. **Three inputs fail rather than reading as agreement**: a constant that is
+  absent or not a literal, which is a polled path this cannot decide; a served tree the export finds
+  no script in; and readiness, which is judged on the served index rather than on the path under
+  test, so a renamed route is reported as a 404 rather than as a container that never came up.
+  A rename of *both* sides passes, which is the legal input — the path is a private convention
+  between the two, not a published contract — though the sibling harnesses' own restatements of
+  `/healthz` fail on it, and this one prints the path it read so that failure is legible. Recorded in
+  [`../scripts/cases/check-image.md`](../scripts/cases/check-image.md).
 - **The property harnesses are not re-run per architecture.** Coming up and serving is what varies
   with the architecture; the configuration, layer and isolation properties hold of the image on
   either, so a second run of them would be a repeat rather than a second assertion.

@@ -346,8 +346,9 @@ jobs:
     # The image tier (docs/TESTING.md): builds the container image and holds the artifact to what
     # the tree obliges of it — a non-root user, a configuration that comes from the mount and
     # nowhere else, no deployment content, two instances sharing nothing, and no secret-shaped value
-    # in any layer. It carries the health-signal check alongside them (docs/CI.md § Deployment and
-    # bring-up), which is a gate over the same artifact and needs the same Docker.
+    # in any layer. It carries the health-signal and liveness-path checks alongside them (docs/CI.md
+    # § Deployment and bring-up and § Image tests), each a gate over the same artifact needing the
+    # same Docker.
     # A job of its own rather than a step elsewhere because it is the one tier that
     # needs Docker, which is why it is not a `just verify` dependency (docs/CI.md § Gate wiring:
     # Docker is not assumed on a contributor machine). The recipe body is the one spelling of what
@@ -365,7 +366,7 @@ jobs:
         with:
           just-version: "1.58.0"
 
-      - name: The image runs non-root, serves only a mounted configuration, carries no deployment content or secret material, keeps two instances independent, and reports its health in both directions
+      - name: The image runs non-root, serves only a mounted configuration, carries no deployment content or secret material, keeps two instances independent, reports its health in both directions, and answers the liveness path the bundle it ships polls
         run: just check-image
 
   image-arch:

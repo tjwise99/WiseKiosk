@@ -216,7 +216,7 @@ check-dead-test:
 # Outside `verify`, and invoked by a CI job of its own: this tier builds and runs the image, and
 # docs/CI.md § Gate wiring is what decides where a check needing Docker sits.
 [group('checks')]
-[doc('The container image builds, runs non-root, serves the configuration a deployment mounts and nothing in its place, carries no deployment content, keeps two instances independent, reports its health in both directions, and holds nothing secret-shaped in any layer; needs Docker')]
+[doc('The container image builds, runs non-root, serves the configuration a deployment mounts and nothing in its place, carries no deployment content, keeps two instances independent, reports its health in both directions, answers the liveness path the bundle it ships polls, and holds nothing secret-shaped in any layer; needs Docker')]
 check-image:
     docker buildx build --load --tag wisekiosk:citest .
     python3 scripts/image/nonroot_uid.py wisekiosk:citest
@@ -224,6 +224,7 @@ check-image:
     python3 scripts/image/no_deployment_content.py wisekiosk:citest
     python3 scripts/image/two_instances.py wisekiosk:citest
     python3 scripts/image/health_signal.py wisekiosk:citest
+    python3 scripts/image/liveness_path.py wisekiosk:citest
     python3 scripts/image/layer_secret_scan.py wisekiosk:citest
 
 # One architecture per invocation, named by the caller: a matrix leg supplies the platform, and a
