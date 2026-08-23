@@ -13,12 +13,17 @@ from the tracked tree at `fab3916` by `just check-image`. Docker 29.6.2, buildx 
 The `health_signal.py` rows were run at `30cb78c health signal`, script md5
 `eea2db5dd1194bc636b2be76416c3dbf`, against `wisekiosk:citest` rebuilt there by `just check-image`.
 
+The `no_deployment_content.py` rows were run at script md5 `a9253ffc7fcffe5a87fcb306a02e27f8`, the
+harness carrying the schema-ranging arm, against `wisekiosk:citest` rebuilt by `just check-image`.
+
 | Direction | Case | Input |
 |---|---|---|
 | Must fail | A container running as root | `nonroot_uid.py` against `FROM wisekiosk:citest` + `USER root` — `runs as uid 0 — the container process holds root` |
 | Must fail | A Dockerfile declaring no user | a copy of `nonroot_uid.py` in a scratch tree whose `Dockerfile` is `FROM alpine:3.24` + `RUN adduser …` and no `USER` — `the Dockerfile's final stage declares no USER`. Seeded on the Dockerfile rather than the image because that half reads the committed file, so no image can exercise it |
 | Must fail | A configuration baked into the image | `config_bind_mount.py` against an image carrying `/srv/kiosk/config.json` — `/config.json answered 200 with no mount, expected 404 — the image serves 36 byte(s) of a default nobody deployed`. The mounted half still passes on that image: a bind mount shadows the baked file, which is why the unmounted half exists |
 | Must fail | The same image, read for deployment content | `no_deployment_content.py` against it, with `ENV UPSTREAM_TOKEN_FILE=/run/secrets/upstream` added — two problems, one per surface: `/srv/kiosk/config.json exists in the image`, and `the image environment carries UPSTREAM_TOKEN_FILE` |
+| Must fail | An image whose environment names something the configuration schema declares | `no_deployment_content.py` against `FROM wisekiosk:citest` + `ENV modules=weather` — `the image environment carries modules, which the configuration schema declares`. The other two arms pass on that image, so the row measures the schema-ranging arm alone |
+| Must fail | A schema declaring nothing to range over | a copy of `no_deployment_content.py` in a scratch tree whose `frontend/src/config/schema.json` is `{"type": "object"}` — `declares no property — this ranged over no declared name, so it cannot report an environment free of them`. Seeded on the harness's tree rather than the image because the schema is what the harness reads, not what the image carries |
 | Must fail | An image declaring writable storage two instances could share | `two_instances.py` against `FROM wisekiosk:citest` + `VOLUME /srv/kiosk` — `declares volume(s) /srv/kiosk` |
 | Must fail | Two instances given one configuration | a copy of `two_instances.py` whose call site passes `[fixtures[0], fixtures[0]]` — `instance 0 serves the other instance's configuration`, and the same for instance 1 |
 | Must fail | A survivor whose declared healthcheck fails | `two_instances.py` against `FROM wisekiosk:citest` + `HEALTHCHECK CMD ["/bin/false"]` — `the surviving instance failed its declared healthcheck`. The harness runs whatever `Config.Healthcheck.Test` names, so the seed moves the declaration rather than the binary |
@@ -31,9 +36,10 @@ The `health_signal.py` rows were run at `30cb78c health signal`, script md5
 | Must fail | A container that never serves | `ENTRYPOINT ["/bin/sleep", "300"]` — `no 200 from /healthz within 30s — this judged no serving container`, so the healthy direction is asserted against a container proven to be serving |
 | Must pass | The image built from the tracked tree | — |
 
-**Every failing row above is a different assertion**, and the two seeded onto the harness rather than
-the image are the two whose subject is what the harness was handed: an image cannot carry "the same
-configuration mounted twice", and an image cannot carry a blind pattern set.
+**Every failing row above is a different assertion**, and the three seeded onto the harness rather
+than the image are the three whose subject is what the harness was handed: an image cannot carry "the
+same configuration mounted twice", an image cannot carry a blind pattern set, and an image cannot
+carry a schema that declares nothing.
 
 **The seeding found a defect in the pattern set.** The first spelling of the assignment pattern was
 `(?i)\b(?:…|password|passwd)\b["']?\s*[=:]…`, and the seeded image carrying `db_password = "…"` scanned
@@ -65,6 +71,9 @@ handling the other would add a path no row here exercises.
   UTF-16, compressed inside a file, or encrypted is invisible to every pattern. A layer written in a
   compression `tarfile` cannot open is the same case one level up, and the canary is what reports it:
   the canary is planted in a layer, so a scan that cannot open layers fails the run.
+- **A declared name spelled another way is not seen.** The image environment is read for the schema's
+  property names exactly as the schema spells them, so `modules` is reported and `MODULES` is not.
+  Nothing here says which spelling a deployment-specific variable would carry.
 - **The pattern set bounds the predicate.** A secret whose shape no line describes passes. That is
   SRS025<!-- No secret material in the published image -->'s own recorded limit, not a hole this
   record closes.
