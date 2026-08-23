@@ -74,6 +74,26 @@ independently: the display refreshes no faster than the cache can answer differe
 holds no longer than the display's tolerance for stale data. Both are constants in code; neither is
 an operator-tunable configuration key.
 
+## An unavailable module and an unreachable backend are different states
+
+A module renders an unavailable state of its own for one cause and no other: its own source failed
+while the backend was reachable — the module's route answered, and the structured failure body it
+answered with is what the module renders in its own place, distinct to that cause
+(SRS001<!-- A failed module shows why, and only that module -->).
+
+Where the backend itself is unreachable, no module reports anything. The page shell asks whether the
+backend is still serving and reports an outage once for the whole display, so a module handed a false
+reachability signal stands down and renders nothing — no unavailable state, no placeholder, no
+last-known content. A module that reported for itself here would restate the one outage once per
+region, which is what the display is obliged not to do
+(SRS026<!-- The display says when the backend is gone -->).
+
+Reachability reaches the component the way its configuration and payload do (part 3): as a prop,
+threaded from the page shell through the frame to every module. The frame forwards it and reads
+nothing from it, so nothing between the shell and the module decides which modules an outage covers.
+A local module ignores the prop — it fetches nothing, so a backend that is gone takes nothing from it
+and it keeps rendering beneath the page's report.
+
 ## Adding a module
 
 First, write the module's need and its decomposition in the requirements tree — one `SYS` for the
