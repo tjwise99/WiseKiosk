@@ -139,7 +139,11 @@ normative item has one.
   ([ADR 0005 rev 2](../decisions/0005-traceability-gating.md)). A bare name would not: Doorstop
   returns the *first* line matching the keyword anywhere in the file, and this repo's Go doc-comment
   convention repeats the function name in prose above it, so a bare name resolves to the comment and
-  survives the test's deletion. **A reference to a whole-file check artifact no runner discovers
+  survives the test's deletion. **A parameterized test's cases are the limit of that**: where the
+  `test(` call sits in a loop, the keyword is the template rather than any title the runner prints,
+  so removing a row of the data array — or emptying it — leaves the entry resolving over fewer
+  tests, or none. Evidence drift below is what catches that. **A reference to a whole-file check
+  artifact no runner discovers
   omits `keyword`** — a `scripts/image/*.py` harness has no declaration to anchor on and no runner
   title to name, so the entry resolves to the file alone and drift is carried by its `sha`. Every
   reference to a runner-discovered test carries a keyword. No test file names a requirement ID: the

@@ -45,12 +45,20 @@ is no parent to inherit from; lower items may carry one but are not gated on it.
 
 **The forward evidence channel is Doorstop's native `references`, one entry per verifying site,
 each carrying the `keyword` of the test that discharges it** (owner, 2026-08-23). The keyword is the
-test's **declaration** — `func TestXxx` for Go, `test('<title>'` or `` test(`<title>` `` for
-Playwright — so the trace names what the runner prints and Doorstop resolves the entry to a file
-*and a line*, the line being the one that declares the test. Anchoring on the declaration rather
-than on the bare name is what makes a deletion visible: Doorstop returns the first line matching the
-keyword anywhere in the file, so a bare name also matches the doc comment this repo writes above
-every Go test, and a deleted test stays resolvable through its own obituary.
+test's **declaration as the source writes it** — `func TestXxx` for Go, `test('<title>'` or
+`` test(`<title>` `` for Playwright — so Doorstop resolves the entry to a file *and a line*, the
+line being the one that declares the test. Anchoring on the declaration rather than on the bare name
+is what makes a deletion visible: Doorstop returns the first line matching the keyword anywhere in
+the file, so a bare name also matches the doc comment this repo writes above every Go test, and a
+deleted test stays resolvable through its own obituary.
+
+**Anchoring does not reach a parameterized test's cases.** Where the `test(` call sits inside a loop
+over a data array, as three render-tier specs do, the keyword is the template as written, which is
+none of the titles the runner prints; deleting a *row* of the array retires runtime tests while the
+`test(` line, and so the entry, still resolves, and emptying the array leaves an entry resolving
+over zero running tests. What catches that is the whole-file drift sha below, and the human
+re-review it forces — not an unresolvable reference. Stated rather than designed around, on the
+same terms as the drift hook's whole-file granularity.
 
 **A reference to a whole-file check artifact that no runner discovers may omit `keyword`.** Where
 the verifying site is a script invoked as one command, every assertion of which discharges the one
