@@ -188,10 +188,13 @@ model {
 
       pageShell = component 'Page shell' {
         #SRS004
+        #SRS026
         description '''
           Loads and renders before any configuration is applied, so a
           configuration that cannot be applied at all is reported on a page
-          that exists rather than on a blank one.
+          that exists rather than on a blank one. Asks the backend whether it
+          is still serving, and reports a backend that is not once for the
+          page, beside the modules that need none.
         '''
       }
 
@@ -220,11 +223,9 @@ model {
       }
 
       payloadClient = component 'Payload client' {
-        #SRS026
         description '''
           Fetches each configured module's payload and hands back what it
-          gets. Distinguishes a backend that cannot be reached from a module
-          that failed, so the display says the former once.
+          gets, a failure included rather than absorbed.
         '''
       }
     }
