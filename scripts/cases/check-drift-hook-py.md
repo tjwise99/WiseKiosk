@@ -44,9 +44,13 @@ rather than asserted.
 
 **Known gaps.**
 
-- **The config, never a run.** No case observes Doorstop loading the hook. That the armed pair
-  actually fails a drifted reference is the tree's own gate, recorded in
-  [`the-requirements-tree-checks.md`](the-requirements-tree-checks.md).
+- **The config, never a run.** No *row* observes Doorstop loading the hook — the rows are configs,
+  and the check reads nothing else. That the armed pair actually fails a drifted reference is
+  measured once, in the live-tree seed above, and nowhere else:
+  [`the-requirements-tree-checks.md`](the-requirements-tree-checks.md)'s
+  `doorstop --error-all --no-reformat` section holds two rows, both about parent links, and no row
+  for a drifted reference, an unresolved keyword or a sha mismatch. That tier of the tree's own
+  gate is unrecorded, and this record is not the place to close it.
 - **The hook's contents are unread.** A file present but exporting no `item_validator`, or one whose
   comparison is wrong, passes here. What the hook must do is
   [ADR 0005 rev 2](../../docs/decisions/0005-traceability-gating.md)'s, and a check reading it would
