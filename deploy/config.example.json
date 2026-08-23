@@ -1,0 +1,13 @@
+{
+  "edge_band": 4,
+  "modules": [
+    {
+      "region": "top_bar",
+      "module": "clock"
+    },
+    {
+      "region": "middle_center",
+      "module": "OpenMeteo"
+    }
+  ]
+}

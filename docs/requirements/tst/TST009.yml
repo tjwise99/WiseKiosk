@@ -1,19 +1,22 @@
-active: false
+active: true
 derived: false
 header: |
-  Pending: the published image carries no deployment specifics
+  The published image carries no deployment specifics
 level: 1.12
 links:
 - SRS018: jAdiVAOaHeEAP9caGAN9vBMpjclpje_k3TmKnf5abBw=
 normative: true
 rationale: ''
 ref: ''
-reviewed: 5HECm7k4aMi0QzoBG9ELPapoyVHgx_x38KJXUuAwfa0=
-status: proposed
+references:
+- path: scripts/image/no_deployment_content.py
+  type: file
+reviewed: JCy-Iv0n0oUaRLtWZuKwziz4f_fISregidT9FrQBOd4=
+status: accepted
 text: |
-  Pending: test exporting the published image filesystem and asserting nothing exists at the
-  configuration mount path, and that no deployment-specific value appears in the image environment.
-  Lands with the container image build (#54); activated then.
+  Export the published image filesystem and assert nothing exists at the configuration mount path,
+  and read the image environment for a deployment-specific value: a variable naming a secret's file,
+  and one named for a property the configuration schema declares.
 verification-justification: |
   Settles that nothing sits at the configuration path and no deployment-specific value is in the
   image environment. Leaves unproven a deployment-varying value the schema does not declare, since

@@ -1,7 +1,7 @@
-active: false
+active: true
 derived: false
 header: |
-  Pending: the published image carries no secret material
+  The published image carries no secret material
 level: 1.14
 links:
 - SRS025: Ru3Q6IBSgjCJAdEUd3Hb0Ppg12_EcwOG12CSOXBTOJ4=
@@ -13,15 +13,17 @@ rationale: |
   fail on the image either. Both are replaced by artifacts the check owns: a committed pattern set, and
   a canary planted where the image can actually carry it.
 ref: ''
-reviewed: K5e8AaPrkkjKTv-QtiVXL408H0qfKzQBBVXYSWyXeN8=
-status: proposed
+references:
+- path: scripts/image/layer_secret_scan.py
+  type: file
+reviewed: GBERp9Fk-jmk8pVXV_crqgo_45ljtNe7VWF_kKpIiOo=
+status: accepted
 text: |
-  Pending: test exporting the published image filesystem and every layer, and asserting that no value
-  matching the committed secret-pattern set appears in any of them - not in a file, not in the image
-  environment, and not in a layer an earlier stage deleted. The pattern set is the check's own
-  committed artifact, so "secret material" resolves to an enumeration rather than a judgement. A
-  planted canary, written into the build context before the build, must be reported. Lands with the
-  container image build (#54); activated then.
+  Export the published image filesystem and every layer, asserting that no value matching the
+  committed secret-pattern set appears in any of them - not in a file, not in the image environment,
+  and not in a layer an earlier stage deleted. The pattern set is the check's own committed
+  artifact, so "secret material" resolves to an enumeration rather than a judgement. A planted
+  canary, written into the build context before the build, must be reported.
 verification-justification: |
   Settles that no value matching the committed pattern set appears in any layer, and that a planted
   canary is reported. Leaves unproven a secret the pattern set does not describe; the predicate is

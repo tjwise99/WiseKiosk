@@ -11,11 +11,12 @@ product's obligations live in [`requirements/`](requirements/README.md)
 **What asserts each of these is [`CI.md`](CI.md).** An obligation is stated here; the check that
 decides it is described there, which is where every check on this repository is described.
 
-**Almost none of it is built.** What a release consists of is
-[ADR 0020 rev 2](decisions/0020-release-artifact-set-and-operator-tooling.md); the material itself is
-published by #67 security and supply-chain gates and #54 container build and publish, and the
-procedure's literal commands wait on them. The one exception is the backend's own side of the health
-signal below, which #9 backend skeleton built — the image that will run it has not.
+**What a release consists of is
+[ADR 0020 rev 2](decisions/0020-release-artifact-set-and-operator-tooling.md).** #54 container build
+and publish ships the image, the deployment recipe, the example configuration and the health signal
+the image declares. #67 security and supply-chain gates ships the signature and the attestation the
+optional verification below reads, so that step is the one thing here with nothing yet to verify
+against.
 
 ## What an operator receives
 
@@ -32,12 +33,7 @@ A deployment reaches a working state on a clean host from the published artifact
 procedure alone — the executable form of *nothing required is missing*. If a clean environment can
 deploy by following only in-repo documentation, the documentation is sufficient.
 
-Three things the procedure owes, each of which fails a first deployment when it is missing.
-
-**The digest is verified before the image runs.** An operator who pulls an image is trusting a
-stranger's build, so the check against its signature and provenance comes ahead of running it rather
-than after, and the commands ship with the procedure rather than having to be reconstructed. That CI
-verifies its own published output is a separate assertion and is in [`CI.md`](CI.md).
+Two things the procedure owes, each of which fails a first deployment when it is missing.
 
 **The example configuration is copied, not edited in place.** The copy is what a deployment binds; the
 example stays as the reference an operator can read a broken configuration against. Only the
@@ -49,6 +45,46 @@ others is fetched by nothing, and the display renders the unfetchable case of
 SRS004<!-- Page renders a legible error state for every configuration failure class --> rather than
 the configured kiosk. The failure is legible and it is still a failure the procedure can prevent, so
 the permissions the file needs are stated where an operator sets them.
+
+**The procedure is three commands**, run in the directory holding the two files the release tag
+carries — `deploy/` in a checkout.
+
+```sh
+cp config.example.json config.json
+chmod 644 config.json
+docker compose up -d
+```
+
+The copy carries no path because the recipe binds `./config.json`, resolved against the directory the
+recipe sits in. `644` is what the second obligation above costs: the image's user is uid 10001, owning
+neither the copy nor its group, so the world-read bit is the one that decides whether the page is
+served a configuration at all. Nothing else is edited and `up` is given no argument: the image
+reference, the port and the mount are all the recipe's. #138 bring-up check is what runs this sequence
+against a clean host and fails on a step that does not.
+
+**The image reference is a movable tag.** The recipe names `ghcr.io/tjwise99/wisekiosk:latest`, which
+tracks the default branch's build ([`CI.md`](CI.md) § *Publishing and provenance*), so `up` against a
+re-pulled tag brings up the newest published image; an operator wanting a fixed one pins a digest in
+their own copy, as the verification note below describes.
+
+**Optional, and recommended: verify the image before trusting it.** An operator who pulls an image is
+trusting a stranger's build, so the check against its signature and provenance ships with the
+procedure rather than having to be reconstructed, and it names the repository the image is expected to
+have been built by.
+
+```sh
+gh attestation verify oci://ghcr.io/tjwise99/wisekiosk@sha256:<digest> --repo tjwise99/WiseKiosk
+```
+
+`<digest>` is the one the release notes name, and what the command reads is #67 security and
+supply-chain gates', so until that lands it verifies nothing. That CI verifies its own published
+output is a separate assertion and is in [`CI.md`](CI.md).
+
+**It is nobody's obligation.** An operator who skips it runs the three commands above and reaches the
+same working deployment; the recipe names a tag rather than a digest, so an operator who wants the
+digest they verified to be the one that runs pins it in their own copy — which is what the recipe
+being a sample rather than an obligation
+([ADR 0020 rev 2](decisions/0020-release-artifact-set-and-operator-tooling.md)) leaves them free to do.
 
 ## The deployment recipe
 
@@ -94,7 +130,7 @@ SRS026<!-- The display says when the backend is gone --> obliges the display to 
 in the room, which is the surface somebody is actually looking at.
 
 It is declared for two smaller reasons. It is an oracle three automated checks read — bring-up,
-upgrade, and TST011<!-- Pending: two instances from one image share no state --> in the requirements
+upgrade, and TST011<!-- Two instances from one image share no state --> in the requirements
 tree — each of which needs a machine-readable *is it serving yet* rather than a scraped log line. And
 an operator wanting a health status in a container listing would otherwise write the declaration into
 their own recipe, which is the avoidable step the restart policy above exists to remove.

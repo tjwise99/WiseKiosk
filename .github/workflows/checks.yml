@@ -22,7 +22,10 @@ concurrency:
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
-  # Every job's `name:` equals its id: required status checks key on the displayed name.
+  # Every job's `name:` equals its id: required status checks key on the displayed name. A matrix
+  # job is the one exception the platform imposes — its displayed name carries its matrix values,
+  # `image-arch (linux/amd64)` and `image-arch (linux/arm64)` — so the required set names each leg
+  # rather than the job.
   # Every check with a local form runs as its `just` recipe — the recipe body is the one
   # spelling of what runs here and locally (docs/CI.md § Gate wiring) — and every setup-just
   # step pins `just-version:`, so the executor CI depends on is a decided version, not a float.
@@ -82,6 +85,9 @@ jobs:
 
       - name: Every tracked file is a declared authored or derived kind
         run: just check-languages
+
+      - name: Every service in the committed deployment recipe declares a restart policy
+        run: just check-restart-policy
 
   requirements:
     name: requirements
@@ -334,6 +340,65 @@ jobs:
 
       - name: Exactly one non-test reference unwraps the confined secret type
         run: just check-secret-unwrap
+
+  image-tests:
+    name: image-tests
+    # The image tier (docs/TESTING.md): builds the container image and holds the artifact to what
+    # the tree obliges of it — a non-root user, a configuration that comes from the mount and
+    # nowhere else, no deployment content, two instances sharing nothing, and no secret-shaped value
+    # in any layer. It carries the health-signal check alongside them (docs/CI.md § Deployment and
+    # bring-up), which is a gate over the same artifact and needs the same Docker.
+    # A job of its own rather than a step elsewhere because it is the one tier that
+    # needs Docker, which is why it is not a `just verify` dependency (docs/CI.md § Gate wiring:
+    # Docker is not assumed on a contributor machine). The recipe body is the one spelling of what
+    # runs, here and locally. No secrets: the image is built and run locally on the runner and is
+    # pushed nowhere — publishing is publish.yml's.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: docker/setup-buildx-action@37fe631027851001ddb9b187196cc803df7f5f0e # v4.3.0
+
+      - uses: extractions/setup-just@53165ef7e734c5c07cb06b3c8e7b647c5aa16db3 # v4
+        with:
+          just-version: "1.58.0"
+
+      - name: The image runs non-root, serves only a mounted configuration, carries no deployment content or secret material, keeps two instances independent, and reports its health in both directions
+        run: just check-image
+
+  image-arch:
+    name: image-arch
+    # Both architectures the backend is obliged to run on, one leg each: the image is built for the
+    # leg's platform and smoke-tested on it (scripts/image/smoke.py). One leg per platform rather
+    # than one job building both, so a failure names the architecture it happened on, and
+    # fail-fast is off so the other architecture still reports. The arm64 leg builds and runs under
+    # QEMU emulation — this runner is amd64, as publish.yml's multi-arch build is. The recipe body
+    # is the one spelling of what runs, here and locally. No secrets: the image is built and run on
+    # the runner and pushed nowhere.
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        platform: [linux/amd64, linux/arm64]
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: docker/setup-qemu-action@96fe6ef7f33517b61c61be40b68a1882f3264fb8 # v4.2.0
+
+      - uses: docker/setup-buildx-action@37fe631027851001ddb9b187196cc803df7f5f0e # v4.3.0
+
+      - uses: extractions/setup-just@53165ef7e734c5c07cb06b3c8e7b647c5aa16db3 # v4
+        with:
+          just-version: "1.58.0"
+
+      - name: The image builds for this leg's platform and comes up serving on it
+        env:
+          PLATFORM: ${{ matrix.platform }}
+        run: just smoke-image "$PLATFORM"
 
   process:
     name: process

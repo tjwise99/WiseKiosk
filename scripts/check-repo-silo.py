@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 """Tooling is siloed with the feature it serves: a depth-1 listing of the
 repository root holds no manifest or environment directory, and every
-Dependabot entry that is not github-actions names a non-root directory holding
-the manifest its ecosystem implies. See docs/CI.md § Repository shape.
+Dependabot entry that is not github-actions names a directory holding the
+manifest its ecosystem implies — non-root, docker excepted. See docs/CI.md
+§ Repository shape.
 
 No dependencies: Python stdlib only, plain text scanning (no YAML parser).
 
@@ -47,6 +48,7 @@ MANIFESTS = {
     "pip": [re.compile(r"^requirements.*\.txt$"), re.compile(r"^pyproject\.toml$")],
     "npm": [re.compile(r"^package\.json$")],
     "gomod": [re.compile(r"^go\.mod$")],
+    "docker": [re.compile(r"^Dockerfile$")],
 }
 
 dependabot_text = (ROOT / ".github/dependabot.yml").read_text(encoding="utf-8")
@@ -95,7 +97,9 @@ for entry in entries:
     if not directory:
         problems.append(f"the '{ecosystem}' Dependabot entry declares no 'directory' key")
         continue
-    if directory == "/":
+    # docker alone may name the root: ADR 0021 rev 1 puts the Dockerfile there, a build reading
+    # `PATH/Dockerfile` by default. Every other ecosystem's manifest is siloed with its feature.
+    if directory == "/" and ecosystem != "docker":
         problems.append(f"the '{ecosystem}' Dependabot entry points at the repository root")
         continue
     patterns = MANIFESTS.get(ecosystem)

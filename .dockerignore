@@ -1,0 +1,12 @@
+# The build reads frontend/ and backend/; everything below is kept out of the context.
+
+.git
+.github
+.claude
+docs
+
+**/node_modules
+frontend/dist
+frontend/test-results
+frontend/playwright-report
+scripts/.venv
