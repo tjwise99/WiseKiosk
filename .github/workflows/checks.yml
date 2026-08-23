@@ -96,8 +96,7 @@ jobs:
     # children do not support, and no item's statement cites another item by
     # identifier. Runs `just check-reqs` and `just check-citations`, the recipes
     # the local gate runs, which read the tree through the same venv; which
-    # commands those are is the recipes' own bodies. `just check-drift-hook`
-    # joins them, on the config that arms the drift half of that validation.
+    # commands those are is the recipes' own bodies.
     # The tool is siloed under docs/requirements/ with the feature it serves.
     # No secrets: pure tree validation.
     runs-on: ubuntu-latest
@@ -124,9 +123,6 @@ jobs:
 
       - name: Every citation resolves and carries its item header
         run: just check-citations
-
-      - name: The TST document still arms the referenced-file drift hook
-        run: just check-drift-hook
 
   docs-site:
     name: docs-site

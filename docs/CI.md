@@ -895,19 +895,6 @@ The requirements tree's own integrity checks run here too, but what they assert 
 specification rather than of the repository, so they are stated where the specification is:
 [`requirements/README.md`](requirements/README.md).
 
-**Whether the tree's drift hook is armed is a repository property, so it is stated here.**
-`scripts/check-drift-hook.py`, run by `just check-drift-hook` in the `requirements` job, fails where
-`docs/requirements/tst/.doorstop.yml` stops declaring `item_sha_required: true` and an
-`item_validator` naming `.req_sha_item_validator.py`, or where that hook file is not beside it.
-Doorstop defends neither half: an unrecognised key under `extensions` raises nothing where one under
-`attributes` errors, so a hand edit that misspells `extensions:` disarms the hook in silence, and
-`Document.save()` rebuilds the config from `settings` and `attributes` alone, writing the
-`extensions:` block away wherever it runs — on `Document.new()` and on a document-property change,
-though not on `doorstop add` or a reorder, neither of which saves the config. A disarmed
-hook fails no run — it reports a clean tree over drifted evidence, which is why the arming is gated
-rather than trusted. Recorded in
-[`../scripts/cases/check-drift-hook-py.md`](../scripts/cases/check-drift-hook-py.md).
-
 **A passing `check-reqs` run also prints the proposed-item backlog** — the count of `proposed` items
 and their identifiers, per tier, against the population each tier holds.
 [ADR 0005 rev 2](decisions/0005-traceability-gating.md) makes the tree the backlog and the backlog a

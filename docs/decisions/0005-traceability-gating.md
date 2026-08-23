@@ -211,11 +211,11 @@ The four stored attributes — `verification-method`, `status`, `verification-ju
 - **No gate in the table is authored here.** Gate 1 is the tool's, configured — the drift hook is
   the extension point Doorstop documents, not a sibling script — and gate 3 is the coverage tool's.
   That is the answer [ADR 0016 rev 5](0016-maintained-tools-for-standard-artifacts.md) asks for
-  before a check is written, and dropping gate 2 is what leaves the table with no exception. What is
-  authored is a guard on the *configuration* rather than on the tree: Doorstop validates nothing
-  under `extensions`, so a misspelt key disarms the hook in silence and the tree then reports clean
-  over drifted evidence. That obligation is this repository's own rule about its own config, which
-  is where ADR 0016 rev 5 puts an authored check; it proves no requirement and is not a row above.
+  before a check is written, and dropping gate 2 is what leaves the table with no exception. The
+  configuration that arms the hook is fragile in a way no gate here covers: keeping the `extensions:`
+  block present is an obligation on whoever edits a `.doorstop.yml`, and it leaves no artifact, so a
+  reader answers it in [`../../CONTRIBUTING.md`](../../CONTRIBUTING.md)'s checklist
+  ([ADR 0011 rev 2](0011-requirement-or-convention.md)).
 - **An unclaimed test is not a build failure.** Nothing fails when a test the runner discovers is
   named by no item, so a structural test lands without inventing a `TST` for it. What that costs is
   visibility into that population, and nothing here buys it back — the gap is accepted rather than

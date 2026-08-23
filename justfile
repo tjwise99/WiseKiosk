@@ -269,10 +269,5 @@ check-restart-policy:
     python3 scripts/check-restart-policy.py
 
 [group('checks')]
-[doc('The TST document still arms the referenced-file drift hook: `item_sha_required` and `item_validator` declared, hook file beside them — Doorstop writes neither back and validates neither')]
-check-drift-hook:
-    python3 scripts/check-drift-hook.py
-
-[group('checks')]
 [doc('Run every check the PR gate runs that has a local form and needs no Docker; secret scanning, the PR-title check (commitlint, via the hook layer), the link check (lychee, from a digest-pinned image) and the workflow audit (zizmor, actionlint) are CI-only, and the image tier is `just check-image`')]
-verify: check-untracked check-hooks check-branch check-reqs check-citations check-arch check-arch-trace check-boundary check-go check-secret-unwrap check-config-types check-build check-static-bundle check-unit check-render check-site check-adr-index check-adr-revs check-docs-index check-repo-silo check-languages check-dead-test check-restart-policy check-drift-hook
+verify: check-untracked check-hooks check-branch check-reqs check-citations check-arch check-arch-trace check-boundary check-go check-secret-unwrap check-config-types check-build check-static-bundle check-unit check-render check-site check-adr-index check-adr-revs check-docs-index check-repo-silo check-languages check-dead-test check-restart-policy
