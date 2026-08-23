@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { checkLiveness } from './liveness';
+import { LIVENESS_INTERVAL_MS, LIVENESS_TIMEOUT_MS, checkLiveness } from './liveness';
 
 /** A fetcher answering with `response`, whatever is asked of it. */
 function answering(response: Response): typeof fetch {
@@ -22,14 +22,20 @@ describe('the liveness check', () => {
     expect(await checkLiveness(refused)).toBe(false);
   });
 
-  it('carries a deadline, and reports it unreachable when the ask is cut off at one', async () => {
-    let deadline: AbortSignal | null | undefined;
-    const wedged: typeof fetch = (_input, init) => {
-      deadline = init?.signal;
-      return Promise.reject(new DOMException('signal timed out', 'TimeoutError'));
-    };
+  it('reports it unreachable when its own deadline ends the ask', async () => {
+    // The stub answers nothing at all, the way a process that accepts the connection and never
+    // replies does. What ends the ask is the deadline the check attached to it, so this runs for
+    // that deadline rather than resolving at once — a rejection handed in from outside would be the
+    // case above, and would pass whether or not a deadline exists.
+    const wedged: typeof fetch = (_input, init) =>
+      new Promise((_resolve, reject) => {
+        init?.signal?.addEventListener('abort', () => reject(init.signal!.reason));
+      });
 
     expect(await checkLiveness(wedged)).toBe(false);
-    expect(deadline).toBeInstanceOf(AbortSignal);
+  });
+
+  it('bounds one ask inside the wait between two, so none overlaps the next', () => {
+    expect(LIVENESS_TIMEOUT_MS).toBeLessThan(LIVENESS_INTERVAL_MS);
   });
 });

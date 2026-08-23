@@ -15,8 +15,7 @@ export const LIVENESS_INTERVAL_MS = 5000;
  * How long one ask may take before it counts as no answer. A process that accepts the connection and
  * never answers is the outage nothing else in a deployment acts on
  * ([`DEPLOYMENT.md`](../../../docs/DEPLOYMENT.md) § The health signal), and the browser's own
- * network timeout is minutes away; the bound matches the one the backend probes itself with.
- * Shorter than the interval, so at most one ask is ever in flight.
+ * network timeout is minutes away. Shorter than the interval, so at most one ask is ever in flight.
  */
 export const LIVENESS_TIMEOUT_MS = 2000;
 
