@@ -13,6 +13,7 @@ COPY backend/ ./
 RUN CGO_ENABLED=0 go build -o /out/wisekiosk ./cmd
 
 FROM alpine:3.24@sha256:28bd5fe8b56d1bd048e5babf5b10710ebe0bae67db86916198a6eec434943f8b
+# Why the image carries trust anchors is docs/ARCHITECTURE.md § Deployment's.
 RUN apk add --no-cache ca-certificates
 RUN adduser -D -u 10001 kiosk
 COPY --from=build /out/wisekiosk /usr/local/bin/wisekiosk

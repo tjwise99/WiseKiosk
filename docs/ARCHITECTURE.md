@@ -450,6 +450,12 @@ configuration this is built for they are necessarily separate machines. Why each
 a host carries a tag only where an item obliges the operator, is
 [ADR 0019 rev 5](decisions/0019-boundary-at-what-deploys-and-tag-tier.md)'s.
 
+**The image carries a CA trust store.** Every module's upstream is fetched by the backend rather than
+by the browser (SYS004<!-- Upstream data reaches the display only through the backend -->), over
+HTTPS, so the trust anchors those fetches verify against are part of the artifact. A base image
+without them builds and starts perfectly well and fails certificate verification at the first upstream
+request — a run-time failure on a configured deployment rather than a build-time one here.
+
 The concrete wiring — the deployment recipe, the mount paths, the example configuration a release
 carries — is [`DEPLOYMENT.md`](DEPLOYMENT.md)'s, and so are the health signal and the restart policy:
 each is a property of what ships rather than of the running system.
