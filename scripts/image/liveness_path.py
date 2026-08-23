@@ -46,8 +46,14 @@ LIVENESS_SOURCE = ROOT / "frontend" / "src" / "lib" / "liveness.ts"
 
 DEFAULT_IMAGE = "wisekiosk:citest"
 
-# The authored constant the page polls, as a literal. A computed URL matches nothing here.
-POLLED = re.compile(r"""export\s+const\s+LIVENESS_URL\s*=\s*['"]([^'"]+)['"]""")
+# The authored constant the page polls, as a literal, in any of the three ways TypeScript spells one
+# and with or without the type annotation that does not change what is asked for. A URL assembled
+# rather than declared matches nothing here — a base joined to a suffix, or a template interpolating
+# one, which is why the backtick arm refuses `$`: what is captured has to be the whole path.
+POLLED = re.compile(
+    r"""export\s+const\s+LIVENESS_URL(?:\s*:\s*string)?\s*=\s*"""
+    r"""(?:['"](?P<quoted>[^'"]+)['"]|`(?P<template>[^`$]+)`)"""
+)
 
 # The tree the image serves, and what an emitted script is named.
 STATIC_ROOT = "srv/kiosk/"
@@ -103,7 +109,7 @@ def polled_path(problems):
             f"read no polled path, and cannot decide what a computed URL asks for"
         )
         return None
-    return found.group(1)
+    return found.group("quoted") or found.group("template")
 
 
 def shipped_scripts(image, directory):

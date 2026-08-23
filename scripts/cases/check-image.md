@@ -7,8 +7,8 @@ case is [`../README.md`](../README.md)'s.
 
 Every case runs the harness from the tracked tree against an image, so the seed is an **image** rather
 than a file: each failing row builds a throwaway image `FROM wisekiosk:citest` carrying the defect and
-hands that ref to the harness, and the five rows whose subject is the harness's own input instead patch
-a copy of the harness in a scratch directory. One row builds its image from a patched copy of the
+hands that ref to the harness, and the seven rows whose subject is the harness's own input instead run
+a copy of the harness in a scratch directory carrying that input. One row builds its image from a patched copy of the
 tracked tree instead, the defect it seeds being what the running handler serves rather than anything a
 layer on top can carry. One row seeds nothing at all: a ref no image answers to is what a leg that
 loaded nothing hands its harness. The passing rows are `wisekiosk:citest` itself, built from the
@@ -24,11 +24,13 @@ The byte-fidelity, served-tree, declared-root and layerless rows were run at
 `b7bae6a a cleanup that fails is not the verdict`, `layer_secret_scan.py` at script md5
 `9a7ebe9428a32cf15be763fb36632cc1`, against `wisekiosk:citest` rebuilt there by `just check-image`.
 
-The `liveness_path.py` rows were run at `7158ddf the frame does not inset a top edge the report
-already holds`, script md5 `66caa770c4efe279b28179cbb0db38bd`, against `wisekiosk:citest` rebuilt
-there by `docker buildx build --load --tag wisekiosk:citest .`, and against seeded images each built
+The `liveness_path.py` rows were run at `7676c45 the Image row names the third harness in the job`,
+script md5 `4ed69ccaa8bad519671ef7fcd211526c`, against `wisekiosk:citest` rebuilt there by
+`docker buildx build --load --tag wisekiosk:citest .`, and against seeded images each built
 from a copy of the tracked tree at that commit — where `frontend/src/lib/liveness.ts`,
-`backend/cmd/main.go` and the `Dockerfile` stand as they did at `a38f631`.
+`backend/cmd/main.go` and the `Dockerfile` stand as they did at `a38f631`. Every row was re-run at
+that md5: the polled-path pattern changed, so a row recorded against the previous one measured a
+different reader.
 
 The `smoke.py` rows were run at `0636f95 the six image verification items`, script md5
 `cbc077d2a78f3cfaf2a838548e861741`, against `wisekiosk:citest` rebuilt by
@@ -62,21 +64,23 @@ CI's.
 | Must fail | A polled path the served tree answers | the same shape with `LIVENESS_URL = '/'` — `/ answered the served index rather than liveness — the polled path reaches the static tree, not the handler the mux registers liveness at`. A status alone would read as agreement here |
 | Must fail | An image shipping no script | `liveness_path.py` against `FROM wisekiosk:citest` + `USER root` + `RUN rm -f /srv/kiosk/assets/*.js` — `the export holds no .js under /srv/kiosk/ — this read no shipped bundle, so it cannot report what the bundle polls`. That container still answers `/healthz`, so the row measures the shipped-bundle half alone |
 | Must fail | A frontend that computes its liveness URL | a copy of `liveness_path.py` in a scratch tree whose `frontend/src/lib/liveness.ts` reads `export const LIVENESS_URL = BASE + '/healthz'` — `declares no LIVENESS_URL string literal — this read no polled path, and cannot decide what a computed URL asks for`. Seeded on the harness's tree rather than the image because the constant is what the harness reads |
+| Must fail | The same URL assembled by interpolation instead | the same scratch tree, the constant instead interpolating that base into a template literal — the same problem line. A backtick literal with nothing interpolated is read like either other quote, so the arm refusing this one refuses `$` rather than the backtick; without the row, "a template literal is rejected" would rest on the pattern reading as if it did |
 | Must fail | A ref naming no image, for the polled path | `liveness_path.py` against `wisekiosk:nosuchtag` — `` `docker create wisekiosk:nosuchtag` exited 1 (…) — this judged no image `` |
 | Must fail | A container that runs and never serves, for the polled path | `liveness_path.py` against `FROM wisekiosk:citest` + `ENTRYPOINT ["/bin/sleep", "300"]` — `no 200 from / within 30s — this judged no serving container, so it read no answer to the polled path`, at the bound rather than hung. Readiness is the served index and not the path under test, which is what keeps a renamed route a 404 rather than a container that never came up |
 | Must pass | Both sides renamed together | `liveness_path.py` against an image built from a copy of the tracked tree with `healthPath` and `LIVENESS_URL` both `/livez` — `wisekiosk:seed-both ships /livez in 1 of 1 script(s) under /srv/kiosk/, and a container answers it 200 with something other than the served index`. The legal input spelled differently: the path is the two sides' own convention and nothing published rests on which string it is |
+| Must pass | The constant carrying a type annotation | a copy of `liveness_path.py` in a scratch tree whose `frontend/src/lib/liveness.ts` reads `export const LIVENESS_URL: string = '/healthz'` — `wisekiosk:citest ships /healthz in 1 of 1 script(s) under /srv/kiosk/, and a container answers it 200 with something other than the served index`. Legal and behaviour-preserving: before the annotation was read, this input was reported as a file declaring no literal, about a file that plainly declares one |
 | Must fail | A ref naming no image | `smoke.py` against `wisekiosk:nosuchtag` — `` `docker image inspect …` exited 1 (No such image: wisekiosk:nosuchtag) — this judged no image ``. A leg whose build loaded nothing must not read as an architecture that was smoke-tested |
 | Must fail | A container that runs and never serves | `smoke.py` against `FROM wisekiosk:citest` + `ENTRYPOINT ["/bin/sleep", "300"]` — `no 200 from /healthz within 30s — nothing this image was built for came up serving`, at the bound rather than hung |
 | Must fail | A container serving, failing the healthcheck it declares | `smoke.py` against `FROM wisekiosk:citest` + `HEALTHCHECK CMD ["/bin/false"]` — `the container failed the healthcheck the image declares: … exited 1`. The port half passes on that image, which is why the two are separate assertions |
 | Must pass | The image built from the tracked tree | — |
 | Must pass | The same image, smoke-tested on the architecture it was built for | `smoke.py` against `wisekiosk:citest` — `wisekiosk:citest (linux/amd64) came up, answered /healthz, and passed the healthcheck it declares` |
 
-**Every failing row above is a different assertion**, and the six whose seed is a file the harness
-reads rather than an image handed to it are the six whose subject is that file: an image cannot carry
-"the same configuration mounted twice", it cannot carry a blind pattern set, it cannot carry a schema
-that declares nothing, it cannot carry a frontend constant that is not a literal, and it cannot carry
-the `USER` another tree's Dockerfile declares — the last being two rows, one per way that declaration
-fails.
+**Every failing row above is a different assertion**, and the seven whose seed is a file the harness
+reads rather than an image handed to it are the seven whose subject is that file: an image cannot
+carry "the same configuration mounted twice", it cannot carry a blind pattern set, it cannot carry a
+schema that declares nothing, it cannot carry a frontend constant that is not a literal — two rows,
+one per way a URL is assembled — and it cannot carry the `USER` another tree's Dockerfile declares,
+two rows again, one per way that declaration fails.
 
 **Three liveness-path rows seed a copy of the tracked tree rather than a layer on top.** Which path
 the mux registers and which path the shipped script asks for are decided in the source and baked by
@@ -101,9 +105,11 @@ both inside a running container and as a container's own entrypoint, and only th
 handling the other would add a path no row here exercises.
 
 **Legal input `liveness_path.py` rejects.** A liveness URL assembled rather than declared — a base
-joined to a suffix, a template literal — is legal TypeScript polling the same path, and is reported
-as no literal. The alternative is executing the module to find out what it asks for, which is the
-render tier's job and not a harness's.
+joined to a suffix, or that base interpolated into a template literal — is legal TypeScript polling
+the same path, and is reported as no literal. A backtick literal with nothing interpolated into it is
+read like either other quote, as is a type annotation on the constant; what the backtick arm refuses
+is `$`, since what is captured has to be the whole path. The alternative is executing the module to
+find out what it asks for, which is the render tier's job and not a harness's.
 
 **Known gaps.**
 
