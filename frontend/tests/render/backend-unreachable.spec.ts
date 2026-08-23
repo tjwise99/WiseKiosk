@@ -6,9 +6,9 @@ import { overlaps, regionBoxes, render, serveLiveness, type Box, type Fixture } 
 /**
  * TST040. A backend that stops answering under a page already serving its modules raises one
  * page-wide state rather than one per region — a module that reports its own failures stands down
- * instead of restating the outage — over a layout the state displaces rather than covers, carrying a
- * remediation distinct from the diagnosis it reports, and clearing on its own once the backend
- * answers again.
+ * instead of restating the outage, and draws again once the backend answers — over a layout the
+ * state displaces rather than covers, carrying a remediation distinct from the diagnosis it reports,
+ * and clearing on its own once the backend answers again.
  */
 const FIXTURE: Fixture = {
   modules: [
@@ -61,16 +61,33 @@ test('raises one state for the page when the backend stops answering under it', 
   await expect(page.locator('[data-region]')).toHaveCount(REGIONS.size);
 });
 
-test('stands a module down rather than letting it report the outage as its own', async ({
+test('stands a module down rather than letting it report the outage as its own, and draws it again', async ({
   page,
 }) => {
-  await render(page, REPORTING, 'frame', { healthz: 'abort' });
+  await render(page, REPORTING);
+  const report = page.locator('[data-backend-unreachable]');
+  const stub = page.locator('[data-stub-unavailable]');
+
+  // One page carried across both transitions rather than two page loads: suppression written as a
+  // teardown that never re-instantiates — a module destroyed on the signal, a store cleared and not
+  // repopulated, a reachability read taken once at mount — satisfies the outage half and leaves the
+  // region blank for as long as the display runs. Only a restoration read on the page that was
+  // suppressed sees that.
+  await expect(stub).toBeVisible();
+
+  await serveLiveness(page, 'abort');
 
   // The clause is a "rather than": one report for the display, and none from the module that would
   // otherwise have drawn one. Both counts are read on the same page, since either alone is met by a
-  // display that renders nothing at all.
-  await expect(page.locator('[data-backend-unreachable]')).toHaveCount(1);
-  await expect(page.locator('[data-stub-unavailable]')).toHaveCount(0);
+  // display that renders nothing at all — and the report is awaited first, so the frame still
+  // rendering the module before the ask returns is not read as the suppression.
+  await expect(report).toHaveCount(1, { timeout: 2 * LIVENESS_INTERVAL_MS });
+  await expect(stub).toHaveCount(0);
+
+  await serveLiveness(page, 'ok');
+
+  // Two intervals, for the reason the clearing test below states.
+  await expect(stub).toBeVisible({ timeout: 2 * LIVENESS_INTERVAL_MS });
   await expect(page.locator('[data-region]')).toHaveCount(REGIONS.size);
 });
 

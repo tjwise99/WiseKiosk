@@ -11,22 +11,24 @@ ref: ''
 references:
 - path: frontend/tests/render/backend-unreachable.spec.ts
   type: file
-reviewed: azmbnnAxOeTbHxOs0SRBsgoIUP2wYqlkcIhihb4VMAQ=
+reviewed: xL2t4KqvNgy3vTMMV91EKsuPLHFV10own4kH78xuur8=
 status: proposed
 text: |
   Check that induces a backend outage with the page already served, and asserts the display renders
-  one page-wide unreachable state and no per-module unavailable state: a module carrying an
-  unavailable state of its own renders nothing while the backend is unreachable, and renders it again
-  once the backend answers. Asserts too that the page-wide state displaces the laid-out regions rather
-  than covering any of them, holds its own text clear of the masked band the configuration declares,
-  carries a remediation field non-empty and not equal to the diagnosis it reports, and clears itself
-  once the backend answers again.
+  one page-wide unreachable state and no per-module unavailable state: a module drawing an
+  unavailable state of its own while the backend answers renders nothing once it stops, and draws it
+  again once the backend answers, all three read across one served page rather than one page each.
+  Asserts too that the page-wide state displaces the laid-out regions rather than covering any of
+  them, holds its own text clear of the masked band the configuration declares, carries a remediation
+  field non-empty and not equal to the diagnosis it reports, and clears itself once the backend
+  answers again.
 verification-justification: |
   Settles both halves: one page-wide state replaces the per-module states, and it carries a
   remediation distinct from its diagnosis. The replacement is read against a module that does report
-  for itself - a render-tier module holding an unavailable state, suppressed under the outage and
-  drawn again once the backend answers - so what the check reads is a substitution rather than only
-  the presence of a page state.
+  for itself - a render-tier module holding an unavailable state, drawn while the backend answers,
+  suppressed under the outage and drawn again on recovery, all on the one served page - so what the
+  check reads is a substitution rather than only the presence of a page state, and a suppression that
+  never comes back is read rather than passed over.
   Leaves unproven whether the remediation is the right advice - #71 restart policy recommends it, no
   gate decides it - and that a module written later obeys the rule the module contract states: the
   suppression is read against a module the render tier supplies, and nothing gates that the first
