@@ -15,8 +15,10 @@ is two assertions about two surfaces:
 What makes a value deployment-specific is not decidable in general, so the third arm ranges over what
 the schema declares: every property name the configuration schema carries, at any depth, is a name a
 deployment supplies a value for, and an image carrying one in its environment carries that
-deployment's answer. A schema that declares nothing would range over nothing, and is reported rather
-than passed.
+deployment's answer. The comparison folds case, because the schema spells a property `edge_band`
+while an environment spells the same thing `EDGE_BAND` — matching only the schema's own spelling
+would range over the vocabulary while missing every conventional way of writing it. A schema that
+declares nothing would range over nothing, and is reported rather than passed.
 
 The export is read for the served tree as well as against it: an export holding nothing under the
 static root judged nothing, and must not read as an image free of deployment content.
@@ -102,7 +104,8 @@ def check_filesystem(image, problems):
 
 
 def declared_names(problems):
-    """Every property name the configuration schema declares, at any depth."""
+    """Every property name the configuration schema declares, at any depth, keyed on its folded
+    form and carrying the spelling the schema gave it."""
     try:
         schema = json.loads(SCHEMA.read_text(encoding="utf-8"))
     except (OSError, ValueError) as error:
@@ -110,16 +113,16 @@ def declared_names(problems):
             f"{SCHEMA.relative_to(ROOT)} could not be read as a schema ({error}) — this ranged over "
             f"no declared name"
         )
-        return set()
+        return {}
 
-    names = set()
+    names = {}
     pending = [schema]
     while pending:
         node = pending.pop()
         if isinstance(node, dict):
             properties = node.get("properties")
             if isinstance(properties, dict):
-                names.update(str(key) for key in properties)
+                names.update((str(key).casefold(), str(key)) for key in properties)
             pending.extend(node.values())
         elif isinstance(node, list):
             pending.extend(node)
@@ -148,10 +151,11 @@ def check_environment(image, declared, problems):
                 f"the image environment carries {name}, which names a secret's file — a deployment "
                 f"sets that, and an image carrying one is specific to the deployment that set it"
             )
-        if name in declared:
+        if name.casefold() in declared:
             problems.append(
-                f"the image environment carries {name}, which the configuration schema declares — "
-                f"a deployment supplies that value, and an image carrying one carries its answer"
+                f"the image environment carries {name}, which the configuration schema declares as "
+                f"{declared[name.casefold()]} — a deployment supplies that value, and an image "
+                f"carrying one carries its answer"
             )
         if CONFIG_NAME in entry.split("=", 1)[-1]:
             problems.append(
