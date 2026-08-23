@@ -44,8 +44,20 @@ is no parent to inherit from; lower items may carry one but are not gated on it.
 
 **The forward evidence channel is Doorstop's native `references`, one entry per verifying site,
 each carrying the `keyword` of the test that discharges it** (owner, 2026-08-23). The keyword is the
-test's own identifier — a Go test function name, a Playwright test title — so the trace names what
-the runner prints, and Doorstop resolves the entry to a file *and a line*. This reaffirms
+test's **declaration** — `func TestXxx` for Go, `test('<title>'` or `` test(`<title>` `` for
+Playwright — so the trace names what the runner prints and Doorstop resolves the entry to a file
+*and a line*, the line being the one that declares the test. Anchoring on the declaration rather
+than on the bare name is what makes a deletion visible: Doorstop returns the first line matching the
+keyword anywhere in the file, so a bare name also matches the doc comment this repo writes above
+every Go test, and a deleted test stays resolvable through its own obituary.
+
+**A reference to a whole-file check artifact that no runner discovers may omit `keyword`.** Where
+the verifying site is a script invoked as one command, every assertion of which discharges the one
+item — the `scripts/image/*.py` harnesses — there is no declaration to anchor on and no runner title
+to name; drift is still carried by the entry's file `sha`. Every reference to a runner-discovered
+test carries a declaration-anchored keyword.
+
+This reaffirms
 [ADR 0002 rev 3](0002-requirements-management-doorstop.md): a `TST` item's `references` point at the
 real verifying files, for every verification method, and rev 1's partial supersession of that
 mechanism is withdrawn.
@@ -83,7 +95,7 @@ Three gates, all in-repo, each run by `just verify` and mirrored byte-identicall
 
 | # | Gate | Proves |
 |---|---|---|
-| 1 | `check-reqs` (exists) | Tree integrity: parent links, no suspect/unreviewed/orphan items; every `TST` reference resolves to a file and keyword; no referenced test drifted since review |
+| 1 | `check-reqs` (exists) | Tree integrity: parent links, no suspect/unreviewed/orphan items; every `TST` reference resolves to a file, and to the declaration its `keyword` names where it carries one; no referenced test drifted since review |
 | 2 | Reverse-direction check | Every test the runner discovers is claimed by some active Test-method `TST` item |
 | 3 | Coverage closure (when source exists) | Uncovered source is unjustified source (visible exemptions) |
 
