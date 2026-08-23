@@ -67,7 +67,7 @@ duration, a sampling interval, a tolerance, or a build mode has swallowed its ow
 threshold then cannot be tuned without a specification change. Where an item's text begins
 *"Verification shall…"*, it is announcing this.
 
-**This narrows [ADR 0005 rev 1](0005-traceability-gating.md).** Its traceability claim is over **the
+**This narrows [ADR 0005 rev 2](0005-traceability-gating.md).** Its traceability claim is over **the
 product**. *No work exists without a requirement authorizing it* is true of work on WiseKiosk; it is
 not true of the repository's own housekeeping, and arguably never was. Three consequences for 0005's
 four gates:

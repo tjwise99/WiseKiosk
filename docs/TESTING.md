@@ -190,7 +190,7 @@ construction, so a high number buys confidence it has not earned.
 Report it, read it to find untested areas, and gate on the standing obligations above. No gate fails
 a merge on a coverage percentage treated as a quality threshold; the coverage gate, where one
 exists, fails only on uncovered source that is neither exempted nor justified — coverage as
-traceability closure, gate 3 of [ADR 0005 rev 1](decisions/0005-traceability-gating.md), never as a
+traceability closure, gate 3 of [ADR 0005 rev 2](decisions/0005-traceability-gating.md), never as a
 chosen quality bar.
 
 ---

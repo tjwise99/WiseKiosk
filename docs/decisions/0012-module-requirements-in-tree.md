@@ -70,14 +70,14 @@ spent its length removing.
 prose.** Rejected: a module's obligations are obligations on the running software — what it fetches,
 what it renders, how it fails — which is exactly what
 [ADR 0011 rev 2](0011-requirement-or-convention.md) puts in the tree. Leaving them to prose would place
-product behaviour outside the traceability claim [ADR 0005 rev 1](0005-traceability-gating.md) makes over
+product behaviour outside the traceability claim [ADR 0005 rev 2](0005-traceability-gating.md) makes over
 the product. Repository conventions leave the tree under that same rule; module behaviour is not one
 of them.
 
 ## Consequences
 
 **The tree grows with content, bounded by the module roster.** Adding a module adds a need and its
-decomposition. That is the work, recorded where work is recorded — [ADR 0005 rev 1](0005-traceability-gating.md)
+decomposition. That is the work, recorded where work is recorded — [ADR 0005 rev 2](0005-traceability-gating.md)
 already treats the tree as the backlog, so a module's unwritten items are its scope rather than an
 omission. The count is not open-ended: the roster is a product decision stated in
 [`../../README.md`](../../README.md), so the need tier is the framework needs plus one per module on

@@ -43,7 +43,7 @@ the single documentation toolchain.
   This machinery is mature, maintained, and purpose-built for exactly the SYS→SRS→TST shape; on
   every alternative it would be bespoke code owned here forever.
 - **Doorstop stays canonical.** This does **not** supersede
-  [ADR 0002 rev 2](0002-requirements-management-doorstop.md): the YAML items under
+  [ADR 0002 rev 3](0002-requirements-management-doorstop.md): the YAML items under
   `docs/requirements/` remain the requirements source and `doorstop --error-all` remains the gate.
   A **thin, presentation-free transform** generates need objects from the YAML at build time
   (generated, gitignored — never hand-authored); only Doorstop's HTML render is retired.

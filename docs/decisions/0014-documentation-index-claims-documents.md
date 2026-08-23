@@ -34,7 +34,7 @@ entered in `17565a1` with the tree rebuild: an intention written down and never 
 that publishes claims [`../../SECURITY.md`](../../SECURITY.md) rests on carried a section standing for
 machinery nobody had written.
 
-This is unrelated to [ADR 0005 rev 1](0005-traceability-gating.md)'s retired gate 4, which
+This is unrelated to [ADR 0005 rev 2](0005-traceability-gating.md)'s retired gate 4, which
 [ADR 0011 rev 2](0011-requirement-or-convention.md) closed on 2026-07-26 for having no possible subject.
 That gate asked an Inspection-method item to claim files; this decision does not reopen it, does not
 supersede anything, and puts no obligation back in the tree. Which document holds which fact is

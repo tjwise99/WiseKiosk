@@ -14,7 +14,7 @@
 
 ## Context
 
-[ADR 0005 rev 1](0005-traceability-gating.md) gave every item a `verification-method` and routed the gates
+[ADR 0005 rev 2](0005-traceability-gating.md) gave every item a `verification-method` and routed the gates
 on it. What the method never carries is the argument behind its value: it records a conclusion and
 discards what produced it. That costs on both sides of the `test` boundary.
 
@@ -62,7 +62,7 @@ records what that item's verification settles and what it does not:
 It is fenced by the review fingerprint alongside `verification-method` and `rationale`, so weakening
 a method cannot land without re-review.
 
-This partially supersedes ADR 0005 rev 1's three-attribute set. 0005's method values, its four gates, its
+This partially supersedes ADR 0005 rev 2's three-attribute set. 0005's method values, its four gates, its
 derived-verification model, and its tree-as-backlog stance all stand unchanged.
 
 Two distinctions the attribute depends on:
@@ -76,8 +76,8 @@ Two distinctions the attribute depends on:
   is why that channel is in use at all. An item at `inspection` owes both.
 
 The gate asserting that every item carries a non-empty justification is
-`scripts/check-method-consistency.py`. The remaining gates it was to be built alongside — ADR 0005 rev 1's
-gates 2 and 3 — are open under #25 traceability gates.
+`scripts/check-method-consistency.py`. The remaining gates it was to be built alongside — ADR 0005 rev 2's
+gates 2 and 3 — are open under #25 traceability gates and #190 coverage closure gate respectively.
 
 ## Alternatives considered
 
@@ -112,7 +112,7 @@ gates 2 and 3 — are open under #25 traceability gates.
 - **The docs site gains a column where it renders verification fields** — the justification sits in
   needtables beside the method, so what each check leaves unproven is browsable rather than
   discoverable only by grep. `docs/site/doorstop_to_needs.py` emits no verification field and needs a
-  `needs_extra_options` declaration for one, which is #25 traceability gates' work.
+  `needs_extra_options` declaration for one, which is #191 verification matrix's work.
 - **It adds an authoring obligation to every item**, including pending ones. An item written before
   its blocker is understood must state the blocker; one claiming `test` must state what the check
   leaves unproven. "Unsure" has no representation, which is intended.
