@@ -132,11 +132,15 @@ normative item has one.
 - **Validation** (completeness) — every `SYS` need has a child `SRS`, every `SRS` has a child `TST`,
   and no `SRS`/`TST` is orphaned without a parent. A gap fails the gate.
 - **Verification linkage** — every active `TST` item's `references` must resolve, each entry to a
-  real file in the repo and to the line its `keyword` names. A renamed or deleted test fails the gate
-  as surely as a missing file does, because the keyword is the test's own identifier — a Go function
-  name, a Playwright title — so the trace names what the runner prints
-  ([ADR 0005 rev 2](../decisions/0005-traceability-gating.md)). No test file names a requirement ID:
-  the trace runs one way, from the tree outward.
+  real file in the repo and to the line its `keyword` names. **The keyword is the test's declaration,
+  not its name** — `func TestFoo` for Go, `test('a title'` or `` test(`a ${templated} title` `` for
+  Playwright — so what resolves is the line that declares the test, and renaming or deleting that
+  test fails the gate as surely as a missing file does
+  ([ADR 0005 rev 2](../decisions/0005-traceability-gating.md)). A bare name would not: Doorstop
+  returns the *first* line matching the keyword anywhere in the file, and this repo's Go doc-comment
+  convention repeats the function name in prose above it, so a bare name resolves to the comment and
+  survives the test's deletion. No test file names a requirement ID: the trace runs one way, from the
+  tree outward.
 - **Evidence drift** — the `TST` document records a hash of each referenced file when the item is
   reviewed, and `tst/.req_sha_item_validator.py` compares it back on every validation run. Editing a
   referenced test — a comment counts — fails the gate for every item referencing it until
@@ -285,6 +289,9 @@ enough — it cannot see a reflow, and reflow is how an unintended change hides.
   so assign `link.stamp = parent.stamp()` from the item found through `document._iter()` and save.
   `check-unreviewed.py` catches the null, so this fails loudly rather than silently; retiring a
   parent whose child is pending is when it arises.
+- **A `keyword` that fails to resolve is reported by its `path`.** Doorstop builds
+  `external reference not found: <path>` from the entry's path whichever half failed, so a deleted or
+  renamed test reads as a missing file that is sitting right there. Check the keyword before the path.
 - **Validation stamps what it touches, so never run it on the tree you care about.** `doorstop`'s
   validation pass re-blesses items as it goes, so a diagnostic run silently re-stamps the very items
   whose review state was in question. Copy the tree to a throwaway directory and validate there.

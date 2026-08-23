@@ -12,15 +12,15 @@ rationale: |
   TST004<!-- Resident memory does not grow without bound --> describes.
 ref: ''
 references:
-- keyword: TestRunningFootprintStaysBounded
+- keyword: func TestRunningFootprintStaysBounded
   path: backend/cmd/footprint_linux_test.go
   sha: 26f9a7f047b2e7a183f65b3e39a016eb46a65422cf4ef34bf808c6d2a2dfc939
   type: file
-- keyword: TestFootprintPredicatesJudgeSyntheticSeries
+- keyword: func TestFootprintPredicatesJudgeSyntheticSeries
   path: backend/cmd/footprint_test.go
   sha: dcfd2cabc4df27ada8f0fa10bfb59c55dc1922f6e3b42f6d8ba57d65622b2806
   type: file
-reviewed: oQvP4-4UtevFMxECZIdW-jFdLLkk0P-zxr_fGiP_yqY=
+reviewed: dT5VlqaFzjnO9_oWDAJL0WA22XhaaW9sKSY_zsc_HUE=
 status: proposed
 text: |
   Over the shared instrumented run, failing on any increase in the runtime's task count between the

@@ -9,15 +9,15 @@ normative: true
 rationale: ''
 ref: ''
 references:
-- keyword: TestNoSecretValueReachesAnyServedSurface
+- keyword: func TestNoSecretValueReachesAnyServedSurface
   path: backend/cmd/canary_test.go
   sha: 5499aa1f736e474ce0750621720d1470b965fb7214428de8eaa88d9663bf09e2
   type: file
-- keyword: TestNoSecretValueReachesAnyResponseOrLog
+- keyword: func TestNoSecretValueReachesAnyResponseOrLog
   path: backend/internal/router/canary_test.go
   sha: 8ee88a3cccf5b62e6d51b3d4db5f785cc0cfd374fdb014e109891f9459e6a832
   type: file
-reviewed: FHF3izpKGVLVEp8jPGuyhpvYrFqb6gMwQkPlEiiJySs=
+reviewed: qOtuT_eZuRPzfmn5JiUETQ3hOlZ1EtQAJSjofxMDEhk=
 status: proposed
 text: |
   Canary test planting a known secret value through <NAME>_FILE delivery, exercising every route

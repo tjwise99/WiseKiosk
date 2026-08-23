@@ -9,19 +9,19 @@ normative: true
 rationale: ''
 ref: ''
 references:
-- keyword: TestResolveStripsTrailingWhitespaceOnly
+- keyword: func TestResolveStripsTrailingWhitespaceOnly
   path: backend/internal/secret/secret_test.go
   sha: 7eda4dce4050addf16f18b5ee78571f07f33956676c17c697d21b1e7dd5ed1d0
   type: file
-- keyword: TestResolveIgnoresBareEnvironmentVariable
+- keyword: func TestResolveIgnoresBareEnvironmentVariable
   path: backend/internal/secret/secret_test.go
   sha: 7eda4dce4050addf16f18b5ee78571f07f33956676c17c697d21b1e7dd5ed1d0
   type: file
-- keyword: TestResolveUnresolvableCauses
+- keyword: func TestResolveUnresolvableCauses
   path: backend/internal/secret/secret_test.go
   sha: 7eda4dce4050addf16f18b5ee78571f07f33956676c17c697d21b1e7dd5ed1d0
   type: file
-reviewed: hrU32YsYr_IGAYSDgahM73oqv2vsA9KUA7OOBWbYDSg=
+reviewed: Q-OVCiYxbjL44Myff-E_6aQNliJDDx5-omV5LvM0bc4=
 status: proposed
 text: |
   Unit tests of secret resolution: the value is read from the file at <NAME>_FILE, trailing

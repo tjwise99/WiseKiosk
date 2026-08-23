@@ -9,11 +9,11 @@ normative: true
 rationale: ''
 ref: ''
 references:
-- keyword: TestAnUnresolvableSecretFailsOnlyItsOwnSource
+- keyword: func TestAnUnresolvableSecretFailsOnlyItsOwnSource
   path: backend/internal/router/router_test.go
   sha: 8ff8a7bdf2e08a700a9b3fc3d0b87176f2ed9b0b8c6dba563f7f591e8c6fe0c3
   type: file
-reviewed: p2qMhErz-K0AKq0Ns_5rs2JmjrsHzRmxA_Zga9ulB-E=
+reviewed: 9lNL07dz4_7y9_keSs18-iMETNJ7AD8qLYh8mP5qP_I=
 status: proposed
 text: |
   Route test asserting the backend boots with no secrets delivered, and that a request to a source

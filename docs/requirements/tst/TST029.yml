@@ -9,35 +9,35 @@ normative: true
 rationale: ''
 ref: ''
 references:
-- keyword: TestNonConformingParametersAreRejectedWithNoUpstreamCall
+- keyword: func TestNonConformingParametersAreRejectedWithNoUpstreamCall
   path: backend/internal/router/router_test.go
   sha: 8ff8a7bdf2e08a700a9b3fc3d0b87176f2ed9b0b8c6dba563f7f591e8c6fe0c3
   type: file
-- keyword: TestARouteAnswersGetOnly
+- keyword: func TestARouteAnswersGetOnly
   path: backend/internal/router/router_test.go
   sha: 8ff8a7bdf2e08a700a9b3fc3d0b87176f2ed9b0b8c6dba563f7f591e8c6fe0c3
   type: file
-- keyword: TestAPathNoEntryRegisteredIsUnknown
+- keyword: func TestAPathNoEntryRegisteredIsUnknown
   path: backend/internal/router/router_test.go
   sha: 8ff8a7bdf2e08a700a9b3fc3d0b87176f2ed9b0b8c6dba563f7f591e8c6fe0c3
   type: file
-- keyword: TestARequestOverTheRateLimitIsRejected
+- keyword: func TestARequestOverTheRateLimitIsRejected
   path: backend/internal/router/router_test.go
   sha: 8ff8a7bdf2e08a700a9b3fc3d0b87176f2ed9b0b8c6dba563f7f591e8c6fe0c3
   type: file
-- keyword: TestEveryOutcomeCarriesItsOwnStatusAndCause
+- keyword: func TestEveryOutcomeCarriesItsOwnStatusAndCause
   path: backend/internal/router/router_test.go
   sha: 8ff8a7bdf2e08a700a9b3fc3d0b87176f2ed9b0b8c6dba563f7f591e8c6fe0c3
   type: file
-- keyword: TestNoTwoCausesShareASpelling
+- keyword: func TestNoTwoCausesShareASpelling
   path: backend/internal/router/router_test.go
   sha: 8ff8a7bdf2e08a700a9b3fc3d0b87176f2ed9b0b8c6dba563f7f591e8c6fe0c3
   type: file
-- keyword: TestAnOutcomeNoCaseNamesIsStillRenderable
+- keyword: func TestAnOutcomeNoCaseNamesIsStillRenderable
   path: backend/internal/router/router_test.go
   sha: 8ff8a7bdf2e08a700a9b3fc3d0b87176f2ed9b0b8c6dba563f7f591e8c6fe0c3
   type: file
-reviewed: MZJF4yj3yyIvtlG2MtIhhdSJwqPWfBpur0HNAXy6UKo=
+reviewed: fijmKaOnY9PIaxdOZ-Qn0UNWjWm9Vm0DMY1UUq3yLxA=
 status: proposed
 text: |
   Test asserting the backend returns 400 (invalid parameter), 404 (unknown source), 405 (non-GET
