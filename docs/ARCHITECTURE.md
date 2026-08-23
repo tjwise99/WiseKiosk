@@ -137,7 +137,10 @@ serving, which is the one thing a single-host runtime can act on; it reaches no 
 that is down is that module's failure on the display rather than an unhealthy container. The same
 binary asks the question of a running instance from inside the image, which is what lets the image
 declare a `HEALTHCHECK` without carrying an HTTP client beside it
-([ADR 0020 rev 2](decisions/0020-release-artifact-set-and-operator-tooling.md)).
+([ADR 0020 rev 2](decisions/0020-release-artifact-set-and-operator-tooling.md)). The display page is
+the second asker: it polls the same endpoint and reports an unanswered one once for the whole page,
+standing its modules down rather than letting each report the outage as its own
+(SRS026<!-- The display says when the backend is gone -->).
 
 **Adding a route is adding one element to a list.** The registration list is a package holding a
 literal, read by the bootstrap and by nothing else, and the framework refuses an entry it cannot
