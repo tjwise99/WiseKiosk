@@ -26,6 +26,9 @@ export async function render(
   await page.route('**/config.json', (route) =>
     route.fulfill({ contentType: 'application/json', body: JSON.stringify(fixture) }),
   );
+  // A reachable backend by default, so the page's liveness poll raises no state over a fixture that
+  // is not asserting one. A test asserting the unreachable state routes `/healthz` itself.
+  await page.route('**/healthz', (route) => route.fulfill({ status: 200, body: 'ok' }));
   await page.goto('/');
   const settled =
     expected === 'frame' ? page.locator('[data-frame]') : page.locator('[data-configuration-error]');

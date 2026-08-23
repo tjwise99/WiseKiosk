@@ -1,12 +1,14 @@
 <script lang="ts">
   import { loadConfiguration, type ConfigurationOutcome } from './config/load';
+  import BackendUnreachable from './lib/BackendUnreachable.svelte';
   import ConfigurationError from './lib/ConfigurationError.svelte';
   import RegionFrame from './lib/RegionFrame.svelte';
+  import { LIVENESS_INTERVAL_MS, checkLiveness } from './lib/liveness';
 
-  // Started once, at mount: the display never navigates, so there is nothing to re-run or tear down.
-  // The rejection arm is not unreachable: `loadConfiguration` maps every failure it anticipates onto
-  // an outcome, and anything it does not — a throw from inside the validator — would otherwise leave
-  // the page on its loading state for as long as the display runs.
+  // Read once, at mount: the display never navigates, so the configuration is asked for a single
+  // time. The rejection arm is not unreachable: `loadConfiguration` maps every failure it
+  // anticipates onto an outcome, and anything it does not — a throw from inside the validator —
+  // would otherwise leave the page on its loading state for as long as the display runs.
   let outcome: ConfigurationOutcome | undefined = $state();
   loadConfiguration()
     .then((result) => {
@@ -18,6 +20,22 @@
         detail: cause instanceof Error ? cause.message : String(cause),
       };
     });
+
+  // Whether the backend answered its last ask. It is asked only once a configuration has been
+  // applied: the other outcomes render a report of their own, which a second failure state over the
+  // top of would not help an operator read.
+  let reachable = $state(true);
+  $effect(() => {
+    if (outcome?.kind !== 'applied') {
+      return;
+    }
+    const ask = async () => {
+      reachable = await checkLiveness();
+    };
+    void ask();
+    const asking = setInterval(() => void ask(), LIVENESS_INTERVAL_MS);
+    return () => clearInterval(asking);
+  });
 </script>
 
 {#if outcome === undefined}
@@ -26,6 +44,9 @@
   </main>
 {:else if outcome.kind === 'applied'}
   <RegionFrame configuration={outcome.configuration} />
+  {#if !reachable}
+    <BackendUnreachable />
+  {/if}
 {:else}
   <ConfigurationError {outcome} />
 {/if}
