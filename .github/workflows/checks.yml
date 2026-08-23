@@ -360,6 +360,38 @@ jobs:
       - name: The image runs non-root, serves only a mounted configuration, carries no deployment content or secret material, and keeps two instances independent
         run: just check-image
 
+  image-arch:
+    name: image-arch
+    # Both architectures the backend is obliged to run on, one leg each: the image is built for the
+    # leg's platform and smoke-tested on it (scripts/image/smoke.py). One leg per platform rather
+    # than one job building both, so a failure names the architecture it happened on, and
+    # fail-fast is off so the other architecture still reports. The arm64 leg builds and runs under
+    # QEMU emulation — this runner is amd64, as publish.yml's multi-arch build is. The recipe body
+    # is the one spelling of what runs, here and locally. No secrets: the image is built and run on
+    # the runner and pushed nowhere.
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        platform: [linux/amd64, linux/arm64]
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: docker/setup-qemu-action@96fe6ef7f33517b61c61be40b68a1882f3264fb8 # v4.2.0
+
+      - uses: docker/setup-buildx-action@37fe631027851001ddb9b187196cc803df7f5f0e # v4.3.0
+
+      - uses: extractions/setup-just@53165ef7e734c5c07cb06b3c8e7b647c5aa16db3 # v4
+        with:
+          just-version: "1.58.0"
+
+      - name: The image builds for this leg's platform and comes up serving on it
+        env:
+          PLATFORM: ${{ matrix.platform }}
+        run: just smoke-image "$PLATFORM"
+
   process:
     name: process
     # Process gates (ADR 0006 rev 4): the branch is named type_number-snake_name and

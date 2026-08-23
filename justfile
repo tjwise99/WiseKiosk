@@ -225,6 +225,14 @@ check-image:
     python3 scripts/image/two_instances.py wisekiosk:citest
     python3 scripts/image/layer_secret_scan.py wisekiosk:citest
 
+# One architecture per invocation, named by the caller: a matrix leg supplies the platform, and a
+# foreign platform needs emulation the runner provides rather than the recipe.
+[group('checks')]
+[doc('The container image builds for one platform — `linux/amd64` or `linux/arm64` — and comes up serving on it; needs Docker, and emulation for a platform this host is not')]
+smoke-image platform:
+    docker buildx build --platform {{platform}} --load --tag wisekiosk:citest .
+    python3 scripts/image/smoke.py wisekiosk:citest
+
 [group('config')]
 [doc('Regenerate the configuration-object TypeScript types from the configuration schema')]
 config-codegen:
