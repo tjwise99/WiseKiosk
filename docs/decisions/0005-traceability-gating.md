@@ -85,8 +85,10 @@ pinned tool rather than against recollection:
   *and* structural ones — a table-driven boundary case, a regression pinning a fixed bug, a fuzz
   seed — and obliging each to carry a verification obligation either invents items that state no
   want or prices the test out of the suite. Degrading the test protocol to satisfy a gate is the
-  wrong trade. The unclaimed population is worth *reporting*, in the forward direction, which is
-  #192 verification-debt report.
+  wrong trade. What is left after that refusal is a **deliberately accepted, non-gated gap**: no
+  gate and no report measures the tests no item claims, and #192 verification-debt report is not
+  that report — it runs the other way, over accepted Test-method items with no resolving reference.
+  The two populations are complements, and #192 says so in its own body.
 
 **Drift on the evidence channel is caught natively too.** The `TST` document sets
 `item_sha_required` in its `.doorstop.yml`, so `doorstop review` records a SHA256 of each referenced
@@ -197,8 +199,9 @@ The four stored attributes — `verification-method`, `status`, `verification-ju
   written, and dropping gate 2 is what leaves it with no exception.
 - **An unclaimed test is not a build failure.** Nothing fails when a test the runner discovers is
   named by no item, so a structural test lands without inventing a `TST` for it. What that costs is
-  visibility, which #192 verification-debt report buys back as a report rather than as a gate; until
-  it exists the population is unmeasured, and saying so is the honest state.
+  visibility into that population, and nothing here buys it back — the gap is accepted rather than
+  mitigated, and saying so is the honest state. #192 verification-debt report is a *separate*
+  forward-direction report over items with no evidence, not a substitute for it.
 - **Coverage implies a near-100% bar** with a visible exemption mechanism — deliberate, because it
   gates an invariant (no unjustified source), not a chosen number. Coverage proves execution, not
   specification: a line covered incidentally counts. That residue is held by review and test
