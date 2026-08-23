@@ -16,13 +16,16 @@
 <style>
   /* A band above what is already laid out, not a replacement for it and not a cover over it: the
      page gives the band its own row and the frame the rest, so the modules that need no backend
-     keep rendering in full (SYS001). The rule beneath separates the two. */
+     keep rendering in full (SYS001). The rule beneath separates the two. Its own text clears the
+     masked band on the three edges it reaches, the frame below holding the fourth
+     (docs/contracts/display-styling-contract.md § Spacing scale and the edge band). */
   .backend-unreachable {
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
     gap: var(--space-xs);
-    padding: var(--space-md) var(--space-lg);
+    padding: calc(var(--edge-band) + var(--space-md)) calc(var(--edge-band) + var(--space-lg))
+      var(--space-md);
     border-bottom: 1px solid var(--emission-stroke);
   }
 

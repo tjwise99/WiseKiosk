@@ -4,6 +4,7 @@
   import ConfigurationError from './lib/ConfigurationError.svelte';
   import RegionFrame from './lib/RegionFrame.svelte';
   import { LIVENESS_INTERVAL_MS, checkLiveness } from './lib/liveness';
+  import { edgeBandLength } from './lib/regions';
 
   // Read once, at mount: the display never navigates, so the configuration is asked for a single
   // time. The rejection arm is not unreachable: `loadConfiguration` maps every failure it
@@ -43,7 +44,11 @@
     <p>Loading the display configuration…</p>
   </main>
 {:else if outcome.kind === 'applied'}
-  <div class="page" class:banded={!reachable}>
+  <div
+    class="page"
+    class:banded={!reachable}
+    style="--edge-band:{edgeBandLength(outcome.configuration.edge_band)}"
+  >
     {#if !reachable}
       <BackendUnreachable />
     {/if}
@@ -56,7 +61,9 @@
 <style>
   /* The display's own height, divided between the states the page carries: the frame alone, or a
      band above it and the frame in what is left. The band displaces the layout rather than covering
-     it, so no region is ever hidden behind a failure report (SYS001). */
+     it, so no region is ever hidden behind a failure report (SYS001). The masked depth is declared
+     here rather than on the frame, so everything the page draws inside it reads the one value
+     (docs/contracts/display-styling-contract.md § Spacing scale and the edge band). */
   .page {
     display: grid;
     grid-template-rows: minmax(0, 1fr);

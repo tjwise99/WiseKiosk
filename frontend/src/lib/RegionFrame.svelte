@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { Region, WiseKioskDisplayConfiguration } from '../config/types';
   import { modules } from './modules';
-  import { FRAME_COLUMNS, FRAME_ROWS, edgeBandLength, placementStyle } from './regions';
+  import { FRAME_COLUMNS, FRAME_ROWS, placementStyle } from './regions';
 
   const { configuration }: { configuration: WiseKioskDisplayConfiguration } = $props();
 
@@ -19,13 +19,10 @@
     return [...byRegion];
   });
 
-  const frameStyle = $derived(
-    [
-      `--edge-band:${edgeBandLength(configuration.edge_band)}`,
-      `grid-template-columns:${FRAME_COLUMNS}`,
-      `grid-template-rows:${FRAME_ROWS}`,
-    ].join(';'),
-  );
+  const frameStyle = [
+    `grid-template-columns:${FRAME_COLUMNS}`,
+    `grid-template-rows:${FRAME_ROWS}`,
+  ].join(';');
 </script>
 
 <div class="frame" style={frameStyle} data-frame>
