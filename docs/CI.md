@@ -899,9 +899,11 @@ specification rather than of the repository, so they are stated where the specif
 `scripts/check-drift-hook.py`, run by `just check-drift-hook` in the `requirements` job, fails where
 `docs/requirements/tst/.doorstop.yml` stops declaring `item_sha_required: true` and an
 `item_validator` naming `.req_sha_item_validator.py`, or where that hook file is not beside it.
-Doorstop defends neither half: `Document.save()` rebuilds the config from `settings` and
-`attributes` alone, so a `doorstop add TST` or a reorder writes the `extensions:` block away, and an
-unrecognised key under `extensions` raises nothing where one under `attributes` errors. A disarmed
+Doorstop defends neither half: an unrecognised key under `extensions` raises nothing where one under
+`attributes` errors, so a hand edit that misspells `extensions:` disarms the hook in silence, and
+`Document.save()` rebuilds the config from `settings` and `attributes` alone, writing the
+`extensions:` block away wherever it runs — on `Document.new()` and on a document-property change,
+though not on `doorstop add` or a reorder, neither of which saves the config. A disarmed
 hook fails no run — it reports a clean tree over drifted evidence, which is why the arming is gated
 rather than trusted. Recorded in
 [`../scripts/cases/check-drift-hook-py.md`](../scripts/cases/check-drift-hook-py.md).

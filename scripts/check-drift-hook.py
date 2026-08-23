@@ -4,12 +4,15 @@
 `item_sha_required` makes `doorstop review` record a hash of each referenced file, and the
 document's `item_validator` hook is what compares it back — together they are gate 1's drift
 half (ADR 0005 rev 2). Both are declared in the `extensions:` block of
-docs/requirements/tst/.doorstop.yml, and nothing else in the toolchain defends that block:
-Doorstop's `Document.save()` writes `settings` and `attributes` and drops `extensions`
-entirely, so a `doorstop add TST` or a reorder rewrites the config without it; and
-`Document` stores `extensions` raw, so an unrecognised key raises nothing where an
-unrecognised `attributes` key errors. A disarmed hook fails no run — it reports a clean
-tree over drifted evidence, which is the shape of failure this record exists to catch.
+docs/requirements/tst/.doorstop.yml, and nothing else in the toolchain defends that block.
+It is lost or disarmed two ways. A hand or tooling edit: `Document` stores `extensions`
+raw, so an unrecognised key raises nothing where an unrecognised `attributes` key errors,
+and `extensons:` therefore disarms the hook in silence. Or `Document.save()`, which
+rebuilds the config from `settings` and `attributes` alone and drops `extensions` entirely
+— reached by `Document.new()` and by the `prefix`/`sep`/`digits`/`parent` setters, not by
+`doorstop add` or a reorder, neither of which saves the config. A disarmed hook fails no
+run — it reports a clean tree over drifted evidence, which is the shape of failure this
+record exists to catch.
 
 The value is asserted as well as the key. Doorstop tests `"item_sha_required" in
 extensions`, so `false` also enables hashing; a config saying `false` while hashing is on
