@@ -15,7 +15,7 @@ A V-model tree — needs on the left, verification on the right:
 |---|---|---|---|
 | `SYS` | [`sys/`](sys) | Stakeholder / system-level needs (the validation anchor), framework and per-module alike | — (top) |
 | `SRS` | [`srs/`](srs) | Decomposed, testable "shall" statements | `SYS` |
-| `TST` | [`tst/`](tst) | One item per test/check; one `references` entry per verifying site, each naming the file and the `keyword` of the test that discharges it | `SRS` |
+| `TST` | [`tst/`](tst) | One item per test/check; one `references` entry per verifying site, naming the file and — where a runner discovers the test — the `keyword` declaring it | `SRS` |
 
 A module is a need: each carries one `SYS` item for its user-facing want, decomposed into `SRS` items
 stating only what is specific to that module. Obligations true of every module stay on the framework
@@ -131,16 +131,19 @@ normative item has one.
 
 - **Validation** (completeness) — every `SYS` need has a child `SRS`, every `SRS` has a child `TST`,
   and no `SRS`/`TST` is orphaned without a parent. A gap fails the gate.
-- **Verification linkage** — every active `TST` item's `references` must resolve, each entry to a
-  real file in the repo and to the line its `keyword` names. **The keyword is the test's declaration,
-  not its name** — `func TestFoo` for Go, `test('a title'` or `` test(`a ${templated} title` `` for
-  Playwright — so what resolves is the line that declares the test, and renaming or deleting that
-  test fails the gate as surely as a missing file does
+- **Verification linkage** — every active `TST` item's `references` must resolve: each entry to a
+  real file in the repo, and, where the entry carries a `keyword`, to the line that keyword names.
+  **The keyword is the test's declaration, not its name** — `func TestFoo` for Go, `test('a title'`
+  or `` test(`a ${templated} title` `` for Playwright — so what resolves is the line that declares
+  the test, and renaming it fails the gate as surely as a missing file does
   ([ADR 0005 rev 2](../decisions/0005-traceability-gating.md)). A bare name would not: Doorstop
   returns the *first* line matching the keyword anywhere in the file, and this repo's Go doc-comment
   convention repeats the function name in prose above it, so a bare name resolves to the comment and
-  survives the test's deletion. No test file names a requirement ID: the trace runs one way, from the
-  tree outward.
+  survives the test's deletion. **A reference to a whole-file check artifact no runner discovers
+  omits `keyword`** — a `scripts/image/*.py` harness has no declaration to anchor on and no runner
+  title to name, so the entry resolves to the file alone and drift is carried by its `sha`. Every
+  reference to a runner-discovered test carries a keyword. No test file names a requirement ID: the
+  trace runs one way, from the tree outward.
 - **Evidence drift** — the `TST` document records a hash of each referenced file when the item is
   reviewed, and `tst/.req_sha_item_validator.py` compares it back on every validation run. Editing a
   referenced test — a comment counts — fails the gate for every item referencing it until
@@ -233,8 +236,9 @@ Between them these commands assert that:
 - every document the tree holds yields at least one item to check — a tier that yields nothing
   produces no finding, which reads exactly like a tier whose every item is reviewed;
 - every parent link resolves and no item is orphaned or left suspect, **inactive items included**;
-- every active `TST` item's `references` resolve — each entry to a real file, and to the line its
-  `keyword` names — and no referenced file has changed since the item was reviewed;
+- every active `TST` item's `references` resolve — each entry to a real file, and, where it carries
+  one, to the line its `keyword` names — and no referenced file has changed since the item was
+  reviewed;
 - every item carries a `verification-justification`;
 - no item claims a verification method its own children do not support;
 - no item's `text` names another item.
