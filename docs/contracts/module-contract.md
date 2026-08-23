@@ -38,7 +38,10 @@ Parts 1, 2 and 5 apply to upstream-backed modules only. Parts 3, 4 and 6 apply t
    accepted upstream response size. Those values live in the entry and nowhere else.
 3. **A Svelte component.** Receives the module's configuration and its payload as props and renders
    them into the module's region; it fetches no data, parses no configuration and validates no
-   payload. Where the module has a payload, the component consumes the type generated from the
+   payload. It receives one prop more, `reachable` — the page shell's answer about whether the backend
+   is serving — which decides whether it renders anything at all, per
+   [§ An unavailable module and an unreachable backend are different states](#an-unavailable-module-and-an-unreachable-backend-are-different-states)
+   below. Where the module has a payload, the component consumes the type generated from the
    boundary schema rather than one declared by hand
    ([ADR 0008 rev 2](../decisions/0008-boundary-contract-openapi-codegen.md)).
 4. **A configuration-schema fragment.** Declares what this module accepts, composed into the one
@@ -117,7 +120,12 @@ and the review trigger.
 4. Add the module's payload to the boundary schema as a named component; the generated type the
    component consumes is emitted from it.
 5. Write the component, plus its render test. Where the module has a payload, write the component
-   against the generated type rather than hand-declaring it.
+   against the generated type rather than hand-declaring it. Declare the `reachable` prop and honour
+   the stand-down it signals
+   ([§ An unavailable module and an unreachable backend are different states](#an-unavailable-module-and-an-unreachable-backend-are-different-states)):
+   a component that leaves it undeclared draws its own unavailable state beneath the page's outage
+   report, and nothing says so — Svelte ignores a prop the component does not declare, and the render
+   tier reads the stand-down against a module it supplies rather than against this one.
 6. Set the module's poll cadence against that route's TTL.
 7. Confirm the dependency direction still runs modules → framework, and that no shared framework
    source names the new module beyond its registration entry.
