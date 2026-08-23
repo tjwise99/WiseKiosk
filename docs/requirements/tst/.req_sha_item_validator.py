@@ -5,7 +5,9 @@ is that read, wired as the document's `item_validator` hook so drift is reported
 `doorstop --error-all`, per [ADR 0005 rev 2](../../decisions/0005-traceability-gating.md).
 
 An entry with no recorded `sha` is skipped rather than failed: absence is Doorstop's own
-pre-review state, and `check-unreviewed.py` is what decides whether that is acceptable.
+pre-review state, and `Item.stamp()` is the backstop, because `references` — shas included —
+ride the item's review fingerprint. Adding an entry, or dropping a `sha` from one, fails as
+`unreviewed changes` without this hook having an opinion.
 """
 
 from doorstop.common import DoorstopError

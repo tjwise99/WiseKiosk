@@ -91,8 +91,9 @@ pinned tool rather than against recollection:
 **Drift on the evidence channel is caught natively too.** The `TST` document sets
 `item_sha_required` in its `.doorstop.yml`, so `doorstop review` records a SHA256 of each referenced
 file in its entry, and the document's `item_validator` hook — Doorstop's documented per-document
-extension, shipped with the tool as `.req_sha_item_validator.py` and described in its scripting
-guide — compares the recorded hash against the file on every validation run. A referenced test whose
+extension, described in its scripting guide and dogfooded on upstream's own tree under `reqs/ext/`,
+though not carried in the installed package — compares the recorded hash against the file on every
+validation run. The copy this repo runs, `tst/.req_sha_item_validator.py`, is authored here. A referenced test whose
 content changed fails `doorstop --error-all` until the item is re-reviewed. This is the suspect-link
 discipline the tree already applies to parent requirements, extended to the files that verify them,
 and it runs inside the existing `check-reqs` rather than as another sibling script. Granularity is
