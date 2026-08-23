@@ -89,8 +89,11 @@ region, which is what the display is obliged not to do
 (SRS026<!-- The display says when the backend is gone -->).
 
 Reachability reaches the component the way its configuration and payload do (part 3): as a prop,
-threaded from the page shell through the frame to every module. The frame forwards it and reads
-nothing from it, so nothing between the shell and the module decides which modules an outage covers.
+threaded from the page shell through the frame to every module. The frame forwards it to every module
+alike and makes no coverage decision from it, so nothing between the shell and the module decides
+which modules an outage covers — that is each module's own question, not a placement one. The frame
+reads the signal for one thing only, and it is the frame's own: dropping the top inset it would
+otherwise hold below a report that already holds that edge.
 A local module ignores the prop — it fetches nothing, so a backend that is gone takes nothing from it
 and it keeps rendering beneath the page's report.
 
