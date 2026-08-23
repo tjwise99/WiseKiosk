@@ -1,12 +1,13 @@
-import { expect, test } from '@playwright/test';
+import { expect, test, type Page } from '@playwright/test';
 
 import { LIVENESS_INTERVAL_MS } from '../../src/lib/liveness';
-import type { Fixture } from './harness';
+import { overlaps, regionBoxes, render, serveLiveness, type Box, type Fixture } from './harness';
 
 /**
- * TST040. With the page already served and its modules laid out, an unreachable backend raises one
- * page-wide state rather than one per region, carrying a remediation distinct from the diagnosis it
- * reports — and the state clears on its own once the backend answers again.
+ * TST040. A backend that stops answering under a page already serving its modules raises one
+ * page-wide state rather than one per region, over a layout the state displaces rather than covers,
+ * carrying a remediation distinct from the diagnosis it reports — and the state clears on its own
+ * once the backend answers again.
  */
 const FIXTURE: Fixture = {
   modules: [
@@ -20,46 +21,63 @@ const FIXTURE: Fixture = {
 
 const REGIONS = new Set(FIXTURE.modules.map((placement) => placement.region));
 
-/**
- * Serves the fixture and answers the liveness ask the way a stopped service does — the connection
- * fails rather than carrying a status. The routes are registered here rather than through the
- * harness, whose default answers that ask healthily.
- */
-test.beforeEach(async ({ page }) => {
-  await page.route('**/config.json', (route) =>
-    route.fulfill({ contentType: 'application/json', body: JSON.stringify(FIXTURE) }),
-  );
-  await page.route('**/healthz', (route) => route.abort('failed'));
-  await page.goto('/');
-  await expect(page.locator('[data-frame]')).toBeVisible();
-  await page.evaluate(() => document.fonts.ready);
-});
+/** The box the page-wide state occupies, in the coordinates `regionBoxes` reads. */
+async function stateBox(page: Page): Promise<Box> {
+  const box = await page.locator('[data-backend-unreachable]').boundingBox();
+  expect(box, 'the state is laid out').not.toBeNull();
+  return { left: box!.x, top: box!.y, right: box!.x + box!.width, bottom: box!.y + box!.height };
+}
 
-test('reports the outage once for the page, over a layout that keeps rendering', async ({
+test('raises one state for the page when the backend stops answering under it', async ({
   page,
 }) => {
-  const state = page.locator('[data-backend-unreachable]');
-  await expect(state).toBeVisible();
-  await expect(state).toHaveCount(1);
+  await render(page, FIXTURE);
 
-  // The failure degrades no more of the display than it has to: what is already laid out is still
-  // laid out under the state reporting the outage.
+  // The transition the obligation names is live to dead: the page is serving its modules, with
+  // nothing reported, before the backend goes.
+  const state = page.locator('[data-backend-unreachable]');
+  await expect(state).toHaveCount(0);
+  await expect(page.locator('[data-region]')).toHaveCount(REGIONS.size);
+
+  await serveLiveness(page, 'abort');
+
+  await expect(state).toBeVisible({ timeout: 2 * LIVENESS_INTERVAL_MS });
+  await expect(state).toHaveCount(1);
   await expect(page.locator('[data-region]')).toHaveCount(REGIONS.size);
 });
 
+test('displaces the layout rather than covering any of it', async ({ page }) => {
+  await render(page, FIXTURE, 'frame', { healthz: 'abort' });
+  await expect(page.locator('[data-backend-unreachable]')).toBeVisible();
+
+  // Counting the regions would pass over a state drawn on top of them, which is the failure SYS001
+  // rules out: what is still laid out has to be still readable.
+  const band = await stateBox(page);
+  const laidOut = [...(await regionBoxes(page))];
+  expect(laidOut).toHaveLength(REGIONS.size);
+  for (const [region, box] of laidOut) {
+    expect(overlaps(band, box), `the state over ${region}`).toBe(false);
+  }
+});
+
 test('names a corrective action that is not the failure it reports', async ({ page }) => {
+  await render(page, FIXTURE, 'frame', { healthz: 'abort' });
+  await expect(page.locator('[data-backend-unreachable]')).toBeVisible();
+
   const diagnosis = (await page.locator('[data-diagnosis]').innerText()).trim();
   const remediation = (await page.locator('[data-remediation]').innerText()).trim();
 
+  expect(diagnosis).not.toBe('');
   expect(remediation).not.toBe('');
   expect(remediation).not.toBe(diagnosis);
 });
 
 test('clears the state on its own once the backend answers again', async ({ page }) => {
+  await render(page, FIXTURE, 'frame', { healthz: 'abort' });
   const state = page.locator('[data-backend-unreachable]');
   await expect(state).toBeVisible();
 
-  await page.route('**/healthz', (route) => route.fulfill({ status: 200, body: 'ok' }));
+  await serveLiveness(page, 'ok');
 
   // Two intervals, not one: the ask that reaches the restored backend is the next one after the
   // route changes, and the route can change immediately after an ask has already gone out.

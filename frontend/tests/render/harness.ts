@@ -9,15 +9,32 @@ export interface Fixture {
 /** What a fixture puts on screen: the frame, or the report of why there is none. */
 export type Rendered = 'frame' | 'configuration-error';
 
+/** How the backend answers the page's liveness ask: serving, or gone. */
+export type Liveness = 'ok' | 'abort';
+
+/**
+ * Answers the page's liveness ask, `abort` being the connection failing the way a stopped service
+ * fails it. Playwright matches routes most-recently-registered first, so calling this again over a
+ * served page is what induces the transition a test is asserting. One spelling of the glob, for the
+ * same reason the configuration's is one.
+ */
+export async function serveLiveness(page: Page, liveness: Liveness): Promise<void> {
+  await page.route('**/healthz', (route) =>
+    liveness === 'ok' ? route.fulfill({ status: 200, body: 'ok' }) : route.abort('failed'),
+  );
+}
+
 /**
  * Serves `fixture` as the configuration and waits for the frame to be laid out. The configuration is
  * fulfilled from the test rather than written to disk, so one server serves every fixture and each
- * test states the configuration it is asserting against.
+ * test states the configuration it is asserting against. The backend answers the liveness ask unless
+ * a test says otherwise, so a fixture not asserting the unreachable state never raises one.
  */
 export async function render(
   page: Page,
   fixture: unknown,
   expected: Rendered = 'frame',
+  { healthz = 'ok' }: { healthz?: Liveness } = {},
 ): Promise<void> {
   // Matched as a glob rather than by importing `CONFIGURATION_URL`: a spec file runs in Node, and
   // that constant's module reaches the validator's virtual module, which only Vite can resolve. The
@@ -26,9 +43,7 @@ export async function render(
   await page.route('**/config.json', (route) =>
     route.fulfill({ contentType: 'application/json', body: JSON.stringify(fixture) }),
   );
-  // A reachable backend by default, so the page's liveness poll raises no state over a fixture that
-  // is not asserting one. A test asserting the unreachable state routes `/healthz` itself.
-  await page.route('**/healthz', (route) => route.fulfill({ status: 200, body: 'ok' }));
+  await serveLiveness(page, healthz);
   await page.goto('/');
   const settled =
     expected === 'frame' ? page.locator('[data-frame]') : page.locator('[data-configuration-error]');
