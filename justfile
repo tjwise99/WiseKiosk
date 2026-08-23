@@ -263,5 +263,10 @@ check-languages:
     python3 scripts/check-languages.py
 
 [group('checks')]
+[doc('Every service in the committed deployment recipe declares restart policy `unless-stopped`; that one key and no other value in the recipe')]
+check-restart-policy:
+    python3 scripts/check-restart-policy.py
+
+[group('checks')]
 [doc('Run every check the PR gate runs that has a local form and needs no Docker; secret scanning, the PR-title check (commitlint, via the hook layer), the link check (lychee, from a digest-pinned image) and the workflow audit (zizmor, actionlint) are CI-only, and the image tier is `just check-image`')]
-verify: check-untracked check-hooks check-branch check-reqs check-citations check-arch check-arch-trace check-boundary check-go check-secret-unwrap check-config-types check-build check-static-bundle check-unit check-render check-site check-adr-index check-adr-revs check-docs-index check-repo-silo check-languages check-dead-test
+verify: check-untracked check-hooks check-branch check-reqs check-citations check-arch check-arch-trace check-boundary check-go check-secret-unwrap check-config-types check-build check-static-bundle check-unit check-render check-site check-adr-index check-adr-revs check-docs-index check-repo-silo check-languages check-dead-test check-restart-policy

@@ -83,6 +83,9 @@ jobs:
       - name: Every tracked file is a declared authored or derived kind
         run: just check-languages
 
+      - name: Every service in the committed deployment recipe declares a restart policy
+        run: just check-restart-policy
+
   requirements:
     name: requirements
     # Validates the Doorstop requirements tree: every TST reference resolves, no
