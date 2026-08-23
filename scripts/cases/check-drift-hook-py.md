@@ -55,11 +55,11 @@ rather than asserted.
   enters at the first `extensions:` and stops at the next top-level key, so a duplicate block later
   in the file is never read — while `yaml.safe_load` takes the last, which is Doorstop's view.
   Seeded: the committed config with a second `extensions:` block appended declaring
-  `item_sha_required: false` and no `item_validator`. This exits **0**, reporting the hook armed
-  over a config `yaml.safe_load` reduces to `{'item_sha_required': False}`. Recorded
-  because reporting armed over disarmed is the one outcome this check must never produce; the config
-  needed to reach it is pathological, and closing it means a YAML parse, which costs the
-  stdlib-only property the script is written for. Left open deliberately, not unnoticed.
+  `item_sha_required: false` and no `item_validator`. This exits **0**, reporting the hook armed over
+  a config `yaml.safe_load` reduces to `{'item_sha_required': False}`. Recorded because reporting
+  armed over disarmed is the one outcome this check must never produce; the config needed to reach it
+  is pathological, and closing it means a YAML parse, which costs the stdlib-only property the script
+  is written for. Left open deliberately, not unnoticed.
 - **The hook's contents are unread.** A file present but exporting no `item_validator`, or one whose
   comparison is wrong, passes here. What the hook must do is
   [ADR 0005 rev 2](../../docs/decisions/0005-traceability-gating.md)'s, and a check reading it would

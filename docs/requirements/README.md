@@ -143,11 +143,10 @@ normative item has one.
   `test(` call sits in a loop, the keyword is the template rather than any title the runner prints,
   so removing a row of the data array — or emptying it — leaves the entry resolving over fewer
   tests, or none. Evidence drift below is what catches that. **A reference to a whole-file check
-  artifact no runner discovers
-  omits `keyword`** — a `scripts/image/*.py` harness has no declaration to anchor on and no runner
-  title to name, so the entry resolves to the file alone and drift is carried by its `sha`. Every
-  reference to a runner-discovered test carries a keyword. No test file names a requirement ID: the
-  trace runs one way, from the tree outward.
+  artifact no runner discovers omits `keyword`** — a `scripts/image/*.py` harness has no declaration
+  to anchor on and no runner title to name, so the entry resolves to the file alone and drift is
+  carried by its `sha`. Every reference to a runner-discovered test carries a keyword. No test file
+  names a requirement ID: the trace runs one way, from the tree outward.
 - **Evidence drift** — the `TST` document records a hash of each referenced file when the item is
   reviewed, and `tst/.req_sha_item_validator.py` compares it back on every validation run. Editing a
   referenced test — a comment counts — fails the gate for every item referencing it until
