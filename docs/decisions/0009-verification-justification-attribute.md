@@ -62,8 +62,10 @@ records what that item's verification settles and what it does not:
 It is fenced by the review fingerprint alongside `verification-method` and `rationale`, so weakening
 a method cannot land without re-review.
 
-This partially supersedes ADR 0005 rev 2's three-attribute set. 0005's method values, its four gates, its
-derived-verification model, and its tree-as-backlog stance all stand unchanged.
+The stored-attribute set is [ADR 0005 rev 2](0005-traceability-gating.md)'s, and this record is what
+puts `verification-justification` in it — the addition 0005 records as superseding its own earlier
+set. 0005's method values, its gate table, its derived-verification model, and its tree-as-backlog
+stance all stand unchanged.
 
 Two distinctions the attribute depends on:
 
@@ -76,8 +78,9 @@ Two distinctions the attribute depends on:
   is why that channel is in use at all. An item at `inspection` owes both.
 
 The gate asserting that every item carries a non-empty justification is
-`scripts/check-method-consistency.py`. The remaining gates it was to be built alongside — ADR 0005 rev 2's
-gates 2 and 3 — are open under #25 traceability gates and #190 coverage closure gate respectively.
+`scripts/check-method-consistency.py`. Of the gates it was to be built alongside,
+[ADR 0005 rev 2](0005-traceability-gating.md) drops the reverse-direction one and leaves gate 3 open
+under #190 coverage closure gate.
 
 ## Alternatives considered
 
