@@ -116,6 +116,31 @@ tree's; what is decided here is only that the tree builds, that `vet` is clean o
 is executed on the merge path rather than declared, and that the tier's concurrent packages executed
 without a detected race.
 
+## Image tests
+
+The container image is built from the tracked tree and the Image tier is run over it, in two jobs of
+their own: `image-tests` runs `just check-image` — the five property harnesses under
+`scripts/image/`, plus the health-signal check § *Deployment and bring-up* states — and `image-arch`
+runs `just smoke-image` once per architecture. Both need Docker, which is why neither is a
+`just verify` dependency (§ *Gate wiring*).
+
+- **The artifact under test is the one this commit builds**, not a published digest: the job builds
+  it and hands the ref to each harness, so a change to the Dockerfile is judged by the same run that
+  makes it. What the tier must guarantee is [`TESTING.md`](TESTING.md)'s and the obligations it
+  answers are the tree's; what is decided here is that it is executed on the merge path rather than
+  declared. Recorded in [`../scripts/cases/check-image.md`](../scripts/cases/check-image.md).
+- **Both architectures are smoke-tested, one matrix leg each.** A leg builds for its own platform and
+  runs `scripts/image/smoke.py` over what it loaded: the container answers on its published port, and
+  answers the argument vector its own `HEALTHCHECK` declares. `fail-fast` is off, so one
+  architecture's failure still leaves the other's verdict; the foreign leg builds and runs under the
+  emulation the runner sets up, this runner being amd64 as the publishing one is. The harness is
+  handed a ref and asserts nothing about which platform produced it — what was smoke-tested is the
+  leg's to decide, and the image's declared platform is printed rather than checked against a
+  restatement here.
+- **The property harnesses are not re-run per architecture.** Coming up and serving is what varies
+  with the architecture; the configuration, layer and isolation properties hold of the image on
+  either, so a second run of them would be a repeat rather than a second assertion.
+
 ## Generated boundary types
 
 The one OpenAPI schema is hand-authored and both sides' types are generated from it
@@ -216,7 +241,9 @@ enabled, and this paragraph rather than a check is what records it.
 
 What a release publishes and what CI asserts about it. Verification runs against the published digest
 in a separate job that pulls from the registry, reads only the registry and the public transparency
-log, and holds no credential. Unbuilt; owned by #67 security and supply-chain gates, against the set
+log, and holds no credential. What builds and pushes the image is `.github/workflows/publish.yml`,
+which #54 container build and publish landed; every check below is unbuilt and owned by #67 security
+and supply-chain gates, against the set
 [ADR 0020 rev 2](decisions/0020-release-artifact-set-and-operator-tooling.md) decides.
 
 **Nothing decides the no-credential property.** It is a proposal for a check, not an asserted
@@ -261,10 +288,13 @@ a posture resting on this section. Until #77 fences this document, read it as in
   than being skipped.
   **What no check here decides:** `.description` and `.licenses` resolve from repository metadata
   rather than from the commit, so either can change with no commit and nothing reports it; and
-  `.created` is the time the build ran, this project making no bit-identical-rebuild claim. The
-  emission is #54's.
+  `.created` is the time the build ran, this project making no bit-identical-rebuild claim.
+  **What emits them** is `publish.yml`'s `docker/metadata-action` step (#54): eight keys are that
+  action's own, `.revision` is the commit the job runs on, and `.documentation` is supplied as a
+  literal on both surfaces. The levels the check reads are declared in that step as
+  `DOCKER_METADATA_ANNOTATIONS_LEVELS: index,manifest`.
 - **Base images are pinned** to a `@sha256:` digest rather than a floating tag, for every base and
-  stage in the Dockerfile.
+  stage in the Dockerfile — three stages, three digests in the committed file (#54).
 - **The code generators are pinned** to an exact version, so a toolchain bump cannot present as
   schema drift and a regeneration is reproducible. Structurally the same rule as the line above, and
   no requirement states it: nothing the running software does can violate a pin (#7).
@@ -290,27 +320,37 @@ What each of these obligations *is*, and why, is [`DEPLOYMENT.md`](DEPLOYMENT.md
   ever run. **In the page** is the load-bearing part: a schema validator run as a step here would be a
   second implementation of the schema's rules, which that ADR forbids. This exercises the one engine
   rather than authoring another.
-- **The committed recipe carries a restart policy.** A scripted check over the recipe, failing if the
-  policy is absent. **It gates that one key deliberately and no others**: the key is the residue of a
+- **The committed recipe carries a restart policy.** `scripts/check-restart-policy.py`, run by
+  `just check-restart-policy` in the `docs-and-hygiene` job, failing where a service in
+  `deploy/compose.yaml` declares no policy or declares one other than `unless-stopped` — the value
+  is the assertion rather than the key's presence, `always` being the wrong one for the reason
+  [`DEPLOYMENT.md`](DEPLOYMENT.md) gives. A recipe it can find no service in fails as well, a run
+  that examined nothing not being a clean one. Recorded in
+  [`../scripts/cases/check-restart-policy-py.md`](../scripts/cases/check-restart-policy-py.md).
+  **It gates that one key deliberately and no others**: the key is the residue of a
   requirement deleted on #69 tree rebuild, not the beginning of a recipe linter. Every other value in
   the recipe is a sample default an operator is expected to weigh and change
   ([ADR 0020 rev 2](decisions/0020-release-artifact-set-and-operator-tooling.md)), and gating one would
   assert a recommendation as an obligation.
-- **The image reports its health in both directions.** An integration test runs the image and reads
-  the reported status while the backend serves and while it does not. A test that only ever observes
-  the healthy state cannot tell a working signal from a hardcoded one.
+- **The image reports its health in both directions.** `scripts/image/health_signal.py`, run by
+  `just check-image` in the `image-tests` job, runs the argument vector the image's own
+  `HEALTHCHECK` declares — rather than a command restated in the check — in a container that is
+  serving and in one where nothing is listening. A test that only ever observes the healthy state
+  cannot tell a working signal from a hardcoded one. An image declaring no `CMD`-form healthcheck
+  fails rather than reading as a signal in neither direction, and a vector docker could not execute
+  at all (125, 126 or 127) is reported as having judged nothing rather than as a correctly reported
+  unhealthy state. Recorded in [`../scripts/cases/check-image.md`](../scripts/cases/check-image.md).
 - **An image swap preserves the deployment.** A test runs published digest A with a mounted
   configuration and secret directory and asserts it is healthy and serving that configuration; stops
   and removes it; runs digest B with byte-identical mount arguments and asserts it is healthy, serving
   the same configuration, and reporting a changed version — with no builder invoked at any point.
 
-**Unbuilt, and three of them have no implementation ticket.** The recipe and health-signal checks are
-#54 container build and publish's. The bring-up, example-configuration and image-swap checks run
-against what that ticket publishes, and #71 release artifact set decided what they assert while
-shipping no code, so no ticket builds them. That departs from naming a ticket per unbuilt gate
-([ADR 0005 rev 1](decisions/0005-traceability-gating.md)), deliberately: an owner line naming a ticket
-that does not own the work reads as scoped when it is not, and a ticket filed to satisfy the
-convention would be a placeholder nobody chose.
+**Two are built and three are not.** The recipe and health-signal checks landed with #54 container
+build and publish, against the image and the recipe that ticket ships. The three that run against a
+published release are owned one ticket each — #138 bring-up check, #139 shipped-example-configuration
+check and #140 image-swap check — which is how this project records scoped work
+([ADR 0005 rev 1](decisions/0005-traceability-gating.md)); what each asserts was decided by #71
+release artifact set, which shipped no code.
 
 ## The exception register
 
@@ -600,9 +640,12 @@ changed, which the citation resolver above decides without anyone declaring anyt
   not itself a conforming branch fails rather than skips, because an anchor the check cannot resolve
   must not read as success. Sub-issue membership means a shared merge target — topical grouping is
   the milestone's job.
-- The Docker build context excludes `.git` and `node_modules`, by `.dockerignore`. Neither is secret
-  material; both are build hygiene, and a smaller context is a faster and more predictable build.
-  That the image carries no secret is the tree's, under
+- The Docker build context excludes `.git` and `node_modules`, which the committed `.dockerignore`
+  does, along with the other trees a build of the two source silos reads nothing from. Neither is
+  secret material; both are build hygiene, and a smaller context is a faster and more predictable
+  build. No gate reads that file — this line rather than a check is what records the exclusions, and
+  what the image carries is decided by the tier over the built image instead
+  (§ *Image tests*). That the image holds no secret is the tree's, under
   SRS025<!-- No secret material in the published image --> (#54).
 - No `justfile` recipe carries a shebang. A recipe is a list of commands; shell control flow is a
   script, and a script is siloed under `scripts/` where a case can be recorded against it, like every
@@ -610,11 +653,14 @@ changed, which the citation resolver above decides without anyone declaring anyt
   shape is whatever `just` resolves it to.
 - A depth-1 listing of the repository root holds no `package.json`, `go.mod`, `pyproject.toml`,
   `requirements*.txt` or `.venv/` — tooling is siloed with the feature it serves — and every
-  Dependabot entry that is not `github-actions` resolves to a non-root directory holding the matching
-  manifest. `github-actions` is exempt from that rule because its manifests are the workflow files,
-  which are siloed nowhere, so its entry is asserted to exist instead — an exemption is otherwise
-  granted to an entry nothing obliges, and without the entry the pins below stop being updated and
-  nothing says so.
+  Dependabot entry that is not `github-actions` resolves to a directory holding the matching
+  manifest, non-root for every ecosystem but `docker`. **Two exemptions, of different kinds.**
+  `github-actions` is exempt from manifest resolution altogether, because its manifests are the
+  workflow files, which are siloed nowhere, so its entry is asserted to exist instead — an exemption
+  is otherwise granted to an entry nothing obliges, and without the entry the pins below stop being
+  updated and nothing says so. `docker` is exempt from the non-root half alone: the `Dockerfile` sits
+  at the root by [ADR 0021 rev 1](decisions/0021-repository-layout.md), and its entry is still held to
+  naming a directory that holds one, so a `docker` entry pointed anywhere else fails like any other.
 
 ## Action pins and workflow privilege
 
