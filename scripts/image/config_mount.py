@@ -14,7 +14,7 @@ The fixture is arbitrary JSON written per run: what is asserted is fidelity, so 
 to be recognisable, and a fixture that is not committed cannot drift into being the default it exists
 to disprove.
 
-Usage: config_bind_mount.py [image-ref]
+Usage: config_mount.py [image-ref]
 """
 
 import json

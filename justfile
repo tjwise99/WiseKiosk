@@ -220,7 +220,7 @@ check-dead-test:
 check-image:
     docker buildx build --load --tag wisekiosk:citest .
     python3 scripts/image/nonroot_uid.py wisekiosk:citest
-    python3 scripts/image/config_bind_mount.py wisekiosk:citest
+    python3 scripts/image/config_mount.py wisekiosk:citest
     python3 scripts/image/no_deployment_content.py wisekiosk:citest
     python3 scripts/image/two_instances.py wisekiosk:citest
     python3 scripts/image/health_signal.py wisekiosk:citest
