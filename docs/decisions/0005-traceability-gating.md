@@ -37,6 +37,12 @@ Doorstop 3.2 source two of the three objections that displaced it do not hold. T
 below is stated against what the tool actually offers, so that what is bespoke here is only what
 Doorstop cannot do.
 
+**And what rev 2 answers differently.** The reverse arrow the Context opens with is two claims, not
+one: that every item's evidence exists in the repo and is current, and that every test in the repo
+names an item. Rev 2 holds the first mechanically and declines the second, for the reason given
+against the third objection below. The record's answer to its own opening question is therefore
+narrower than rev 1's, and deliberately so.
+
 ## Decision
 
 Every requirement carries a `verification-method` attribute (`test` | `inspection` | `analysis` |
@@ -218,7 +224,9 @@ The four stored attributes — `verification-method`, `status`, `verification-ju
   gates an invariant (no unjustified source), not a chosen number. Coverage proves execution, not
   specification: a line covered incidentally counts. That residue is held by review and test
   quality, and no gate pretends otherwise.
-- **Exactly one ungated surface remains** — the axiom tier — held by human review, mechanized by
-  fingerprints. Everything below it is machine-checked.
+- **The ungated surfaces are named rather than counted.** The axiom tier, held by human review and
+  mechanized by fingerprints. The reverse direction, accepted above. And source no test reaches,
+  until gate 3 lands under #190 coverage closure gate. What the gates do reach, they reach
+  mechanically; nothing else is claimed.
 - The exemption mechanism's shape is deferred to #190 coverage closure gate **explicitly marked
   open**, not resolved silently here.
