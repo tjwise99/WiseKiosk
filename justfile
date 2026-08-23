@@ -208,6 +208,11 @@ check-unit:
 check-render:
     frontend/node_modules/.bin/playwright test --config frontend/playwright.config.ts
 
+[group('checks')]
+[doc('Every committed test file is discovered by a configured runner, asked of each runner rather than restating its globs; needs `just boundary-install`')]
+check-dead-test:
+    python3 scripts/check-dead-test.py
+
 [group('config')]
 [doc('Regenerate the configuration-object TypeScript types from the configuration schema')]
 config-codegen:
@@ -239,4 +244,4 @@ check-languages:
 
 [group('checks')]
 [doc('Run every check the PR gate runs that has a local form; secret scanning, the PR-title check (commitlint, via the hook layer), the link check (lychee, from a digest-pinned image) and the workflow audit (zizmor, actionlint) are CI-only')]
-verify: check-untracked check-hooks check-branch check-reqs check-citations check-arch check-arch-trace check-boundary check-go check-secret-unwrap check-config-types check-build check-static-bundle check-unit check-render check-site check-adr-index check-adr-revs check-docs-index check-repo-silo check-languages
+verify: check-untracked check-hooks check-branch check-reqs check-citations check-arch check-arch-trace check-boundary check-go check-secret-unwrap check-config-types check-build check-static-bundle check-unit check-render check-site check-adr-index check-adr-revs check-docs-index check-repo-silo check-languages check-dead-test

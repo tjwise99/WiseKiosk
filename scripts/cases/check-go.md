@@ -42,8 +42,10 @@ first execution under `-race`. A gate reading the count cannot tell the two apar
   not inferred. `go test` reports a package carrying no test file as a non-failure, so a test lost to
   a build tag, a wrong directory or a deletion is invisible here, and a run that executed nothing
   reads exactly like a clean tier. It is the row above's neighbour and the row above does not reach
-  it: `vet` refuses an empty *package* set and has nothing to say about an empty *test* set. Closing
-  it is #82 dead-test detector's.
+  it: `vet` refuses an empty *package* set and has nothing to say about an empty *test* set. It is
+  closed by the whole-tree discovery gate, `check-dead-test`
+  ([cases](check-dead-test-py.md)), whose population is the tracked tree rather than what a runner
+  executed.
 - **`-race` detects, it does not prove.** It reports only the unsynchronised accesses a run actually
   performs, so a race on a path the tests never drive is not caught — and the fourth step's whole
   value is on loan from the concurrency tests underneath it, which force the contention it observes.
