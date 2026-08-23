@@ -5,9 +5,10 @@ import { overlaps, regionBoxes, render, serveLiveness, type Box, type Fixture } 
 
 /**
  * TST040. A backend that stops answering under a page already serving its modules raises one
- * page-wide state rather than one per region, over a layout the state displaces rather than covers,
- * carrying a remediation distinct from the diagnosis it reports — and the state clears on its own
- * once the backend answers again.
+ * page-wide state rather than one per region — a module that reports its own failures stands down
+ * instead of restating the outage — over a layout the state displaces rather than covers, carrying a
+ * remediation distinct from the diagnosis it reports, and clearing on its own once the backend
+ * answers again.
  */
 const FIXTURE: Fixture = {
   modules: [
@@ -20,6 +21,16 @@ const FIXTURE: Fixture = {
 };
 
 const REGIONS = new Set(FIXTURE.modules.map((placement) => placement.region));
+
+/**
+ * The same display carrying a module that reports for itself: `unavailable` renders its own failure
+ * box while the backend answers and stands down while it does not. It is placed in a region the
+ * fixture already occupies, so the count of laid-out regions is the same either way and a suppressed
+ * module cannot be read as a lost region.
+ */
+const REPORTING: Fixture = {
+  modules: [...FIXTURE.modules, { region: 'middle_center', module: 'unavailable' }],
+};
 
 /** The same fixture on a display whose outer band is behind a fitted mask. */
 const BAND = 7;
@@ -47,6 +58,31 @@ test('raises one state for the page when the backend stops answering under it', 
 
   await expect(state).toBeVisible({ timeout: 2 * LIVENESS_INTERVAL_MS });
   await expect(state).toHaveCount(1);
+  await expect(page.locator('[data-region]')).toHaveCount(REGIONS.size);
+});
+
+test('stands a module down rather than letting it report the outage as its own', async ({
+  page,
+}) => {
+  await render(page, REPORTING, 'frame', { healthz: 'abort' });
+
+  // The clause is a "rather than": one report for the display, and none from the module that would
+  // otherwise have drawn one. Both counts are read on the same page, since either alone is met by a
+  // display that renders nothing at all.
+  await expect(page.locator('[data-backend-unreachable]')).toHaveCount(1);
+  await expect(page.locator('[data-stub-unavailable]')).toHaveCount(0);
+  await expect(page.locator('[data-region]')).toHaveCount(REGIONS.size);
+});
+
+test('leaves the module free to report its own source while the backend answers', async ({
+  page,
+}) => {
+  await render(page, REPORTING);
+
+  // What makes the suppression above readable: the module does draw its box, so its absence there is
+  // the page standing it down rather than a module that renders nothing whatever it is told.
+  await expect(page.locator('[data-stub-unavailable]')).toBeVisible();
+  await expect(page.locator('[data-backend-unreachable]')).toHaveCount(0);
   await expect(page.locator('[data-region]')).toHaveCount(REGIONS.size);
 });
 

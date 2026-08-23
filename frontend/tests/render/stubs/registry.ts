@@ -13,11 +13,13 @@ import Overflows from './Overflows.svelte';
 import RegionFill from './RegionFill.svelte';
 import Scrim from './Scrim.svelte';
 import TypeScale from './TypeScale.svelte';
+import Unavailable from './Unavailable.svelte';
 
 /**
  * The registry the render tier substitutes for the product's empty one. Each stub is a shape the
  * render obligations are read against — a box that fits, one that overflows, the type scale, the
- * legal grouping vocabulary, and the emitting surfaces that must be reported as above the ceiling.
+ * legal grouping vocabulary, the module that reports for itself, and the emitting surfaces that must
+ * be reported as above the ceiling.
  */
 export const modules: Record<string, Component> = {
   fits: Fits,
@@ -25,6 +27,7 @@ export const modules: Record<string, Component> = {
   'type-scale': TypeScale,
   grouped: Grouped,
   'bright-image': BrightImage,
+  unavailable: Unavailable,
 
   // Seeds. A fixture placing one of these is asserting that the emission scan reports it.
   'lit-panel': LitPanel,
