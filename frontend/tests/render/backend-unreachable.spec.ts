@@ -138,6 +138,29 @@ test('holds what it reports clear of the band the configuration declares', async
   }
 });
 
+test('leaves the regions beneath it clear of that band as well', async ({ page }) => {
+  await render(page, MASKED, 'frame', { healthz: 'abort' });
+  await expect(page.locator('[data-backend-unreachable]')).toBeVisible();
+
+  const viewport = page.viewportSize();
+  expect(viewport).not.toBeNull();
+  const { width, height } = viewport!;
+  const band = (BAND / 100) * height;
+
+  // The banded page is the one state where the frame does not hold the top inset itself — it drops
+  // it, the report having taken that edge — so here the top edge rests on the report's own padding
+  // and the other three on what the frame still holds. Every other fixture that reads a region box
+  // against a band renders the backend serving, so this is the only place that rule is read at all.
+  const boxes = await regionBoxes(page);
+  expect(boxes.size).toBe(REGIONS.size);
+  for (const [region, box] of boxes) {
+    expect(box.left, `${region} left`).toBeGreaterThanOrEqual(band - 0.5);
+    expect(box.top, `${region} top`).toBeGreaterThanOrEqual(band - 0.5);
+    expect(box.right, `${region} right`).toBeLessThanOrEqual(width - band + 0.5);
+    expect(box.bottom, `${region} bottom`).toBeLessThanOrEqual(height - band + 0.5);
+  }
+});
+
 test('names a corrective action that is not the failure it reports', async ({ page }) => {
   await render(page, FIXTURE, 'frame', { healthz: 'abort' });
   await expect(page.locator('[data-backend-unreachable]')).toBeVisible();

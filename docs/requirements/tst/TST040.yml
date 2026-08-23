@@ -11,7 +11,7 @@ ref: ''
 references:
 - path: frontend/tests/render/backend-unreachable.spec.ts
   type: file
-reviewed: xL2t4KqvNgy3vTMMV91EKsuPLHFV10own4kH78xuur8=
+reviewed: 1m0vMqFGl3SqD7KEsxT7xblEf6VhApRTf9HxBqpxJ6c=
 status: proposed
 text: |
   Check that induces a backend outage with the page already served, and asserts the display renders
@@ -19,9 +19,10 @@ text: |
   unavailable state of its own while the backend answers renders nothing once it stops, and draws it
   again once the backend answers, all three read across one served page rather than one page each.
   Asserts too that the page-wide state displaces the laid-out regions rather than covering any of
-  them, holds its own text clear of the masked band the configuration declares, carries a remediation
-  field non-empty and not equal to the diagnosis it reports, and clears itself once the backend
-  answers again.
+  them, holds its own text clear of the masked band the configuration declares and leaves every
+  laid-out region clear of that band on all four edges while it is up, carries a remediation field
+  non-empty and not equal to the diagnosis it reports, and clears itself once the backend answers
+  again.
 verification-justification: |
   Settles both halves: one page-wide state replaces the per-module states, and it carries a
   remediation distinct from its diagnosis. The replacement is read against a module that does report
@@ -29,6 +30,10 @@ verification-justification: |
   suppressed under the outage and drawn again on recovery, all on the one served page - so what the
   check reads is a substitution rather than only the presence of a page state, and a suppression that
   never comes back is read rather than passed over.
+  The region clearance is read here rather than with the unbanded ones because the frame drops its
+  own top inset only while a report is up: that is a state no other check renders, so the clearance
+  the report's inset then holds would otherwise rest on an argument across three files rather than on
+  an assertion.
   Leaves unproven whether the remediation is the right advice - #71 restart policy recommends it, no
   gate decides it - and that a module written later obeys the rule the module contract states: the
   suppression is read against a module the render tier supplies, and nothing gates that the first
