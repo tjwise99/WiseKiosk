@@ -9,7 +9,14 @@ normative: true
 rationale: ''
 ref: ''
 references:
-- path: frontend/tests/render/region-overflow.spec.ts
+- keyword: content larger than its region exceeds the region rather than fitting inside it
+  path: frontend/tests/render/region-overflow.spec.ts
+  type: file
+- keyword: content that fits its region is not reported as overflowing
+  path: frontend/tests/render/region-overflow.spec.ts
+  type: file
+- keyword: the overflow is neither clipped nor scrolled away nor scaled down
+  path: frontend/tests/render/region-overflow.spec.ts
   type: file
 reviewed: 4KTcZuNpOTJMNW5HRagz1GmH0mv7zrVgReDBAXX5Jg8=
 status: accepted

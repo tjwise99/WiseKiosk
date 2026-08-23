@@ -9,7 +9,8 @@ normative: true
 rationale: ''
 ref: ''
 references:
-- path: frontend/tests/render/edge-clearance.spec.ts
+- keyword: keeps every region clear of the band, with ${name}
+  path: frontend/tests/render/edge-clearance.spec.ts
   type: file
 reviewed: A4npRvFMun42UwrLAdE9P0i7zrXnHtYdMGElNuBm0ko=
 status: accepted

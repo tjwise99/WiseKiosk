@@ -8,6 +8,16 @@ links:
 normative: true
 rationale: ''
 ref: ''
+references:
+- keyword: TestHangingFetchEndsAtTheDeadline
+  path: backend/internal/upstream/proxy_test.go
+  type: file
+- keyword: TestOneHangingSourceDoesNotStallAnother
+  path: backend/internal/upstream/proxy_test.go
+  type: file
+- keyword: TestBodyOverTheSizeBoundFails
+  path: backend/internal/upstream/proxy_test.go
+  type: file
 reviewed: t3gPGZcldDLivNvljMhNOgzk0L10M4mhHEg4h2An1w0=
 status: proposed
 text: |

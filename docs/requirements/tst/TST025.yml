@@ -8,6 +8,13 @@ links:
 normative: true
 rationale: ''
 ref: ''
+references:
+- keyword: TestAnIdenticalRequestIsServedFromCacheUntilTheTTLExpires
+  path: backend/internal/router/router_test.go
+  type: file
+- keyword: TestCachedResultIsServedWithoutAnUpstreamCallAndRefetchesAfterTheTTL
+  path: backend/internal/upstream/proxy_test.go
+  type: file
 reviewed: EIi9TAJcPrBx9Z78lh8IDGUztH9YS32ES5VjKbuuvFQ=
 status: proposed
 text: |

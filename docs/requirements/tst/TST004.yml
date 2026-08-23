@@ -15,6 +15,13 @@ rationale: |
   a leak class found later a new item under SRS022<!-- A bounded running footprint --> rather than
   a longer sentence inside an existing one.
 ref: ''
+references:
+- keyword: TestRunningFootprintStaysBounded
+  path: backend/cmd/footprint_linux_test.go
+  type: file
+- keyword: TestFootprintPredicatesJudgeSyntheticSeries
+  path: backend/cmd/footprint_test.go
+  type: file
 reviewed: oLIeHQ3goNLSVZ4TIOnUQWUKSkyLetYIALkpgPBwutk=
 status: proposed
 text: |

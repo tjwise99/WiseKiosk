@@ -9,7 +9,11 @@ normative: true
 rationale: ''
 ref: ''
 references:
-- path: frontend/tests/render/content-emission.spec.ts
+- keyword: renders every text element at full emission
+  path: frontend/tests/render/content-emission.spec.ts
+  type: file
+- keyword: renders the configuration report at full emission too
+  path: frontend/tests/render/content-emission.spec.ts
   type: file
 reviewed: QiO_F3_JEtQtjvy1CvmZSp_Xfxq7-h5bX-7N03Eznz8=
 status: accepted

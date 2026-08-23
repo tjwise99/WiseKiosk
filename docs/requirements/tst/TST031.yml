@@ -8,6 +8,10 @@ links:
 normative: true
 rationale: ''
 ref: ''
+references:
+- keyword: TestFailureIsServedFromCacheForTheNegativeTTL
+  path: backend/internal/upstream/proxy_test.go
+  type: file
 reviewed: 3pHsQAhUW2troUGa6XkkCoPvRLYIj4pdbjdOFLxBZEA=
 status: proposed
 text: |

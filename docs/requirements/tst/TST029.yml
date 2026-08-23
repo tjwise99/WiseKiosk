@@ -8,6 +8,28 @@ links:
 normative: true
 rationale: ''
 ref: ''
+references:
+- keyword: TestNonConformingParametersAreRejectedWithNoUpstreamCall
+  path: backend/internal/router/router_test.go
+  type: file
+- keyword: TestARouteAnswersGetOnly
+  path: backend/internal/router/router_test.go
+  type: file
+- keyword: TestAPathNoEntryRegisteredIsUnknown
+  path: backend/internal/router/router_test.go
+  type: file
+- keyword: TestARequestOverTheRateLimitIsRejected
+  path: backend/internal/router/router_test.go
+  type: file
+- keyword: TestEveryOutcomeCarriesItsOwnStatusAndCause
+  path: backend/internal/router/router_test.go
+  type: file
+- keyword: TestNoTwoCausesShareASpelling
+  path: backend/internal/router/router_test.go
+  type: file
+- keyword: TestAnOutcomeNoCaseNamesIsStillRenderable
+  path: backend/internal/router/router_test.go
+  type: file
 reviewed: yBOZ-p19iBTYFX_jSweHUfvjDfk5FdJIlHNLesjFkqs=
 status: proposed
 text: |

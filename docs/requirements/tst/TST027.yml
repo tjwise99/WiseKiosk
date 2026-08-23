@@ -8,6 +8,13 @@ links:
 normative: true
 rationale: ''
 ref: ''
+references:
+- keyword: TestARequestOverTheRateLimitIsRejected
+  path: backend/internal/router/router_test.go
+  type: file
+- keyword: TestEachSourceHasItsOwnBudget
+  path: backend/internal/upstream/proxy_test.go
+  type: file
 reviewed: hvF239UtuyJ0jZRmDsua21V19RyrJ-4Gs9yezJFvRKk=
 status: proposed
 text: |

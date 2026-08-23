@@ -8,6 +8,13 @@ links:
 normative: true
 rationale: ''
 ref: ''
+references:
+- keyword: TestNoSecretValueReachesAnyServedSurface
+  path: backend/cmd/canary_test.go
+  type: file
+- keyword: TestNoSecretValueReachesAnyResponseOrLog
+  path: backend/internal/router/canary_test.go
+  type: file
 reviewed: xhH-kdq7MNqs9Jn_xoIZDfuWnY5irPzdhtLEIOqws-c=
 status: proposed
 text: |

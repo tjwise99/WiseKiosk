@@ -8,6 +8,16 @@ links:
 normative: true
 rationale: ''
 ref: ''
+references:
+- keyword: TestResolveStripsTrailingWhitespaceOnly
+  path: backend/internal/secret/secret_test.go
+  type: file
+- keyword: TestResolveIgnoresBareEnvironmentVariable
+  path: backend/internal/secret/secret_test.go
+  type: file
+- keyword: TestResolveUnresolvableCauses
+  path: backend/internal/secret/secret_test.go
+  type: file
 reviewed: PgMR91bDMZeNFWFXkK7oLFOQUkHu8RpCbLHSuMrePwo=
 status: proposed
 text: |

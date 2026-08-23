@@ -3,7 +3,7 @@ import { expect, test } from '@playwright/test';
 import { regionBoxes, render, type Fixture } from './harness';
 
 /**
- * TST050. The band the regions keep clear of tracks the depth the configuration declares, and where
+ * The band the regions keep clear of tracks the depth the configuration declares, and where
  * none is declared the regions reach the display's own edge. Seeded both ways deliberately: a depth
  * compiled into the image fails the first, and fills the second with a figure of its own.
  */

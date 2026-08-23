@@ -9,7 +9,23 @@ normative: true
 rationale: ''
 ref: ''
 references:
-- path: frontend/tests/render/region-layout.spec.ts
+- keyword: lays out every region the configuration names, and no other
+  path: frontend/tests/render/region-layout.spec.ts
+  type: file
+- keyword: renders each module in the region named for it, and nothing a region was not given
+  path: frontend/tests/render/region-layout.spec.ts
+  type: file
+- keyword: draws each module inside the box of the region it was given
+  path: frontend/tests/render/region-layout.spec.ts
+  type: file
+- keyword: anchors each module to the edge or corner its region is named for
+  path: frontend/tests/render/region-layout.spec.ts
+  type: file
+- keyword: lays out no two regions over one another
+  path: frontend/tests/render/region-layout.spec.ts
+  type: file
+- keyword: does not scroll sideways
+  path: frontend/tests/render/region-layout.spec.ts
   type: file
 reviewed: ZgFPF4uhMYvlm07ywW3-HhiHgVILpewutghBmGRCWsw=
 status: accepted

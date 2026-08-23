@@ -9,7 +9,14 @@ normative: true
 rationale: ''
 ref: ''
 references:
-- path: frontend/tests/render/emitting-surfaces.spec.ts
+- keyword: nothing the page draws clears the ceiling, over the design as it is stated
+  path: frontend/tests/render/emitting-surfaces.spec.ts
+  type: file
+- keyword: the page still draws the two things the exemption is for
+  path: frontend/tests/render/emitting-surfaces.spec.ts
+  type: file
+- keyword: reports ${seed.name}
+  path: frontend/tests/render/emitting-surfaces.spec.ts
   type: file
 reviewed: ivtzJvOnkchhvaMMjHl4L1sqGy-UUr5sXocNikZLPa4=
 status: accepted

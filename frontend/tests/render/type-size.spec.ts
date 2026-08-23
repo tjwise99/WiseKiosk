@@ -4,7 +4,7 @@ import { TYPE_SIZE_FLOOR, readEmission } from './emission';
 import { render, type Fixture } from './harness';
 
 /**
- * TST048. Every text element clears the type-size floor as a fraction of viewport height, at each
+ * Every text element clears the type-size floor as a fraction of viewport height, at each
  * resolution rendered. The project matrix is what renders more than one; a size fixed in device
  * pixels fails at the second.
  *

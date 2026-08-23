@@ -9,7 +9,14 @@ normative: true
 rationale: ''
 ref: ''
 references:
-- path: frontend/tests/render/type-size.spec.ts
+- keyword: renders no text below the floor, read against the viewport
+  path: frontend/tests/render/type-size.spec.ts
+  type: file
+- keyword: renders the smallest step near the floor rather than far above it
+  path: frontend/tests/render/type-size.spec.ts
+  type: file
+- keyword: holds the floor as a fraction rather than as a pixel count
+  path: frontend/tests/render/type-size.spec.ts
   type: file
 reviewed: ykhNIy8djfwXROPy9MKeBthDBI6dYqtgpCGjCjfbP9c=
 status: accepted

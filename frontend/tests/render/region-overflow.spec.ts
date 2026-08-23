@@ -3,7 +3,7 @@ import { expect, test, type Page } from '@playwright/test';
 import { render, type Fixture } from './harness';
 
 /**
- * TST046. Content exceeding its region overflows rather than being clipped, scrolled or scaled.
+ * Content exceeding its region overflows rather than being clipped, scrolled or scaled.
  * Seeded both ways over two fixtures, because a fixture that overflows may cross a neighbouring
  * region and extend the document past the viewport — both permitted — so one fixture asserting both
  * would fail on a page behaving exactly as obliged.

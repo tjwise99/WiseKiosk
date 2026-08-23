@@ -11,6 +11,13 @@ rationale: |
   hold its memory flat while exhausting the host's descriptors. Sampled in the run
   TST004<!-- Resident memory does not grow without bound --> describes.
 ref: ''
+references:
+- keyword: TestRunningFootprintStaysBounded
+  path: backend/cmd/footprint_linux_test.go
+  type: file
+- keyword: TestFootprintPredicatesJudgeSyntheticSeries
+  path: backend/cmd/footprint_test.go
+  type: file
 reviewed: 1s-NzFs_mULpbJE9GjZ14rU_bTRmtw0Ugk2DvfrNHeQ=
 status: proposed
 text: |

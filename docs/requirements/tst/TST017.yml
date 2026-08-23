@@ -8,6 +8,10 @@ links:
 normative: true
 rationale: ''
 ref: ''
+references:
+- keyword: TestAnUnresolvableSecretFailsOnlyItsOwnSource
+  path: backend/internal/router/router_test.go
+  type: file
 reviewed: s-PlvMUswUj1vaqy3Xs3oH4g9_JvancNCB1Rht5gW3w=
 status: proposed
 text: |

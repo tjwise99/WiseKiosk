@@ -11,6 +11,13 @@ rationale: |
   neither sibling item catches it. Sampled in the run
   TST004<!-- Resident memory does not grow without bound --> describes.
 ref: ''
+references:
+- keyword: TestRunningFootprintStaysBounded
+  path: backend/cmd/footprint_linux_test.go
+  type: file
+- keyword: TestFootprintPredicatesJudgeSyntheticSeries
+  path: backend/cmd/footprint_test.go
+  type: file
 reviewed: R3U6wQxrn_vwt0w84uFH3ZzpLjkQOSaNZ-mCUEqzArQ=
 status: proposed
 text: |

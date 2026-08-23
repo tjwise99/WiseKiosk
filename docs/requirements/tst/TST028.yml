@@ -8,6 +8,10 @@ links:
 normative: true
 rationale: ''
 ref: ''
+references:
+- keyword: TestResolveRotationIsNotCached
+  path: backend/internal/secret/secret_test.go
+  type: file
 reviewed: oiooUVpe45DlKq5a8wtJu5DrvE7JN5G1zc7NeJDhv_g=
 status: proposed
 text: |

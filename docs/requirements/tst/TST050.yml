@@ -9,7 +9,14 @@ normative: true
 rationale: ''
 ref: ''
 references:
-- path: frontend/tests/render/edge-band-depth.spec.ts
+- keyword: holds the regions ${depth}% of the display's height off every edge
+  path: frontend/tests/render/edge-band-depth.spec.ts
+  type: file
+- keyword: the band tracks the depth rather than being one figure for both
+  path: frontend/tests/render/edge-band-depth.spec.ts
+  type: file
+- keyword: assumes no band where the configuration declares none
+  path: frontend/tests/render/edge-band-depth.spec.ts
   type: file
 reviewed: gkTPi93iGccvyGalxwJRTN5AHH-S8a2ySGpMhyLOvCk=
 status: accepted
