@@ -4,7 +4,7 @@ import { readEmission } from './emission';
 import { render, type Fixture } from './harness';
 
 /**
- * Every text element the page presents for reading renders at the display's maximum
+ * TST047. Every text element the page presents for reading renders at the display's maximum
  * emission rather than a reduced level. The value asserted is the one the page chose; what the
  * panel emits and what a viewer sees over the reflected room are both outside it.
  */

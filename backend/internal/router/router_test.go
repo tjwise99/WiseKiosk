@@ -199,6 +199,7 @@ func wantFailure(t *testing.T, recorder *httptest.ResponseRecorder, status int, 
 	return decoded
 }
 
+// TST025
 func TestAnIdenticalRequestIsServedFromCacheUntilTheTTLExpires(t *testing.T) {
 	clock := newFakeClock()
 	fake := newUpstreamFake(t)
@@ -228,6 +229,7 @@ func TestAnIdenticalRequestIsServedFromCacheUntilTheTTLExpires(t *testing.T) {
 	}
 }
 
+// TST029
 func TestNonConformingParametersAreRejectedWithNoUpstreamCall(t *testing.T) {
 	fake := newUpstreamFake(t)
 	handler := newRouter([]Entry{testEntry(fake, "readings")}, newFakeClock().now)
@@ -272,6 +274,7 @@ func writeSecretFile(t *testing.T, name, contents string, mode os.FileMode) stri
 	return path
 }
 
+// TST017
 func TestAnUnresolvableSecretFailsOnlyItsOwnSource(t *testing.T) {
 	// One row per cause secret.Resolve distinguishes, so a cause given its own
 	// handling later cannot lose its route behaviour. setUp returns the path the
@@ -405,6 +408,7 @@ func TestASecretDoesNotFollowARedirect(t *testing.T) {
 	}
 }
 
+// TST029
 func TestARouteAnswersGetOnly(t *testing.T) {
 	fake := newUpstreamFake(t)
 	handler := newRouter([]Entry{testEntry(fake, "readings")}, newFakeClock().now)
@@ -429,6 +433,7 @@ func TestARouteAnswersGetOnly(t *testing.T) {
 	}
 }
 
+// TST029
 func TestAPathNoEntryRegisteredIsUnknown(t *testing.T) {
 	fake := newUpstreamFake(t)
 	handler := newRouter([]Entry{testEntry(fake, "readings")}, newFakeClock().now)
@@ -448,6 +453,7 @@ func TestAnEmptyRegistrationListServesNoSource(t *testing.T) {
 	wantRejection(t, ask(handler, http.MethodGet, "/api/readings"), http.StatusNotFound, causeUnknownSource)
 }
 
+// TST027, TST029
 func TestARequestOverTheRateLimitIsRejected(t *testing.T) {
 	fake := newUpstreamFake(t)
 	entry := testEntry(fake, "readings")
@@ -521,6 +527,7 @@ func TestACallerWhoseContextEndedIsStillAnswered(t *testing.T) {
 	wantFailure(t, recorder, http.StatusServiceUnavailable, "readings", causeShuttingDown)
 }
 
+// TST029
 func TestEveryOutcomeCarriesItsOwnStatusAndCause(t *testing.T) {
 	// The path the secret was looked for at, which the wire message must not
 	// carry.
@@ -574,6 +581,7 @@ func TestEveryOutcomeCarriesItsOwnStatusAndCause(t *testing.T) {
 	}
 }
 
+// TST029
 func TestNoTwoCausesShareASpelling(t *testing.T) {
 	// Every cause constant, compared against every other. The sweep above reads
 	// only what failure() returns, and causeShuttingDown and the rejection
@@ -611,6 +619,7 @@ func TestNoTwoCausesShareASpelling(t *testing.T) {
 	}
 }
 
+// TST029
 func TestAnOutcomeNoCaseNamesIsStillRenderable(t *testing.T) {
 	var logged bytes.Buffer
 	previous := log.Writer()

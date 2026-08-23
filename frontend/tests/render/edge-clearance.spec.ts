@@ -3,7 +3,7 @@ import { expect, test } from '@playwright/test';
 import { regionBoxes, render, type Fixture } from './harness';
 
 /**
- * No laid-out region enters the band the configuration declares, on any edge, over
+ * TST049. No laid-out region enters the band the configuration declares, on any edge, over
  * configurations chosen to load the display rather than a single fixture.
  *
  * Regions are read rather than content: content overflows its region by design, so a content-level

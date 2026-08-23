@@ -11,9 +11,9 @@ ref: ''
 references:
 - keyword: func TestResolveRotationIsNotCached
   path: backend/internal/secret/secret_test.go
-  sha: 7eda4dce4050addf16f18b5ee78571f07f33956676c17c697d21b1e7dd5ed1d0
+  sha: d20339fed1a996b1c5d3b6dbbc082abc052a123fde3720f6ac947b8a3bc5bee0
   type: file
-reviewed: wOzW_3rjUa9n1LLlQUUL1GNnFZBW-qic997M46S9JEw=
+reviewed: T5JfXhKBwOZTa5iTMwkA1OXth1e4y0KQpn1XorjOV5k=
 status: proposed
 text: |
   Test asserting a secret value changed in the <NAME>_FILE file is reflected on the next resolution

@@ -11,13 +11,13 @@ ref: ''
 references:
 - keyword: func TestNoSecretValueReachesAnyServedSurface
   path: backend/cmd/canary_test.go
-  sha: 5499aa1f736e474ce0750621720d1470b965fb7214428de8eaa88d9663bf09e2
+  sha: 672ab6fdf900db807d77cdfff9542f33daa771aab4f92dc56971f63a9fe4e141
   type: file
 - keyword: func TestNoSecretValueReachesAnyResponseOrLog
   path: backend/internal/router/canary_test.go
-  sha: 8ee88a3cccf5b62e6d51b3d4db5f785cc0cfd374fdb014e109891f9459e6a832
+  sha: 6ff182b392be9f2e9b5d380d576e902f5f13ef7dba6571a00cc5b8c1543dd9c6
   type: file
-reviewed: qOtuT_eZuRPzfmn5JiUETQ3hOlZ1EtQAJSjofxMDEhk=
+reviewed: fztZnDYx2N7FGQeIeqyGzSA5sKgrCv2ZkQLTTJZ6QdM=
 status: proposed
 text: |
   Canary test planting a known secret value through <NAME>_FILE delivery, exercising every route

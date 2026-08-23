@@ -11,9 +11,9 @@ ref: ''
 references:
 - keyword: test(`keeps every region clear of the band, with ${name}`
   path: frontend/tests/render/edge-clearance.spec.ts
-  sha: 1f81ba77dc9881e41eca28c1c120e371f8040e4369dec05545a01905dc52acbc
+  sha: 590e3d1af542a3ccefa4dbb281813441a4f9b4e0c105460de422f25381b93d5d
   type: file
-reviewed: qTXlhvW3erKJ1GHPCSmBuR2FbJBjTeKRGE4lMSGOktw=
+reviewed: NiZLQqd2qU1iwduQEwzsNsdvrFstGa_lzx89ysLXMM4=
 status: accepted
 text: |
   Read each laid-out region's geometry against the viewport, asserting no region enters the band

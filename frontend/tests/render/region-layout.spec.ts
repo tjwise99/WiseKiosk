@@ -3,7 +3,7 @@ import { expect, test } from '@playwright/test';
 import { overlaps, regionBoxes, render, type Fixture } from './harness';
 
 /**
- * Over a fixture whose content fits the regions it is given: every module renders in the
+ * TST035. Over a fixture whose content fits the regions it is given: every module renders in the
  * region the configuration names for it, no region holds a module named elsewhere, the laid-out
  * regions are pairwise disjoint, and the document does not scroll sideways.
  *

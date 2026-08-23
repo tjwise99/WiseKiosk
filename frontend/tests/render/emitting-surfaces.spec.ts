@@ -4,7 +4,7 @@ import { EMISSION_CEILING, readEmission } from './emission';
 import { render, type Fixture } from './harness';
 
 /**
- * Everything the page draws sits below the emission ceiling except text and imagery rendered
+ * TST045. Everything the page draws sits below the emission ceiling except text and imagery rendered
  * as content. Read over every element and every surface it emits from, and seeded in both directions:
  * the legal design must be reported clean, and each device the ceiling refuses must be reported.
  */
