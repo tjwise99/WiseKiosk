@@ -223,9 +223,14 @@ model {
       }
 
       payloadClient = component 'Payload client' {
+        #SRS026
         description '''
           Fetches each configured module's payload and hands back what it
-          gets, a failure included rather than absorbed.
+          gets, a failure included rather than absorbed. Distinguishes a
+          backend that cannot be reached from a module whose own source
+          failed: the first is the page shell's to report once, and stands
+          every module down rather than having each render an unavailable
+          state of its own.
         '''
       }
     }
