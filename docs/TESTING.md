@@ -175,6 +175,12 @@ or [`DEPLOYMENT.md`](DEPLOYMENT.md) where it is not
   rewritten under a pending check fails a gate in the commit that rewrites it. What it cannot decide
   is the question activation exists to ask, and that stays a human read — does this check still
   assert a clause its parent still states?
+- **A test's name is its trace, and no test names a requirement.** The `TST` item that a test
+  discharges names *it* — one `references` entry per verifying site, keyed by the test's own
+  identifier ([ADR 0005 rev 2](decisions/0005-traceability-gating.md)) — so renaming a test, or
+  editing the file it lives in, fails the requirements gate until the tree is corrected and the item
+  re-reviewed. Nothing in a test file carries a requirement ID; reading a test's obligation means
+  reading the item, and [`requirements/README.md`](requirements/README.md) says how.
 - **Every test and check in the repository is executed by CI** — the whole-tree discovery and
   verify/CI wiring gates are [`CI.md § Gate wiring`](CI.md#gate-wiring)'s, not the tree's. A test no
   runner reaches is a false signal, so a new test is wired in by its location alone.

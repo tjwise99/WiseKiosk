@@ -15,7 +15,7 @@ A V-model tree — needs on the left, verification on the right:
 |---|---|---|---|
 | `SYS` | [`sys/`](sys) | Stakeholder / system-level needs (the validation anchor), framework and per-module alike | — (top) |
 | `SRS` | [`srs/`](srs) | Decomposed, testable "shall" statements | `SYS` |
-| `TST` | [`tst/`](tst) | One item per test/check; `references` point at the real verifying file | `SRS` |
+| `TST` | [`tst/`](tst) | One item per test/check; one `references` entry per verifying site, each naming the file and the `keyword` of the test that discharges it | `SRS` |
 
 A module is a need: each carries one `SYS` item for its user-facing want, decomposed into `SRS` items
 stating only what is specific to that module. Obligations true of every module stay on the framework
@@ -131,8 +131,17 @@ normative item has one.
 
 - **Validation** (completeness) — every `SYS` need has a child `SRS`, every `SRS` has a child `TST`,
   and no `SRS`/`TST` is orphaned without a parent. A gap fails the gate.
-- **Verification linkage** — every active `TST` item's `references` must resolve to a real file in the
-  repo. A dangling reference fails the gate.
+- **Verification linkage** — every active `TST` item's `references` must resolve, each entry to a
+  real file in the repo and to the line its `keyword` names. A renamed or deleted test fails the gate
+  as surely as a missing file does, because the keyword is the test's own identifier — a Go function
+  name, a Playwright title — so the trace names what the runner prints
+  ([ADR 0005 rev 2](../decisions/0005-traceability-gating.md)). No test file names a requirement ID:
+  the trace runs one way, from the tree outward.
+- **Evidence drift** — the `TST` document records a hash of each referenced file when the item is
+  reviewed, and `tst/.req_sha_item_validator.py` compares it back on every validation run. Editing a
+  referenced test — a comment counts — fails the gate for every item referencing it until
+  `doorstop review <UID>` is run against each. That cost is deliberate and is
+  [ADR 0005 rev 2](../decisions/0005-traceability-gating.md)'s.
 - **Re-validation** — editing a parent item changes its fingerprint, flagging every child **suspect**
   until re-reviewed, and moving a child to a different parent unreviews the child. Among **active**
   items a silent divergence is impossible; an inactive item is evaluated for neither, and what is and
@@ -220,7 +229,8 @@ Between them these commands assert that:
 - every document the tree holds yields at least one item to check — a tier that yields nothing
   produces no finding, which reads exactly like a tier whose every item is reviewed;
 - every parent link resolves and no item is orphaned or left suspect, **inactive items included**;
-- every active `TST` item's `references` resolve to a real file;
+- every active `TST` item's `references` resolve — each entry to a real file, and to the line its
+  `keyword` names — and no referenced file has changed since the item was reviewed;
 - every item carries a `verification-justification`;
 - no item claims a verification method its own children do not support;
 - no item's `text` names another item.
@@ -246,7 +256,7 @@ Run all commands with the venv (`docs/requirements/.venv/bin/doorstop …`).
 |---|---|---|
 | Add an item | `doorstop add SRS` | Creates the next `SRS0NN.yml`. Edit its `text` to a single "shall" statement; write a `header` summarising it |
 | Link it up | `doorstop link SRS0NN SYS0MM` (child first, parent second) | Every `SRS` needs a `SYS` parent and every `TST` a `SRS` parent, or the gate flags an orphan |
-| Point a `TST` at its check | add a `references` list entry `{path: <repo-relative-file>, type: file}` | The path must resolve to a real tracked file. **Doorstop cannot reference a file under a dot-directory** (e.g. anything in `.github/`) — see ADR 0002 rev 3; cite such wiring in the item's `text` instead |
+| Point a `TST` at its check | add one `references` entry per verifying site: `{path: <repo-relative-file>, type: file, keyword: <test identifier>}`, then `doorstop review <UID>` to stamp the file hash | The path must resolve to a real tracked file and the keyword to a line in it. Omit `keyword` only where the whole file *is* the check. **Doorstop cannot reference a file under a dot-directory** (e.g. anything in `.github/`) — see ADR 0002 rev 3; cite such wiring in the item's `text` instead |
 | Re-bless a child after editing its parent | `doorstop clear <UID>`, then `doorstop review <UID>` | `clear` updates the stored parent fingerprint in the child's `links:`; `review` alone re-stamps the item but leaves the link suspect. Re-blessing is the human act of re-reading a downstream item after its parent moved — do not script it blindly |
 | Re-bless an item after moving it to a different parent | `doorstop review <UID>` | `clear` is not enough: the item's parent UIDs are inside its own stamp, so the item itself is unreviewed. Read it against the parent it now has. `--error-all` reports it as `unreviewed changes` until you do |
 | Baseline a round | — | Its `SYS`/`SRS` items land `accepted` + `active: true`, reviewed in the same change; only items awaiting decomposition or a verifying artifact stay `active: false` (see *Pending* above). "Active" and "reviewed" arrive together — an active-but-unreviewed item fails `--error-all` — so a domain's requirements are never left `proposed`/inactive, which would leave them un-baselined and outside the gate |
