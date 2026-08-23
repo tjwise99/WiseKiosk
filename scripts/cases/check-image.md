@@ -6,13 +6,17 @@ architecture. What the tier *guarantees* is [`docs/TESTING.md`](../../docs/TESTI
 case is [`../README.md`](../README.md)'s.
 
 Every case runs the harness from the tracked tree against an image, so the seed is an **image** rather
-than a file: each failing row builds a throwaway image `FROM wisekiosk:citest` carrying the defect and
-hands that ref to the harness, and the seven rows whose subject is the harness's own input instead run
-a copy of the harness in a scratch directory carrying that input. One row builds its image from a patched copy of the
-tracked tree instead, the defect it seeds being what the running handler serves rather than anything a
-layer on top can carry. One row seeds nothing at all: a ref no image answers to is what a leg that
-loaded nothing hands its harness. The passing rows are `wisekiosk:citest` itself, built from the
-tracked tree at `fab3916` by `just check-image`. Docker 29.6.2, buildx 0.31.1, native amd64.
+than a file: each failing row builds a throwaway image carrying the defect — `FROM wisekiosk:citest`,
+or `FROM scratch` where the defect is having no layer at all — and hands that ref to the harness, and
+the seven failing rows whose subject is the harness's own input instead run a copy of the harness in a
+scratch directory carrying that input. Four failing rows build their image from a patched copy of the
+tracked tree instead, the defect they seed being what the running handler serves, or what the source
+decides and the build bakes in, rather than anything a layer on top can carry. Two seed nothing at
+all: a ref no image answers to is what a leg that loaded nothing hands its harness. Of the four
+passing rows, two seed `wisekiosk:citest` itself, built from the tracked tree at `fab3916` by
+`just check-image`; the other two are legal inputs spelled differently — a tracked-tree copy with both
+liveness sides renamed together, and a scratch copy of the harness whose constant carries a type
+annotation. Docker 29.6.2, buildx 0.31.1, native amd64.
 
 The `health_signal.py` rows were run at `30cb78c health signal`, script md5
 `eea2db5dd1194bc636b2be76416c3dbf`, against `wisekiosk:citest` rebuilt there by `just check-image`.
@@ -82,7 +86,7 @@ schema that declares nothing, it cannot carry a frontend constant that is not a 
 one per way a URL is assembled — and it cannot carry the `USER` another tree's Dockerfile declares,
 two rows again, one per way that declaration fails.
 
-**Three liveness-path rows seed a copy of the tracked tree rather than a layer on top.** Which path
+**Four liveness-path rows seed a copy of the tracked tree rather than a layer on top.** Which path
 the mux registers and which path the shipped script asks for are decided in the source and baked by
 the build, so no `FROM wisekiosk:citest` layer can move either.
 
