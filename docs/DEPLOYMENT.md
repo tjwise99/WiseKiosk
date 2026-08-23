@@ -11,11 +11,12 @@ product's obligations live in [`requirements/`](requirements/README.md)
 **What asserts each of these is [`CI.md`](CI.md).** An obligation is stated here; the check that
 decides it is described there, which is where every check on this repository is described.
 
-**Almost none of it is built.** What a release consists of is
-[ADR 0020 rev 2](decisions/0020-release-artifact-set-and-operator-tooling.md); the material itself is
-published by #67 security and supply-chain gates and #54 container build and publish, and the
-procedure's literal commands wait on them. The one exception is the backend's own side of the health
-signal below, which #9 backend skeleton built — the image that will run it has not.
+**What a release consists of is
+[ADR 0020 rev 2](decisions/0020-release-artifact-set-and-operator-tooling.md).** #54 container build
+and publish ships the image, the deployment recipe, the example configuration and the health signal
+the image declares. #67 security and supply-chain gates ships the signature and the attestation the
+procedure's first command reads, so that command is the one step below with nothing yet to verify
+against.
 
 ## What an operator receives
 
@@ -49,6 +50,27 @@ others is fetched by nothing, and the display renders the unfetchable case of
 SRS004<!-- Page renders a legible error state for every configuration failure class --> rather than
 the configured kiosk. The failure is legible and it is still a failure the procedure can prevent, so
 the permissions the file needs are stated where an operator sets them.
+
+**The procedure is four commands**, run in the directory holding the two files the release tag
+carries — `deploy/` in a checkout. `<digest>` is the one the release notes name.
+
+```sh
+gh attestation verify oci://ghcr.io/tjwise99/wisekiosk@sha256:<digest> --repo tjwise99/WiseKiosk
+cp config.example.json config.json
+chmod 644 config.json
+docker compose up -d
+```
+
+The verification is the first command rather than a step somebody performs afterwards, and it names
+the repository the image is expected to have been built by; what it reads is #67 security and
+supply-chain gates', so until that lands it verifies nothing. #138 bring-up check is what runs this
+sequence against a clean host and fails on a step that does not.
+
+The copy carries no path because the recipe binds `./config.json`, resolved against the directory the
+recipe sits in. `644` is what the third obligation above costs: the image's user is uid 10001, owning
+neither the copy nor its group, so the world-read bit is the one that decides whether the page is
+served a configuration at all. Nothing else is edited and `up` is given no argument: the digest
+verified above is the one the recipe pins, and the port and the mount are the recipe's as well.
 
 ## The deployment recipe
 
