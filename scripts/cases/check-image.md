@@ -1,7 +1,7 @@
 # `check-image`
 
-The inputs the five image-tier harnesses under [`../image/`](../image/) have been run against, in both
-directions. What the tier *guarantees* is [`docs/TESTING.md`](../../docs/TESTING.md)'s; how to run a
+The inputs the six harnesses `check-image` runs, under [`../image/`](../image/), have been run
+against, in both directions. What the tier *guarantees* is [`docs/TESTING.md`](../../docs/TESTING.md)'s; how to run a
 case is [`../README.md`](../README.md)'s.
 
 Every case runs the harness from the tracked tree against an image, so the seed is an **image** rather
@@ -9,6 +9,9 @@ than a file: each failing row builds a throwaway image `FROM wisekiosk:citest` c
 hands that ref to the harness, and the two rows whose subject is the harness's own input instead patch
 a copy of the harness in a scratch directory. The passing rows are `wisekiosk:citest` itself, built
 from the tracked tree at `fab3916` by `just check-image`. Docker 29.6.2, buildx 0.31.1, native amd64.
+
+The `health_signal.py` rows were run at `30cb78c health signal`, script md5
+`eea2db5dd1194bc636b2be76416c3dbf`, against `wisekiosk:citest` rebuilt there by `just check-image`.
 
 | Direction | Case | Input |
 |---|---|---|
@@ -21,6 +24,11 @@ from the tracked tree at `fab3916` by `just check-image`. Docker 29.6.2, buildx 
 | Must fail | A survivor whose declared healthcheck fails | `two_instances.py` against `FROM wisekiosk:citest` + `HEALTHCHECK CMD ["/bin/false"]` — `the surviving instance failed its declared healthcheck`. The harness runs whatever `Config.Healthcheck.Test` names, so the seed moves the declaration rather than the binary |
 | Must fail | A secret present only in a layer a later step deleted | `layer_secret_scan.py` against an image that copies in `db_password = "…"` and then `rm`s it — `blobs/sha256/421bed…!etc/leaked.conf matches secret-patterns.txt:38`. `ls /etc/leaked.conf` inside that image exits 1, so the flattened filesystem an export reads does not carry it and only the layer read reports it |
 | Must fail | A scan that cannot see its own canary | a copy of `layer_secret_scan.py` beside a `secret-patterns.txt` with the AWS-prefix line removed — `the canary planted in /tmp/planted was not reported — this scan cannot see a secret in a layer, so its clean result on the real image says nothing` |
+| Must fail | A health signal that cannot report unhealthy | `health_signal.py` against `FROM wisekiosk:citest` + `HEALTHCHECK CMD ["/bin/true"]` — `the declared healthcheck exited 0 with nothing listening — the signal reports healthy in both states, so a healthy verdict from it means nothing`. The serving direction passes on that image, which is the whole reason the second direction exists |
+| Must fail | A health signal that never reports healthy | the same, with `HEALTHCHECK CMD ["/bin/false"]` — `the declared healthcheck exited 1 () in a container answering /healthz` |
+| Must fail | An image declaring no healthcheck | `HEALTHCHECK NONE` — `declares no CMD-form healthcheck (['NONE']) — this read no signal in either direction`, rather than a vacuous pass over a signal that is not there |
+| Must fail | A healthcheck naming a binary the image does not carry | `HEALTHCHECK CMD ["/usr/local/bin/absent", "-health-check"]` — two problems, one being `could not be run on its own (127: …) — this judged nothing about the unhealthy direction`. Without that reserved-code guard, a vector the container never ran would read as a correctly reported failure |
+| Must fail | A container that never serves | `ENTRYPOINT ["/bin/sleep", "300"]` — `no 200 from /healthz within 30s — this judged no serving container`, so the healthy direction is asserted against a container proven to be serving |
 | Must pass | The image built from the tracked tree | — |
 
 **Every failing row above is a different assertion**, and the two seeded onto the harness rather than
@@ -40,8 +48,17 @@ digest, a certificate body or binary noise. A pattern that cannot pass on a clea
 which is why [`../image/secret-patterns.txt`](../image/secret-patterns.txt) reaches entropy only through
 a name.
 
+**Legal input `health_signal.py` rejects.** A `HEALTHCHECK CMD-SHELL …` declaration is one string
+rather than an argument vector, and is reported as no `CMD`-form healthcheck. The vector has to run
+both inside a running container and as a container's own entrypoint, and only the exec form does;
+handling the other would add a path no row here exercises.
+
 **Known gaps.**
 
+- **The status docker maintains is not read.** `health_signal.py` runs the declared vector itself, in
+  each direction. The aggregated `.State.Health.Status` is docker's own scheduling of that same
+  command — its interval, retries and start period are unexercised, and no row here says what a
+  container listing would show.
 - **One architecture.** Every row runs the native amd64 image. That the image is the same on another
   architecture is TST007's<!-- Pending: multi-arch build and smoke test --> and is not asserted here.
 - **A secret this cannot decode is not seen.** Layer bytes are read as latin-1, so a value written
