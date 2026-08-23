@@ -69,7 +69,10 @@ EXTENSIONS = {
     "(ADR 0003 rev 2)",
     "mmd": "derived — generated Mermaid output of the LikeC4 export/splice toolchain "
     "(scripts/splice-arch-diagrams.py), never hand-authored",
-    "txt": "derived — a toolchain's own required input format (pip's requirements-dev.txt)",
+    "txt": "derived — a toolchain's own required input format (pip's requirements-dev.txt); also "
+    "derived — data an authored check reads and does not itself author: the secret-pattern "
+    "enumeration scripts/image/layer_secret_scan.py matches image layers against, rather "
+    "than restating it (docs/TESTING.md)",
     "regex": "derived — data an authored check reads and does not itself author: the "
     "single-source-of-truth branch pattern check-branch.py and branch-shape.py "
     "each read instead of restating it (docs/CI.md)",
