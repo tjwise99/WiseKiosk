@@ -226,11 +226,13 @@ model {
         #SRS026
         description '''
           Fetches each configured module's payload and hands back what it
-          gets, a failure included rather than absorbed. Distinguishes a
-          backend that cannot be reached from a module whose own source
-          failed: the first is the page shell's to report once, and stands
-          every module down rather than having each render an unavailable
-          state of its own.
+          gets, a failure included rather than absorbed — the structured
+          body a module renders its own unavailable state from, and the only
+          half of the distinction this component carries. Whether the backend
+          can be reached at all is not inferred here: the page shell decides
+          it from its own liveness ask, and each module component stands
+          itself down on that answer rather than every one of them rendering
+          an unavailable state over the one outage.
         '''
       }
     }
