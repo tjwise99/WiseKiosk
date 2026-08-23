@@ -15,7 +15,7 @@ decides it is described there, which is where every check on this repository is 
 [ADR 0020 rev 2](decisions/0020-release-artifact-set-and-operator-tooling.md).** #54 container build
 and publish ships the image, the deployment recipe, the example configuration and the health signal
 the image declares. #67 security and supply-chain gates ships the signature and the attestation the
-procedure's first command reads, so that command is the one step below with nothing yet to verify
+optional verification below reads, so that step is the one thing here with nothing yet to verify
 against.
 
 ## What an operator receives
@@ -33,12 +33,7 @@ A deployment reaches a working state on a clean host from the published artifact
 procedure alone — the executable form of *nothing required is missing*. If a clean environment can
 deploy by following only in-repo documentation, the documentation is sufficient.
 
-Three things the procedure owes, each of which fails a first deployment when it is missing.
-
-**The digest is verified before the image runs.** An operator who pulls an image is trusting a
-stranger's build, so the check against its signature and provenance comes ahead of running it rather
-than after, and the commands ship with the procedure rather than having to be reconstructed. That CI
-verifies its own published output is a separate assertion and is in [`CI.md`](CI.md).
+Two things the procedure owes, each of which fails a first deployment when it is missing.
 
 **The example configuration is copied, not edited in place.** The copy is what a deployment binds; the
 example stays as the reference an operator can read a broken configuration against. Only the
@@ -51,26 +46,40 @@ SRS004<!-- Page renders a legible error state for every configuration failure cl
 the configured kiosk. The failure is legible and it is still a failure the procedure can prevent, so
 the permissions the file needs are stated where an operator sets them.
 
-**The procedure is four commands**, run in the directory holding the two files the release tag
-carries — `deploy/` in a checkout. `<digest>` is the one the release notes name.
+**The procedure is three commands**, run in the directory holding the two files the release tag
+carries — `deploy/` in a checkout.
 
 ```sh
-gh attestation verify oci://ghcr.io/tjwise99/wisekiosk@sha256:<digest> --repo tjwise99/WiseKiosk
 cp config.example.json config.json
 chmod 644 config.json
 docker compose up -d
 ```
 
-The verification is the first command rather than a step somebody performs afterwards, and it names
-the repository the image is expected to have been built by; what it reads is #67 security and
-supply-chain gates', so until that lands it verifies nothing. #138 bring-up check is what runs this
-sequence against a clean host and fails on a step that does not.
-
 The copy carries no path because the recipe binds `./config.json`, resolved against the directory the
-recipe sits in. `644` is what the third obligation above costs: the image's user is uid 10001, owning
+recipe sits in. `644` is what the second obligation above costs: the image's user is uid 10001, owning
 neither the copy nor its group, so the world-read bit is the one that decides whether the page is
-served a configuration at all. Nothing else is edited and `up` is given no argument: the digest
-verified above is the one the recipe pins, and the port and the mount are the recipe's as well.
+served a configuration at all. Nothing else is edited and `up` is given no argument: the image
+reference, the port and the mount are all the recipe's. #138 bring-up check is what runs this sequence
+against a clean host and fails on a step that does not.
+
+**Optional, and recommended: verify the image before trusting it.** An operator who pulls an image is
+trusting a stranger's build, so the check against its signature and provenance ships with the
+procedure rather than having to be reconstructed, and it names the repository the image is expected to
+have been built by.
+
+```sh
+gh attestation verify oci://ghcr.io/tjwise99/wisekiosk@sha256:<digest> --repo tjwise99/WiseKiosk
+```
+
+`<digest>` is the one the release notes name, and what the command reads is #67 security and
+supply-chain gates', so until that lands it verifies nothing. That CI verifies its own published
+output is a separate assertion and is in [`CI.md`](CI.md).
+
+**It is nobody's obligation.** An operator who skips it runs the three commands above and reaches the
+same working deployment; the recipe names a tag rather than a digest, so an operator who wants the
+digest they verified to be the one that runs pins it in their own copy — which is what the recipe
+being a sample rather than an obligation
+([ADR 0020 rev 2](decisions/0020-release-artifact-set-and-operator-tooling.md)) leaves them free to do.
 
 ## The deployment recipe
 

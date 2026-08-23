@@ -244,7 +244,10 @@ in a separate job that pulls from the registry, reads only the registry and the 
 log, and holds no credential. What builds and pushes the image is `.github/workflows/publish.yml`,
 which #54 container build and publish landed; every check below is unbuilt and owned by #67 security
 and supply-chain gates, against the set
-[ADR 0020 rev 2](decisions/0020-release-artifact-set-and-operator-tooling.md) decides.
+[ADR 0020 rev 2](decisions/0020-release-artifact-set-and-operator-tooling.md) decides. That workflow
+tags each build of the default branch `latest` beside the commit sha, and the committed recipe
+references `latest` so it runs unedited ([`DEPLOYMENT.md`](DEPLOYMENT.md) § *Bring-up*); the digest the
+release notes name is what an operator who chooses to verify checks against.
 
 **Nothing decides the no-credential property.** It is a proposal for a check, not an asserted
 guarantee: no gate compares the verification job's permissions against it, and SECURITY.md publishes
@@ -308,9 +311,11 @@ What each of these obligations *is*, and why, is [`DEPLOYMENT.md`](DEPLOYMENT.md
 - **The documented procedure executes.** The bring-up commands the documentation states are run in a
   clean container and the service is asserted to serve. It fails if a documented step does not run, or
   if the sequence completes without a serving deployment — so documentation that omits a step fails
-  here rather than at somebody's first deployment. The procedure's verification step is inside that
-  sequence: a procedure whose digest check does not run, or does not fail on a digest that fails
-  verification, fails the check. No human is in the loop at any point.
+  here rather than at somebody's first deployment. What is run is the documented default path, which
+  edits nothing and verifies nothing: attestation verification is the operator's option rather than a
+  step of the sequence ([`DEPLOYMENT.md`](DEPLOYMENT.md) § *Bring-up*), so a run that skips it is a
+  faithful bring-up and not a gap. Whether #138 bring-up check also exercises the optional step is
+  that ticket's to decide. No human is in the loop at any point.
 - **The example configuration is one the page accepts.** It is loaded in the page and asserted to
   render the configured display with no validation report. Asserting that the tag carries the file
   decides its presence and nothing about its content, and the bring-up check above passes over a bad

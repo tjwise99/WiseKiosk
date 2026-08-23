@@ -3,8 +3,7 @@
 
 services:
   kiosk:
-    # Digest-pinned; the release notes name the digest.
-    image: ghcr.io/tjwise99/wisekiosk@sha256:REPLACE_WITH_RELEASE_DIGEST
+    image: ghcr.io/tjwise99/wisekiosk:latest
     restart: unless-stopped
     ports:
       - "8080:8080"
