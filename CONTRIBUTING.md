@@ -147,6 +147,11 @@ appended for the same reason; inserting one is permitted
 15. **Named resources.** Does a requirement name a file, endpoint, package or tool rather than the
     property the software must have? Naming one swallows a design decision into the specification,
     where it cannot change without a specification change.
+25. **Doorstop extensions.** Where the change edits a requirements `.doorstop.yml`, is its
+    `extensions:` block still present? That block is what makes an edit to a verifying test
+    invalidate the item's review until a human re-checks it
+    ([ADR 0005 rev 2](docs/decisions/0005-traceability-gating.md)). Both `Document.save()` and an
+    unrecognised key drop it in silence, so a specification that has lost it still reports clean.
 
 **Checks**
 
