@@ -109,13 +109,14 @@ pinned tool rather than against recollection:
 file in its entry, and the document's `item_validator` hook — Doorstop's documented per-document
 extension, described in its scripting guide and dogfooded on upstream's own tree under `reqs/ext/`,
 though not carried in the installed package — compares the recorded hash against the file on every
-validation run. The copy this repo runs, `tst/.req_sha_item_validator.py`, is authored here. A referenced test whose
-content changed fails `doorstop --error-all` until the item is re-reviewed. This is the suspect-link
-discipline the tree already applies to parent requirements, extended to the files that verify them,
-and it runs inside the existing `check-reqs` rather than as another sibling script. Granularity is
-whole-file for now: any edit to a referenced test re-reviews every item referencing it, and that
-churn is accepted rather than designed around; hashing only the keyword's region is a later
-refinement if it bites. The extension is per-document, so `sys/` and `srs/` are untouched.
+validation run. The copy this repo runs, `tst/.req_sha_item_validator.py`, is authored here. A
+referenced test whose content changed fails `doorstop --error-all` until the item is re-reviewed.
+This is the suspect-link discipline the tree already applies to parent requirements, extended to the
+files that verify them, and it runs inside the existing `check-reqs` rather than as another sibling
+script. Granularity is whole-file for now: any edit to a referenced test re-reviews every item
+referencing it, and that churn is accepted rather than designed around; hashing only the keyword's
+region is a later refinement if it bites. The extension is per-document, so `sys/` and `srs/` are
+untouched.
 
 Two gates, both in-repo, each run by `just verify` and mirrored byte-identically in CI. The numbering
 is historical, so a retired gate's number is not reused:
