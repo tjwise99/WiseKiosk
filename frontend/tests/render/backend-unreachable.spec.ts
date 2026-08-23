@@ -21,6 +21,10 @@ const FIXTURE: Fixture = {
 
 const REGIONS = new Set(FIXTURE.modules.map((placement) => placement.region));
 
+/** The same fixture on a display whose outer band is behind a fitted mask. */
+const BAND = 7;
+const MASKED: Fixture = { edge_band: BAND, modules: FIXTURE.modules };
+
 /** The box the page-wide state occupies, in the coordinates `regionBoxes` reads. */
 async function stateBox(page: Page): Promise<Box> {
   const box = await page.locator('[data-backend-unreachable]').boundingBox();
@@ -57,6 +61,27 @@ test('displaces the layout rather than covering any of it', async ({ page }) => 
   expect(laidOut).toHaveLength(REGIONS.size);
   for (const [region, box] of laidOut) {
     expect(overlaps(band, box), `the state over ${region}`).toBe(false);
+  }
+});
+
+test('holds what it reports clear of the band the configuration declares', async ({ page }) => {
+  await render(page, MASKED, 'frame', { healthz: 'abort' });
+  await expect(page.locator('[data-backend-unreachable]')).toBeVisible();
+
+  const viewport = page.viewportSize();
+  expect(viewport).not.toBeNull();
+  const { width, height } = viewport!;
+  const band = (BAND / 100) * height;
+
+  // The band the depth declares is a mask fitted over the display, so text drawn inside it is behind
+  // an object rather than dim: read on the content, since the state's own box spans the full width
+  // and holds its text off the edges with padding.
+  for (const hook of ['[data-diagnosis]', '[data-remediation]']) {
+    const box = await page.locator(hook).boundingBox();
+    expect(box, hook).not.toBeNull();
+    expect(box!.x, `${hook} left`).toBeGreaterThanOrEqual(band - 0.5);
+    expect(box!.y, `${hook} top`).toBeGreaterThanOrEqual(band - 0.5);
+    expect(box!.x + box!.width, `${hook} right`).toBeLessThanOrEqual(width - band + 0.5);
   }
 });
 
