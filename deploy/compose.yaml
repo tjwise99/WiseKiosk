@@ -1,0 +1,19 @@
+# The deployment recipe: what it carries, and that it is a sample rather than an obligation on what
+# runs, is ADR 0020 rev 2's.
+
+services:
+  kiosk:
+    # Digest-pinned; the release notes name the digest.
+    image: ghcr.io/tjwise99/wisekiosk@sha256:REPLACE_WITH_RELEASE_DIGEST
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    # The secret channel, commented rather than carried: the shape — a `<NAME>_FILE` variable and
+    # the file it names — is ADR 0024 rev 1's, and the mount path is the operator's. What provisions
+    # a secret is #73 secret delivery mechanism and #74 keeping secrets out of client output, and
+    # the recipe is incomplete in that respect until they land.
+    # environment:
+    #   - EXAMPLE_API_KEY_FILE=/run/secrets/example_api_key
+    volumes:
+      - ./config.json:/srv/kiosk/config.json:ro
+      # - ./secrets/example_api_key:/run/secrets/example_api_key:ro
