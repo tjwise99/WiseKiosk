@@ -39,7 +39,9 @@ Parts 1, 2 and 5 apply to upstream-backed modules only. Parts 3, 4 and 6 apply t
 3. **A Svelte component.** Receives the module's configuration and its payload as props and renders
    them into the module's region; it fetches no data, parses no configuration and validates no
    payload. It receives one prop more, `reachable` — the page shell's answer about whether the backend
-   is serving — which decides whether it renders anything at all, per
+   is serving. Every module is handed it and only an upstream-backed one acts on it: that module
+   stands down and renders nothing while the signal is false, and a local module ignores the prop and
+   keeps rendering, per
    [§ An unavailable module and an unreachable backend are different states](#an-unavailable-module-and-an-unreachable-backend-are-different-states)
    below. Where the module has a payload, the component consumes the type generated from the
    boundary schema rather than one declared by hand
@@ -120,8 +122,8 @@ and the review trigger.
 4. Add the module's payload to the boundary schema as a named component; the generated type the
    component consumes is emitted from it.
 5. Write the component, plus its render test. Where the module has a payload, write the component
-   against the generated type rather than hand-declaring it. Declare the `reachable` prop and honour
-   the stand-down it signals
+   against the generated type rather than hand-declaring it. Where the module is upstream-backed,
+   declare the `reachable` prop and honour the stand-down it signals
    ([§ An unavailable module and an unreachable backend are different states](#an-unavailable-module-and-an-unreachable-backend-are-different-states)):
    a component that leaves it undeclared draws its own unavailable state beneath the page's outage
    report, and nothing says so — Svelte ignores a prop the component does not declare, and the render
