@@ -52,7 +52,7 @@ Three properties follow, and they are the point:
   differently-configured scanner would prove nothing.
 
 The meta-gate and `scripts/gate-fixtures/` are both outside dot-directories — the limit
-[ADR 0002 rev 2](0002-requirements-management-doorstop.md) records.
+[ADR 0002 rev 3](0002-requirements-management-doorstop.md) records.
 
 A fixture materialised at run time is not an exclusion under the whole-tree discovery gate, so the
 pattern cannot be mistaken for what that gate bans and "corrected" into real source.

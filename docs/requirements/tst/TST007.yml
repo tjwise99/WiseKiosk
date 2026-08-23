@@ -10,13 +10,14 @@ rationale: ''
 ref: ''
 references:
 - path: scripts/image/smoke.py
+  sha: 3a44a1d7c8b69ce56145e90dc7c32c70cafe0eb9a5f1f7118e6286981079dbc2
   type: file
-reviewed: mYyVmPZylPT04r4UG-B9X5zLu0I_SEYTc4GQH8Kqlbk=
+reviewed: KFsDuS6BKZnipO5bS-9y3YctnOVLDUgte3L1rrUVwS8=
 status: accepted
 text: |
   A CI matrix builds the published image on amd64 and arm64, one architecture per leg, and runs the
   smoke harness against each. The CI wiring lives under .github/
-  (not Doorstop-referenceable, ADR 0002 rev 2) and is cited here; the non-dot-dir smoke harness it
+  (not Doorstop-referenceable, ADR 0002 rev 3) and is cited here; the non-dot-dir smoke harness it
   invokes is the references target.
 verification-justification: |
   Settles that the image builds and smoke-tests on both architectures. Leaves unproven behaviour

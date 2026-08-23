@@ -8,7 +8,12 @@ links:
 normative: true
 rationale: ''
 ref: ''
-reviewed: oiooUVpe45DlKq5a8wtJu5DrvE7JN5G1zc7NeJDhv_g=
+references:
+- keyword: func TestResolveRotationIsNotCached
+  path: backend/internal/secret/secret_test.go
+  sha: d20339fed1a996b1c5d3b6dbbc082abc052a123fde3720f6ac947b8a3bc5bee0
+  type: file
+reviewed: T5JfXhKBwOZTa5iTMwkA1OXth1e4y0KQpn1XorjOV5k=
 status: proposed
 text: |
   Test asserting a secret value changed in the <NAME>_FILE file is reflected on the next resolution

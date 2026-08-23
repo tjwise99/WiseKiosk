@@ -139,7 +139,7 @@ func flat(value int) func(int) int {
 // series carrying the growth it looks for and over one carrying noise it must
 // tolerate. Without the first the predicates are only known to run, and without
 // the second a predicate that fails on everything would pass for working.
-// TODO (#25): TST004, TST043, TST044
+// TST004, TST043, TST044
 func TestFootprintPredicatesJudgeSyntheticSeries(t *testing.T) {
 	const (
 		samples     = 40

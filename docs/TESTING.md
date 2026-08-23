@@ -175,6 +175,13 @@ or [`DEPLOYMENT.md`](DEPLOYMENT.md) where it is not
   rewritten under a pending check fails a gate in the commit that rewrites it. What it cannot decide
   is the question activation exists to ask, and that stays a human read — does this check still
   assert a clause its parent still states?
+- **A test's declaration is its trace, and no test names a requirement.** The `TST` item that a test
+  discharges names *it* — one `references` entry per verifying site, keyed on the line that declares
+  the test ([ADR 0005 rev 2](decisions/0005-traceability-gating.md)). Nothing in a test file carries
+  a requirement ID; reading a test's obligation means reading the item. What such an entry
+  guarantees, and what editing a referenced test costs, is a property of the specification rather
+  than of the suite, so it is stated where the specification is:
+  [`requirements/README.md`](requirements/README.md) § The V&V model.
 - **Every test and check in the repository is executed by CI** — the whole-tree discovery and
   verify/CI wiring gates are [`CI.md § Gate wiring`](CI.md#gate-wiring)'s, not the tree's. A test no
   runner reaches is a false signal, so a new test is wired in by its location alone.
@@ -190,7 +197,7 @@ construction, so a high number buys confidence it has not earned.
 Report it, read it to find untested areas, and gate on the standing obligations above. No gate fails
 a merge on a coverage percentage treated as a quality threshold; the coverage gate, where one
 exists, fails only on uncovered source that is neither exempted nor justified — coverage as
-traceability closure, gate 3 of [ADR 0005 rev 1](decisions/0005-traceability-gating.md), never as a
+traceability closure, gate 3 of [ADR 0005 rev 2](decisions/0005-traceability-gating.md), never as a
 chosen quality bar.
 
 ---

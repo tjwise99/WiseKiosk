@@ -9,9 +9,19 @@ normative: true
 rationale: ''
 ref: ''
 references:
-- path: frontend/tests/render/type-size.spec.ts
+- keyword: test('renders no text below the floor, read against the viewport'
+  path: frontend/tests/render/type-size.spec.ts
+  sha: 9a5a106b467d8fa030da2c926ee0dc4d110857a852879016b63ea156fcb84e32
   type: file
-reviewed: ykhNIy8djfwXROPy9MKeBthDBI6dYqtgpCGjCjfbP9c=
+- keyword: test('renders the smallest step near the floor rather than far above it'
+  path: frontend/tests/render/type-size.spec.ts
+  sha: 9a5a106b467d8fa030da2c926ee0dc4d110857a852879016b63ea156fcb84e32
+  type: file
+- keyword: test('holds the floor as a fraction rather than as a pixel count'
+  path: frontend/tests/render/type-size.spec.ts
+  sha: 9a5a106b467d8fa030da2c926ee0dc4d110857a852879016b63ea156fcb84e32
+  type: file
+reviewed: 8p3Cx7tOU8vbdvxUcysBxI_RSMS1rMb2_IYtfcQGYqg=
 status: accepted
 text: |
   Render at more than one resolution and read each text element's size as a fraction of viewport

@@ -10,8 +10,9 @@ rationale: ''
 ref: ''
 references:
 - path: scripts/image/no_deployment_content.py
+  sha: 6ceb609fd2d5673a1ae964babc2d05ff5a27b70d6c8f1d775253bf85483dc785
   type: file
-reviewed: JCy-Iv0n0oUaRLtWZuKwziz4f_fISregidT9FrQBOd4=
+reviewed: HUFENLaWCXbU7bODr-kUY_Hzu_9jG2SqnS2d3S9H48w=
 status: accepted
 text: |
   Export the published image filesystem and assert nothing exists at the configuration mount path,

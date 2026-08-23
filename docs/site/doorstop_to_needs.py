@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Doorstop YAML -> sphinx-needs MyST transform.
 
-Reads docs/requirements/{sys,srs,tst}/*.yml (canonical, ADR 0002 rev 2) and emits,
+Reads docs/requirements/{sys,srs,tst}/*.yml (canonical, ADR 0002 rev 3) and emits,
 per item, one page under docs/site/generated/items/ holding its sphinx-needs
 directive (the definition every id link resolves to), plus one sheet page per
 document (sys.md/srs.md/tst.md) that pulls all items of that type together

@@ -9,9 +9,32 @@ normative: true
 rationale: ''
 ref: ''
 references:
-- path: frontend/tests/render/region-layout.spec.ts
+- keyword: test('lays out every region the configuration names, and no other'
+  path: frontend/tests/render/region-layout.spec.ts
+  sha: d6e4a6207cc7fb6e5905f68d7f67fae337430d6590cc16d3b1e7b9253b6f4886
   type: file
-reviewed: ZgFPF4uhMYvlm07ywW3-HhiHgVILpewutghBmGRCWsw=
+- keyword: test('renders each module in the region named for it, and nothing a region
+    was not given'
+  path: frontend/tests/render/region-layout.spec.ts
+  sha: d6e4a6207cc7fb6e5905f68d7f67fae337430d6590cc16d3b1e7b9253b6f4886
+  type: file
+- keyword: test('draws each module inside the box of the region it was given'
+  path: frontend/tests/render/region-layout.spec.ts
+  sha: d6e4a6207cc7fb6e5905f68d7f67fae337430d6590cc16d3b1e7b9253b6f4886
+  type: file
+- keyword: test('anchors each module to the edge or corner its region is named for'
+  path: frontend/tests/render/region-layout.spec.ts
+  sha: d6e4a6207cc7fb6e5905f68d7f67fae337430d6590cc16d3b1e7b9253b6f4886
+  type: file
+- keyword: test('lays out no two regions over one another'
+  path: frontend/tests/render/region-layout.spec.ts
+  sha: d6e4a6207cc7fb6e5905f68d7f67fae337430d6590cc16d3b1e7b9253b6f4886
+  type: file
+- keyword: test('does not scroll sideways'
+  path: frontend/tests/render/region-layout.spec.ts
+  sha: d6e4a6207cc7fb6e5905f68d7f67fae337430d6590cc16d3b1e7b9253b6f4886
+  type: file
+reviewed: HPA3cxZpz7D35azddZ6WoBz68pGckiaIAfM22FH6Q4Q=
 status: accepted
 text: |
   Viewport-driven render test asserting that every module the fixture configuration names renders

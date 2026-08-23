@@ -10,7 +10,7 @@ an edit here and a change to the check, not a specification change.
 
 **Most of what follows is not built yet.** The gates are described in the tense they will run in;
 where a gate is unbuilt its ticket is named. That is how this project records scoped work
-([ADR 0005 rev 1](decisions/0005-traceability-gating.md)).
+([ADR 0005 rev 2](decisions/0005-traceability-gating.md)).
 
 ## What CI provides
 
@@ -355,7 +355,7 @@ What each of these obligations *is*, and why, is [`DEPLOYMENT.md`](DEPLOYMENT.md
 build and publish, against the image and the recipe that ticket ships. The three that run against a
 published release are owned one ticket each — #138 bring-up check, #139 example-configuration check
 and #140 image-swap check — which is how this project records scoped work
-([ADR 0005 rev 1](decisions/0005-traceability-gating.md)); what each asserts was decided by #71
+([ADR 0005 rev 2](decisions/0005-traceability-gating.md)); what each asserts was decided by #71
 release artifact set, which shipped no code.
 
 ## The exception register
@@ -897,7 +897,7 @@ specification rather than of the repository, so they are stated where the specif
 
 **A passing `check-reqs` run also prints the proposed-item backlog** — the count of `proposed` items
 and their identifiers, per tier, against the population each tier holds.
-[ADR 0005 rev 1](decisions/0005-traceability-gating.md) makes the tree the backlog and the backlog a
+[ADR 0005 rev 2](decisions/0005-traceability-gating.md) makes the tree the backlog and the backlog a
 report, never a blocking failure, so this line reports and exits zero whatever the tree holds — like
 `just rev-reach` below, it is not a gate, and what the tree holds never moves the run's exit status.
 Two shapes it asserts against its own output: a tier with nothing proposed prints its zero rather
