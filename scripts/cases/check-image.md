@@ -66,7 +66,7 @@ handling the other would add a path no row here exercises.
   command — its interval, retries and start period are unexercised, and no row here says what a
   container listing would show.
 - **One architecture.** Every row runs the native amd64 image. That the image is the same on another
-  architecture is TST007's<!-- Pending: multi-arch build and smoke test --> and is not asserted here.
+  architecture is TST007's<!-- Multi-arch build and smoke test --> and is not asserted here.
 - **A secret this cannot decode is not seen.** Layer bytes are read as latin-1, so a value written
   UTF-16, compressed inside a file, or encrypted is invisible to every pattern. A layer written in a
   compression `tarfile` cannot open is the same case one level up, and the canary is what reports it:

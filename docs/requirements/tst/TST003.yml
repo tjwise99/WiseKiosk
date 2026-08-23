@@ -1,17 +1,21 @@
-active: false
+active: true
 derived: false
 header: |
-  Pending: container non-root uid test
+  Container non-root uid test
 level: 1.4
 links:
 - SRS020: nHg_GBzQiNYkIBREoXNfkkxwMYvXoo_KJU0Bj4HbISw=
 normative: true
 rationale: ''
 ref: ''
-reviewed: D87uznzFLr2ILZWa-axhinr3vgMaLMOOxEJZUK8fDG8=
-status: proposed
+references:
+- path: scripts/image/nonroot_uid.py
+  type: file
+reviewed: sM0eh3D9YLAT9o78j2eNPwBnH0GJFl1EAbUgZxkBh0w=
+status: accepted
 text: |
-  Pending: image test asserting the running container's effective uid is non-root (not 0) and the Dockerfile declares an explicit non-root USER. Lands with the container image build (#54); activated and given a references entry then.
+  Start a container from the published image and assert its effective uid is non-root (not 0), and
+  read the committed Dockerfile's final stage, asserting it declares an explicit non-root USER.
 verification-justification: |
   Settles that the image declares a non-root user and runs as one. Leaves unproven what an operator
   does at run time, since a deployment can override the user and no image property prevents it.

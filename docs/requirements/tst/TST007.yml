@@ -1,17 +1,23 @@
-active: false
+active: true
 derived: false
 header: |
-  Pending: multi-arch build and smoke test
+  Multi-arch build and smoke test
 level: 1.11
 links:
 - SRS019: ALueIJ3zEWq8j_LkY3hpQHk0UH8zRTHXOpHPB02yEUY=
 normative: true
 rationale: ''
 ref: ''
-reviewed: E72oHBzc1-OMBnaNN28923y_I58bxfsPPf4kDTKCdhE=
-status: proposed
+references:
+- path: scripts/image/smoke.py
+  type: file
+reviewed: mYyVmPZylPT04r4UG-B9X5zLu0I_SEYTc4GQH8Kqlbk=
+status: accepted
 text: |
-  Pending: a CI matrix that builds and smoke-tests the published image on amd64 and arm64. The CI wiring lives under .github/ (not Doorstop-referenceable, ADR 0002 rev 2) and is cited here; any non-dot-dir smoke harness it invokes is the references target. Lands with the container image build (#54); activated then.
+  A CI matrix builds the published image on amd64 and arm64, one architecture per leg, and runs the
+  smoke harness against each. The CI wiring lives under .github/
+  (not Doorstop-referenceable, ADR 0002 rev 2) and is cited here; the non-dot-dir smoke harness it
+  invokes is the references target.
 verification-justification: |
   Settles that the image builds and smoke-tests on both architectures. Leaves unproven behaviour
   under load on either - the matrix establishes that it runs, not that it runs well.

@@ -1,7 +1,7 @@
-active: false
+active: true
 derived: false
 header: |
-  Pending: bind-mounted config demonstration
+  Bind-mounted config demonstration
 level: 1.9
 links:
 - SRS018: jAdiVAOaHeEAP9caGAN9vBMpjclpje_k3TmKnf5abBw=
@@ -9,16 +9,18 @@ normative: true
 rationale: |
   Asserts what the mount delivers, not what the image omits: that nothing sits at the configuration
   path in the image is
-  TST009's<!-- Pending: the published image carries no deployment specifics -->, under the same
+  TST009's<!-- The published image carries no deployment specifics -->, under the same
   parent.
 ref: ''
-reviewed: Eu59QBCDZOa7lBypptiPhrT8mlqu0vwjvhQ933ygl2s=
-status: proposed
+references:
+- path: scripts/image/config_mount.py
+  type: file
+reviewed: zXk_-vf2-7P4htpqUCUjXDqdNY3HYvekZ-sTGdrLPic=
+status: accepted
 text: |
-  Pending: test running the published image with a fixture configuration bind-mounted at the
-  configuration path, asserting the served configuration reflects the fixture byte-for-byte; and
-  running the same image with no mount, asserting it fails loudly rather than serving a baked
-  default. Lands with the container image build (#54); activated then.
+  Run the published image with a fixture configuration bind-mounted at the configuration path,
+  asserting the served configuration reflects the fixture byte-for-byte; and run the same image with
+  no mount, asserting it fails loudly rather than serving a baked default.
 verification-justification: |
   Settles byte-fidelity of the mounted configuration, and loud failure rather than a baked default
   when no mount is supplied. Leaves unproven behaviour when the mount exists but is unreadable.

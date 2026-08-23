@@ -1,20 +1,22 @@
-active: false
+active: true
 derived: false
 header: |
-  Pending: two instances from one image share no state
+  Two instances from one image share no state
 level: 1.13
 links:
 - SRS029: D329DENuHyT3wlNFDrPqvwYglfXu5bStopKDxB_7hVw=
 normative: true
 rationale: ''
 ref: ''
-reviewed: QWFwXcG4cVRxzKHMm9LwiRTcERvrEGjOmsAZ2ml_M6U=
+references:
+- path: scripts/image/two_instances.py
+  type: file
+reviewed: c_OfU6zWl5qMxCwS9NBAVC0xJAA4F_YIZPGFzsLbB2w=
 status: proposed
 text: |
-  Pending: test starting two containers from the same digest with two different bind-mounted
-  configurations on two ports, asserting each serves only its own configuration and neither reflects
-  the other; asserting the image declares no shared writable volume; stopping one and asserting the
-  other stays healthy. Lands with the container image build (#54); activated then.
+  Start two containers from one image with two different bind-mounted configurations on two ports,
+  asserting each serves only its own configuration and neither reflects the other; assert the image
+  declares no shared writable volume; then stop one and assert the other stays healthy.
 verification-justification: |
   Settles that two instances of one image serve only their own configuration, declare no shared
   writable storage, and survive each other stopping. Leaves unproven what an operator can defeat

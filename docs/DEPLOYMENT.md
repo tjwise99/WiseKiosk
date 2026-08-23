@@ -94,7 +94,7 @@ SRS026<!-- The display says when the backend is gone --> obliges the display to 
 in the room, which is the surface somebody is actually looking at.
 
 It is declared for two smaller reasons. It is an oracle three automated checks read — bring-up,
-upgrade, and TST011<!-- Pending: two instances from one image share no state --> in the requirements
+upgrade, and TST011<!-- Two instances from one image share no state --> in the requirements
 tree — each of which needs a machine-readable *is it serving yet* rather than a scraped log line. And
 an operator wanting a health status in a container listing would otherwise write the declaration into
 their own recipe, which is the avoidable step the restart policy above exists to remove.
