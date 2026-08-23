@@ -1,13 +1,15 @@
 # `check-image`
 
-The inputs the six harnesses `check-image` runs, under [`../image/`](../image/), have been run
-against, in both directions. What the tier *guarantees* is [`docs/TESTING.md`](../../docs/TESTING.md)'s; how to run a
+The inputs the image-tier harnesses under [`../image/`](../image/) have been run against, in both
+directions — the six `check-image` runs, and `smoke.py`, which `smoke-image` runs once per
+architecture. What the tier *guarantees* is [`docs/TESTING.md`](../../docs/TESTING.md)'s; how to run a
 case is [`../README.md`](../README.md)'s.
 
 Every case runs the harness from the tracked tree against an image, so the seed is an **image** rather
 than a file: each failing row builds a throwaway image `FROM wisekiosk:citest` carrying the defect and
 hands that ref to the harness, and the two rows whose subject is the harness's own input instead patch
-a copy of the harness in a scratch directory. The passing rows are `wisekiosk:citest` itself, built
+a copy of the harness in a scratch directory. One row seeds nothing at all: a ref no image answers to
+is what a leg that loaded nothing hands its harness. The passing rows are `wisekiosk:citest` itself, built
 from the tracked tree at `fab3916` by `just check-image`. Docker 29.6.2, buildx 0.31.1, native amd64.
 
 The `health_signal.py` rows were run at `30cb78c health signal`, script md5
@@ -15,6 +17,11 @@ The `health_signal.py` rows were run at `30cb78c health signal`, script md5
 
 The `no_deployment_content.py` rows were run at script md5 `ce85ce9f395149f9e758de41a3e9bb16`, the
 harness carrying the schema-ranging arm, against `wisekiosk:citest` rebuilt by `just check-image`.
+
+The `smoke.py` rows were run at `0636f95 the six image verification items`, script md5
+`cbc077d2a78f3cfaf2a838548e861741`, against `wisekiosk:citest` rebuilt by
+`just smoke-image linux/amd64` — one architecture, the host's, and the leg that reports the other is
+CI's.
 
 | Direction | Case | Input |
 |---|---|---|
@@ -34,7 +41,11 @@ harness carrying the schema-ranging arm, against `wisekiosk:citest` rebuilt by `
 | Must fail | An image declaring no healthcheck | `HEALTHCHECK NONE` — `declares no CMD-form healthcheck (['NONE']) — this read no signal in either direction`, rather than a vacuous pass over a signal that is not there |
 | Must fail | A healthcheck naming a binary the image does not carry | `HEALTHCHECK CMD ["/usr/local/bin/absent", "-health-check"]` — two problems, one being `could not be run on its own (127: …) — this judged nothing about the unhealthy direction`. Without that reserved-code guard, a vector the container never ran would read as a correctly reported failure |
 | Must fail | A container that never serves | `ENTRYPOINT ["/bin/sleep", "300"]` — `no 200 from /healthz within 30s — this judged no serving container`, so the healthy direction is asserted against a container proven to be serving |
+| Must fail | A ref naming no image | `smoke.py` against `wisekiosk:nosuchtag` — `` `docker image inspect …` exited 1 (No such image: wisekiosk:nosuchtag) — this judged no image ``. A leg whose build loaded nothing must not read as an architecture that was smoke-tested |
+| Must fail | A container that runs and never serves | `smoke.py` against `FROM wisekiosk:citest` + `ENTRYPOINT ["/bin/sleep", "300"]` — `no 200 from /healthz within 30s — nothing this image was built for came up serving`, at the bound rather than hung |
+| Must fail | A container serving, failing the healthcheck it declares | `smoke.py` against `FROM wisekiosk:citest` + `HEALTHCHECK CMD ["/bin/false"]` — `the container failed the healthcheck the image declares: … exited 1`. The port half passes on that image, which is why the two are separate assertions |
 | Must pass | The image built from the tracked tree | — |
+| Must pass | The same image, smoke-tested on the architecture it was built for | `smoke.py` against `wisekiosk:citest` — `wisekiosk:citest (linux/amd64) came up, answered /healthz, and passed the healthcheck it declares` |
 
 **Every failing row above is a different assertion**, and the three seeded onto the harness rather
 than the image are the three whose subject is what the harness was handed: an image cannot carry "the
@@ -65,8 +76,10 @@ handling the other would add a path no row here exercises.
   each direction. The aggregated `.State.Health.Status` is docker's own scheduling of that same
   command — its interval, retries and start period are unexercised, and no row here says what a
   container listing would show.
-- **One architecture.** Every row runs the native amd64 image. That the image is the same on another
-  architecture is TST007's<!-- Multi-arch build and smoke test --> and is not asserted here.
+- **One architecture.** Every row above runs the native amd64 image, `smoke.py`'s included: what they
+  establish is that the harness fails on an image that does not come up, not that the arm64 image
+  comes up. The arm64 verdict is the `image-arch` matrix's own leg, built and run under emulation in
+  CI (TST007<!-- Multi-arch build and smoke test -->), and no row here stands in for it.
 - **A secret this cannot decode is not seen.** Layer bytes are read as latin-1, so a value written
   UTF-16, compressed inside a file, or encrypted is invisible to every pattern. A layer written in a
   compression `tarfile` cannot open is the same case one level up, and the canary is what reports it:
