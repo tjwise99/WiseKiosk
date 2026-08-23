@@ -43,15 +43,30 @@
     <p>Loading the display configuration…</p>
   </main>
 {:else if outcome.kind === 'applied'}
-  <RegionFrame configuration={outcome.configuration} />
-  {#if !reachable}
-    <BackendUnreachable />
-  {/if}
+  <div class="page" class:banded={!reachable}>
+    {#if !reachable}
+      <BackendUnreachable />
+    {/if}
+    <RegionFrame configuration={outcome.configuration} />
+  </div>
 {:else}
   <ConfigurationError {outcome} />
 {/if}
 
 <style>
+  /* The display's own height, divided between the states the page carries: the frame alone, or a
+     band above it and the frame in what is left. The band displaces the layout rather than covering
+     it, so no region is ever hidden behind a failure report (SYS001). */
+  .page {
+    display: grid;
+    grid-template-rows: minmax(0, 1fr);
+    height: 100vh;
+  }
+
+  .banded {
+    grid-template-rows: auto minmax(0, 1fr);
+  }
+
   .waiting {
     box-sizing: border-box;
     display: flex;

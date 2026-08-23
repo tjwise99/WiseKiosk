@@ -49,8 +49,10 @@
     box-sizing: border-box;
     /* A definite height, not a minimum: in an auto-height grid an `fr` track is sized to its
        content, so the three bands would grow to whatever they were given instead of dividing the
-       display. Content larger than its band then leaves the frame, which is what it must do. */
-    height: 100vh;
+       display. Content larger than its band then leaves the frame, which is what it must do. The
+       height is the track the page gives the frame, which is the display less whatever band the
+       page carries above it. */
+    height: 100%;
     padding: var(--edge-band);
   }
 

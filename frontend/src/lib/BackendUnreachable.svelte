@@ -14,20 +14,15 @@
 </aside>
 
 <style>
-  /* A band across the top of what is already laid out, not a replacement for it: the modules that
-     need no backend keep rendering beneath (SYS001). The ground is the page's own, so the band is
-     opaque over whatever it covers without emitting anything itself. */
+  /* A band above what is already laid out, not a replacement for it and not a cover over it: the
+     page gives the band its own row and the frame the rest, so the modules that need no backend
+     keep rendering in full (SYS001). The rule beneath separates the two. */
   .backend-unreachable {
     box-sizing: border-box;
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
     display: flex;
     flex-direction: column;
     gap: var(--space-xs);
     padding: var(--space-md) var(--space-lg);
-    background: var(--emission-ground);
     border-bottom: 1px solid var(--emission-stroke);
   }
 
