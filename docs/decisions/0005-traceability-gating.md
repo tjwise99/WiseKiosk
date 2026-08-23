@@ -14,8 +14,9 @@ under the requirements rewrite #18)
   Test-method items is native Doorstop `references` carrying a `keyword`, which reaffirms
   [ADR 0002 rev 3](0002-requirements-management-doorstop.md)'s mechanism rather than superseding it;
   content drift is caught by Doorstop's own `item_sha_required` plus its `item_validator` hook; gate
-  2 narrows to the reverse-direction check, which is the one of rev 1's three objections that
-  survives, and gate 3 moves to #190 coverage closure gate (#25 traceability gates).
+  2 is dropped, because a declaration-anchored keyword closes the gap it was to cover and a blocking
+  reverse gate would price structural tests out of the suite; and gate 3 moves to #190 coverage
+  closure gate (#25 traceability gates).
 - **rev 1** — 2026-08-05 — revision tracking begins; text as merged (#118 ADR revisions).
 
 ## Context
@@ -68,16 +69,24 @@ pinned tool rather than against recollection:
 - **Granularity** — *a file holds many tests, so a file-grain reference smuggles untraced siblings
   past the gate*. **Does not hold.** A `references` entry takes a `keyword`, and Doorstop resolves it
   to a file and line number. The channel is line-grain; rev 1 was written as though `keyword` did not
-  exist.
+  exist. Anchored on the declaration, the entry vouches for one test rather than for the file holding
+  it, so a sibling is neither smuggled nor claimed.
 - **Multiplicity** — *one reference cannot carry the relation the tree needs*. **Does not hold.**
   `references` is a validated many-to-many list: an item may name several sites, several items may
   name one site, and every entry is checked rather than only the first. That is exactly the relation
   [`../requirements/README.md`](../requirements/README.md) states, where a `TST` item is a
   verification obligation rather than a test function.
-- **Reverse direction** — *nothing proves that no sibling test is untraced*. **Survives.** Doorstop's
-  traceability is item-anchored: it asks whether this item's reference resolves, never whether every
-  test in a file is claimed by some item. This gap is real, and it is the whole justification for a
-  check authored here.
+- **Reverse direction** — *nothing proves that no sibling test is untraced*. **Survives as a fact
+  about the tool, and is rejected as a gate** (owner, 2026-08-23). Doorstop's traceability is
+  item-anchored: it asks whether this item's reference resolves, never whether every test in a file
+  is claimed by some item. What that observation was carrying was the granularity objection above,
+  and the declaration-anchored keyword settles that natively. What is left is the demand that every
+  test the runner discovers name a `TST`, and that is refused: a suite holds requirements-based tests
+  *and* structural ones — a table-driven boundary case, a regression pinning a fixed bug, a fuzz
+  seed — and obliging each to carry a verification obligation either invents items that state no
+  want or prices the test out of the suite. Degrading the test protocol to satisfy a gate is the
+  wrong trade. The unclaimed population is worth *reporting*, in the forward direction, which is
+  #192 verification-debt report.
 
 **Drift on the evidence channel is caught natively too.** The `TST` document sets
 `item_sha_required` in its `.doorstop.yml`, so `doorstop review` records a SHA256 of each referenced
@@ -91,22 +100,23 @@ whole-file for now: any edit to a referenced test re-reviews every item referenc
 churn is accepted rather than designed around; hashing only the keyword's region is a later
 refinement if it bites. The extension is per-document, so `sys/` and `srs/` are untouched.
 
-Three gates, all in-repo, each run by `just verify` and mirrored byte-identically in CI:
+Two gates, both in-repo, each run by `just verify` and mirrored byte-identically in CI. The numbering
+is historical, so a retired gate's number is not reused:
 
 | # | Gate | Proves |
 |---|---|---|
 | 1 | `check-reqs` (exists) | Tree integrity: parent links, no suspect/unreviewed/orphan items; every `TST` reference resolves to a file, and to the declaration its `keyword` names where it carries one; no referenced test drifted since review |
-| 2 | Reverse-direction check | Every test the runner discovers is claimed by some active Test-method `TST` item |
 | 3 | Coverage closure (when source exists) | Uncovered source is unjustified source (visible exemptions) |
 
-Gate 4, an inspection file-claim over non-code silos, is retired by
+Gate 2, a reverse-direction claim over every discovered test, is dropped for the reason given against
+the third objection above. Gate 4, an inspection file-claim over non-code silos, is retired by
 [ADR 0011 rev 2](0011-requirement-or-convention.md) for having no possible subject.
 
-- **The forward direction is Doorstop's, the reverse direction is ours.** Gate 1 proves each item's
-  evidence exists, at the line the runner names, and has not drifted. Gate 2 proves the complement,
-  which Doorstop cannot express: that no test runs unclaimed. Coverage then makes the closure
+- **Both surviving gates run forward, from the tree outward.** Gate 1 proves each item's evidence
+  exists, at the line that declares it, and has not drifted. Coverage then makes the closure
   transitive: source → test → `TST` → `SRS` → `SYS`, so coverage is traceability closure here, not a
-  quality threshold.
+  quality threshold — and it reaches source a structural test covers without any item naming that
+  test, which is the closure gate 2 was reached for.
 - **Analysis and demonstration items close through referenced artifacts** — the item references the
   analysis document or demonstration procedure, and derived verification is that reference resolving
   plus the item's `reviewed` fingerprint. Human judgment stays in the sign-off; only the linkage is
@@ -140,8 +150,7 @@ The four stored attributes — `verification-method`, `status`, `verification-ju
   that its keyword is present, carries the reference inside the item's `reviewed` fingerprint, and
   renders it in published output; a parallel convention gets none of that, and a renamed or deleted
   test file breaks nothing. Two of the three objections that justified the replacement do not hold
-  against the tool as shipped, and the third is answered by gate 2 sitting *on top of* the native
-  channel rather than in place of it.
+  against the tool as shipped, and the third asks for a gate this rev declines to build.
 - **Requirement IDs in PR bodies, and a PR→issue link gate.** Rejected by a partition argument:
   every file a PR touches falls to exactly one of the gates, so its trace is fully derivable
   from the diff against the tree — a PR-body ID either restates that or contradicts it, and in a
@@ -181,9 +190,14 @@ The four stored attributes — `verification-method`, `status`, `verification-ju
   [ADR 0002 rev 3](0002-requirements-management-doorstop.md) warns about — re-blessing is a human act
   and must not become a reflex — and it is the cost this rev accepts in exchange for the tree
   noticing when its evidence moves.
-- **Only one gate is authored here.** Gate 1 is the tool's, configured; gate 2 is this repository's
-  own rule and has no maintained tool that decides it, which is what
-  [ADR 0016 rev 5](0016-maintained-tools-for-standard-artifacts.md) asks before a check is written.
+- **No gate is authored here.** Gate 1 is the tool's, configured — the drift hook is the extension
+  point Doorstop documents, not a sibling script — and gate 3 is the coverage tool's. That is the
+  answer [ADR 0016 rev 5](0016-maintained-tools-for-standard-artifacts.md) asks for before a check is
+  written, and dropping gate 2 is what leaves it with no exception.
+- **An unclaimed test is not a build failure.** Nothing fails when a test the runner discovers is
+  named by no item, so a structural test lands without inventing a `TST` for it. What that costs is
+  visibility, which #192 verification-debt report buys back as a report rather than as a gate; until
+  it exists the population is unmeasured, and saying so is the honest state.
 - **Coverage implies a near-100% bar** with a visible exemption mechanism — deliberate, because it
   gates an invariant (no unjustified source), not a chosen number. Coverage proves execution, not
   specification: a line covered incidentally counts. That residue is held by review and test
