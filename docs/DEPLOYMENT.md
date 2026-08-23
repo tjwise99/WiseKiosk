@@ -62,6 +62,11 @@ served a configuration at all. Nothing else is edited and `up` is given no argum
 reference, the port and the mount are all the recipe's. #138 bring-up check is what runs this sequence
 against a clean host and fails on a step that does not.
 
+**The image reference is a movable tag.** The recipe names `ghcr.io/tjwise99/wisekiosk:latest`, which
+tracks the default branch's build ([`CI.md`](CI.md) § *Publishing and provenance*), so `up` against a
+re-pulled tag brings up the newest published image; an operator wanting a fixed one pins a digest in
+their own copy, as the verification note below describes.
+
 **Optional, and recommended: verify the image before trusting it.** An operator who pulls an image is
 trusting a stranger's build, so the check against its signature and provenance ships with the
 procedure rather than having to be reconstructed, and it names the repository the image is expected to
