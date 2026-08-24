@@ -44,7 +44,7 @@ handler cannot tell them apart when it arrives.
 
 The frontend renders these bodies directly on a Raspberry-Pi-Zero-class browser and consumes the
 generated types only, with no runtime re-validation
-([ADR 0008 rev 2](0008-boundary-contract-openapi-codegen.md)). So what the body costs to parse and
+([ADR 0008 rev 3](0008-boundary-contract-openapi-codegen.md)). So what the body costs to parse and
 to render is paid on the constrained side, and every field it carries is a field the page must
 either display or ignore.
 
