@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "type": "module",
-  "description": "The WiseKiosk frontend package root: the display page, its configuration schema and the two test tiers. Its boundary types under src/lib/boundary/ and its configuration types under src/config/ are generated and committed; every generator is pinned exact so a toolchain bump cannot present as schema drift.",
+  "description": "The WiseKiosk frontend package root: the display page, its configuration schema and the two test tiers. Its boundary contract under src/lib/boundary/ and its configuration types under src/config/ are generated and committed; every generator is pinned exact so a toolchain bump cannot present as schema drift.",
   "engines": {
     "node": "24"
   },
@@ -13,7 +13,8 @@
     "@types/node": "24.13.3",
     "ajv": "8.20.0",
     "json-schema-to-typescript": "15.0.4",
-    "openapi-typescript": "7.13.0",
+    "orval": "8.26.0",
+    "prettier": "3.6.2",
     "svelte": "5.56.9",
     "typescript": "5.9.3",
     "vite": "8.2.1",

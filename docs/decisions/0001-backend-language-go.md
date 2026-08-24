@@ -51,7 +51,7 @@ up-front cost, not a retrofit. Choosing Go without it is not on the table.
   `net/http` a direct fit. No backend runtime image, no lockfile or musl/glibc toolchain split.
 - **The boundary contract becomes a hard, up-front obligation.** A schema→codegen mechanism must be
   chosen and stood up before the second module (resolved by
-  [ADR 0008 rev 2](0008-boundary-contract-openapi-codegen.md)), and it becomes the Boundary tier of the
+  [ADR 0008 rev 3](0008-boundary-contract-openapi-codegen.md)), and it becomes the Boundary tier of the
   test architecture — CI must verify the generated code is in sync.
   Under Node this would have been nearly free; under Go it is paid work, done knowingly.
 - **Response shaping is more verbose** than TypeScript — explicit struct definitions per payload.

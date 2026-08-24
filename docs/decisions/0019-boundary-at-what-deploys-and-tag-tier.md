@@ -186,7 +186,7 @@ per-route configuration as per-module structure would make request validation, t
 the upstream client all module-owned and leave the framework half empty — against the contract's own
 dependency direction, under which framework code "is shared code from the moment it is written". Parts
 4 and 5 earn no component either: the boundary-schema fragment belongs to the one schema, which
-[ADR 0008 rev 2](0008-boundary-contract-openapi-codegen.md) gives to neither side, and the
+[ADR 0008 rev 3](0008-boundary-contract-openapi-codegen.md) gives to neither side, and the
 configuration-schema fragment composes into the one schema the frontend validates against. Part 6 is
 tests, which run nowhere in either container and are [`../TESTING.md`](../TESTING.md)'s.
 

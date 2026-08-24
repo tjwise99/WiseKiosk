@@ -141,23 +141,36 @@ runs `just smoke-image` once per architecture. Both need Docker, which is why ne
   with the architecture; the configuration, layer and isolation properties hold of the image on
   either, so a second run of them would be a repeat rather than a second assertion.
 
-## Generated boundary types
+## Generated boundary contract
 
-The one OpenAPI schema is hand-authored and both sides' types are generated from it
-([ADR 0008 rev 2](decisions/0008-boundary-contract-openapi-codegen.md)). The gate regenerates the Go
-and TypeScript types and fails on any difference, so a schema edit that reaches neither side, and a
-hand-edit of either, both fail.
+The one OpenAPI schema is hand-authored and both sides' **routes, client, server and types** are
+generated from it ([ADR 0008 rev 3](decisions/0008-boundary-contract-openapi-codegen.md)). The gate
+regenerates the Go and TypeScript output and fails on any difference, so a schema edit that reaches
+neither side, and a hand-edit of either, both fail.
 
+- **Routes are inside what is compared.** Because each side's route table is generated rather than
+  written, a path that moves in the schema and nowhere else is a difference this gate sees — the case
+  a types-only setup could not reach, since neither side's generated output mentioned a path at all.
 - The gate clears both generated directories, regenerates, and fails on any difference from the
   committed output (`git diff --exit-code`). Clearing before regenerating is what makes a missing
   generator visible: absent output reads as a deletion in the diff rather than as a stale file
   byte-identical to what is committed. That the gate can fail — a committed type moved away from the
-  schema, each side seeded independently — is proven once against a throwaway copy and recorded in
+  schema, a route renamed in the schema alone, each side seeded independently — is proven once
+  against a throwaway copy and recorded in
   [`../scripts/cases/check-boundary.md`](../scripts/cases/check-boundary.md), the way every check's
   fallibility is recorded here; it is not re-tested by a standing meta-gate.
 - **A run that regenerates nothing fails** rather than reporting agreement over an empty comparison,
   which is what a missing generator or a schema path that resolves to no file would otherwise read as
   — a non-empty assertion on each output is the half of that the clear-and-diff does not cover.
+- **Both languages are compiled, not just written.** `go build` over the backend and `tsc --noEmit`
+  over the generated frontend directory each fail on output that is syntactically present and does
+  not compile. The Go half also catches what a non-empty assertion cannot: oapi-codegen exits *zero*
+  on any configuration it accepts, including one naming fewer targets than this repo needs, and its
+  parser falls back to an older configuration schema rather than refusing a mis-shaped one — so a
+  whole target can go missing from a non-empty file. The backend consumes each target (the routes
+  through the generated router, the error bodies through the generated models), which turns a missing
+  one into an undefined symbol. The TypeScript half is narrowed to the generated directory — the
+  general frontend typecheck is #67 typecheck gate's.
 
 **What it leaves unproven** is whether the schema says what the boundary actually carries; the gate
 compares the schema against its own output and nothing against the running system.
@@ -783,7 +796,7 @@ violate any of them, so they are checks here rather than obligations there.
 - **The committed configuration types are what the configuration schema generates.** The
   configuration-object TypeScript types are generated from `frontend/src/config/schema.json` and
   committed ([ADR 0022 rev 1](decisions/0022-config-schema-format.md)), so the gate regenerates and
-  fails on any difference — the same clear-regenerate-assert-diff shape § *Generated boundary types*
+  fails on any difference — the same clear-regenerate-assert-diff shape § *Generated boundary contract*
   runs one layer over, and for the same reason: the generator is resolved before the committed output
   is cleared, absent output then reads as a deletion rather than as a stale file, and a non-empty
   assertion catches the emitted-but-empty case the diff does not. Recorded in

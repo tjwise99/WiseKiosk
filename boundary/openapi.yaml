@@ -1,8 +1,13 @@
-# The one boundary schema. Owned by neither package; both sides' types are generated from it and
-# committed inside the package that compiles them (ADR 0008 rev 2, ADR 0021 rev 1).
+# The one boundary schema. Owned by neither package; both sides' routes, client, server and types
+# are generated from it and committed inside the package that compiles them
+# (ADR 0008 rev 3, ADR 0021 rev 1).
 #
-# `paths` is empty: no route exists until a module contributes one. A module contributes its payload
-# as a named component here rather than as a file of its own.
+# Two kinds of path live here. A **module data route** carries the full component set — its success
+# payload, the upstream failure and the client rejection below — and a module contributes its payload
+# as a named component here rather than as a file of its own. An **infrastructure route** answers
+# about the process rather than about a source, declares its own response and nothing more, and is
+# not a module's to contribute. Which paths of either kind exist is what `paths` below says; no
+# document counts them.
 #
 # The two error bodies below are the compact shapes ADR 0026 rev 2 decides. `cause` is an open
 # string in both: which causes there are is a verification item's, not this schema's.
@@ -12,7 +17,16 @@ info:
   # OpenAPI requires this field. Nothing reads it: neither generator emits it, no release is cut
   # against it, and the two sides ship in one image, so it tracks nothing and gates nothing.
   version: 0.1.0
-paths: {}
+paths:
+  # An infrastructure route: it answers that the process is serving and nothing else, so it declares
+  # no body at all. Every consumer reads the status code (ADR 0007 rev 2, ADR 0020 rev 2).
+  /healthz:
+    get:
+      operationId: getHealthz
+      summary: Report that the backend process is serving.
+      responses:
+        '200':
+          description: The backend process is up.
 components:
   schemas:
     UpstreamFailure:
