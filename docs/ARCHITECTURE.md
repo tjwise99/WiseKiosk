@@ -407,8 +407,8 @@ success payload plus the two error bodies — and a module contributes its paylo
 of the same file; the error bodies are
 [ADR 0026 rev 2](decisions/0026-boundary-error-body-shape.md)'s. An **infrastructure route** answers
 about the process rather than about a source and declares its own response alone — `/healthz` is one,
-and its 200 carries no body at all. Which paths of either kind exist is the schema's to say and is
-not counted again here.
+and its 200 carries no body at all. Which paths of either kind exist is the schema's to say, and is
+not counted here.
 
 ## Config and secrets
 

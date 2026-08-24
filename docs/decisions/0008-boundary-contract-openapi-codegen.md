@@ -82,8 +82,9 @@ notch too narrow, so rev 3 widens it to the whole wire contract rather than addi
   its success payload, the upstream-failure body and the client-rejection body — and is what
   [the module contract](../contracts/module-contract.md) governs. An **infrastructure route** answers
   about the process rather than about a source, declares its own response and nothing else, and is
-  not a module's to contribute; `/healthz` is the only one, and its 200 carries no body at all
-  because every consumer reads the status code. The distinction is recorded because the schema's
+  not a module's to contribute. Rev 3 brings one in, `/healthz`, whose 200 carries no body at all
+  because every consumer reads the status code; which paths of either kind exist is the schema's to
+  say, and is not counted here. The distinction is recorded because the schema's
   conventions were written module-shaped, and **both** of
   TST032<!-- Pending: boundary schema is single and complete -->'s path-level clauses are scoped to
   module data routes when it is activated. Its "every path declares the error set" assertion is,
@@ -200,9 +201,9 @@ notch too narrow, so rev 3 widens it to the whole wire contract rather than addi
   set and a middleware hook whether or not any route has parameters. Accepted: it is one file, it
   compiles, and it adds no dependency.
 - **`orval` is small at the boundary and large in `node_modules`.** It ships as one package tree that
-  carries every generator it can emit — 11 of them beside the `fetch` one this repo uses, plus
-  `typedoc` and its two plugins, plus `esbuild` with 26 platform-specific native binary packages that
-  nothing in the tree had before. Net **+95 packages** in `frontend/package-lock.json` (119 added, 24
+  carries every output target it can emit — **twelve `@orval/*` packages, of which this repo's
+  configuration reaches exactly one, `fetch`** — plus `typedoc` and its two plugins, plus `esbuild`
+  with 26 platform-specific native binary packages that nothing in the tree had before. Net **+95 packages** in `frontend/package-lock.json` (119 added, 24
   removed with `openapi-typescript`), 237 in total. **None of it reaches what ships**: the emitted
   client imports nothing, so the browser module graph and
   [`frontend/bundle-allowlist.json`](../../frontend/bundle-allowlist.json) are untouched, and this is

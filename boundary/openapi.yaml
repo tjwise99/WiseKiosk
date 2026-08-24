@@ -6,7 +6,8 @@
 # payload, the upstream failure and the client rejection below — and a module contributes its payload
 # as a named component here rather than as a file of its own. An **infrastructure route** answers
 # about the process rather than about a source, declares its own response and nothing more, and is
-# not a module's to contribute. `/healthz` is the only one.
+# not a module's to contribute. Which paths of either kind exist is what `paths` below says; no
+# document counts them.
 #
 # The two error bodies below are the compact shapes ADR 0026 rev 2 decides. `cause` is an open
 # string in both: which causes there are is a verification item's, not this schema's.
