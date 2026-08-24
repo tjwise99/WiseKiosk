@@ -20,7 +20,7 @@ is what makes a regeneration reproducible.
 | Must fail | A generator does not run, so nothing is regenerated | the `orval` binary made unresolvable — the gate destroys nothing and exits non-zero |
 | Must fail | A generator exits zero having emitted no route table | drop `std-http-server` from `backend/oapi-codegen.yaml` — `go build` reports `cmd/main.go: undefined: boundary.HandlerFromMux` |
 | Must fail | A generator's configuration silently parses as an older schema | `generate: [models, std-http-server, client]` with no `output-options` — accepted as the v1 configuration, exits zero, prunes the models; `go build` reports `internal/router/router.go: undefined: boundary.UpstreamFailure` |
-| Must fail | Generated TypeScript that does not compile | a component named `Headers` in the schema, which shadows the DOM type orval's own response wrapper uses — `tsc` reports `TS2352` |
+| Must fail | Generated TypeScript that does not compile | a component named `Headers` in the schema **carrying a required property**, which shadows the DOM type orval's own response wrapper uses — `tsc` reports `TS2352` |
 | Must pass | The tree as it stands | — |
 
 **What the cases prove, beyond what the table shows on its own.**
@@ -65,6 +65,11 @@ is what makes a regeneration reproducible.
   regeneration would overwrite. A component name that collides with a DOM type orval emits against is
   a schema the generator accepts, Go compiles, and TypeScript rejects — which is what makes the
   `tsc` step an assertion about generated output rather than about a file nobody can produce.
+  **The required property is what makes the seed bite**, and it is the half of this row easiest to
+  drop when re-running it: with every property optional the emitted interface is a weak type, the
+  `as` conversion stays legal, `tsc` passes, and the gate then fails at the drift diff instead — the
+  right verdict for the wrong reason, which would read as evidence that the `tsc` step decides
+  nothing.
 
 **Known gaps.**
 
