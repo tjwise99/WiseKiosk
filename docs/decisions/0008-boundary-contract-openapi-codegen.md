@@ -84,10 +84,16 @@ notch too narrow, so rev 3 widens it to the whole wire contract rather than addi
   about the process rather than about a source, declares its own response and nothing else, and is
   not a module's to contribute; `/healthz` is the only one, and its 200 carries no body at all
   because every consumer reads the status code. The distinction is recorded because the schema's
-  conventions were written module-shaped: when
-  TST032<!-- Pending: boundary schema is single and complete --> is activated, its "every path declares
-  the error set" assertion is scoped to module data routes, which is where the obligation comes from
-  — an infrastructure route has no upstream to fail and no request to reject.
+  conventions were written module-shaped, and **both** of
+  TST032<!-- Pending: boundary schema is single and complete -->'s path-level clauses are scoped to
+  module data routes when it is activated. Its "every path declares the error set" assertion is,
+  because that is where the obligation comes from — an infrastructure route has no upstream to fail
+  and no request to reject. Its "schema path items equal the static route registration list, in both
+  directions" assertion is too, for the same reason one clause over: that list holds one entry per
+  upstream-backed module, so `/healthz` is a path item that has no entry in it and is never going to
+  acquire one. Read unscoped, the clause is false the moment an infrastructure route exists, and the
+  reading that repairs it — adding registry plumbing for a liveness route — would invent a module
+  where there is none.
 - **The schema defines every value class that crosses the boundary**
   (SRS015<!-- One schema, all boundary value classes -->): request parameter names and types,
   success payloads, the structured body for the upstream failure
@@ -175,9 +181,41 @@ notch too narrow, so rev 3 widens it to the whole wire contract rather than addi
   regenerating; a registration or a call written directly is either overwritten or reported as drift.
   That is the point, and it is also the cost — the schema sits on the critical path of every route
   change, not only of every payload change.
+- **OPEN: how a generated `ServerInterface` method meets the registry, at the first module data
+  route. #12 first module takes this.** Rev 3 is proven on one infrastructure route, whose handler is
+  a single Go type. A module data route enters the same schema, so `oapi-codegen` will emit a
+  `ServerInterface` method for it and `HandlerFromMux` will register that method by name — while
+  [ADR 0021 rev 1](0021-repository-layout.md)'s registry says a module is added by adding one element
+  to a literal, with no per-module Go method anywhere. Three things collide the moment both exist:
+  `health.Route` stops satisfying the widened interface and the build breaks until something
+  implements the new method; implementing one method per module route puts per-route hand code back
+  on the side this rev just cleared, while keeping module paths out of the schema forfeits the
+  route-drift property the rev exists to buy; and the generated `GET /api/<source>` is a *more
+  specific* `ServeMux` pattern than the `/api/` seam, so it would shadow the module router for that
+  path rather than sit beside it. **Nothing here decides that** — the shape of the seam (a generated
+  interface delegating into the registry, a schema-driven registry, or something else) is a design
+  call that wants a real module in front of it, and it is named here so it is met deliberately rather
+  than discovered by a red build.
 - **The generated Go surface is larger than the types were.** `std-http-server` emits a parameter-error
   set and a middleware hook whether or not any route has parameters. Accepted: it is one file, it
   compiles, and it adds no dependency.
+- **`orval` is small at the boundary and large in `node_modules`.** It ships as one package tree that
+  carries every generator it can emit — 11 of them beside the `fetch` one this repo uses, plus
+  `typedoc` and its two plugins, plus `esbuild` with 26 platform-specific native binary packages that
+  nothing in the tree had before. Net **+95 packages** in `frontend/package-lock.json` (119 added, 24
+  removed with `openapi-typescript`), 237 in total. **None of it reaches what ships**: the emitted
+  client imports nothing, so the browser module graph and
+  [`frontend/bundle-allowlist.json`](../../frontend/bundle-allowlist.json) are untouched, and this is
+  a build-time and supply-chain cost only. It is recorded because a Dependabot pull request against
+  `@orval/angular` or `typedoc` is otherwise unexplainable to whoever has to weigh it: those packages
+  are here because orval is one package, not because anything uses them.
+- **A generated route is method-scoped, where a hand-written one was not.** `std-http-server`
+  registers `GET /healthz`, so the schema's `get:` is now load-bearing in a way it was not when the
+  registration was `mux.Handle("/healthz", …)` and answered any verb. What an unlisted method gets is
+  the served tree's answer rather than a 405, because the `/` seam matches the path when the
+  method-scoped pattern does not — the observable is
+  [`../ARCHITECTURE.md`](../ARCHITECTURE.md)'s. The general shape is that a generated pattern is more
+  specific than the seams it sits beside, which is also the third strand of the open question above.
 - **Hand-authored OpenAPI YAML is verbose** — accepted for ~5 payloads; the 3.1 migration and, if it
   ever bites, an authoring layer remain open.
 - **The configuration schema stays a separate artifact**, TS-owned (ADR 0007 rev 2), never crossing the
