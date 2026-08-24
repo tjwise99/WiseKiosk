@@ -137,7 +137,13 @@ serving, which is the one thing a single-host runtime can act on; it reaches no 
 that is down is that module's failure on the display rather than an unhealthy container. The same
 binary asks the question of a running instance from inside the image, which is what lets the image
 declare a `HEALTHCHECK` without carrying an HTTP client beside it
-([ADR 0020 rev 2](decisions/0020-release-artifact-set-and-operator-tooling.md)).
+([ADR 0020 rev 2](decisions/0020-release-artifact-set-and-operator-tooling.md)). It answers `GET` and
+`HEAD` alone, because the schema declares a `get:` and the generated registration is method-scoped
+([ADR 0008 rev 3](decisions/0008-boundary-contract-openapi-codegen.md)); another verb on that path
+falls through to the served tree and gets its 404 rather than a 405, since the `/` seam matches the
+path that the method-scoped pattern does not. A handler mounted on the bare multiplexer — which is
+what a package's own test assembles — answers 405 there instead, so the two disagree by exactly the
+catch-all that only the assembled server has.
 
 **Adding a route is adding one element to a list.** The registration list is a package holding a
 literal, read by the bootstrap and by nothing else, and the framework refuses an entry it cannot
@@ -386,8 +392,11 @@ gate asserts, and what it leaves unproven, is [`CI.md`](CI.md) § *Generated bou
 The generate step reads that one file twice. `oapi-codegen`, pinned by the Go module's `tool`
 directive, emits `backend/internal/boundary/`; `orval`, pinned to an exact version in the frontend
 package, emits `frontend/src/lib/boundary/`. Each emits the whole wire contract for its side — types,
-the route table, and a client — so no route is hand-authored anywhere and a path that moves in the
-schema alone is drift the gate sees. Neither generator knows about the other, and neither package's
+the route table, and a client — so neither package registers or calls a path it wrote itself, and a
+path that moves in the schema alone is drift the gate sees. The image harnesses under `scripts/` name
+`/healthz` in a constant of their own, deliberately: they probe a built container from outside both
+packages, so what they assert against is a running server rather than a generated declaration, and a
+rename fails them loudly in `check-image`. Neither generator knows about the other, and neither package's
 build reaches across — what the two sides share is the schema and nothing else, which is the whole of
 the arrangement. `just codegen` runs both; `just check-boundary` clears the two generated directories,
 runs both again, compiles each side's output, and fails on any difference against what is committed,
@@ -397,8 +406,9 @@ Two kinds of path live in that schema. A **module data route** carries the full 
 success payload plus the two error bodies — and a module contributes its payload as a named component
 of the same file; the error bodies are
 [ADR 0026 rev 2](decisions/0026-boundary-error-body-shape.md)'s. An **infrastructure route** answers
-about the process rather than about a source and declares its own response alone: `/healthz` is the
-only one, and its 200 carries no body at all.
+about the process rather than about a source and declares its own response alone — `/healthz` is one,
+and its 200 carries no body at all. Which paths of either kind exist is the schema's to say and is
+not counted again here.
 
 ## Config and secrets
 
