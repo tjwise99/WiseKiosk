@@ -116,9 +116,9 @@ notch too narrow, so rev 3 widens it to the whole wire contract rather than addi
 - **Docsite: withdrawn as a decision here.** Rev 2 named `sphinxcontrib-openapi` as the renderer, on
   the generated-not-authored, single-toolchain pattern of doorstop→needs and likec4→mermaid
   ([ADR 0004 rev 1](0004-docs-site-sphinx-needs.md)). How the schema is *presented* is a separate
-  trade from how it is *generated*, and rev 3 leaves it to the API-explorer design ticket (#188
-  follow-up), which takes the renderer choice with the interactive option on the table rather than
-  inheriting a static one settled in passing here. Nothing renders the schema until it lands.
+  trade from how it is *generated*, and rev 3 leaves it to #195 API explorer (split from #188
+  boundary codegen), which takes the renderer choice with the interactive option on the table rather
+  than inheriting a static one settled in passing here. Nothing renders the schema until it lands.
 
 ## Alternatives considered
 
@@ -184,7 +184,7 @@ notch too narrow, so rev 3 widens it to the whole wire contract rather than addi
   wire. When 3.1 lands, both schemas can share the JSON Schema 2020-12 dialect and whatever renders
   them — a shared *vocabulary*, not a merged schema (that would be abstraction without a second
   consumer).
-- **Nothing renders the schema for a reader until the API-explorer ticket lands.** Rev 3 withdrew the
+- **Nothing renders the schema for a reader until #195 API explorer lands.** Rev 3 withdrew the
   renderer choice rather than replacing it, so the schema is readable as YAML and in no other form
   meanwhile.
 - **ARCHITECTURE.md's "boundary contract" section** (its "open question 2") is answered by this ADR;
