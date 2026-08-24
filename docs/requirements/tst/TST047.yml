@@ -9,9 +9,15 @@ normative: true
 rationale: ''
 ref: ''
 references:
-- path: frontend/tests/render/content-emission.spec.ts
+- keyword: test('renders every text element at full emission'
+  path: frontend/tests/render/content-emission.spec.ts
+  sha: 03ddbbda68dca35e4d32934f273d1350112b155fb769ef2f46086f2bed24ac7a
   type: file
-reviewed: QiO_F3_JEtQtjvy1CvmZSp_Xfxq7-h5bX-7N03Eznz8=
+- keyword: test('renders the configuration report at full emission too'
+  path: frontend/tests/render/content-emission.spec.ts
+  sha: 03ddbbda68dca35e4d32934f273d1350112b155fb769ef2f46086f2bed24ac7a
+  type: file
+reviewed: TjknoS_56xLnu7WSa02lNiRh0SIA5zWWmQeEvv2vfNw=
 status: accepted
 text: |
   Read the rendered value of every text element the page presents for reading, asserting each sits

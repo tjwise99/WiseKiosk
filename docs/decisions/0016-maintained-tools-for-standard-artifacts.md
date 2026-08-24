@@ -35,7 +35,7 @@ This repository is guarded by the `check-*` recipes [`just verify`](../../justfi
 that exist only in CI: the pull-request-title check and the `secret-scan` job. There were fourteen
 when this was decided; the roster is `just --list`, and no count written here is compared against it. Nearly
 every obligation they assert was authored here, and that was never a decision. The gate records argue
-at length about *which hand-rolled form* a check should take — [ADR 0005 rev 1](0005-traceability-gating.md) on
+at length about *which hand-rolled form* a check should take — [ADR 0005 rev 2](0005-traceability-gating.md) on
 where evidence lives, [ADR 0006 rev 4](0006-process-gates.md) on what the gate reads,
 [ADR 0014 rev 4](0014-documentation-index-claims-documents.md) on whether a list may be hand-maintained — and
 never about whether to author one at all.
@@ -44,7 +44,7 @@ The exceptions show the question has an answer whenever it is actually asked, an
 them. `check-site` is a Sphinx build with warnings-as-errors, adopted by
 [ADR 0004 rev 1](0004-docs-site-sphinx-needs.md). `check-arch` validates the model with `likec4 validate`,
 adopted by [ADR 0003 rev 2](0003-architecture-as-code-likec4.md). `check-reqs` delegates tree integrity to
-`doorstop --error-all`, adopted by [ADR 0002 rev 2](0002-requirements-management-doorstop.md) — a delegation
+`doorstop --error-all`, adopted by [ADR 0002 rev 3](0002-requirements-management-doorstop.md) — a delegation
 [`../CI.md`](../CI.md) relies on explicitly when it scopes the dead-test gate away from the
 requirements tier. `secret-scan` is `gitleaks`. So the precedent
 exists and is four times recorded; it had simply never been generalised, and in its absence every new

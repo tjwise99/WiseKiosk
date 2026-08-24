@@ -1,12 +1,20 @@
-# 0008 — Boundary contract: one OpenAPI schema, Go and TypeScript types generated from it
+# 0008 — Boundary contract: one OpenAPI schema, the whole wire contract generated from it
 
 **Status:** accepted
-**Decided:** 2026-07-23 (boundary-contract requirements round #37; the codegen-mechanism trade
-carried by #7). This ADR records the mechanism **decision**; the **build** is #7.
-**Rev:** 2
+**Decided:** 2026-08-23 (rev 3's types-to-wire-contract pivot, in the #188 boundary codegen session;
+the surrounding model was taken 2026-07-23 at the boundary-contract requirements round #37, with the
+codegen-mechanism trade carried by #7). This ADR records the mechanism **decision**; the **build** is
+#7, and rev 3's migration is #188.
+**Rev:** 3
 
 ## Revisions
 
+- **rev 3** — 2026-08-23 — both sides generate the **whole wire contract** — routes, client, server
+  and types — where rev 2 generated types alone and left every route hand-authored on each side. That
+  gap put the route outside what the drift gate compares, and a hand-rolled per-route drift script was
+  written to patch it. `openapi-typescript` gives way to `orval`; the Go side turns on
+  `oapi-codegen`'s `std-http-server` and `client` targets. `/healthz` enters the schema, and the
+  schema is recorded as holding two kinds of path (#188 boundary codegen).
 - **rev 2** — 2026-08-12 — the schema's location, left open here and named as another ticket's to
   take, is [ADR 0021 rev 1](0021-repository-layout.md)'s; the sentences deferring it now cite that
   record. The mechanism, the version and the drift gate are unchanged (#5 repo layout).
@@ -27,6 +35,14 @@ the mechanism does not need that layout; only *building* it does, so this ADR to
 without one, and [ADR 0021 rev 1](0021-repository-layout.md) supplied the layout afterwards. #7's
 acceptance — schema file present, both generators wired, drift gate green — is what waited.
 
+**What rev 3 reopens.** Rev 2 read "both sides generated from it" as *both sides' types*, and the
+first route to exist showed what that leaves out. The path was hand-authored on each side — a Go
+constant and a TypeScript string — and neither was compared to anything: what the drift gate
+regenerated were types, and the Go generator's output did not carry a path at all. The gap was then
+patched by a bespoke script written to compare the two hand-authored strings, a second enforcer for
+the property the drift gate already exists to hold. That is the shape of a mechanism decided one
+notch too narrow, so rev 3 widens it to the whole wire contract rather than adding the script.
+
 ## Decision
 
 - **One hand-authored OpenAPI schema is the single definition**, owned by neither package (it sits at
@@ -39,13 +55,46 @@ acceptance — schema file present, both generators wired, drift gate green — 
   TypeSpec below. The configuration schema's shape is #8's and nothing here settles it.
 - **OpenAPI 3.0.3 now; 3.1 is the stated migration target.** 3.1's schema objects *are* JSON Schema
   2020-12, which would give one dialect shared with the configuration schema (open question 4) and a
-  common docsite render — but `oapi-codegen` and `sphinxcontrib-openapi` have both historically
-  lagged 3.1. Start on the interop-safe version; migrate once both generators and the site renderer
-  handle 3.1 cleanly and the config-schema format is settled.
-- **Go types via `oapi-codegen`** (standard-library `net/http` target, no router dependency).
-  **TypeScript types via `openapi-typescript`** — build-time type emission, erased at compile,
-  **zero runtime weight in the browser bundle** (the Raspberry-Pi-Zero-class constraint decides
-  this).
+  common docsite render — but `oapi-codegen` has historically lagged 3.1. Start on the interop-safe
+  version; migrate once both generators handle 3.1 cleanly, whatever renders the schema does, and
+  the config-schema format is settled.
+- **Each side generates its whole wire contract — routes, client, server and types — not types
+  alone.** Types-only generation leaves every route hand-authored twice, which puts the one thing the
+  single-definition rule is about *outside* what the drift gate compares. A generated *type* naming a
+  path is not enough: the request is issued and served by hand-written strings, so the gate can agree
+  with itself while the two sides disagree with each other. Rev 2 had it that way, and the first
+  liveness route promptly grew a bespoke per-route drift script to patch the hole by hand. Generating
+  the route table closes it by construction — the registration and the call site are both output of
+  the schema, so a path that moves is a difference the existing gate sees.
+- **Go via `oapi-codegen`** with `models`, `std-http-server` and `client`. `std-http-server` binds
+  against the standard library's own `net/http.ServeMux` through a structural interface `*http.ServeMux`
+  already satisfies, so **no router dependency and no new module requirement** — the process keeps its
+  own `main` and its own multiplexer, and the generated half is one file.
+- **TypeScript via `orval`** (its `fetch` client), which replaces `openapi-typescript`. It emits one
+  self-contained file whose every declaration is local — nothing resolves into `node_modules`, which
+  is what SRS016<!-- Both sides consume the generated types --> requires of a boundary value's
+  declaration — and whose client is a bare `fetch` call, so **nothing enters the browser module
+  graph and the bundle carries no runtime helper** (the Raspberry-Pi-Zero-class constraint decides
+  this, as it did when the same clause bought types-only emission). It declares no `typescript` peer,
+  so the generator cannot hold a TypeScript upgrade hostage. Its output is formatted by `prettier`,
+  orval's own declared peer, because the raw emission carries stray semicolons and blank-line runs.
+- **The schema holds two kinds of path.** A **module data route** carries the full component set —
+  its success payload, the upstream-failure body and the client-rejection body — and is what
+  [the module contract](../contracts/module-contract.md) governs. An **infrastructure route** answers
+  about the process rather than about a source, declares its own response and nothing else, and is
+  not a module's to contribute. Rev 3 brings one in, `/healthz`, whose 200 carries no body at all
+  because every consumer reads the status code; which paths of either kind exist is the schema's to
+  say, and is not counted here. The distinction is recorded because the schema's
+  conventions were written module-shaped, and **both** of
+  TST032<!-- Pending: boundary schema is single and complete -->'s path-level clauses are scoped to
+  module data routes when it is activated. Its "every path declares the error set" assertion is,
+  because that is where the obligation comes from — an infrastructure route has no upstream to fail
+  and no request to reject. Its "schema path items equal the static route registration list, in both
+  directions" assertion is too, for the same reason one clause over: that list holds one entry per
+  upstream-backed module, so `/healthz` is a path item that has no entry in it and is never going to
+  acquire one. Read unscoped, the clause is false the moment an infrastructure route exists, and the
+  reading that repairs it — adding registry plumbing for a liveness route — would invent a module
+  where there is none.
 - **The schema defines every value class that crosses the boundary**
   (SRS015<!-- One schema, all boundary value classes -->): request parameter names and types,
   success payloads, the structured body for the upstream failure
@@ -60,22 +109,32 @@ acceptance — schema file present, both generators wired, drift gate green — 
   (`git diff --exit-status`); the generators are **version-pinned** so a toolchain bump cannot read
   as schema drift (SRS016<!-- Both sides consume the generated types -->; verified by
   TST033<!-- Pending: boundary codegen drift-gate test -->). The gate is repo-level because it
-  spans both packages.
-- **The frontend consumes the generated types only — no runtime re-validation of proxied payloads.**
+  spans both packages. It also **compiles** each side's output, because a generator exits zero on any
+  configuration it accepts — including one naming fewer targets than the code consumes — and a
+  non-empty assertion passes on a file missing a whole target. Compilation is what makes the consumer
+  the judge of what was generated.
+- **The frontend consumes the generated contract only — no runtime re-validation of proxied payloads.**
   The version-skew case a runtime validator defends against is foreclosed by single-image co-deploy,
   and a bundled validator (schema→zod/ajv) would cost weight and per-render CPU on the Pi against a
   case that does not exist. **Reopen if the two sides ever become independently deployable** — that
   is the premise the foreclosure rests on, and nothing else here survives its loss. This was once a
   requirement; it was deleted as a prohibition against a case that does not exist, and this ADR is
   its home.
-- **Docsite:** `sphinxcontrib-openapi` renders the schema into the existing Sphinx site at build
-  under warnings-as-errors — the same generated-not-authored, single-toolchain pattern as
-  doorstop→needs and likec4→mermaid ([ADR 0004 rev 1](0004-docs-site-sphinx-needs.md)).
+- **Docsite: withdrawn as a decision here.** Rev 2 named `sphinxcontrib-openapi` as the renderer, on
+  the generated-not-authored, single-toolchain pattern of doorstop→needs and likec4→mermaid
+  ([ADR 0004 rev 1](0004-docs-site-sphinx-needs.md)). How the schema is *presented* is a separate
+  trade from how it is *generated*, and rev 3 leaves it to #195 API explorer (split from #188
+  boundary codegen), which takes the renderer choice with the interactive option on the table rather
+  than inheriting a static one settled in passing here. Nothing renders the schema until it lands.
 
 ## Alternatives considered
 
-- **OpenAPI 3.1 as the starting point** — rejected *for now* on tool maturity (`oapi-codegen` and
-  `sphinxcontrib-openapi` both lag 3.1); adopted as the migration target rather than dropped.
+- **OpenAPI 3.1 as the starting point** — rejected *for now* on tool maturity (`oapi-codegen` lags
+  3.1); adopted as the migration target rather than dropped.
+- **`openapi-typescript` (TypeScript)** — the incumbent through rev 2, and correct while the decision
+  was types-only: it emits declarations and erases at compile. It emits *only* declarations, so it
+  cannot carry rev 3's route table or client, and it holds a `typescript@^5.x` peer that pins the
+  repository's own TypeScript version. Superseded rather than found wanting on its own terms.
 - **TypeSpec → OpenAPI** — a more ergonomic authoring DSL, but it adds a Node compile hop and a
   second generation stage in the drift gate, and makes the OpenAPI itself a generated artifact. An
   authoring abstraction whose only consumer is ~5 routes — generality ahead of a second use
@@ -92,7 +151,22 @@ acceptance — schema file present, both generators wired, drift gate green — 
   beyond a five-route proxy.
 - **`ogen` (Go)** — best-in-class 3.1 with generated request/response validation; kept as the
   documented fallback if 3.1 plus server-side validation are later wanted, but heavier (its own
-  router, a large generated surface) than a thin proxy needs today.
+  router, a large generated surface) than a thin proxy needs today. Rev 3's move to server
+  generation does not cross that line: `oapi-codegen`'s `std-http-server` binds against the standard
+  library's own `net/http.ServeMux` and adds no module requirement, where the objection to `ogen` was
+  a router of its own. The concern was never *generating a server*; it was owning the routing layer.
+- **`openapi-generator`, as the single tool covering both languages** — rejected. It is the only
+  candidate spanning Go and TypeScript, and one tool would be simpler than two, but its `go-server`
+  **mandates a third-party router**: a closed `mux`|`chi` option with no standard-library choice, and
+  the router type is in the exported `NewRouter` signature rather than an internal detail — so the
+  routing layer this design keeps ([ADR 0001 rev 1](0001-backend-language-go.md), and the `ogen`
+  entry above) would be given away by the codegen choice. Beyond the kernel objection it requires a
+  JVM and a downloaded jar on every machine and in CI, which nothing else in this repo needs, and it
+  emits a whole-application scaffold — the Go spread across many files, plus a `main.go` and a
+  Dockerfile that assume they own the process. The magnitudes behind that are the trial's, recorded
+  on #188 boundary codegen. **This is why the decision is two native generators rather than one tool**: the
+  cost of a second generator is two pinned versions, and the cost of the unified tool is a dependency
+  the architecture refuses.
 - **Frontend runtime validation (schema→zod/ajv)** — rejected: bundle weight and per-render cost on
   a Pi-Zero browser against a version-skew case foreclosed by single-image co-deploy.
 
@@ -102,13 +176,57 @@ acceptance — schema file present, both generators wired, drift gate green — 
   generators, green drift gate) has the layout it waited for
   ([ADR 0021 rev 1](0021-repository-layout.md)).
 - **Two pinned generators to keep current** — inherent to Go not sharing types (ADR 0001 rev 1 paid for
-  this knowingly), tracked like any pinned tool.
+  this knowingly), tracked like any pinned tool. Rev 3 adds a third pin, `prettier`, which formats
+  orval's output: unpinned it would reformat the committed contract on its own schedule and read as
+  schema drift.
+- **A route cannot be added by hand on either side.** Adding one means editing the schema and
+  regenerating; a registration or a call written directly is either overwritten or reported as drift.
+  That is the point, and it is also the cost — the schema sits on the critical path of every route
+  change, not only of every payload change.
+- **OPEN: how a generated `ServerInterface` method meets the registry, at the first module data
+  route. #12 first module takes this.** Rev 3 is proven on one infrastructure route, whose handler is
+  a single Go type. A module data route enters the same schema, so `oapi-codegen` will emit a
+  `ServerInterface` method for it and `HandlerFromMux` will register that method by name — while
+  [ADR 0021 rev 1](0021-repository-layout.md)'s registry says a module is added by adding one element
+  to a literal, with no per-module Go method anywhere. Three things collide the moment both exist:
+  `health.Route` stops satisfying the widened interface and the build breaks until something
+  implements the new method; implementing one method per module route puts per-route hand code back
+  on the side this rev just cleared, while keeping module paths out of the schema forfeits the
+  route-drift property the rev exists to buy; and the generated `GET /api/<source>` is a *more
+  specific* `ServeMux` pattern than the `/api/` seam, so it would shadow the module router for that
+  path rather than sit beside it. **Nothing here decides that** — the shape of the seam (a generated
+  interface delegating into the registry, a schema-driven registry, or something else) is a design
+  call that wants a real module in front of it, and it is named here so it is met deliberately rather
+  than discovered by a red build.
+- **The generated Go surface is larger than the types were.** `std-http-server` emits a parameter-error
+  set and a middleware hook whether or not any route has parameters. Accepted: it is one file, it
+  compiles, and it adds no dependency.
+- **`orval` is small at the boundary and large in `node_modules`.** It ships undivided: installing it
+  brings the whole set of `@orval/*` client generators although the configuration reaches only the
+  `fetch` one, a documentation toolchain (`typedoc` and its plugins), and `esbuild` with a native
+  binary package per platform — none of which the generator it replaces brought. **None of it reaches
+  what ships**: the emitted client imports nothing, so the browser module graph and
+  [`frontend/bundle-allowlist.json`](../../frontend/bundle-allowlist.json) are untouched, and the
+  cost is build-time and supply-chain only. It is recorded because a Dependabot pull request against
+  a package like `@orval/angular` is otherwise unexplainable to whoever has to weigh it: such packages
+  are present because orval is one package, not because anything uses them. The size of that tree at
+  any moment is `frontend/package-lock.json`'s to state, and is not counted here.
+- **A generated route is method-scoped, where a hand-written one was not.** `std-http-server`
+  registers `GET /healthz`, so the schema's `get:` is now load-bearing in a way it was not when the
+  registration was `mux.Handle("/healthz", …)` and answered any verb. What an unlisted method gets is
+  the served tree's answer rather than a 405, because the `/` seam matches the path when the
+  method-scoped pattern does not — the observable is
+  [`../ARCHITECTURE.md`](../ARCHITECTURE.md)'s. The general shape is that a generated pattern is more
+  specific than the seams it sits beside, which is also the third strand of the open question above.
 - **Hand-authored OpenAPI YAML is verbose** — accepted for ~5 payloads; the 3.1 migration and, if it
   ever bites, an authoring layer remain open.
 - **The configuration schema stays a separate artifact**, TS-owned (ADR 0007 rev 2), never crossing the
-  wire. When 3.1 lands, both schemas can share the JSON Schema 2020-12 dialect and docsite
-  rendering — a shared *vocabulary*, not a merged schema (that would be abstraction without a second
+  wire. When 3.1 lands, both schemas can share the JSON Schema 2020-12 dialect and whatever renders
+  them — a shared *vocabulary*, not a merged schema (that would be abstraction without a second
   consumer).
+- **Nothing renders the schema for a reader until #195 API explorer lands.** Rev 3 withdrew the
+  renderer choice rather than replacing it, so the schema is readable as YAML and in no other form
+  meanwhile.
 - **ARCHITECTURE.md's "boundary contract" section** (its "open question 2") is answered by this ADR;
   the fuller prose is written when the mechanism is built, under #7 boundary-contract codegen.
 - **Requirement text stays mechanism-agnostic**

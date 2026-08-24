@@ -14,8 +14,9 @@ rationale: |
 ref: ''
 references:
 - path: scripts/image/config_mount.py
+  sha: e8971b80f23ecdda2c8d90b88a9c553f419d5437f4c51414cff885f14b55122b
   type: file
-reviewed: zXk_-vf2-7P4htpqUCUjXDqdNY3HYvekZ-sTGdrLPic=
+reviewed: LZEvuf2xECnEdSfMz_NdjDNygFgAivvLAVrPKtieF5U=
 status: accepted
 text: |
   Run the published image with a fixture configuration bind-mounted at the configuration path,

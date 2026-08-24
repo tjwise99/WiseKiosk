@@ -10,8 +10,9 @@ rationale: ''
 ref: ''
 references:
 - path: scripts/image/nonroot_uid.py
+  sha: 793ab2a942906966368e41f747ad64e6017c7717e844e1d8bbfcd982ac0c2a6f
   type: file
-reviewed: sM0eh3D9YLAT9o78j2eNPwBnH0GJFl1EAbUgZxkBh0w=
+reviewed: hsnXsLMwiUwz5jCEepBBay8BP8C06BKUFESRykmWfvs=
 status: accepted
 text: |
   Start a container from the published image and assert its effective uid is non-root (not 0), and

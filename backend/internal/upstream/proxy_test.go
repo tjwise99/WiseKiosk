@@ -97,7 +97,7 @@ func do(t *testing.T, p *Proxy, source, key string, fetch Fetcher) Result {
 
 // The standing liveness canary: an identical request inside the TTL costs
 // nothing upstream, and the first one after it costs exactly one call.
-// TODO (#25): TST025
+// TST025
 func TestCachedResultIsServedWithoutAnUpstreamCallAndRefetchesAfterTheTTL(t *testing.T) {
 	clock := newFakeClock()
 	fake := &upstreamFake{}
@@ -134,7 +134,7 @@ func TestCachedResultIsServedWithoutAnUpstreamCallAndRefetchesAfterTheTTL(t *tes
 
 // A sustained outage costs one upstream call per negative TTL rather than one
 // per incoming request.
-// TODO (#25): TST031
+// TST031
 func TestFailureIsServedFromCacheForTheNegativeTTL(t *testing.T) {
 	clock := newFakeClock()
 	fake := &upstreamFake{}
@@ -237,7 +237,7 @@ func TestConcurrentIdenticalMissesShareOneUpstreamCall(t *testing.T) {
 }
 
 // The bound is per source and is spent only by what reaches upstream.
-// TODO (#25): TST027
+// TST027
 func TestEachSourceHasItsOwnBudget(t *testing.T) {
 	clock := newFakeClock()
 	fake := &upstreamFake{}
@@ -294,7 +294,7 @@ func TestEachSourceHasItsOwnBudget(t *testing.T) {
 
 // The outbound deadline is a real one, so this test's Timeout is a small
 // fixture: the fake clock governs TTL and refill, never a context.
-// TODO (#25): TST030
+// TST030
 func TestHangingFetchEndsAtTheDeadline(t *testing.T) {
 	clock := newFakeClock()
 	fake := &upstreamFake{}
@@ -339,7 +339,7 @@ func TestHangingFetchEndsAtTheDeadline(t *testing.T) {
 
 // A stalled exchange holds up its own request and nothing else: the healthy
 // source is served while the first exchange is still hanging, not after it.
-// TODO (#25): TST030
+// TST030
 func TestOneHangingSourceDoesNotStallAnother(t *testing.T) {
 	clock := newFakeClock()
 	hanging := &upstreamFake{}
@@ -380,7 +380,7 @@ func TestOneHangingSourceDoesNotStallAnother(t *testing.T) {
 
 // A body over the bound is a failure rather than a truncation, and a body at
 // the bound is not.
-// TODO (#25): TST030
+// TST030
 func TestBodyOverTheSizeBoundFails(t *testing.T) {
 	clock := newFakeClock()
 	cfg := testConfig()

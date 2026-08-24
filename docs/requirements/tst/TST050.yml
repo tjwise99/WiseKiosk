@@ -9,9 +9,19 @@ normative: true
 rationale: ''
 ref: ''
 references:
-- path: frontend/tests/render/edge-band-depth.spec.ts
+- keyword: test(`holds the regions ${depth}% of the display's height off every edge`
+  path: frontend/tests/render/edge-band-depth.spec.ts
+  sha: 565dff7de864a6be11a1b942bd5dfd5faf8df71f96bedaa5e23a3915539d1e49
   type: file
-reviewed: gkTPi93iGccvyGalxwJRTN5AHH-S8a2ySGpMhyLOvCk=
+- keyword: test('the band tracks the depth rather than being one figure for both'
+  path: frontend/tests/render/edge-band-depth.spec.ts
+  sha: 565dff7de864a6be11a1b942bd5dfd5faf8df71f96bedaa5e23a3915539d1e49
+  type: file
+- keyword: test('assumes no band where the configuration declares none'
+  path: frontend/tests/render/edge-band-depth.spec.ts
+  sha: 565dff7de864a6be11a1b942bd5dfd5faf8df71f96bedaa5e23a3915539d1e49
+  type: file
+reviewed: g7J5IZeiQXNZZ2-8IlcPyPNcpvLGueBs_gCP5wY-PgI=
 status: accepted
 text: |
   Render a fixture configuration declaring the edge band at more than one depth and read each

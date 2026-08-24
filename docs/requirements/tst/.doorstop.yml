@@ -4,6 +4,9 @@ settings:
   parent: SRS
   prefix: TST
   sep: ''
+extensions:
+  item_sha_required: true
+  item_validator: .req_sha_item_validator.py
 attributes:
   defaults:
     status: proposed

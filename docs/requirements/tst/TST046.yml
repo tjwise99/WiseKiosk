@@ -9,9 +9,20 @@ normative: true
 rationale: ''
 ref: ''
 references:
-- path: frontend/tests/render/region-overflow.spec.ts
+- keyword: test('content larger than its region exceeds the region rather than fitting
+    inside it'
+  path: frontend/tests/render/region-overflow.spec.ts
+  sha: b01d9019b4d968e2cf861be28904c3d8895bf76cfc1ac51ad5e189a4cf729647
   type: file
-reviewed: 4KTcZuNpOTJMNW5HRagz1GmH0mv7zrVgReDBAXX5Jg8=
+- keyword: test('content that fits its region is not reported as overflowing'
+  path: frontend/tests/render/region-overflow.spec.ts
+  sha: b01d9019b4d968e2cf861be28904c3d8895bf76cfc1ac51ad5e189a4cf729647
+  type: file
+- keyword: test('the overflow is neither clipped nor scrolled away nor scaled down'
+  path: frontend/tests/render/region-overflow.spec.ts
+  sha: b01d9019b4d968e2cf861be28904c3d8895bf76cfc1ac51ad5e189a4cf729647
+  type: file
+reviewed: 9L5hOU2DzlU6Ehrzjg7yPy71Nq5Fm-N1f8bet1ZeGhs=
 status: accepted
 text: |
   Render a fixture whose content exceeds the region it is given, at the kiosk viewport (1920x1080)

@@ -8,7 +8,20 @@ links:
 normative: true
 rationale: ''
 ref: ''
-reviewed: PgMR91bDMZeNFWFXkK7oLFOQUkHu8RpCbLHSuMrePwo=
+references:
+- keyword: func TestResolveStripsTrailingWhitespaceOnly
+  path: backend/internal/secret/secret_test.go
+  sha: d20339fed1a996b1c5d3b6dbbc082abc052a123fde3720f6ac947b8a3bc5bee0
+  type: file
+- keyword: func TestResolveIgnoresBareEnvironmentVariable
+  path: backend/internal/secret/secret_test.go
+  sha: d20339fed1a996b1c5d3b6dbbc082abc052a123fde3720f6ac947b8a3bc5bee0
+  type: file
+- keyword: func TestResolveUnresolvableCauses
+  path: backend/internal/secret/secret_test.go
+  sha: d20339fed1a996b1c5d3b6dbbc082abc052a123fde3720f6ac947b8a3bc5bee0
+  type: file
+reviewed: 5qUltJFutgzrf-41C3QRFhY2TtmNxjcnCYCKxn_YRCU=
 status: proposed
 text: |
   Unit tests of secret resolution: the value is read from the file at <NAME>_FILE, trailing

@@ -1,11 +1,16 @@
 # 0002 — Requirements tracking and V&V with Doorstop
 
-**Status:** accepted; Test-method linkage mechanism superseded by [ADR 0005 rev 1](0005-traceability-gating.md)
+**Status:** accepted
 **Decided:** 2026-07-21 (requirements-system spike, issue #14)
-**Rev:** 2
+**Rev:** 3
 
 ## Revisions
 
+- **rev 3** — 2026-08-23 — drops the Status note recording that the Test-method linkage mechanism was
+  superseded: [ADR 0005 rev 2](0005-traceability-gating.md) withdraws that supersession and
+  reaffirms the mechanism this record decides — a `TST` item's `references` point at the real
+  verifying files, for every verification method. The decision text is unchanged and stands in full
+  (#25 traceability gates).
 - **rev 2** — 2026-08-17 — drops the named exemplar in the dot-directory consequence, which went
   stale a second time (`scripts/check-links.mjs`, retired by [ADR 0016 rev 5](0016-maintained-tools-for-standard-artifacts.md));
   the point about the wiring pattern is unchanged (#160 post-adoption-wave sweep).

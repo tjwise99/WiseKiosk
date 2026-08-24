@@ -121,9 +121,11 @@ hand-maintained type declarations checked for agreement by a test — it is **on
 sides generated from it**, and the tier's job in CI is to prove the generation is real and current:
 
 - Generation from the one schema by the codegen mechanism
-  ([ADR 0008 rev 2](decisions/0008-boundary-contract-openapi-codegen.md)), the CI drift gate failing
+  ([ADR 0008 rev 3](decisions/0008-boundary-contract-openapi-codegen.md)), the CI drift gate failing
   on committed output that differs from a fresh regeneration, and version-pinned generators so
-  regeneration is deterministic. Generation is
+  regeneration is deterministic. What is generated is the whole wire contract on each side — types,
+  the route table and a client — so a route that moves in the schema alone is inside what the gate
+  compares, rather than a hand-written path on each side needing a check of its own. Generation is
   **SRS015<!-- One schema, all boundary value classes -->**, the drift gate is verified under
   **SRS016<!-- Both sides consume the generated types -->**, and the version pin is no requirement's
   — a repository convention, in [`CI.md § Publishing and
@@ -134,7 +136,7 @@ sides generated from it**, and the tier's job in CI is to prove the generation i
   **SYS005<!-- Single-definition internal contract -->**.
 - That the frontend adds no second, runtime validator over proxied payloads, so agreement rests on
   the schema and the drift gate rather than a bundled re-check —
-  [ADR 0008 rev 2](decisions/0008-boundary-contract-openapi-codegen.md), which carries the decision
+  [ADR 0008 rev 3](decisions/0008-boundary-contract-openapi-codegen.md), which carries the decision
   and its premise. No requirement states this: it was deleted as a prohibition against a case that
   does not exist.
 
@@ -175,6 +177,13 @@ or [`DEPLOYMENT.md`](DEPLOYMENT.md) where it is not
   rewritten under a pending check fails a gate in the commit that rewrites it. What it cannot decide
   is the question activation exists to ask, and that stays a human read — does this check still
   assert a clause its parent still states?
+- **A test's declaration is its trace, and no test names a requirement.** The `TST` item that a test
+  discharges names *it* — one `references` entry per verifying site, keyed on the line that declares
+  the test ([ADR 0005 rev 2](decisions/0005-traceability-gating.md)). Nothing in a test file carries
+  a requirement ID; reading a test's obligation means reading the item. What such an entry
+  guarantees, and what editing a referenced test costs, is a property of the specification rather
+  than of the suite, so it is stated where the specification is:
+  [`requirements/README.md`](requirements/README.md) § The V&V model.
 - **Every test and check in the repository is executed by CI** — the whole-tree discovery and
   verify/CI wiring gates are [`CI.md § Gate wiring`](CI.md#gate-wiring)'s, not the tree's. A test no
   runner reaches is a false signal, so a new test is wired in by its location alone.
@@ -190,7 +199,7 @@ construction, so a high number buys confidence it has not earned.
 Report it, read it to find untested areas, and gate on the standing obligations above. No gate fails
 a merge on a coverage percentage treated as a quality threshold; the coverage gate, where one
 exists, fails only on uncovered source that is neither exempted nor justified — coverage as
-traceability closure, gate 3 of [ADR 0005 rev 1](decisions/0005-traceability-gating.md), never as a
+traceability closure, gate 3 of [ADR 0005 rev 2](decisions/0005-traceability-gating.md), never as a
 chosen quality bar.
 
 ---
@@ -214,7 +223,7 @@ is a defect in the suite's architecture, not a neutral choice.
 
 The test architecture is reviewed **whenever a module is added** and **whenever the boundary
 transport** (the OpenAPI schema / codegen mechanism,
-[ADR 0008 rev 2](decisions/0008-boundary-contract-openapi-codegen.md)) **changes**. This is
+[ADR 0008 rev 3](decisions/0008-boundary-contract-openapi-codegen.md)) **changes**. This is
 scheduled deliberately: removing or reshaping a test feels like a regression even when the test
 proves nothing, so without a scheduled review the suite silently becomes permanent architecture
 nobody revisits. Code gets that review by default; tests must be given it explicitly.

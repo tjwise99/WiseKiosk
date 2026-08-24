@@ -8,7 +8,36 @@ links:
 normative: true
 rationale: ''
 ref: ''
-reviewed: yBOZ-p19iBTYFX_jSweHUfvjDfk5FdJIlHNLesjFkqs=
+references:
+- keyword: func TestNonConformingParametersAreRejectedWithNoUpstreamCall
+  path: backend/internal/router/router_test.go
+  sha: 9c27caa6b487a71f228e9602a664ac0c2aa644a91785c5d4f4f7158313e8b597
+  type: file
+- keyword: func TestARouteAnswersGetOnly
+  path: backend/internal/router/router_test.go
+  sha: 9c27caa6b487a71f228e9602a664ac0c2aa644a91785c5d4f4f7158313e8b597
+  type: file
+- keyword: func TestAPathNoEntryRegisteredIsUnknown
+  path: backend/internal/router/router_test.go
+  sha: 9c27caa6b487a71f228e9602a664ac0c2aa644a91785c5d4f4f7158313e8b597
+  type: file
+- keyword: func TestARequestOverTheRateLimitIsRejected
+  path: backend/internal/router/router_test.go
+  sha: 9c27caa6b487a71f228e9602a664ac0c2aa644a91785c5d4f4f7158313e8b597
+  type: file
+- keyword: func TestEveryOutcomeCarriesItsOwnStatusAndCause
+  path: backend/internal/router/router_test.go
+  sha: 9c27caa6b487a71f228e9602a664ac0c2aa644a91785c5d4f4f7158313e8b597
+  type: file
+- keyword: func TestNoTwoCausesShareASpelling
+  path: backend/internal/router/router_test.go
+  sha: 9c27caa6b487a71f228e9602a664ac0c2aa644a91785c5d4f4f7158313e8b597
+  type: file
+- keyword: func TestAnOutcomeNoCaseNamesIsStillRenderable
+  path: backend/internal/router/router_test.go
+  sha: 9c27caa6b487a71f228e9602a664ac0c2aa644a91785c5d4f4f7158313e8b597
+  type: file
+reviewed: _eqe9s96TOev2bxh7CI3A9Sg5uybc_X01TY1C4H_zas=
 status: proposed
 text: |
   Test asserting the backend returns 400 (invalid parameter), 404 (unknown source), 405 (non-GET

@@ -88,7 +88,7 @@ settle is whether the published image appears, and the obligations that name the
 anything running turn on the answer.
 
 **Completeness was never on the table beside discrimination.**
-[ADR 0005 rev 1](0005-traceability-gating.md) rejected requirement→source design-allocation refs and
+[ADR 0005 rev 2](0005-traceability-gating.md) rejected requirement→source design-allocation refs and
 routed the duty here in one sentence: "Design allocation, where wanted, belongs to the architecture
 model, not the gate system." The model then built a mechanism answering a different question. Every
 rule above argues **which** element a tag belongs on, and none of them concerns whether every
@@ -186,7 +186,7 @@ per-route configuration as per-module structure would make request validation, t
 the upstream client all module-owned and leave the framework half empty — against the contract's own
 dependency direction, under which framework code "is shared code from the moment it is written". Parts
 4 and 5 earn no component either: the boundary-schema fragment belongs to the one schema, which
-[ADR 0008 rev 2](0008-boundary-contract-openapi-codegen.md) gives to neither side, and the
+[ADR 0008 rev 3](0008-boundary-contract-openapi-codegen.md) gives to neither side, and the
 configuration-schema fragment composes into the one schema the frontend validates against. Part 6 is
 tests, which run nowhere in either container and are [`../TESTING.md`](../TESTING.md)'s.
 
@@ -333,7 +333,7 @@ does not bend, and there is no exemption record.**
 load-bearing rather than a convenience.** `check-arch-trace` resolves a tag only to an accepted item,
 so a `proposed` item cannot be tagged and a rule reaching it would be unsatisfiable. A retired item
 obliges nothing — and retirement here is `active: false` with `status` untouched
-([ADR 0005 rev 1](0005-traceability-gating.md)), so a retired item stays `accepted` and the second word
+([ADR 0005 rev 2](0005-traceability-gating.md)), so a retired item stays `accepted` and the second word
 does not imply the third. **`TST` is out of the population**, which the tree's third document makes
 worth saying: a verification item states how an obligation is settled, not an obligation on the running
 software, so it allocates to nothing in a model of what runs. `check-arch-trace`'s identifier pattern
@@ -537,7 +537,7 @@ rot into an allowlist, which was that ticket's own first-named trap and
 
 **No completeness obligation**, on the ground that the model is a communication artifact and C4 supplies
 no such rule. Honest, and it is the position the repository held. Rejected because it leaves
-ADR 0005 rev 1's routed duty discharged by nobody: that record rejected design-allocation refs partly
+ADR 0005 rev 2's routed duty discharged by nobody: that record rejected design-allocation refs partly
 *because* the model would carry the link, and a model that owes nothing carries it in name only. It also
 declines the only reading under which the five absences were a finding rather than a preference.
 
@@ -615,7 +615,7 @@ every responsibility statement beside the first with nothing comparing them.
 and `check-arch-trace` refuses a tag on an unbaselined item. Binding a requirement to an
 element is the act of reading it and judging what it obliges, so the review happened there: both items
 were put in front of the owner in full and accepted (owner, 2026-08-04). That decision is the record —
-[ADR 0005 rev 1](0005-traceability-gating.md) reserves acceptance to a human, and no property of an
+[ADR 0005 rev 2](0005-traceability-gating.md) reserves acceptance to a human, and no property of an
 item can stand in for one. In particular the presence of a fingerprint, a rationale and a verification
 method cannot: every `SYS` and `SRS` item still `proposed` carries all three, so a criterion built from
 them would baseline those too and leave `proposed` unreachable. The untouched items were not read and

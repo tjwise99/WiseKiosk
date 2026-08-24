@@ -6,7 +6,7 @@ carrying no stamp, the first time it validates the tree. It does that whether or
 looked, and `--no-reformat` does not stop it. An item authored in one commit is therefore
 "reviewed" by whoever next runs the gate.
 
-That is the one thing the fingerprint is supposed to prove. ADR 0005 rev 1 stores state for human
+That is the one thing the fingerprint is supposed to prove. ADR 0005 rev 2 stores state for human
 decisions only and holds the axiom tier by review alone, mechanized by fingerprints; a fingerprint
 the gate writes for itself proves that the gate ran. `reviewed: true` is the same defect declared by
 hand: Doorstop reads it as "matching, hash to follow" and fills the hash in unprompted.

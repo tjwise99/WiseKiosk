@@ -57,7 +57,7 @@
 
 The product's languages were decided. Go is [ADR 0001 rev 1](0001-backend-language-go.md); the frontend is
 [ADR 0018 rev 1](0018-frontend-svelte-vite-static-spa.md); the boundary types are generated into both by
-[ADR 0008 rev 2](0008-boundary-contract-openapi-codegen.md). The languages the *repository* is written in were
+[ADR 0008 rev 3](0008-boundary-contract-openapi-codegen.md). The languages the *repository* is written in were
 never decided at all. Programs are authored here in POSIX sh, in Node ESM and in Python, none of
 those by anyone's choice, and the next contributor could add a fourth without meeting an argument.
 
@@ -69,7 +69,7 @@ facility, which costs a classifier arm and a fixture suite per language, and its
 fails on a language that has neither. A set nobody bounded is an obligation nobody can size.
 
 **One of the candidates is already owed and the other is not.** Python is unconditional here for
-reasons that have nothing to do with checks: Doorstop ([ADR 0002 rev 2](0002-requirements-management-doorstop.md))
+reasons that have nothing to do with checks: Doorstop ([ADR 0002 rev 3](0002-requirements-management-doorstop.md))
 and Sphinx ([ADR 0004 rev 1](0004-docs-site-sphinx-needs.md)) both require it, and CI installs it for two jobs
 whatever the check scripts are written in. Nothing obliges Node in the repository-checks layer at
 all — all seven `.mjs` scripts import only `node:fs`, `node:child_process` and `node:path`, and five
@@ -268,7 +268,7 @@ unregistered language whatever this record said.
   question, never a tree item.
 - **The review checklist gains a question, *Languages***, appended to its *Code* section rather than
   placed beside the dependency question it most resembles. Inserting it there would have renumbered
-  the questions below it, against [ADR 0002 rev 2](0002-requirements-management-doorstop.md),
+  the questions below it, against [ADR 0002 rev 3](0002-requirements-management-doorstop.md),
   [ADR 0003 rev 2](0003-architecture-as-code-likec4.md) and
   [ADR 0016 rev 5](0016-maintained-tools-for-standard-artifacts.md), which cite one by number with
   nothing gating the citation. That constraint does not bind a later change:
@@ -282,7 +282,7 @@ unregistered language whatever this record said.
 
 **Premise that would reopen this:** an artifact appears that neither audience covers — something that
 must run where neither Python nor a shipped toolchain is reachable — or Python stops being
-unconditional here, which means both Doorstop ([ADR 0002 rev 2](0002-requirements-management-doorstop.md)) and
+unconditional here, which means both Doorstop ([ADR 0002 rev 3](0002-requirements-management-doorstop.md)) and
 Sphinx ([ADR 0004 rev 1](0004-docs-site-sphinx-needs.md)) leaving. A single script that would have been shorter
 in another language is not that premise; it is the argument this decision rejected. Absent either, do
 not relitigate.

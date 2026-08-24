@@ -96,9 +96,9 @@ jobs:
     # children do not support, and no item's statement cites another item by
     # identifier. Runs `just check-reqs` and `just check-citations`, the recipes
     # the local gate runs, which read the tree through the same venv; which
-    # commands those are is the recipes' own bodies. The tool is siloed under
-    # docs/requirements/ with the feature it serves. No secrets: pure tree
-    # validation.
+    # commands those are is the recipes' own bodies.
+    # The tool is siloed under docs/requirements/ with the feature it serves.
+    # No secrets: pure tree validation.
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -198,15 +198,18 @@ jobs:
 
   boundary:
     name: boundary
-    # Regenerates the Go and TypeScript boundary types from the one schema and
-    # fails on any drift: the staleness gate for the boundary layer, the same
-    # shape the architecture job runs for the architecture layer. The gate
-    # clears and regenerates before it diffs, so a generator that cannot run
-    # leaves absent output that reads as a deletion rather than a false clean;
-    # that it can fail is recorded in scripts/cases/check-boundary.md, not
-    # re-tested here. Each generator is pinned in the silo it belongs to:
-    # oapi-codegen through backend/go.mod's tool directive, openapi-typescript
-    # through frontend/package-lock.json. No secrets: pure codegen and comparison.
+    # Regenerates the Go and TypeScript boundary contract — routes, client,
+    # server and types — from the one schema and fails on any drift: the
+    # staleness gate for the boundary layer, the same shape the architecture job
+    # runs for the architecture layer. Because the routes are generated too, a
+    # renamed path is drift the gate sees rather than a hand-written string on
+    # each side (ADR 0008 rev 3). The gate clears and regenerates before it
+    # diffs, so a generator that cannot run leaves absent output that reads as a
+    # deletion rather than a false clean; that it can fail is recorded in
+    # scripts/cases/check-boundary.md, not re-tested here. Each generator is
+    # pinned in the silo it belongs to: oapi-codegen through backend/go.mod's
+    # tool directive, orval through frontend/package-lock.json. No secrets: pure
+    # codegen, compilation and comparison.
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -228,10 +231,10 @@ jobs:
       - name: Install the Go module's dependencies into the silo (backend/), locked
         run: go -C backend mod download
 
-      - name: Install openapi-typescript into the silo (frontend/), locked
+      - name: Install orval and its formatter into the silo (frontend/), locked
         run: npm --prefix frontend ci
 
-      - name: The committed boundary types are what the schema generates, and the generated Go compiles
+      - name: The committed boundary contract is what the schema generates, and the generated Go and TypeScript both compile
         run: just check-boundary
 
   frontend:

@@ -3,20 +3,21 @@
   "version": "0.0.0",
   "private": true,
   "type": "module",
-  "description": "The WiseKiosk frontend package root: the display page, its configuration schema and the two test tiers. Its boundary types under src/lib/boundary/ and its configuration types under src/config/ are generated and committed; every generator is pinned exact so a toolchain bump cannot present as schema drift.",
+  "description": "The WiseKiosk frontend package root: the display page, its configuration schema and the two test tiers. Its boundary contract under src/lib/boundary/ and its configuration types under src/config/ are generated and committed; every generator is pinned exact so a toolchain bump cannot present as schema drift.",
   "engines": {
     "node": "24"
   },
   "devDependencies": {
     "@playwright/test": "1.62.1",
     "@sveltejs/vite-plugin-svelte": "7.3.0",
-    "@types/node": "24.13.3",
+    "@types/node": "26.2.0",
     "ajv": "8.20.0",
     "json-schema-to-typescript": "15.0.4",
-    "openapi-typescript": "7.13.0",
-    "svelte": "5.56.9",
-    "typescript": "5.9.3",
-    "vite": "8.2.1",
-    "vitest": "4.1.10"
+    "orval": "8.26.0",
+    "prettier": "3.9.6",
+    "svelte": "5.56.10",
+    "typescript": "7.0.2",
+    "vite": "8.2.2",
+    "vitest": "4.1.11"
   }
 }

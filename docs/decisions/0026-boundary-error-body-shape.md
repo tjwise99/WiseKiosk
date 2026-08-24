@@ -42,9 +42,9 @@ server closing connections under a client still holding one is the one it gains 
 shutdown lands. This record settles the outcome for both, ahead of the second existing, because the
 handler cannot tell them apart when it arrives.
 
-The frontend renders these bodies directly on a Raspberry-Pi-Zero-class browser and consumes the
-generated types only, with no runtime re-validation
-([ADR 0008 rev 2](0008-boundary-contract-openapi-codegen.md)). So what the body costs to parse and
+The frontend renders these bodies directly on a Raspberry-Pi-Zero-class browser, through the
+generated boundary contract and with no runtime re-validation of what it carries
+([ADR 0008 rev 3](0008-boundary-contract-openapi-codegen.md)). So what the body costs to parse and
 to render is paid on the constrained side, and every field it carries is a field the page must
 either display or ignore.
 
