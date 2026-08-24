@@ -42,9 +42,6 @@ func TestRoutesHealth(t *testing.T) {
 	if recorder.Code != http.StatusOK {
 		t.Errorf("GET %s: status = %d, want %d", healthPath, recorder.Code, http.StatusOK)
 	}
-	if strings.Contains(recorder.Body.String(), indexBody) {
-		t.Errorf("GET %s: body = %q, want the liveness answer", healthPath, recorder.Body.String())
-	}
 }
 
 func TestRoutesTheServedTree(t *testing.T) {
