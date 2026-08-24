@@ -5,25 +5,34 @@ import (
 	"net/http/httptest"
 	"testing"
 	"time"
+
+	"github.com/tjwise99/WiseKiosk/backend/internal/boundary"
 )
 
-func TestHandlerReportsServing(t *testing.T) {
+// served is an instance answering the schema's routes the way the process does
+// — through the generated router — so Check meets the path it will meet in a
+// container rather than one the test wrote.
+func served(t *testing.T) *httptest.Server {
+	t.Helper()
+	server := httptest.NewServer(boundary.HandlerFromMux(Route{}, http.NewServeMux()))
+	t.Cleanup(server.Close)
+	return server
+}
+
+func TestRouteReportsServing(t *testing.T) {
 	recorder := httptest.NewRecorder()
-	Handler().ServeHTTP(recorder, httptest.NewRequest(http.MethodGet, "/healthz", nil))
+	Route{}.GetHealthz(recorder, httptest.NewRequest(http.MethodGet, "/healthz", nil))
 
 	if recorder.Code != http.StatusOK {
 		t.Fatalf("status = %d, want %d", recorder.Code, http.StatusOK)
 	}
-	if recorder.Body.Len() == 0 {
-		t.Error("body is empty, want a liveness answer")
+	if recorder.Body.Len() != 0 {
+		t.Errorf("body = %q, want none — the schema declares no body", recorder.Body.String())
 	}
 }
 
 func TestCheckAcceptsA200(t *testing.T) {
-	server := httptest.NewServer(Handler())
-	defer server.Close()
-
-	if err := Check(server.URL + "/healthz"); err != nil {
+	if err := Check(served(t).URL); err != nil {
 		t.Errorf("Check: unexpected error: %v", err)
 	}
 }
@@ -34,7 +43,7 @@ func TestCheckRefusesAnotherStatus(t *testing.T) {
 	}))
 	defer server.Close()
 
-	if err := Check(server.URL + "/healthz"); err == nil {
+	if err := Check(server.URL); err == nil {
 		t.Error("Check: no error for a 503")
 	}
 }
@@ -57,7 +66,7 @@ func TestCheckRefusesAWedgedInstance(t *testing.T) {
 	// bound, which asserts Check has one at all rather than measuring a loaded
 	// machine's scheduling.
 	returned := make(chan error, 1)
-	go func() { returned <- Check(server.URL + "/healthz") }()
+	go func() { returned <- Check(server.URL) }()
 
 	select {
 	case err := <-returned:
@@ -70,11 +79,11 @@ func TestCheckRefusesAWedgedInstance(t *testing.T) {
 }
 
 func TestCheckRefusesAnUnreachableInstance(t *testing.T) {
-	server := httptest.NewServer(Handler())
-	url := server.URL + "/healthz"
+	server := httptest.NewServer(boundary.HandlerFromMux(Route{}, http.NewServeMux()))
+	origin := server.URL
 	server.Close()
 
-	if err := Check(url); err == nil {
+	if err := Check(origin); err == nil {
 		t.Error("Check: no error against a closed listener")
 	}
 }
