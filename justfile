@@ -125,16 +125,20 @@ boundary-install:
     go -C backend mod download
     npm --prefix frontend ci
 
+# Each generator runs from its own package root: oapi-codegen so its config's relative paths resolve,
+# orval so its config is the one beside it and prettier resolves from that package's dependencies.
 [group('boundary')]
-[doc('Regenerate the Go and TypeScript boundary types from the one schema')]
+[doc('Regenerate the Go and TypeScript boundary contract — routes, client, server and types — from the one schema')]
 codegen:
     cd backend && go tool oapi-codegen -config oapi-codegen.yaml ../boundary/openapi.yaml
-    frontend/node_modules/.bin/openapi-typescript boundary/openapi.yaml -o frontend/src/lib/boundary/schema.ts
+    cd frontend && node_modules/.bin/orval
 
-# Both generators are resolved before anything is deleted: the clear below removes committed source,
-# so a toolchain that cannot run must fail with the tree intact rather than after emptying it. The
-# Go check runs the tool the generate step runs, which is what makes it a resolution rather than a
-# guess; `just boundary-install` is what a failure of either wants.
+# Every tool is resolved before anything is deleted: the clear below removes committed source, so a
+# toolchain that cannot run must fail with the tree intact rather than after emptying it. The Go
+# check runs the tool the generate step runs, which is what makes it a resolution rather than a
+# guess; `just boundary-install` is what a failure of any of them wants. `prettier` is resolved
+# beside orval because orval only *warns* when it cannot format — the run would otherwise succeed
+# and land unformatted output the diff below reports as schema drift.
 #
 # The generated directories are then cleared before `codegen`, which overwrites but never creates
 # what a generator did not emit: absent output reads as a deletion in the diff below, where a stale
@@ -142,16 +146,28 @@ codegen:
 # other half — an emitted-but-empty file is a deletion the diff does see, and neither catches the
 # case the other does. `add --intent-to-add` reaches regenerated output that is untracked, and the
 # diff is against HEAD because that same `git add` stages the deletion a missing generator makes.
+#
+# The two compile steps are what a `test -s` cannot say. oapi-codegen exits *zero* on any
+# configuration it accepts, including one naming fewer targets than this repo needs — and its v2
+# parser falls back to the v1 schema, so a mis-shaped `generate:` can be accepted rather than
+# refused. Either way the output is non-empty and missing a whole target, and `go build` is what says
+# so: the process registers its routes through `boundary.HandlerFromMux` and the router renders its
+# error bodies from the generated models, so an absent target is an undefined symbol. `tsc` is the
+# same assertion one language over, narrowed to the generated directory; the general frontend
+# typecheck is #67 typecheck gate's.
 [group('checks')]
-[doc('The committed boundary types are what the schema generates, and the generated Go compiles; needs `just boundary-install`')]
+[doc('The committed boundary contract is what the schema generates, and the generated Go and TypeScript both compile; needs `just boundary-install`')]
 check-boundary:
     go -C backend tool oapi-codegen -version
-    test -x frontend/node_modules/.bin/openapi-typescript
+    test -x frontend/node_modules/.bin/orval
+    test -x frontend/node_modules/.bin/prettier
+    test -x frontend/node_modules/.bin/tsc
     rm -rf backend/internal/boundary frontend/src/lib/boundary
     just codegen
     test -s backend/internal/boundary/boundary.gen.go
-    test -s frontend/src/lib/boundary/schema.ts
+    test -s frontend/src/lib/boundary/client.ts
     cd backend && go build ./...
+    frontend/node_modules/.bin/tsc --noEmit --project frontend/tsconfig.boundary.json
     git add --intent-to-add -- backend/internal/boundary/ frontend/src/lib/boundary/
     git diff --exit-code HEAD -- backend/internal/boundary/ frontend/src/lib/boundary/
 
