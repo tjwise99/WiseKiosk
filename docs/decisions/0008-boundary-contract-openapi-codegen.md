@@ -160,10 +160,11 @@ notch too narrow, so rev 3 widens it to the whole wire contract rather than addi
   **mandates a third-party router**: a closed `mux`|`chi` option with no standard-library choice, and
   the router type is in the exported `NewRouter` signature rather than an internal detail — so the
   routing layer this design keeps ([ADR 0001 rev 1](0001-backend-language-go.md), and the `ogen`
-  entry above) would be given away by the codegen choice. Beyond the kernel objection it carries a
-  JVM (~190 MB of runtime and jar, on every machine and in CI, that nothing else in this repo needs)
-  and emits roughly 2.3× the Go across eleven files plus a `main.go` and a Dockerfile the repo neither
-  needs nor wants. **This is why the decision is two native generators rather than one tool**: the
+  entry above) would be given away by the codegen choice. Beyond the kernel objection it requires a
+  JVM and a downloaded jar on every machine and in CI, which nothing else in this repo needs, and it
+  emits a whole-application scaffold — the Go spread across many files, plus a `main.go` and a
+  Dockerfile that assume they own the process. The magnitudes behind that are the trial's, recorded
+  on #188 boundary codegen. **This is why the decision is two native generators rather than one tool**: the
   cost of a second generator is two pinned versions, and the cost of the unified tool is a dependency
   the architecture refuses.
 - **Frontend runtime validation (schema→zod/ajv)** — rejected: bundle weight and per-render cost on
@@ -200,16 +201,16 @@ notch too narrow, so rev 3 widens it to the whole wire contract rather than addi
 - **The generated Go surface is larger than the types were.** `std-http-server` emits a parameter-error
   set and a middleware hook whether or not any route has parameters. Accepted: it is one file, it
   compiles, and it adds no dependency.
-- **`orval` is small at the boundary and large in `node_modules`.** It ships as one package tree that
-  carries every output target it can emit — **twelve `@orval/*` packages, of which this repo's
-  configuration reaches exactly one, `fetch`** — plus `typedoc` and its two plugins, plus `esbuild`
-  with 26 platform-specific native binary packages that nothing in the tree had before. Net **+95 packages** in `frontend/package-lock.json` (119 added, 24
-  removed with `openapi-typescript`), 237 in total. **None of it reaches what ships**: the emitted
-  client imports nothing, so the browser module graph and
-  [`frontend/bundle-allowlist.json`](../../frontend/bundle-allowlist.json) are untouched, and this is
-  a build-time and supply-chain cost only. It is recorded because a Dependabot pull request against
-  `@orval/angular` or `typedoc` is otherwise unexplainable to whoever has to weigh it: those packages
-  are here because orval is one package, not because anything uses them.
+- **`orval` is small at the boundary and large in `node_modules`.** It ships undivided: installing it
+  brings the whole set of `@orval/*` client generators although the configuration reaches only the
+  `fetch` one, a documentation toolchain (`typedoc` and its plugins), and `esbuild` with a native
+  binary package per platform — none of which the generator it replaces brought. **None of it reaches
+  what ships**: the emitted client imports nothing, so the browser module graph and
+  [`frontend/bundle-allowlist.json`](../../frontend/bundle-allowlist.json) are untouched, and the
+  cost is build-time and supply-chain only. It is recorded because a Dependabot pull request against
+  a package like `@orval/angular` is otherwise unexplainable to whoever has to weigh it: such packages
+  are present because orval is one package, not because anything uses them. The size of that tree at
+  any moment is `frontend/package-lock.json`'s to state, and is not counted here.
 - **A generated route is method-scoped, where a hand-written one was not.** `std-http-server`
   registers `GET /healthz`, so the schema's `get:` is now load-bearing in a way it was not when the
   registration was `mux.Handle("/healthz", …)` and answered any verb. What an unlisted method gets is
