@@ -47,7 +47,7 @@ test('nothing the page draws clears the ceiling, over the design as it is stated
 
 test('nothing clears the ceiling on the page raising the outage report either', async ({ page }) => {
   // The report is a render mode of the page rather than a module, and it draws a surface of its
-  // own — a rule under its text today, and whatever a later hand adds to make a failure stand out.
+  // own — a rule under its text, and whatever a later hand adds to make a failure stand out.
   // This is the only scan that reads surfaces, and every other fixture in it renders the backend
   // serving, so the report has never been in its population.
   await render(page, LEGAL, 'frame', { healthz: 'abort' });

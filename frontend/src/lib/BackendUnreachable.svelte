@@ -1,8 +1,7 @@
 <script lang="ts">
   /**
-   * What is wrong, and what an operator does about it. The two are separate content rather than one
-   * sentence rephrased: SRS026 obliges the corrective action to be distinct from the failure it
-   * reports, and #71 restart policy is what decides whether the action itself is the right advice.
+   * What is wrong, and what an operator does about it — two distinct strings per SRS026, with
+   * #71 restart policy deciding whether the action itself is the right advice.
    */
   const DIAGNOSIS = 'The kiosk service isn’t responding.';
   const REMEDIATION = 'Restart the WiseKiosk service on the host, then this page recovers on its own.';
