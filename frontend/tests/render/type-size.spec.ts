@@ -35,6 +35,26 @@ test('renders no text below the floor, read against the viewport', async ({ page
   }
 });
 
+test('holds the floor over the backend-unreachable report too', async ({ page }) => {
+  // A failure state is the text a viewer most needs to read from across the room, and the report
+  // carries the smallest step in the scale — so the floor is asserted on the page raising it rather
+  // than only on the page serving modules.
+  await render(page, FIXTURE, 'frame', { healthz: 'abort' });
+  await expect(page.locator('[data-backend-unreachable]')).toBeVisible();
+  const viewportHeight = page.viewportSize()?.height ?? 0;
+  expect(viewportHeight).toBeGreaterThan(0);
+
+  const { text } = await readEmission(page);
+  expect(text.length).toBeGreaterThan(0);
+
+  for (const element of text) {
+    const fraction = element.fontSizePx / viewportHeight;
+    expect(fraction, `${element.element} at ${element.fontSizePx}px`).toBeGreaterThanOrEqual(
+      TYPE_SIZE_FLOOR,
+    );
+  }
+});
+
 test('renders the smallest step near the floor rather than far above it', async ({ page }) => {
   // The caption step is deliberately authored close to the floor, so a run in which every element
   // sits far above it would mean the smallest step never reached the page and the floor was

@@ -38,7 +38,12 @@ Parts 1, 2 and 5 apply to upstream-backed modules only. Parts 3, 4 and 6 apply t
    accepted upstream response size. Those values live in the entry and nowhere else.
 3. **A Svelte component.** Receives the module's configuration and its payload as props and renders
    them into the module's region; it fetches no data, parses no configuration and validates no
-   payload. Where the module has a payload, the component consumes the type generated from the
+   payload. It receives one prop more, `reachable` — the page shell's answer about whether the backend
+   is serving. Every module is handed it and only an upstream-backed one acts on it: that module
+   stands down and renders nothing while the signal is false, and a local module ignores the prop and
+   keeps rendering, per
+   [§ An unavailable module and an unreachable backend are different states](#an-unavailable-module-and-an-unreachable-backend-are-different-states)
+   below. Where the module has a payload, the component consumes the type generated from the
    boundary schema rather than one declared by hand
    ([ADR 0008 rev 3](../decisions/0008-boundary-contract-openapi-codegen.md)).
 4. **A configuration-schema fragment.** Declares what this module accepts, composed into the one
@@ -74,6 +79,29 @@ independently: the display refreshes no faster than the cache can answer differe
 holds no longer than the display's tolerance for stale data. Both are constants in code; neither is
 an operator-tunable configuration key.
 
+## An unavailable module and an unreachable backend are different states
+
+A module renders an unavailable state of its own for one cause and no other: its own source failed
+while the backend was reachable — the module's route answered, and the structured failure body it
+answered with is what the module renders in its own place, distinct to that cause
+(SRS001<!-- A failed module shows why, and only that module -->).
+
+Where the backend itself is unreachable, no module reports anything. The page shell asks whether the
+backend is still serving and reports an outage once for the whole display, so a module handed a false
+reachability signal stands down and renders nothing — no unavailable state, no placeholder, no
+last-known content. A module that reported for itself here would restate the one outage once per
+region, which is what the display is obliged not to do
+(SRS026<!-- The display says when the backend is gone -->).
+
+Reachability reaches the component the way its configuration and payload do (part 3): as a prop,
+threaded from the page shell through the frame to every module. The frame forwards it to every module
+alike and makes no coverage decision from it, so nothing between the shell and the module decides
+which modules an outage covers — that is each module's own question, not a placement one. The frame
+reads the signal for one thing only, and it is the frame's own: dropping the top inset it would
+otherwise hold below a report that already holds that edge.
+A local module ignores the prop — it fetches nothing, so a backend that is gone takes nothing from it
+and it keeps rendering beneath the page's report.
+
 ## Adding a module
 
 First, write the module's need and its decomposition in the requirements tree — one `SYS` for the
@@ -94,7 +122,12 @@ and the review trigger.
 4. Add the module's payload to the boundary schema as a named component; the generated type the
    component consumes is emitted from it.
 5. Write the component, plus its render test. Where the module has a payload, write the component
-   against the generated type rather than hand-declaring it.
+   against the generated type rather than hand-declaring it. Where the module is upstream-backed,
+   declare the `reachable` prop and honour the stand-down it signals
+   ([§ An unavailable module and an unreachable backend are different states](#an-unavailable-module-and-an-unreachable-backend-are-different-states)):
+   a component that leaves it undeclared draws its own unavailable state beneath the page's outage
+   report, and nothing says so — Svelte ignores a prop the component does not declare, and the render
+   tier reads the stand-down against a module it supplies rather than against this one.
 6. Set the module's poll cadence against that route's TTL.
 7. Confirm the dependency direction still runs modules → framework, and that no shared framework
    source names the new module beyond its registration entry.

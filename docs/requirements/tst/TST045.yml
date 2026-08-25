@@ -12,17 +12,22 @@ references:
 - keyword: test('nothing the page draws clears the ceiling, over the design as it
     is stated'
   path: frontend/tests/render/emitting-surfaces.spec.ts
-  sha: d4b8cab438eaefa3bdfdda6d68cf9bb701d499a98870361eb944224fe8ee7a7a
+  sha: 5b731391fe1263098deae92c50beb5d19cf7a1a5fb9e222b2123a1751f3dc39e
+  type: file
+- keyword: test('nothing clears the ceiling on the page raising the outage report
+    either'
+  path: frontend/tests/render/emitting-surfaces.spec.ts
+  sha: 5b731391fe1263098deae92c50beb5d19cf7a1a5fb9e222b2123a1751f3dc39e
   type: file
 - keyword: test('the page still draws the two things the exemption is for'
   path: frontend/tests/render/emitting-surfaces.spec.ts
-  sha: d4b8cab438eaefa3bdfdda6d68cf9bb701d499a98870361eb944224fe8ee7a7a
+  sha: 5b731391fe1263098deae92c50beb5d19cf7a1a5fb9e222b2123a1751f3dc39e
   type: file
 - keyword: test(`reports ${seed.name}`
   path: frontend/tests/render/emitting-surfaces.spec.ts
-  sha: d4b8cab438eaefa3bdfdda6d68cf9bb701d499a98870361eb944224fe8ee7a7a
+  sha: 5b731391fe1263098deae92c50beb5d19cf7a1a5fb9e222b2123a1751f3dc39e
   type: file
-reviewed: cx60XFcGiAZpRfKGohoNyq1cvMymJazwpAMLmmJ5Oqk=
+reviewed: kXRsDGMpOm4sCF7SG7u13DGG9e3_v--gBFe_FkhYg60=
 status: accepted
 text: |
   Render a fixture configuration and read every emitting surface of every element the page draws -
@@ -33,9 +38,10 @@ text: |
   spelling that reads as legal. Must pass: text at the maximum emission its own obligation
   requires, and an image rendered as content brighter than the ceiling - the exemption is what
   these two exercise, and without them a check that dropped the exemption altogether would report
-  the right answer on every other case. Must pass too: a hairline rule under a module title, and a
-  grouping tint dark enough to clear the ceiling. The ceiling is calibrated against the glass, so
-  moving it changes this check and not the requirement.
+  the right answer on every other case. Must pass too: a hairline rule under a module title, a
+  grouping tint dark enough to clear the ceiling, and the page in the state it raises when the
+  backend stops answering, which draws a surface of the page's own rather than a module's. The
+  ceiling is calibrated against the glass, so moving it changes this check and not the requirement.
 verification-justification: |
   Settles that nothing the page draws other than text and imagery clears the ceiling, whatever the
   configuration - the population is every element rendered and every surface it emits from, so

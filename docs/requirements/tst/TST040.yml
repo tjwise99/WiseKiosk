@@ -1,20 +1,39 @@
-active: false
+active: true
 derived: false
 header: |
-  Pending: backend-unreachable display state
+  Backend-unreachable display state
 level: 63
 links:
 - SRS026: zivxU0HYyxFMwYJKGpeBNNpbeXTDKC7J41KC9sM68kM=
 normative: true
 rationale: ''
 ref: ''
-reviewed: oDQD1WR4JmElgp-umcN5EnSKQ4NZuvEQ7CKeVROtCQg=
+references:
+- keyword: test('raises one state for the page when the backend stops answering under
+    it'
+  path: frontend/tests/render/backend-unreachable.spec.ts
+  sha: 1af889a56fa9e868bc7485abaf8b2955b5d8890b0a2014215f0c94d483b115c5
+  type: file
+- keyword: test('stands a module down rather than letting it report the outage as
+    its own'
+  path: frontend/tests/render/backend-unreachable.spec.ts
+  sha: 1af889a56fa9e868bc7485abaf8b2955b5d8890b0a2014215f0c94d483b115c5
+  type: file
+- keyword: test('leaves the module free to report its own source while the backend
+    answers'
+  path: frontend/tests/render/backend-unreachable.spec.ts
+  sha: 1af889a56fa9e868bc7485abaf8b2955b5d8890b0a2014215f0c94d483b115c5
+  type: file
+- keyword: test('names a corrective action that is not the failure it reports'
+  path: frontend/tests/render/backend-unreachable.spec.ts
+  sha: 1af889a56fa9e868bc7485abaf8b2955b5d8890b0a2014215f0c94d483b115c5
+  type: file
+reviewed: vwUNjNmGqoRzjhhIxjWuLsx9ekxqJp-B5SobB3YD9cA=
 status: proposed
 text: |
-  Pending: check that induces a backend outage with the page already served, and asserts the display
-  renders one page-wide unreachable state rather than a per-module unavailable state in each region;
-  and that the state carries a remediation field, non-empty and not equal to the diagnosis it reports.
-  Lands with the liveness endpoint (#72).
+  Check that induces a backend outage with the page already served, and asserts the display renders
+  one page-wide unreachable state rather than a per-module unavailable state in each region; and
+  that the state carries a remediation field, non-empty and not equal to the diagnosis it reports.
 verification-justification: |
   Settles that one page-wide state replaces the per-module states and that it carries a remediation
   distinct from its diagnosis. Leaves unproven whether the remediation is the right advice - #71

@@ -143,7 +143,10 @@ declare a `HEALTHCHECK` without carrying an HTTP client beside it
 falls through to the served tree and gets its 404 rather than a 405, since the `/` seam matches the
 path that the method-scoped pattern does not. A handler mounted on the bare multiplexer — which is
 what a package's own test assembles — answers 405 there instead, so the two disagree by exactly the
-catch-all that only the assembled server has.
+catch-all that only the assembled server has. The display page is the second asker: it puts the same
+question through the generated client, and reports an unanswered one once for the whole page,
+standing its modules down rather than letting each report the outage as its own
+(SRS026<!-- The display says when the backend is gone -->).
 
 **Adding a route is adding one element to a list.** The registration list is a package holding a
 literal, read by the bootstrap and by nothing else, and the framework refuses an entry it cannot

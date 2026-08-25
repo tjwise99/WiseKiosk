@@ -33,6 +33,20 @@ test('renders every text element at full emission', async ({ page }) => {
   }
 });
 
+test('renders the backend-unreachable report at full emission too', async ({ page }) => {
+  // The outage report is the page's own text as well, and it is raised over a display still
+  // rendering: the reading covers the report and the modules beneath it in one pass.
+  await render(page, FIXTURE, 'frame', { healthz: 'abort' });
+  await expect(page.locator('[data-backend-unreachable]')).toBeVisible();
+
+  const { text, unreadable } = await readEmission(page);
+  expect(text.length).toBeGreaterThan(0);
+  expect(unreadable, JSON.stringify(unreadable, null, 2)).toHaveLength(0);
+  for (const element of text) {
+    expect(element.luminance, `${element.element} (${element.colour})`).toBeCloseTo(1, 6);
+  }
+});
+
 test('renders the configuration report at full emission too', async ({ page }) => {
   // The error state is the page's own text, and the emission rule is the page's rather than a
   // module's: a configuration that cannot be applied leaves no modules at all.
