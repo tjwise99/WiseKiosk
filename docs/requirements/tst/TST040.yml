@@ -12,23 +12,23 @@ references:
 - keyword: test('raises one state for the page when the backend stops answering under
     it'
   path: frontend/tests/render/backend-unreachable.spec.ts
-  sha: f61c86ebd60e0c14e8053fb3b21dc3368929bbd95ea2e39e9eef0a594d5ccf29
+  sha: 1af889a56fa9e868bc7485abaf8b2955b5d8890b0a2014215f0c94d483b115c5
   type: file
 - keyword: test('stands a module down rather than letting it report the outage as
     its own'
   path: frontend/tests/render/backend-unreachable.spec.ts
-  sha: f61c86ebd60e0c14e8053fb3b21dc3368929bbd95ea2e39e9eef0a594d5ccf29
+  sha: 1af889a56fa9e868bc7485abaf8b2955b5d8890b0a2014215f0c94d483b115c5
   type: file
 - keyword: test('leaves the module free to report its own source while the backend
     answers'
   path: frontend/tests/render/backend-unreachable.spec.ts
-  sha: f61c86ebd60e0c14e8053fb3b21dc3368929bbd95ea2e39e9eef0a594d5ccf29
+  sha: 1af889a56fa9e868bc7485abaf8b2955b5d8890b0a2014215f0c94d483b115c5
   type: file
 - keyword: test('names a corrective action that is not the failure it reports'
   path: frontend/tests/render/backend-unreachable.spec.ts
-  sha: f61c86ebd60e0c14e8053fb3b21dc3368929bbd95ea2e39e9eef0a594d5ccf29
+  sha: 1af889a56fa9e868bc7485abaf8b2955b5d8890b0a2014215f0c94d483b115c5
   type: file
-reviewed: V3HhGZG78DVz7Z2fuqFsG_cFfqjKkT4tH6ai1YKbYBw=
+reviewed: vwUNjNmGqoRzjhhIxjWuLsx9ekxqJp-B5SobB3YD9cA=
 status: proposed
 text: |
   Check that induces a backend outage with the page already served, and asserts the display renders

@@ -1,7 +1,7 @@
-import { expect, test } from '@playwright/test';
+import { expect, test, type Page } from '@playwright/test';
 
 import { LIVENESS_INTERVAL_MS } from '../../src/lib/liveness';
-import { regionBoxes, render, serveLiveness, type Fixture } from './harness';
+import { overlaps, regionBoxes, render, serveLiveness, type Box, type Fixture } from './harness';
 
 /**
  * TST040. A backend that stops answering under a page already serving its modules raises one
@@ -10,6 +10,9 @@ import { regionBoxes, render, serveLiveness, type Fixture } from './harness';
  *
  * The band clearance every laid-out region holds while that state is up is TST049's (SRS034); it is
  * read here because it needs this file's outage harness.
+ *
+ * The displacement, recovery and report-legibility cases below are cited by no obligation, and are
+ * kept deliberately: they cover behaviour this display chose rather than behaviour the tree demands.
  */
 const FIXTURE: Fixture = {
   modules: [
@@ -36,6 +39,13 @@ const REPORTING: Fixture = {
 /** The same fixture on a display whose outer band is behind a fitted mask. */
 const BAND = 7;
 const MASKED: Fixture = { edge_band: BAND, modules: FIXTURE.modules };
+
+/** The box the page-wide state occupies, in the coordinates `regionBoxes` reads. */
+async function stateBox(page: Page): Promise<Box> {
+  const box = await page.locator('[data-backend-unreachable]').boundingBox();
+  expect(box, 'the state is laid out').not.toBeNull();
+  return { left: box!.x, top: box!.y, right: box!.x + box!.width, bottom: box!.y + box!.height };
+}
 
 test('raises one state for the page when the backend stops answering under it', async ({
   page,
@@ -88,6 +98,41 @@ test('leaves the module free to report its own source while the backend answers'
   await expect(page.locator('[data-region]')).toHaveCount(REGIONS.size);
 });
 
+test('displaces the layout rather than covering any of it', async ({ page }) => {
+  await render(page, FIXTURE, 'frame', { healthz: 'abort' });
+  await expect(page.locator('[data-backend-unreachable]')).toBeVisible();
+
+  // Counting the regions would pass over a state drawn on top of them, which is the failure SYS001
+  // rules out: what is still laid out has to be still readable.
+  const band = await stateBox(page);
+  const laidOut = [...(await regionBoxes(page))];
+  expect(laidOut).toHaveLength(REGIONS.size);
+  for (const [region, box] of laidOut) {
+    expect(overlaps(band, box), `the state over ${region}`).toBe(false);
+  }
+});
+
+test('holds what it reports clear of the band the configuration declares', async ({ page }) => {
+  await render(page, MASKED, 'frame', { healthz: 'abort' });
+  await expect(page.locator('[data-backend-unreachable]')).toBeVisible();
+
+  const viewport = page.viewportSize();
+  expect(viewport).not.toBeNull();
+  const { width, height } = viewport!;
+  const band = (BAND / 100) * height;
+
+  // The band the depth declares is a mask fitted over the display, so text drawn inside it is behind
+  // an object rather than dim: read on the content, since the state's own box spans the full width
+  // and holds its text off the edges with padding.
+  for (const hook of ['[data-diagnosis]', '[data-remediation]']) {
+    const box = await page.locator(hook).boundingBox();
+    expect(box, hook).not.toBeNull();
+    expect(box!.x, `${hook} left`).toBeGreaterThanOrEqual(band - 0.5);
+    expect(box!.y, `${hook} top`).toBeGreaterThanOrEqual(band - 0.5);
+    expect(box!.x + box!.width, `${hook} right`).toBeLessThanOrEqual(width - band + 0.5);
+  }
+});
+
 test('leaves every laid-out region clear of the band while the outage report is up', async ({
   page,
 }) => {
@@ -123,4 +168,39 @@ test('names a corrective action that is not the failure it reports', async ({ pa
   expect(diagnosis).not.toBe('');
   expect(remediation).not.toBe('');
   expect(remediation).not.toBe(diagnosis);
+});
+
+test('clears the state on its own once the backend answers again', async ({ page }) => {
+  await render(page, FIXTURE, 'frame', { healthz: 'abort' });
+  const state = page.locator('[data-backend-unreachable]');
+  await expect(state).toBeVisible();
+
+  await serveLiveness(page, 'ok');
+
+  // Two intervals, not one: the ask that reaches the restored backend is the next one after the
+  // route changes, and the route can change immediately after an ask has already gone out.
+  await expect(state).toBeHidden({ timeout: 2 * LIVENESS_INTERVAL_MS });
+});
+
+test('draws a stood-down module again once the backend answers', async ({ page }) => {
+  await render(page, REPORTING);
+  const report = page.locator('[data-backend-unreachable]');
+  const stub = page.locator('[data-stub-unavailable]');
+
+  // One page carried across both transitions rather than two page loads: suppression written as a
+  // teardown that never re-instantiates — a module destroyed on the signal, a store cleared and not
+  // repopulated, a reachability read taken once at mount — leaves the region blank for as long as
+  // the display runs. Only a restoration read on the page that was suppressed sees that.
+  await expect(stub).toBeVisible();
+
+  await serveLiveness(page, 'abort');
+
+  await expect(report).toHaveCount(1, { timeout: 2 * LIVENESS_INTERVAL_MS });
+  await expect(stub).toHaveCount(0);
+
+  await serveLiveness(page, 'ok');
+
+  // Two intervals, for the reason the clearing test above states.
+  await expect(stub).toBeVisible({ timeout: 2 * LIVENESS_INTERVAL_MS });
+  await expect(page.locator('[data-region]')).toHaveCount(REGIONS.size);
 });

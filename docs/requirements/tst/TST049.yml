@@ -16,9 +16,9 @@ references:
 - keyword: test('leaves every laid-out region clear of the band while the outage report
     is up'
   path: frontend/tests/render/backend-unreachable.spec.ts
-  sha: f61c86ebd60e0c14e8053fb3b21dc3368929bbd95ea2e39e9eef0a594d5ccf29
+  sha: 1af889a56fa9e868bc7485abaf8b2955b5d8890b0a2014215f0c94d483b115c5
   type: file
-reviewed: jhvREWQzuAE12PmEob1ZRfLSObxvN-HlF3VLKV8q4n4=
+reviewed: 8mlB-veE3fubeYcZT2zorpeQOT4KsroNaZ4dpd98Iu4=
 status: accepted
 text: |
   Read each laid-out region's geometry against the viewport, asserting no region enters the band

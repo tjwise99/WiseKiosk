@@ -142,7 +142,9 @@ belong to the configuration schema
 the report of a backend that stopped answering
 (SRS026<!-- The display says when the backend is gone -->) — is not a laid-out region and is not
 placed by the frame, so `--edge-band` is declared on the page rather than on the frame and each such
-state insets its own content by it.
+state insets its own content by it. The band is a mask fitted over the display, so text drawn inside
+it is behind an object rather than dim, which a failure state cannot afford
+(SYS001<!-- Failure is legible and proportionate -->).
 
 ## Typeface
 
