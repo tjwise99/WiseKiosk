@@ -14,6 +14,11 @@ references:
   path: frontend/tests/render/emitting-surfaces.spec.ts
   sha: 46bba5b11e2f74d994807a28bd8dd5d171e2e78d84776c7702ee291a0e9c75f6
   type: file
+- keyword: test('nothing clears the ceiling on the page raising the outage report
+    either'
+  path: frontend/tests/render/emitting-surfaces.spec.ts
+  sha: 46bba5b11e2f74d994807a28bd8dd5d171e2e78d84776c7702ee291a0e9c75f6
+  type: file
 - keyword: test('the page still draws the two things the exemption is for'
   path: frontend/tests/render/emitting-surfaces.spec.ts
   sha: 46bba5b11e2f74d994807a28bd8dd5d171e2e78d84776c7702ee291a0e9c75f6
@@ -22,7 +27,7 @@ references:
   path: frontend/tests/render/emitting-surfaces.spec.ts
   sha: 46bba5b11e2f74d994807a28bd8dd5d171e2e78d84776c7702ee291a0e9c75f6
   type: file
-reviewed: D6YVnL2Mwtm1X4azgg-NCWS8SeG8BH-tGYXFNHo0pOo=
+reviewed: fCr9i99uRL2grPt5vW1oQUdqtF-4frIP5Q3ZT_k4w50=
 status: accepted
 text: |
   Render a fixture configuration and read every emitting surface of every element the page draws -

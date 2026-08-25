@@ -1,22 +1,74 @@
-active: false
+active: true
 derived: false
 header: |
-  Pending: backend-unreachable display state
+  Backend-unreachable display state
 level: 63
 links:
 - SRS026: zivxU0HYyxFMwYJKGpeBNNpbeXTDKC7J41KC9sM68kM=
 normative: true
 rationale: ''
 ref: ''
-reviewed: oDQD1WR4JmElgp-umcN5EnSKQ4NZuvEQ7CKeVROtCQg=
+references:
+- keyword: test('raises one state for the page when the backend stops answering under
+    it'
+  path: frontend/tests/render/backend-unreachable.spec.ts
+  sha: 7a75fe3b8cff27bada778d69fb5b24f88def3613d471bb98cf11c3f512afcb16
+  type: file
+- keyword: test('stands a module down rather than letting it report the outage as
+    its own, and draws it again'
+  path: frontend/tests/render/backend-unreachable.spec.ts
+  sha: 7a75fe3b8cff27bada778d69fb5b24f88def3613d471bb98cf11c3f512afcb16
+  type: file
+- keyword: test('leaves the module free to report its own source while the backend
+    answers'
+  path: frontend/tests/render/backend-unreachable.spec.ts
+  sha: 7a75fe3b8cff27bada778d69fb5b24f88def3613d471bb98cf11c3f512afcb16
+  type: file
+- keyword: test('displaces the layout rather than covering any of it'
+  path: frontend/tests/render/backend-unreachable.spec.ts
+  sha: 7a75fe3b8cff27bada778d69fb5b24f88def3613d471bb98cf11c3f512afcb16
+  type: file
+- keyword: test('holds what it reports clear of the band the configuration declares'
+  path: frontend/tests/render/backend-unreachable.spec.ts
+  sha: 7a75fe3b8cff27bada778d69fb5b24f88def3613d471bb98cf11c3f512afcb16
+  type: file
+- keyword: test('leaves the regions beneath it clear of that band as well'
+  path: frontend/tests/render/backend-unreachable.spec.ts
+  sha: 7a75fe3b8cff27bada778d69fb5b24f88def3613d471bb98cf11c3f512afcb16
+  type: file
+- keyword: test('names a corrective action that is not the failure it reports'
+  path: frontend/tests/render/backend-unreachable.spec.ts
+  sha: 7a75fe3b8cff27bada778d69fb5b24f88def3613d471bb98cf11c3f512afcb16
+  type: file
+- keyword: test('clears the state on its own once the backend answers again'
+  path: frontend/tests/render/backend-unreachable.spec.ts
+  sha: 7a75fe3b8cff27bada778d69fb5b24f88def3613d471bb98cf11c3f512afcb16
+  type: file
+reviewed: b00SmOysFnSY3iVJ2r51_SJauGUOkvMXZchcAw_PMwc=
 status: proposed
 text: |
-  Pending: check that induces a backend outage with the page already served, and asserts the display
-  renders one page-wide unreachable state rather than a per-module unavailable state in each region;
-  and that the state carries a remediation field, non-empty and not equal to the diagnosis it reports.
-  Lands with the liveness endpoint (#72).
+  Check that induces a backend outage with the page already served, and asserts the display renders
+  one page-wide unreachable state and no per-module unavailable state: a module drawing an
+  unavailable state of its own while the backend answers renders nothing once it stops, and draws it
+  again once the backend answers, all three read across one served page rather than one page each.
+  Asserts too that the page-wide state displaces the laid-out regions rather than covering any of
+  them, holds its own text clear of the masked band the configuration declares and leaves every
+  laid-out region clear of that band on all four edges while it is up, carries a remediation field
+  non-empty and not equal to the diagnosis it reports, and clears itself once the backend answers
+  again.
 verification-justification: |
-  Settles that one page-wide state replaces the per-module states and that it carries a remediation
-  distinct from its diagnosis. Leaves unproven whether the remediation is the right advice - #71
-  recommends it, no gate decides it.
+  Settles both halves: one page-wide state replaces the per-module states, and it carries a
+  remediation distinct from its diagnosis. The replacement is read against a module that does report
+  for itself - a render-tier module holding an unavailable state, drawn while the backend answers,
+  suppressed under the outage and drawn again on recovery, all on the one served page - so what the
+  check reads is a substitution rather than only the presence of a page state, and a suppression that
+  never comes back is read rather than passed over.
+  The region clearance is read here rather than with the unbanded ones because the frame drops its
+  own top inset only while a report is up: that is a state no other check renders, so the clearance
+  the report's inset then holds would otherwise rest on an argument across three files rather than on
+  an assertion.
+  Leaves unproven whether the remediation is the right advice - #71 restart policy recommends it, no
+  gate decides it - and that a module written later obeys the rule the module contract states: the
+  suppression is read against a module the render tier supplies, and nothing gates that the first
+  real one is written the same way.
 verification-method: test

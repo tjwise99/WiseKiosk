@@ -11,17 +11,21 @@ ref: ''
 references:
 - keyword: test('renders no text below the floor, read against the viewport'
   path: frontend/tests/render/type-size.spec.ts
-  sha: 9a5a106b467d8fa030da2c926ee0dc4d110857a852879016b63ea156fcb84e32
+  sha: aae10765b263ea58977e4e8df5c94ea50bb93e12859113adaa78995505dc76cb
+  type: file
+- keyword: test('holds the floor over the backend-unreachable report too'
+  path: frontend/tests/render/type-size.spec.ts
+  sha: aae10765b263ea58977e4e8df5c94ea50bb93e12859113adaa78995505dc76cb
   type: file
 - keyword: test('renders the smallest step near the floor rather than far above it'
   path: frontend/tests/render/type-size.spec.ts
-  sha: 9a5a106b467d8fa030da2c926ee0dc4d110857a852879016b63ea156fcb84e32
+  sha: aae10765b263ea58977e4e8df5c94ea50bb93e12859113adaa78995505dc76cb
   type: file
 - keyword: test('holds the floor as a fraction rather than as a pixel count'
   path: frontend/tests/render/type-size.spec.ts
-  sha: 9a5a106b467d8fa030da2c926ee0dc4d110857a852879016b63ea156fcb84e32
+  sha: aae10765b263ea58977e4e8df5c94ea50bb93e12859113adaa78995505dc76cb
   type: file
-reviewed: 8p3Cx7tOU8vbdvxUcysBxI_RSMS1rMb2_IYtfcQGYqg=
+reviewed: sF478H_QN9uqqcwLM6pA5WpvdztZMuRfJzWAPdeY3p0=
 status: accepted
 text: |
   Render at more than one resolution and read each text element's size as a fraction of viewport
