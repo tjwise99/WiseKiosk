@@ -36,8 +36,9 @@ Parts 1, 2 and 5 apply to upstream-backed modules only. Parts 3, 4 and 6 apply t
    `GET /api/<source>` to that library and carrying every policy governing that route: parameter
    validation, success cache TTL, negative cache TTL, rate limit, outbound timeout, and maximum
    accepted upstream response size. Those values live in the entry and nowhere else in code; the
-   timing ones are argued in the module's own requirements ([§ Adding a module](#adding-a-module))
-   rather than set a second time there.
+   timing ones are argued in the module's own requirements ([§ Adding a module](#adding-a-module)),
+   which carry each value with the rationale that produced it rather than setting it a second time
+   as a bare number.
 3. **A Svelte component.** Receives the module's configuration and its payload as props and renders
    them into the module's region; it fetches no data, parses no configuration and validates no
    payload. It receives one prop more, `reachable` — the page shell's answer about whether the backend
@@ -59,11 +60,11 @@ Parts 1, 2 and 5 apply to upstream-backed modules only. Parts 3, 4 and 6 apply t
    module's generated payload type exist.
 6. **Tests.** A render test for the component, and — for an upstream-backed module — unit tests for
    the shaping library. What they must cover and the standing obligation they discharge are
-   [`TESTING.md`](../TESTING.md)'s — a per-module test obligation is stated there, not here, though
-   the pending `TST` items those tests land against are written with the module's decomposition
-   ([§ Adding a module](#adding-a-module)); that they exist and sit where the runner reaches them is
-   gated
-   ([`CI.md § Module and framework structure`](../CI.md#module-and-framework-structure)).
+   [`TESTING.md`](../TESTING.md)'s — a per-module test obligation is stated there, not here; that
+   the tests exist and sit where the runner reaches them is gated
+   ([`CI.md § Module and framework structure`](../CI.md#module-and-framework-structure)), and the
+   pending `TST` items they land against are written with the module's decomposition
+   ([§ Adding a module](#adding-a-module)).
 
 ## Dependency direction
 
@@ -166,7 +167,10 @@ not restate is that the rate is bounded at all and not left for an operator to t
 (SRS011<!-- Upstream request rate is bounded, and the bound is not operator-tunable -->) — the
 framework obliges that there be a bound, and the module says what it is.
 
-Two test tiers guide an upstream-backed module's decomposition. The Unit tier reads the shaping
+Test tiers guide the decomposition, and one of them guides every module's. The Render tier reads the
+component of part 3, which is what [`TESTING.md`](../TESTING.md) states that tier by, so the items
+saying what this module renders in the region it is given are written precisely enough for that tier
+to assert them. The other two are an upstream-backed module's. The Unit tier reads the shaping
 library of part 1 — the upstream URL it builds and the payload it reshapes a response into, pure and
 without network — so the items stating this module's parameters and its payload are written
 precisely enough for that tier to assert them. The Contract tier replays a recorded fixture to catch
@@ -186,20 +190,26 @@ code it checks exists, and a module's directories and test files do not exist un
 vertical slice creates them; the items are activated, given a references entry and re-read against
 their parent then.
 
-The architecture model is drawn in the same change that flips the module's items to accepted and
-active, because every accepted, active item binds to something the model draws
-([ADR 0019 rev 5](../decisions/0019-boundary-at-what-deploys-and-tag-tier.md)). Every module gains a
-component under the frontend for its Svelte component; an upstream-backed module gains one under the
-backend for its shaping library, and one external system for the upstream it reads. Each new
-identifier is declared as `tag SYSNNN` or `tag SRSNNN` in the model's `specification` block and
-applied as the first entry of the body it belongs to, which is the only position that parses it; a
-tag declared and applied to nothing fails on its own. Drawing an element moves the generated
-diagrams, so `docs/architecture/model/`, `docs/architecture/generated/` and `docs/ARCHITECTURE.md`
-are regenerated and committed together, and the prose in `ARCHITECTURE.md` that the drawing
-falsifies is swept in the same change. `just check-arch-trace` is what closes the change, and it
-reads both directions: an accepted, active item nothing carries fails it, and a tag naming an item
-still `proposed` fails it the other way, which is why the model lands with the status flip rather
-than before or after it. While the items sit `proposed`, no model work is owed.
+The architecture model is drawn in the same change that accepts the module's `SYS` and `SRS` items —
+they are written active, so the `status` flip is what the model waits on — because every accepted,
+active `SYS` or `SRS` item binds to something the model draws
+([ADR 0019 rev 5](../decisions/0019-boundary-at-what-deploys-and-tag-tier.md)). The `TST` stubs are
+outside that rule, and activating one later owes the model nothing. Every module gains a component
+under the frontend for its Svelte component; an upstream-backed module gains one under the backend
+for its shaping library, one external system for the upstream it reads, and the relationship from
+the upstream client to that system — the edge that carries the source-reachability obligation as the
+module lands ([ADR 0019 rev 5](../decisions/0019-boundary-at-what-deploys-and-tag-tier.md) § Where a
+tag sits), and without which the drawn system is a box nothing reaches. Each new identifier is
+declared as a tag in the model's `specification` block and applied as the first entry of the body it
+belongs to; drawing an element also moves the generated diagrams, so the model, its generated
+artifacts and `ARCHITECTURE.md` are regenerated with `just arch-export` and committed together
+([`architecture/README.md § Editing the model`](../architecture/README.md#editing-the-model)), and
+the prose in `ARCHITECTURE.md` that the drawing falsifies is swept in the same change.
+`just check-arch-trace` is what closes the change, and it reads both directions — an accepted,
+active item nothing carries fails it, and a tag naming an item still `proposed` fails it the other
+way ([`CI.md § Documentation integrity`](../CI.md#documentation-integrity)) — which is why the model
+lands with the status flip rather than before or after it. While the items sit `proposed`, no model
+work is owed.
 
 Steps 2, 5, 7 and 8 apply to every module — a local module's component renders from configuration or
 the browser rather than from a payload prop, but it still has a configuration fragment, a component,
@@ -211,8 +221,9 @@ upstream-backed module adds.
 2. Add the configuration-schema fragment and check an example configuration by loading it in the
    page.
 3. Add the registration entry, carrying all six of that route's policies — parameter validation,
-   success TTL, negative TTL, rate limit, outbound timeout, maximum response size; the three timing
-   values are read out of the module's freshness and upstream-rate items rather than chosen here.
+   success TTL, negative TTL, rate limit, outbound timeout, maximum response size; the two cache
+   TTLs and the rate limit are read out of the module's freshness and upstream-rate items rather
+   than chosen here.
 4. Add the module's payload to the boundary schema as a named component; the generated type the
    component consumes is emitted from it.
 5. Write the component, plus its render test. Where the module has a payload, write the component
