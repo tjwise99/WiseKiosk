@@ -13,11 +13,12 @@ references:
   path: frontend/tests/render/edge-clearance.spec.ts
   sha: 590e3d1af542a3ccefa4dbb281813441a4f9b4e0c105460de422f25381b93d5d
   type: file
-- keyword: test('leaves the regions beneath it clear of that band as well'
+- keyword: test('leaves every laid-out region clear of the band while the outage report
+    is up'
   path: frontend/tests/render/backend-unreachable.spec.ts
-  sha: 29ee43f03a7220a69dc43a1edd1459485e5aa4dd74c494dea04ab0cff385a418
+  sha: f61c86ebd60e0c14e8053fb3b21dc3368929bbd95ea2e39e9eef0a594d5ccf29
   type: file
-reviewed: MVoBeuVBsK1HgVhJ6TGOrahcetjweDqg2W5kvIwZzm8=
+reviewed: jhvREWQzuAE12PmEob1ZRfLSObxvN-HlF3VLKV8q4n4=
 status: accepted
 text: |
   Read each laid-out region's geometry against the viewport, asserting no region enters the band
