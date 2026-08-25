@@ -45,6 +45,19 @@ test('nothing the page draws clears the ceiling, over the design as it is stated
   expect(unreadable, JSON.stringify(unreadable, null, 2)).toHaveLength(0);
 });
 
+test('nothing clears the ceiling on the page raising the outage report either', async ({ page }) => {
+  // The report is a render mode of the page rather than a module, and it draws a surface of its
+  // own — a rule under its text today, and whatever a later hand adds to make a failure stand out.
+  // This is the only scan that reads surfaces, and every other fixture in it renders the backend
+  // serving, so the report has never been in its population.
+  await render(page, LEGAL, 'frame', { healthz: 'abort' });
+  await expect(page.locator('[data-backend-unreachable]')).toBeVisible();
+
+  const { above, unreadable } = await readEmission(page);
+  expect(above, JSON.stringify(above, null, 2)).toHaveLength(0);
+  expect(unreadable, JSON.stringify(unreadable, null, 2)).toHaveLength(0);
+});
+
 test('the page still draws the two things the exemption is for', async ({ page }) => {
   await render(page, LEGAL);
 
