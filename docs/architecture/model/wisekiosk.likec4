@@ -188,10 +188,13 @@ model {
 
       pageShell = component 'Page shell' {
         #SRS004
+        #SRS026
         description '''
           Loads and renders before any configuration is applied, so a
           configuration that cannot be applied at all is reported on a page
-          that exists rather than on a blank one.
+          that exists rather than on a blank one. Asks the backend whether it
+          is still serving, and reports a backend that is not once for the
+          page, beside the modules that need none.
         '''
       }
 
@@ -223,8 +226,13 @@ model {
         #SRS026
         description '''
           Fetches each configured module's payload and hands back what it
-          gets. Distinguishes a backend that cannot be reached from a module
-          that failed, so the display says the former once.
+          gets, a failure included rather than absorbed — the structured
+          body a module renders its own unavailable state from, and the only
+          half of the distinction this component carries. Whether the backend
+          can be reached at all is not inferred here: the page shell decides
+          it from its own liveness ask, and each module component stands
+          itself down on that answer rather than every one of them rendering
+          an unavailable state over the one outage.
         '''
       }
     }
