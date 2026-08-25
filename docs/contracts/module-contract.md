@@ -35,7 +35,9 @@ Parts 1, 2 and 5 apply to upstream-backed modules only. Parts 3, 4 and 6 apply t
 2. **A route registration.** Exactly one entry in the static, compile-time list, binding
    `GET /api/<source>` to that library and carrying every policy governing that route: parameter
    validation, success cache TTL, negative cache TTL, rate limit, outbound timeout, and maximum
-   accepted upstream response size. Those values live in the entry and nowhere else.
+   accepted upstream response size. Those values live in the entry and nowhere else in code; the
+   timing ones are argued in the module's own requirements ([§ Adding a module](#adding-a-module))
+   rather than set a second time there.
 3. **A Svelte component.** Receives the module's configuration and its payload as props and renders
    them into the module's region; it fetches no data, parses no configuration and validates no
    payload. It receives one prop more, `reachable` — the page shell's answer about whether the backend
@@ -57,8 +59,10 @@ Parts 1, 2 and 5 apply to upstream-backed modules only. Parts 3, 4 and 6 apply t
    module's generated payload type exist.
 6. **Tests.** A render test for the component, and — for an upstream-backed module — unit tests for
    the shaping library. What they must cover and the standing obligation they discharge are
-   [`TESTING.md`](../TESTING.md)'s — a per-module test obligation is stated there, not here; that
-   they exist and sit where the runner reaches them is gated
+   [`TESTING.md`](../TESTING.md)'s — a per-module test obligation is stated there, not here, though
+   the pending `TST` items those tests land against are written with the module's decomposition
+   ([§ Adding a module](#adding-a-module)); that they exist and sit where the runner reaches them is
+   gated
    ([`CI.md § Module and framework structure`](../CI.md#module-and-framework-structure)).
 
 ## Dependency direction
@@ -76,8 +80,10 @@ it is written, so it is written to serve every module rather than that one.
 
 The route's response-cache TTL (part 2) and the module's poll cadence are picked as a pair, not
 independently: the display refreshes no faster than the cache can answer differently, and the cache
-holds no longer than the display's tolerance for stale data. Both are constants in code; neither is
-an operator-tunable configuration key.
+holds no longer than the display's tolerance for stale data. The pairing is where the two values are
+checked against each other rather than where either comes from: each is what the module's freshness
+and upstream-rate obligations come to in code ([§ Adding a module](#adding-a-module)). Both are
+constants in code; neither is an operator-tunable configuration key.
 
 ## An unavailable module and an unreachable backend are different states
 
@@ -109,6 +115,14 @@ user-facing want, decomposed by `SRS` items carrying what is specific to this mo
 ([ADR 0012 rev 2](../decisions/0012-module-requirements-in-tree.md)). Writing those comes first, and
 the eight steps below build against what it produces.
 
+Adding a module is one procedure rather than two, and the difference between the shapes is additive:
+every module has a need, a component that renders and behaves as this module does, and a
+configuration it accepts; an upstream-backed module adds the backend beneath that — a source to
+fetch, a payload to put across the boundary, and the timing that governs both. The parameter
+pattern, the timing pair and the Unit and Contract tiers below apply to upstream-backed modules
+only. The need, the decomposition boundary, the `TST` stubs and the architecture model apply to
+every module.
+
 The need states what a viewer gets from this module, in one sentence carrying one `shall`, and it
 enumerates nothing: a need listing its own decomposition is a hat over its children rather than a
 want of its own. Its header is an indicative claim in noun-phrase form, the way the rest of the need
@@ -117,18 +131,15 @@ the sentence beneath it said again. Write it for a reader with no stake in the c
 the first item in the tree a non-technical reader can validate the product against, which is why a
 module is a need at all rather than a note on an implementation ticket.
 
-The decomposition beneath it carries what is true of this module and of nothing else — the source it
-fetches, the pattern its parameters must match, the payload it puts across the boundary, its timing.
-It stops at the framework universals. Secret delivery, caching, request rejection and failure
-rendering are already obliged for every module by framework items, so a module restating one has
-written it twice ([ADR 0012 rev 2](../decisions/0012-module-requirements-in-tree.md)). The boundary
-is categorical rather than a roster of items to check a draft against: the test on a draft `SRS` is
-whether rewording it to name a different module would leave a sentence the framework already says.
-
-One overlap is legitimate, and it is the parameter pattern. The framework obliges the validating and
-the rejecting (SRS012<!-- Request parameters validated against known-good per-source patterns -->);
-which pattern that is — a code format, an enumerated identifier set — that item's own rationale hands
-to the module, and it is stated as a module `SRS`.
+The decomposition beneath it carries what is true of this module and of nothing else — what it
+renders in the region it is given and how it behaves there, and what it accepts as configuration;
+and, where the module is upstream-backed, the source it fetches, the pattern its parameters must
+match, the payload it puts across the boundary, its timing. It stops at the framework universals.
+Secret delivery, caching, request rejection and failure rendering are already obliged for every
+module by framework items, so a module restating one has written it twice
+([ADR 0012 rev 2](../decisions/0012-module-requirements-in-tree.md)). The boundary is categorical
+rather than a roster of items to check a draft against: the test on a draft `SRS` is whether
+rewording it to name a different module would leave a sentence the framework already says.
 
 A module requirement names one module, and that is its correct form rather than a defect to be
 triaged away. The instinct it meets — that a requirement naming a single instance is implementation
@@ -136,48 +147,72 @@ detail — is aimed at the framework tiers, where an item stating one module's b
 items obliging all of them and cannot be told from a universal by position. Beneath a module need,
 position already says which module the item is about, and naming it is what the item is for.
 
-Two of the decomposition's items are about timing, and each carries a value together with the
-rationale that produced it. Freshness states how stale the data a viewer sees may be, argued from how
-often the source itself changes: refetching faster than the source moves buys a viewer nothing.
-Upstream rate states a politeness bound — how often this module may ask its source, chosen so a
-display left running is not throttled or cut off for asking too often. What those two settle is read
-out of them rather than picked at the keyboard: the success and negative cache TTLs and the rate
-limit of part 2, and the module's poll cadence, are what the two values come to in code, which is
-what writing them down was for
+One overlap with the framework is legitimate, and it is an upstream-backed module's parameter
+pattern. The framework obliges the validating and the rejecting
+(SRS012<!-- Request parameters validated against known-good per-source patterns -->); which pattern
+that is — a code format, an enumerated identifier set — that item's own rationale hands to the
+module, and it is stated as a module `SRS`.
+
+Two of an upstream-backed module's items are about timing, and each carries a value together with
+the rationale that produced it. Freshness states how stale the data a viewer sees may be, argued
+from how often the source itself changes: refetching faster than the source moves buys a viewer
+nothing. Upstream rate states a politeness bound — how often this module may ask its source, chosen
+so a display left running is not throttled or cut off for asking too often. What those two settle is
+read out of them rather than picked at the keyboard: the success and negative cache TTLs and the
+rate limit of part 2, and the module's poll cadence, are what the two values come to in code, which
+is what writing them down was for
 ([§ Cadence and TTL are chosen together](#cadence-and-ttl-are-chosen-together)). What a module does
 not restate is that the rate is bounded at all and not left for an operator to tune
 (SRS011<!-- Upstream request rate is bounded, and the bound is not operator-tunable -->) — the
 framework obliges that there be a bound, and the module says what it is.
 
-Two test tiers guide the decomposition. The Unit tier reads the shaping library of part 1 — the
-upstream URL it builds and the payload it reshapes a response into, pure and without network — so the
-items stating this module's parameters and its payload are written precisely enough for that tier to
-assert them. The Contract tier replays a recorded fixture to catch an upstream that changed beneath
-the library, and it earns no `SRS`: the owner ruled it carries no requirement, because an upstream
-still returning what was expected is an obligation on somebody else's API, and the half that is ours
-is already SRS001<!-- A failed module shows why, and only that module -->
+Two test tiers guide an upstream-backed module's decomposition. The Unit tier reads the shaping
+library of part 1 — the upstream URL it builds and the payload it reshapes a response into, pure and
+without network — so the items stating this module's parameters and its payload are written
+precisely enough for that tier to assert them. The Contract tier replays a recorded fixture to catch
+an upstream that changed beneath the library, and it earns no `SRS`: the owner ruled it carries no
+requirement, because an upstream still returning what was expected is an obligation on somebody
+else's API, and the half that is ours is already
+SRS001<!-- A failed module shows why, and only that module -->
 ([`TESTING.md` § Where the Contract tier runs, and how it reaches upstream](../TESTING.md#where-the-contract-tier-runs-and-how-it-reaches-upstream)).
 The fixture and the scheduled run against it are machinery, not a module obligation.
 
 The module's `TST` items are written with the rest of the decomposition, as pending stubs:
 `active: false`, header and text both prefixed `Pending:`, stating what will be asserted and what it
 lands with — the shape the framework's own pending items already have
-(TST002<!-- Pending: module error-state render test -->). A verification item stays inactive until the
+(TST002<!-- Pending: module error-state render test -->). Every module's render test is among them,
+and an upstream-backed module's unit tests as well. A verification item stays inactive until the
 code it checks exists, and a module's directories and test files do not exist until the first
 vertical slice creates them; the items are activated, given a references entry and re-read against
 their parent then.
 
-Steps 1, 3, 4 and 6 apply to upstream-backed modules only. Steps 2, 5, 7 and 8 apply to every
-module — a local module's component renders from configuration or the browser rather than from a
-payload prop, but it still has a configuration fragment, a component, the dependency-direction check
-and the review trigger.
+The architecture model is drawn in the same change that flips the module's items to accepted and
+active, because every accepted, active item binds to something the model draws
+([ADR 0019 rev 5](../decisions/0019-boundary-at-what-deploys-and-tag-tier.md)). Every module gains a
+component under the frontend for its Svelte component; an upstream-backed module gains one under the
+backend for its shaping library, and one external system for the upstream it reads. Each new
+identifier is declared as `tag SYSNNN` or `tag SRSNNN` in the model's `specification` block and
+applied as the first entry of the body it belongs to, which is the only position that parses it; a
+tag declared and applied to nothing fails on its own. Drawing an element moves the generated
+diagrams, so `docs/architecture/model/`, `docs/architecture/generated/` and `docs/ARCHITECTURE.md`
+are regenerated and committed together, and the prose in `ARCHITECTURE.md` that the drawing
+falsifies is swept in the same change. `just check-arch-trace` is what closes the change, and it
+reads both directions: an accepted, active item nothing carries fails it, and a tag naming an item
+still `proposed` fails it the other way, which is why the model lands with the status flip rather
+than before or after it. While the items sit `proposed`, no model work is owed.
+
+Steps 2, 5, 7 and 8 apply to every module — a local module's component renders from configuration or
+the browser rather than from a payload prop, but it still has a configuration fragment, a component,
+the dependency-direction check and the review trigger. Steps 1, 3, 4 and 6 are what an
+upstream-backed module adds.
 
 1. Write the shaping library as pure functions, with its unit tests against a captured upstream
    response.
 2. Add the configuration-schema fragment and check an example configuration by loading it in the
    page.
 3. Add the registration entry, carrying all six of that route's policies — parameter validation,
-   success TTL, negative TTL, rate limit, outbound timeout, maximum response size.
+   success TTL, negative TTL, rate limit, outbound timeout, maximum response size; the three timing
+   values are read out of the module's freshness and upstream-rate items rather than chosen here.
 4. Add the module's payload to the boundary schema as a named component; the generated type the
    component consumes is emitted from it.
 5. Write the component, plus its render test. Where the module has a payload, write the component
@@ -187,7 +222,9 @@ and the review trigger.
    a component that leaves it undeclared draws its own unavailable state beneath the page's outage
    report, and nothing says so — Svelte ignores a prop the component does not declare, and the render
    tier reads the stand-down against a module it supplies rather than against this one.
-6. Set the module's poll cadence against that route's TTL.
+6. Set the module's poll cadence to what its freshness obligation comes to, and check it against
+   that route's TTL
+   ([§ Cadence and TTL are chosen together](#cadence-and-ttl-are-chosen-together)).
 7. Confirm the dependency direction still runs modules → framework, and that no shared framework
    source names the new module beyond its registration entry.
 8. Adding a module is a test-architecture review trigger — run it, per
