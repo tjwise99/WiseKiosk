@@ -12,22 +12,22 @@ references:
 - keyword: test('nothing the page draws clears the ceiling, over the design as it
     is stated'
   path: frontend/tests/render/emitting-surfaces.spec.ts
-  sha: 46bba5b11e2f74d994807a28bd8dd5d171e2e78d84776c7702ee291a0e9c75f6
+  sha: 5b731391fe1263098deae92c50beb5d19cf7a1a5fb9e222b2123a1751f3dc39e
   type: file
 - keyword: test('nothing clears the ceiling on the page raising the outage report
     either'
   path: frontend/tests/render/emitting-surfaces.spec.ts
-  sha: 46bba5b11e2f74d994807a28bd8dd5d171e2e78d84776c7702ee291a0e9c75f6
+  sha: 5b731391fe1263098deae92c50beb5d19cf7a1a5fb9e222b2123a1751f3dc39e
   type: file
 - keyword: test('the page still draws the two things the exemption is for'
   path: frontend/tests/render/emitting-surfaces.spec.ts
-  sha: 46bba5b11e2f74d994807a28bd8dd5d171e2e78d84776c7702ee291a0e9c75f6
+  sha: 5b731391fe1263098deae92c50beb5d19cf7a1a5fb9e222b2123a1751f3dc39e
   type: file
 - keyword: test(`reports ${seed.name}`
   path: frontend/tests/render/emitting-surfaces.spec.ts
-  sha: 46bba5b11e2f74d994807a28bd8dd5d171e2e78d84776c7702ee291a0e9c75f6
+  sha: 5b731391fe1263098deae92c50beb5d19cf7a1a5fb9e222b2123a1751f3dc39e
   type: file
-reviewed: fCr9i99uRL2grPt5vW1oQUdqtF-4frIP5Q3ZT_k4w50=
+reviewed: kXRsDGMpOm4sCF7SG7u13DGG9e3_v--gBFe_FkhYg60=
 status: accepted
 text: |
   Render a fixture configuration and read every emitting surface of every element the page draws -
