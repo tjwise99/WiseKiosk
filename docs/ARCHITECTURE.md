@@ -198,8 +198,8 @@ A module's own half of this container is its shaping library, drawn when that mo
 it twice — to build the upstream request and to parse the answer — so what is drawn here cannot serve
 a payload on its own. A route's policies — parameter validation, both cache TTLs, rate limit, outbound
 timeout, maximum response size — are one entry in the static registration list and live nowhere else
-([the module contract](contracts/module-contract.md)); that entry is data these components read rather
-than a component of its own.
+in code ([the module contract](contracts/module-contract.md)); that entry is data these components
+read rather than a component of its own.
 
 <!-- arch-export:begin generated/backendComponents.mmd -->
 
