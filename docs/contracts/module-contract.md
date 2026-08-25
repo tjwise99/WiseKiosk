@@ -106,8 +106,8 @@ and it keeps rendering beneath the page's report.
 
 A module reaches the requirements tree before it reaches the repository: one `SYS` for the
 user-facing want, decomposed by `SRS` items carrying what is specific to this module
-([ADR 0012 rev 2](../decisions/0012-module-requirements-in-tree.md)). Writing those is the first part
-of adding a module, and the eight steps below build against what it produces.
+([ADR 0012 rev 2](../decisions/0012-module-requirements-in-tree.md)). Writing those comes first, and
+the eight steps below build against what it produces.
 
 The need states what a viewer gets from this module, in one sentence carrying one `shall`, and it
 enumerates nothing: a need listing its own decomposition is a hat over its children rather than a
@@ -119,19 +119,16 @@ module is a need at all rather than a note on an implementation ticket.
 
 The decomposition beneath it carries what is true of this module and of nothing else — the source it
 fetches, the pattern its parameters must match, the payload it puts across the boundary, its timing.
-It stops at the framework universals. Secret delivery, caching and upstream rate, the rejection of a
-request that does not conform, and how a failure renders are already obliged for every module by
-framework items, so a module restating one has written it twice;
-[ADR 0012 rev 2](../decisions/0012-module-requirements-in-tree.md) names the items that carry them,
-and the boundary is read there rather than re-derived per module. The test on a draft `SRS` is
+It stops at the framework universals. Secret delivery, caching, request rejection and failure
+rendering are already obliged for every module by framework items, so a module restating one has
+written it twice ([ADR 0012 rev 2](../decisions/0012-module-requirements-in-tree.md)). The boundary
+is categorical rather than a roster of items to check a draft against: the test on a draft `SRS` is
 whether rewording it to name a different module would leave a sentence the framework already says.
 
-One overlap is legitimate, and it is the parameter pattern. The backend validates each request
-against the known-good pattern its source declares and rejects what does not conform
-(SRS012<!-- Request parameters validated against known-good per-source patterns -->); which pattern
-that is — a code format, an enumerated identifier set — is handed to the module by that item's own
-rationale, and is stated as a module `SRS`. The framework obliges the validating and the rejecting;
-the module supplies the thing being validated against.
+One overlap is legitimate, and it is the parameter pattern. The framework obliges the validating and
+the rejecting (SRS012<!-- Request parameters validated against known-good per-source patterns -->);
+which pattern that is — a code format, an enumerated identifier set — that item's own rationale hands
+to the module, and it is stated as a module `SRS`.
 
 A module requirement names one module, and that is its correct form rather than a defect to be
 triaged away. The instinct it meets — that a requirement naming a single instance is implementation
@@ -143,10 +140,10 @@ Two of the decomposition's items are about timing, and each carries a value toge
 rationale that produced it. Freshness states how stale the data a viewer sees may be, argued from how
 often the source itself changes: refetching faster than the source moves buys a viewer nothing.
 Upstream rate states a politeness bound — how often this module may ask its source, chosen so a
-display left running for months is not throttled or cut off for asking too often. The registration
-entry's constants are read out of those two rather than picked at the keyboard: the success and
-negative cache TTLs, the poll cadence and the rate limit of part 2 are what the two values come to in
-code, which is what writing them down was for
+display left running is not throttled or cut off for asking too often. What those two settle is read
+out of them rather than picked at the keyboard: the success and negative cache TTLs and the rate
+limit of part 2, and the module's poll cadence, are what the two values come to in code, which is
+what writing them down was for
 ([§ Cadence and TTL are chosen together](#cadence-and-ttl-are-chosen-together)). What a module does
 not restate is that the rate is bounded at all and not left for an operator to tune
 (SRS011<!-- Upstream request rate is bounded, and the bound is not operator-tunable -->) — the
