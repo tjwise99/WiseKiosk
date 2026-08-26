@@ -68,9 +68,8 @@ Where the backend itself is unreachable, no module reports anything. The page sh
 backend is still serving and reports an outage once for the whole display. Every module is handed
 that answer and only an upstream-backed one acts on it: such a module, handed a false reachability
 signal, stands down and renders nothing — no unavailable state, no placeholder, no last-known
-content. A module that reported for itself here would restate the one outage once per
-region, which is what the display is obliged not to do
-(SRS026<!-- The display says when the backend is gone -->).
+content. A module that reported for itself here would restate the one outage once per region, which
+is what the display is obliged not to do (SRS026<!-- The display says when the backend is gone -->).
 
 Reachability reaches the component the way its configuration and payload do (part 1): as a prop,
 threaded from the page shell through the frame to every module. The frame forwards it to every module
@@ -144,9 +143,9 @@ the rationale that produced it. Freshness states how stale the data a viewer see
 from how often the source itself changes: refetching faster than the source moves buys a viewer
 nothing. Upstream rate states a politeness bound — how often this module may ask its source, chosen
 so a display left running is not throttled or cut off for asking too often. The route's two cache
-TTLs, its rate limit and the module's poll cadence are read out of those two items rather than picked
-at the keyboard. What a module does
-not restate is that the rate is bounded at all and not left for an operator to tune
+TTLs, its rate limit and the module's poll cadence are read out of those two items rather than
+picked at the keyboard. What a module does not restate is that the rate is bounded at all and not
+left for an operator to tune
 (SRS011<!-- Upstream request rate is bounded, and the bound is not operator-tunable -->) — the
 framework obliges that there be a bound, and the module says what it is.
 
@@ -185,10 +184,11 @@ source-reachability obligation as the module lands
 ([ADR 0019 rev 5](../decisions/0019-boundary-at-what-deploys-and-tag-tier.md) § Where a tag sits),
 and without which the drawn system is a box nothing reaches.
 
-How a tag is declared and applied, and how the model, its generated artifacts and `ARCHITECTURE.md`
-are regenerated and committed together, are
-[`architecture/README.md § Editing the model`](../architecture/README.md#editing-the-model)'s; the
-prose in `ARCHITECTURE.md` that the drawing falsifies is swept in the same change.
+How a tag is declared and applied is
+[`architecture/README.md § What the model holds, and when an element earns a place`](../architecture/README.md#what-the-model-holds-and-when-an-element-earns-a-place)'s;
+regenerating the model, its generated artifacts and `ARCHITECTURE.md` and committing them together
+is [`architecture/README.md § Editing the model`](../architecture/README.md#editing-the-model)'s.
+The prose in `ARCHITECTURE.md` that the drawing falsifies is swept in the same change.
 `just check-arch-trace` is what closes the change, and it reads both directions — an accepted,
 active item nothing carries fails it, and a tag naming an item still `proposed` fails it the other
 way ([`CI.md § Documentation integrity`](../CI.md#documentation-integrity)) — which is why the model
