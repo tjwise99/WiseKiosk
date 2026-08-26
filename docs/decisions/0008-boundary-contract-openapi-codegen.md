@@ -5,12 +5,10 @@
 the surrounding model was taken 2026-07-23 at the boundary-contract requirements round #37, with the
 codegen-mechanism trade carried by #7). This ADR records the mechanism **decision**; the **build** is
 #7, and rev 3's migration is #188.
-**Rev:** 4
+**Rev:** 3
 
 ## Revisions
 
-- **rev 4** — 2026-08-26 — re-point the module-contract part-number citation after the parts were
-  renumbered base-first (#198 module-spec authoring procedure).
 - **rev 3** — 2026-08-23 — both sides generate the **whole wire contract** — routes, client, server
   and types — where rev 2 generated types alone and left every route hand-authored on each side. That
   gap put the route outside what the drift gate compares, and a hand-rolled per-route drift script was

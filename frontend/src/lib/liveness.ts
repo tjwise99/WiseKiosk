@@ -17,7 +17,7 @@ export const LIVENESS_TIMEOUT_MS = 2000;
 
 /**
  * Whether the backend answered. The ask goes through the generated client, so the route is the
- * boundary schema's rather than a path written here (ADR 0008 rev 4). Every failure is one answer —
+ * boundary schema's rather than a path written here (ADR 0008 rev 3). Every failure is one answer —
  * a refused connection, an ask cut off at its deadline and a 503 are all the backend not being
  * reachable — so nothing here throws and there is no arm the caller has to render separately.
  */

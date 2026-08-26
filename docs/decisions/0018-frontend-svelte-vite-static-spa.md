@@ -41,7 +41,7 @@ what it asserts against.
 Components are authored in the Svelte component format and everything around them in TypeScript,
 which is what [ADR 0017 rev 8](0017-authored-language-set.md) admits for what ships: the
 configuration-validation engine of [ADR 0007 rev 2](0007-config-validation-allocation.md) and the generated
-boundary types of [ADR 0008 rev 4](0008-boundary-contract-openapi-codegen.md) both live here. Vite is an
+boundary types of [ADR 0008 rev 3](0008-boundary-contract-openapi-codegen.md) both live here. Vite is an
 invoked toolchain under that decision, not an authoring language.
 
 ## Alternatives considered
@@ -79,7 +79,7 @@ invoked toolchain under that decision, not an authoring language.
 - **First paint waits for the bundle and the first fetch.** Acceptable for a display that boots once
   and runs for weeks, and it is exactly the trade that would be wrong for a page a person opens cold.
 - **The frontend owns configuration validation** ([ADR 0007 rev 2](0007-config-validation-allocation.md)) and
-  consumes generated boundary types ([ADR 0008 rev 4](0008-boundary-contract-openapi-codegen.md)), so the
+  consumes generated boundary types ([ADR 0008 rev 3](0008-boundary-contract-openapi-codegen.md)), so the
   TypeScript toolchain is unconditional here whatever else changes.
 - **No requirement item states any of this.** The stack constrains the repository rather than the
   running software, which [ADR 0011 rev 2](0011-requirement-or-convention.md) routes to a check —

@@ -14,7 +14,7 @@ The configuration schema is the operator-facing artifact that states what a depl
 parameterised with (SYS003<!-- A deployment is parameterised from outside the image -->). Two
 earlier decisions bound its neighbours but not its language: [ADR 0007 rev 2](0007-config-validation-allocation.md)
 settled *where* validation runs — one TypeScript engine in the page, the backend config-blind — and
-[ADR 0008 rev 4](0008-boundary-contract-openapi-codegen.md) settled the *boundary* contract as a
+[ADR 0008 rev 3](0008-boundary-contract-openapi-codegen.md) settled the *boundary* contract as a
 separate OpenAPI schema that never carries configuration. Neither names the format the configuration
 schema is written in. That format is stated nowhere in the tree; this ADR decides it.
 
@@ -23,7 +23,7 @@ The demand is for a tooling ecosystem, not for an elegant type. The schema has m
 - **One enforcer, in the page.** [ADR 0007 rev 2](0007-config-validation-allocation.md) forbids a
   second validator, and validation runs at apply time — page load — not per render. The
   per-render-cost argument that ruled a runtime validator off the boundary in
-  [ADR 0008 rev 4](0008-boundary-contract-openapi-codegen.md) does not reach a validator that runs
+  [ADR 0008 rev 3](0008-boundary-contract-openapi-codegen.md) does not reach a validator that runs
   once a load.
 - **Machine-enumerable.** SRS024<!-- Every offered configuration key is exercised at a non-default value -->
   ranges *over the schema* to enumerate every offered key — "the schema is the finite
@@ -41,7 +41,7 @@ SYS005<!-- Single-definition internal contract --> does not bind here: it scopes
 configuration explicitly — the configuration format is shared with the operator and governed by
 SYS003<!-- A deployment is parameterised from outside the image --> — so the internal
 define-once-and-generate rule is not imposed on this artifact.
-[ADR 0008 rev 4](0008-boundary-contract-openapi-codegen.md) already names the direction — JSON
+[ADR 0008 rev 3](0008-boundary-contract-openapi-codegen.md) already names the direction — JSON
 Schema 2020-12 is the dialect the configuration schema and the boundary schema would share once
 OpenAPI reaches 3.1.
 
@@ -61,7 +61,7 @@ the one-in-page-enforcer this ADR builds on.)
   regenerates and checks unchanged, the same regenerate-and-compare shape the boundary schema's
   generated code is held to
   ([`docs/CI.md` § Module and framework structure](../CI.md#module-and-framework-structure)). This is
-  the file-per-module composition [ADR 0008 rev 4](0008-boundary-contract-openapi-codegen.md) rejected
+  the file-per-module composition [ADR 0008 rev 3](0008-boundary-contract-openapi-codegen.md) rejected
   for the boundary — there, to keep the single OpenAPI file authored rather than recomposed. The
   configuration schema accepts it: its fragments belong beside the modules that declare them, with no
   single authored file to keep, and the recomposition drift gate is the cost of that placement. The
@@ -112,18 +112,18 @@ SRS002<!-- A module-scoped configuration error is reported at that module -->.
   key enumeration SRS024<!-- Every offered configuration key is exercised at a non-default value -->
   needs would rest on a library's internal introspection rather than on a portable document, and the
   docsite would render from a lossy code-to-JSON-Schema conversion. It also diverges from the
-  2020-12 dialect [ADR 0008 rev 4](0008-boundary-contract-openapi-codegen.md) is heading toward. The
+  2020-12 dialect [ADR 0008 rev 3](0008-boundary-contract-openapi-codegen.md) is heading toward. The
   ticket asks for the tooling ecosystem over the elegant type, and this is the type over the
   ecosystem.
 - **TypeBox.** Authored in TypeScript, emitting a real JSON Schema document *and* static types *and*
   a validator from one source — the data document without the generation step Zod lacks. Rejected
   because it makes the schema generated rather than authored, which is the same cost
-  [ADR 0008 rev 4](0008-boundary-contract-openapi-codegen.md) used to reject TypeSpec for the
+  [ADR 0008 rev 3](0008-boundary-contract-openapi-codegen.md) used to reject TypeSpec for the
   boundary: an authoring layer whose only consumer is a handful of small schemas, generality ahead
   of a second use.
 - **Folding the configuration into the boundary (OpenAPI) schema.** Foreclosed upstream: the
   configuration never crosses the boundary ([ADR 0007 rev 2](0007-config-validation-allocation.md)),
-  and [ADR 0008 rev 4](0008-boundary-contract-openapi-codegen.md) keeps it a separate artifact. A
+  and [ADR 0008 rev 3](0008-boundary-contract-openapi-codegen.md) keeps it a separate artifact. A
   shared *dialect* when OpenAPI reaches 3.1 is a shared vocabulary, not a merged schema.
 
 ## Consequences
@@ -133,7 +133,7 @@ SRS002<!-- A module-scoped configuration error is reported at that module -->.
   SRS024<!-- Every offered configuration key is exercised at a non-default value --> asks for is a
   walk over a standard document rather than over a library's internals.
 - It converges with the boundary schema on JSON Schema 2020-12 — the shared *vocabulary*
-  [ADR 0008 rev 4](0008-boundary-contract-openapi-codegen.md) names, and a candidate for a shared
+  [ADR 0008 rev 3](0008-boundary-contract-openapi-codegen.md) names, and a candidate for a shared
   docsite render — while staying a separate schema that never crosses the wire.
 - A validator ships in the bundle. Weight is owned under
   [ADR 0018 rev 1](0018-frontend-svelte-vite-static-spa.md) and is addressable by compiling the

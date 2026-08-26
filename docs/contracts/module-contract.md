@@ -32,7 +32,7 @@ Parts 1–3 apply to every module; parts 4–6 are what an upstream-backed modul
    [§ An unavailable module and an unreachable backend are different states](#an-unavailable-module-and-an-unreachable-backend-are-different-states).
    Where the module has a payload, the component consumes the type generated from the boundary schema
    rather than one declared by hand
-   ([ADR 0008 rev 4](../decisions/0008-boundary-contract-openapi-codegen.md)).
+   ([ADR 0008 rev 3](../decisions/0008-boundary-contract-openapi-codegen.md)).
 2. **A configuration-schema fragment** *(every module).* Declares what this module accepts, composed
    into the one configuration schema and enforced at apply time in the page, which is where validation
    runs, per [ADR 0007 rev 2](../decisions/0007-config-validation-allocation.md). The fragment does not
@@ -56,7 +56,7 @@ Parts 1–3 apply to every module; parts 4–6 are what an upstream-backed modul
 6. **A boundary-schema fragment** *(upstream-backed only).* Declares the payload this module returns
    across the boundary, as a named component in the one boundary schema — a section of that schema
    rather than a file of its own, and nothing recomposes it
-   ([ADR 0008 rev 4](../decisions/0008-boundary-contract-openapi-codegen.md)). This is what makes the
+   ([ADR 0008 rev 3](../decisions/0008-boundary-contract-openapi-codegen.md)). This is what makes the
    module's generated payload type exist.
 
 ## An unavailable module and an unreachable backend are different states
@@ -172,12 +172,12 @@ their parent then.
 The architecture model is drawn in the same change that accepts the module's `SYS` and `SRS` items —
 they are written active, so the `status` flip is what the model waits on — because every accepted,
 active `SYS` or `SRS` item binds to something the model draws
-([ADR 0019 rev 6](../decisions/0019-boundary-at-what-deploys-and-tag-tier.md)). The `TST` stubs are
+([ADR 0019 rev 5](../decisions/0019-boundary-at-what-deploys-and-tag-tier.md)). The `TST` stubs are
 outside that rule, and activating one later owes the model nothing. Every module gains a component
 under the frontend for its Svelte component; an upstream-backed module gains one under the backend
 for its shaping library, one external system for the upstream it reads, and the relationship from
 the upstream client to that system — the edge that carries the source-reachability obligation as the
-module lands ([ADR 0019 rev 6](../decisions/0019-boundary-at-what-deploys-and-tag-tier.md) § Where a
+module lands ([ADR 0019 rev 5](../decisions/0019-boundary-at-what-deploys-and-tag-tier.md) § Where a
 tag sits), and without which the drawn system is a box nothing reaches. Each new identifier is
 declared as a tag in the model's `specification` block and applied as the first entry of the body it
 belongs to; drawing an element also moves the generated diagrams, so the model, its generated

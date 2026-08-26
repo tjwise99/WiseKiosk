@@ -45,7 +45,7 @@ func main() {
 // newServer assembles the routes: the boundary schema's own, the API, and the
 // served tree for everything else. A nil api answers 404 for every path under
 // /api/. The schema's paths are registered by the generated router, so no path
-// it declares is written here (ADR 0008 rev 4).
+// it declares is written here (ADR 0008 rev 3).
 func newServer(static, api http.Handler) http.Handler {
 	if api == nil {
 		api = http.NotFoundHandler()

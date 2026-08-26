@@ -6,12 +6,10 @@ level the same day, #97 C4 phase 2 Container; the Component level 2026-08-05, #9
 Component; the binding rule 2026-08-08, #121 allocation completeness; the Deployment level
 2026-08-09, #123 C4 phase 4 Deployment; the disclaimer and composed-observable rules 2026-08-10,
 #135 bind the mirror and legibility requirements)
-**Rev:** 6
+**Rev:** 5
 
 ## Revisions
 
-- **rev 6** — 2026-08-26 — re-point the module-contract part-number citations after the parts were
-  renumbered base-first (#198 module-spec authoring procedure).
 - **rev 5** — 2026-08-12 — the `link` consequence no longer names an open ticket for the repository
   layout, which [ADR 0021 rev 1](0021-repository-layout.md) decides; no rule here changes (#5 repo
   layout).
@@ -189,7 +187,7 @@ the upstream client all module-owned and leave the framework half empty — agai
 dependency direction, under which framework code "is shared code from the moment it is written". Parts
 2 and 6 earn no component either: the configuration-schema fragment composes into the one schema the
 frontend validates against, and the boundary-schema fragment belongs to the one schema, which
-[ADR 0008 rev 4](0008-boundary-contract-openapi-codegen.md) gives to neither side. Part 3 is
+[ADR 0008 rev 3](0008-boundary-contract-openapi-codegen.md) gives to neither side. Part 3 is
 tests, which run nowhere in either container and are [`../TESTING.md`](../TESTING.md)'s.
 
 **Only the framework half is drawn.** [ADR 0012 rev 2](0012-module-requirements-in-tree.md) makes a
