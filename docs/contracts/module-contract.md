@@ -32,7 +32,7 @@ Parts 1–3 apply to every module; parts 4–6 are what an upstream-backed modul
    [§ An unavailable module and an unreachable backend are different states](#an-unavailable-module-and-an-unreachable-backend-are-different-states).
    Where the module has a payload, the component consumes the type generated from the boundary schema
    rather than one declared by hand
-   ([ADR 0008 rev 3](../decisions/0008-boundary-contract-openapi-codegen.md)).
+   ([ADR 0008 rev 4](../decisions/0008-boundary-contract-openapi-codegen.md)).
 2. **A configuration-schema fragment** *(every module).* Declares what this module accepts, composed
    into the one configuration schema and enforced at apply time in the page, which is where validation
    runs, per [ADR 0007 rev 2](../decisions/0007-config-validation-allocation.md). The fragment does not
@@ -56,7 +56,7 @@ Parts 1–3 apply to every module; parts 4–6 are what an upstream-backed modul
 6. **A boundary-schema fragment** *(upstream-backed only).* Declares the payload this module returns
    across the boundary, as a named component in the one boundary schema — a section of that schema
    rather than a file of its own, and nothing recomposes it
-   ([ADR 0008 rev 3](../decisions/0008-boundary-contract-openapi-codegen.md)). This is what makes the
+   ([ADR 0008 rev 4](../decisions/0008-boundary-contract-openapi-codegen.md)). This is what makes the
    module's generated payload type exist.
 
 ## An unavailable module and an unreachable backend are different states

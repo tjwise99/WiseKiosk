@@ -5,10 +5,12 @@
 the surrounding model was taken 2026-07-23 at the boundary-contract requirements round #37, with the
 codegen-mechanism trade carried by #7). This ADR records the mechanism **decision**; the **build** is
 #7, and rev 3's migration is #188.
-**Rev:** 3
+**Rev:** 4
 
 ## Revisions
 
+- **rev 4** — 2026-08-26 — re-point the module-contract part-number citation after the parts were
+  renumbered base-first (#198 module-spec authoring procedure).
 - **rev 3** — 2026-08-23 — both sides generate the **whole wire contract** — routes, client, server
   and types — where rev 2 generated types alone and left every route hand-authored on each side. That
   gap put the route outside what the drift gate compares, and a hand-rolled per-route drift script was
@@ -47,7 +49,7 @@ notch too narrow, so rev 3 widens it to the whole wire contract rather than addi
 
 - **One hand-authored OpenAPI schema is the single definition**, owned by neither package (it sits at
   `boundary/openapi.yaml`, per [ADR 0021 rev 1](0021-repository-layout.md)). A module contributes its payload as a **named component inside
-  that schema**: the *fragment* [the module contract](../contracts/module-contract.md) part 5 names is
+  that schema**: the *fragment* [the module contract](../contracts/module-contract.md) part 6 names is
   that component, a section of the one schema rather than a file of its own, so nothing recomposes and
   the schema stays authored rather than generated. Rejected — one fragment file per module, recomposed
   into the committed schema: it buys per-module file ownership at the cost of a composition stage in
