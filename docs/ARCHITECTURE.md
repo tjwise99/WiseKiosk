@@ -15,7 +15,7 @@ The living structural description of WiseKiosk **as built**. It grows with the c
 
 One published container image serving a full-screen, config-driven smart-mirror display: a Go backend
 proxying public APIs and serving the built frontend, and a Svelte SPA rendering modules into regions of
-the page ([ADR 0019 rev 5](decisions/0019-boundary-at-what-deploys-and-tag-tier.md)). The product
+the page ([ADR 0019 rev 6](decisions/0019-boundary-at-what-deploys-and-tag-tier.md)). The product
 definition is the [README](../README.md); the intended architecture until this section describes the
 built one is SYS002<!-- The display's rendering keeps nothing from a viewer -->,
 SYS004<!-- Upstream data reaches the display only through the backend --> and
@@ -36,7 +36,7 @@ overwritten on the next export, and drift fails the staleness gate. The workflow
 **System context (C4 L1)** — the Operator who deploys and configures WiseKiosk, the Viewer it renders
 for, and the boundary between them, which is what deploys: the published image and what it serves. No
 external system appears, an upstream data source being modelled once the module that reads it has a need
-in the tree ([ADR 0019 rev 5](decisions/0019-boundary-at-what-deploys-and-tag-tier.md)).
+in the tree ([ADR 0019 rev 6](decisions/0019-boundary-at-what-deploys-and-tag-tier.md)).
 
 <!-- arch-export:begin generated/index.mmd -->
 
@@ -60,7 +60,7 @@ rest`" .-> Viewer
 **Containers (C4 L2)** — what runs inside the boundary: the backend process, and the frontend bundle
 executing in the browser on the display host. They share one origin, because the backend serves that
 bundle and the configuration file as static content it never interprets
-([ADR 0019 rev 5](decisions/0019-boundary-at-what-deploys-and-tag-tier.md),
+([ADR 0019 rev 6](decisions/0019-boundary-at-what-deploys-and-tag-tier.md),
 [ADR 0007 rev 2](decisions/0007-config-validation-allocation.md)). What parameterises a deployment
 (SYS003<!-- A deployment is parameterised from outside the image -->) reaches that filesystem as two
 separate supplies: the secret for each source, resolved per request
@@ -103,7 +103,7 @@ source implementing it; where that source sits is
 **Every accepted, active `SYS` or `SRS` item binds somewhere in this model, and where one cannot, the
 model grows to draw what it obliges** — there is no exemption record, and which items are unbound is
 `check-arch-trace`'s answer rather than this document's
-([ADR 0019 rev 5](decisions/0019-boundary-at-what-deploys-and-tag-tier.md)). The **kind** of absence is
+([ADR 0019 rev 6](decisions/0019-boundary-at-what-deploys-and-tag-tier.md)). The **kind** of absence is
 what a reader needs, and there is one: an item whose subject the model does not draw at all. The worked
 example is the published image — neither container nor component, so the obligations on it sit at the
 Deployment level, which is the level drawn to carry them.
@@ -194,7 +194,7 @@ SRS008<!-- No secret value in any backend output -->).
 
 **Components (C4 L3)**, diagrammed below; each box's responsibility is the model's, not restated here.
 A module's own half of this container is its shaping library, drawn when that module's need lands
-([ADR 0019 rev 5](decisions/0019-boundary-at-what-deploys-and-tag-tier.md)); the route handler calls
+([ADR 0019 rev 6](decisions/0019-boundary-at-what-deploys-and-tag-tier.md)); the route handler calls
 it twice — to build the upstream request and to parse the answer — so what is drawn here cannot serve
 a payload on its own. A route's policies — parameter validation, both cache TTLs, rate limit, outbound
 timeout, maximum response size — are one entry in the static registration list and live nowhere else
@@ -291,7 +291,7 @@ restated here.
 
 **Components (C4 L3)**, diagrammed below; each box's responsibility is the model's, not restated here.
 A module's own half of this container is its Svelte component, drawn when that module's need lands
-([ADR 0019 rev 5](decisions/0019-boundary-at-what-deploys-and-tag-tier.md)), which is why the edge to
+([ADR 0019 rev 6](decisions/0019-boundary-at-what-deploys-and-tag-tier.md)), which is why the edge to
 the Viewer leaves this container rather than a region within it. Assembly's discipline — placing what
 it is handed, fetching nothing — is the module contract's rule for a module component, applied one
 level up. The bundle that becomes this container arrives on the one edge drawn server-to-client,
@@ -428,7 +428,7 @@ offers no secret-bearing key (SRS007<!-- Configuration schema offers no secret-b
 ## Deployment
 
 **Deployment** — what the project publishes, the hosts that run it, and the files the operator places
-beside them ([ADR 0019 rev 5](decisions/0019-boundary-at-what-deploys-and-tag-tier.md)). It is not one
+beside them ([ADR 0019 rev 6](decisions/0019-boundary-at-what-deploys-and-tag-tier.md)). It is not one
 of C4's four core levels: C4's fourth is Code, and deployment is a supplementary diagram mapping
 containers onto the infrastructure they run on.
 
@@ -467,7 +467,7 @@ the obligations on it are obligations on the artifact rather than on the process
 container host and the display host are **roles, not machines**, with different floors; in the
 configuration this is built for they are necessarily separate machines. Why each of those is so, and why
 a host carries a tag only where an item obliges the operator, is
-[ADR 0019 rev 5](decisions/0019-boundary-at-what-deploys-and-tag-tier.md)'s.
+[ADR 0019 rev 6](decisions/0019-boundary-at-what-deploys-and-tag-tier.md)'s.
 
 **The image carries a CA trust store.** Every module's upstream is fetched by the backend rather than
 by the browser (SYS004<!-- Upstream data reaches the display only through the backend -->), over

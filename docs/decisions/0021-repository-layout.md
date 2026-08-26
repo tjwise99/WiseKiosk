@@ -2,7 +2,7 @@
 
 **Status:** accepted
 **Decided:** 2026-08-12 (#5 repo layout, once #97 C4 phase 2 Container closed and the decomposition
-this projects landed as [ADR 0019 rev 5](0019-boundary-at-what-deploys-and-tag-tier.md))
+this projects landed as [ADR 0019 rev 6](0019-boundary-at-what-deploys-and-tag-tier.md))
 **Rev:** 1
 
 ## Revisions
@@ -30,11 +30,11 @@ What is left to decide is what the roots are called, what sits in neither, and w
 go.
 
 **A repository layout is a projection of the container decomposition onto directories**, which is why
-this decision waited on one. [ADR 0019 rev 5](0019-boundary-at-what-deploys-and-tag-tier.md) decided
+this decision waited on one. [ADR 0019 rev 6](0019-boundary-at-what-deploys-and-tag-tier.md) decided
 two containers behind one origin, and that the provisioning material shipped beside the image falls
 outside the boundary altogether. The third thing the projection has to hold is older: the boundary
 schema belongs to neither container, which is
-[ADR 0008 rev 3](0008-boundary-contract-openapi-codegen.md)'s and which ADR 0019 rev 5 reasons from
+[ADR 0008 rev 3](0008-boundary-contract-openapi-codegen.md)'s and which ADR 0019 rev 6 reasons from
 rather than decides.
 
 **The module is where the projection stops being obvious.** A module is "added and removed as a unit",
@@ -184,7 +184,7 @@ the second one to be invented would have to argue against the first rather than 
   where the trade lands; neither half is decided here.
 - **The model's `link` properties gain their targets with the source they point at.** This record
   supplies the layout a `link` needs; no source exists, and that is what keeps every element without
-  one. How ADR 0019 rev 5 words its own deferral is that record's to change, so this one does not
+  one. How ADR 0019 rev 6 words its own deferral is that record's to change, so this one does not
   count its reasons — a claim about another record's argument goes stale when that record is revised,
   and a pinned citation is green either way, the pin being current while what it is attached to is
   not.
