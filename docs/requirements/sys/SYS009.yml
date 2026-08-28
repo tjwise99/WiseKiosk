@@ -1,40 +1,49 @@
 active: true
 derived: false
 header: |
-  A viewer knows the time of day without looking elsewhere
+  A viewer can know the current time and date without looking elsewhere
 level: 14
 links: []
 normative: true
 rationale: |
   The display's roster is a product decision, and the clock is on it; a module is a need, so the clock
   gets one need of its own decomposed by items carrying what is true of the clock and of nothing else
-  (ADR 0012 rev 2). This is the first of those needs, and until one landed nothing in the tree said the
-  display showed anything at all.
+  (ADR 0012 rev 2).
+  The obligation is a capability rather than an unconditional guarantee, and the configuration is the
+  difference. A framework need holds whatever the display is asked to show, nothing being able to
+  switch it off. A module is configured in or left out, so a need obliging the display to show the
+  time outright would go unmet by every deployment that configures no clock - a permitted deployment
+  rather than a defect, and a need no conforming display can be built to meet is not a want but a
+  mistake. What is owed is that the display can do this when it is asked to.
   What a viewer gets is stated rather than how it is produced. That the time is taken from the machine
-  the page runs on, that it keeps moving, and that its hour form and whether a date joins it follow the
-  configuration are the decomposition beneath, not clauses of the want: a need listing its own children
-  is a hat over them rather than a want.
+  the page runs on, that it keeps moving, and that its hour form and whether the date joins it follow
+  the configuration are the decomposition beneath, not clauses of the want: a need listing its own
+  children is a hat over them rather than a want.
+  The date sits inside this want rather than beside it. A viewer glancing at a wall display reads the
+  time and the date as one act, and they are the same reading of the same host clock rendered in the
+  same region, so splitting them would put one want's content under two.
   That the clock survives an unreachable backend is not among them, and deliberately. It is true of
   every module that fetches nothing rather than of this one, so it is obliged once at the framework
   (SRS040<!-- A module that fetches nothing renders on through an outage -->) beneath the need about
-  failure costing no more than it must, and the clock is where it is first verified rather than where
-  it is stated.
-  "Current" is the whole of the demand and is deliberately load-bearing. A time rendered once and left
+  failure costing no more than it must; the clock verifies it rather than states it.
+  "Current" is load-bearing. A time rendered once and left
   standing satisfies a want phrased as showing the time and fails this one, which is what gives the
   advancing obligation a parent clause to trace to. Nothing here says how the time is formatted, how
   large it is drawn or which region carries it: the size figure is the styling contract's and the
   region is the configuration's, both already obliged of every module by
   SYS002<!-- The display's rendering keeps nothing from a viewer --> and its children.
 ref: ''
-reviewed: l4ntHRFxwSwa4Zb7njr_ui0TiEj571D6wfRaMkQaPmg=
+reviewed: RSxxtzhijMS9gizw8daCJw_84nEvbAUI0q-3Gp3WsJI=
 status: accepted
 text: |
-  The display shall show the current time of day.
+  The display shall be capable of showing the current time of day and date.
 verification-justification: |
-  Its children are read from a rendered page: where the value came from, that it keeps moving while the
-  page stays loaded, and that the hour form and the date follow the configuration. That an unreachable
-  backend takes none of it away is settled beneath a different need, this one being met or failed the
-  same whether the backend is there or not.
+  Its children are read from a rendered page whose configuration asks for a clock: where the value came
+  from, that it keeps moving while the page stays loaded, and that the hour form and the date follow
+  the configuration. A capability is settled by exercising it, so the evidence is a display configured
+  to show the time; one configured without a clock is outside what this claims rather than a failure
+  of it. That an unreachable backend takes none of it away is settled beneath a different need, this
+  one being met or failed the same whether the backend is there or not.
   What none of them can reach is whether the time shown is the true time. The clock of the host running
   the browser is outside this system - the operating system, the runtime and the browser are the
   operator's - so a check can establish that the value is that host's and that it advances, never that

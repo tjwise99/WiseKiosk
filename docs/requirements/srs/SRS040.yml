@@ -19,14 +19,12 @@ rationale: |
   (SRS001<!-- A failed module shows why, and only that module -->), which is rendered for one cause
   and no other - the module's own source failing while the backend answered. A local module has no
   source that can fail that way.
-  This was first written as the clock's, then promoted. Reworded to name any other local module the
-  sentence is identical, which is the tell for a framework obligation; what the tell could not settle
-  is whether the framework already said it, and it did not. Promoting it before a second local module
-  arrived is the alternative to waiting for the duplicate that would have proved it - the wait was
-  available and was refused, because an obligation true of every local module is not made truer by a
-  module restating it.
+  It is stated once, for every module it holds of, rather than per module. Nothing about it varies with
+  which module is being rendered: a module that fetches nothing is undisturbed by an unreachable
+  backend whatever it draws, so the sentence is the same sentence each time and a module carrying its
+  own copy would be carrying this one twice.
 ref: ''
-reviewed: NsHh2adbeSni8C4ZXTJrzBQP-yD_Xx_EnlXZhWKoqtA=
+reviewed: uHM-qJq6ZlHarVp6-gM0PhU8A1k9v1oI4ihgpxWfdJ0=
 status: accepted
 text: |
   While the backend is unreachable a module that fetches nothing shall go on rendering, neither
@@ -38,8 +36,8 @@ verification-justification: |
   timeout, a wrong answer and a network that swallows the request - so this is evidence that a module
   taking nothing from the backend is undisturbed by one, rather than proof that no manner of outage
   can disturb it. And the obligation quantifies over every module that fetches nothing while the
-  evidence today reads one of them, so what is settled is the claim for the modules actually
-  exercised; each local module added brings its own reading of this item rather than inheriting one.
+  evidence reads the ones a suite exercises, so what is settled is the claim for those; a module that
+  no check drives is unasserted here rather than covered by a sibling's reading.
   What the display says about the outage is a different item's, and this check asserts nothing about
   it.
 verification-method: test

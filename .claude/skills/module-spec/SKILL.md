@@ -30,6 +30,8 @@ element. Settle this first; most of the contract's clauses are marked with the s
 1. **One `SYS` need.** What a viewer gets, one sentence, one `shall`, enumerating nothing — a need
    listing its own decomposition is a hat over its children. Header an indicative noun-phrase claim,
    not the sentence beneath it repeated. Written for a reader with no stake in the code.
+   **It obliges a capability** — *shall be capable of showing …* — because a module is configured in
+   or left out; the contract says why.
 2. **The `SRS` decomposition.** What is true of this module and nothing else. Each names its module —
    beneath a module need that is the item's correct form, not an instance to triage away.
 3. **One `Pending:` `TST` stub per active `SRS`** — [pending-stub](../pending-stub/SKILL.md).
@@ -53,8 +55,8 @@ module leave a sentence the framework already says?** If yes, drop it.
 
 **And if rewording leaves a sentence the framework *would* say but does not — stop.** That is not the
 same answer and the first stage cannot tell them apart. The obligation is real and homeless; dropping
-it loses it silently. It becomes a framework item now, or this module's with the next module needing it
-as the promote-later trigger — and **which one is the owner's call**. Surface it; do not choose.
+it loses it silently. It becomes a framework item, or this module's against a recorded trigger for
+promoting it — and **which one is the owner's call**. Surface it; do not choose.
 
 ## Escalate rather than invent
 

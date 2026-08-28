@@ -118,6 +118,13 @@ tier reads — SYS008<!-- The surface carrying no content is a mirror -->, not a
 the sentence beneath it said again. Write it for a reader with no stake in the code — that is what a
 module need is for.
 
+A module need obliges a **capability**, not an outcome: *the display shall be capable of showing …*
+rather than *the display shall show …*. A framework need is unconditional because nothing can switch
+it off, but nothing forces a module to be configured, so a need obliging the display to show that
+module's content outright is unmet by every deployment that leaves the module out — deployments the
+configuration permits. A need no conforming display can be built to satisfy is a mistake rather than
+a want.
+
 The decomposition beneath it carries what is true of this module and of nothing else — what it
 renders in the region it is given and how it behaves there, and what it accepts as configuration;
 and, where the module is upstream-backed, the source it fetches, the pattern its parameters must

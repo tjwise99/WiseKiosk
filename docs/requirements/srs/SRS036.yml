@@ -4,7 +4,7 @@ header: |
   The clock reads the time off the host running the browser
 level: 39
 links:
-- SYS009: l4ntHRFxwSwa4Zb7njr_ui0TiEj571D6wfRaMkQaPmg=
+- SYS009: RSxxtzhijMS9gizw8daCJw_84nEvbAUI0q-3Gp3WsJI=
 normative: true
 rationale: |
   The clock is a local module: it renders from something already present rather than from an upstream,
