@@ -21,6 +21,28 @@ browser's own state, or its configuration — fetches nothing, and has no shapin
 registration and no boundary-schema fragment, there being no upstream to shape and nothing crossing
 the boundary. Each part and each build step below carries the shape it applies to.
 
+## A module is its capability, not its supplier
+
+A module is identified by **what a viewer gets from it** — weather, the time, aviation conditions —
+and never by the service it happens to read. The supplier is an implementation detail: a module
+reads one source, and changing which one is an edit to this repository rather than a choice an
+operator makes or the module arbitrates at runtime. So a module named for its supplier has put a
+swappable detail where its identity belongs, and swapping the supplier would rename the module, its
+roster entry and the configuration key that names it.
+
+**No requirement names a supplier**, in the need or anywhere in the decomposition. A requirement
+naming the party would make replacing that party a specification change, and would tie a viewer's
+want to a company the viewer has never heard of. A module's items are written against *a weather
+source*, *the source*, *its source*.
+
+**The supplier is named in the concrete-upstream layer, and only there**: the external system
+element the architecture model draws, and the route, cache and rate-bucket key that identify the
+upstream in code. Those are facts about what runs rather than obligations on it.
+
+The roster in [`README.md`](../../README.md) already carries the convention — a capability name with
+its current supplier beside it, `AviationWeather` for CheckWX and `DisneyWaitTimes` for
+themeparks.wiki — and a new module joins it the same way.
+
 ## The six parts
 
 1. **A Svelte component** *(every module).* Receives the module's configuration and its payload as
@@ -158,13 +180,28 @@ pattern. The framework obliges the validating and the rejecting
 that is, that item's own rationale hands to the module, and it is stated as a module `SRS`.
 
 Two of an upstream-backed module's items are about timing, and each carries a value together with
-the rationale that produced it. Freshness states how stale the data a viewer sees may be, argued
-from how often the source itself changes: refetching faster than the source moves buys a viewer
-nothing. Upstream rate states a politeness bound — how often this module may ask its source, chosen
-so a display left running is not throttled or cut off for asking too often. The route's two cache
-TTLs, its rate limit and the module's poll cadence are read out of those two items rather than
-picked at the keyboard. What a module does not restate is that the rate is bounded at all and not
-left for an operator to tune
+the rationale that produced it — the figure in the item, argued in the item, rather than a constant
+somewhere with a comment beside it.
+
+Both are argued **at the capability**, not from a supplier's published behaviour. Freshness states
+how stale the data a viewer sees may be, argued from how often the thing the module reports on
+actually changes and from what a display glanced at rather than consulted needs: refetching faster
+than the world moves buys a viewer nothing, and a display has no way to tell a viewer that what it
+shows has aged. Upstream rate states a politeness bound — how often this module may ask its source —
+chosen low enough that a display left running for years is not throttled or cut off by any free
+upstream for asking too often.
+
+Arguing them that way is what makes them **capability requirements that double as
+provider-suitability criteria**. A figure read off one service's refresh interval or its published
+rate limit is that service's property wearing a requirement's clothes: it names no party and still
+cannot outlive one, and swapping the supplier falsifies it silently. A figure argued from the
+capability survives the swap and becomes the test a candidate supplier is held to — a source that
+moves slower than the freshness figure, or that will not be asked as often as the rate figure
+allows, is a source this module cannot use.
+
+The route's two cache TTLs, its rate limit and the module's poll cadence are read out of those two
+items rather than picked at the keyboard. What a module does not restate is that the rate is bounded
+at all and not left for an operator to tune
 (SRS011<!-- Upstream request rate is bounded, and the bound is not operator-tunable -->) — the
 framework obliges that there be a bound, and the module says what it is.
 
@@ -202,6 +239,16 @@ reads, and the relationship from the upstream client to that system — the edge
 source-reachability obligation as the module lands
 ([ADR 0019 rev 5](../decisions/0019-boundary-at-what-deploys-and-tag-tier.md) § Where a tag sits),
 and without which the drawn system is a box nothing reaches.
+
+**That external system is named for the supplier, and the requirements above it are not.** The two
+say different kinds of thing about the same module and the difference is expected rather than a
+seam left open: the model draws what deploys and what it exchanges with, so the box is the service
+actually reached and drawing it unnamed would leave the level asserting an upstream exists while
+refusing to say which — the aggregate placeholder ADR 0019 rev 5 refuses. The specification says
+what a viewer is owed, which the supplier is not ([§ A module is its capability, not its
+supplier](#a-module-is-its-capability-not-its-supplier)). A supplier swap therefore moves the model
+element and the route key and touches no item in the tree, which is the property the split exists
+for.
 
 How a tag is declared and applied is
 [`architecture/README.md § What the model holds, and when an element earns a place`](../architecture/README.md#what-the-model-holds-and-when-an-element-earns-a-place)'s;
