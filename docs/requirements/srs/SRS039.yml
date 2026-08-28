@@ -1,0 +1,34 @@
+active: true
+derived: false
+header: |
+  The clock shows the date when its configuration asks for it
+level: 42
+links:
+- SYS009: s8TjUw37qCSpVRmL9jQhjvVhRKP9haPGIYcmNiYjgic=
+normative: true
+rationale: |
+  A wall display is glanced at, and what a glance is owed differs by where the display hangs: the date
+  is worth its space in some rooms and is clutter in others. So the date is offered rather than always
+  drawn or never drawn, and the offer is the clock's own - it is the same reading of the same host
+  clock, in the same region, and a separate module for it would be a module made of one field.
+  The obligation is two-sided deliberately. An item obliging only the showing would be met by a clock
+  that always draws the date, which is precisely the display the operator who turned it off did not
+  ask for, and omission is the half a check can be fooled on. As with the hour form, the key's name and
+  its default are the configuration-schema fragment's, and that the key is driven at a non-default
+  value is already obliged of every module
+  (SRS024<!-- Every offered configuration key is exercised at a non-default value -->).
+ref: ''
+reviewed: _jPkTQj7c6a2-4jZ8xeCSQOAmPuYC1xr2FzGWqJLmfI=
+status: accepted
+text: |
+  The clock module shall show the current date beside the time when its configuration selects the date,
+  and shall omit the date when its configuration does not.
+verification-justification: |
+  Read from a rendered page under each of the two selections: the date is present and is the host's
+  current date under one, and absent under the other.
+  What it cannot settle is that the date shown is the true date, which is the host's to be right about
+  and outside this system, nor how the date is written - the order of its parts and whether a weekday
+  or a month is spelled are presentation choices the item does not oblige. Where the date sits relative
+  to the time is bounded only as being in the clock's own region, which is the layout's obligation
+  rather than this one's.
+verification-method: test

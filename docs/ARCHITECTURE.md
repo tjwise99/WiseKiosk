@@ -308,6 +308,7 @@ title: "WiseKiosk Frontend — Components (C4 L3)"
 graph TB
   subgraph WisekioskFrontend["`Frontend`"]
     WisekioskFrontend.PageShell@{ shape: rectangle, label: "Page shell" }
+    WisekioskFrontend.Clock@{ shape: rectangle, label: "Clock" }
     WisekioskFrontend.Configuration@{ shape: rectangle, label: "Configuration load and validation" }
     WisekioskFrontend.Layout@{ shape: rectangle, label: "Layout assembly" }
     WisekioskFrontend.PayloadClient@{ shape: rectangle, label: "Payload client" }

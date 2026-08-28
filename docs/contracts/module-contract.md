@@ -118,6 +118,13 @@ tier reads — SYS008<!-- The surface carrying no content is a mirror -->, not a
 the sentence beneath it said again. Write it for a reader with no stake in the code — that is what a
 module need is for.
 
+A module need obliges a **capability**, not an outcome: *the display shall be capable of showing …*
+rather than *the display shall show …*. A framework need is unconditional because nothing can switch
+it off, but nothing forces a module to be configured, so a need obliging the display to show that
+module's content outright is unmet by every deployment that leaves the module out — deployments the
+configuration permits. A need no conforming display can be built to satisfy is a mistake rather than
+a want.
+
 The decomposition beneath it carries what is true of this module and of nothing else — what it
 renders in the region it is given and how it behaves there, and what it accepts as configuration;
 and, where the module is upstream-backed, the source it fetches, the pattern its parameters must
@@ -126,6 +133,18 @@ begin ([ADR 0012 rev 2](../decisions/0012-module-requirements-in-tree.md) names 
 restating one has written it twice. The boundary is categorical rather than a roster of items to
 check a draft against: the test on a draft `SRS` is whether rewording it to name a different module
 would leave a sentence the framework already says.
+
+That test has a second stage, and skipping it is how an obligation goes missing. Rewording a draft can
+leave a sentence the framework *would* say but does not — true of every module, and written down for
+none of them. Read as the first stage alone the test says drop it, and dropping it loses the obligation
+with nothing recording that it went. So it is not the author's to drop: either it lands as a framework
+item in the same change, or it is written as this module's, and a second module needing the same
+sentence promotes it to a framework item rather than leaving a duplicate nobody notices. That
+promotion is a different thing from
+[ADR 0012 rev 2](../decisions/0012-module-requirements-in-tree.md)'s reopen premise, which revisits
+the module-is-a-need decision itself once three near-identical decompositions reveal a universal that
+was missed; this moves one obligation without reopening anything. Which of the two is an owner's call
+rather than the author's, and the author's job is to surface that the sentence has no home yet.
 
 A module `SRS` names its module, and that is its correct form rather than an instance to be triaged
 away. The instinct against naming one instance is aimed at the framework tiers, where an item stating

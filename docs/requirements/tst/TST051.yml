@@ -1,0 +1,28 @@
+active: false
+derived: false
+header: |
+  Pending: the clock's time comes off the host and off nothing else
+level: 73
+links:
+- SRS036: aXZR2wK_pGQpzFH-1GHvvfzmEVyzqYM4A09moVd2OlE=
+normative: true
+rationale: |
+  Two things are asserted together because either alone passes a module that fails the item.
+  A clock reading the host is not distinguished from a clock reading anything else by the value it
+  shows at one instant, so the check drives the host clock and reads the page against it. And a module
+  showing the host's time can still have asked for a time it then ignored, or subscribed to a channel
+  that would have overridden it, so the traffic is watched as well.
+ref: ''
+reviewed: AXUO8wrU9lt9iftSnR1NOi9hPQo5Esf0UdUi-WW8vQM=
+status: proposed
+text: |
+  Pending: render test driving the page against a controlled host clock and asserting the time shown is
+  that clock's, while observing the page's traffic and asserting no request attributable to the clock
+  is issued for the time and no channel is opened that could deliver one. Lands with the first vertical
+  slice (#12); activated and given a references entry then.
+verification-justification: |
+  Settles that the value shown follows the host clock and that no request or subscription for the time
+  is made over the traffic the harness observes.
+  Leaves unproven that the host clock is right, the host being outside this system, and bounds the
+  no-request half by what the harness can see - a channel it does not watch is not asserted about.
+verification-method: test
