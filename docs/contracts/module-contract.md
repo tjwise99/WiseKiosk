@@ -127,6 +127,16 @@ restating one has written it twice. The boundary is categorical rather than a ro
 check a draft against: the test on a draft `SRS` is whether rewording it to name a different module
 would leave a sentence the framework already says.
 
+That test has a second stage, and skipping it is how an obligation goes missing. Rewording a draft can
+leave a sentence the framework *would* say but does not — true of every module, and written down for
+none of them. Read as the first stage alone the test says drop it, and dropping it loses the obligation
+with nothing recording that it went. So it is not the author's to drop: either it lands as a framework
+item in the same change, or it is written as this module's and the next module needing the same
+sentence is the reopen trigger
+([ADR 0012 rev 2](../decisions/0012-module-requirements-in-tree.md)) rather than a duplicate nobody
+notices. Which of the two is an owner's call rather than the author's, and the author's job is to
+surface that the sentence has no home yet.
+
 A module `SRS` names its module, and that is its correct form rather than an instance to be triaged
 away. The instinct against naming one instance is aimed at the framework tiers, where an item stating
 one module's behaviour sits among items obliging all of them and cannot be told from a universal by
