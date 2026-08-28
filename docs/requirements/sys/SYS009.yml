@@ -16,24 +16,26 @@ rationale: |
   rather than a defect, and a need no conforming display can be built to meet is not a want but a
   mistake. What is owed is that the display can do this when it is asked to.
   What a viewer gets is stated rather than how it is produced. That the time is taken from the machine
-  the page runs on, that it keeps moving, and that its hour form and whether the date joins it follow
-  the configuration are the decomposition beneath, not clauses of the want: a need listing its own
-  children is a hat over them rather than a want.
-  The date sits inside this want rather than beside it. A viewer glancing at a wall display reads the
-  time and the date as one act, and they are the same reading of the same host clock rendered in the
-  same region, so splitting them would put one want's content under two.
+  the page runs on, that it keeps moving, and that its hour form and the showing of its date follow the
+  configuration are the decomposition beneath, not clauses of the want: a need listing its own children
+  is a hat over them rather than a want.
+  The date is named here rather than left to the decomposition, and the two halves of it divide
+  cleanly: that the display can show a date is what this want covers, and whether any given display
+  does is the configuration's, which is a child's. A viewer glancing at a wall display reads the time
+  and the date as one act, and they are the same reading of the same host clock rendered in the same
+  region, so a want covering one and not the other would split a single thing across two needs.
   That the clock survives an unreachable backend is not among them, and deliberately. It is true of
   every module that fetches nothing rather than of this one, so it is obliged once at the framework
   (SRS040<!-- A module that fetches nothing renders on through an outage -->) beneath the need about
   failure costing no more than it must; the clock verifies it rather than states it.
-  "Current" is load-bearing. A time rendered once and left
-  standing satisfies a want phrased as showing the time and fails this one, which is what gives the
-  advancing obligation a parent clause to trace to. Nothing here says how the time is formatted, how
+  "Current" is load-bearing. A time rendered once and left standing satisfies a want phrased as
+  showing the time and fails this one, which is what gives the advancing obligation a parent clause to
+  trace to. Nothing here says how the time is formatted, how
   large it is drawn or which region carries it: the size figure is the styling contract's and the
   region is the configuration's, both already obliged of every module by
   SYS002<!-- The display's rendering keeps nothing from a viewer --> and its children.
 ref: ''
-reviewed: RSxxtzhijMS9gizw8daCJw_84nEvbAUI0q-3Gp3WsJI=
+reviewed: s6Ogmlv6bdVlrRNrJnx24sEGXGeTc8hQNrP-Y2dC-OI=
 status: accepted
 text: |
   The display shall be capable of showing the current time of day and date.
