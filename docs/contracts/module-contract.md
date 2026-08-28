@@ -138,11 +138,13 @@ That test has a second stage, and skipping it is how an obligation goes missing.
 leave a sentence the framework *would* say but does not — true of every module, and written down for
 none of them. Read as the first stage alone the test says drop it, and dropping it loses the obligation
 with nothing recording that it went. So it is not the author's to drop: either it lands as a framework
-item in the same change, or it is written as this module's and the next module needing the same
-sentence is the reopen trigger
-([ADR 0012 rev 2](../decisions/0012-module-requirements-in-tree.md)) rather than a duplicate nobody
-notices. Which of the two is an owner's call rather than the author's, and the author's job is to
-surface that the sentence has no home yet.
+item in the same change, or it is written as this module's, and a second module needing the same
+sentence promotes it to a framework item rather than leaving a duplicate nobody notices. That
+promotion is a different thing from
+[ADR 0012 rev 2](../decisions/0012-module-requirements-in-tree.md)'s reopen premise, which revisits
+the module-is-a-need decision itself once three near-identical decompositions reveal a universal that
+was missed; this moves one obligation without reopening anything. Which of the two is an owner's call
+rather than the author's, and the author's job is to surface that the sentence has no home yet.
 
 A module `SRS` names its module, and that is its correct form rather than an instance to be triaged
 away. The instinct against naming one instance is aimed at the framework tiers, where an item stating

@@ -143,7 +143,11 @@ appended for the same reason; inserting one is permitted
 14. **Module universals.** Does a module requirement the change adds or edits state something already
     obliged of every module — failure rendering, secret delivery, caching, request rejection? A
     module's requirements carry what is true of that module and nothing else
-    ([ADR 0012 rev 2](docs/decisions/0012-module-requirements-in-tree.md)).
+    ([ADR 0012 rev 2](docs/decisions/0012-module-requirements-in-tree.md)). And the reverse: does the
+    change drop a sentence that reads as a universal but that no framework item states? That
+    obligation is not the author's to drop silently — it lands as a framework item, or as this
+    module's with the promotion surfaced (the dual-stage test in
+    [the module contract](docs/contracts/module-contract.md)).
 15. **Named resources.** Does a requirement name a file, endpoint, package or tool rather than the
     property the software must have? Naming one swallows a design decision into the specification,
     where it cannot change without a specification change.
