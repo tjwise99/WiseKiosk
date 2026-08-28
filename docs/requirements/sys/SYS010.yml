@@ -1,0 +1,52 @@
+active: true
+derived: false
+header: |
+  A viewer can know the weather now and next without looking elsewhere
+level: 15
+links: []
+normative: true
+rationale: |
+  The display's roster is a product decision, and weather is on it; a module is a need, so weather gets
+  one need of its own decomposed by items carrying what is true of the weather module and of nothing
+  else (ADR 0012 rev 2).
+  The obligation is a capability rather than an unconditional guarantee, and the configuration is the
+  difference. A framework need holds whatever the display is asked to show, nothing being able to switch
+  it off. A module is configured in or left out, so a need obliging the display to show the weather
+  outright would go unmet by every deployment that configures no weather - a permitted deployment rather
+  than a defect, and a need no conforming display can be built to meet is not a want but a mistake. What
+  is owed is that the display can do this when it is asked to.
+  What a viewer gets is stated rather than how it is produced. Which place the weather describes, where
+  it is taken from, how recent it is, how often the source is asked for it and what shape it crosses the
+  boundary in are the decomposition beneath, not clauses of the want: a need listing its own children is
+  a hat over them rather than a want.
+  No supplier is named, here or anywhere beneath. Which service the weather is bought from is an
+  implementation the repository is edited to change, and a want naming one would make that edit a
+  specification change and would tie a viewer's want to a party the viewer has never heard of.
+  The outlook is named here rather than left to the decomposition, and the two halves of it divide
+  cleanly: that the display can show what the weather is expected to do is what this want covers, and
+  how far ahead any given display is drawn is the decomposition's. A viewer glancing at a wall display
+  reads the sky now and the day ahead as one act - whether to take a coat is answered by neither alone -
+  and both describe the same place at the same glance, so a want covering one and not the other would
+  split a single thing across two needs.
+  Nothing here says how the weather is drawn, how large it is or which region carries it: the size
+  figure is the styling contract's and the region is the configuration's, both already obliged of every
+  module by SYS002<!-- The display's rendering keeps nothing from a viewer --> and its children.
+ref: ''
+reviewed: dgflQFtHGeswH-PgjWmcBkfuJujSp-a-Z5JtN4H0Low=
+status: accepted
+text: |
+  The display shall be capable of showing what the weather is doing at a place and what it is expected
+  to do next.
+verification-justification: |
+  Its children are read from a rendered page whose configuration asks for weather, and from the shaping
+  that feeds it: which place the weather describes, where it was taken from, how far behind the source
+  it may be, how often that source is asked, what crosses the boundary and what a viewer can tell apart
+  in the region. A capability is settled by exercising it, so the evidence is a display configured to
+  show weather; one configured without it is outside what this claims rather than a failure of it.
+  What none of them can reach is whether the weather shown is the weather outside. The source is another
+  party's system and lies outside this one, so a check can establish that what is shown is what the
+  source reported and how far behind it the display may fall, never that the source is right about the
+  sky. A display faithfully showing a wrong forecast is this need met, and the same limit is already
+  carried the other way where a host's own clock is outside what the tree can be failed against
+  (SYS009<!-- A viewer can know the current time and date without looking elsewhere -->).
+verification-method: test

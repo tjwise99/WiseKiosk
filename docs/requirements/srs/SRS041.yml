@@ -1,0 +1,39 @@
+active: true
+derived: false
+header: |
+  The weather module takes what it shows from one external weather source
+level: 44
+links:
+- SYS010: dgflQFtHGeswH-PgjWmcBkfuJujSp-a-Z5JtN4H0Low=
+normative: true
+rationale: |
+  The weather module is upstream-backed, and what kind of thing it reads is the module's to say. The
+  framework bounds where upstream data may reach the page from
+  (SRS010<!-- The display page reaches no origin but the backend's -->) and obliges every source it
+  supports to be reachable through the backend
+  (SRS009<!-- Every source reachable through the backend, statelessly -->); neither says what a given
+  module reads, so rewording this item to name another module names a different kind of source rather
+  than leaving a sentence already said elsewhere.
+  One source rather than several is the choice being made. A second source for the same weather would
+  need a rule for which answer wins when the two disagree, and a viewer reading one region cannot be
+  told which one answered - so the display would carry a disagreement nobody can see and nobody can
+  resolve. Changing which supplier is read is an edit to this repository rather than something an
+  operator selects or the module arbitrates at runtime, so nothing here needs the plurality.
+  No supplier is named. The obligation is on the kind of source and on there being one of it, and a
+  requirement naming the party would make replacing that party a specification change.
+ref: ''
+reviewed: OnryOSj5mJXPnidACEWvMPhL3iCI5ZN6bpRQdErTIso=
+status: accepted
+text: |
+  The weather module shall take the weather it shows from one external weather source, and shall derive
+  the weather it shows from no other.
+verification-justification: |
+  Read from the module's shaping and from the requests its route issues under a rendered page: the
+  request built is the one that source answers, and the weather rendered is parsed from that source's
+  response rather than assembled from anywhere else.
+  What it cannot settle is that no second source exists behind the first: the source is another party's
+  system, so what is checkable is that this module asks one party and reads that party's answer, not
+  what that party does to produce it. The absence half is also evidence rather than proof, being
+  asserted over the traffic the harness observes - a channel it does not watch is outside what the check
+  sees.
+verification-method: test
