@@ -1,0 +1,29 @@
+active: false
+derived: false
+header: |
+  Pending: the clock survives an unreachable backend
+level: 77
+links:
+- SRS040: 70NFL8jWOodG-kuwOFOB7Q1PNxVtIOpwXyycD3ASmmU=
+normative: true
+rationale: |
+  The render tier already stands a supplied upstream-backed module down against an unreachable backend;
+  what it does not read is the other side of that distinction, a module that must not stand down. So
+  this is asserted against the clock specifically, in the same staged outage.
+  Advancing is asserted rather than presence alone, because a clock frozen at the moment the backend
+  went away is the failure that would otherwise read as survival.
+ref: ''
+reviewed: 0Oza-HHhrcQB3woem8I-SQ7VOgM__YhOeIzzQaejWUI=
+status: proposed
+text: |
+  Pending: render test loading the page with the backend staged unreachable and asserting the clock's
+  region still carries a time, that it is the controlled host clock's, and that it still moves as that
+  clock advances - with no unavailable state, placeholder or empty region in its place. Lands with the
+  first vertical slice (#12); activated and given a references entry then.
+verification-justification: |
+  Settles that an unreachable backend takes neither the clock's content nor its advancing away, and
+  that the clock puts no state of its own where the time was.
+  Leaves unproven the other ways a backend can be gone: one manner of failure is staged, so this is
+  evidence that the clock does not depend on the backend rather than proof no manner of outage can
+  disturb it. It asserts nothing about what the page says about the outage.
+verification-method: test

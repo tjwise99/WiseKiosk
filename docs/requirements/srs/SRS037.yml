@@ -1,0 +1,33 @@
+active: true
+derived: false
+header: |
+  The clock keeps up with real time while the page stays loaded
+level: 40
+links:
+- SYS009: tElibr5RJkXKnVo8YvMo4twKGHUtpZDziNHYYOIyKQQ=
+normative: true
+rationale: |
+  A display is left running for weeks, so the interesting failure is not a clock that renders wrongly
+  but one that renders once. Where the time comes from and whether it keeps moving are two observables
+  and fail independently: a module reading the host clock at mount and holding that value satisfies the
+  source obligation completely while showing the wrong time within a minute, so this is a separate
+  item rather than a second clause of that one.
+  It carries no interval, no tick rate and no tolerance. What a viewer is owed is that the displayed
+  time tracks the real one, and how often the module re-renders to achieve that is an implementation
+  choice the check bounds - the timing pair a module states in its own requirements is an
+  upstream-backed module's freshness and politeness argument, and the clock has no upstream to be
+  polite to.
+ref: ''
+reviewed: BncC4kkQQlY_JrW0K8telA2uVRGbl-JftsAP1w2Lmv8=
+status: accepted
+text: |
+  The clock module shall keep the time it shows tracking the passage of real time for as long as the
+  page stays loaded, rather than holding the value it first rendered.
+verification-justification: |
+  Read from a rendered page held open across an advancing host clock: the value shown moves with it,
+  which fails a module that renders once and a module that stops.
+  What it cannot settle is the behaviour of a page left running far longer than a check runs. Tracking
+  is asserted over the span the harness holds the page open, so a drift or a stall that appears only
+  after days is outside it, as is any consequence of the host clock being stepped by something outside
+  this system.
+verification-method: test

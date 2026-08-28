@@ -1,0 +1,33 @@
+active: true
+derived: false
+header: |
+  The clock reads the time off the host running the browser
+level: 39
+links:
+- SYS009: tElibr5RJkXKnVo8YvMo4twKGHUtpZDziNHYYOIyKQQ=
+normative: true
+rationale: |
+  The clock is a local module: it renders from something already present rather than from an upstream,
+  and the something is the machine the page is running on. Saying so is the module's, not the
+  framework's - SRS010<!-- The display page reaches no origin but the backend's --> bounds which origin
+  the page may reach and says nothing about whether a module reaches one at all, so rewording this item
+  to name another module would not leave a sentence already said elsewhere.
+  A backend-driven clock is the alternative refused. It would buy a live channel, or a route and a
+  cache, against a want the browser already answers, and would make a display that shows the time
+  depend on a service that has nothing to contribute to it. That dependency is the point of the clause
+  rather than the fetching: what is forbidden is the time arriving from anywhere but the host,
+  whichever mechanism carries it.
+ref: ''
+reviewed: eoGnjaABuSp8Mu9vLdsfrhrf2NNL202kuDjOs-9CHyE=
+status: accepted
+text: |
+  The clock module shall take the time it shows from the clock of the host running the browser,
+  requesting it from nothing and accepting it from nothing pushed to the page.
+verification-justification: |
+  Read from a rendered page: the value shown moves with the host clock the page is driven against, and
+  no request the clock is responsible for is issued for it.
+  What it cannot settle is that the host clock is right - the host is outside this system, so its being
+  the source is the whole of what is checkable and its correctness is the operator's. Absence of a
+  request is also evidence rather than proof: it is asserted over the traffic the harness observes, so
+  a channel the harness does not watch is outside what the check sees.
+verification-method: test
