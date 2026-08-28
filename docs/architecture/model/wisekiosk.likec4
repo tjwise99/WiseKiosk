@@ -181,6 +181,7 @@ model {
       #SRS030
       #SRS032
       #SRS033
+      #SRS040
       technology 'Svelte 5, static single-page bundle'
       icon tech:svelte
       description '''
@@ -248,7 +249,6 @@ model {
         #SRS037
         #SRS038
         #SRS039
-        #SRS040
         description '''
           Renders the time of day into the region the configuration gives it,
           taken from the clock of the host running the browser and kept

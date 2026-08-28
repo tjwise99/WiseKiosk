@@ -1,39 +1,45 @@
 active: true
 derived: false
 header: |
-  The clock goes on showing the time through a backend outage
+  A module that fetches nothing renders on through an outage
 level: 43
 links:
-- SYS009: tElibr5RJkXKnVo8YvMo4twKGHUtpZDziNHYYOIyKQQ=
+- SYS001: VGhozQiiHRgx8gA75WcFC3WXgp9KCc4dS_FDyA8tuGg=
 normative: true
 rationale: |
   A module that fetches has to stand down when the backend is gone, because a display cannot say the
   same outage once per region
-  (SRS026<!-- The display says when the backend is gone -->). The clock fetches nothing, so nothing it
-  shows is any less true for the backend being unreachable, and standing down would take from a viewer
-  something the outage never touched. That is the half stated here: this item says the clock keeps
-  rendering, and says nothing about the report, which is the page's and is already obliged.
-  Nor is it the module's own unavailable state
-  (SRS001<!-- A failed module shows why, and only that module -->), which a module renders for one
-  cause and no other - its own source failing while the backend answered. The clock has no source that
-  can fail that way.
-  Reworded to name another local module the sentence would be equally true, which is the tell for a
-  framework obligation, and no framework item says it today. Stating it here is the owner's call, taken
-  knowingly (owner, 2026-08-27): when a second local module needs the same sentence that is the reopen
-  trigger ADR 0012 rev 2 names, and the shared half is promoted to the framework then rather than
-  guessed at now.
+  (SRS026<!-- The display says when the backend is gone -->). A module that fetches nothing shows
+  nothing that is any less true for the backend being unreachable, so standing it down would take from
+  a viewer something the outage never touched - degrading more of the display than the failure
+  requires, which is what the parent forbids. That is why this sits beside the report rather than
+  under it: one obliges the page to say the outage once, this obliges the outage to cost nothing it
+  need not cost. Neither implies the other, and the display is only right when both hold.
+  It is not a module's own unavailable state
+  (SRS001<!-- A failed module shows why, and only that module -->), which is rendered for one cause
+  and no other - the module's own source failing while the backend answered. A local module has no
+  source that can fail that way.
+  This was first written as the clock's, then promoted. Reworded to name any other local module the
+  sentence is identical, which is the tell for a framework obligation; what the tell could not settle
+  is whether the framework already said it, and it did not. Promoting it before a second local module
+  arrived is the alternative to waiting for the duplicate that would have proved it - the wait was
+  available and was refused, because an obligation true of every local module is not made truer by a
+  module restating it.
 ref: ''
-reviewed: WpXHbmoqHDksi3LAjQ4UwCWhikfZN-Mp1MFoFZXMp8c=
+reviewed: NsHh2adbeSni8C4ZXTJrzBQP-yD_Xx_EnlXZhWKoqtA=
 status: accepted
 text: |
-  While the backend is unreachable the clock module shall go on showing the time, neither standing down
-  nor putting a state of its own in its place.
+  While the backend is unreachable a module that fetches nothing shall go on rendering, neither
+  standing down nor putting a state of its own in its place.
 verification-justification: |
-  Read from a rendered page whose backend is unreachable: the clock's region still carries a time, and
-  it is still advancing, rather than being empty or carrying a message.
-  What it cannot settle is every way a backend can be gone. Unreachability is staged by the harness -
-  one manner of failure among refusal, timeout, a wrong answer and a network that swallows the request
-  - so this is evidence that the clock does not depend on the backend rather than proof it cannot be
-  disturbed by one. What the display says about the outage is a different item's, and this check
-  asserts nothing about it.
+  Read from a rendered page whose backend is unreachable: the module's region still carries its
+  content, still changing where its content changes, rather than being empty or carrying a message.
+  Two things bound it. Unreachability is staged by the harness - one manner of failure among refusal,
+  timeout, a wrong answer and a network that swallows the request - so this is evidence that a module
+  taking nothing from the backend is undisturbed by one, rather than proof that no manner of outage
+  can disturb it. And the obligation quantifies over every module that fetches nothing while the
+  evidence today reads one of them, so what is settled is the claim for the modules actually
+  exercised; each local module added brings its own reading of this item rather than inheriting one.
+  What the display says about the outage is a different item's, and this check asserts nothing about
+  it.
 verification-method: test

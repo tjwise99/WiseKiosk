@@ -4,7 +4,7 @@ header: |
   The clock keeps up with real time while the page stays loaded
 level: 40
 links:
-- SYS009: tElibr5RJkXKnVo8YvMo4twKGHUtpZDziNHYYOIyKQQ=
+- SYS009: l4ntHRFxwSwa4Zb7njr_ui0TiEj571D6wfRaMkQaPmg=
 normative: true
 rationale: |
   A display is left running for weeks, so the interesting failure is not a clock that renders wrongly

@@ -4,16 +4,20 @@ header: |
   Pending: the clock survives an unreachable backend
 level: 77
 links:
-- SRS040: 70NFL8jWOodG-kuwOFOB7Q1PNxVtIOpwXyycD3ASmmU=
+- SRS040: kHM_asrS0CgJK7zRaAQwi2AspEQV5oumMe6j-SQh-P0=
 normative: true
 rationale: |
   The render tier already stands a supplied upstream-backed module down against an unreachable backend;
   what it does not read is the other side of that distinction, a module that must not stand down. So
-  this is asserted against the clock specifically, in the same staged outage.
+  this is asserted in the same staged outage.
+  Its parent obliges every module that fetches nothing, and the clock is the one that exists, so the
+  clock is what this reads. That is the ordinary shape of a verification item rather than a shortfall
+  in it - a general obligation is verified by the instances there are, and the next local module brings
+  its own item rather than being covered retrospectively by this one.
   Advancing is asserted rather than presence alone, because a clock frozen at the moment the backend
   went away is the failure that would otherwise read as survival.
 ref: ''
-reviewed: 0Oza-HHhrcQB3woem8I-SQ7VOgM__YhOeIzzQaejWUI=
+reviewed: u4qZtVTTc3s92wvJ1opOU3MisRqPYPkkDoDHhNkW3-M=
 status: proposed
 text: |
   Pending: render test loading the page with the backend staged unreachable and asserting the clock's
@@ -25,5 +29,8 @@ verification-justification: |
   that the clock puts no state of its own where the time was.
   Leaves unproven the other ways a backend can be gone: one manner of failure is staged, so this is
   evidence that the clock does not depend on the backend rather than proof no manner of outage can
-  disturb it. It asserts nothing about what the page says about the outage.
+  disturb it. It also leaves unproven every module its parent obliges that is not the clock - the
+  obligation quantifies over all of them and this reads one, so the parent's coverage grows only as
+  each further such module gains a reading of its own. It asserts nothing about what the page says
+  about the outage.
 verification-method: test
