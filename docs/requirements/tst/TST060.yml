@@ -1,0 +1,28 @@
+active: false
+derived: false
+header: |
+  Pending: the weather region tells the present from what is expected
+level: 82
+links:
+- SRS045: y3spq4JBEwGDG4J4DFik7pBxYFaf6sEYwXIU7HCkCIg=
+normative: true
+rationale: |
+  Presence alone would pass a component that ran the three parts together into one undifferentiated
+  block, which is the failure the item names rather than an untidy version of success. So separability
+  is asserted beside presence.
+  It is read from the rendered output rather than from what the component was handed, the whole
+  distinction between this and the payload obligation being that a component can be given everything and
+  draw half of it.
+ref: ''
+reviewed: u3LP4yiBOK-7o1Dm4OXwwENb6vT_UpoJ2fYo6vK56b8=
+status: proposed
+text: |
+  Pending: render test handing the component a payload and asserting the present weather and both
+  forward ranges are all drawn, and that each of the three is separable from the other two in what is
+  rendered. Lands with the first vertical slice (#12); activated and given a references entry then.
+verification-justification: |
+  Settles that all three are drawn and are told apart in the rendered output.
+  Leaves unproven that a viewer glancing across a room tells them apart, which is a judgement about a
+  real display in a real room and not something a rendered page settles. It is bounded by the payloads
+  the suite supplies: a payload shape no case covers is unasserted.
+verification-method: test
