@@ -37,6 +37,7 @@ specification {
   tag SYS005
   tag SYS006
   tag SYS008
+  tag SYS009
   tag SRS001
   tag SRS002
   tag SRS003
@@ -67,6 +68,11 @@ specification {
   tag SRS033
   tag SRS034
   tag SRS035
+  tag SRS036
+  tag SRS037
+  tag SRS038
+  tag SRS039
+  tag SRS040
 }
 
 model {
@@ -233,6 +239,23 @@ model {
           it from its own liveness ask, and each module component stands
           itself down on that answer rather than every one of them rendering
           an unavailable state over the one outage.
+        '''
+      }
+
+      clock = component 'Clock' {
+        #SYS009
+        #SRS036
+        #SRS037
+        #SRS038
+        #SRS039
+        #SRS040
+        description '''
+          Renders the time of day into the region the configuration gives it,
+          taken from the clock of the host running the browser and kept
+          tracking real time for as long as the page stays loaded. Presents
+          the hour in the form its configuration selects, and the date beside
+          it where the configuration asks for one. Fetches nothing, so a
+          backend that is gone takes nothing from it.
         '''
       }
     }
