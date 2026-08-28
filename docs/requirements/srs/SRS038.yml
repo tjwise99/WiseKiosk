@@ -4,7 +4,7 @@ header: |
   The clock's hour form is the one its configuration selects
 level: 41
 links:
-- SYS009: s6Ogmlv6bdVlrRNrJnx24sEGXGeTc8hQNrP-Y2dC-OI=
+- SYS009: s8TjUw37qCSpVRmL9jQhjvVhRKP9haPGIYcmNiYjgic=
 normative: true
 rationale: |
   Twelve-hour and twenty-four-hour are both right answers, and which one a display should show is the

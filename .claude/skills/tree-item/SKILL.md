@@ -32,8 +32,9 @@ $D clear SRS0NN            # stamps the parent link
 `clear` is what writes the parent fingerprint into `links:`. `scripts/check-unreviewed.py` fails on
 that null, so add-link-review with no `clear` reds the gate on every item it produced.
 
-This is the reverse of re-blessing a child after its parent moved, where `clear` comes first and
-`review` second. Same two commands, opposite order, different act.
+Their order is immaterial: neither command reads what the other writes, and the two sequences produce
+byte-identical files. Re-blessing a child after its parent moved uses the same two commands for a
+different act — a human re-reading the child against the parent it has.
 
 **Editing an item after stamping unreviews it** — `rationale`, `verification-method`,
 `verification-justification` and the parent UIDs are all inside the fingerprint. Re-run `review`.

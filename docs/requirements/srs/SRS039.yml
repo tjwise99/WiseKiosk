@@ -4,7 +4,7 @@ header: |
   The clock shows the date when its configuration asks for it
 level: 42
 links:
-- SYS009: s6Ogmlv6bdVlrRNrJnx24sEGXGeTc8hQNrP-Y2dC-OI=
+- SYS009: s8TjUw37qCSpVRmL9jQhjvVhRKP9haPGIYcmNiYjgic=
 normative: true
 rationale: |
   A wall display is glanced at, and what a glance is owed differs by where the display hangs: the date

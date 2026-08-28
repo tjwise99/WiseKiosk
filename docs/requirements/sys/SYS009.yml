@@ -30,12 +30,12 @@ rationale: |
   failure costing no more than it must; the clock verifies it rather than states it.
   "Current" is load-bearing. A time rendered once and left standing satisfies a want phrased as
   showing the time and fails this one, which is what gives the advancing obligation a parent clause to
-  trace to. Nothing here says how the time is formatted, how
-  large it is drawn or which region carries it: the size figure is the styling contract's and the
-  region is the configuration's, both already obliged of every module by
+  trace to. Nothing here says how the time is formatted, how large it is drawn or which region carries
+  it: the size figure is the styling contract's and the region is the configuration's, both already
+  obliged of every module by
   SYS002<!-- The display's rendering keeps nothing from a viewer --> and its children.
 ref: ''
-reviewed: s6Ogmlv6bdVlrRNrJnx24sEGXGeTc8hQNrP-Y2dC-OI=
+reviewed: s8TjUw37qCSpVRmL9jQhjvVhRKP9haPGIYcmNiYjgic=
 status: accepted
 text: |
   The display shall be capable of showing the current time of day and date.
