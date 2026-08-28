@@ -29,6 +29,13 @@ adds. Reasoning is
   *"Lands with the first vertical slice (#12); activated and given a references entry then."*
   Name the ticket, never a bare number alone.
 
+  **That ticket is a choice, not boilerplate.** The example above is a real open issue and it copies
+  cleanly into a stub it is wrong for, where it reads as a decision somebody made. Work out which
+  ticket writes the artifact this stub waits on and check the issue says so —
+  `gh issue view <n> --json title,body` — before writing the sentence. A stub naming the wrong ticket
+  is invisible to every gate and is read as fact at activation, which is the point where getting it
+  wrong costs the most.
+
 ## Stamping one — the whole problem
 
 `check-unreviewed.py` reads inactive items and fails on a missing stamp on the item **or** on its
