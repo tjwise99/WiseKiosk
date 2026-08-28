@@ -63,7 +63,11 @@ design_119-c4_model_completion
 - its **parent matches the PR base** — a sub-issue's PR targets its integration branch, a top-level
   issue's targets `main`, and the gate asserts that in both directions;
 - the PR's **Development field links the ticket**: `Closes #N` in the body writes that record on a
-  default-base PR, an integration or epic base needs it linked by hand.
+  default-base PR and writes **nothing** on an integration or epic base, which has to be linked
+  separately — in the web UI's Development panel, or with the API call the
+  [`file-ticket` skill](.claude/skills/file-ticket/SKILL.md) carries for a session that has no UI.
+  The gate reads GitHub's recorded state rather than the body, so a `Closes` line on an epic-based
+  PR looks right and gates red.
 
 **PR titles are Conventional Commits** — the repo squash-merges, so the title becomes the commit
 on `main`. A `fixup!`/`squash!`/merge subject passes as a commit message, whose text the squash

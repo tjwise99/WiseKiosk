@@ -3,9 +3,10 @@ name: file-ticket
 description: >-
   File a WiseKiosk issue that conforms to the gates, from a session where the GitHub template picker
   does not exist. Carries the template-to-label-to-branch-type mapping, the required milestone, how
-  ordering and epic membership are recorded, and the API traps that make each of those silently
-  fail. Invoke before `gh issue create` — filing a ticket by hand produces one that cannot be
-  branched on.
+  ordering and epic membership are recorded, how a pull request records its ticket in the
+  Development field when its base is not the default branch, and the API traps that make each of
+  those silently fail. Invoke before `gh issue create` — filing a ticket by hand produces one that
+  cannot be branched on — and when a PR onto an integration or epic branch needs its ticket linked.
 ---
 
 # File a ticket
@@ -100,6 +101,41 @@ gh api repos/tjwise99/WiseKiosk/issues/<parent-number>/sub_issues --jq '[.[].num
 
 Detaching is the same shape against the singular path: `gh api -X DELETE
 repos/tjwise99/WiseKiosk/issues/<parent-number>/sub_issue -F sub_issue_id=$child`.
+
+## Linking the ticket to its PR, on an epic base
+
+The same gate demands one more record, at the other end of the work: the PR's **Development field**
+must link the ticket, on every base. `Closes #N` in the PR body writes that record **only when the
+base is the default branch**. A sub-issue's PR targets its integration branch, so the keyword writes
+nothing, the body still reads as though it did, and `check-branch.py` fails with *"link it there
+manually — body keywords record nothing against base '<epic>'"*. It reads GitHub's recorded state,
+so no wording in the body will satisfy it.
+
+There is a web UI for this — the Development panel on the pull request — and no `gh` subcommand.
+From a session without a browser the record is written with a GraphQL mutation, which takes **node
+ids**, not numbers:
+
+```sh
+issue=$(gh api graphql -f query='{repository(owner:"tjwise99",name:"WiseKiosk"){issue(number:<n>){id}}}' \
+  --jq '.data.repository.issue.id')
+pr=$(gh api graphql -f query='{repository(owner:"tjwise99",name:"WiseKiosk"){pullRequest(number:<p>){id}}}' \
+  --jq '.data.repository.pullRequest.id')
+gh api graphql -f query="mutation{addCloseIssueReferences(input:{issueId:\"$issue\",pullRequestIds:[\"$pr\"]}){clientMutationId}}"
+```
+
+**Read it back rather than trusting the exit code** — the mutation returns a null
+`clientMutationId` on success, which looks like nothing happening:
+
+```sh
+gh api graphql -f query='{repository(owner:"tjwise99",name:"WiseKiosk"){pullRequest(number:<p>){closingIssuesReferences(first:5){nodes{number}}}}}' \
+  --jq '.data.repository.pullRequest.closingIssuesReferences.nodes'
+```
+
+Undoing it is `removeCloseIssueReferences`, same input shape.
+
+The mutation is not in `gh`'s help and is easy to doubt; both names come from the live schema, and
+`gh api graphql -f query='{__type(name:"Mutation"){fields{name}}}'` is how to check that again if
+either is ever renamed.
 
 ## In the body
 
