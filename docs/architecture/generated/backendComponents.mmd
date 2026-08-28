@@ -10,7 +10,9 @@ graph TB
     WisekioskBackend.RequestValidation@{ shape: rectangle, label: "Request validation" }
     WisekioskBackend.ResponseCache@{ shape: rectangle, label: "Response cache" }
     WisekioskBackend.UpstreamClient@{ shape: rectangle, label: "Upstream client" }
+    WisekioskBackend.WeatherShaping@{ shape: rectangle, label: "Weather shaping" }
   end
+  OpenMeteo@{ shape: rectangle, label: "Open-Meteo" }
   Operator -. "`Places the configuration into the served 
 tree`" .-> WisekioskBackend.StaticServing
   Operator -. "`Supplies the secret for each source`" .-> WisekioskBackend.UpstreamClient
@@ -23,3 +25,5 @@ it gets`" .-> WisekioskBackend.ResponseCache
   WisekioskBackend.RouteHandler -. "`Asks for a fresh response when nothing 
 is held`" .-> WisekioskBackend.UpstreamClient
   WisekioskBackend.StaticServing -. "`Serves the single-page bundle`" .-> WisekioskFrontend
+  WisekioskBackend.UpstreamClient -. "`Fetches the weather for the location a 
+request names`" .-> OpenMeteo
