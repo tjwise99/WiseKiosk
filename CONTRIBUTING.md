@@ -65,7 +65,7 @@ design_119-c4_model_completion
 - the PR's **Development field links the ticket**: `Closes #N` in the body writes that record on a
   default-base PR and writes **nothing** on an integration or epic base, which has to be linked
   separately — in the web UI's Development panel, or with the API call the
-  [`file-ticket` skill](.claude/skills/file-ticket/SKILL.md) carries for a session that has no UI.
+  [`link-pr` skill](.claude/skills/link-pr/SKILL.md) carries for a session that has no UI.
   The gate reads GitHub's recorded state rather than the body, so a `Closes` line on an epic-based
   PR looks right and gates red.
 
