@@ -156,9 +156,20 @@ restating one has written it twice. The boundary is categorical rather than a ro
 check a draft against: the test on a draft `SRS` is whether rewording it to name a different module
 would leave a sentence the framework already says.
 
-That test has a second stage, and skipping it is how an obligation goes missing. Rewording a draft can
-leave a sentence the framework *would* say but does not — true of every module, and written down for
-none of them. Read as the first stage alone the test says drop it, and dropping it loses the obligation
+**The test runs over rewording and over abstraction, and an author is done only when both have been
+tried.** Rewording swaps the module named and keeps everything else — *the clock* for *the weather
+module*. Abstraction goes one step further and drops what is particular to the module, leaving the
+shape underneath: *the weather module shall report on the location its configuration names*
+abstracts to *a module reports on the subject its configuration names*. Rewording alone is not
+enough, because an item whose every clause mentions its own subject survives it untouched while the
+sentence beneath it is a universal — which is precisely the item most worth catching. Abstraction
+alone is not enough either: abstract far enough and every item reduces to *a module does what it is
+for*, so the abstraction that counts is the one that drops the module and keeps the obligation.
+Where the two disagree, the abstracted reading is the one to take to the second stage.
+
+That test has a second stage, and skipping it is how an obligation goes missing. The test can leave
+a sentence the framework *would* say but does not — true of every module, and written down for none
+of them. Read as the first stage alone the test says drop it, and dropping it loses the obligation
 with nothing recording that it went. So it is not the author's to drop: either it lands as a framework
 item in the same change, or it is written as this module's, and a second module needing the same
 sentence promotes it to a framework item rather than leaving a duplicate nobody notices. That
@@ -167,6 +178,20 @@ promotion is a different thing from
 the module-is-a-need decision itself once three near-identical decompositions reveal a universal that
 was missed; this moves one obligation without reopening anything. Which of the two is an owner's call
 rather than the author's, and the author's job is to surface that the sentence has no home yet.
+
+**There is a third outcome, and it is neither drop nor escalate: the sentence is already settled by
+this document.** The tree is not the only place an obligation on every module can live — this
+contract states structure directly, and what it states is binding without a tree item behind it
+([ADR 0011 rev 2](../decisions/0011-requirement-or-convention.md) decides which of the two an
+obligation belongs in). *An upstream-backed module reads exactly one source* is part 5's "exactly
+one entry in the static, compile-time list, binding `GET /api/<source>`", and an author who searches
+the `SRS` tier for it finds nothing and concludes the obligation is homeless. It is not; it is
+written down one document over.
+
+So the second stage asks two questions rather than one. Does a framework item say it — if yes, drop
+the draft. Does **this contract** say it — if yes, the draft cites the clause in its own
+`rationale`, and nothing is promoted and nothing is escalated. Only when neither says it is the
+sentence homeless, and only then is it the owner's call. Search both before raising one.
 
 A module `SRS` names its module, and that is its correct form rather than an instance to be triaged
 away. The instinct against naming one instance is aimed at the framework tiers, where an item stating
