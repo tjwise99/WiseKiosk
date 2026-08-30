@@ -7,24 +7,26 @@ links:
 - SYS001: VGhozQiiHRgx8gA75WcFC3WXgp9KCc4dS_FDyA8tuGg=
 normative: true
 rationale: |
-  A module that fetches has to stand down when the backend is gone, because a display cannot say the
-  same outage once per region
-  (SRS026<!-- The display says when the backend is gone -->). A module that fetches nothing shows
-  nothing that is any less true for the backend being unreachable, so standing it down would take from
-  a viewer something the outage never touched - degrading more of the display than the failure
-  requires, which is what the parent forbids. That is why this sits beside the report rather than
-  under it: one obliges the page to say the outage once, this obliges the outage to cost nothing it
-  need not cost. Neither implies the other, and the display is only right when both hold.
+  That a module which fetches stands down when the backend is gone - renders nothing, no unavailable
+  state, no placeholder, no last-known content - is module-contract.md's, under An unavailable module
+  and an unreachable backend are different states. A module that fetches nothing shows nothing that is
+  any less true for the backend being unreachable, so standing it down would take from a viewer
+  something the outage never touched - degrading more of the display than the failure requires, which
+  is what the parent forbids. That is why this sits beside the report rather than under it: the report
+  (SRS026<!-- The display says when the backend is gone -->) obliges the page to say the outage once,
+  this obliges the outage to cost nothing it need not cost. Neither implies the other, and the display
+  is only right when both hold.
   It is not a module's own unavailable state
-  (SRS001<!-- A failed module shows why, and only that module -->), which is rendered for one cause
-  and no other - the module's own source failing while the backend answered. A local module has no
-  source that can fail that way.
+  (SRS001<!-- A failed module shows why, and only that module -->), which a module renders in its own
+  place when its own data request failed. That it is drawn for one cause and no other - the module's
+  own source failing while the backend answered - is module-contract.md's, under the same heading. A
+  local module has no source that can fail that way.
   It is stated once, for every module it holds of, rather than per module. Nothing about it varies with
   which module is being rendered: a module that fetches nothing is undisturbed by an unreachable
   backend whatever it draws, so the sentence is the same sentence each time and a module carrying its
   own copy would be carrying this one twice.
 ref: ''
-reviewed: uHM-qJq6ZlHarVp6-gM0PhU8A1k9v1oI4ihgpxWfdJ0=
+reviewed: U8tzNncaFlU-mA4Z5z_4TDEheZN3rvb7z-3S7t2E7Xg=
 status: accepted
 text: |
   While the backend is unreachable a module that fetches nothing shall go on rendering, neither
