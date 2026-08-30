@@ -7,7 +7,7 @@
     },
     {
       "region": "middle_center",
-      "module": "OpenMeteo"
+      "module": "Weather"
     }
   ]
 }

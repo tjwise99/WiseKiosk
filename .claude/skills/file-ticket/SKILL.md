@@ -101,6 +101,10 @@ gh api repos/tjwise99/WiseKiosk/issues/<parent-number>/sub_issues --jq '[.[].num
 Detaching is the same shape against the singular path: `gh api -X DELETE
 repos/tjwise99/WiseKiosk/issues/<parent-number>/sub_issue -F sub_issue_id=$child`.
 
+Linking a sub-issue's pull request to its ticket, which the same gate demands and which a `Closes #N`
+body keyword does not write against an integration base, is the [`link-pr`](../link-pr/SKILL.md)
+skill's.
+
 ## In the body
 
 - **Never a bare `#N`, and never a number as a name.** Issues and PRs share one counter, so `#66` and

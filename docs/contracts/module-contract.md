@@ -21,6 +21,28 @@ browser's own state, or its configuration — fetches nothing, and has no shapin
 registration and no boundary-schema fragment, there being no upstream to shape and nothing crossing
 the boundary. Each part and each build step below carries the shape it applies to.
 
+## A module is its capability, not its supplier
+
+A module is identified by **what a viewer gets from it** — weather, the time, aviation conditions —
+and never by the service it happens to read. The supplier is an implementation detail: a module
+reads one source, and changing which one is an edit to this repository rather than a choice an
+operator makes or the module arbitrates at runtime. So a module named for its supplier has put a
+swappable detail where its identity belongs, and swapping the supplier would rename the module, its
+roster entry and the configuration key that names it.
+
+**No requirement names a supplier**, in the need or anywhere in the decomposition. A requirement
+naming the party would make replacing that party a specification change, and would tie a viewer's
+want to a company the viewer has never heard of. A module's items are written against *a weather
+source*, *the source*, *its source*.
+
+**The supplier is named in the concrete-upstream layer, and only there**: the external system
+element the architecture model draws, and the route, cache and rate-bucket key that identify the
+upstream in code. Those are facts about what runs rather than obligations on it.
+
+The roster in [`README.md`](../../README.md) already carries the convention — a capability name with
+its current supplier beside it, `AviationWeather` for CheckWX and `DisneyWaitTimes` for
+themeparks.wiki — and a new module joins it the same way.
+
 ## The six parts
 
 1. **A Svelte component** *(every module).* Receives the module's configuration and its payload as
@@ -134,9 +156,20 @@ restating one has written it twice. The boundary is categorical rather than a ro
 check a draft against: the test on a draft `SRS` is whether rewording it to name a different module
 would leave a sentence the framework already says.
 
-That test has a second stage, and skipping it is how an obligation goes missing. Rewording a draft can
-leave a sentence the framework *would* say but does not — true of every module, and written down for
-none of them. Read as the first stage alone the test says drop it, and dropping it loses the obligation
+**The test runs over rewording and over abstraction, and an author is done only when both have been
+tried.** Rewording swaps the module named and keeps everything else — *the clock* for *the weather
+module*. Abstraction goes one step further and drops what is particular to the module, leaving the
+shape underneath: *the weather module shall report on the location its configuration names*
+abstracts to *a module reports on the subject its configuration names*. Rewording alone is not
+enough, because an item whose every clause mentions its own subject survives it untouched while the
+sentence beneath it is a universal — which is precisely the item most worth catching. Abstraction
+alone is not enough either: abstract far enough and every item reduces to *a module does what it is
+for*, so the abstraction that counts is the one that drops the module and keeps the obligation.
+Where the two disagree, the abstracted reading is the one to take to the second stage.
+
+That test has a second stage, and skipping it is how an obligation goes missing. The test can leave
+a sentence the framework *would* say but does not — true of every module, and written down for none
+of them. Read as the first stage alone the test says drop it, and dropping it loses the obligation
 with nothing recording that it went. So it is not the author's to drop: either it lands as a framework
 item in the same change, or it is written as this module's, and a second module needing the same
 sentence promotes it to a framework item rather than leaving a duplicate nobody notices. That
@@ -145,6 +178,20 @@ promotion is a different thing from
 the module-is-a-need decision itself once three near-identical decompositions reveal a universal that
 was missed; this moves one obligation without reopening anything. Which of the two is an owner's call
 rather than the author's, and the author's job is to surface that the sentence has no home yet.
+
+**There is a third outcome, and it is neither drop nor escalate: the sentence is already settled by
+this document.** The tree is not the only place an obligation on every module can live — this
+contract states structure directly, and what it states is binding without a tree item behind it
+([ADR 0011 rev 2](../decisions/0011-requirement-or-convention.md) decides which of the two an
+obligation belongs in). *An upstream-backed module reads exactly one source* is part 5's "exactly
+one entry in the static, compile-time list, binding `GET /api/<source>`", and an author who searches
+the `SRS` tier for it finds nothing and concludes the obligation is homeless. It is not; it is
+written down one document over.
+
+So the second stage asks two questions rather than one. Does a framework item say it — if yes, drop
+the draft. Does **this contract** say it — if yes, the draft cites the clause in its own
+`rationale`, and nothing is promoted and nothing is escalated. Only when neither says it is the
+sentence homeless, and only then is it the owner's call. Search both before raising one.
 
 A module `SRS` names its module, and that is its correct form rather than an instance to be triaged
 away. The instinct against naming one instance is aimed at the framework tiers, where an item stating
@@ -158,13 +205,28 @@ pattern. The framework obliges the validating and the rejecting
 that is, that item's own rationale hands to the module, and it is stated as a module `SRS`.
 
 Two of an upstream-backed module's items are about timing, and each carries a value together with
-the rationale that produced it. Freshness states how stale the data a viewer sees may be, argued
-from how often the source itself changes: refetching faster than the source moves buys a viewer
-nothing. Upstream rate states a politeness bound — how often this module may ask its source, chosen
-so a display left running is not throttled or cut off for asking too often. The route's two cache
-TTLs, its rate limit and the module's poll cadence are read out of those two items rather than
-picked at the keyboard. What a module does not restate is that the rate is bounded at all and not
-left for an operator to tune
+the rationale that produced it — the figure in the item, argued in the item, rather than a constant
+somewhere with a comment beside it.
+
+Both are argued **at the capability**, not from a supplier's published behaviour. Freshness states
+how stale the data a viewer sees may be, argued from how often the thing the module reports on
+actually changes and from what a display glanced at rather than consulted needs: refetching faster
+than the world moves buys a viewer nothing, and a display has no way to tell a viewer that what it
+shows has aged. Upstream rate states a politeness bound — how often this module may ask its source —
+chosen low enough that a display left running for years is not throttled or cut off by any free
+upstream for asking too often.
+
+Arguing them that way is what makes them **capability requirements that double as
+provider-suitability criteria**. A figure read off one service's refresh interval or its published
+rate limit is that service's property wearing a requirement's clothes: it names no party and still
+cannot outlive one, and swapping the supplier falsifies it silently. A figure argued from the
+capability survives the swap and becomes the test a candidate supplier is held to — a source that
+moves slower than the freshness figure, or that will not be asked as often as the rate figure
+allows, is a source this module cannot use.
+
+The route's two cache TTLs, its rate limit and the module's poll cadence are read out of those two
+items rather than picked at the keyboard. What a module does not restate is that the rate is bounded
+at all and not left for an operator to tune
 (SRS011<!-- Upstream request rate is bounded, and the bound is not operator-tunable -->) — the
 framework obliges that there be a bound, and the module says what it is.
 
@@ -202,6 +264,16 @@ reads, and the relationship from the upstream client to that system — the edge
 source-reachability obligation as the module lands
 ([ADR 0019 rev 5](../decisions/0019-boundary-at-what-deploys-and-tag-tier.md) § Where a tag sits),
 and without which the drawn system is a box nothing reaches.
+
+**That external system is named for the supplier, and the requirements above it are not.** The two
+say different kinds of thing about the same module and the difference is expected rather than a
+seam left open: the model draws what deploys and what it exchanges with, so the box is the service
+actually reached and drawing it unnamed would leave the level asserting an upstream exists while
+refusing to say which — the aggregate placeholder ADR 0019 rev 5 refuses. The specification says
+what a viewer is owed, which the supplier is not ([§ A module is its capability, not its
+supplier](#a-module-is-its-capability-not-its-supplier)). A supplier swap therefore moves the model
+element and the route key and touches no item in the tree, which is the property the split exists
+for.
 
 How a tag is declared and applied is
 [`architecture/README.md § What the model holds, and when an element earns a place`](../architecture/README.md#what-the-model-holds-and-when-an-element-earns-a-place)'s;

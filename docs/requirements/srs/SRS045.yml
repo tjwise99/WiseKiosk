@@ -1,0 +1,35 @@
+active: true
+derived: false
+header: |
+  The weather module shows the present weather and the outlook apart from each other
+level: 48
+links:
+- SYS010: dgflQFtHGeswH-PgjWmcBkfuJujSp-a-Z5JtN4H0Low=
+normative: true
+rationale: |
+  A payload carrying everything a viewer is owed is drawn by a component that can still show half of it,
+  or run the three parts together so that a glance cannot tell what is happening now from what is
+  expected later. That failure is invisible to the shaping and visible only on a page, which is why this
+  is its own item rather than a second clause of the payload's.
+  What is obliged is that the parts are told apart, not how. Where each sits, in what order and in what
+  styling is the page's layout and the styling contract's, both already obliged of every module; a
+  viewer confusing this afternoon's rain for the rain outside is the failure this forbids, and there are
+  many arrangements that avoid it.
+  Reading a wall display is a glance rather than a study, so being told apart has to survive the glance.
+  That is a property of the rendering rather than of the data, and no obligation on the payload reaches
+  it.
+ref: ''
+reviewed: ZhfrzoIOm1XuLizBKb4P_0_PUV8N_SC9I6FFYzLJKjk=
+status: accepted
+text: |
+  The weather module shall show both the present weather and the weather expected next, the present
+  distinguishable from the expected, and the hours next to come distinguishable from the days next to
+  come.
+verification-justification: |
+  Read from a rendered page handed a payload: the present weather and both forward ranges are all
+  present, and each is separable from the other two by what is drawn.
+  What it cannot settle is whether the arrangement chosen is a good one. That a viewer can tell the
+  parts apart at a glance across the room is a judgement about a real display in a real room, and a
+  check reads a rendered page rather than a viewer. It is also bounded by the payloads a suite supplies:
+  a payload shape no case covers is unasserted here.
+verification-method: test

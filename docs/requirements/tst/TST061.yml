@@ -1,0 +1,30 @@
+active: false
+derived: false
+header: |
+  Pending: the weather shown follows its source inside the freshness bound
+level: 83
+links:
+- SRS046: twOwP_ffa_ll4QDgilsFX0QBaqRfP1KwM6EUN9qcKwA=
+normative: true
+rationale: |
+  Two things are staged because neither alone makes the bound decidable. A source that never changes its
+  answer cannot show the page following one, and a wall clock cannot be run for the length of the bound
+  inside a suite, so the source is moved and the clock is driven.
+  The reload is what the assertion is against. A page that picked up the change only when it was loaded
+  again would satisfy any reading taken after a reload while leaving a display that is never reloaded
+  showing weather from whenever it started.
+ref: ''
+reviewed: rvHAiRKYXVWduEGZZ9ZPpBQea7zaym_Lh8SGtczmMVc=
+status: proposed
+text: |
+  Pending: render test holding the page open against a source staged to change its answer and a driven
+  clock, asserting the region carries the changed answer within the freshness bound the requirement
+  states and without the page being reloaded. Lands with the first vertical slice (#12); activated and
+  given a references entry then.
+verification-justification: |
+  Settles that what is drawn follows a change at the source inside the bound, on a page nobody reloaded.
+  Leaves unproven how far behind the weather the source itself runs, which is another party's and
+  outside this system. It is asserted against a clock the harness drives rather than a wall clock, so
+  what is settled is the module's behaviour as time is presented to it, and a page left running far
+  longer than the suite runs is outside it.
+verification-method: test

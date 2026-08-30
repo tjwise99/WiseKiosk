@@ -52,8 +52,19 @@ is. Quote a two-digit tail (`level: '1.10'`) or YAML collapses it to `1.1`.
 Keys are alphabetical. `ref: ''` on every item. `derived: false`. `normative: true` unless the item
 obliges nothing, in which case its `verification-method` is empty and it carries no justification.
 
+**`doorstop add` writes `status: proposed`, and the sequence above never changes it.** An item
+authored to the commands alone is stamped, linked and un-baselined: `check-arch-trace` refuses a tag
+naming a `proposed` item, so the model cannot carry it and the change cannot close. Set
+`status: accepted` by hand, in the same edit that writes the content — accepting is the human act of
+having read it, which is why no command does it for you. `status` sits outside the review
+fingerprint, so setting it moves no stamp and can be done before or after `review`. The exception is
+a deliberate stub, which stays `proposed` — see [pending-stub](../pending-stub/SKILL.md).
+
 ## Checklist before you commit — each of these is a gate, not a preference
 
+- **`status: accepted`**, unless the item is a deliberate stub. `doorstop add` writes `proposed` and
+  no command in the sequence changes it, so this is the one field an author has to remember; a
+  `proposed` item cannot be tagged in the model and reds `check-arch-trace`.
 - **`verification-justification` on every item.** Required with no exception
   ([ADR 0009 rev 2](../../../docs/decisions/0009-verification-justification-attribute.md)); at `test`
   it says what the check leaves unproven, below `test` what blocks a mechanical check. The single most

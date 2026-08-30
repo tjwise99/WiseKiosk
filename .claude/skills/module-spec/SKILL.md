@@ -43,6 +43,20 @@ element. Settle this first; most of the contract's clauses are marked with the s
 Item mechanics throughout — creating, linking, the two stamps, the per-item checklist — are
 [tree-item](../tree-item/SKILL.md)'s.
 
+## Commit granularity, and a red step 2
+
+**Steps 2 and 3 are gate-complete only together.** An active `SRS` with no child link errors the
+strict gate, so a commit holding step 2 alone reds `just check-reqs` until step 3's stubs land, and a
+commit holding steps 1–3 without step 4 reds `check-arch-trace` until the model does. Both are
+expected rather than a mistake.
+
+**Either shape is fine, and the choice is the change's, not this skill's.** One commit per step
+reviews the reasoning in the order it was made and leaves intermediate commits red; one commit for
+steps 2 and 3 together leaves every commit green and merges two arguments into one message. **Only
+the PR head is gated** — CI runs against the merge result, not each commit — so a red intermediate
+commit blocks nothing. Where a step is red in isolation, say so in that commit's message, so the next
+reader meets the reason rather than a mystery.
+
 ## The boundary, and its second stage
 
 The decomposition stops where the framework universals begin — what is obliged of every module
@@ -66,6 +80,21 @@ what the choice *does*. Where the specification is silent on something observabl
 
 ## Closing
 
-`just check-reqs`, `just check-citations`, `just check-arch-trace`, `just check-arch`, then
-`just verify`. Adding a module is a test-architecture review trigger
+`just check-reqs`, `just check-citations`, `just check-arch-trace`, `just check-arch`. Those four are
+what this work can fail, and all four run from `docs/requirements/.venv` and
+`docs/architecture/node_modules`, which the module-spec path already needs.
+
+Then `just verify` — with two caveats, because **it halts at the first failing recipe**, so a stop
+early in the list means every gate after it did not run and the change was not measured:
+
+- **`check-branch` needs the GitHub API.** It resolves the branch's issue over HTTPS; a sandbox
+  without a usable trust store, or no network, fails it on the environment rather than on the branch.
+- **`check-site` needs `docs/site/.venv`**, which nothing on this path installs. Create it with
+  `just site-install` once, or expect the stop.
+
+Neither failure says anything about the module spec. When `verify` stops on one, run the rest by
+name rather than reading the stop as a verdict — the recipe list is in the `verify` line of the
+[justfile](../../../justfile). **CI is the source of truth either way**, and it has both.
+
+Adding a module is a test-architecture review trigger
 ([`docs/TESTING.md` § Review cadence](../../../docs/TESTING.md)).

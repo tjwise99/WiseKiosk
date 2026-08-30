@@ -1,0 +1,29 @@
+active: false
+derived: false
+header: |
+  Pending: the weather comes from one source and no other
+level: 78
+links:
+- SRS041: iXvWfUkcMIBIak0JBQIl-PLsKBzrXEjzJBqCiix_cnc=
+normative: true
+rationale: |
+  Two things are asserted together because either alone passes a module that fails the item.
+  A payload that looks like weather does not say which party produced it, so the check stages the source
+  and reads the page against what that source alone returned. And a module reading its source can still
+  be reading a second one beside it - blending, or falling back - so the traffic the module causes is
+  watched as well.
+ref: ''
+reviewed: r92llrTfQFdsdHk5Is1bHSj8VAyv0x8zS4fSjBl6ZRE=
+status: proposed
+text: |
+  Pending: unit and render test driving the module against one staged weather source and asserting the
+  weather rendered is that source's answer, with no part of it drawn from anywhere else, while observing
+  the traffic the module's route causes and asserting no request reaches a second source. Lands with the
+  first vertical slice (#12); activated and given a references entry then.
+verification-justification: |
+  Settles that what a viewer reads is the one staged source's answer, over the traffic the harness
+  observes.
+  Leaves unproven what that source does behind its own boundary, it being another party's system, and
+  bounds the absence half by what the harness watches - a destination it does not observe is not
+  asserted about.
+verification-method: test

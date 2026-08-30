@@ -1,0 +1,37 @@
+active: true
+derived: false
+header: |
+  The weather module reports on the location its configuration names
+level: 45
+links:
+- SYS010: dgflQFtHGeswH-PgjWmcBkfuJujSp-a-Z5JtN4H0Low=
+normative: true
+rationale: |
+  A wall display hangs in one place and the weather worth its space is that place's. Where a deployment
+  hangs is the operator's knowledge and not ours - the same image runs at the author's house and at
+  someone else's, on different sides of a range of hills - so the place is configuration rather than a
+  constant, and it is one of the two things a module's own decomposition carries.
+  What the item states is what the choice does, not what it is spelled. The key's name and its default
+  belong to the module's configuration-schema fragment, and a requirement naming them would fix an
+  interface here that the schema is the record of. Nor does the item say the option is exercised: that
+  every offered key is driven at a non-default value is already obliged of every module
+  (SRS024<!-- Every offered configuration key is exercised at a non-default value -->).
+  This is not the pattern a location must match. That item bounds which values the backend will carry
+  upstream at all and is a check on a request; this one says the configured place is the place reported
+  on, which is what a viewer would notice going wrong. A module could reject every malformed location
+  and still show the weather somewhere else entirely.
+ref: ''
+reviewed: wWVexkGmEC9A3uY5y8w71NE85lU2z0PDENQyznQUXwQ=
+status: accepted
+text: |
+  The weather module shall report the weather for the location its configuration names, and for no
+  other.
+verification-justification: |
+  Read from a rendered page under a configuration naming a location, against a source staged to answer
+  differently by location: the request the module causes carries the configured place and the region
+  shows the answer given for it, and a second configuration naming a second place moves both.
+  What it cannot settle is that the source's answer is true of that place - which place a supplier
+  believes it is answering for is its own, and outside this system. It also settles nothing about a
+  configuration naming no location, which is a configuration-validation question rather than this
+  module's.
+verification-method: test
