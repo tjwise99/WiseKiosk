@@ -4,7 +4,7 @@ header: |
   Pending: the clock survives an unreachable backend
 level: 77
 links:
-- SRS040: yapJ28uK8zaBEMsMdr0j9lF41Y_TVaDw6zcoqIn5C1U=
+- SRS040: FztMJgU2LktJuauxJaOpF5Enp8VObHIco6OvPbHPtbM=
 normative: true
 rationale: |
   The render tier already stands a supplied upstream-backed module down against an unreachable backend;
