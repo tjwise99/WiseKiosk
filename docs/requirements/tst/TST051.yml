@@ -1,7 +1,7 @@
-active: false
+active: true
 derived: false
 header: |
-  Pending: the clock's time comes off the host and off nothing else
+  The clock's time comes off the host and off nothing else
 level: 73
 links:
 - SRS036: aXZR2wK_pGQpzFH-1GHvvfzmEVyzqYM4A09moVd2OlE=
@@ -13,13 +13,19 @@ rationale: |
   showing the host's time can still have asked for a time it then ignored, or subscribed to a channel
   that would have overridden it, so the traffic is watched as well.
 ref: ''
-reviewed: AXUO8wrU9lt9iftSnR1NOi9hPQo5Esf0UdUi-WW8vQM=
+references:
+- keyword: 'test(''TST051: takes the time off the host clock, asking nothing for it'',
+    async ({ page }) => {'
+  path: frontend/src/modules/clock/clock.spec.ts
+  sha: 8afd3f5fc5f56f06abb87443d44b27136fd1d53ed322f8ab98d70631db14b8cd
+  type: file
+reviewed: P9IKHnJE2EuEYR-FSjxrzNiLAPXV95pje73cFyjjfAc=
 status: proposed
 text: |
-  Pending: render test driving the page against a controlled host clock and asserting the time shown is
-  that clock's, while observing the page's traffic and asserting no request attributable to the clock
-  is issued for the time and no channel is opened that could deliver one. Lands with the first vertical
-  slice (#12); activated and given a references entry then.
+  Render test driving the page against a host clock the test holds, asserting the time shown is that
+  clock's both at rest and after it advances, while watching what the page asks for and what it opens:
+  every ask of a kind that fetches data is one the page shell makes on its own account, and no channel
+  is opened beyond the one the tier's own server holds.
 verification-justification: |
   Settles that the value shown follows the host clock and that no request or subscription for the time
   is made over the traffic the harness observes.

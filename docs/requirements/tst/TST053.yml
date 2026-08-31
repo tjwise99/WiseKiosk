@@ -1,7 +1,7 @@
-active: false
+active: true
 derived: false
 header: |
-  Pending: each hour form is the one its selection asked for
+  Each hour form is the one its selection asked for
 level: 75
 links:
 - SRS038: R0HOuBF7kotpzdPXK3DKBOVCnBN3NlGLiPsgG_-yau0=
@@ -12,13 +12,18 @@ rationale: |
   each other at an hour that tells them apart - an afternoon hour, since morning hours read alike in
   both forms - so a module that varies the label without varying the hour is caught.
 ref: ''
-reviewed: whdvgI2jyus3AkeRVhk6im_VArIVcKVpzbnlpgjyG1g=
+references:
+- keyword: 'test(''TST053: presents the hour in the form its configuration selects'',
+    async ({ page }) => {'
+  path: frontend/src/modules/clock/clock.spec.ts
+  sha: 8afd3f5fc5f56f06abb87443d44b27136fd1d53ed322f8ab98d70631db14b8cd
+  type: file
+reviewed: P1i9XJDUsg8kwXFUqR0Nmw42-LkghJ78HNeKPQz8SYQ=
 status: proposed
 text: |
-  Pending: render test loading the page under each of the two hour selections at a host time in the
-  afternoon, asserting that the hour presented is the one that selection calls for and that the two
-  renderings differ. Lands with the first vertical slice (#12); activated and given a references entry
-  then.
+  Render test loading the page under each of the two hour selections at an afternoon host time,
+  asserting that the hour presented is the one that selection calls for and that the two renderings
+  differ from each other.
 verification-justification: |
   Settles that the presented hour follows the selection under both values, which fails a module that
   hardcodes either form or that ignores the key.
