@@ -144,7 +144,7 @@ runs `just smoke-image` once per architecture. Both need Docker, which is why ne
 ## Generated boundary contract
 
 The one OpenAPI schema is hand-authored and both sides' **routes, client, server and types** are
-generated from it ([ADR 0008 rev 3](decisions/0008-boundary-contract-openapi-codegen.md)). The gate
+generated from it ([ADR 0008 rev 4](decisions/0008-boundary-contract-openapi-codegen.md)). The gate
 regenerates the Go and TypeScript output and fails on any difference, so a schema edit that reaches
 neither side, and a hand-edit of either, both fail.
 

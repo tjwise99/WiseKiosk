@@ -26,6 +26,76 @@ export interface ClientRejection {
   message: string;
 }
 
+/**
+ * The weather at the location at present.
+ */
+export interface WeatherCurrent {
+  /** Air temperature, in degrees Fahrenheit. */
+  temp: number;
+  /** How warm it feels, in degrees Fahrenheit. Carried apart from the temperature because it is what a coat is chosen against, and the two part company in wind and in damp. */
+  apparentTemp: number;
+  /** Relative humidity, as a percentage. */
+  humidity: number;
+  /** Wind speed, in miles per hour. */
+  windSpeed: number;
+  /** What the sky is doing, as a WMO 4677 present-weather code. An open standard rather than a supplier's vocabulary, so what draws it maps the code to its own icon. */
+  weatherCode: number;
+  /** Whether it is daylight at the location. */
+  isDay: boolean;
+}
+
+/**
+ * The weather expected at the location for one hour to come.
+ */
+export interface WeatherHour {
+  /** The hour this entry is for, as an ISO 8601 timestamp carrying the location's own UTC offset — `2026-08-31T14:00:00-04:00` — so the hour is unambiguous wherever it is read. */
+  time: string;
+  /** Air temperature expected, in degrees Fahrenheit. */
+  temp: number;
+  /** What the sky is expected to be doing, as a WMO 4677 present-weather code. */
+  weatherCode: number;
+  /** The chance of precipitation, as a percentage. */
+  precipProbability: number;
+}
+
+/**
+ * The weather expected at the location for one day to come.
+ */
+export interface WeatherDay {
+  /** The day this entry is for, as an ISO 8601 timestamp at that day's start carrying the location's own UTC offset — `2026-08-31T00:00:00-04:00`. */
+  time: string;
+  /** What the sky is expected to be doing, as a WMO 4677 present-weather code. */
+  weatherCode: number;
+  /** The warmest the day is expected to get, in degrees Fahrenheit. */
+  max: number;
+  /** The coldest the day is expected to get, in degrees Fahrenheit. */
+  min: number;
+  /** The chance of precipitation, as a percentage. */
+  precipProbability: number;
+}
+
+/**
+ * The weather module's payload: what the weather is doing at one location now, and what it is expected to do over the hours and the days next to come. Every temperature here is in degrees Fahrenheit and every wind speed in miles per hour — the units are the schema's, so no value on the wire carries one and no consumer converts.
+ */
+export interface WeatherPayload {
+  current: WeatherCurrent;
+  /** The hours next to come, nearest first. How many is the shaping library's. */
+  hourly: WeatherHour[];
+  /** The days next to come, nearest first. How many is the shaping library's. */
+  daily: WeatherDay[];
+}
+
+export type GetApiWeatherParams = {
+  /**
+   * Latitude of the point, in decimal degrees north of the equator.
+   */
+  lat: number;
+  /**
+   * Longitude of the point, in decimal degrees east of the prime meridian.
+   */
+  lon: number;
+};
+
 export type getHealthzResponse200 = {
   data: void;
   status: 200;
@@ -59,4 +129,88 @@ export const getHealthz = async (
     status: res.status,
     headers: res.headers,
   } as getHealthzResponse;
+};
+
+export type getApiWeatherResponse200 = {
+  data: WeatherPayload;
+  status: 200;
+};
+
+export type getApiWeatherResponse400 = {
+  data: ClientRejection;
+  status: 400;
+};
+
+export type getApiWeatherResponse429 = {
+  data: ClientRejection;
+  status: 429;
+};
+
+export type getApiWeatherResponse502 = {
+  data: UpstreamFailure;
+  status: 502;
+};
+
+export type getApiWeatherResponse503 = {
+  data: UpstreamFailure;
+  status: 503;
+};
+
+export type getApiWeatherResponse504 = {
+  data: UpstreamFailure;
+  status: 504;
+};
+
+export type getApiWeatherResponseSuccess = getApiWeatherResponse200 & {
+  headers: Headers;
+};
+export type getApiWeatherResponseError = (
+  | getApiWeatherResponse400
+  | getApiWeatherResponse429
+  | getApiWeatherResponse502
+  | getApiWeatherResponse503
+  | getApiWeatherResponse504
+) & {
+  headers: Headers;
+};
+
+export type getApiWeatherResponse =
+  getApiWeatherResponseSuccess | getApiWeatherResponseError;
+
+export const getGetApiWeatherUrl = (params: GetApiWeatherParams) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? "null" : String(value));
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0
+    ? `/api/weather?${stringifiedParams}`
+    : `/api/weather`;
+};
+
+/**
+ * @summary Report the weather at a point on the earth's surface.
+ */
+export const getApiWeather = async (
+  params: GetApiWeatherParams,
+  options?: RequestInit,
+): Promise<getApiWeatherResponse> => {
+  const res = await fetch(getGetApiWeatherUrl(params), {
+    ...options,
+    method: "GET",
+  });
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+
+  const data: getApiWeatherResponse["data"] = body ? JSON.parse(body) : {};
+  return {
+    data,
+    status: res.status,
+    headers: res.headers,
+  } as getApiWeatherResponse;
 };

@@ -57,7 +57,7 @@
 
 The product's languages were decided. Go is [ADR 0001 rev 1](0001-backend-language-go.md); the frontend is
 [ADR 0018 rev 1](0018-frontend-svelte-vite-static-spa.md); the boundary types are generated into both by
-[ADR 0008 rev 3](0008-boundary-contract-openapi-codegen.md). The languages the *repository* is written in were
+[ADR 0008 rev 4](0008-boundary-contract-openapi-codegen.md). The languages the *repository* is written in were
 never decided at all. Programs are authored here in POSIX sh, in Node ESM and in Python, none of
 those by anyone's choice, and the next contributor could add a fourth without meeting an argument.
 

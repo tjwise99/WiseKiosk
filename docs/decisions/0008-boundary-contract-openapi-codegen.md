@@ -1,14 +1,20 @@
 # 0008 — Boundary contract: one OpenAPI schema, the whole wire contract generated from it
 
 **Status:** accepted
-**Decided:** 2026-08-23 (rev 3's types-to-wire-contract pivot, in the #188 boundary codegen session;
-the surrounding model was taken 2026-07-23 at the boundary-contract requirements round #37, with the
+**Decided:** 2026-08-31 (rev 4's registry seam, met at the first module data route on #220 weather
+module; the types-to-wire-contract pivot taken 2026-08-23 in the #188 boundary codegen session, and
+the surrounding model 2026-07-23 at the boundary-contract requirements round #37, with the
 codegen-mechanism trade carried by #7). This ADR records the mechanism **decision**; the **build** is
 #7, and rev 3's migration is #188.
-**Rev:** 3
+**Rev:** 4
 
 ## Revisions
 
+- **rev 4** — 2026-08-31 — rev 3's open question is answered by the first module data route: the
+  generated `ServerInterface` method **delegates into the registry**, implemented in the registry's
+  own file beside the entry it reaches. The first parameterised route also falsifies rev 3's claim
+  that the generated server adds no module requirement, and the dependency it does add is recorded
+  as a consequence (#220 weather module).
 - **rev 3** — 2026-08-23 — both sides generate the **whole wire contract** — routes, client, server
   and types — where rev 2 generated types alone and left every route hand-authored on each side. That
   gap put the route outside what the drift gate compares, and a hand-rolled per-route drift script was
@@ -68,8 +74,10 @@ notch too narrow, so rev 3 widens it to the whole wire contract rather than addi
   the schema, so a path that moves is a difference the existing gate sees.
 - **Go via `oapi-codegen`** with `models`, `std-http-server` and `client`. `std-http-server` binds
   against the standard library's own `net/http.ServeMux` through a structural interface `*http.ServeMux`
-  already satisfies, so **no router dependency and no new module requirement** — the process keeps its
-  own `main` and its own multiplexer, and the generated half is one file.
+  already satisfies, so **no router dependency** — the process keeps its own `main` and its own
+  multiplexer, and the generated half is one file. Rev 3 read that as no new module requirement
+  either; rev 4 corrects it, the parameter binding being the part that does need one (see
+  *Consequences*).
 - **TypeScript via `orval`** (its `fetch` client), which replaces `openapi-typescript`. It emits one
   self-contained file whose every declaration is local — nothing resolves into `node_modules`, which
   is what SRS016<!-- Both sides consume the generated types --> requires of a boundary value's
@@ -95,6 +103,32 @@ notch too narrow, so rev 3 widens it to the whole wire contract rather than addi
   acquire one. Read unscoped, the clause is false the moment an infrastructure route exists, and the
   reading that repairs it — adding registry plumbing for a liveness route — would invent a module
   where there is none.
+- **A generated module-route method delegates into the registry, and lives beside the entry it
+  reaches.** Rev 3 left open how a generated `ServerInterface` method meets a registry whose whole
+  interface is one element of a literal. The answer: the method is written once per module data
+  route, in the registry's own file, and its body hands the request to the handler built over that
+  literal — so the *path* is the schema's, the *behaviour* is the framework's, and nothing about the
+  request is decided in both. Three properties follow. The generated pattern shadowing the `/api/`
+  seam stops being a hazard and becomes the mechanism, because what it shadows the seam with is the
+  seam's own handler. A route the schema declares and the registry has not taken up is a build
+  failure rather than a path that answers from somewhere else, which is the compile-time tie the
+  types already had and the routes did not. And the per-route hand code rev 3 objected to is a
+  delegation naming no path, no method and no parameter — the *drift* the objection was about
+  cannot live in it.
+  Rejected — a registry read at build time to synthesise the methods: code generation of our own, a
+  second generator in the drift gate, against a population of about five routes. Rejected — keeping
+  module paths out of the schema: it buys back the hand-authored request on the frontend, which is
+  the property this ADR exists to hold.
+  The cost is honest and is the reason the alternatives were weighed: a module now costs the shared
+  tree **two** things rather than one — its element of the registration list and its delegation —
+  both in the one file [the module contract](../contracts/module-contract.md) part 5 already admits
+  framework code naming a module in.
+- **The generated wrapper is given the boundary's own rejection body.** A parameterised route binds
+  its parameters before the handler is reached, and answers a request it cannot bind through
+  `ErrorHandlerFunc`, whose default writes `net/http`'s plain text — a body outside this schema on a
+  path this schema declares. The process supplies the client-rejection body
+  ([ADR 0026 rev 2](0026-boundary-error-body-shape.md)) instead. It renders the framework's own
+  text rather than the generator's error, which names the parameter and is diagnosis.
 - **The schema defines every value class that crosses the boundary**
   (SRS015<!-- One schema, all boundary value classes -->): request parameter names and types,
   success payloads, the structured body for the upstream failure
@@ -153,8 +187,9 @@ notch too narrow, so rev 3 widens it to the whole wire contract rather than addi
   documented fallback if 3.1 plus server-side validation are later wanted, but heavier (its own
   router, a large generated surface) than a thin proxy needs today. Rev 3's move to server
   generation does not cross that line: `oapi-codegen`'s `std-http-server` binds against the standard
-  library's own `net/http.ServeMux` and adds no module requirement, where the objection to `ogen` was
-  a router of its own. The concern was never *generating a server*; it was owning the routing layer.
+  library's own `net/http.ServeMux`, where the objection to `ogen` was a router of its own. The
+  concern was never *generating a server*, nor the parameter-binding module rev 4 records; it was
+  owning the routing layer.
 - **`openapi-generator`, as the single tool covering both languages** — rejected. It is the only
   candidate spanning Go and TypeScript, and one tool would be simpler than two, but its `go-server`
   **mandates a third-party router**: a closed `mux`|`chi` option with no standard-library choice, and
@@ -183,21 +218,27 @@ notch too narrow, so rev 3 widens it to the whole wire contract rather than addi
   regenerating; a registration or a call written directly is either overwritten or reported as drift.
   That is the point, and it is also the cost — the schema sits on the critical path of every route
   change, not only of every payload change.
-- **OPEN: how a generated `ServerInterface` method meets the registry, at the first module data
-  route. #12 first module takes this.** Rev 3 is proven on one infrastructure route, whose handler is
-  a single Go type. A module data route enters the same schema, so `oapi-codegen` will emit a
-  `ServerInterface` method for it and `HandlerFromMux` will register that method by name — while
-  [ADR 0021 rev 2](0021-repository-layout.md)'s registry says a module is added by adding one element
-  to a literal, with no per-module Go method anywhere. Three things collide the moment both exist:
-  `health.Route` stops satisfying the widened interface and the build breaks until something
-  implements the new method; implementing one method per module route puts per-route hand code back
-  on the side this rev just cleared, while keeping module paths out of the schema forfeits the
-  route-drift property the rev exists to buy; and the generated `GET /api/<source>` is a *more
-  specific* `ServeMux` pattern than the `/api/` seam, so it would shadow the module router for that
-  path rather than sit beside it. **Nothing here decides that** — the shape of the seam (a generated
-  interface delegating into the registry, a schema-driven registry, or something else) is a design
-  call that wants a real module in front of it, and it is named here so it is met deliberately rather
-  than discovered by a red build.
+- **The schema's server interface is composed at the assembly point.** Rev 3's open question is
+  answered above; what it correctly predicted is that `health.Route` stops satisfying the widened
+  interface the moment a module data route exists. The generated interface is one and its two kinds
+  of path are owned by different packages, so neither owner can implement the whole of it: the
+  process's `main` composes the infrastructure routes' handler and the registry's into the one value
+  the generated router takes. A package's own tests reach the generated router the same way, by
+  standing in for the routes that are not theirs — which is what keeps another package's path out of
+  their assertions.
+- **The backend's first third-party runtime dependency arrives with the first parameterised route,
+  and rev 3's "no module requirement" claim was true only of a route without parameters.**
+  `oapi-codegen` binds a declared query parameter through `github.com/oapi-codegen/runtime`, so the
+  generated package imports it and `backend/go.mod` acquires it and its own two
+  (`github.com/apapsch/go-jsonmerge/v2`, `github.com/google/uuid`). The `ogen` objection this ADR
+  turns on is unmoved — none of these is a router, and the process keeps its own `ServeMux` — but
+  [ADR 0001 rev 1](0001-backend-language-go.md)'s "near-zero third-party dependencies" is now three
+  modules rather than none, they are pinned like any other, and they enter the dependency-vulnerability
+  gate ([`../CI.md`](../CI.md)). The alternative was declaring the route's parameters nowhere: the
+  request would then be assembled by hand on the frontend against a generated client that knows
+  nothing about it, which is the drift this ADR exists to foreclose. Paid knowingly.
+  **Reopen if the runtime package ever grows past parameter binding** — the premise is that it is a
+  binding helper the generator emits calls into, not a framework.
 - **The generated Go surface is larger than the types were.** `std-http-server` emits a parameter-error
   set and a middleware hook whether or not any route has parameters. Accepted: it is one file, it
   compiles, and it adds no dependency.

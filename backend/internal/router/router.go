@@ -88,6 +88,13 @@ const (
 // malformedMessage is what a module's own reshaping failure renders as.
 const malformedMessage = "the source's response could not be read as this module's payload"
 
+// invalidParametersMessage is what a request the framework could not read
+// parameters from renders as, whether the query string itself would not parse or
+// a parameter the boundary schema declares is missing or malformed. One text for
+// both, because a caller can act on neither beyond sending the request the
+// schema describes.
+const invalidParametersMessage = "the request parameters could not be read"
+
 // outbound is the client every route's fetch makes its call with. It follows no
 // redirect, returning the 3xx as the response, and sets no timeout of its own:
 // the deadline is the one the pipeline puts on the call's context.
@@ -155,7 +162,7 @@ type route struct {
 func (rt *route) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	params, err := url.ParseQuery(r.URL.RawQuery)
 	if err != nil {
-		reject(w, http.StatusBadRequest, causeInvalidParameters, "the request parameters could not be read")
+		reject(w, http.StatusBadRequest, causeInvalidParameters, invalidParametersMessage)
 		return
 	}
 	if err := rt.entry.Validate(params); err != nil {
@@ -314,6 +321,16 @@ func (f *fallback) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	reject(w, http.StatusNotFound, causeUnknownSource, "this backend serves no such source")
+}
+
+// RejectParameters answers a request the generated route table could not read
+// the schema's parameters from, before that route's handler is reached. The
+// generated server writes net/http's plain text here unless it is given this,
+// which would put a body outside the boundary schema on a path the schema
+// declares (ADR 0026 rev 2). The error it carries names the parameter and is
+// diagnosis rather than something a viewer reads, so it is not rendered.
+func RejectParameters(w http.ResponseWriter, _ *http.Request, _ error) {
+	reject(w, http.StatusBadRequest, causeInvalidParameters, invalidParametersMessage)
 }
 
 // reject writes the client-rejection body (ADR 0026 rev 2).

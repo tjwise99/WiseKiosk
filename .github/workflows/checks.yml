@@ -203,7 +203,7 @@ jobs:
     # staleness gate for the boundary layer, the same shape the architecture job
     # runs for the architecture layer. Because the routes are generated too, a
     # renamed path is drift the gate sees rather than a hand-written string on
-    # each side (ADR 0008 rev 3). The gate clears and regenerates before it
+    # each side (ADR 0008 rev 4). The gate clears and regenerates before it
     # diffs, so a generator that cannot run leaves absent output that reads as a
     # deletion rather than a false clean; that it can fail is recorded in
     # scripts/cases/check-boundary.md, not re-tested here. Each generator is
