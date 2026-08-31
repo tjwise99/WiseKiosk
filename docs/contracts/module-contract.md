@@ -45,9 +45,15 @@ themeparks.wiki — and a new module joins it the same way.
 
 ## The six parts
 
-1. **A Svelte component** *(every module).* Receives the module's configuration and its payload as
-   props and renders them into the module's region; it fetches no data, parses no configuration and
-   validates no payload. It receives one prop more, `reachable` — the page shell's answer about
+1. **A Svelte component** *(every module).* Receives the module's configuration as a prop and renders
+   into the module's region; it parses no configuration and validates no payload. A **local** module
+   is handed everything it renders and fetches nothing. An **upstream-backed** module reads its own
+   payload, calling the client generated from the boundary schema for the route its registration
+   binds (part 5), on the cadence
+   [§ Cadence and TTL are chosen together](#cadence-and-ttl-are-chosen-together) settles — the request
+   is the generated client's, so what the component adds is when to ask rather than how, and no shared
+   fetching layer stands between the two. It receives one prop more, `reachable` — the page shell's
+   answer about
    whether the backend is serving — and what a module does with it is
    [§ An unavailable module and an unreachable backend are different states](#an-unavailable-module-and-an-unreachable-backend-are-different-states).
    Where the module has a payload, the component consumes the type generated from the boundary schema
@@ -94,7 +100,7 @@ signal, stands down and renders nothing — no unavailable state, no placeholder
 content. A module that reported for itself here would restate the one outage once per region, which
 is what the display is obliged not to do (SRS026<!-- The display says when the backend is gone -->).
 
-Reachability reaches the component the way its configuration and payload do (part 1): as a prop,
+Reachability reaches the component the way its configuration does (part 1): as a prop,
 threaded from the page shell through the frame to every module. The frame forwards it to every module
 alike and makes no coverage decision from it, so nothing between the shell and the module decides
 which modules an outage covers — that is each module's own question, not a placement one. The frame's

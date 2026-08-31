@@ -65,6 +65,54 @@ export async function holdHostClock(page: Page, when: Date): Promise<void> {
   await page.clock.install({ time: when });
 }
 
+/** What a module's data route answers with: the status, and the body carried at it. */
+export interface ModuleAnswer {
+  status: number;
+  body: unknown;
+}
+
+/** What a served module route was handed, for a test to read the ask back off. */
+export interface Served {
+  /** Every ask this stub answered, path and query, in the order it answered them. */
+  readonly urls: string[];
+}
+
+/**
+ * Answers the module data routes with whatever `answer` makes of each ask. One glob over every such
+ * route rather than one per module, because the harness is shared framework code
+ * (docs/contracts/module-contract.md § Dependency direction). What distinguishes one module's ask
+ * from another's is therefore the ask itself: `answer` is handed the parsed URL and reads
+ * `searchParams`, which is also how two placements at two locations get two answers from one
+ * registration.
+ *
+ * Registered before `render`, since the component asks on mount and a route added after the
+ * navigation misses that first ask. Playwright matches routes most-recently-registered first, so
+ * calling this again over a served page is what changes the answer a later poll receives — the
+ * transition a freshness case asserts, driven by the clock rather than by waiting.
+ *
+ * The record is what proves the ask carried what the configuration said, and it is kept here because
+ * `asksBeyondTheShell` reads paths alone and would drop the query the location travels in. Paths and
+ * queries are recorded rather than whole URLs: the origin is the tier's own dev server, which is not
+ * what any case is asserting.
+ */
+export async function serveModuleData(
+  page: Page,
+  answer: (asked: URL) => ModuleAnswer,
+): Promise<Served> {
+  const urls: string[] = [];
+  await page.route('**/api/*', async (route) => {
+    const asked = new URL(route.request().url());
+    urls.push(`${asked.pathname}${asked.search}`);
+    const { status, body } = answer(asked);
+    await route.fulfill({
+      status,
+      contentType: 'application/json',
+      body: JSON.stringify(body),
+    });
+  });
+  return { urls };
+}
+
 /** What the page asked for, and what it opened, while a test watched. */
 export interface Traffic {
   /** Every request the page issued, by URL and by the kind of thing that issued it. */
