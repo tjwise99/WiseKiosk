@@ -12,17 +12,16 @@
   const showSeconds = $derived(config.show_seconds);
   const showDate = $derived(config.show_date);
 
-  // The host clock is re-read on the smallest unit shown — the second when seconds are drawn, the
-  // minute otherwise, so a clock with seconds off wakes once a minute rather than sixty times for a
-  // digit it never draws. A cadence, not a phase: the reading trails the host by wherever in the
-  // unit the page mounted, and each reading takes the host's value afresh, so nothing accumulates.
-  const readIntervalMs = $derived(showSeconds ? 1000 : 60_000);
+  // The host clock is re-read every second, so the shown time stays current to the second whether or
+  // not seconds are drawn. A cadence, not a phase: the reading trails the host by wherever in the
+  // second the page mounted, and each reading takes the host's value afresh, so nothing accumulates.
+  const READ_INTERVAL_MS = 1000;
 
   let now = $state(new Date());
   $effect(() => {
     const reading = setInterval(() => {
       now = new Date();
-    }, readIntervalMs);
+    }, READ_INTERVAL_MS);
     return () => clearInterval(reading);
   });
 
