@@ -5,10 +5,12 @@ The inputs this check has been run against, in both directions. What the tier *g
 [ADR 0027 rev 1](../../docs/decisions/0027-frontend-test-runners.md)'s; how to run a case is
 [`../README.md`](../README.md)'s.
 
-The recipe runs Playwright over `frontend/tests/render/`, at each of the three supported viewports,
-against a dev server running the production Vite configuration with the module registry substituted
-for the tier's stubs. Each fixture is a configuration the test fulfils on the `config.json` route, so
-one server serves every case and each test states the configuration it asserts against.
+The recipe runs Playwright over two populations — the framework's own render specs under
+`frontend/tests/render/` and each module's render spec beside its component — at each of the three
+supported viewports, against a dev server running the production Vite configuration with the module
+registry augmented by the tier's stubs. Each fixture is a configuration the test fulfils on the
+`config.json` route, so one server serves every case and each test states the configuration it
+asserts against.
 
 Each seed below is applied to the working tree, the recipe run at the kiosk viewport, and the seed
 reverted. `passed`/`failed` are the counts the run reported, taken at `b2ab5fc`. A seed that trips

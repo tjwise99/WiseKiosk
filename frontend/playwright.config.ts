@@ -36,8 +36,8 @@ export default defineConfig({
     use: { ...devices['Desktop Chrome'], viewport },
   })),
 
-  // The dev server runs the production configuration with the module registry substituted, so what
-  // is measured is the page as it is built rather than a second assembly of it.
+  // The dev server runs the production configuration with the module registry augmented by the
+  // tier's stubs, so what is measured is the page as it is built rather than a second assembly of it.
   webServer: {
     command: `node_modules/.bin/vite --config vite.config.render.ts --host 127.0.0.1 --port ${PORT} --strictPort`,
     url: `http://127.0.0.1:${PORT}`,

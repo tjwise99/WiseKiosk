@@ -16,7 +16,10 @@ export type ValidationResult =
 /**
  * Runs the one validator the schema's rules are enforced by
  * ([ADR 0007 rev 2](../../../docs/decisions/0007-config-validation-allocation.md)) over a parsed
- * configuration, reporting every fault rather than the first.
+ * configuration, reporting every fault rather than the first. The validator writes the schema's
+ * defaults into `value` in place as it runs, so a caller keeps the returned `configuration` and
+ * lets the argument go; the fill lands on the rejection path too, where the mutated value is
+ * discarded with the rest.
  */
 export function validateConfiguration(value: unknown): ValidationResult {
   if (validate(value)) {
