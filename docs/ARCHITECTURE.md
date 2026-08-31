@@ -276,8 +276,11 @@ the three, so there is nothing for a constant to hold; `upstream.Config` records
 code side. Each registration entry therefore states its own, and a module author chooses rather than
 inherits. Nothing in the framework supplies one or checks that an entry did — the deadline and the
 ceiling SRS014<!-- No single upstream exchange can stall or exhaust the backend --> obliges rest on
-the entry declaring them, which is a gap a first real module either closes or gives a value worth
-defaulting.
+the entry declaring them. The weather route declares all three, in the module's own package, which the
+registration entry assembles rather than restates — the same arrangement the defaults have in
+`upstream`, and for the same reason. Closing the gap per entry is that arrangement working rather than
+an argument for a constant: a figure chosen against one source is that source's, and a second module
+arriving at the same three is what would make them worth holding centrally.
 
 **Three of those figures multiply, which is the arithmetic a module author is choosing against.** The
 cache sweeps expired entries on every write, so what a route can hold is what it can write inside one
