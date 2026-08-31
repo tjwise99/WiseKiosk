@@ -1,7 +1,7 @@
-active: false
+active: true
 derived: false
 header: |
-  Pending: the weather payload carries the present and both outlooks
+  The weather payload carries the present and both outlooks
 level: 81
 links:
 - SRS044: 6uZim7o-jdWfmjHib1Aeoz4uBfmjGv27rci1xYdgEHw=
@@ -14,13 +14,21 @@ rationale: |
   shape, because a shaping that dropped one of them produces a payload that still parses and still
   renders.
 ref: ''
-reviewed: 4lHyTplfM_wr0ZZhs5ZMZ2_2pt3NzDZNe5GAIcj4v7U=
+references:
+- keyword: func TestTST059_ShapingTheCapturedResponseCarriesEverythingAViewerIsOwed
+  path: backend/internal/modules/weather/weather_test.go
+  sha: 764703140677613d6a2e7618a998910c164e2a9d43b58fe3c9b32b1acda493a6
+  type: file
+- keyword: func TestTST059_AResponseMissingAValueThePayloadNeedsIsNotShaped
+  path: backend/internal/modules/weather/weather_test.go
+  sha: 764703140677613d6a2e7618a998910c164e2a9d43b58fe3c9b32b1acda493a6
+  type: file
+reviewed: jg4By207A6Wm1HJo1MPnse4OGjcSjzQ0FmLGoDWFcWQ=
 status: proposed
 text: |
-  Pending: unit test running the module's shaping over a captured response from its source, with no
-  network, and asserting the payload it produces carries, for the location the request named, the
-  present weather in each of the four respects and both forward ranges. Lands with the first vertical
-  slice (#12); activated and given a references entry then.
+  Unit test running the module's shaping over a captured response from its source, with no network,
+  and asserting the payload it produces carries, for the location the request named, the present
+  weather in each of the four respects and both forward ranges.
 verification-justification: |
   Settles that a captured response is reshaped into everything a viewer is owed.
   Leaves unproven the truth of any value in it, the source being outside this system, and bounds

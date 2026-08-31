@@ -1,7 +1,7 @@
-active: false
+active: true
 derived: false
 header: |
-  Pending: the weather shown follows its source inside the freshness bound
+  The weather shown follows its source inside the freshness bound
 level: 83
 links:
 - SRS046: twOwP_ffa_ll4QDgilsFX0QBaqRfP1KwM6EUN9qcKwA=
@@ -14,13 +14,18 @@ rationale: |
   again would satisfy any reading taken after a reload while leaving a display that is never reloaded
   showing weather from whenever it started.
 ref: ''
-reviewed: rvHAiRKYXVWduEGZZ9ZPpBQea7zaym_Lh8SGtczmMVc=
+references:
+- keyword: 'test(''TST061: follows its source to a new reading inside the freshness
+    bound, without reloading'', async ({'
+  path: frontend/src/modules/weather/weather.spec.ts
+  sha: 8ff42d16f4227d37fc102613bd4c4f5bdc9a01b011cdf1d3aeaac0e2dd3365c3
+  type: file
+reviewed: y7r8gwgBZeoYB_TdpzRZomM5mMJThrbWUAgIgkzilKo=
 status: proposed
 text: |
-  Pending: render test holding the page open against a source staged to change its answer and a driven
-  clock, asserting the region carries the changed answer within the freshness bound the requirement
-  states and without the page being reloaded. Lands with the first vertical slice (#12); activated and
-  given a references entry then.
+  Render test holding the page open against a source staged to change its answer and a driven clock,
+  asserting the region carries the changed answer within the freshness bound the requirement states
+  and without the page being reloaded.
 verification-justification: |
   Settles that what is drawn follows a change at the source inside the bound, on a page nobody reloaded.
   Leaves unproven how far behind the weather the source itself runs, which is another party's and

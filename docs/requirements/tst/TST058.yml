@@ -1,7 +1,7 @@
-active: false
+active: true
 derived: false
 header: |
-  Pending: the weather module's location pattern admits and rejects
+  The weather module's location pattern admits and rejects
 level: 80
 links:
 - SRS043: fjACy6gOsReWpBFv5bGdBSnAdpY7DaKyZx8w34vV-TI=
@@ -13,13 +13,17 @@ rationale: |
   The no-request clause is read with them rather than separately: a rejection that still went upstream
   is exactly the failure the item forbids, and it is invisible in the status a caller gets back.
 ref: ''
-reviewed: z9HH5aueTnJ1CSOgjRIbpgj8ITCaV-epXaVuPCrb1LM=
+references:
+- keyword: func TestTST058_ThePatternAdmitsAPointAndRejectsEveryOtherValue
+  path: backend/internal/modules/weather/weather_test.go
+  sha: 764703140677613d6a2e7618a998910c164e2a9d43b58fe3c9b32b1acda493a6
+  type: file
+reviewed: p-dlIMKAewZstld7YqFDM7VA10DadWhRkfpQy0QQVXQ=
 status: proposed
 text: |
-  Pending: unit test exercising the pattern the module declares over conforming and non-conforming
-  locations, asserting that a point on the earth's surface is admitted, that every other value is
-  rejected, and that no upstream request is issued for a rejected one. Lands with the first vertical
-  slice (#12); activated and given a references entry then.
+  Unit test exercising the pattern the module declares over conforming and non-conforming locations,
+  asserting that a point on the earth's surface is admitted, that every other value is rejected, and
+  that no upstream request is issued for a rejected one.
 verification-justification: |
   Settles which values the module admits, and that a rejected request costs no upstream call.
   Leaves unproven that an admitted location is one the source can answer for - a well-formed point the

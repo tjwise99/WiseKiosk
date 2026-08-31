@@ -1,7 +1,7 @@
-active: false
+active: true
 derived: false
 header: |
-  Pending: the weather shown is the configured location's
+  The weather shown is the configured location's
 level: 79
 links:
 - SRS042: 50b5Ub75iB9607ucNzXygTS-IuHJI5DWYfWvvJwSOrE=
@@ -14,13 +14,19 @@ rationale: |
   module can ask about the right place and draw a cached answer for another, or ask about the wrong one
   and draw its answer faithfully.
 ref: ''
-reviewed: 3qBrl53us2xD3jzckqc7d1sR9vf1s_MkpCptiP1ylM8=
+references:
+- keyword: 'test(''TST057: reports on the point its configuration names, in the region
+    it names'', async ({'
+  path: frontend/src/modules/weather/weather.spec.ts
+  sha: 8ff42d16f4227d37fc102613bd4c4f5bdc9a01b011cdf1d3aeaac0e2dd3365c3
+  type: file
+reviewed: qwhX3C9M4vsDAhk2phD5TrQC4WojltMulLfU8BHYzBQ=
 status: proposed
 text: |
-  Pending: render test loading the page under two configurations naming two locations, against a source
-  staged to answer differently by location, and asserting that the request the module causes carries the
+  Render test loading the page under two configurations naming two locations, against a source staged
+  to answer differently by location, and asserting that the request the module causes carries the
   configured location and that the region shows the answer given for it, both following the
-  configuration. Lands with the first vertical slice (#12); activated and given a references entry then.
+  configuration.
 verification-justification: |
   Settles that the place configured is the place asked about and the place drawn.
   Leaves unproven that the source's answer is true of that place, which is the source's own and outside
