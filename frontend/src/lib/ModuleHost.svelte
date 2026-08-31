@@ -73,10 +73,19 @@
   $effect(() => {
     const ask = entry.read;
 
-    // A local module has nothing to read, and an unreachable backend has nothing to answer with: in
-    // neither case is the timer merely ignored, it is not running. A display left in an outage for
-    // days would otherwise go on asking every five minutes for all of them.
-    if (ask === undefined || !reachable) {
+    // A local module has nothing to read, so there is no timer and nothing held.
+    if (ask === undefined) {
+      return;
+    }
+
+    // An unreachable backend has nothing to answer with, so the timer is not merely ignored, it is
+    // not running: a display left in an outage for days would otherwise go on asking every five
+    // minutes for all of them. What is held from before the outage is dropped with it, because the
+    // module would otherwise draw that reading as current for the window between the backend coming
+    // back and the first read after it landing — old weather presented as now, which is the one
+    // thing a display that cannot say how old it is must not do.
+    if (!reachable) {
+      payload = { state: 'loading' };
       return;
     }
 

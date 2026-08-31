@@ -254,7 +254,11 @@ notch too narrow, so rev 3 widens it to the whole wire contract rather than addi
   [ADR 0001 rev 1](0001-backend-language-go.md)'s "near-zero third-party dependencies" and into the
   dependency-vulnerability gate ([`../CI.md`](../CI.md)). **Reopen if a module data route ever needs
   the generated handler to read the request** — a request body to decode, a header to honour — since
-  the trade is struck on a handler that delegates without looking.
+  the trade is struck on a handler that delegates without looking. **Reopen too if `oapi-codegen`
+  comes to bind a simple query parameter with the standard library alone**: the subtraction would
+  then buy nothing, and leaving it in place would mean a module route that forgot the tag generated a
+  binding while the tagged ones did not — a difference between two module routes that no reader of
+  the schema could account for, and one that would no longer stop the build.
 - **A second file stands between the schema and the Go generator**, and that is the overlay's
   cost. Reading what this side generates means reading two files rather than one, and the drift gate
   regenerates through both — so an overlay that stopped applying is a difference the gate sees, but

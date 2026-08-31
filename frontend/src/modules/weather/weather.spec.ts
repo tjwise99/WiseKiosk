@@ -1,6 +1,7 @@
 import { expect, test } from '@playwright/test';
 
 import type { WeatherPayload } from '../../lib/boundary/client';
+import { LIVENESS_INTERVAL_MS } from '../../lib/liveness';
 import {
   advanceHostClock,
   asksBeyondTheShell,
@@ -8,6 +9,7 @@ import {
   holdHostClock,
   overlaps,
   render,
+  serveLiveness,
   serveModuleData,
   watchTraffic,
   type Box,
@@ -288,6 +290,33 @@ test('stands down to nothing while the backend is unreachable, and stops asking 
   expect(whileGone.urls.length, 'it asked nothing further once the backend was gone').toBe(
     askedBeforeTheOutageWasKnown,
   );
+});
+
+test('does not draw its reading from before an outage as current after one', async ({ page }) => {
+  await serveModuleData(page, () => ({ status: 200, body: forecast(WARM) }));
+  await render(page, placed(HERE));
+  await expect(page.locator(TEMP)).toContainText(String(WARM));
+
+  await serveLiveness(page, 'abort');
+  await expect(page.locator('[data-backend-unreachable]')).toHaveCount(1, {
+    timeout: 2 * LIVENESS_INTERVAL_MS,
+  });
+
+  // The route is taken and never fulfilled from here on, so the read that follows recovery is in
+  // flight for the whole of what is asserted below. Registered while the outage is up, because
+  // Playwright matches most-recently-registered first and this must win over the answering stub.
+  await page.route('**/api/*', () => {});
+
+  await serveLiveness(page, 'ok');
+
+  // The module is drawn again, and what it draws is the state of having nothing rather than the
+  // reading it held before the outage. A held payload survives the stand-down otherwise, and the
+  // window between the backend answering and the first read landing shows old weather as now —
+  // which a display that cannot say how old what it shows is must not do.
+  const loading = page.locator(`[data-region="middle_center"] ${LOADING}`);
+  await expect(loading).toBeVisible({ timeout: 2 * LIVENESS_INTERVAL_MS });
+  await expect(page.locator(TEMP)).toHaveCount(0);
+  await expect(page.locator(UNAVAILABLE)).toHaveCount(0);
 });
 
 test('shows that it is reading while its route has not answered yet', async ({ page }) => {
