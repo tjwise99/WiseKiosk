@@ -52,9 +52,7 @@ func NewRoutes(api http.Handler) Routes {
 // GetApiWeather serves the weather module's route. It takes no parameters
 // because the generated wrapper binds none: this side of the schema is read
 // without them (ADR 0008 rev 4), so what judges the request is the entry's own
-// validator
-// (SRS043<!-- The weather module declares the known-good pattern its location parameter must match -->)
-// reading the query the response cache is keyed on.
+// validator (SRS043) reading the query the response cache is keyed on.
 func (r Routes) GetApiWeather(w http.ResponseWriter, req *http.Request) {
 	r.api.ServeHTTP(w, req)
 }

@@ -32,8 +32,7 @@ const (
 	paramLon = "lon"
 )
 
-// The bounds a point on the earth's surface lies within
-// (SRS043<!-- The weather module declares the known-good pattern its location parameter must match -->).
+// The bounds a point on the earth's surface lies within (SRS043).
 const (
 	maxLatitude  = 90
 	maxLongitude = 180
@@ -42,15 +41,8 @@ const (
 // decimal is the spelling a coordinate is accepted in: an optional sign, digits
 // with an optional fractional part, and an optional decimal exponent. It admits
 // no hexadecimal, no NaN and no infinity, each of which Go's float parser takes
-// and none of which names a point.
-//
-// The exponent is admitted because a caller does not choose it. A coordinate
-// near the equator or the prime meridian is what a JavaScript number formats as
-// `1e-7`, so refusing the form refuses a legal point for how it was printed, and
-// the module would answer a well-configured display with a permanent rejection.
-// The cost is that one point has more than one spelling and the response cache
-// holds each separately; the rate bucket over the source is what bounds that,
-// and a display sends one spelling for the one location it is configured with.
+// and none of which names a point. The exponent is admitted because a coordinate
+// near the equator or the prime meridian serialises as `1e-7`.
 var decimal = regexp.MustCompile(`^[-+]?(\d+(\.\d*)?|\.\d+)([eE][-+]?\d+)?$`)
 
 // Config is the policy this route runs under, carried here so the registration
@@ -58,9 +50,8 @@ var decimal = regexp.MustCompile(`^[-+]?(\d+(\.\d*)?|\.\d+)([eE][-+]?\d+)?$`)
 //
 // SuccessTTL is what holds the upstream rate down: an answer is served from
 // cache for fifteen minutes however often the display asks, which is four
-// requests an hour for one location and is where
-// SRS047<!-- The weather module asks its source at most four times an hour for a location -->'s
-// figure is met. The token bucket is a coarse backstop over the source as a
+// requests an hour for one location and is where SRS047's figure is met. The
+// token bucket is a coarse backstop over the source as a
 // whole and cannot express that figure — its rate is per minute and its bucket
 // is not per location — so it is set to catch a runaway rather than to be the
 // bound. NegativeTTL is shorter than SuccessTTL because a source that is down is
@@ -78,8 +69,7 @@ func Config() upstream.Config {
 
 // Validate judges a request's parameters against the pattern this module
 // declares: a latitude and a longitude, each a plain decimal within its range,
-// each given once, and nothing else
-// (SRS043<!-- The weather module declares the known-good pattern its location parameter must match -->).
+// each given once, and nothing else (SRS043).
 // The returned error's text is what the rejection renders, so it says what is
 // accepted and never echoes what was sent.
 func Validate(params url.Values) error {
@@ -124,8 +114,7 @@ func coordinate(params url.Values, name string, bound float64) (float64, error) 
 
 // The upstream request. One call carries the present conditions and both forward
 // ranges, which is what lets this module read its source through the one URL and
-// one body the framework gives it
-// (SRS041<!-- The weather module takes what it shows from one external weather source -->).
+// one body the framework gives it (SRS041).
 const (
 	// forecastURL is the source's forecast endpoint. It needs no credential.
 	forecastURL = "https://api.open-meteo.com/v1/forecast"
@@ -245,8 +234,7 @@ type seriesBlock struct {
 
 // Shape reads the source's response into the payload the boundary schema
 // declares: the present conditions in each of the four respects, and both
-// forward ranges
-// (SRS044<!-- The weather module puts the present conditions and the near-term outlook across the boundary -->).
+// forward ranges (SRS044).
 // A response missing a value the payload requires is an error rather than a
 // payload carrying a zero nobody reported. The body is the cached response every
 // caller it is served to holds, and nothing here writes to it.

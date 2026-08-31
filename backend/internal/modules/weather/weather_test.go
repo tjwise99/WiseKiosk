@@ -40,8 +40,7 @@ func point(lat, lon string) url.Values {
 	return url.Values{paramLat: {lat}, paramLon: {lon}}
 }
 
-// TestTST058_ThePatternAdmitsAPointAndRejectsEveryOtherValue reads
-// SRS043<!-- The weather module declares the known-good pattern its location parameter must match -->
+// TestTST058_ThePatternAdmitsAPointAndRejectsEveryOtherValue reads SRS043
 // against the pattern itself. No case reaches a network, and the rejected ones
 // build no URL — which is what says nothing goes upstream for a request the
 // pattern refuses.
@@ -209,9 +208,8 @@ func horizon(t *testing.T, built *url.URL, name string) int {
 }
 
 // TestTST059_ShapingTheCapturedResponseCarriesEverythingAViewerIsOwed reads
-// SRS044<!-- The weather module puts the present conditions and the near-term outlook across the boundary -->
-// against the captured response, with no network: the present weather in each of
-// the four respects, and both forward ranges.
+// SRS044 against the captured response, with no network: the present weather in
+// each of the four respects, and both forward ranges.
 func TestTST059_ShapingTheCapturedResponseCarriesEverythingAViewerIsOwed(t *testing.T) {
 	payload, err := Shape(response(t))
 	if err != nil {
@@ -372,10 +370,9 @@ func TestShapeReadsTheBodyWithoutWritingToIt(t *testing.T) {
 }
 
 // TestTST062_ThePolicyComesToFourRequestsAnHourForOneLocation reads this
-// module's half of
-// SRS047<!-- The weather module asks its source at most four times an hour for a location -->:
-// the figures it registers, against what obliged them rather than against
-// themselves. What the framework then does with a cache interval — one upstream
+// module's half of SRS047: the figures it registers, against what obliged them
+// rather than against themselves. What the framework then does with a cache
+// interval — one upstream
 // call per interval for one location, and never a second in flight while a first
 // has not answered — is the router package's to read, against a fixture rather
 // than against these numbers.
@@ -409,8 +406,8 @@ func TestTST062_ThePolicyComesToFourRequestsAnHourForOneLocation(t *testing.T) {
 func TestThePolicyIsCompleteAndItsFailureRetryIsSooner(t *testing.T) {
 	policy := Config()
 
-	// SRS046<!-- The weather a viewer sees is no more than fifteen minutes behind its source -->:
-	// an answer held longer than the bound is one a viewer could be shown past it.
+	// SRS046: an answer held longer than the bound is one a viewer could be shown
+	// past it.
 	if policy.SuccessTTL > 15*time.Minute {
 		t.Errorf("SuccessTTL = %s, want no more than 15m", policy.SuccessTTL)
 	}

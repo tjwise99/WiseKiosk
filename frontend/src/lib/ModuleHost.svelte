@@ -10,9 +10,8 @@
    * module's (docs/contracts/module-contract.md § Dependency direction).
    *
    * One host per placement, so two placements of one module read separately, each for the point its
-   * own entry names. That is two reads where a shared one would do; they are not shared because the
-   * route's own response cache already collapses them before anything leaves for the upstream, and a
-   * cache here would be a second one with no obligation behind it.
+   * own entry names. The route's response cache collapses them before anything leaves for the
+   * upstream.
    */
   const {
     entry,
@@ -89,8 +88,8 @@
       return;
     }
 
-    // A read coming back after this effect was torn down belongs to a configuration, or a
-    // reachability, that no longer applies, and writing it would put a stale reading on screen.
+    // A read settling after teardown belongs to a superseded configuration or reachability, so it
+    // is discarded rather than written.
     let current = true;
     const once = async () => {
       const settled = await read(ask);
