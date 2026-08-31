@@ -109,9 +109,7 @@ describe('the configuration validator', () => {
   // placement rejects this, which is what makes the case worth driving.
   //
   // The module named has to be one the schema declares nothing about, so it moves as sections are
-  // added. It read `weather` until the weather module gained one, at which point it asserted the
-  // weather section's own admission rather than the absence of a section, and would have gone on
-  // passing while measuring nothing.
+  // added.
   it('does not judge a module with no section of its own by the clock’s keys', () => {
     const result = validateConfiguration({
       modules: [{ region: 'top_bar', module: 'compliments', options: { greeting: 'hello' } }],

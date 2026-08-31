@@ -77,8 +77,7 @@ export async function holdHostClock(page: Page, when: Date): Promise<void> {
  * Nothing is wrong with the page; the flap is the driven clock's. But a module fed by the backend
  * stands down and re-reads across one, so a case that advances time in a single jump measures a
  * module remounting where it meant to measure the module polling, and passes whether or not the poll
- * it is about works at all. That was measured rather than reasoned: over five driven minutes, a
- * module whose poll timer had been removed entirely still refetched seven times.
+ * it is about works at all.
  *
  * The step is taken from the deadline it has to stay inside rather than written here as a figure of
  * its own, so a change to the shell's timeout carries to this by itself.
