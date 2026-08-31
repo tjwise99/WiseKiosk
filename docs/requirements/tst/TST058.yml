@@ -16,9 +16,9 @@ ref: ''
 references:
 - keyword: func TestTST058_ThePatternAdmitsAPointAndRejectsEveryOtherValue
   path: backend/internal/modules/weather/weather_test.go
-  sha: ac823f623b94d86b057766e6efcf412fa021febcb9bd8dc93df3d148f3dcc183
+  sha: 48cdd4054c0ef948c22221d21d239d7de0486051d39a8e2d68caccb9ff9a688e
   type: file
-reviewed: TQBpxNtVhq3sbXf8keczC6v74P7XvaAnu2VN9AG57Go=
+reviewed: xA8wiKvMECTemQudfOUD97cLPChUeYKTcPuF7MaDbx4=
 status: proposed
 text: |
   Unit test exercising the pattern the module declares over conforming and non-conforming locations,
