@@ -1,12 +1,15 @@
-# The one boundary schema. Owned by neither package; both sides' routes, client, server and types
-# are generated from it and committed inside the package that compiles them
-# (ADR 0008 rev 4, ADR 0021 rev 2).
+# The one boundary schema. Owned by neither package; both sides' client and types, and the routes
+# each side serves or calls, are generated from it and committed inside the package that compiles
+# them (ADR 0008 rev 4, ADR 0021 rev 2).
 #
 # Two kinds of path live here. A **module data route** carries the full component set — its success
 # payload, the upstream failure and the client rejection below — and a module contributes its payload
-# as a named component here rather than as a file of its own. An **infrastructure route** answers
-# about the process rather than about a source, declares its own response and nothing more, and is
-# not a module's to contribute. Which paths of either kind exist is what `paths` below says; no
+# as a named component here rather than as a file of its own. It is marked with the `module-route`
+# tag, which is what excludes it from the Go server generation: the backend serves it from the route
+# registration list instead, and the correspondence between the path and the source that serves it is
+# read by that list's own tests. An **infrastructure route** answers about the process rather than
+# about a source, declares its own response and nothing more, is not a module's to contribute, and is
+# generated and served on both sides. Which paths of either kind exist is what `paths` below says; no
 # document counts them.
 #
 # The two error bodies below are the compact shapes ADR 0026 rev 2 decides. `cause` is an open
@@ -31,10 +34,18 @@ paths:
   # A module data route: the weather module's payload is the `Weather*` components below, and the
   # route declares the full set — the payload, every rejection the framework answers before an
   # upstream call, and every failure it answers after one (ADR 0026 rev 2).
+  #
+  # The `module-route` tag is what the Go generator excludes on, and it is the marker every module
+  # data route carries: the backend serves this path from the route registration list rather than
+  # from a generated handler, so the Go side takes the payload types from here and no route. The
+  # frontend generates the call itself, which is what keeps the path and its parameters compared
+  # against this schema rather than hand-written (ADR 0008 rev 4).
   /api/weather:
     get:
       operationId: getApiWeather
       summary: Report the weather at a point on the earth's surface.
+      tags:
+        - module-route
       parameters:
         # The two of them together are the point. Which values are admitted — the ranges, and the
         # rejection of anything that is not a plain decimal — is the route's registration entry's,

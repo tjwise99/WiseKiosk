@@ -63,9 +63,17 @@ Unbuilt; owned by #67 security and supply-chain CI gates.
 ## Backend build, vet and tests
 
 The Go tree compiles, `go vet`'s default analyser set reports nothing over it, the backend package
-tests pass, and the packages under `internal/` pass a second time under the race detector. Four steps
-in one recipe, ordered cheapest-failure-first: `go build` reads the non-test tree alone, so a compile
-error is reported against it rather than buried under the test files' copy of the same error.
+tests pass, `internal/registry`'s pass again uncached, and the packages under `internal/` pass a
+second time under the race detector. Five steps in one recipe, ordered cheapest-failure-first:
+`go build` reads the non-test tree alone, so a compile error is reported against it rather than
+buried under the test files' copy of the same error.
+
+- **`internal/registry` runs at `-count=1`** because it reads the authored boundary schema, which
+  sits outside the Go module root. The test cache does not watch a file there, so a schema edited on
+  its own leaves every input Go tracks unchanged and the ordinary run reports a cached pass — for the
+  one package whose tests exist to compare the schema against the route registration list
+  ([ADR 0008 rev 4](decisions/0008-boundary-contract-openapi-codegen.md)). Seeded by moving a path in
+  the schema and leaving the Go tree alone, which the ordinary step passes and this one fails.
 
 - Each step is seeded independently — an undefined identifier, a `printf` argument `vet` rejects and
   the compiler accepts, a passing-`vet` change that breaks a test, and a narrowed critical section no

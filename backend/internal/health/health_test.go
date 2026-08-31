@@ -9,25 +9,12 @@ import (
 	"github.com/tjwise99/WiseKiosk/backend/internal/boundary"
 )
 
-// schemaRoutes carries this package's route into the generated router, which
-// registers the schema's whole set at once. The embedded interface supplies
-// every other route, is nil, and is reached by nothing here — a route this
-// package does not answer is one no case below asks for, and naming any of them
-// would put another package's path in this one's tests.
-type schemaRoutes struct {
-	boundary.ServerInterface
-}
-
-func (schemaRoutes) GetHealthz(w http.ResponseWriter, r *http.Request) {
-	Route{}.GetHealthz(w, r)
-}
-
 // served is an instance answering the schema's routes the way the process does
 // — through the generated router — so Check meets the path it will meet in a
 // container rather than one the test wrote.
 func served(t *testing.T) *httptest.Server {
 	t.Helper()
-	server := httptest.NewServer(boundary.HandlerFromMux(schemaRoutes{}, http.NewServeMux()))
+	server := httptest.NewServer(boundary.HandlerFromMux(Route{}, http.NewServeMux()))
 	t.Cleanup(server.Close)
 	return server
 }
@@ -92,7 +79,7 @@ func TestCheckRefusesAWedgedInstance(t *testing.T) {
 }
 
 func TestCheckRefusesAnUnreachableInstance(t *testing.T) {
-	server := httptest.NewServer(boundary.HandlerFromMux(schemaRoutes{}, http.NewServeMux()))
+	server := httptest.NewServer(boundary.HandlerFromMux(Route{}, http.NewServeMux()))
 	origin := server.URL
 	server.Close()
 

@@ -173,16 +173,24 @@ check-boundary:
 
 # `go build` compiles the non-test tree alone, where `vet` and `test` compile the test files with it,
 # so a compile error common to both is reported against the smaller of the two first. A step runs only
-# where the one before it exited zero; what the four together assert is docs/CI.md § Backend build,
+# where the one before it exited zero; what the five together assert is docs/CI.md § Backend build,
 # vet and tests. The `-race` pass covers the concurrency-bearing packages under `internal/`; the
 # bounded-footprint soak in `cmd` is run once without it, because the detector's own allocation
 # perturbs the memory that soak measures.
+#
+# `internal/registry` runs a third time at `-count=1` because it reads a file the Go test cache does
+# not watch: the authored boundary schema sits outside the module root, so an edit to it alone leaves
+# every input Go tracks unchanged and the run above reports a cached pass. That package's tests are
+# the only ones comparing the schema to the route registration list, and a schema-only edit is exactly
+# what they exist to catch, so a cached pass there is the failure looking like success. It is one
+# package and milliseconds; forcing the whole tree would cost the two-minute soak on every run.
 [group('checks')]
-[doc('The backend Go tree builds, passes vet, its package tests pass, and the internal packages are free of data races; needs `just boundary-install`')]
+[doc('The backend Go tree builds, passes vet, its package tests pass, the schema-to-registry comparison runs uncached, and the internal packages are free of data races; needs `just boundary-install`')]
 check-go:
     go -C backend build ./...
     go -C backend vet ./...
     go -C backend test ./...
+    go -C backend test -count=1 ./internal/registry/
     go -C backend test -race ./internal/...
 
 [group('checks')]
