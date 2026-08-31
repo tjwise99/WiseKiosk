@@ -56,6 +56,7 @@ type upstreamFake struct {
 	headers http.Header
 	status  int
 	body    string
+	release chan struct{}
 }
 
 func newUpstreamFake(t *testing.T) *upstreamFake {
@@ -66,14 +67,33 @@ func newUpstreamFake(t *testing.T) *upstreamFake {
 		fake.mu.Lock()
 		fake.calls++
 		fake.headers = r.Header.Clone()
-		status, body := fake.status, fake.body
+		status, body, release := fake.status, fake.body, fake.release
 		fake.mu.Unlock()
+
+		// Counted before the wait, so a call that reached the source is counted
+		// whether or not it has been let go.
+		if release != nil {
+			<-release
+		}
 
 		w.WriteHeader(status)
 		fmt.Fprint(w, body)
 	}))
 	t.Cleanup(fake.server.Close)
 	return fake
+}
+
+// hold stages a slow source: every call reaches it and then waits, until the
+// returned function is called. Calling that function twice is harmless, so a
+// test releases the source itself and registers the same call as its cleanup.
+func (u *upstreamFake) hold() func() {
+	release := make(chan struct{})
+
+	u.mu.Lock()
+	u.release = release
+	u.mu.Unlock()
+
+	return sync.OnceFunc(func() { close(release) })
 }
 
 func (u *upstreamFake) count() int {

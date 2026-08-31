@@ -6,13 +6,29 @@ import (
 	"net/http"
 
 	"github.com/tjwise99/WiseKiosk/backend/internal/boundary"
+	"github.com/tjwise99/WiseKiosk/backend/internal/modules/weather"
 	"github.com/tjwise99/WiseKiosk/backend/internal/router"
 )
 
 // Entries is the static route registration list: one entry per upstream-backed
 // module, declared here and nowhere else. A module is added by adding one
 // element to this literal.
-var Entries = []router.Entry{}
+//
+// Every policy an entry carries is the module's own, assembled from its shaping
+// library rather than restated here, so the figures a requirement settled have
+// one home and a test reads the same ones the route runs.
+var Entries = []router.Entry{
+	{
+		Config:   weather.Config(),
+		Source:   weather.Source,
+		Validate: weather.Validate,
+		BuildURL: weather.BuildURL,
+		// The module shapes into the generated payload type, which the framework
+		// takes as the JSON-encodable value any module may return.
+		Shape: func(body []byte) (any, error) { return weather.Shape(body) },
+		// Open-Meteo is keyless, so there is nothing to name and nothing to place.
+	},
+}
 
 // Routes implements the boundary schema's module data routes. The schema is
 // what registers each of them, so a path that moves or an operation that
