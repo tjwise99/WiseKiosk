@@ -50,7 +50,7 @@
           "properties": { "module": { "const": "clock" } }
         },
         "then": {
-          "properties": { "options": { "$ref": "#/$defs/clockOptions" } }
+          "properties": { "options": { "$ref": "#/$defs/clockOptions", "default": {} } }
         }
       }
     },
@@ -71,7 +71,7 @@
           "title": "Twenty-four-hour",
           "description": "Whether the hour is presented in twenty-four-hour form. False presents it in twelve-hour form, carrying the indicator that tells the two halves of the day apart.",
           "type": "boolean",
-          "default": true
+          "default": false
         },
         "show_seconds": {
           "title": "Show seconds",
