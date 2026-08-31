@@ -18,7 +18,7 @@ direction).
 **Shape**
 
 - [ ] Upstream-backed (six parts) — or —
-- [ ] Local, fetches nothing (component, configuration fragment, tests)
+- [ ] Local, fetches nothing (component, configuration-schema section, tests)
 
 **Before opening a PR**
 
