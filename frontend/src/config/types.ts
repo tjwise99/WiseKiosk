@@ -27,7 +27,7 @@ export type Module = string;
 /**
  * What this placement asks of the module it names. The keys on offer are the named module's own, declared in that module's section below, and a module with no section there is not judged by another module's keys; two placements of the same module are configured apart, each from its own entry.
  */
-export type ModuleOptions = ClockOptions | {};
+export type ModuleOptions = ClockOptions | WeatherOptions | {};
 /**
  * Whether the hour is presented in twenty-four-hour form. False presents it in twelve-hour form, carrying the indicator that tells the two halves of the day apart.
  */
@@ -40,6 +40,14 @@ export type ShowSeconds = boolean;
  * Whether the current date is shown beside the time.
  */
 export type ShowDate = boolean;
+/**
+ * Latitude of the point, in decimal degrees north of the equator.
+ */
+export type Latitude = number;
+/**
+ * Longitude of the point, in decimal degrees east of the prime meridian.
+ */
+export type Longitude = number;
 /**
  * Every module this deployment displays, each with the region it is laid out into. A region may carry several modules, and a region no entry names holds nothing.
  */
@@ -65,4 +73,17 @@ export interface ClockOptions {
   twenty_four_hour?: TwentyFourHour;
   show_seconds?: ShowSeconds;
   show_date?: ShowDate;
+}
+/**
+ * The weather module's section: what a placement of the weather module asks of it. Unlike the clock's, its one key is required and carries no default — the module reports on a point on the earth's surface, and there is no point that would do in the absence of one the placement names.
+ */
+export interface WeatherOptions {
+  location: WeatherLocation;
+}
+/**
+ * The point the weather is reported at. Two placements of the module report on two points, each from its own entry.
+ */
+export interface WeatherLocation {
+  lat: Latitude;
+  lon: Longitude;
 }

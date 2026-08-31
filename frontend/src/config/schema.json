@@ -42,7 +42,11 @@
           "options": {
             "title": "Module options",
             "description": "What this placement asks of the module it names. The keys on offer are the named module's own, declared in that module's section below, and a module with no section there is not judged by another module's keys; two placements of the same module are configured apart, each from its own entry.",
-            "anyOf": [{ "$ref": "#/$defs/clockOptions" }, { "type": "object" }]
+            "anyOf": [
+              { "$ref": "#/$defs/clockOptions" },
+              { "$ref": "#/$defs/weatherOptions" },
+              { "type": "object" }
+            ]
           }
         },
         "if": {
@@ -51,6 +55,16 @@
         },
         "then": {
           "properties": { "options": { "$ref": "#/$defs/clockOptions", "default": {} } }
+        },
+        "else": {
+          "if": {
+            "required": ["module"],
+            "properties": { "module": { "const": "weather" } }
+          },
+          "then": {
+            "required": ["options"],
+            "properties": { "options": { "$ref": "#/$defs/weatherOptions" } }
+          }
         }
       }
     },
@@ -84,6 +98,34 @@
           "description": "Whether the current date is shown beside the time.",
           "type": "boolean",
           "default": true
+        }
+      }
+    },
+    "weatherOptions": {
+      "title": "Weather options",
+      "description": "The weather module's section: what a placement of the weather module asks of it. Unlike the clock's, its one key is required and carries no default — the module reports on a point on the earth's surface, and there is no point that would do in the absence of one the placement names.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["location"],
+      "properties": {
+        "location": {
+          "title": "Weather location",
+          "description": "The point the weather is reported at. Two placements of the module report on two points, each from its own entry.",
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["lat", "lon"],
+          "properties": {
+            "lat": {
+              "title": "Latitude",
+              "description": "Latitude of the point, in decimal degrees north of the equator.",
+              "type": "number"
+            },
+            "lon": {
+              "title": "Longitude",
+              "description": "Longitude of the point, in decimal degrees east of the prime meridian.",
+              "type": "number"
+            }
+          }
         }
       }
     }
