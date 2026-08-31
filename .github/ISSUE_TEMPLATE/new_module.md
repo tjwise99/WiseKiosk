@@ -13,7 +13,7 @@ direction).
 **What it displays, and from which upstream API — or none**
 
 <!-- The data source, its refresh cadence, and whether it needs a key. A module that fetches nothing
-     — a clock, a local list — is a local module and has three of the six parts. -->
+     is a local module and has three of the six parts. -->
 
 **Shape**
 

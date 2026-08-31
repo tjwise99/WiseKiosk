@@ -34,9 +34,12 @@ overwritten on the next export, and drift fails the staleness gate. The workflow
 [architecture README](architecture/README.md)'s.
 
 **System context (C4 L1)** — the Operator who deploys and configures WiseKiosk, the Viewer it renders
-for, and the boundary between them, which is what deploys: the published image and what it serves. No
-external system appears, an upstream data source being modelled once the module that reads it has a need
-in the tree ([ADR 0019 rev 5](decisions/0019-boundary-at-what-deploys-and-tag-tier.md)).
+for, the boundary between them, which is what deploys — the published image and what it serves — and
+the one upstream outside it. An upstream data source is drawn individually and only once the module
+that reads it has a need in the tree
+([ADR 0019 rev 5](decisions/0019-boundary-at-what-deploys-and-tag-tier.md)), so the level carries one
+box per such module and no aggregate standing in for the rest. The requirements name no supplier:
+which service a box is, is an edit to this repository rather than something the tree obliges.
 
 <!-- arch-export:begin generated/index.mmd -->
 
@@ -48,12 +51,15 @@ graph TB
   Operator@{ icon: "fa:user", shape: rounded, label: "Operator" }
   Wisekiosk@{ shape: rectangle, label: "WiseKiosk" }
   Viewer@{ icon: "fa:user", shape: rounded, label: "Viewer" }
+  OpenMeteo@{ shape: rectangle, label: "Open-Meteo" }
   Operator -. "`Supplies the secret for each source`" .-> Wisekiosk
   Operator -. "`Places the configuration into the served 
 tree`" .-> Wisekiosk
   Wisekiosk -. "`Renders the configured modules, legibly 
 says when one failed, and mirrors the 
 rest`" .-> Viewer
+  Wisekiosk -. "`Fetches the weather for the location a 
+request names`" .-> OpenMeteo
 ```
 
 <!-- arch-export:end generated/index.mmd -->
@@ -66,8 +72,9 @@ bundle and the configuration file as static content it never interprets
 separate supplies: the secret for each source, resolved per request
 (SRS006<!-- Unresolvable secret surfaces as that source's upstream failure -->), and the configuration,
 which the image does not carry (SRS018<!-- One generic published image -->) and which reaches its
-consumer on a second hop, when the page fetches it. No upstream source appears here for the reason none
-appears above.
+consumer on a second hop, when the page fetches it. The upstream drawn above appears here on the
+backend, which is the container that reaches it — the frontend never does
+(SYS004<!-- Upstream data reaches the display only through the backend -->).
 
 <!-- arch-export:begin generated/containers.mmd -->
 
@@ -81,6 +88,7 @@ graph TB
     Wisekiosk.Backend@{ shape: rectangle, label: "Backend" }
     Wisekiosk.Frontend@{ shape: rectangle, label: "Frontend" }
   end
+  OpenMeteo@{ shape: rectangle, label: "Open-Meteo" }
   Viewer@{ icon: "fa:user", shape: rounded, label: "Viewer" }
   Operator -. "`Supplies the secret for each source`" .-> Wisekiosk.Backend
   Operator -. "`Places the configuration into the served 
@@ -89,6 +97,8 @@ tree`" .-> Wisekiosk.Backend
   Wisekiosk.Frontend -. "`Fetches the configuration, served back 
 unparsed`" .-> Wisekiosk.Backend
   Wisekiosk.Frontend -. "`Fetches the payload for each module`" .-> Wisekiosk.Backend
+  Wisekiosk.Backend -. "`Fetches the weather for the location a 
+request names`" .-> OpenMeteo
   Wisekiosk.Frontend -. "`Renders the configured modules, legibly 
 says when one failed, and mirrors the 
 rest`" .-> Viewer
@@ -195,11 +205,13 @@ SRS008<!-- No secret value in any backend output -->).
 **Components (C4 L3)**, diagrammed below; each box's responsibility is the model's, not restated here.
 A module's own half of this container is its shaping library, drawn when that module's need lands
 ([ADR 0019 rev 5](decisions/0019-boundary-at-what-deploys-and-tag-tier.md)); the route handler calls
-it twice — to build the upstream request and to parse the answer — so what is drawn here cannot serve
-a payload on its own. A route's policies — parameter validation, both cache TTLs, rate limit, outbound
+it twice — to build the upstream request and to parse the answer — so the framework half drawn beside
+it cannot serve a payload on its own. The framework/module seam is drawn rather than inferred: one
+shaping box appears per upstream-backed module and every other box on this level is shared framework.
+A route's policies — parameter validation, both cache TTLs, rate limit, outbound
 timeout, maximum response size — are one entry in the static registration list and live nowhere else
-([the module contract](contracts/module-contract.md)); that entry is data these components read rather
-than a component of its own.
+in code ([the module contract](contracts/module-contract.md)); that entry is data these components
+read rather than a component of its own.
 
 <!-- arch-export:begin generated/backendComponents.mmd -->
 
@@ -216,7 +228,9 @@ graph TB
     WisekioskBackend.RequestValidation@{ shape: rectangle, label: "Request validation" }
     WisekioskBackend.ResponseCache@{ shape: rectangle, label: "Response cache" }
     WisekioskBackend.UpstreamClient@{ shape: rectangle, label: "Upstream client" }
+    WisekioskBackend.WeatherShaping@{ shape: rectangle, label: "Weather shaping" }
   end
+  OpenMeteo@{ shape: rectangle, label: "Open-Meteo" }
   Operator -. "`Places the configuration into the served 
 tree`" .-> WisekioskBackend.StaticServing
   Operator -. "`Supplies the secret for each source`" .-> WisekioskBackend.UpstreamClient
@@ -229,6 +243,8 @@ it gets`" .-> WisekioskBackend.ResponseCache
   WisekioskBackend.RouteHandler -. "`Asks for a fresh response when nothing 
 is held`" .-> WisekioskBackend.UpstreamClient
   WisekioskBackend.StaticServing -. "`Serves the single-page bundle`" .-> WisekioskFrontend
+  WisekioskBackend.UpstreamClient -. "`Fetches the weather for the location a 
+request names`" .-> OpenMeteo
 ```
 
 <!-- arch-export:end generated/backendComponents.mmd -->
@@ -291,13 +307,17 @@ restated here.
 
 **Components (C4 L3)**, diagrammed below; each box's responsibility is the model's, not restated here.
 A module's own half of this container is its Svelte component, drawn when that module's need lands
-([ADR 0019 rev 5](decisions/0019-boundary-at-what-deploys-and-tag-tier.md)), which is why the edge to
-the Viewer leaves this container rather than a region within it. Assembly's discipline — placing what
-it is handed, fetching nothing — is the module contract's rule for a module component, applied one
-level up. The bundle that becomes this container arrives on the one edge drawn server-to-client,
-terminating on the container rather than on a child because no component exists to fetch what has yet
-to run; `include *` does not reach it, so this view alone omits where the bundle comes from, and the
-Backend's view above is where it is drawn.
+([ADR 0019 rev 5](decisions/0019-boundary-at-what-deploys-and-tag-tier.md)). The framework/module seam
+is drawn rather than inferred: one component box appears per module whatever its shape — a local
+module has no other box anywhere in the model — and every other box on this level is shared
+framework. The edge to the Viewer still leaves this container rather than any one of those boxes,
+because what a viewer is shown is the assembled surface: the configured modules placed together, one
+of them saying it failed, the rest of it mirrored — which no single component renders. Assembly's
+discipline — placing what it is handed, fetching nothing — is the module contract's rule for a module
+component, applied one level up. The bundle that becomes this container arrives on the one edge drawn
+server-to-client, terminating on the container rather than on a child because no component exists to
+fetch what has yet to run; `include *` does not reach it, so this view alone omits where the bundle
+comes from, and the Backend's view above is where it is drawn.
 
 <!-- arch-export:begin generated/frontendComponents.mmd -->
 
@@ -308,6 +328,8 @@ title: "WiseKiosk Frontend — Components (C4 L3)"
 graph TB
   subgraph WisekioskFrontend["`Frontend`"]
     WisekioskFrontend.PageShell@{ shape: rectangle, label: "Page shell" }
+    WisekioskFrontend.Clock@{ shape: rectangle, label: "Clock" }
+    WisekioskFrontend.Weather@{ shape: rectangle, label: "Weather" }
     WisekioskFrontend.Configuration@{ shape: rectangle, label: "Configuration load and validation" }
     WisekioskFrontend.Layout@{ shape: rectangle, label: "Layout assembly" }
     WisekioskFrontend.PayloadClient@{ shape: rectangle, label: "Payload client" }

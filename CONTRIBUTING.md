@@ -63,7 +63,11 @@ design_119-c4_model_completion
 - its **parent matches the PR base** — a sub-issue's PR targets its integration branch, a top-level
   issue's targets `main`, and the gate asserts that in both directions;
 - the PR's **Development field links the ticket**: `Closes #N` in the body writes that record on a
-  default-base PR, an integration or epic base needs it linked by hand.
+  default-base PR and writes **nothing** on an integration or epic base, which has to be linked
+  separately — in the web UI's Development panel, or with the API call the
+  [`link-pr` skill](.claude/skills/link-pr/SKILL.md) carries for a session that has no UI.
+  The gate reads GitHub's recorded state rather than the body, so a `Closes` line on an epic-based
+  PR looks right and gates red.
 
 **PR titles are Conventional Commits** — the repo squash-merges, so the title becomes the commit
 on `main`. A `fixup!`/`squash!`/merge subject passes as a commit message, whose text the squash
@@ -143,7 +147,11 @@ appended for the same reason; inserting one is permitted
 14. **Module universals.** Does a module requirement the change adds or edits state something already
     obliged of every module — failure rendering, secret delivery, caching, request rejection? A
     module's requirements carry what is true of that module and nothing else
-    ([ADR 0012 rev 2](docs/decisions/0012-module-requirements-in-tree.md)).
+    ([ADR 0012 rev 2](docs/decisions/0012-module-requirements-in-tree.md)). And the reverse: does the
+    change drop a sentence that reads as a universal but that no framework item states? That
+    obligation is not the author's to drop silently — it lands as a framework item, or as this
+    module's with the promotion surfaced (the dual-stage test in
+    [the module contract](docs/contracts/module-contract.md)).
 15. **Named resources.** Does a requirement name a file, endpoint, package or tool rather than the
     property the software must have? Naming one swallows a design decision into the specification,
     where it cannot change without a specification change.

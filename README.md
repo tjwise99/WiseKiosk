@@ -1,7 +1,7 @@
 # WiseKiosk
 
 A config-driven smart-mirror display. A full-screen browser page renders a fixed set of five modules
-— `clock`, `compliments`, `OpenMeteo` weather, `AviationWeather` (CheckWX METAR/TAF), and
+— `clock`, `compliments`, `Weather` (Open-Meteo), `AviationWeather` (CheckWX METAR/TAF), and
 `DisneyWaitTimes` (themeparks.wiki) — from a handful of public APIs, running unattended on a display
 behind one-way glass. What that glass returns where the display carries nothing is the point rather
 than a side effect: the page spends what light it spends on what it presents,

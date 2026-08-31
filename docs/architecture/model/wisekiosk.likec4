@@ -37,6 +37,8 @@ specification {
   tag SYS005
   tag SYS006
   tag SYS008
+  tag SYS009
+  tag SYS010
   tag SRS001
   tag SRS002
   tag SRS003
@@ -67,6 +69,18 @@ specification {
   tag SRS033
   tag SRS034
   tag SRS035
+  tag SRS036
+  tag SRS037
+  tag SRS038
+  tag SRS039
+  tag SRS040
+  tag SRS041
+  tag SRS042
+  tag SRS043
+  tag SRS044
+  tag SRS045
+  tag SRS046
+  tag SRS047
 }
 
 model {
@@ -164,6 +178,20 @@ model {
           cause, and a secret by its name.
         '''
       }
+
+      weatherShaping = component 'Weather shaping' {
+        #SRS043
+        #SRS044
+        description '''
+          The weather module's half of this container. Builds the request for
+          the weather source from the location a caller named, and reshapes
+          what comes back into the payload that module puts across the
+          boundary — the present weather and what is expected over the coming
+          hours and days. Declares the pattern a location must match, which
+          the framework applies before anything goes upstream. Pure functions,
+          reading nothing and calling nothing.
+        '''
+      }
     }
 
     frontend = container 'Frontend' {
@@ -175,6 +203,7 @@ model {
       #SRS030
       #SRS032
       #SRS033
+      #SRS040
       technology 'Svelte 5, static single-page bundle'
       icon tech:svelte
       description '''
@@ -235,6 +264,37 @@ model {
           an unavailable state over the one outage.
         '''
       }
+
+      clock = component 'Clock' {
+        #SYS009
+        #SRS036
+        #SRS037
+        #SRS038
+        #SRS039
+        description '''
+          Renders the time of day into the region the configuration gives it,
+          taken from the clock of the host running the browser and kept
+          tracking real time for as long as the page stays loaded. Presents
+          the hour in the form its configuration selects, and the date beside
+          it where the configuration asks for one. Fetches nothing, so a
+          backend that is gone takes nothing from it.
+        '''
+      }
+
+      weather = component 'Weather' {
+        #SYS010
+        #SRS042
+        #SRS045
+        #SRS046
+        description '''
+          Renders the weather into the region the configuration gives it: what
+          it is doing now, and what is expected over the coming hours and the
+          coming days, each told apart from the others. Reports on the
+          location its configuration names, and asks again often enough that
+          what a viewer reads is never far behind the source. It fetches, so a
+          backend that is gone stands it down.
+        '''
+      }
     }
 
     // Deliberately server->client, terminating on a container (../../ARCHITECTURE.md § Frontend).
@@ -263,6 +323,24 @@ model {
       #SRS016
       technology 'HTTP / JSON'
     }
+  }
+
+  // The first external system in the model. An upstream is drawn once the module
+  // reading it has a need in the tree (ADR 0019 rev 5), and the weather module's
+  // has landed.
+  openMeteo = system 'Open-Meteo' {
+    description '''
+      The weather service the weather module reads. Run by somebody else and
+      outside the boundary. Which service this is, is an edit to this
+      repository: no requirement names it, and the module's obligations are
+      written against a weather source rather than against this one.
+    '''
+  }
+
+  upstreamClient -> openMeteo 'Fetches the weather for the location a request names' {
+    #SRS041
+    #SRS047
+    technology 'HTTPS'
   }
 
   operator -> upstreamClient 'Supplies the secret for each source' {

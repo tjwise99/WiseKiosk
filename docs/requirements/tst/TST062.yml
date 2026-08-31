@@ -1,0 +1,30 @@
+active: false
+derived: false
+header: |
+  Pending: the weather module's upstream rate and concurrency bounds hold
+level: 84
+links:
+- SRS047: 4QyJkk1fU7vKwq0YrR5f0J4HRnNPHhs8p3P9hSwCGKo=
+normative: true
+rationale: |
+  The source is staged slow deliberately. The concurrency half can only fail while an answer is
+  outstanding long enough for a second ask to fall due, and against a source that answers at once the
+  two clauses of the item are indistinguishable - every reading shows one request at a time whether or
+  not anything enforces it.
+  The clock is driven for the same reason the freshness reading drives it: an hourly bound cannot be
+  read from a suite that runs for seconds.
+ref: ''
+reviewed: GNCFiFMFcRgLDnchnz4yG_K_lz3JT8EJfcaFMHpuEY4=
+status: proposed
+text: |
+  Pending: integration test driving the module's route under a driven clock and a slow staged source,
+  asserting the requests that leave stay within the hourly bound the requirement states for one
+  location, and that a second is never outstanding while a first has not answered. Lands with the first
+  vertical slice (#12); activated and given a references entry then.
+verification-justification: |
+  Settles what this system emits, under a clock the harness drives.
+  Leaves unproven what the source will tolerate: another party's rate policy is published or not at its
+  own discretion, changed without notice, and not decidable here. It is asserted over the window the
+  suite runs rather than over a deployment left running for years, so a drift that only appears over
+  that span is outside it.
+verification-method: test

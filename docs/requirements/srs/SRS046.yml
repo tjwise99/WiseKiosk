@@ -1,0 +1,37 @@
+active: true
+derived: false
+header: |
+  The weather a viewer sees is no more than fifteen minutes behind its source
+level: 49
+links:
+- SYS010: dgflQFtHGeswH-PgjWmcBkfuJujSp-a-Z5JtN4H0Low=
+normative: true
+rationale: |
+  Weather at a place moves on the scale of minutes to tens of minutes - a shower arrives, the wind gets
+  up, the temperature turns with the sun - so what a source reports about a place is a value that goes
+  wrong by itself while nothing else changes. A display that is glanced at rather than consulted has no
+  way to tell a viewer that what it shows has aged, so the only defence is that it cannot have aged
+  much: fifteen minutes is short enough that what the display says and what is outside the window agree
+  about the same sky, and long enough that asking again buys nothing the source has not itself changed.
+  Refetching faster than the source moves buys a viewer nothing, and buys the source another request.
+  The bound is on the distance from the source rather than from the sky, deliberately. How long a
+  supplier takes to notice the weather is the supplier's, and stating a bound that included it would
+  oblige something no display can control and no check can read.
+  Two settings are read out of this figure rather than chosen beside it: the interval the route holds a
+  successful answer for, and how often the module asks. Neither may be set so that a viewer sees weather
+  older than this, which is the whole reason the figure sits in a requirement instead of in the code
+  that uses it.
+ref: ''
+reviewed: OrGpQEvy28R9nLZHSqMBT0L3EMGpxx7KToeycMD4d-I=
+status: accepted
+text: |
+  The weather the module shows shall be no more than fifteen minutes behind what its source reports.
+verification-justification: |
+  Read from a rendered page against a source staged to change its answer: within the bound, and without
+  the page being reloaded, what the region shows is the changed answer rather than the old one.
+  What it cannot settle is how far behind the sky the source itself runs, which is another party's
+  system and outside this one - so what is bounded is the display's distance from its source, not a
+  viewer's distance from the weather. Nor does it settle the behaviour of a page left running far longer
+  than a check runs: the bound is asserted over the span the harness holds the page open, so an ageing
+  that appears only after days is outside it.
+verification-method: test

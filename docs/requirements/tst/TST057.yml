@@ -1,0 +1,29 @@
+active: false
+derived: false
+header: |
+  Pending: the weather shown is the configured location's
+level: 79
+links:
+- SRS042: CK28O8A7DIgUc4RbLfQN8gRUevDsIgyfdP8wtGblFuI=
+normative: true
+rationale: |
+  One configuration is not enough. A module ignoring its configuration and reporting on a place fixed in
+  its own code passes a single reading whenever that place happens to be the one configured, so two are
+  driven and both halves are read to move with them.
+  The request and the region are both read because either alone is satisfiable while the item fails: a
+  module can ask about the right place and draw a cached answer for another, or ask about the wrong one
+  and draw its answer faithfully.
+ref: ''
+reviewed: 3qBrl53us2xD3jzckqc7d1sR9vf1s_MkpCptiP1ylM8=
+status: proposed
+text: |
+  Pending: render test loading the page under two configurations naming two locations, against a source
+  staged to answer differently by location, and asserting that the request the module causes carries the
+  configured location and that the region shows the answer given for it, both following the
+  configuration. Lands with the first vertical slice (#12); activated and given a references entry then.
+verification-justification: |
+  Settles that the place configured is the place asked about and the place drawn.
+  Leaves unproven that the source's answer is true of that place, which is the source's own and outside
+  this system. It settles nothing about a configuration naming no location, which is a
+  configuration-validation question rather than this module's.
+verification-method: test

@@ -1,0 +1,40 @@
+active: true
+derived: false
+header: |
+  The weather module asks its source at most four times an hour for a location
+level: 50
+links:
+- SYS010: dgflQFtHGeswH-PgjWmcBkfuJujSp-a-Z5JtN4H0Low=
+normative: true
+rationale: |
+  The source is a free service run by somebody else, and a display that is never turned off asks for
+  years. What ends that arrangement is not one bad hour but a steady rate somebody decides is unfair, so
+  the module sets its own politeness bound low enough that a deployment left running is not throttled or
+  cut off for asking too often.
+  Four times an hour is what the freshness figure comes to and nothing beyond it: asking more often
+  cannot make what a viewer sees fresher than that item obliges, so the extra requests would be spent
+  for no viewer. The bound is per location because that is what a request is about - two displays
+  configured for two places are two conversations, and one of them being busy is not a reason to starve
+  the other.
+  One request in flight is the second half and is not implied by the first. A module that reissued on
+  top of a slow answer would multiply its own rate exactly when the source is least able to bear it,
+  which is the moment a politeness bound is for; a per-hour count alone permits four at once.
+  What is not restated is that the rate is bounded at all and not left for an operator to raise
+  (SRS011<!-- Upstream request rate is bounded, and the bound is not operator-tunable -->). The
+  framework obliges there be a bound; this says what this module's is.
+ref: ''
+reviewed: KRI3alkPrkXY2b5HunGDvCW6Aq9Nie_gCB5_p4w0nGw=
+status: accepted
+text: |
+  The weather module shall issue no more than four requests an hour to its source for any one location,
+  and shall have no more than one request to that source in flight at a time.
+verification-justification: |
+  Read over the requests the module's route issues against a staged source and a driven clock: no more
+  than four leave in any hour for one location, and a second is never outstanding while a first has not
+  answered.
+  What it cannot settle is that this rate is one the source accepts. What a free supplier will tolerate
+  is its own policy, published or not, changed without notice and not decidable here; the figure is
+  chosen to sit well under what such a service is likely to permit, and a check reads what this system
+  emits rather than what another party thinks of it. It is also asserted over the window the harness
+  runs, so a rate that drifts only over days is outside it.
+verification-method: test

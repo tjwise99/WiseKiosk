@@ -179,15 +179,15 @@ the module's shaping functions, before the upstream request to build it and afte
 otherwise leave invisible, since the module half it reaches is undrawn.
 
 **The framework/module seam is the contract's, not this record's judgement.** A module's half of a
-container is code a module author writes *that runs in that container*: part 1's shaping library in
-the backend, part 3's Svelte component in the frontend. Everything else is shared framework,
-parameterised per route by part 2's entry. Those six policy values are per-route **data**, and treating
+container is code a module author writes *that runs in that container*: part 4's shaping library in
+the backend, part 1's Svelte component in the frontend. Everything else is shared framework,
+parameterised per route by part 5's entry. Those six policy values are per-route **data**, and treating
 per-route configuration as per-module structure would make request validation, the response cache and
 the upstream client all module-owned and leave the framework half empty — against the contract's own
 dependency direction, under which framework code "is shared code from the moment it is written". Parts
-4 and 5 earn no component either: the boundary-schema fragment belongs to the one schema, which
-[ADR 0008 rev 3](0008-boundary-contract-openapi-codegen.md) gives to neither side, and the
-configuration-schema fragment composes into the one schema the frontend validates against. Part 6 is
+2 and 6 earn no component either: the configuration-schema fragment composes into the one schema the
+frontend validates against, and the boundary-schema fragment belongs to the one schema, which
+[ADR 0008 rev 3](0008-boundary-contract-openapi-codegen.md) gives to neither side. Part 3 is
 tests, which run nowhere in either container and are [`../TESTING.md`](../TESTING.md)'s.
 
 **Only the framework half is drawn.** [ADR 0012 rev 2](0012-module-requirements-in-tree.md) makes a

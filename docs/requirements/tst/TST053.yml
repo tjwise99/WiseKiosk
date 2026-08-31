@@ -1,0 +1,27 @@
+active: false
+derived: false
+header: |
+  Pending: each hour form is the one its selection asked for
+level: 75
+links:
+- SRS038: TMy56xXMB17QBXQC9B7CZKkT4gOldU0qk8ILtCHB1oM=
+normative: true
+rationale: |
+  Both selections are driven rather than one, because a module ignoring the configuration and hardcoding
+  either form passes a check that reads only the other. The two renderings are also compared against
+  each other at an hour that tells them apart - an afternoon hour, since morning hours read alike in
+  both forms - so a module that varies the label without varying the hour is caught.
+ref: ''
+reviewed: whdvgI2jyus3AkeRVhk6im_VArIVcKVpzbnlpgjyG1g=
+status: proposed
+text: |
+  Pending: render test loading the page under each of the two hour selections at a host time in the
+  afternoon, asserting that the hour presented is the one that selection calls for and that the two
+  renderings differ. Lands with the first vertical slice (#12); activated and given a references entry
+  then.
+verification-justification: |
+  Settles that the presented hour follows the selection under both values, which fails a module that
+  hardcodes either form or that ignores the key.
+  Leaves unproven everything about how the form is written - separator, zero-padding, and how a
+  meridiem indicator reads - which the item does not oblige and no check judges.
+verification-method: test

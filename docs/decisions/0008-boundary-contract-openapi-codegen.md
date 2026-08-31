@@ -47,7 +47,7 @@ notch too narrow, so rev 3 widens it to the whole wire contract rather than addi
 
 - **One hand-authored OpenAPI schema is the single definition**, owned by neither package (it sits at
   `boundary/openapi.yaml`, per [ADR 0021 rev 1](0021-repository-layout.md)). A module contributes its payload as a **named component inside
-  that schema**: the *fragment* [the module contract](../contracts/module-contract.md) part 5 names is
+  that schema**: the *fragment* [the module contract](../contracts/module-contract.md) part 6 names is
   that component, a section of the one schema rather than a file of its own, so nothing recomposes and
   the schema stays authored rather than generated. Rejected — one fragment file per module, recomposed
   into the committed schema: it buys per-module file ownership at the cost of a composition stage in

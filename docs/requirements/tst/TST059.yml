@@ -1,0 +1,29 @@
+active: false
+derived: false
+header: |
+  Pending: the weather payload carries the present and both outlooks
+level: 81
+links:
+- SRS044: 6uZim7o-jdWfmjHib1Aeoz4uBfmjGv27rci1xYdgEHw=
+normative: true
+rationale: |
+  Read against a captured response rather than a live source, so what is asserted is the shaping rather
+  than the weather on the day the suite runs. A live source would make the same test pass or fail with
+  the sky.
+  All four present respects and both ranges are asserted rather than the payload being checked for
+  shape, because a shaping that dropped one of them produces a payload that still parses and still
+  renders.
+ref: ''
+reviewed: 4lHyTplfM_wr0ZZhs5ZMZ2_2pt3NzDZNe5GAIcj4v7U=
+status: proposed
+text: |
+  Pending: unit test running the module's shaping over a captured response from its source, with no
+  network, and asserting the payload it produces carries, for the location the request named, the
+  present weather in each of the four respects and both forward ranges. Lands with the first vertical
+  slice (#12); activated and given a references entry then.
+verification-justification: |
+  Settles that a captured response is reshaped into everything a viewer is owed.
+  Leaves unproven the truth of any value in it, the source being outside this system, and bounds
+  coverage by the captures the suite holds: a response the source can return and no capture contains -
+  a value missing, a range short - is unasserted here.
+verification-method: test

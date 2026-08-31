@@ -1,0 +1,33 @@
+active: true
+derived: false
+header: |
+  The clock's hour form is the one its configuration selects
+level: 41
+links:
+- SYS009: s8TjUw37qCSpVRmL9jQhjvVhRKP9haPGIYcmNiYjgic=
+normative: true
+rationale: |
+  Twelve-hour and twenty-four-hour are both right answers, and which one a display should show is the
+  operator's rather than ours: the same clock hangs in a household that reads one and an operations
+  room that reads the other. That makes the choice configuration, which is one of the two things a
+  local module's decomposition carries.
+  What the item states is what the choice does, not what it is spelled. The key's name and its default
+  belong to the module's configuration-schema fragment, and a requirement naming them would fix an
+  interface here that the schema is the record of. Nor does the item say the option is exercised: that
+  every offered key is driven at a non-default value is already obliged of every module
+  (SRS024<!-- Every offered configuration key is exercised at a non-default value -->), and restating
+  it would be writing a framework universal twice.
+ref: ''
+reviewed: Q7ibWeo6TVJtnVLIkDYhig7sAVU55IaHqaR-rjd2Qa8=
+status: accepted
+text: |
+  The clock module shall present the time it shows in twelve-hour or in twenty-four-hour form,
+  according to which of the two its configuration selects.
+verification-justification: |
+  Read from a rendered page under each of the two selections: the form the page presents is the one
+  selected, and the two are distinguishable from each other.
+  What it cannot settle is that the rendered form is idiomatic wherever the display hangs - which
+  separator, whether an hour is zero-padded, and how a meridiem indicator reads are presentation
+  choices the item does not oblige and no check judges. Nor does it reach a configuration that selects
+  neither, which is a configuration-validation question rather than this module's.
+verification-method: test

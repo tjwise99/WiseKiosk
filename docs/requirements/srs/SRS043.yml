@@ -1,0 +1,36 @@
+active: true
+derived: false
+header: |
+  The weather module declares the known-good pattern its location parameter must match
+level: 46
+links:
+- SYS010: dgflQFtHGeswH-PgjWmcBkfuJujSp-a-Z5JtN4H0Low=
+normative: true
+rationale: |
+  The framework obliges the validating and the rejecting, and hands the pattern itself to the source
+  that declares it
+  (SRS012<!-- Request parameters validated against known-good per-source patterns -->). This is that
+  hand-off taken up, and it is the one overlap with the framework a module's decomposition legitimately
+  carries: the framework says a pattern is applied before anything goes upstream, and the module says
+  which pattern that is.
+  What a location is, is the whole of what is fixed here. A point on the earth's surface is the class of
+  value this module can be asked about, and anything outside that class is not an unlucky request but a
+  request this module cannot mean. How such a value is spelled on the wire - which characters, which
+  order, which precision - is the route's registration entry and the boundary schema's, and a
+  requirement fixing it would settle an interface those records are the record of.
+  It stands apart from the configured location for a reason that is not tidiness: this bounds what the
+  backend will carry upstream from any caller, and holds against a request the page never made.
+ref: ''
+reviewed: _V8sk2vV1q5tRUr8Ev0168CmnmXpArdw6QGOPbPad5I=
+status: accepted
+text: |
+  The weather module shall declare the known-good pattern for the location its requests name, admitting
+  a point on the earth's surface and no other value.
+verification-justification: |
+  Read against the pattern the module declares, exercised without a network: a request naming a point on
+  the earth's surface is admitted and one naming anything else is rejected with nothing sent upstream.
+  What it cannot settle is that an admitted location is one the source has weather for. A well-formed
+  point in the middle of an ocean conforms and may still be answered poorly or not at all, which is an
+  upstream failure rather than a rejection, and the boundary between the two is what this item fixes
+  rather than something it proves right.
+verification-method: test
