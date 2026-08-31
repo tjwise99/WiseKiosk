@@ -59,6 +59,54 @@ describe('the configuration validator', () => {
     expect(result.faults[0].what).toContain('bottom_bar');
   });
 
+  // The clock's section is the first per-module one, and its keys are enforced only while the
+  // placement names the clock. Both halves are read: a section nothing narrows would admit any key,
+  // and a section narrowed to the wrong placement would reject a good configuration.
+  it('accepts the keys the clock offers, at values that are not their defaults', () => {
+    const result = validateConfiguration({
+      modules: [
+        {
+          region: 'top_bar',
+          module: 'clock',
+          options: { twenty_four_hour: false, show_seconds: false, show_date: false },
+        },
+      ],
+    });
+
+    expect(result.valid).toBe(true);
+  });
+
+  it('names the key an operator misspelled in a clock placement', () => {
+    const result = validateConfiguration({
+      modules: [{ region: 'top_bar', module: 'clock', options: { twelve_hour: true } }],
+    });
+
+    expect(result.valid).toBe(false);
+    if (result.valid) {
+      return;
+    }
+    expect(result.faults.map((fault) => fault.what).join(' ')).toContain('twelve_hour');
+  });
+
+  it('rejects a clock option carrying the wrong kind of value', () => {
+    const result = validateConfiguration({
+      modules: [{ region: 'top_bar', module: 'clock', options: { show_date: 'yes' } }],
+    });
+
+    expect(result.valid).toBe(false);
+  });
+
+  it('asks the clock’s keys of a clock placement and of no other', () => {
+    const result = validateConfiguration({
+      modules: [
+        { region: 'top_bar', module: 'weather' },
+        { region: 'top_left', module: 'clock', options: {} },
+      ],
+    });
+
+    expect(result.valid).toBe(true);
+  });
+
   it('rejects a document that is not an object at all', () => {
     const result = validateConfiguration([]);
 

@@ -38,7 +38,19 @@
             "title": "Module",
             "description": "The name of the module to render, as the page registers it.",
             "type": "string"
+          },
+          "options": {
+            "title": "Module options",
+            "description": "What this placement asks of the module it names. The keys on offer are the named module's own, declared in that module's section below; two placements of the same module are configured apart, each from its own entry.",
+            "anyOf": [{ "$ref": "#/$defs/clockOptions" }]
           }
+        },
+        "if": {
+          "required": ["module"],
+          "properties": { "module": { "const": "clock" } }
+        },
+        "then": {
+          "properties": { "options": { "$ref": "#/$defs/clockOptions" } }
         }
       }
     },
@@ -46,6 +58,34 @@
       "title": "Edge band",
       "description": "Depth of the masked band every laid-out region keeps clear of, on all four edges, as a percentage of the display's height — the same unit the type and spacing scales are stated in. Omit it where the display presents its own edge; nothing is assumed in its absence.",
       "type": "integer"
+    }
+  },
+  "$defs": {
+    "clockOptions": {
+      "title": "Clock options",
+      "description": "The clock module's section: what a placement of the clock may ask of it. Every key is omissible, and a clock configured with none of them takes the defaults below.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "twenty_four_hour": {
+          "title": "Twenty-four-hour",
+          "description": "Whether the hour is presented in twenty-four-hour form. False presents it in twelve-hour form, carrying the indicator that tells the two halves of the day apart.",
+          "type": "boolean",
+          "default": true
+        },
+        "show_seconds": {
+          "title": "Show seconds",
+          "description": "Whether the seconds of the current time are shown beside the rest of it.",
+          "type": "boolean",
+          "default": true
+        },
+        "show_date": {
+          "title": "Show date",
+          "description": "Whether the current date is shown beside the time.",
+          "type": "boolean",
+          "default": true
+        }
+      }
     }
   }
 }
