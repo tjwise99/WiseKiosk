@@ -12,6 +12,11 @@ link is committed. The generators are pinned (oapi-codegen `v2.8.0` through `bac
 directive, orval `8.26.0` and its `prettier` formatter through `frontend/package-lock.json`), which
 is what makes a regeneration reproducible.
 
+The three overlay rows are the exception to the copy procedure above: each fails at `codegen` or at
+the `go build` step that follows it, both of which read the worktree, so they were seeded and run in
+the working tree at `bb67aa0` and restored after. The committed copy exists for rows whose verdict
+comes from the diff against `HEAD`, and none of these three reaches it.
+
 | Direction | Case | Input |
 |---|---|---|
 | Must fail | A route renamed in the schema and nowhere else | rename `/healthz` to `/livez` in `boundary/openapi.yaml`, commit, run the gate — **both** generated files differ |
@@ -21,6 +26,9 @@ is what makes a regeneration reproducible.
 | Must fail | A generator exits zero having emitted no route table | drop `std-http-server` from `backend/oapi-codegen.yaml` — `go build` reports `cmd/main.go: undefined: boundary.HandlerFromMux` |
 | Must fail | A generator's configuration silently parses as an older schema | `generate: [models, std-http-server, client]` with no `output-options` — accepted as the v1 configuration, exits zero, prunes the models; `go build` reports `internal/router/router.go: undefined: boundary.UpstreamFailure` |
 | Must fail | Generated TypeScript that does not compile | a component named `Headers` in the schema **carrying a required property**, which shadows the DOM type orval's own response wrapper uses — `tsc` reports `TS2352` |
+| Must fail | The Go generator's overlay missing | `backend/openapi-overlay.yaml` deleted — `codegen` exits 1 with `failed to read overlay file at path "openapi-overlay.yaml"`, so an overlay that is not there is refused rather than skipped |
+| Must fail | The overlay selecting nothing | the `module-route` tag renamed in `boundary/openapi.yaml` and not in the overlay — `codegen` exits 1 with `error applying overlay (strict): selector … did not match any targets`. Strict is the generator's default and is what keeps an inert overlay from reading as a working one |
+| Must fail | A module data route the overlay's selector misses | a second path declaring a query parameter and carrying no `module-route` tag. The overlay still matches the tagged route, so `codegen` exits **0** — and the untagged route's parameters are bound, so the emitted Go imports `github.com/oapi-codegen/runtime`, which `backend/go.mod` does not carry: the gate's own `go build` step exits 1 with `no required module provides package github.com/oapi-codegen/runtime`. The absent dependency is what guards its own absence |
 | Must pass | The tree as it stands | — |
 
 **What the cases prove, beyond what the table shows on its own.**
