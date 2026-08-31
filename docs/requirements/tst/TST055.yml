@@ -1,7 +1,7 @@
-active: false
+active: true
 derived: false
 header: |
-  Pending: the clock survives an unreachable backend
+  The clock survives an unreachable backend
 level: 77
 links:
 - SRS040: FztMJgU2LktJuauxJaOpF5Enp8VObHIco6OvPbHPtbM=
@@ -16,13 +16,18 @@ rationale: |
   Advancing is asserted rather than presence alone, because a clock frozen at the moment the backend
   went away is the failure that would otherwise read as survival.
 ref: ''
-reviewed: IJBbsNJotDr-E1zOu4hGPq1QocCtmgH2UUlC_CdgUJc=
+references:
+- keyword: 'test(''TST055: goes on showing an advancing time while the backend is
+    unreachable'', async ({'
+  path: frontend/src/modules/clock/clock.spec.ts
+  sha: bc5977d6c1698822b133bc6cab102363abc3b9c040e84407cd5f05fd73734c14
+  type: file
+reviewed: q16X7dF09FtQflvhYtF6FNcGka_HvdkL2yTRS4RVJV0=
 status: proposed
 text: |
-  Pending: render test loading the page with the backend staged unreachable and asserting the clock's
-  region still carries a time, that it is the controlled host clock's, and that it still moves as that
-  clock advances - with no unavailable state, placeholder or empty region in its place. Lands with the
-  first vertical slice (#12); activated and given a references entry then.
+  Render test loading the page with the backend staged unreachable and asserting the clock's region
+  still carries a time, that it is the held host clock's, and that it still moves as that clock
+  advances - with the clock's own content in place and no state of its own where the time was.
 verification-justification: |
   Settles that an unreachable backend takes neither the clock's content nor its advancing away, and
   that the clock puts no state of its own where the time was.

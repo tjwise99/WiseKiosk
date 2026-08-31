@@ -1,7 +1,7 @@
-active: false
+active: true
 derived: false
 header: |
-  Pending: the date appears and disappears with its selection
+  The date appears and disappears with its selection
 level: 76
 links:
 - SRS039: d3yZHqS_GP_wJlY6-tzUhABgyw1uMiBCaKut4Uo2YIc=
@@ -10,16 +10,23 @@ rationale: |
   Omission is the half a check is fooled on. A module always drawing the date passes any assertion that
   reads only the selection that asks for it, so both selections are driven and the absent case is
   asserted as an absence in the clock's own region rather than anywhere on the page.
-  The date read is checked against the host's rather than merely being present, because a placeholder
-  or a build-time constant is present too.
+  The date read is checked against the host's, and across a move of the host clock to a second date
+  rather than at one instant, because a placeholder or a build-time constant transcribed from that one
+  instant is present too and passes a single read; moving the clock catches it and exercises the
+  date's rollover in the one place that reads it.
 ref: ''
-reviewed: 0Loih1mH16qPZESOgeo2x_JJYXMcGMhDmpSMze2yrKg=
+references:
+- keyword: 'test(''TST054: shows the date when its configuration asks and omits it
+    when it does not'', async ({'
+  path: frontend/src/modules/clock/clock.spec.ts
+  sha: bc5977d6c1698822b133bc6cab102363abc3b9c040e84407cd5f05fd73734c14
+  type: file
+reviewed: Sj6sItZ0MiNqRfAcHTvL0WYThVCz8auHQHo4igJm8D0=
 status: proposed
 text: |
-  Pending: render test loading the page under each of the two date selections against a controlled host
-  clock, asserting that the selection asking for the date yields the host's current date beside the
-  time and that the selection not asking for it yields no date in the clock's region. Lands with the
-  first vertical slice (#12); activated and given a references entry then.
+  Render test loading the page under each of the two date selections against a held host clock,
+  asserting that the selection asking for the date yields the host's current date beside the time, and
+  that the selection not asking for it leaves the clock's region carrying a time and no date.
 verification-justification: |
   Settles that the date's presence follows the selection in both directions, and that what is shown
   when it is present is the host's date rather than a fixed string.

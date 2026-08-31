@@ -386,10 +386,10 @@ large for one leaves it rather than growing it
 (SRS031<!-- Content too large for its region overflows -->).
 
 **Layout assembly places what it is handed and fetches nothing.** A configuration entry's module name
-resolves through a registry in `src/lib/`, which is empty until the first module lands (#12 first
-module end-to-end); a name it cannot resolve renders as that region's own state rather than as an
-empty region. The render tier substitutes its own registry for that one, which is the only thing it
-replaces.
+resolves through a registry in `src/lib/`; a name it cannot resolve renders as that region's own state
+rather than as an empty region. The render tier augments that registry with its own stubs rather than
+replacing it, so a module's render test exercises the registration the display ships with while the
+framework's obligations are still read against shapes no product module has to supply.
 
 **Shared design tokens are delivered as `:root` custom properties** in `src/app.css`, whose values are
 [the display styling contract](contracts/display-styling-contract.md)'s. The edge band is one of them:

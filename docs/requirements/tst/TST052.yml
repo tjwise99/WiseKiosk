@@ -1,7 +1,7 @@
-active: false
+active: true
 derived: false
 header: |
-  Pending: the displayed time moves as the host clock moves
+  The displayed time moves as the host clock moves
 level: 74
 links:
 - SRS037: hTyiAGqlWlrBOwNWIR6jau_BeL-gwNorP7QdPmuft_M=
@@ -14,13 +14,18 @@ rationale: |
   the item obliges tracking, not a re-render every so many seconds, and a check that waited for real
   seconds would smuggle an interval into the requirement by choosing how long to wait.
 ref: ''
-reviewed: 6sDkq0Hy6rRJT8lGV5_i7MCaPohjD9kINMa_jkJ-Kgg=
+references:
+- keyword: 'test(''TST052: keeps the displayed time moving as the host clock moves'',
+    async ({ page }) => {'
+  path: frontend/src/modules/clock/clock.spec.ts
+  sha: bc5977d6c1698822b133bc6cab102363abc3b9c040e84407cd5f05fd73734c14
+  type: file
+reviewed: VN_BK2zzeauvEUz55XEowAz4ztaAg0U9kKNZlMW7ClU=
 status: proposed
 text: |
-  Pending: render test loading the page once, advancing the controlled host clock by more than the
-  smallest unit the clock displays, and asserting the displayed time has moved to match - repeated so
-  that a module updating once and stopping fails as well. Lands with the first vertical slice (#12);
-  activated and given a references entry then.
+  Render test loading the page once and advancing the held host clock twice, each time by more than
+  the smallest unit the clock displays, asserting after each advance that the displayed time has moved
+  to match - so that a clock frozen at first render and a clock that updates once and stops each fail.
 verification-justification: |
   Settles that the displayed time follows the host clock across successive advances on one loaded page,
   which fails a clock frozen at first render and a clock that updates once.

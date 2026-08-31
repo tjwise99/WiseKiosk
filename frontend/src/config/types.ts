@@ -25,6 +25,22 @@ export type Region =
  */
 export type Module = string;
 /**
+ * What this placement asks of the module it names. The keys on offer are the named module's own, declared in that module's section below, and a module with no section there is not judged by another module's keys; two placements of the same module are configured apart, each from its own entry.
+ */
+export type ModuleOptions = ClockOptions | {};
+/**
+ * Whether the hour is presented in twenty-four-hour form. False presents it in twelve-hour form, carrying the indicator that tells the two halves of the day apart.
+ */
+export type TwentyFourHour = boolean;
+/**
+ * Whether the seconds of the current time are shown beside the rest of it.
+ */
+export type ShowSeconds = boolean;
+/**
+ * Whether the current date is shown beside the time.
+ */
+export type ShowDate = boolean;
+/**
  * Every module this deployment displays, each with the region it is laid out into. A region may carry several modules, and a region no entry names holds nothing.
  */
 export type Modules = ModulePlacement[];
@@ -40,4 +56,13 @@ export interface WiseKioskDisplayConfiguration {
 export interface ModulePlacement {
   region: Region;
   module: Module;
+  options?: ModuleOptions;
+}
+/**
+ * The clock module's section: what a placement of the clock may ask of it. Every key is omissible, and a clock configured with none of them takes the defaults below.
+ */
+export interface ClockOptions {
+  twenty_four_hour?: TwentyFourHour;
+  show_seconds?: ShowSeconds;
+  show_date?: ShowDate;
 }
