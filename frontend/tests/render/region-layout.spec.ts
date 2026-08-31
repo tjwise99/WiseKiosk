@@ -8,7 +8,7 @@ import { overlaps, regionBoxes, render, type Fixture } from './harness';
  * regions are pairwise disjoint, and the document does not scroll sideways.
  *
  * Every region in the roster is one the frame lays out beside the others
- * ([ADR 0025 rev 2](../../../docs/decisions/0025-display-region-roster.md)), so the disjointness
+ * ([ADR 0025 rev 3](../../../docs/decisions/0025-display-region-roster.md)), so the disjointness
  * read below covers the whole roster rather than a subset of it.
  */
 const FIXTURE: Fixture = {
@@ -28,7 +28,7 @@ const FIXTURE: Fixture = {
 };
 
 /**
- * Where a region's name says its content sits, read off the name itself. ADR 0025 rev 2 fixes the
+ * Where a region's name says its content sits, read off the name itself. ADR 0025 rev 3 fixes the
  * roster as names that "anchor to a corner or edge of the display", so this is the obligation stated
  * independently of the frame that implements it — reading it out of `REGION_PLACEMENTS` instead would
  * compare that map against itself.

@@ -122,7 +122,7 @@ A module's half of a container is the code a module author writes that runs ther
 module as that module's need lands, on the same ground that defers an upstream.
 
 **Source `link`s** wire the model to real code: once the package roots
-[ADR 0021 rev 1](../decisions/0021-repository-layout.md) fixes hold source, a `link` property
+[ADR 0021 rev 2](../decisions/0021-repository-layout.md) fixes hold source, a `link` property
 on a container or component points at the source implementing it. This is how the model stops being a
 drawing and starts pointing at the code it describes, and it is checked at review
 ([`CONTRIBUTING.md`](../../CONTRIBUTING.md)'s checklist, architecture links).

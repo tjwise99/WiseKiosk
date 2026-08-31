@@ -79,7 +79,7 @@ updates:
         patterns: ["*"]
 
   # Base images for the container build — the Dockerfile sits at the repository
-  # root (ADR 0021 rev 1), which is the one manifest location outside a silo, so
+  # root (ADR 0021 rev 2), which is the one manifest location outside a silo, so
   # this block points there and keeps every `FROM` digest fresh. Grouped like the
   # blocks above so a week's bumps land as one PR.
   - package-ecosystem: docker

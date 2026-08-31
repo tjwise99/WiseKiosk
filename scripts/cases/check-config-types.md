@@ -1,7 +1,7 @@
 # `check-config-types`
 
 The inputs the drift gate has been run against, in both directions. What it *asserts* is
-[ADR 0022 rev 1](../../docs/decisions/0022-config-schema-format.md)'s — the configuration-object
+[ADR 0022 rev 2](../../docs/decisions/0022-config-schema-format.md)'s — the configuration-object
 types are generated from the schema, so the schema is the one statement of the configuration's
 shape — and how to run a case is [`../README.md`](../README.md)'s.
 

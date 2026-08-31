@@ -1,12 +1,19 @@
 # 0021 — Lay the repository out as the container decomposition: a root per container, and a home for what belongs to neither
 
 **Status:** accepted
-**Decided:** 2026-08-12 (#5 repo layout, once #97 C4 phase 2 Container closed and the decomposition
-this projects landed as [ADR 0019 rev 5](0019-boundary-at-what-deploys-and-tag-tier.md))
-**Rev:** 1
+**Decided:** 2026-08-30 (the configuration-schema fragment dropped from the module directory,
+#156 config-schema composer; the layout itself taken 2026-08-12 at #5 repo layout, once #97 C4
+phase 2 Container closed and the decomposition this projects landed as
+[ADR 0019 rev 5](0019-boundary-at-what-deploys-and-tag-tier.md))
+**Rev:** 2
 
 ## Revisions
 
+- **rev 2** — 2026-08-30 — the configuration schema is one central file under
+  `frontend/src/config/` and a module directory holds the component and the render test only; the
+  per-module configuration-schema fragment is gone (owner, 2026-08-30). This changes what was
+  chosen, so the `Decided` date moves with it. Nothing else in the layout moves (#156 config-schema
+  composer).
 - **rev 1** — 2026-08-12 — first written (#5 repo layout).
 
 ## Context
@@ -43,7 +50,7 @@ in the browser. A local module fetches nothing, so it has no backend half at all
 are follows from the roster in [`../../README.md`](../../README.md), which this record does not copy.
 Whatever this decides has to leave the checks
 [`../CI.md`](../CI.md) § *Module and framework structure* describes — module directories in bijection
-with configuration fragments and with test files, and one registration entry per upstream-backed
+with test files, and one registration entry per upstream-backed
 module — walking populations that can be read off the tree.
 
 **Generated output has no say in where it sits.** A compiler reads a package where the package is, so
@@ -80,9 +87,11 @@ product rather than running in it.
 
 **A module's files sit in each package that runs one, under the same name.**
 `backend/internal/modules/<name>/` holds the shaping library and its unit tests;
-`frontend/src/modules/<name>/` holds the component, the configuration-schema fragment and the render
-test. A local module has the second only. The directory name is the module's name and is identical in
-both trees, which is what lets a check pair the halves without a mapping table to maintain.
+`frontend/src/modules/<name>/` holds the component and the render test. No configuration lives
+there: a module's configuration keys are a section of the one configuration schema below, not a
+file beside the component. A local module has the second only. The directory name is the module's
+name and is identical in both trees, which is what lets a check pair the halves without a mapping
+table to maintain.
 
 **The single route registration is framework code and sits outside `modules/`**, in
 `backend/internal/registry/`. The reason is the populations above: every child of `modules/` is a module,
@@ -95,9 +104,12 @@ of its own named for the boundary — `backend/internal/boundary/` and `frontend
 that "the generated package" is a place rather than a pattern, which is what
 TST034<!-- Pending: both sides consume the generated boundary types --> asks a type to resolve into.
 
-**The configuration schema is the frontend's**, under `frontend/src/config/`, beside the one engine
-that enforces it ([ADR 0007 rev 2](0007-config-validation-allocation.md)); the fragments composing it
-are in the module directories that declare them. Its format, its dialect and its file name are #8
+**The configuration schema is the frontend's, and it is one file**, under `frontend/src/config/`,
+beside the one engine that enforces it ([ADR 0007 rev 2](0007-config-validation-allocation.md)).
+It is authored there and nowhere else: no part of it sits in a module directory, and nothing
+assembles it from parts, so the file a reader opens is the file the page validates against. A
+module's keys are a section within it — the same *section of one document* shape the boundary
+schema already uses for a module's payload. Its format, its dialect and its file name are #8
 config schema format's, and nothing here constrains them.
 
 **What this does not decide.** Every path another document defers here is named above. The framework

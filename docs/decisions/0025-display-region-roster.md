@@ -3,10 +3,14 @@
 **Status:** accepted
 **Decided:** 2026-08-18 (the two fullscreen names dropped, #10 frontend skeleton; the roster itself
 taken 2026-08-16 in #154 display design)
-**Rev:** 2
+**Rev:** 3
 
 ## Revisions
 
+- **rev 3** — 2026-08-30 — the `region` enum's citation names ADR 0022 rev 2's illustrative example
+  rather than an illustrative fragment, the configuration schema being one document with a
+  section per module (owner, 2026-08-30). This restates rather than changes what was chosen, so the
+  `Decided` date stays (#156 config-schema composer).
 - **rev 2** — 2026-08-18 — `fullscreen_above` and `fullscreen_below` are dropped and the roster is
   eleven names (owner, 2026-08-18). Building the frame surfaced that the two were named and never
   defined: the only reading their names support is a layer covering the display, and a region
@@ -45,7 +49,7 @@ record cites that contract rather than restating any of it.
 `top_bar`, `top_left`, `top_center`, `top_right`, `upper_third`, `middle_center`, `lower_third`,
 `bottom_left`, `bottom_center`, `bottom_right`, `bottom_bar`.
 Each is an enum member the configuration schema offers as a module's `region` value, the same shape
-[ADR 0022 rev 1](0022-config-schema-format.md)'s illustrative fragment shows for one key;
+[ADR 0022 rev 2](0022-config-schema-format.md)'s illustrative example shows for one key;
 SRS024<!-- Every offered configuration key is exercised at a non-default value -->'s per-key
 enumeration ranges over exactly that fixed set, and SRS017<!-- Full-screen assembly at kiosk;
 reflow, no horizontal scroll, at narrower widths -->'s disjointness and reflow obligations bind the

@@ -583,7 +583,7 @@ Viewer, and that relationship's endpoint is the module component this record lea
 compensating for an undrawn element is a seam, and it closes when the module components land.
 
 **No element carries a `link`.** No source exists, and where it will sit is
-[ADR 0021 rev 1](0021-repository-layout.md); each
+[ADR 0021 rev 2](0021-repository-layout.md); each
 container and component gains one when the code it describes is written, which is the review obligation
 [`../../CONTRIBUTING.md`](../../CONTRIBUTING.md) carries as its architecture-links question.
 

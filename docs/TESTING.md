@@ -68,7 +68,7 @@ Which runner executes each tier is
   a fixture places under `frontend/tests/render/stubs/`. Playwright's `testDir` is that directory.
 
 A module's own two tests sit with the module ([the module contract](contracts/module-contract.md),
-part 3; [ADR 0021 rev 1](decisions/0021-repository-layout.md) fixes the directory), which is inside
+part 3; [ADR 0021 rev 2](decisions/0021-repository-layout.md) fixes the directory), which is inside
 the unit glob for a shaping library's tests and is why the render runner's directory is stated
 separately — a module's render test is reached by the same runner from a different place.
 
