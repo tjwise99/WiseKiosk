@@ -16,9 +16,9 @@ rationale: |
   rather than a defect, and a need no conforming display can be built to meet is not a want but a
   mistake. What is owed is that the display can do this when it is asked to.
   What a viewer gets is stated rather than how it is produced. That the time is taken from the machine
-  the page runs on, that it keeps moving, and that its hour form and the showing of its date follow the
-  configuration are the decomposition beneath, not clauses of the want: a need listing its own children
-  is a hat over them rather than a want.
+  the page runs on, that it keeps moving, and that its hour form, the showing of its seconds and the
+  showing of its date follow the configuration are the decomposition beneath, not clauses of the want:
+  a need listing its own children is a hat over them rather than a want.
   The date is named here rather than left to the decomposition, and the two halves of it divide
   cleanly: that the display can show a date is what this want covers, and whether any given display
   does is the configuration's, which is a child's. A viewer glancing at a wall display reads the time
@@ -35,14 +35,14 @@ rationale: |
   obliged of every module by
   SYS002<!-- The display's rendering keeps nothing from a viewer --> and its children.
 ref: ''
-reviewed: s8TjUw37qCSpVRmL9jQhjvVhRKP9haPGIYcmNiYjgic=
+reviewed: Oqy0AtMBAPlYbzEGcm2h9TaTcqKrFoJzvgGk-h8y0cY=
 status: accepted
 text: |
   The display shall be capable of showing the current time of day and date.
 verification-justification: |
   Its children are read from a rendered page whose configuration asks for a clock: where the value came
-  from, that it keeps moving while the page stays loaded, and that the hour form and the date follow
-  the configuration. A capability is settled by exercising it, so the evidence is a display configured
+  from, that it keeps moving while the page stays loaded, and that the hour form, the seconds and the
+  date follow the configuration. A capability is settled by exercising it, so the evidence is a display configured
   to show the time; one configured without a clock is outside what this claims rather than a failure
   of it. That an unreachable backend takes none of it away is settled beneath a different need, this
   one being met or failed the same whether the backend is there or not.
