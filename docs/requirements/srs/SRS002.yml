@@ -15,14 +15,14 @@ rationale: |
   Stated over the module's own place rather than its region, since a region may carry several
   modules and reporting "at the region" would not say which of them the error belongs to.
 ref: ''
-reviewed: -U7kmDPXBBdouh9jAgI-cylogagQ9BXAyzNJOTDNfOc=
+reviewed: rb-I0JrBtzeqQD_nBQVUfTqU8Ka0gGpW9s2wWCJtIuw=
 status: accepted
 text: |
   A configuration error that can be isolated to a single module shall be reported at that module's
   own place on the display, naming what is wrong and what to change, and shall never be silently
   worked around.
 verification-justification: |
-  Asserted by driving a fixture whose only error sits inside one module's fragment and reading the
+  Asserted by driving a fixture whose only error sits inside one module's section of the schema and
   rendered page. What the check does not settle is whether the correction it names is the right
   correction - that the text says what to change is decidable, that the advice is good is not.
 verification-method: test

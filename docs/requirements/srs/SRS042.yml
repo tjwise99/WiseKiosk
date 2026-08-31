@@ -12,8 +12,8 @@ rationale: |
   someone else's, on different sides of a range of hills - so the place is configuration rather than a
   constant, and it is one of the two things a module's own decomposition carries.
   What the item states is what the choice does, not what it is spelled. The key's name and its default
-  belong to the module's configuration-schema fragment, and a requirement naming them would fix an
-  interface here that the schema is the record of. Nor does the item say the option is exercised: that
+  belong to the module's section of the configuration schema, and a requirement naming them would fix
+  an interface here that the schema is the record of. Nor does the item say the option is exercised: that
   every offered key is driven at a non-default value is already obliged of every module
   (SRS024<!-- Every offered configuration key is exercised at a non-default value -->).
   Abstracted, the item reads that a module reports on the subject its configuration names, and that is
@@ -28,7 +28,7 @@ rationale: |
   on, which is what a viewer would notice going wrong. A module could reject every malformed location
   and still show the weather somewhere else entirely.
 ref: ''
-reviewed: BZElZx4CPG9-RMLh3TP4PugreoN0y8YPJ0y_Ypp5FYI=
+reviewed: 3guIX2fRQ2865iWlLGVRTuHM7IDkzle6s4_WA9uVGF4=
 status: accepted
 text: |
   The weather module shall report the weather for the location its configuration names, and for no

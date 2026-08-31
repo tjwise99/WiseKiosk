@@ -14,11 +14,11 @@ rationale: |
   The obligation is two-sided deliberately. An item obliging only the showing would be met by a clock
   that always draws the date, which is precisely the display the operator who turned it off did not
   ask for, and omission is the half a check can be fooled on. As with the hour form, the key's name and
-  its default are the configuration-schema fragment's, and that the key is driven at a non-default
+  its default are the configuration schema's, and that the key is driven at a non-default
   value is already obliged of every module
   (SRS024<!-- Every offered configuration key is exercised at a non-default value -->).
 ref: ''
-reviewed: _jPkTQj7c6a2-4jZ8xeCSQOAmPuYC1xr2FzGWqJLmfI=
+reviewed: 49YdK7KRBuEAB6FTW3pbg8EeKUdSTPonRiImfuE7SsE=
 status: accepted
 text: |
   The clock module shall show the current date beside the time when its configuration selects the date,
