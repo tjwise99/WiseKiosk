@@ -165,7 +165,7 @@ or [`DEPLOYMENT.md`](DEPLOYMENT.md) where it is not
   a passing one. What they must cover is stated here; that the files exist and sit where the runner
   reaches them is gated by [`CI.md § Module and framework
   structure`](CI.md#module-and-framework-structure).
-- **Every config schema rejects a realistic malformed input, in a test** →
+- **The configuration schema rejects a realistic malformed input, in a test** →
   SRS002<!-- A module-scoped configuration error is reported at that module -->. The operator is not
   the author, so validation failing correctly and legibly is a product feature and is tested as one.
 - **Repo-wide checks live at repo level** — see [Where a check belongs](#where-a-check-belongs).

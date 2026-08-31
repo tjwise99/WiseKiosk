@@ -14,11 +14,11 @@ rationale: |
   SRS002<!-- A module-scoped configuration error is reported at that module -->/SRS004<!-- Page renders a legible error state for every configuration failure class -->
   pair did before.
 ref: ''
-reviewed: FuZL6xvG_LQzfNUN9Ehm-j0xWlr-lTBMDBVaYbr6ywE=
+reviewed: 9cHUKsmEdoWvzqKxp2KVHr6A93hldrzB-xs1KosQa-I=
 status: proposed
 text: |
   Pending: render test driving two fixtures through the same validation path and asserting opposite
-  outcomes. A configuration whose only error is inside one module's section: the page renders, that
+  outcomes. A configuration whose only error is inside one module's section of the schema: the page renders, that
   module carries the error state in its own place, it names what is wrong and what to change, and no
   sibling module is affected, including one sharing its region. A configuration whose top level is malformed: no module renders and the page
   carries the page-wide state instead. The two fixtures differ only in where the error sits, so the
