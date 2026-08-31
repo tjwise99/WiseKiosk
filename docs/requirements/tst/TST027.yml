@@ -11,13 +11,13 @@ ref: ''
 references:
 - keyword: func TestARequestOverTheRateLimitIsRejected
   path: backend/internal/router/router_test.go
-  sha: 9c27caa6b487a71f228e9602a664ac0c2aa644a91785c5d4f4f7158313e8b597
+  sha: 29cccffaf6bc8354db029f9c4ccf57a1b13abf26e1933df43288dab039bcc516
   type: file
 - keyword: func TestEachSourceHasItsOwnBudget
   path: backend/internal/upstream/proxy_test.go
   sha: 02f9058aef8ab8f8867e1a524c2447c7b6cf28fa2f3f1b87b5ae0b366883711e
   type: file
-reviewed: Uk_F0RgkZe1TFTTg8WHhUoamSMsuPTpjUm5DnJbvZto=
+reviewed: Tx0MR9Fr4I--sSdpM4ZdrRHQIexepypiGrcWwkO-XYM=
 status: proposed
 text: |
   Test asserting a route's global rate limit rejects requests over the threshold without an upstream
