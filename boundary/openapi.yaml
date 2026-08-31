@@ -1,6 +1,6 @@
 # The one boundary schema. Owned by neither package; both sides' routes, client, server and types
 # are generated from it and committed inside the package that compiles them
-# (ADR 0008 rev 3, ADR 0021 rev 1).
+# (ADR 0008 rev 3, ADR 0021 rev 2).
 #
 # Two kinds of path live here. A **module data route** carries the full component set — its success
 # payload, the upstream failure and the client rejection below — and a module contributes its payload

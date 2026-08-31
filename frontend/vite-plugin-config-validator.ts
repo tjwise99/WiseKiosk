@@ -17,7 +17,7 @@ const SCHEMA_PATH = fileURLToPath(new URL('./src/config/schema.json', import.met
  * `virtual:config-validator`. ajv runs here, at build time, so no schema evaluator reaches the
  * bundle. The emitted function embeds the schema document as a constant — its error parameters are
  * drawn from it — so the document ships and the compiler does not
- * ([ADR 0028 rev 1](../docs/decisions/0028-bundled-config-validator.md)).
+ * ([ADR 0028 rev 2](../docs/decisions/0028-bundled-config-validator.md)).
  *
  * `allErrors` collects every failure rather than stopping at the first, which is what lets the page
  * render the whole validation report.

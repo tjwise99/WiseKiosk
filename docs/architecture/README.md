@@ -86,11 +86,11 @@ the staleness gate; the prose around the markers is yours to edit.
 The model holds the System Context, Container and Component levels — `component` children nest inside
 a container, and each container has a `view of` it in `views.likec4` — and, separately from all three,
 a deployment model of the hosts that run them, the processes on those hosts and the files placed
-beside them ([ADR 0019 rev 5](../decisions/0019-boundary-at-what-deploys-and-tag-tier.md)). A
+beside them ([ADR 0019 rev 6](../decisions/0019-boundary-at-what-deploys-and-tag-tier.md)). A
 deployment node holds an `instanceOf` a container rather than a copy of it, so the two models name one
 set of containers; a `deployment view` renders them.
 
-**A relationship is declared once, at its true endpoints** ([ADR 0019 rev 5](../decisions/0019-boundary-at-what-deploys-and-tag-tier.md)).
+**A relationship is declared once, at its true endpoints** ([ADR 0019 rev 6](../decisions/0019-boundary-at-what-deploys-and-tag-tier.md)).
 Each view renders from that one set, aggregating an edge to the nearest ancestor it does not expand,
 so an edge is never restated a level down.
 
@@ -114,15 +114,15 @@ rendered label moves the generated artifact and the staleness gate reads the dif
 `icon` or `description`.
 
 **An element earns a place where the system exchanges something with it, and an upstream once the
-module that reads it has a need** ([ADR 0019 rev 5](../decisions/0019-boundary-at-what-deploys-and-tag-tier.md)).
+module that reads it has a need** ([ADR 0019 rev 6](../decisions/0019-boundary-at-what-deploys-and-tag-tier.md)).
 
 **A component earns a place by its interface — what it exposes, and who calls it — and each container
-holds only its framework half** ([ADR 0019 rev 5](../decisions/0019-boundary-at-what-deploys-and-tag-tier.md)).
+holds only its framework half** ([ADR 0019 rev 6](../decisions/0019-boundary-at-what-deploys-and-tag-tier.md)).
 A module's half of a container is the code a module author writes that runs there, and it arrives per
 module as that module's need lands, on the same ground that defers an upstream.
 
 **Source `link`s** wire the model to real code: once the package roots
-[ADR 0021 rev 1](../decisions/0021-repository-layout.md) fixes hold source, a `link` property
+[ADR 0021 rev 2](../decisions/0021-repository-layout.md) fixes hold source, a `link` property
 on a container or component points at the source implementing it. This is how the model stops being a
 drawing and starts pointing at the code it describes, and it is checked at review
 ([`CONTRIBUTING.md`](../../CONTRIBUTING.md)'s checklist, architecture links).
@@ -131,7 +131,7 @@ drawing and starts pointing at the code it describes, and it is checked at revie
 
 A LikeC4 **tag** carries the Doorstop id of the requirement obliging the element or relationship it
 sits on — that tag *is* the architecture → requirements link, and the tier follows the level
-([ADR 0019 rev 5](../decisions/0019-boundary-at-what-deploys-and-tag-tier.md)). At the Context level
+([ADR 0019 rev 6](../decisions/0019-boundary-at-what-deploys-and-tag-tier.md)). At the Context level
 it is `SYS`, bound where the obligation is observable at that level: on the relationships, not on the
 system box, which owes every `SYS` item and so distinguishes none of them. The Container, Component
 and Deployment levels answer to `SRS`, and anything at a level also carries the coarser item it
@@ -145,7 +145,7 @@ every exchange an element has goes on the element rather than one of its edges.
 
 **Every accepted, active `SYS` or `SRS` item binds somewhere, and a subject the model does not draw is
 a level to add rather than an absence to accept**
-([ADR 0019 rev 5](../decisions/0019-boundary-at-what-deploys-and-tag-tier.md)). There is no exemption
+([ADR 0019 rev 6](../decisions/0019-boundary-at-what-deploys-and-tag-tier.md)). There is no exemption
 record, and **an obligation reaching something *permanently* outside the model is not a way out of
 this**: that record admits the case, the tree holds no item of that shape, and a fresh one is the
 premise that reopens the binding rule — argued as a decision, never left standing as an untagged

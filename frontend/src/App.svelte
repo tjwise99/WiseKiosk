@@ -61,7 +61,7 @@
 <style>
   /* The display's own height, divided between the states the page carries: the frame alone, or a
      band above it and the frame in what is left. The band displaces rather than covers, on SYS001's
-     terms — whether the display carries a covering region at all is ADR 0025 rev 2's to decide. The
+     terms — whether the display carries a covering region at all is ADR 0025 rev 3's to decide. The
      masked depth is declared here rather than on the frame, so everything the page draws inside it
      reads the one value
      (docs/contracts/display-styling-contract.md § Spacing scale and the edge band). */

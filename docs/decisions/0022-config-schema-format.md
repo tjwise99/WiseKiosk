@@ -1,11 +1,18 @@
-# 0022 — The configuration schema is authored as JSON Schema 2020-12, per-module fragments composed and enforced by one in-page validator
+# 0022 — The configuration schema is one authored JSON Schema 2020-12 document, enforced by one in-page validator
 
 **Status:** accepted
-**Decided:** 2026-08-15 (#8 config schema format)
-**Rev:** 1
+**Decided:** 2026-08-30 (per-module fragments and their composer dropped; the format itself taken
+2026-08-15 in #8 config schema format)
+**Rev:** 2
 
 ## Revisions
 
+- **rev 2** — 2026-08-30 — the schema is a single hand-authored document with a section per module;
+  per-module fragment files, the composer and the recomposition drift gate are dropped (owner,
+  2026-08-30) and recorded as a rejected alternative with the grounds for rejecting them. The
+  2020-12 format, the one bundled in-page validator and the generated
+  configuration types are unchanged. This changes what was chosen, so the `Decided` date moves with
+  it (#156 config-schema composer).
 - **rev 1** — 2026-08-15 — first written (#8 config schema format).
 
 ## Context
@@ -29,10 +36,10 @@ The demand is for a tooling ecosystem, not for an elegant type. The schema has m
   ranges *over the schema* to enumerate every offered key — "the schema is the finite
   machine-readable statement of what is offered" — so the format must be introspectable as data, not
   only executable as a check.
-- **Composed from per-module fragments.** [The module contract](../contracts/module-contract.md)
-  puts a configuration-schema fragment under each module, recomposed into the one schema the page
-  validates; the format must let a per-module fragment be authored on its own and composed into that
-  single schema.
+- **Organised per module, in one document.** [The module contract](../contracts/module-contract.md)
+  states what a module's configuration declares; those declarations are sections of the one schema
+  the page validates, authored in place rather than assembled from files. The format must therefore
+  let one document carry a named, independently readable section per module.
 - **Read by tools that are not the page.** The configuration generator (#70 configuration generator)
   and any future config editor read the schema as data to produce or drive a form over a valid
   configuration.
@@ -55,17 +62,15 @@ the one-in-page-enforcer this ADR builds on.)
   TypeScript code and not emitted from a code-level schema builder. This is the ecosystem the readers
   above need: a standard the generator, a future editor, the docsite renderer, and validators in any
   language can consume without executing the project's own code.
-- **Per-module fragments recompose into one schema.** Each module authors its configuration-schema
-  fragment as a JSON Schema document; the fragments recompose into the one configuration schema under
-  `src/config/` ([ADR 0021 rev 1](0021-repository-layout.md)) — a committed artifact a drift gate
-  regenerates and checks unchanged, the same regenerate-and-compare shape the boundary schema's
-  generated code is held to
-  ([`docs/CI.md` § Module and framework structure](../CI.md#module-and-framework-structure)). This is
-  the file-per-module composition [ADR 0008 rev 3](0008-boundary-contract-openapi-codegen.md) rejected
-  for the boundary — there, to keep the single OpenAPI file authored rather than recomposed. The
-  configuration schema accepts it: its fragments belong beside the modules that declare them, with no
-  single authored file to keep, and the recomposition drift gate is the cost of that placement. The
-  authored unit is the fragment; the composed schema is derived from the fragments, not hand-edited.
+- **One authored schema, with a section per module.** The configuration schema is a single JSON
+  Schema document under `frontend/src/config/` ([ADR 0021 rev 2](0021-repository-layout.md)),
+  hand-authored and hand-edited. Each module's keys are a named section within it; there is no
+  per-module file, nothing recomposes, and no gate regenerates the schema and compares it — there
+  is no generated form of it to compare against. This is the same single-authored-file rule
+  [ADR 0008 rev 3](0008-boundary-contract-openapi-codegen.md) keeps for the boundary, where a
+  module's payload is a named component *inside* the one OpenAPI schema rather than a file beside
+  the module; the configuration schema reads the same way, and a module's configuration is
+  added by editing one file. The authored unit is the schema.
 - **Exactly one validator enforces it, bundled and in the page**, 2020-12-capable, run at apply
   time. This ADR fixes the *format*, not the library: the concrete validator — a 2020-12 runtime
   such as ajv's 2020 build or `@cfworker/json-schema`, or a build-time standalone-compiled
@@ -77,14 +82,12 @@ the one-in-page-enforcer this ADR builds on.)
   schema is the one source of the configuration's shape and that shape lives as data rather than as
   code.
 
-A fragment is an ordinary 2020-12 document — a good configuration validates, a malformed one is
-rejected:
+A module's section is an ordinary 2020-12 subschema — a good configuration validates, a malformed
+one is rejected:
 
 ```json
 {
-  "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://wisekiosk.example/config/modules/clock.schema.json",
-  "title": "clock module configuration fragment",
+  "title": "clock module configuration",
   "type": "object",
   "additionalProperties": false,
   "required": ["region"],
@@ -97,8 +100,10 @@ rejected:
 
 `{ "region": "centre", "twentyFourHour": false }` validates; `{ "region": "middle" }` is rejected —
 `region` is not one of the allowed values, and `additionalProperties: false` rejects an unknown key
-the same way. This is the acceptance property demonstrated, not a wired product test: that test
-enumerates the composed schema's keys and lands with the frontend skeleton
+the same way. Where a section sits within the one document, and under what key, is the first
+module's to settle (#12 first module end-to-end): the shape above is what a section *is*, not where
+it goes. This is the acceptance property demonstrated, not a wired product test: that test
+enumerates the schema's keys and lands with the frontend skeleton
 (TST016<!-- Pending: every schema key is varied by a fixture and renders -->, #10), and the
 malformed-input obligation is already recorded against
 SRS002<!-- A module-scoped configuration error is reported at that module -->.
@@ -121,6 +126,13 @@ SRS002<!-- A module-scoped configuration error is reported at that module -->.
   [ADR 0008 rev 3](0008-boundary-contract-openapi-codegen.md) used to reject TypeSpec for the
   boundary: an authoring layer whose only consumer is a handful of small schemas, generality ahead
   of a second use.
+- **Per-module fragment files composed into the schema.** Each module authors its configuration keys
+  as a separate JSON Schema file in its own directory; a composer recomposes them into the one
+  schema, guarded by a drift gate. Rejected: it stores the same information twice — the fragment
+  files and the composed schema — and the composer and drift gate exist only to police the two copies
+  agreeing. The co-location it buys (config beside the component) does not, at this scale, justify a
+  generated, drift-gated artifact no one hand-reads; the schema is small enough to author as one
+  file, each module's keys a section within it. (owner, 2026-08-30)
 - **Folding the configuration into the boundary (OpenAPI) schema.** Foreclosed upstream: the
   configuration never crosses the boundary ([ADR 0007 rev 2](0007-config-validation-allocation.md)),
   and [ADR 0008 rev 3](0008-boundary-contract-openapi-codegen.md) keeps it a separate artifact. A

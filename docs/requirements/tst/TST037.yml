@@ -4,7 +4,7 @@ header: |
   Pending: refresh cadence is not configurable
 level: 1.43
 links:
-- SRS011: UabgFxMxko3SOIEjl27IkRmu5gRG_1kzgzPSjqhK2B4=
+- SRS011: n3GTMmpKLNxBx33_48HiifodUJaoBh1Ro5VYuz6aad8=
 normative: true
 rationale: |
   The fake-timer cadence assertion was struck: it measured the frontend's poll interval against a
@@ -16,10 +16,10 @@ rationale: |
   SRS011's<!-- Upstream request rate is bounded, and the bound is not operator-tunable --> own
   clause that the bound is not raisable by configuration.
 ref: ''
-reviewed: uSYtSkEkzKrAZTbG4P9YmPjGbtNW6Q3k1EheRDhy7Xg=
+reviewed: oQz3Sqww1WoNn9BylLvDBCZF3QfCO0FMBzaLiwiVMEA=
 status: proposed
 text: |
-  Pending: test asserting the composed configuration schema declares no property that sets a refresh
+  Pending: test asserting the configuration schema declares no property that sets a refresh
   cadence, by ranging over the policies a registration entry owns and asserting none of them is
   reachable from a schema property - not by matching a keyword list, which fails open on a name nobody
   anticipated. Lands with the frontend skeleton (#10).

@@ -12,13 +12,13 @@ rationale: |
   room that reads the other. That makes the choice configuration, which is one of the two things a
   local module's decomposition carries.
   What the item states is what the choice does, not what it is spelled. The key's name and its default
-  belong to the module's configuration-schema fragment, and a requirement naming them would fix an
-  interface here that the schema is the record of. Nor does the item say the option is exercised: that
+  belong to the module's section of the configuration schema, and a requirement naming them would fix
+  an interface here that the schema is the record of. Nor does the item say the option is exercised: that
   every offered key is driven at a non-default value is already obliged of every module
   (SRS024<!-- Every offered configuration key is exercised at a non-default value -->), and restating
   it would be writing a framework universal twice.
 ref: ''
-reviewed: Q7ibWeo6TVJtnVLIkDYhig7sAVU55IaHqaR-rjd2Qa8=
+reviewed: FECoJIUhhgtokcCFyAt-LF86we7731QDp5NqMVDTeLE=
 status: accepted
 text: |
   The clock module shall present the time it shows in twelve-hour or in twenty-four-hour form,

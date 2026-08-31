@@ -68,7 +68,7 @@ Which runner executes each tier is
   a fixture places under `frontend/tests/render/stubs/`. Playwright's `testDir` is that directory.
 
 A module's own two tests sit with the module ([the module contract](contracts/module-contract.md),
-part 3; [ADR 0021 rev 1](decisions/0021-repository-layout.md) fixes the directory), which is inside
+part 3; [ADR 0021 rev 2](decisions/0021-repository-layout.md) fixes the directory), which is inside
 the unit glob for a shaping library's tests and is why the render runner's directory is stated
 separately — a module's render test is reached by the same runner from a different place.
 
@@ -165,7 +165,7 @@ or [`DEPLOYMENT.md`](DEPLOYMENT.md) where it is not
   a passing one. What they must cover is stated here; that the files exist and sit where the runner
   reaches them is gated by [`CI.md § Module and framework
   structure`](CI.md#module-and-framework-structure).
-- **Every config schema rejects a realistic malformed input, in a test** →
+- **The configuration schema rejects a realistic malformed input, in a test** →
   SRS002<!-- A module-scoped configuration error is reported at that module -->. The operator is not
   the author, so validation failing correctly and legibly is a product feature and is tested as one.
 - **Repo-wide checks live at repo level** — see [Where a check belongs](#where-a-check-belongs).

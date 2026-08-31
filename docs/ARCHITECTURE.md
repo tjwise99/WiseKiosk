@@ -15,7 +15,7 @@ The living structural description of WiseKiosk **as built**. It grows with the c
 
 One published container image serving a full-screen, config-driven smart-mirror display: a Go backend
 proxying public APIs and serving the built frontend, and a Svelte SPA rendering modules into regions of
-the page ([ADR 0019 rev 5](decisions/0019-boundary-at-what-deploys-and-tag-tier.md)). The product
+the page ([ADR 0019 rev 6](decisions/0019-boundary-at-what-deploys-and-tag-tier.md)). The product
 definition is the [README](../README.md); the intended architecture until this section describes the
 built one is SYS002<!-- The display's rendering keeps nothing from a viewer -->,
 SYS004<!-- Upstream data reaches the display only through the backend --> and
@@ -25,7 +25,7 @@ shape is a repository check, in [`CI.md`](CI.md), rather than a need.
 Those two containers project onto two package roots — `backend/` and `frontend/` — with the one
 boundary schema at `boundary/openapi.yaml` because it belongs to neither, and the release material in
 `deploy/` because it is outside the boundary
-([ADR 0021 rev 1](decisions/0021-repository-layout.md)).
+([ADR 0021 rev 2](decisions/0021-repository-layout.md)).
 
 Every diagram below is **generated from the validated [LikeC4 model](architecture/README.md)**, not
 drawn by hand. Edit `docs/architecture/model/` and run `just arch-export`, which regenerates each
@@ -37,7 +37,7 @@ overwritten on the next export, and drift fails the staleness gate. The workflow
 for, the boundary between them, which is what deploys — the published image and what it serves — and
 the one upstream outside it. An upstream data source is drawn individually and only once the module
 that reads it has a need in the tree
-([ADR 0019 rev 5](decisions/0019-boundary-at-what-deploys-and-tag-tier.md)), so the level carries one
+([ADR 0019 rev 6](decisions/0019-boundary-at-what-deploys-and-tag-tier.md)), so the level carries one
 box per such module and no aggregate standing in for the rest. The requirements name no supplier:
 which service a box is, is an edit to this repository rather than something the tree obliges.
 
@@ -66,7 +66,7 @@ request names`" .-> OpenMeteo
 **Containers (C4 L2)** — what runs inside the boundary: the backend process, and the frontend bundle
 executing in the browser on the display host. They share one origin, because the backend serves that
 bundle and the configuration file as static content it never interprets
-([ADR 0019 rev 5](decisions/0019-boundary-at-what-deploys-and-tag-tier.md),
+([ADR 0019 rev 6](decisions/0019-boundary-at-what-deploys-and-tag-tier.md),
 [ADR 0007 rev 2](decisions/0007-config-validation-allocation.md)). What parameterises a deployment
 (SYS003<!-- A deployment is parameterised from outside the image -->) reaches that filesystem as two
 separate supplies: the secret for each source, resolved per request
@@ -108,12 +108,12 @@ rest`" .-> Viewer
 The Component level (C4 L3) is drawn per container, in the two sections below, and the Deployment level
 in [§ Deployment](#deployment). The Backend container and each of its components carry a `link` to the
 source implementing it; where that source sits is
-[ADR 0021 rev 1](decisions/0021-repository-layout.md).
+[ADR 0021 rev 2](decisions/0021-repository-layout.md).
 
 **Every accepted, active `SYS` or `SRS` item binds somewhere in this model, and where one cannot, the
 model grows to draw what it obliges** — there is no exemption record, and which items are unbound is
 `check-arch-trace`'s answer rather than this document's
-([ADR 0019 rev 5](decisions/0019-boundary-at-what-deploys-and-tag-tier.md)). The **kind** of absence is
+([ADR 0019 rev 6](decisions/0019-boundary-at-what-deploys-and-tag-tier.md)). The **kind** of absence is
 what a reader needs, and there is one: an item whose subject the model does not draw at all. The worked
 example is the published image — neither container nor component, so the obligations on it sit at the
 Deployment level, which is the level drawn to carry them.
@@ -122,7 +122,7 @@ Deployment level, which is the level drawn to carry them.
 
 Its source root is `backend/`, the Go module root, holding the shared framework under `internal/` and
 each upstream-backed module's shaping library under `internal/modules/<name>/`
-([ADR 0021 rev 1](decisions/0021-repository-layout.md)). Language and
+([ADR 0021 rev 2](decisions/0021-repository-layout.md)). Language and
 boundary-contract decision: [ADR 0001 rev 1](decisions/0001-backend-language-go.md); config-blindness:
 [ADR 0007 rev 2](decisions/0007-config-validation-allocation.md). What the backend must do is the
 [requirements tree](requirements/README.md); which obligations bind this container is the
@@ -204,7 +204,7 @@ SRS008<!-- No secret value in any backend output -->).
 
 **Components (C4 L3)**, diagrammed below; each box's responsibility is the model's, not restated here.
 A module's own half of this container is its shaping library, drawn when that module's need lands
-([ADR 0019 rev 5](decisions/0019-boundary-at-what-deploys-and-tag-tier.md)); the route handler calls
+([ADR 0019 rev 6](decisions/0019-boundary-at-what-deploys-and-tag-tier.md)); the route handler calls
 it twice — to build the upstream request and to parse the answer — so the framework half drawn beside
 it cannot serve a payload on its own. The framework/module seam is drawn rather than inferred: one
 shaping box appears per upstream-backed module and every other box on this level is shared framework.
@@ -294,9 +294,9 @@ module revisits when its upstream lands.
 ## Frontend
 
 Its source root is `frontend/`, the npm package root, holding the
-framework half under `src/lib/`, each module's component and configuration-schema fragment under
-`src/modules/<name>/`, and the configuration schema those fragments compose into under `src/config/`
-([ADR 0021 rev 1](decisions/0021-repository-layout.md)). Svelte 5 + Vite, a static single-page bundle
+framework half under `src/lib/`, each module's component under `src/modules/<name>/`, and the one
+configuration schema — carrying a named section per module, authored nowhere else — under
+`src/config/` ([ADR 0021 rev 2](decisions/0021-repository-layout.md)). Svelte 5 + Vite, a static single-page bundle
 served as static files ([ADR 0018 rev 1](decisions/0018-frontend-svelte-vite-static-spa.md)); each
 module's poll cadence is that module's own need
 ([the module contract](contracts/module-contract.md)); configuration validation is frontend-owned
@@ -307,7 +307,7 @@ restated here.
 
 **Components (C4 L3)**, diagrammed below; each box's responsibility is the model's, not restated here.
 A module's own half of this container is its Svelte component, drawn when that module's need lands
-([ADR 0019 rev 5](decisions/0019-boundary-at-what-deploys-and-tag-tier.md)). The framework/module seam
+([ADR 0019 rev 6](decisions/0019-boundary-at-what-deploys-and-tag-tier.md)). The framework/module seam
 is drawn rather than inferred: one component box appears per module whatever its shape — a local
 module has no other box anywhere in the model — and every other box on this level is shared
 framework. The edge to the Viewer still leaves this container rather than any one of those boxes,
@@ -365,22 +365,22 @@ SRS004<!-- Page renders a legible error state for every configuration failure cl
 file absent, unfetchable, unparsable, or rejected by the schema — each render their own plain-language
 state, and the load itself renders as a load. A rejected configuration lists every fault the schema
 found rather than the first, which is why the validator collects them all
-([ADR 0028 rev 1](decisions/0028-bundled-config-validator.md)).
+([ADR 0028 rev 2](decisions/0028-bundled-config-validator.md)).
 
 **The configuration schema is enforced once, by code the schema generates.** The schema is authored as
-JSON Schema 2020-12 ([ADR 0022 rev 1](decisions/0022-config-schema-format.md)) and compiled at build
+JSON Schema 2020-12 ([ADR 0022 rev 2](decisions/0022-config-schema-format.md)) and compiled at build
 time to a standalone validation function, so the bundle carries a function specialised to it rather
-than a schema evaluator ([ADR 0028 rev 1](decisions/0028-bundled-config-validator.md)). The
+than a schema evaluator ([ADR 0028 rev 2](decisions/0028-bundled-config-validator.md)). The
 configuration-object TypeScript types are generated from the same file and drift-gated, so the
 schema is the one statement of the configuration's shape and the region roster
-([ADR 0025 rev 2](decisions/0025-display-region-roster.md)) has one machine-readable form that both
+([ADR 0025 rev 3](decisions/0025-display-region-roster.md)) has one machine-readable form that both
 the validator and the layout read.
 
 **The frame is a grid the region names anchor into, not a set of cells content fills.** Three columns
 and seven rows: the two bars span the width at top and bottom, the corner rows anchor their three
 columns, and the centre column's three bands take equal shares of what the bars leave. Every region
 is laid out beside the others rather than over them
-([ADR 0025 rev 2](decisions/0025-display-region-roster.md)), and a region the configuration names no
+([ADR 0025 rev 3](decisions/0025-display-region-roster.md)), and a region the configuration names no
 module for is not laid out at all. The bands are bounded rather than content-sized, so content too
 large for one leaves it rather than growing it
 (SRS031<!-- Content too large for its region overflows -->).
@@ -411,7 +411,7 @@ request parameters, success payloads, the structured upstream-failure and client
 and the status codes the frontend discriminates on.
 
 The one schema is `boundary/openapi.yaml`, and what is generated from it is committed inside the
-package that compiles it ([ADR 0021 rev 1](decisions/0021-repository-layout.md)). What the drift
+package that compiles it ([ADR 0021 rev 2](decisions/0021-repository-layout.md)). What the drift
 gate asserts, and what it leaves unproven, is [`CI.md`](CI.md) § *Generated boundary contract*.
 
 The generate step reads that one file twice. `oapi-codegen`, pinned by the Go module's `tool`
@@ -450,7 +450,7 @@ offers no secret-bearing key (SRS007<!-- Configuration schema offers no secret-b
 ## Deployment
 
 **Deployment** — what the project publishes, the hosts that run it, and the files the operator places
-beside them ([ADR 0019 rev 5](decisions/0019-boundary-at-what-deploys-and-tag-tier.md)). It is not one
+beside them ([ADR 0019 rev 6](decisions/0019-boundary-at-what-deploys-and-tag-tier.md)). It is not one
 of C4's four core levels: C4's fourth is Code, and deployment is a supplementary diagram mapping
 containers onto the infrastructure they run on.
 
@@ -489,7 +489,7 @@ the obligations on it are obligations on the artifact rather than on the process
 container host and the display host are **roles, not machines**, with different floors; in the
 configuration this is built for they are necessarily separate machines. Why each of those is so, and why
 a host carries a tag only where an item obliges the operator, is
-[ADR 0019 rev 5](decisions/0019-boundary-at-what-deploys-and-tag-tier.md)'s.
+[ADR 0019 rev 6](decisions/0019-boundary-at-what-deploys-and-tag-tier.md)'s.
 
 **The image carries a CA trust store.** Every module's upstream is fetched by the backend rather than
 by the browser (SYS004<!-- Upstream data reaches the display only through the backend -->), over

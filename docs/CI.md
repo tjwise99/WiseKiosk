@@ -20,7 +20,7 @@ Not everything CI does is a gate. These produce material a person acts on.
   tree — `github-actions` at the root, and the `pip` and `npm` entries pointing at the silos holding
   the documentation toolchains' manifests; `gomod` and the application `npm` entry join them with the
   manifests they need, and `docker` names the root, where the `Dockerfile` carrying its base-image
-  pins sits ([ADR 0021 rev 1](decisions/0021-repository-layout.md)). Each carries a non-empty `groups` key, so an ecosystem's updates arrive as one
+  pins sits ([ADR 0021 rev 2](decisions/0021-repository-layout.md)). Each carries a non-empty `groups` key, so an ecosystem's updates arrive as one
   reviewable change rather than a dozen. That the `github-actions` entry exists and every other entry
   resolves to its manifest is § *Repository shape*'s.
 - **Code-scanning results.** Every static-analysis finding is reported to the repository's
@@ -534,7 +534,7 @@ resolve, a citation to something that does not exist, an index that has drifted 
 - Every requirement identifier tagged in the architecture model names an item that exists, is active
   and accepted, and is spelled canonically; every declared tag is applied to something. A tag
   carrying anything other than an identifier fails rather than being passed over — the model's tags
-  carry requirement links ([ADR 0019 rev 5](decisions/0019-boundary-at-what-deploys-and-tag-tier.md)), so
+  carry requirement links ([ADR 0019 rev 6](decisions/0019-boundary-at-what-deploys-and-tag-tier.md)), so
   one carrying something else is a decision to take, not an exemption to add. A model naming no
   requirement at all fails too: it resolves every tag it carries, so an absent link and a sound one
   would read identically. A tag counts on four subject kinds — the logical model's elements and
@@ -546,7 +546,7 @@ resolve, a citation to something that does not exist, an index that has drifted 
   tagged element is the one that requirement obliges, and whether the tier suits the level; both are
   read at review.
 - **Every accepted, active `SYS` or `SRS` item is tagged somewhere in the architecture model**, on an
-  element or a relationship ([ADR 0019 rev 5](decisions/0019-boundary-at-what-deploys-and-tag-tier.md)).
+  element or a relationship ([ADR 0019 rev 6](decisions/0019-boundary-at-what-deploys-and-tag-tier.md)).
   There is no exemption record and nothing to add an item to: where one can bind nowhere, the model
   grows to draw what it obliges. The population is decided rather than filtered — a tier outside the
   obliging and verification sets fails, and so does a `status` outside `accepted` and `proposed`,
@@ -680,7 +680,7 @@ changed, which the citation resolver above decides without anyone declaring anyt
   workflow files, which are siloed nowhere, so its entry is asserted to exist instead — an exemption
   is otherwise granted to an entry nothing obliges, and without the entry the pins below stop being
   updated and nothing says so. `docker` is exempt from the non-root half alone: the `Dockerfile` sits
-  at the root by [ADR 0021 rev 1](decisions/0021-repository-layout.md), and its entry is still held to
+  at the root by [ADR 0021 rev 2](decisions/0021-repository-layout.md), and its entry is still held to
   naming a directory that holds one, so a `docker` entry pointed anywhere else fails like any other.
 
 ## Action pins and workflow privilege
@@ -772,11 +772,6 @@ violate any of them, so they are checks here rather than obligations there.
   ([ADR 0023 rev 2](decisions/0023-secret-output-containment.md) composes the two). It also decides
   nothing about *where* the site sits: singularity is what the ADR obliges, so moving the unwrap to
   another package passes, and only a second one fails.
-- **The configuration schema recomposes from its fragments.** Recomposing from the module fragments
-  leaves the committed schema unchanged; module directories and fragments stand in bijection, with no
-  registered module lacking a fragment and no orphan fragment; each fragment file is the unique
-  definition site of its property names; and no fragment property is reachable by reference from the
-  boundary schema (#8).
 - **The frontend build emits a static bundle**
   ([ADR 0018 rev 1](decisions/0018-frontend-svelte-vite-static-spa.md)). Exactly one HTML entry whose
   mount element is empty, no server-entry chunk, no SSR target or adapter declared in the build
@@ -795,14 +790,12 @@ violate any of them, so they are checks here rather than obligations there.
   and the allowlist is a package set, saying nothing about how much of a granted package ships.
 - **The committed configuration types are what the configuration schema generates.** The
   configuration-object TypeScript types are generated from `frontend/src/config/schema.json` and
-  committed ([ADR 0022 rev 1](decisions/0022-config-schema-format.md)), so the gate regenerates and
+  committed ([ADR 0022 rev 2](decisions/0022-config-schema-format.md)), so the gate regenerates and
   fails on any difference — the same clear-regenerate-assert-diff shape § *Generated boundary contract*
   runs one layer over, and for the same reason: the generator is resolved before the committed output
   is cleared, absent output then reads as a deletion rather than as a stale file, and a non-empty
   assertion catches the emitted-but-empty case the diff does not. Recorded in
   [`../scripts/cases/check-config-types.md`](../scripts/cases/check-config-types.md).
-  This is the *envelope* schema's gate; recomposition from module fragments is the bullet above,
-  and unbuilt.
 - **No backend code builds an upstream URL outside a module's shaping library.** The URL a module
   fetches is that module's to construct; shared framework code constructing one is shared code
   holding module knowledge (#9).

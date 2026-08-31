@@ -19,7 +19,7 @@ Each seed is applied to a copy of the tracked tree, the recipe run, and the seed
 
 **The schema row is the load-bearing one.** The configuration validator is compiled from
 `frontend/src/config/schema.json` during the build
-([ADR 0028 rev 1](../../docs/decisions/0028-bundled-config-validator.md)), so this is where a schema
+([ADR 0028 rev 2](../../docs/decisions/0028-bundled-config-validator.md)), so this is where a schema
 that will not compile is found. Without it the failure moves to page load, in front of a display
 nobody is standing at.
 

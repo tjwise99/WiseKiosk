@@ -18,13 +18,13 @@ rationale: |
   the limit nor rejected by it, and a sustained upstream outage must not cause an upstream request
   on every incoming request.
 ref: ''
-reviewed: 1l4vEOLPApefJZadU9YIeNu0QDDAN1eo0_wVYhWAkG0=
+reviewed: ub7SdiEdMX8PbIiulNY5Ow2CNtb_v5Zz7faycDOc2S0=
 status: accepted
 text: |
   The backend's rate of upstream requests to a source shall be bounded regardless of how many
   clients it serves or how often they ask, and the bound shall not be raisable by configuration.
 verification-justification: |
   Asserted by driving a route past its threshold and observing that no upstream call follows, and by
-  asserting the composed schema exposes no property that sets a cadence. What no check settles is
+  asserting the configuration schema exposes no property that sets a cadence. What no check settles is
   the bound's value against a real source's published limit.
 verification-method: test
