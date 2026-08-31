@@ -1,109 +1,27 @@
 <script lang="ts">
   import type { WeatherOptions } from '../../config/types';
-  import { getApiWeather, type WeatherPayload } from '../../lib/boundary/client';
+  import type { WeatherPayload } from '../../lib/boundary/client';
+  import type { Payload } from '../../lib/payload';
 
   /**
+   * The module draws from its props and fetches nothing
+   * (docs/contracts/module-contract.md § The six parts, part 1): the shell reads the route and hands
+   * the answer down as `payload`, already resolved into not-yet-read, read, or read-and-failed.
+   *
    * `reachable` is declared and acted on, this module being fed by the backend: while it is false the
    * module stands down and renders nothing, the page reporting the one outage for the whole display
-   * (docs/contracts/module-contract.md § An unavailable module and an unreachable backend are
-   * different states). Leaving the prop undeclared would draw this module's own unavailable box
-   * beneath that report, which is the failure that section names.
+   * (§ An unavailable module and an unreachable backend are different states). Leaving the prop
+   * undeclared would draw this module's own unavailable box beneath that report, which is the failure
+   * that section names.
+   *
+   * `config` is declared because part 1 hands every module its configuration. The location in it is
+   * what the shell reads the route with, so nothing below has to read it a second time.
    */
-  const { reachable, config }: { reachable: boolean; config: WeatherOptions } = $props();
-
-  /**
-   * How often the module re-reads its route. The freshness obligation is met between the two of them
-   * rather than here alone: the route's response cache is what bounds how far behind its source the
-   * served answer can be, and this only decides how often the display picks that answer up
-   * (docs/contracts/module-contract.md § Cadence and TTL are chosen together). Polls landing inside
-   * the cache's hold are answered from it, so this figure is a refresh knob and not a rate.
-   */
-  const READ_INTERVAL_MS = 5 * 60 * 1000;
-
-  /**
-   * How long a read is given before it is abandoned. Without it a request that never settles leaves
-   * the module in its first-paint state for as long as the display runs, and a loading state that
-   * never resolves is indistinguishable from a module that is broken.
-   */
-  const REQUEST_TIMEOUT_MS = 10_000;
-
-  /**
-   * What stands in the module's place when a read did not come back at all, there being no failure
-   * body to take the reason off.
-   */
-  const UNANSWERED = 'The weather did not come back in time.';
-
-  /** What the module has to draw: nothing yet, a reading, or why there is no reading. */
-  type View =
-    | { kind: 'loading' }
-    | { kind: 'present'; payload: WeatherPayload }
-    | { kind: 'unavailable'; message: string };
-
-  let view = $state<View>({ kind: 'loading' });
-
-  /**
-   * One read of the route, resolved into what it leaves on screen. The request is the generated
-   * client's — the path, the parameters and every status the route answers at come from the one
-   * boundary schema, so nothing here is hand-parsed (ADR 0008 rev 4).
-   */
-  async function read(lat: number, lon: number): Promise<View> {
-    let answer;
-    try {
-      answer = await getApiWeather(
-        { lat, lon },
-        { signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS) },
-      );
-    } catch {
-      return { kind: 'unavailable', message: UNANSWERED };
-    }
-
-    switch (answer.status) {
-      case 200:
-        return { kind: 'present', payload: answer.data };
-      case 400:
-      case 429:
-      case 502:
-      case 503:
-      case 504:
-        // Both bodies the route answers a failure with spell the reason for a reader the same way,
-        // so one branch renders either; which of them arrived is the status, not this module's to
-        // retell (SRS001).
-        return { kind: 'unavailable', message: answer.data.message };
-      default:
-        // A status the boundary schema does not describe, which something between the page and the
-        // route can still produce. It carries no body this module can read, so it is reported as an
-        // answer that did not arrive rather than drawn as an empty box.
-        return { kind: 'unavailable', message: UNANSWERED };
-    }
-  }
-
-  $effect(() => {
-    // Read while the backend is serving and not otherwise: an unreachable backend has nothing to
-    // answer with, so the timer is not merely ignored but not running — a display left in an outage
-    // for days would otherwise go on asking every five minutes for all of them.
-    if (!reachable) {
-      return;
-    }
-
-    const { lat, lon } = config.location;
-
-    // A read that comes back after this effect was torn down belongs to a location, or a
-    // reachability, that no longer applies, and writing it would put a stale reading on screen.
-    let current = true;
-    const once = async () => {
-      const settled = await read(lat, lon);
-      if (current) {
-        view = settled;
-      }
-    };
-
-    void once();
-    const polling = setInterval(() => void once(), READ_INTERVAL_MS);
-    return () => {
-      current = false;
-      clearInterval(polling);
-    };
-  });
+  const {
+    reachable,
+    config,
+    payload,
+  }: { reachable: boolean; config: WeatherOptions; payload: Payload<WeatherPayload> } = $props();
 
   /**
    * What a WMO 4677 present-weather code says the sky is doing. The payload carries the code rather
@@ -148,31 +66,31 @@
 
 {#if reachable}
   <div class="weather" data-weather>
-    {#if view.kind === 'loading'}
+    {#if payload.state === 'loading'}
       <!-- Drawn rather than left blank: on an unattended display an empty region reads as a broken
-           one, and a module that has asked but not yet been answered is neither. -->
+           one, and a module that has been asked for but not yet answered is neither. -->
       <p class="waiting" data-module-loading>Reading the weather…</p>
-    {:else if view.kind === 'unavailable'}
+    {:else if payload.state === 'unavailable'}
       <!-- The module's own place, and the route's own words for why (SRS001). The hook names the
            state rather than this module, the state being one every upstream-backed module has. -->
-      <p class="waiting" data-module-unavailable>{view.message}</p>
+      <p class="waiting" data-module-unavailable>{payload.failure.message}</p>
     {:else}
-      {@const payload = view.payload}
+      {@const reading = payload.data}
       <!-- Three parts, each drawn on its own: what it is doing now, the hours next to come and the
            days next to come (SRS045). -->
       <section class="present" data-weather-present>
-        <p class="temp" data-weather-temp>{round(payload.current.temp)}°F</p>
-        <p class="sky" data-weather-sky>{describeSky(payload.current.weatherCode)}</p>
+        <p class="temp" data-weather-temp>{round(reading.current.temp)}°F</p>
+        <p class="sky" data-weather-sky>{describeSky(reading.current.weatherCode)}</p>
         <p class="detail" data-weather-detail>
-          Feels like {round(payload.current.apparentTemp)}°F · {round(payload.current.humidity)}%
-          humidity · {round(payload.current.windSpeed)} mph
+          Feels like {round(reading.current.apparentTemp)}°F · {round(reading.current.humidity)}%
+          humidity · {round(reading.current.windSpeed)} mph
         </p>
       </section>
 
       <section class="series" data-weather-hourly>
         <h2 class="heading">Next hours</h2>
         <ol class="entries">
-          {#each payload.hourly as hour (hour.time)}
+          {#each reading.hourly as hour (hour.time)}
             <li class="entry" data-weather-hour>
               <span class="when">{atLocation(hour.time)}</span>
               <span class="reading">{round(hour.temp)}°F</span>
@@ -186,7 +104,7 @@
       <section class="series" data-weather-daily>
         <h2 class="heading">Next days</h2>
         <ol class="entries">
-          {#each payload.daily as day (day.time)}
+          {#each reading.daily as day (day.time)}
             <li class="entry" data-weather-day>
               <span class="when">{dayName(day.time)}</span>
               <span class="reading">{round(day.max)}°F / {round(day.min)}°F</span>

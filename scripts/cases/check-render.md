@@ -31,16 +31,19 @@ moved — a count that drops when a read is deleted is the first sign the seed s
 | Must fail | The declared band is ignored | `edgeBandLength` returns `0px` whatever it is given | 4 failed (clearance), 3 failed 1 passed (depth) |
 | Must fail | A band is compiled in where none is declared | `edgeBandLength` returns `3vh` for an absent depth | 1 failed, 3 passed |
 | Must fail | Any emitting surface clears the ceiling | eight stub modules, one per device the ceiling refuses — a lit panel, a card's border, a region fill, an outline, a shadow scrim, the fill and the scrim spelled as gradients, and a ground spelled outside sRGB | each is a standing test rather than a reverted seed |
-| Must fail | The weather drawn is the one its route answered with | the present temperature drawn as a constant instead of from the payload | 3 failed, 4 passed — the reading, the two-point and the freshness reads |
-| Must fail | The configured point drives the request | the component asks a fixed latitude and longitude instead of its configuration's | 1 failed, 6 passed |
+| Must fail | The weather drawn is the one its route answered with | the present temperature drawn as a constant instead of from the payload prop | 3 failed, 4 passed — the reading, the two-point and the freshness reads |
+| Must fail | The configured point drives the request | the registry's fetcher asking a fixed latitude and longitude instead of the placement's | 1 failed, 6 passed |
 | Must fail | The three parts are drawn separably | one element carrying all three parts' hooks | 1 failed, 6 passed |
 | Must fail | An upstream-backed module stands down while the backend is gone | `{#if reachable}` around the module's content replaced by `{#if true}` | 1 failed, 6 passed |
-| Must fail | The read timer stops while the backend is gone | the effect's `!reachable` early return removed | 1 failed, 6 passed |
-| Must fail | The module re-reads on its own interval | the interval's callback emptied, leaving the mount read alone | 2 failed, 5 passed — the freshness read and the polling control |
+| Must fail | The read timer stops while the backend is gone | the host effect's `!reachable` early return removed | 1 failed, 6 passed |
+| Must fail | The host re-reads on its own interval | the interval's callback emptied, leaving the mount read alone | 2 failed, 5 passed — the freshness read and the polling control |
 | Must fail | A module with no reading yet draws a visible waiting state | the waiting line emptied of its text | 1 failed, 6 passed |
-| Must fail | A failed module renders its route's own words | the unavailable box composing a message of its own | 1 failed, 6 passed |
-| Must fail | A new reading replaces the one on screen | the component keeping the first reading once it has one | 1 failed, 6 passed |
-| Must pass | The tree as it stands | — | 171 passed across the three viewports |
+| Must fail | A failed module renders its route's own words | the host composing a failure message of its own | 1 failed, 6 passed |
+| Must fail | A new reading replaces the one on screen | the host keeping the first reading once it has one | 1 failed, 6 passed |
+| Must fail | The read cadence is the one the module owes | the host's read interval halved | 1 failed, 6 passed |
+| Must fail | The read cadence is the one the module owes | the host's read interval doubled | 2 failed, 5 passed |
+| Must fail | An answer carrying no reason it can read still says something | the host rendering the missing reason as an empty string | 1 failed, 7 passed |
+| Must pass | The tree as it stands | — | 174 passed across the three viewports |
 
 **The emission seeds are tests rather than seeds.** Each device
 TST045<!-- Emitting-surface test --> names is a stub module the emission spec places and then asserts
@@ -59,17 +62,27 @@ now turns the legal run red naming `bright-image`, seeded and confirmed. What st
 is stated rather than implied: an image's own pixels. Imagery is exempt **by element type**, so a
 dark `<img>` and a blinding one are treated alike.
 
-**The weather rows are counted within that module's own seven at the kiosk viewport**, the seed being
-applied to one component and the rest of the tier being unable to see it.
+**The weather rows are counted within that module's own seven at the kiosk viewport**, each seed
+being applied to one file and the rest of the tier being unable to see it. Each was applied, run and
+reverted, and the tier re-run clean afterwards — an earlier pass of these left one seed in place
+across the runs that followed it and inflated their counts, which the revert check is there to catch.
+The seeds sit in three places, because the work does: the module draws, the shell's per-placement host
+reads, and the registry says what to read.
+
+**What the tier does not reach here is the request deadline.** A read that never settles is bounded by
+a real-time `AbortSignal.timeout`, which the driven clock does not advance, so the flip from waiting to
+unavailable on a hung request costs real seconds the tier will not spend. The undeclared-status row
+above exercises the same constant and the same branch by the other route into it; the deadline itself
+is unmeasured and stated so rather than implied.
 
 **A driven clock makes the page flap between reachable and gone, and one seed passed on it.** The
-module-polling seed above — the read interval left in place and its callback emptied — passed the
+host-polling seed above — the read interval left in place and its callback emptied — passed the
 whole tier as first written, and the freshness read went on going green with a read interval set sixty
 times longer than the case advanced. Neither could have failed. Advancing the clock in one jump fires
 every timer in the span before any ask those timers issued resolves, so each of the page shell's
 liveness asks meets its own `AbortSignal.timeout` deadline unanswered; the shell reads the backend as
 gone and then back, and a module fed by the backend stands down and re-reads across every one of
-those. Measured: over five driven minutes a module with no working poll at all still refetched seven
+those. Measured: over five driven minutes a display with no working poll at all still refetched seven
 times, and the value on screen changed each time — so the case was reading a remount and calling it a
 poll. `advanceHostClock` steps by less than that deadline so each ask settles inside its own step,
 which takes the flap to nil and the reads to the one the interval owes; the freshness case now also

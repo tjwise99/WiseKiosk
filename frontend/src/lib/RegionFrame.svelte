@@ -1,5 +1,6 @@
 <script lang="ts">
   import type { ModulePlacement, Region, WiseKioskDisplayConfiguration } from '../config/types';
+  import ModuleHost from './ModuleHost.svelte';
   import { modules } from './modules';
   import { FRAME_COLUMNS, FRAME_ROWS, placementStyle } from './regions';
 
@@ -41,9 +42,9 @@
   {#each occupied as [region, placements] (region)}
     <section class="region" data-region={region} style={placementStyle(region)}>
       {#each placements as placement, index (index)}
-        {@const Module = modules[placement.module]}
-        {#if Module}
-          <Module {reachable} config={placement.options ?? {}} />
+        {@const entry = modules[placement.module]}
+        {#if entry}
+          <ModuleHost {entry} {reachable} config={placement.options ?? {}} />
         {:else}
           <p class="unknown">
             No module named “{placement.module}” — nothing renders here until one is added.

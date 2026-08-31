@@ -330,3 +330,23 @@ test('renders why its own source failed, in its own place, while the backend is 
   await expect(page.locator(TEMP)).toHaveCount(0);
   await expect(page.locator('[data-backend-unreachable]')).toHaveCount(0);
 });
+
+test('says something in the module’s place when the answer carries no reason it can read', async ({
+  page,
+}) => {
+  // A status the boundary schema does not describe, which something standing between the page and
+  // the route can still produce, carrying a body with no message in it. The shell has no reason to
+  // render and must not draw an empty box: on an unattended display a box with nothing in it is
+  // indistinguishable from a broken one.
+  await serveModuleData(page, () => ({ status: 500, body: { detail: 'gateway exploded' } }));
+  await render(page, placed(HERE));
+
+  const box = page.locator(`[data-region="middle_center"] ${UNAVAILABLE}`);
+  await expect(box).toBeVisible();
+  await expect(box).not.toBeEmpty();
+
+  // And it is not the body's own words dressed up as a reason — the body carried none, so nothing
+  // from it should reach the screen.
+  await expect(box).not.toContainText('gateway exploded');
+  await expect(page.locator(TEMP)).toHaveCount(0);
+});
