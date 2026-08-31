@@ -15,7 +15,13 @@ const VIEWPORTS = {
 };
 
 export default defineConfig({
-  testDir: './tests/render',
+  // Two populations, one tier. The framework's own render tests sit together under `tests/render/`;
+  // a module's sits in that module's directory beside the component it reads
+  // ([ADR 0021 rev 2](../docs/decisions/0021-repository-layout.md)), so the root is the package and
+  // the two are named rather than one directory being the definition. `.spec.ts` alone, which is
+  // what keeps the unit tier's `.test.ts` files out of this runner's reach.
+  testDir: '.',
+  testMatch: ['tests/render/**/*.spec.ts', 'src/modules/*/*.spec.ts'],
   fullyParallel: true,
   forbidOnly: Boolean(process.env.CI),
   retries: 0,
