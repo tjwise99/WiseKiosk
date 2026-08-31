@@ -64,13 +64,16 @@ Which runner executes each tier is
 
 - **Unit** — `frontend/src/**/*.test.ts`, beside the source it exercises. Vitest's configured
   population is that glob, so a file matching it is reached and a file outside it is not.
-- **Render** — `frontend/tests/render/*.spec.ts`, one file per obligation, with the stub components
-  a fixture places under `frontend/tests/render/stubs/`. Playwright's `testDir` is that directory.
+- **Render** — the framework's own, `frontend/tests/render/*.spec.ts`, one file per obligation, with
+  the stub components a fixture places under `frontend/tests/render/stubs/`; and a module's, in that
+  module's own directory. Playwright's root is the frontend package and both populations are named to
+  it as patterns, so neither is reached by being the runner's default directory.
 
 A module's own two tests sit with the module ([the module contract](contracts/module-contract.md),
 part 3; [ADR 0021 rev 2](decisions/0021-repository-layout.md) fixes the directory), which is inside
-the unit glob for a shaping library's tests and is why the render runner's directory is stated
-separately — a module's render test is reached by the same runner from a different place.
+the unit glob for a shaping library's tests and is why the render runner's population is stated as
+two patterns rather than one place — a module's render test is reached by the same runner from a
+different place.
 
 The Boundary row enumerates the value classes deliberately: "payload shape and parameter name" reads
 narrower than SRS015<!-- One schema, all boundary value classes -->, and an error body or a status
