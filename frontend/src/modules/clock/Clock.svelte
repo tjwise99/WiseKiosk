@@ -1,41 +1,28 @@
 <script lang="ts">
   import type { ClockOptions } from '../../config/types';
 
-  /**
-   * How often the host clock is re-read: the smallest unit the module presents, so a coarser
-   * interval would leave a shown second standing while another passed. It is a cadence and not a
-   * phase — the interval is not aligned to the second boundary, so the reading trails the host by
-   * wherever in a second the page mounted. What is owed is that the shown time tracks the real one,
-   * and each reading takes the host's value afresh rather than adding to the last, so nothing
-   * accumulates.
-   */
-  const READ_INTERVAL_MS = 1000;
-
-  /**
-   * `reachable` is deliberately not declared, and that is the whole of what this module does about an
-   * outage: it fetches nothing, so a backend that is gone takes nothing from it and it keeps
-   * rendering beneath the page's own report (docs/contracts/module-contract.md § An unavailable
-   * module and an unreachable backend are different states). Svelte drops a prop the component does
-   * not declare, so the frame forwarding it to every module alike costs this one nothing.
-   */
+  // No `reachable` prop is declared: the module fetches nothing, so an outage takes nothing from it
+  // (docs/contracts/module-contract.md § An unavailable module and an unreachable backend are
+  // different states). Svelte drops the prop the frame forwards to every module alike.
   const { config }: { config: ClockOptions } = $props();
 
-  // An absent key takes the default its section of the configuration schema declares; the two are
-  // read together, and a placement supplying no options at all is the same case.
-  const twentyFourHour = $derived(config.twenty_four_hour ?? true);
-  const showSeconds = $derived(config.show_seconds ?? true);
-  const showDate = $derived(config.show_date ?? true);
+  // Read as given: the validator writes each key's schema default into the configuration, so an
+  // absent key arrives already at its default rather than being defaulted a second time here.
+  const twentyFourHour = $derived(config.twenty_four_hour);
+  const showSeconds = $derived(config.show_seconds);
+  const showDate = $derived(config.show_date);
 
-  /**
-   * The host's time, re-read on an interval rather than once at mount: the display is left running
-   * for weeks, and a value taken at mount is wrong within a minute. Each reading replaces the value
-   * rather than mutating it, which is what the rune tracks.
-   */
+  // The host clock is re-read on the smallest unit shown — the second when seconds are drawn, the
+  // minute otherwise, so a clock with seconds off wakes once a minute rather than sixty times for a
+  // digit it never draws. A cadence, not a phase: the reading trails the host by wherever in the
+  // unit the page mounted, and each reading takes the host's value afresh, so nothing accumulates.
+  const readIntervalMs = $derived(showSeconds ? 1000 : 60_000);
+
   let now = $state(new Date());
   $effect(() => {
     const reading = setInterval(() => {
       now = new Date();
-    }, READ_INTERVAL_MS);
+    }, readIntervalMs);
     return () => clearInterval(reading);
   });
 
