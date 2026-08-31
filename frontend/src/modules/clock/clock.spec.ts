@@ -1,4 +1,6 @@
-import { expect, test } from '@playwright/test';
+import { readFileSync } from 'node:fs';
+
+import { expect, test, type Page } from '@playwright/test';
 
 import {
   asksBeyondTheShell,
@@ -35,7 +37,10 @@ function placed(options: Record<string, unknown>): Fixture {
 const TIME = '[data-clock-time]';
 const DATE = '[data-clock-date]';
 
-test('TST051: takes the time off the host clock, asking nothing for it', async ({ page }) => {
+test('TST051: takes the time off the host clock, asking nothing for it', async ({
+  page,
+  baseURL,
+}) => {
   // Registered before the page loads: a listener added afterwards would miss the load's own asks,
   // and an absence measured over nothing is not an absence.
   const traffic = watchTraffic(page);
@@ -48,11 +53,17 @@ test('TST051: takes the time off the host clock, asking nothing for it', async (
   await page.clock.runFor(3000);
   await expect(page.locator(TIME)).toHaveText('15:04:08');
 
-  // And it was not asked for. The shell's own two asks are named rather than every request being
-  // permitted, so a module ask would be left over rather than absorbed; a channel of either kind
-  // counts as a way the time could have arrived even if the module then ignored what came back.
+  // The watcher saw something first. Both assertions below are absences, and an absence read over a
+  // population nobody filled is not an absence: a listener attached to the wrong page, or after the
+  // navigation, would leave them empty and green.
+  const asked = traffic.requests.map((request) => new URL(request.url).pathname);
+  expect(asked, 'the watcher saw the shell ask for its configuration').toContain('/config.json');
+
+  // And the time was not asked for. The shell's own two asks are named rather than every request
+  // being permitted, so a module ask would be left over rather than absorbed; a channel of either
+  // kind counts as a way the time could have arrived even if the module then ignored what came back.
   expect(asksBeyondTheShell(traffic)).toEqual([]);
-  expect(channelsBeyondTheTier(traffic)).toEqual([]);
+  expect(channelsBeyondTheTier(traffic, baseURL)).toEqual([]);
 });
 
 test('TST052: keeps the displayed time moving as the host clock moves', async ({ page }) => {
@@ -80,11 +91,19 @@ test('TST053: presents the hour in the form its configuration selects', async ({
   await render(page, placed({ twenty_four_hour: false }));
   const asTwelve = (await page.locator(TIME).innerText()).trim();
 
-  // Both selections are driven, since a module hardcoding either form passes a check that reads only
-  // the other; and the hour itself is read rather than the label, so a rendering that varies the
-  // indicator without varying the hour fails.
-  expect(asTwentyFour).toMatch(/^15:04:05$/);
-  expect(asTwelve).toMatch(/^03:04:05\s*PM$/);
+  // The hour each form names, and whether a meridiem indicator is there to tell the halves of the
+  // day apart - not how either is spelled. The separator, the padding and how the indicator reads
+  // are presentation the item does not oblige, so asserting the whole string would red this on a
+  // change the requirement permits. The host time makes the two hours distinguishable as substrings:
+  // at 15:04:05 nothing but the hour reads 15, and nothing but the hour reads 3.
+  expect(asTwentyFour).toContain('15');
+  expect(asTwentyFour).not.toMatch(/[ap]\.?m\.?/i);
+  expect(asTwelve).toMatch(/(^|\D)0?3(\D|$)/);
+  expect(asTwelve).toMatch(/[ap]\.?m\.?/i);
+  expect(asTwelve).not.toContain('15');
+
+  // Both selections are driven, since a module hardcoding either form passes a check reading only
+  // the other, and the two renderings are compared as the item obliges.
   expect(asTwelve).not.toBe(asTwentyFour);
 });
 
@@ -117,16 +136,55 @@ test('TST063: shows seconds when its configuration asks and omits them when it d
   await holdHostClock(page, HOST_TIME);
 
   await render(page, placed({ show_seconds: true }));
-
-  // The host's seconds, not merely a seconds-shaped field: the controlled clock stands at :05.
-  await expect(page.locator(TIME)).toHaveText('15:04:05');
+  const withSeconds = (await page.locator(TIME).innerText()).trim();
 
   await render(page, placed({ show_seconds: false }));
+  const without = (await page.locator(`[data-region="${REGION}"] ${TIME}`).innerText()).trim();
 
-  // The absence is read on the time itself — a time still shown, with no seconds in it — since a
-  // clock that stopped rendering would satisfy any assertion made only about what is missing.
-  await expect(page.locator(`[data-region="${REGION}"] ${TIME}`)).toHaveText('15:04');
+  // The host's own seconds rather than a seconds-shaped field: the held clock stands at :05, and at
+  // 15:04:05 nothing but the seconds reads 05. Read as a substring rather than against the whole
+  // string, because the separator before them and whether they are padded are presentation the item
+  // does not oblige.
+  expect(withSeconds).toContain('05');
+
+  // The absence is read on a time that is still there - the minute is asserted alongside it - since
+  // a clock that stopped rendering satisfies any assertion made only about what is missing.
+  expect(without).not.toContain('05');
+  expect(without).toContain('04');
 });
+
+/**
+ * Cited by no obligation and kept deliberately. Each key's default is stated twice — once in the
+ * module's section of the configuration schema, and again in the component as the value an absent key
+ * takes — and the compiled validator does not write defaults into the configuration, so the two are
+ * held together by nothing. The defaults are read out of the schema rather than written here a third
+ * time, so a flip of either copy alone parts the two renderings and fails.
+ */
+test('renders a placement that asks for nothing as its declared defaults', async ({ page }) => {
+  const schema = JSON.parse(
+    readFileSync(new URL('../../config/schema.json', import.meta.url), 'utf8'),
+  );
+  const declared = Object.entries<{ default?: unknown }>(schema.$defs.clockOptions.properties);
+  const defaults = Object.fromEntries(declared.map(([key, kind]) => [key, kind.default]));
+  expect(Object.values(defaults).every((value) => value !== undefined)).toBe(true);
+
+  await holdHostClock(page, HOST_TIME);
+
+  await render(page, placed({}));
+  const implicit = await rendering(page);
+
+  await render(page, placed(defaults));
+  expect(await rendering(page)).toEqual(implicit);
+});
+
+/** What the clock puts on screen: its time, and its date where it draws one. */
+async function rendering(page: Page): Promise<{ time: string; date: string | null }> {
+  const date = page.locator(DATE);
+  return {
+    time: (await page.locator(TIME).innerText()).trim(),
+    date: (await date.count()) === 0 ? null : (await date.innerText()).trim(),
+  };
+}
 
 test('TST055: goes on showing an advancing time while the backend is unreachable', async ({
   page,

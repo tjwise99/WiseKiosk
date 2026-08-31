@@ -41,8 +41,8 @@
           },
           "options": {
             "title": "Module options",
-            "description": "What this placement asks of the module it names. The keys on offer are the named module's own, declared in that module's section below; two placements of the same module are configured apart, each from its own entry.",
-            "anyOf": [{ "$ref": "#/$defs/clockOptions" }]
+            "description": "What this placement asks of the module it names. The keys on offer are the named module's own, declared in that module's section below, and a module with no section there is not judged by another module's keys; two placements of the same module are configured apart, each from its own entry.",
+            "anyOf": [{ "$ref": "#/$defs/clockOptions" }, { "type": "object" }]
           }
         },
         "if": {

@@ -116,14 +116,22 @@ export function asksBeyondTheShell(traffic: Traffic): string[] {
 /**
  * Every channel the page opened that the tier did not open on its own account. The tier is served by
  * a dev server, and its injected client holds one WebSocket at the served root carrying a handshake
- * token; that shape is excepted, and it is the only exception — a channel a module opens addresses a
- * route on the backend, so it is left over rather than absorbed. The exception is by shape rather
- * than by counting, so a second channel of any kind still shows up.
+ * token; that one is excepted, by its host, its path and its token together, and it is the only
+ * exception — a channel a module opens addresses a route, so it is left over rather than absorbed.
+ * The exception is by shape rather than by counting, so a second channel of any kind still shows up.
+ *
+ * `served` is where the tier is served from; without it nothing is excepted, which fails loud rather
+ * than absorbing a channel whose origin could not be checked.
  */
-export function channelsBeyondTheTier(traffic: Traffic): string[] {
+export function channelsBeyondTheTier(traffic: Traffic, served?: string): string[] {
+  const host = served === undefined ? undefined : new URL(served).host;
   return traffic.channels.filter((channel) => {
     const opened = new URL(channel);
-    return !(opened.pathname === '/' && opened.searchParams.has('token'));
+    return !(
+      opened.host === host &&
+      opened.pathname === '/' &&
+      opened.searchParams.has('token')
+    );
   });
 }
 

@@ -2,8 +2,12 @@
   import type { ClockOptions } from '../../config/types';
 
   /**
-   * How often the host clock is re-read. One second is the smallest unit the module presents, so a
-   * coarser interval would show a second that skips and a finer one would re-render for nothing.
+   * How often the host clock is re-read: the smallest unit the module presents, so a coarser
+   * interval would leave a shown second standing while another passed. It is a cadence and not a
+   * phase — the interval is not aligned to the second boundary, so the reading trails the host by
+   * wherever in a second the page mounted. What is owed is that the shown time tracks the real one,
+   * and each reading takes the host's value afresh rather than adding to the last, so nothing
+   * accumulates.
    */
   const READ_INTERVAL_MS = 1000;
 

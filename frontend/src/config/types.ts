@@ -25,9 +25,9 @@ export type Region =
  */
 export type Module = string;
 /**
- * What this placement asks of the module it names. The keys on offer are the named module's own, declared in that module's section below; two placements of the same module are configured apart, each from its own entry.
+ * What this placement asks of the module it names. The keys on offer are the named module's own, declared in that module's section below, and a module with no section there is not judged by another module's keys; two placements of the same module are configured apart, each from its own entry.
  */
-export type ModuleOptions = ClockOptions;
+export type ModuleOptions = ClockOptions | {};
 /**
  * Whether the hour is presented in twenty-four-hour form. False presents it in twelve-hour form, carrying the indicator that tells the two halves of the day apart.
  */
