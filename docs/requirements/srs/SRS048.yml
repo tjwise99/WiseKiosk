@@ -1,0 +1,39 @@
+active: true
+derived: false
+header: |
+  The clock shows or omits seconds per its configuration
+level: 51
+links:
+- SYS009: s8TjUw37qCSpVRmL9jQhjvVhRKP9haPGIYcmNiYjgic=
+normative: true
+rationale: |
+  Seconds are the smallest unit a wall clock is asked for, and whether they earn their space is the
+  room's to decide rather than ours: a kitchen glance wants them gone, an operations position reads
+  them as the display's own evidence that it has not frozen. So they are offered rather than always
+  drawn or never drawn, and the offer is the clock's own - the same reading of the same host clock,
+  rendered in the same region, so a module made of one field would be the alternative.
+  The obligation is two-sided for the reason the date's is. An item obliging only the showing is met
+  by a clock that always draws seconds, which is precisely the display the operator who turned them
+  off did not ask for, and omission is the half a check is fooled on.
+  It is not the advancing obligation restated. A clock showing no seconds is still obliged to track
+  real time (SRS037<!-- The clock keeps up with real time while the page stays loaded -->), and a
+  clock drawing a seconds field frozen at mount satisfies this item completely while failing that
+  one, so the two fail independently and are separate items. As with the hour form and the date, the
+  key's name and its default belong to the module's section of the configuration schema, and that the
+  key is driven at a non-default value is already obliged of every module
+  (SRS024<!-- Every offered configuration key is exercised at a non-default value -->).
+ref: ''
+reviewed: fkq0Q8WBTlj6g1XVbruXfBP7OcOCIWCNECDCo6-dcvM=
+status: accepted
+text: |
+  The clock module shall show the seconds of the current time beside the rest of it when its
+  configuration selects them, and shall omit the seconds when its configuration does not.
+verification-justification: |
+  Read from a rendered page under each of the two selections: the seconds present under one are the
+  host's current seconds, and under the other the clock's region carries a time with no seconds in it.
+  What it cannot settle is that the seconds shown are the true ones, which is the host's to be right
+  about and outside this system, nor how they are written - the separator before them and whether
+  they are zero-padded are presentation choices the item does not oblige. That the field keeps moving
+  is asserted beneath the tracking item rather than here: this one is met the same by a clock showing
+  seconds that advance and one showing seconds that do not.
+verification-method: test

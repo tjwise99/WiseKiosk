@@ -1,0 +1,32 @@
+active: false
+derived: false
+header: |
+  Pending: seconds appear and disappear with their selection
+level: 85
+links:
+- SRS048: vkb1gUt4IS82KQqBI4A0QyMrW5UmeFFOduUh3QKELS4=
+normative: true
+rationale: |
+  Omission is the half a check is fooled on. A module that always draws seconds passes any assertion
+  reading only the selection that asks for them, so both selections are driven and the absent case is
+  asserted as an absence in the clock's own region rather than anywhere on the page.
+  The seconds read are checked against the host's rather than merely being present, because a
+  placeholder or a frozen zero is present too. That the field keeps moving is not read here: advancing
+  is the tracking item's, already driven against the controlled host clock, and asserting it in two
+  places would put one obligation under two parents.
+ref: ''
+reviewed: NBDm88l9wWvAg_S_GZqUb_YZMQiPITmLhBhriwk13MQ=
+status: proposed
+text: |
+  Pending: render test loading the page under each of the two seconds selections against a controlled
+  host clock, asserting that the selection asking for seconds yields the host's current seconds beside
+  the rest of the time and that the selection not asking for them yields a time carrying no seconds in
+  the clock's region. Lands with the first vertical slice (#12); activated and given a references entry
+  then.
+verification-justification: |
+  Settles that the seconds' presence follows the selection in both directions, and that what is shown
+  when they are present is the host's seconds rather than a fixed string.
+  Leaves unproven that the host's seconds are the true ones, the host being outside this system, and
+  says nothing about how they are written - the separator before them and whether they are zero-padded
+  are outside what the item obliges.
+verification-method: test

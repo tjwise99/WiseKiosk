@@ -81,6 +81,7 @@ specification {
   tag SRS045
   tag SRS046
   tag SRS047
+  tag SRS048
 }
 
 model {
@@ -271,13 +272,14 @@ model {
         #SRS037
         #SRS038
         #SRS039
+        #SRS048
         description '''
           Renders the time of day into the region the configuration gives it,
           taken from the clock of the host running the browser and kept
           tracking real time for as long as the page stays loaded. Presents
-          the hour in the form its configuration selects, and the date beside
-          it where the configuration asks for one. Fetches nothing, so a
-          backend that is gone takes nothing from it.
+          the hour in the form its configuration selects, and the seconds and
+          the date beside it where the configuration asks for them. Fetches
+          nothing, so a backend that is gone takes nothing from it.
         '''
       }
 
