@@ -4,7 +4,7 @@ header: |
   Pending: the weather comes from one source and no other
 level: 78
 links:
-- SRS041: iXvWfUkcMIBIak0JBQIl-PLsKBzrXEjzJBqCiix_cnc=
+- SRS041: nOOTagO3XUWnLikYkiB4XHmUvvFMSSwQymfhVvStxxs=
 normative: true
 rationale: |
   Two things are asserted together because either alone passes a module that fails the item.

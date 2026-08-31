@@ -4,7 +4,7 @@ header: |
   Pending: the weather shown is the configured location's
 level: 79
 links:
-- SRS042: RxP1qlmKM8WGIhsjP_0Acu5D29P1i_8D0KFPSnJg7SE=
+- SRS042: CK28O8A7DIgUc4RbLfQN8gRUevDsIgyfdP8wtGblFuI=
 normative: true
 rationale: |
   One configuration is not enough. A module ignoring its configuration and reporting on a place fixed in

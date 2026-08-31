@@ -307,13 +307,17 @@ restated here.
 
 **Components (C4 L3)**, diagrammed below; each box's responsibility is the model's, not restated here.
 A module's own half of this container is its Svelte component, drawn when that module's need lands
-([ADR 0019 rev 5](decisions/0019-boundary-at-what-deploys-and-tag-tier.md)), which is why the edge to
-the Viewer leaves this container rather than a region within it. Assembly's discipline — placing what
-it is handed, fetching nothing — is the module contract's rule for a module component, applied one
-level up. The bundle that becomes this container arrives on the one edge drawn server-to-client,
-terminating on the container rather than on a child because no component exists to fetch what has yet
-to run; `include *` does not reach it, so this view alone omits where the bundle comes from, and the
-Backend's view above is where it is drawn.
+([ADR 0019 rev 5](decisions/0019-boundary-at-what-deploys-and-tag-tier.md)). The framework/module seam
+is drawn rather than inferred: one component box appears per module whatever its shape — a local
+module has no other box anywhere in the model — and every other box on this level is shared
+framework. The edge to the Viewer still leaves this container rather than any one of those boxes,
+because what a viewer is shown is the assembled surface: the configured modules placed together, one
+of them saying it failed, the rest of it mirrored — which no single component renders. Assembly's
+discipline — placing what it is handed, fetching nothing — is the module contract's rule for a module
+component, applied one level up. The bundle that becomes this container arrives on the one edge drawn
+server-to-client, terminating on the container rather than on a child because no component exists to
+fetch what has yet to run; `include *` does not reach it, so this view alone omits where the bundle
+comes from, and the Backend's view above is where it is drawn.
 
 <!-- arch-export:begin generated/frontendComponents.mmd -->
 

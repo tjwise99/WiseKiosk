@@ -12,7 +12,11 @@ description: >-
 **A module reaches the requirements tree before it reaches the repository.** This skill is the
 sequence; what each item must *say* is
 [`docs/contracts/module-contract.md` § Writing the module's requirements](../../../docs/contracts/module-contract.md),
-and it is authoritative. Do not re-derive its rules from here — read it.
+and it is authoritative. Do not re-derive its rules from here — read it. Read
+[§ A module is its capability, not its supplier](../../../docs/contracts/module-contract.md) with it:
+a module is identified by what a viewer gets from it and never by the service it happens to read, so
+**no requirement names a supplier** — not the need, not anywhere in the decomposition. The supplier is
+named in the architecture model's external system and in the route key, and nowhere in the tree.
 
 That a module is a need at all is
 [ADR 0012 rev 2](../../../docs/decisions/0012-module-requirements-in-tree.md). A module not on the
@@ -64,13 +68,30 @@ already, which a module restating has written twice.
 
 **Do not check a draft against a list of them.** The boundary is categorical and a roster was
 explicitly refused, because a list is wrong the moment the framework gains an item and an author
-working down it stops thinking. The test is one question: **would rewording this to name a different
-module leave a sentence the framework already says?** If yes, drop it.
+working down it stops thinking. The test is what a draft leaves once its module is taken out of it,
+and **it runs over rewording and over abstraction — an author is done only when both have been
+tried.** Rewording swaps the module named and keeps everything else. Abstraction goes a step further
+and drops what is particular to the module, leaving the shape underneath: *the weather module shall
+report on the location its configuration names* abstracts to *a module reports on the subject its
+configuration names*. Rewording alone misses the item most worth catching, because an item whose
+every clause names its own subject survives it untouched while the sentence beneath it is a
+universal; abstraction alone runs the other way, since abstracted far enough every item reduces to *a
+module does what it is for*, so the abstraction that counts is the one that drops the module and
+keeps the obligation. Where the two disagree, the abstracted reading is the one that goes to the
+second stage.
 
-**And if rewording leaves a sentence the framework *would* say but does not — stop.** That is not the
-same answer and the first stage cannot tell them apart. The obligation is real and homeless; dropping
-it loses it silently. It becomes a framework item, or this module's against a recorded trigger for
-promoting it — and **which one is the owner's call**. Surface it; do not choose.
+**And if what the test leaves is a sentence the framework *would* say but does not — stop.** That is
+not the same answer and the first stage cannot tell them apart, and dropping it loses a real
+obligation silently.
+
+**So the second stage asks two questions rather than one, and it has three outcomes.** Does a
+framework item say it — if yes, drop the draft. Does the contract itself say it — if yes, the draft
+cites that clause in its own `rationale`, and nothing is promoted and nothing is escalated: the
+contract states structure directly and what it states binds without a tree item behind it
+([ADR 0011 rev 2](../../../docs/decisions/0011-requirement-or-convention.md)). Only when neither says
+it is the sentence homeless, and only then is it the owner's: it becomes a framework item, or this
+module's against a recorded trigger for promoting it — and **which one is the owner's call**. Surface
+it; do not choose. **Search both before raising one.**
 
 ## Escalate rather than invent
 

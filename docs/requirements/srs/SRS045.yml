@@ -15,11 +15,18 @@ rationale: |
   styling is the page's layout and the styling contract's, both already obliged of every module; a
   viewer confusing this afternoon's rain for the rain outside is the failure this forbids, and there are
   many arrangements that avoid it.
+  Abstraction splits the item in two, and each half lands somewhere different. Drawing all of what it
+  was handed reads, with the module dropped, as a module draws all of what its payload carries, which
+  is module-contract.md's rather than the tree's - part 1's component receives the module's
+  configuration and its payload as props and renders them into the module's region - so that half is
+  cited and neither promoted nor escalated. Telling the parts apart does not abstract to a universal:
+  a payload carrying one thing has nothing to tell from anything, and which parts must be told from
+  which is this module's payload's, so that half is this item's own and is what it is for.
   Reading a wall display is a glance rather than a study, so being told apart has to survive the glance.
   That is a property of the rendering rather than of the data, and no obligation on the payload reaches
   it.
 ref: ''
-reviewed: ZhfrzoIOm1XuLizBKb4P_0_PUV8N_SC9I6FFYzLJKjk=
+reviewed: rhrY4v2HUEE5X3kHm6bQ94Et4AKOIdBTnMQ38PX6oUw=
 status: accepted
 text: |
   The weather module shall show both the present weather and the weather expected next, the present

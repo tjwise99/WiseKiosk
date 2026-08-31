@@ -16,12 +16,19 @@ rationale: |
   interface here that the schema is the record of. Nor does the item say the option is exercised: that
   every offered key is driven at a non-default value is already obliged of every module
   (SRS024<!-- Every offered configuration key is exercised at a non-default value -->).
+  Abstracted, the item reads that a module reports on the subject its configuration names, and that is
+  the reading the second stage runs on. No framework item says it - the nearest, cited above, obliges
+  that every offered key be exercised and says nothing about what any key names - and
+  module-contract.md does not settle it either, using the sentence as its worked example of
+  abstracting rather than as structure it binds. What is left is not a universal: a module whose
+  subject its configuration does not name satisfies it vacuously, and which subject is named differs
+  per module, so the sentence is this module's to carry and it is carried here.
   This is not the pattern a location must match. That item bounds which values the backend will carry
   upstream at all and is a check on a request; this one says the configured place is the place reported
   on, which is what a viewer would notice going wrong. A module could reject every malformed location
   and still show the weather somewhere else entirely.
 ref: ''
-reviewed: wWVexkGmEC9A3uY5y8w71NE85lU2z0PDENQyznQUXwQ=
+reviewed: BZElZx4CPG9-RMLh3TP4PugreoN0y8YPJ0y_Ypp5FYI=
 status: accepted
 text: |
   The weather module shall report the weather for the location its configuration names, and for no

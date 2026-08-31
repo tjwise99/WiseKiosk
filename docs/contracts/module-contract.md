@@ -230,13 +230,16 @@ at all and not left for an operator to tune
 (SRS011<!-- Upstream request rate is bounded, and the bound is not operator-tunable -->) — the
 framework obliges that there be a bound, and the module says what it is.
 
-Three of [`TESTING.md`](../TESTING.md)'s tiers bear on a module's decomposition, and one of them
+Four of [`TESTING.md`](../TESTING.md)'s tiers bear on a module's decomposition, and one of them
 bears on every module's. The Render tier reads the component of part 1, which is what that document
 states the tier by, so the items saying what this module renders in the region it is given are
-written precisely enough for that tier to assert them. The other two are an upstream-backed module's.
-The Unit tier reads the shaping library of part 4 — the upstream URL it builds and the payload it
-reshapes a response into, pure and without network — so the items stating this module's parameters
-and its payload are written precisely enough for that tier to assert them. The Contract tier is
+written precisely enough for that tier to assert them. The other three are an upstream-backed
+module's. The Unit tier reads the shaping library of part 4 — the upstream URL it builds and the
+payload it reshapes a response into, pure and without network — so the items stating this module's
+parameters and its payload are written precisely enough for that tier to assert them. The Integration
+tier reads the route registration of part 5 — what leaves for the upstream and how often — so the
+item stating how often this module may ask its source is written precisely enough for that tier to
+assert it. The Contract tier is
 machinery rather than a module obligation and earns no `SRS`
 ([`TESTING.md` § Where the Contract tier runs, and how it reaches upstream](../TESTING.md#where-the-contract-tier-runs-and-how-it-reaches-upstream)).
 
