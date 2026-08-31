@@ -17,13 +17,13 @@ ref: ''
 references:
 - keyword: func TestTST059_ShapingTheCapturedResponseCarriesEverythingAViewerIsOwed
   path: backend/internal/modules/weather/weather_test.go
-  sha: 764703140677613d6a2e7618a998910c164e2a9d43b58fe3c9b32b1acda493a6
+  sha: ac823f623b94d86b057766e6efcf412fa021febcb9bd8dc93df3d148f3dcc183
   type: file
 - keyword: func TestTST059_AResponseMissingAValueThePayloadNeedsIsNotShaped
   path: backend/internal/modules/weather/weather_test.go
-  sha: 764703140677613d6a2e7618a998910c164e2a9d43b58fe3c9b32b1acda493a6
+  sha: ac823f623b94d86b057766e6efcf412fa021febcb9bd8dc93df3d148f3dcc183
   type: file
-reviewed: jg4By207A6Wm1HJo1MPnse4OGjcSjzQ0FmLGoDWFcWQ=
+reviewed: mYvqcWUL3zSnSk3Lr726tSiTITKclCj3NvxhawTc7VA=
 status: proposed
 text: |
   Unit test running the module's shaping over a captured response from its source, with no network,

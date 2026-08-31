@@ -55,6 +55,14 @@ func TestTST058_ThePatternAdmitsAPointAndRejectsEveryOtherValue(t *testing.T) {
 		{"the poles and the antimeridian", "-90", "-180"},
 		{"the other end of both ranges", "90", "180"},
 		{"a whole number of degrees", "51", "-1"},
+		// What a JavaScript number formats a near-zero coordinate as. Refusing
+		// this refused a legal point for how it was printed.
+		{"a near-zero longitude in exponent form", capturedLat, "1e-7"},
+		{"a negative near-zero latitude in exponent form", "-1.5e-7", capturedLon},
+		{"an exponent standing for a whole coordinate", "4.07128e1", capturedLon},
+		{"a signed-positive latitude", "+40.7128", capturedLon},
+		{"a latitude with no whole part", ".5", capturedLon},
+		{"a latitude with no fractional part after its point", "40.", capturedLon},
 	}
 
 	for _, c := range admitted {
@@ -98,11 +106,12 @@ func TestTST058_ThePatternAdmitsAPointAndRejectsEveryOtherValue(t *testing.T) {
 		{"a longitude that is not a number", point(capturedLat, "east")},
 		{"a latitude written as not-a-number", point("NaN", capturedLon)},
 		{"a longitude written as infinite", point(capturedLat, "Inf")},
-		{"a latitude in exponent form", point("4.07128e1", capturedLon)},
 		{"a longitude in hexadecimal", point(capturedLat, "0x4a")},
-		{"a signed-positive latitude", point("+40.7128", capturedLon)},
-		{"a latitude with no whole part", point(".5", capturedLon)},
-		{"a latitude with no fractional part after its point", point("40.", capturedLon)},
+		{"a latitude in hexadecimal float form", point("0x1p4", capturedLon)},
+		{"a latitude written as infinity in full", point("Infinity", capturedLon)},
+		{"an exponent with no digits", point("40.7e", capturedLon)},
+		{"a latitude past the pole in exponent form", point("9.1e1", capturedLon)},
+		{"a magnitude too large to hold", point("1e400", capturedLon)},
 		{"a place name instead of a point", url.Values{"place": {"the observatory"}}},
 		{"a repeated latitude", url.Values{paramLat: {capturedLat, "0"}, paramLon: {capturedLon}}},
 		{"a repeated longitude", url.Values{paramLat: {capturedLat}, paramLon: {capturedLon, "0"}}},
@@ -362,21 +371,48 @@ func TestShapeReadsTheBodyWithoutWritingToIt(t *testing.T) {
 	}
 }
 
-// TestThePolicyIsTheOneItsRequirementsCameTo reads the figures the registration
-// entry carries against what obliged them, rather than against themselves.
-func TestThePolicyIsTheOneItsRequirementsCameTo(t *testing.T) {
+// TestTST062_ThePolicyComesToFourRequestsAnHourForOneLocation reads this
+// module's half of
+// SRS047<!-- The weather module asks its source at most four times an hour for a location -->:
+// the figures it registers, against what obliged them rather than against
+// themselves. What the framework then does with a cache interval — one upstream
+// call per interval for one location, and never a second in flight while a first
+// has not answered — is the router package's to read, against a fixture rather
+// than against these numbers.
+//
+// The second clause reaches no value here. Single flight is the framework's for
+// every entry alike, so there is nothing this module could set that would meet
+// or miss it.
+func TestTST062_ThePolicyComesToFourRequestsAnHourForOneLocation(t *testing.T) {
+	policy := Config()
+
+	// The interval is what holds the rate: the route answers from cache until it
+	// lapses, so one location costs one upstream call per interval.
+	if perHour := time.Hour / policy.SuccessTTL; perHour > 4 {
+		t.Errorf("a %s cache interval comes to %d requests an hour for one location, want no more than 4",
+			policy.SuccessTTL, perHour)
+	}
+
+	// The bucket cannot express the bound — its rate is per minute and it is
+	// keyed on the source rather than the location — so it is a backstop over the
+	// route as a whole, and it must be loose enough not to refuse the polling the
+	// interval above already answers from cache.
+	if policy.RequestsPerMinute < 1 || policy.Burst < policy.RequestsPerMinute {
+		t.Errorf("the bucket refills at %d a minute and holds %d, want a backstop that does not bind first",
+			policy.RequestsPerMinute, policy.Burst)
+	}
+}
+
+// TestThePolicyIsCompleteAndItsFailureRetryIsSooner reads what an entry requires
+// of any policy, and the one relation between two of this module's figures that
+// no requirement states.
+func TestThePolicyIsCompleteAndItsFailureRetryIsSooner(t *testing.T) {
 	policy := Config()
 
 	// SRS046<!-- The weather a viewer sees is no more than fifteen minutes behind its source -->:
 	// an answer held longer than the bound is one a viewer could be shown past it.
 	if policy.SuccessTTL > 15*time.Minute {
 		t.Errorf("SuccessTTL = %s, want no more than 15m", policy.SuccessTTL)
-	}
-
-	// SRS047<!-- The weather module asks its source at most four times an hour for a location -->:
-	// the TTL is what holds the rate, one call per interval for one location.
-	if perHour := time.Hour / policy.SuccessTTL; perHour > 4 {
-		t.Errorf("a %s TTL comes to %d requests an hour for one location, want no more than 4", policy.SuccessTTL, perHour)
 	}
 
 	// Every value is required of an entry, and a zero one panics at construction

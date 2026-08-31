@@ -15,15 +15,19 @@ rationale: |
   read from a suite that runs for seconds.
 ref: ''
 references:
-- keyword: func TestTST062_TheSourceIsAskedNoMoreThanFourTimesAnHourForOneLocation
-  path: backend/internal/router/weather_rate_test.go
-  sha: 54cdaace4addf3d8c3b313d8680c8b43ab83ce09726d86fdf67a6be70bb4edb2
+- keyword: func TestTST062_ASourceIsAskedOncePerCacheIntervalForOneLocation
+  path: backend/internal/router/rate_test.go
+  sha: 4c44ffccdcdda14c0f8aef5c63f97500d54cad9b604f1160e4ef2dcf66354977
   type: file
 - keyword: func TestTST062_ASecondRequestIsNeverOutstandingWhileAFirstHasNotAnswered
-  path: backend/internal/router/weather_rate_test.go
-  sha: 54cdaace4addf3d8c3b313d8680c8b43ab83ce09726d86fdf67a6be70bb4edb2
+  path: backend/internal/router/rate_test.go
+  sha: 4c44ffccdcdda14c0f8aef5c63f97500d54cad9b604f1160e4ef2dcf66354977
   type: file
-reviewed: iv2l6YmZQ91ALOF8566gnZmQf-exg4fm2NIgmvi8qh8=
+- keyword: func TestTST062_ThePolicyComesToFourRequestsAnHourForOneLocation
+  path: backend/internal/modules/weather/weather_test.go
+  sha: ac823f623b94d86b057766e6efcf412fa021febcb9bd8dc93df3d148f3dcc183
+  type: file
+reviewed: 3yz6kk9slDKNp68K-EWNemcQVmD4ojIUCONzHLlmgGU=
 status: proposed
 text: |
   Integration test driving the module's route under a driven clock and a slow staged source, asserting

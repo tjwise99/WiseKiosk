@@ -18,9 +18,9 @@ references:
 - keyword: 'test(''TST061: follows its source to a new reading inside the freshness
     bound, without reloading'', async ({'
   path: frontend/src/modules/weather/weather.spec.ts
-  sha: 8ff42d16f4227d37fc102613bd4c4f5bdc9a01b011cdf1d3aeaac0e2dd3365c3
+  sha: f880f85ab7ba56af0672a1d1df48c539582de70df699f09f56406db0f2bd0148
   type: file
-reviewed: y7r8gwgBZeoYB_TdpzRZomM5mMJThrbWUAgIgkzilKo=
+reviewed: R6UTnu8d5fDZtbE0ToG9Uo1UMVeUyWigzGrV7Xaq01U=
 status: proposed
 text: |
   Render test holding the page open against a source staged to change its answer and a driven clock,
