@@ -59,8 +59,8 @@ describe('the configuration validator', () => {
     expect(result.faults[0].what).toContain('bottom_bar');
   });
 
-  // The clock's section is the first per-module one, and its keys are asked only of a placement that
-  // names the clock. Both directions are driven below: a section nothing narrows would admit a typo
+  // The clock's section is a per-module one: its keys are asked only of a placement that names the
+  // clock. Both directions are driven below: a section nothing narrows would admit a typo
   // on a clock placement, and a section applied to every placement would reject the keys of a module
   // it was never written for.
   it('accepts the keys the clock offers, at values that are not their defaults', () => {
