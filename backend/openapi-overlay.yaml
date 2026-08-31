@@ -1,0 +1,32 @@
+# The Go generator's view of the one boundary schema, as an OpenAPI Overlay applied before
+# generation (ADR 0008 rev 4). The schema itself is unchanged and stays the single authored source:
+# this subtracts from what oapi-codegen reads, and nothing here adds, renames or reshapes anything.
+#
+# What it subtracts, and why. A module data route's request parameters are validated by that route's
+# registration entry, which reads the raw query — the response cache is keyed on the whole query
+# string, so the entry is what must judge it. The generated handler would bind those parameters into
+# a struct the delegation immediately discards, and that binding is the one thing in the emitted Go
+# that needs `github.com/oapi-codegen/runtime` — a module, and two more beneath it, bought for a
+# parse of two floats that is thrown away. Removing the parameters from this side removes the
+# binding; the route, the payload types and the client are all still generated, and the frontend's
+# client is generated from the schema itself and still carries them.
+#
+# It is selected by the `module-route` tag rather than by any path, so no module's name reaches the
+# Go generator's configuration and this file is edited once, ever.
+#
+# Two things make a mistake here loud rather than silent. `strict` (oapi-codegen's default) fails the
+# generate step on a selector matching nothing, so a tag that is renamed or dropped everywhere stops
+# the build. And a module data route this selector misses keeps its parameters, so the emitted code
+# imports the runtime module that `backend/go.mod` does not carry, and the build stops at that
+# import.
+overlay: 1.0.0
+info:
+  title: WiseKiosk boundary contract, as the Go generator reads it
+  # Required by the Overlay specification and read by nothing, as with the schema's own.
+  version: 0.1.0
+actions:
+  - target: $.paths[*][*][?(@.tags[?(@ == "module-route")])].parameters
+    description: >-
+      A module data route's parameters are the registration entry's to judge, so the Go side binds
+      none and needs no binding helper.
+    remove: true

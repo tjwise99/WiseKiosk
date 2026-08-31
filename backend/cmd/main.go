@@ -44,18 +44,33 @@ func main() {
 
 // newServer assembles the routes: the boundary schema's own, the API, and the
 // served tree for everything else. A nil api answers 404 for every path under
-// /api/. The schema's infrastructure paths are registered by the generated
-// router, so no path it declares is written here; a module data route is
-// excluded from that generation and reaches the /api/ seam below, where the
-// route registration list decides it (ADR 0008 rev 4).
+// /api/. The schema's paths are registered by the generated router, so no path
+// it declares is written here (ADR 0008 rev 4).
+//
+// A module data route's generated pattern is more specific than the /api/ seam,
+// so it takes that path and hands it back to the same handler the seam holds —
+// the schema decides where the route is and the registry decides what it does.
+// The generated wrapper reads nothing of the request on the way: this side of
+// the schema is read without a module route's parameters, so it has none to bind
+// and no rejection of its own to write.
 func newServer(static, api http.Handler) http.Handler {
 	if api == nil {
 		api = http.NotFoundHandler()
 	}
 
 	mux := http.NewServeMux()
-	boundary.HandlerFromMux(health.Route{}, mux)
+	boundary.HandlerFromMux(schemaRoutes{Routes: registry.NewRoutes(api)}, mux)
 	mux.Handle("/api/", api)
 	mux.Handle("/", static)
 	return mux
+}
+
+// schemaRoutes is the whole of the boundary schema's server interface. The
+// generated interface is one, and its two kinds of path are owned by different
+// packages — an infrastructure route by the package that answers it, every
+// module data route by the registry — so the two are composed at the assembly
+// point rather than in either of them.
+type schemaRoutes struct {
+	health.Route
+	registry.Routes
 }

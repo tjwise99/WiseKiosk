@@ -90,7 +90,7 @@ const malformedMessage = "the source's response could not be read as this module
 
 // invalidParametersMessage is what a request whose query string would not parse
 // renders as. A request that parses is judged by the entry's own validator, and
-// the text there is the module's.
+// the text a caller reads there is the module's.
 const invalidParametersMessage = "the request parameters could not be read"
 
 // outbound is the client every route's fetch makes its call with. It follows no
