@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { Region, WiseKioskDisplayConfiguration } from '../config/types';
+  import type { ModulePlacement, Region, WiseKioskDisplayConfiguration } from '../config/types';
   import { modules } from './modules';
   import { FRAME_COLUMNS, FRAME_ROWS, placementStyle } from './regions';
 
@@ -16,14 +16,16 @@
   }: { configuration: WiseKioskDisplayConfiguration; reachable: boolean } = $props();
 
   /**
-   * The regions the configuration names, each with the modules placed there in the order it names
-   * them. A region no entry names is not laid out at all.
+   * The regions the configuration names, each with the placements made there in the order it names
+   * them. A region no entry names is not laid out at all. The whole placement is carried rather than
+   * the module's name, because the entry is also where that module's configuration sits: two
+   * placements of one module are configured apart, so nothing above the placement can hold it.
    */
   const occupied = $derived.by(() => {
-    const byRegion = new Map<Region, string[]>();
+    const byRegion = new Map<Region, ModulePlacement[]>();
     for (const placement of configuration.modules) {
       const here = byRegion.get(placement.region) ?? [];
-      here.push(placement.module);
+      here.push(placement);
       byRegion.set(placement.region, here);
     }
     return [...byRegion];
@@ -36,14 +38,16 @@
 </script>
 
 <div class="frame" class:below-report={!reachable} style={frameStyle} data-frame>
-  {#each occupied as [region, names] (region)}
+  {#each occupied as [region, placements] (region)}
     <section class="region" data-region={region} style={placementStyle(region)}>
-      {#each names as name, index (index)}
-        {@const Module = modules[name]}
+      {#each placements as placement, index (index)}
+        {@const Module = modules[placement.module]}
         {#if Module}
-          <Module {reachable} />
+          <Module {reachable} config={placement.options ?? {}} />
         {:else}
-          <p class="unknown">No module named “{name}” — nothing renders here until one is added.</p>
+          <p class="unknown">
+            No module named “{placement.module}” — nothing renders here until one is added.
+          </p>
         {/if}
       {/each}
     </section>
