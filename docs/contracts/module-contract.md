@@ -10,7 +10,7 @@ upstream-backed — adding one registration entry. There is no mechanism to regi
 
 The concrete locations — which directory holds a module's files, and where the registration list
 lives — are fixed by the repository layout
-([ADR 0021 rev 1](../decisions/0021-repository-layout.md)). This page names the parts, not their
+([ADR 0021 rev 2](../decisions/0021-repository-layout.md)). This page names the parts, not their
 paths.
 
 ## Two module shapes
@@ -53,10 +53,11 @@ themeparks.wiki — and a new module joins it the same way.
    Where the module has a payload, the component consumes the type generated from the boundary schema
    rather than one declared by hand
    ([ADR 0008 rev 3](../decisions/0008-boundary-contract-openapi-codegen.md)).
-2. **A configuration-schema fragment** *(every module).* Declares what this module accepts, composed
-   into the one configuration schema and enforced at apply time in the page, which is where validation
-   runs, per [ADR 0007 rev 2](../decisions/0007-config-validation-allocation.md). The fragment does not
-   cross the frontend/backend boundary.
+2. **A configuration-schema section** *(every module).* Declares what this module accepts, as a named
+   section of the one configuration schema — authored there rather than in a file of its own, and
+   nothing recomposes it — and enforced at apply time in the page, which is where validation runs, per
+   [ADR 0007 rev 2](../decisions/0007-config-validation-allocation.md). It does not cross the
+   frontend/backend boundary.
 3. **Tests** *(every module).* A render test for the component, and — for an upstream-backed module —
    unit tests for the shaping library. What they must cover is [`TESTING.md`](../TESTING.md)'s, not
    this document's; that the tests exist and sit where the runner reaches them is gated
@@ -295,8 +296,8 @@ written against the type its boundary-schema fragment generates.
 
 1. *(upstream-backed only)* Write the shaping library as pure functions, with its unit tests against
    a captured upstream response.
-2. *(every module)* Add the configuration-schema fragment and check an example configuration by
-   loading it in the page.
+2. *(every module)* Add the module's section to the configuration schema and check an example
+   configuration by loading it in the page.
 3. *(upstream-backed only)* Add the registration entry, carrying all six of that route's policies —
    parameter validation, success TTL, negative TTL, rate limit, outbound timeout, maximum response
    size — with the timing values the module's requirements already settled
