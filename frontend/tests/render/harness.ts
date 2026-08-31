@@ -1,5 +1,7 @@
 import { expect, type Page } from '@playwright/test';
 
+import { LIVENESS_TIMEOUT_MS } from '../../src/lib/liveness';
+
 /** A configuration the page is driven with, in the shape `config.json` carries. */
 export interface Fixture {
   modules: { region: string; module: string; options?: Record<string, unknown> }[];
@@ -63,6 +65,29 @@ export async function render(
  */
 export async function holdHostClock(page: Page, when: Date): Promise<void> {
   await page.clock.install({ time: when });
+}
+
+/**
+ * Advances the held clock by `ms`, in steps short enough that each of the page shell's liveness asks
+ * settles before its own deadline is reached.
+ *
+ * One `runFor` over a long span fires every timer in that span before any ask those timers issued can
+ * resolve, so each liveness ask meets its `AbortSignal.timeout` deadline unanswered and the shell
+ * reads the backend as gone and then back again — repeatedly, over a span holding many intervals.
+ * Nothing is wrong with the page; the flap is the driven clock's. But a module fed by the backend
+ * stands down and re-reads across one, so a case that advances time in a single jump measures a
+ * module remounting where it meant to measure the module polling, and passes whether or not the poll
+ * it is about works at all. That was measured rather than reasoned: over five driven minutes, a
+ * module whose poll timer had been removed entirely still refetched seven times.
+ *
+ * The step is taken from the deadline it has to stay inside rather than written here as a figure of
+ * its own, so a change to the shell's timeout carries to this by itself.
+ */
+export async function advanceHostClock(page: Page, ms: number): Promise<void> {
+  const step = Math.max(1, Math.floor(LIVENESS_TIMEOUT_MS / 2));
+  for (let advanced = 0; advanced < ms; advanced += step) {
+    await page.clock.runFor(Math.min(step, ms - advanced));
+  }
 }
 
 /** What a module's data route answers with: the status, and the body carried at it. */

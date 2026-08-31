@@ -1,6 +1,7 @@
 import type { Component } from 'svelte';
 
 import Clock from '../modules/clock/Clock.svelte';
+import Weather from '../modules/weather/Weather.svelte';
 
 /**
  * Every module the page can render, by the name a configuration places into a region. An entry here
@@ -10,4 +11,5 @@ import Clock from '../modules/clock/Clock.svelte';
  */
 export const modules: Record<string, Component> = {
   clock: Clock,
+  weather: Weather,
 };

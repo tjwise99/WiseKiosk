@@ -7,7 +7,8 @@
     },
     {
       "region": "middle_center",
-      "module": "Weather"
+      "module": "weather",
+      "options": { "location": { "lat": 51.5, "lon": -0.12 } }
     }
   ]
 }
