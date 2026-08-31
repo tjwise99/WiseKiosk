@@ -9,7 +9,8 @@
 
 - **rev 2** — 2026-08-30 — the schema is a single hand-authored document with a section per module;
   per-module fragment files, the composer and the recomposition drift gate are dropped (owner,
-  2026-08-30). The 2020-12 format, the one bundled in-page validator and the generated
+  2026-08-30) and recorded as a rejected alternative with the grounds for rejecting them. The
+  2020-12 format, the one bundled in-page validator and the generated
   configuration types are unchanged. This changes what was chosen, so the `Decided` date moves with
   it (#156 config-schema composer).
 - **rev 1** — 2026-08-15 — first written (#8 config schema format).
@@ -125,6 +126,13 @@ SRS002<!-- A module-scoped configuration error is reported at that module -->.
   [ADR 0008 rev 3](0008-boundary-contract-openapi-codegen.md) used to reject TypeSpec for the
   boundary: an authoring layer whose only consumer is a handful of small schemas, generality ahead
   of a second use.
+- **Per-module fragment files composed into the schema.** Each module authors its configuration keys
+  as a separate JSON Schema file in its own directory; a composer recomposes them into the one
+  schema, guarded by a drift gate. Rejected: it stores the same information twice — the fragment
+  files and the composed schema — and the composer and drift gate exist only to police the two copies
+  agreeing. The co-location it buys (config beside the component) does not, at this scale, justify a
+  generated, drift-gated artifact no one hand-reads; the schema is small enough to author as one
+  file, each module's keys a section within it. (owner, 2026-08-30)
 - **Folding the configuration into the boundary (OpenAPI) schema.** Foreclosed upstream: the
   configuration never crosses the boundary ([ADR 0007 rev 2](0007-config-validation-allocation.md)),
   and [ADR 0008 rev 3](0008-boundary-contract-openapi-codegen.md) keeps it a separate artifact. A
