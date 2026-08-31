@@ -25,7 +25,7 @@ shape is a repository check, in [`CI.md`](CI.md), rather than a need.
 Those two containers project onto two package roots — `backend/` and `frontend/` — with the one
 boundary schema at `boundary/openapi.yaml` because it belongs to neither, and the release material in
 `deploy/` because it is outside the boundary
-([ADR 0021 rev 1](decisions/0021-repository-layout.md)).
+([ADR 0021 rev 2](decisions/0021-repository-layout.md)).
 
 Every diagram below is **generated from the validated [LikeC4 model](architecture/README.md)**, not
 drawn by hand. Edit `docs/architecture/model/` and run `just arch-export`, which regenerates each
@@ -108,7 +108,7 @@ rest`" .-> Viewer
 The Component level (C4 L3) is drawn per container, in the two sections below, and the Deployment level
 in [§ Deployment](#deployment). The Backend container and each of its components carry a `link` to the
 source implementing it; where that source sits is
-[ADR 0021 rev 1](decisions/0021-repository-layout.md).
+[ADR 0021 rev 2](decisions/0021-repository-layout.md).
 
 **Every accepted, active `SYS` or `SRS` item binds somewhere in this model, and where one cannot, the
 model grows to draw what it obliges** — there is no exemption record, and which items are unbound is
@@ -122,7 +122,7 @@ Deployment level, which is the level drawn to carry them.
 
 Its source root is `backend/`, the Go module root, holding the shared framework under `internal/` and
 each upstream-backed module's shaping library under `internal/modules/<name>/`
-([ADR 0021 rev 1](decisions/0021-repository-layout.md)). Language and
+([ADR 0021 rev 2](decisions/0021-repository-layout.md)). Language and
 boundary-contract decision: [ADR 0001 rev 1](decisions/0001-backend-language-go.md); config-blindness:
 [ADR 0007 rev 2](decisions/0007-config-validation-allocation.md). What the backend must do is the
 [requirements tree](requirements/README.md); which obligations bind this container is the
@@ -294,9 +294,9 @@ module revisits when its upstream lands.
 ## Frontend
 
 Its source root is `frontend/`, the npm package root, holding the
-framework half under `src/lib/`, each module's component and configuration-schema fragment under
-`src/modules/<name>/`, and the configuration schema those fragments compose into under `src/config/`
-([ADR 0021 rev 1](decisions/0021-repository-layout.md)). Svelte 5 + Vite, a static single-page bundle
+framework half under `src/lib/`, each module's component under `src/modules/<name>/`, and the one
+configuration schema — carrying a named section per module, authored nowhere else — under
+`src/config/` ([ADR 0021 rev 2](decisions/0021-repository-layout.md)). Svelte 5 + Vite, a static single-page bundle
 served as static files ([ADR 0018 rev 1](decisions/0018-frontend-svelte-vite-static-spa.md)); each
 module's poll cadence is that module's own need
 ([the module contract](contracts/module-contract.md)); configuration validation is frontend-owned
@@ -365,22 +365,22 @@ SRS004<!-- Page renders a legible error state for every configuration failure cl
 file absent, unfetchable, unparsable, or rejected by the schema — each render their own plain-language
 state, and the load itself renders as a load. A rejected configuration lists every fault the schema
 found rather than the first, which is why the validator collects them all
-([ADR 0028 rev 1](decisions/0028-bundled-config-validator.md)).
+([ADR 0028 rev 2](decisions/0028-bundled-config-validator.md)).
 
 **The configuration schema is enforced once, by code the schema generates.** The schema is authored as
-JSON Schema 2020-12 ([ADR 0022 rev 1](decisions/0022-config-schema-format.md)) and compiled at build
+JSON Schema 2020-12 ([ADR 0022 rev 2](decisions/0022-config-schema-format.md)) and compiled at build
 time to a standalone validation function, so the bundle carries a function specialised to it rather
-than a schema evaluator ([ADR 0028 rev 1](decisions/0028-bundled-config-validator.md)). The
+than a schema evaluator ([ADR 0028 rev 2](decisions/0028-bundled-config-validator.md)). The
 configuration-object TypeScript types are generated from the same file and drift-gated, so the
 schema is the one statement of the configuration's shape and the region roster
-([ADR 0025 rev 2](decisions/0025-display-region-roster.md)) has one machine-readable form that both
+([ADR 0025 rev 3](decisions/0025-display-region-roster.md)) has one machine-readable form that both
 the validator and the layout read.
 
 **The frame is a grid the region names anchor into, not a set of cells content fills.** Three columns
 and seven rows: the two bars span the width at top and bottom, the corner rows anchor their three
 columns, and the centre column's three bands take equal shares of what the bars leave. Every region
 is laid out beside the others rather than over them
-([ADR 0025 rev 2](decisions/0025-display-region-roster.md)), and a region the configuration names no
+([ADR 0025 rev 3](decisions/0025-display-region-roster.md)), and a region the configuration names no
 module for is not laid out at all. The bands are bounded rather than content-sized, so content too
 large for one leaves it rather than growing it
 (SRS031<!-- Content too large for its region overflows -->).
@@ -411,7 +411,7 @@ request parameters, success payloads, the structured upstream-failure and client
 and the status codes the frontend discriminates on.
 
 The one schema is `boundary/openapi.yaml`, and what is generated from it is committed inside the
-package that compiles it ([ADR 0021 rev 1](decisions/0021-repository-layout.md)). What the drift
+package that compiles it ([ADR 0021 rev 2](decisions/0021-repository-layout.md)). What the drift
 gate asserts, and what it leaves unproven, is [`CI.md`](CI.md) § *Generated boundary contract*.
 
 The generate step reads that one file twice. `oapi-codegen`, pinned by the Go module's `tool`

@@ -96,8 +96,9 @@ it; do not choose. **Search both before raising one.**
 ## Escalate rather than invent
 
 A module spec is where invented interfaces are cheapest to write and most expensive to find. A
-configuration key's name and default are the schema fragment's, not a requirement's — an item states
-what the choice *does*. Where the specification is silent on something observable, halt and ask.
+configuration key's name and default are the configuration schema's, not a requirement's — an item
+states what the choice *does*. Where the specification is silent on something observable, halt and
+ask.
 
 ## Closing
 
