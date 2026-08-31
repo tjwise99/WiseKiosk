@@ -6,12 +6,14 @@ guarantee is [`docs/TESTING.md`](../../docs/TESTING.md)'s; how to run a case is
 [`../README.md`](../README.md)'s.
 
 Each case is a `git archive` copy of the tracked tree — at the commit before the one adding the step
-the row exercises, so `f8c99cb` for the `build`/`vet`/`test` rows and `556ac3a` for the `-race` rows —
-with the working-tree `justfile` copied in over it, seeded in place, and `just check-go` run inside the
-copy. Go 1.26.5, against the `1.26` the `backend-tests` job pins. The recipe reads the worktree rather
-than `git ls-files`, so no case needs a commit; each copy is committed pristine anyway so the seed can
-be asserted to have landed (`git diff --quiet` after seeding, exit 0 read as the case failing to
-apply).
+the row exercises, so `f8c99cb` for the `build`/`vet`/`test` rows and `556ac3a` for the `-race` rows.
+The two schema rows are the exception: the `-count=1` step and the tests it runs arrive in one
+commit, so there is no commit before it that holds the tests, and their copies are taken at `a52ab54`
+itself. Each copy has the working-tree `justfile` copied in over it, is seeded in place, and has
+`just check-go` run inside it. Go 1.26.5, against the `1.26` the `backend-tests` job pins. The recipe
+reads the worktree rather than `git ls-files`, so no case needs a commit; each copy is committed
+pristine anyway so the seed can be asserted to have landed (`git diff --quiet` after seeding, exit 0
+read as the case failing to apply).
 
 | Direction | Case | Input |
 |---|---|---|
@@ -21,14 +23,28 @@ apply).
 | Must fail | No Go package under `backend/` at all | every `*.go` deleted — `build` warns `"./..." matched no packages` and exits 0, and `vet` exits 1 with `no packages to vet`, so the empty population is refused by the second step rather than by the first |
 | Must fail | A race no test failure reaches | `Allow`'s `defer l.mu.Unlock()` replaced by an `l.mu.Unlock()` before the `b.tokens < 1` check — the bucket map stays guarded and the token arithmetic does not. `just check-go` exits 1 on the `test -race` line, having passed the plain `test` one: `go test ./internal/ratelimit/` alone exits **0** where `go test -race ./internal/ratelimit/` exits **1** with `WARNING: DATA RACE`, naming the read at `ratelimit.go:56` against the write at `:59` |
 | Must fail | The mutex removed outright | `Allow`'s `l.mu.Lock()` and `defer l.mu.Unlock()` both deleted — `vet` exits 0 and `go test ./internal/ratelimit/` exits 1 on `fatal error: concurrent map writes`, so the plain `test` step already refuses it. Recorded for contrast: the blunt regression is not what `-race` is for |
-| Must fail | A schema path moved with the Go tree untouched | `/api/weather` renamed to `/api/forecast` in `boundary/openapi.yaml` and nothing under `backend/` edited. With the cache warm, the plain `test` step answers `ok … (cached)`; the `-count=1` step over `internal/registry` exits 1 on both directions of the comparison — `entry "weather" serves /api/weather, which the schema does not declare` and `the schema declares /api/forecast and no entry serves it` |
-| Must fail | The schema unreadable where the comparison expects it | `schemaPath` pointed at a file holding no path items — both comparison cases exit 1 on `the schema scan found no /healthz among map[], so it is not reading path items`, rather than passing over an empty population |
+| Must fail | A schema path moved with the Go tree untouched | `/api/weather` renamed to `/api/forecast` in `boundary/openapi.yaml` and nothing under `backend/` edited. Both directions of the comparison exit 1 — `entry "weather" serves /api/weather, which the schema does not declare` and `the schema declares /api/forecast and no entry serves it`. **Which step reports it depends on the cache**, and that is the row's whole point: see below |
+| Must fail | The schema unreadable where the comparison expects it | `schemaPath` pointed at a file holding no path items — both comparison cases exit 1 on `the schema scan found no /healthz among map[], so it is not reading path items`, rather than passing over an empty population. This is a Go-source edit, so the plain `test` step catches it in either cache state |
 | Must pass | The tree as it stands | — |
 
-**The failing rows are seeded to fail at five different steps**, which is what makes the recipe five
-checks rather than one: a step is reached only because the steps before it passed, so a row failing at
-`build` proves nothing about whether `vet`, `test`, the uncached `test` or `test -race` can fail at all. Which step failed
-is read from the recipe line `just` names on exit, not from the exit code, which is 1 in every row.
+**The failing rows are seeded to fail at four different steps** — `build`, `vet`, `test` and
+`test -race` — which is what makes those four checks rather than one: a step is reached only because
+the steps before it passed, so a row failing at `build` proves nothing about whether the others can
+fail at all. Which step failed is read from the recipe line `just` names on exit, not from the exit
+code, which is 1 in every row. The fifth step, `test -count=1`, is not demonstrated by any row here,
+for the reason the paragraph below gives.
+
+**The `-count=1` step's argument is not reproducible by the case procedure above, and that is worth
+stating rather than glossing.** The two schema rows were run in fresh copies, where the Go test cache
+holds nothing for `internal/registry`, and in that state the plain `test` step catches both — each
+copy's run failed on `go -C backend test ./...`, not on the step after it. A cold cache is CI's state,
+so **CI would catch a moved schema path without the fourth step at all**. What the step is for is the
+state a working tree is usually in: with the cache warm from a passing run, editing
+`boundary/openapi.yaml` alone and re-running leaves `internal/registry` reporting `ok … (cached)`,
+because the file is outside the Go module root and nothing Go tracks moved. Measured in the working
+tree at `a52ab54`: the plain step answered `(cached)` and `go test -count=1 ./internal/registry/`
+exited 1 on the same tree. The step costs milliseconds and removes a class of local false pass; it is
+not what makes the schema comparison work in CI.
 
 **The two race rows are the argument for the `-race` step, and only the first of them makes it.** The
 blunt row is caught by the plain `test` step, so it justifies nothing `-race` adds; the subtle row is

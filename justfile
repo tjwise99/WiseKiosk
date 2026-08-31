@@ -178,12 +178,13 @@ check-boundary:
 # bounded-footprint soak in `cmd` is run once without it, because the detector's own allocation
 # perturbs the memory that soak measures.
 #
-# `internal/registry` runs a third time at `-count=1` because it reads a file the Go test cache does
-# not watch: the authored boundary schema sits outside the module root, so an edit to it alone leaves
+# `internal/registry` runs again at `-count=1` because it reads a file the Go test cache does not
+# watch: the authored boundary schema sits outside the module root, so an edit to it alone leaves
 # every input Go tracks unchanged and the run above reports a cached pass. That package's tests are
 # the only ones comparing the schema to the route registration list, and a schema-only edit is exactly
-# what they exist to catch, so a cached pass there is the failure looking like success. It is one
-# package and milliseconds; forcing the whole tree would cost the two-minute soak on every run.
+# what they exist to catch, so a cached pass there is the failure looking like success. CI starts
+# without that cache entry and does not need the step; a working tree does. It is one package and
+# milliseconds, where forcing the whole tree would cost the two-minute soak on every run.
 [group('checks')]
 [doc('The backend Go tree builds, passes vet, its package tests pass, the schema-to-registry comparison runs uncached, and the internal packages are free of data races; needs `just boundary-install`')]
 check-go:
