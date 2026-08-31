@@ -25,6 +25,10 @@ const HOST_TIME = new Date('2026-08-30T15:04:05Z');
 /** The parts of that date, as the host would put them — read from the constant, not re-derived. */
 const HOST_DATE_PARTS = ['August', '30', '2026'];
 
+/** A second instant on a different date, to read the date across a move of the host clock. */
+const SECOND_TIME = new Date('2027-01-15T09:20:00Z');
+const SECOND_DATE_PARTS = ['January', '15', '2027'];
+
 const REGION = 'middle_center';
 
 /** A display carrying one clock, configured as the case under test asks. */
@@ -120,6 +124,18 @@ test('TST054: shows the date when its configuration asks and omits it when it do
   for (const part of HOST_DATE_PARTS) {
     expect(shown, `the date carries ${part}`).toContain(part);
   }
+
+  // And attributable to the host clock rather than to that first instant: move the clock to a second
+  // date and the shown date follows it. A date read once against a constant transcribed from the same
+  // instant passes on a build-time literal; read across a move, a literal is caught, and the date's
+  // rollover is exercised in the one place that reads it.
+  await page.clock.setSystemTime(SECOND_TIME);
+  await page.clock.runFor(1000);
+  const later = (await page.locator(DATE).innerText()).trim();
+  for (const part of SECOND_DATE_PARTS) {
+    expect(later, `the date follows the host to ${part}`).toContain(part);
+  }
+  expect(later, 'the first date is gone once the host has moved on').not.toContain('August');
 
   await render(page, placed({ show_date: false }));
 
