@@ -1,0 +1,44 @@
+active: true
+derived: false
+header: |
+  The weather module's failing-source retry bound holds
+level: 88
+links:
+- SRS049: t6P22YZO2Sylohh4_mDhP2dOXzclWojxXJZfndhXLpw=
+normative: true
+rationale: |
+  The route is called far oftener than the bound permits, because a module passing every incoming
+  request upstream and one holding the failure are indistinguishable under a caller that asks once.
+  The source is staged to fail rather than to be slow: what holds the rate down on this path is the
+  interval a failure is held for, and a slow source that eventually answers exercises the other bound
+  instead.
+  The clock is driven for the reason every bound in this module's decomposition drives it - an
+  interval cannot be read from a suite that runs for seconds.
+  The mechanism and the figure are read apart. The framework case drives a fixture interval, so what
+  it settles is that a failure held for an interval costs one upstream call per interval however often
+  the route is called; that this module registers an interval as long as the requirement states is the
+  module's own package to assert, against what obliged the figure rather than against itself.
+ref: ''
+references:
+- keyword: func TestASourceIsAskedOncePerFailureIntervalForOneLocation
+  path: backend/internal/router/rate_test.go
+  sha: d525ad0e4ea2797b18d60baadad4afbbab7008aeed680de3460b95cd35650020
+  type: file
+- keyword: func TestTST066_ThePolicyComesToOneRequestEveryFiveMinutesForOneLocation
+  path: backend/internal/modules/weather/weather_test.go
+  sha: ffa361137d24db1f1d5f1f14b3b3c043d661dd2562ce4efc894d2f4514068fe5
+  type: file
+reviewed: X2SZYdDPQwxDLt1tjhy96-BFzFLEIM4lQcJHCWeiZN4=
+status: proposed
+text: |
+  Integration test driving a route under a driven clock against a source staged to fail, calling it
+  far oftener than the interval it holds a failure for and asserting that no more than one request
+  leaves for one location in that interval; and a unit test over the policy this module registers,
+  asserting the interval it sets is no shorter than the one the requirement states.
+verification-justification: |
+  Settles what leaves this system while its source is failing, under a clock the harness drives, and
+  that the interval this module registers is no shorter than the one the requirement states.
+  Leaves unproven what the source makes of being retried while it is down, its tolerance being its
+  own, and is asserted over the window the suite runs, so a failure lasting longer than the suite
+  stages is outside it.
+verification-method: test

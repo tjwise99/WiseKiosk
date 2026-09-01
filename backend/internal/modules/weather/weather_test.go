@@ -442,7 +442,7 @@ func TestShapeReadsTheBodyWithoutWritingToIt(t *testing.T) {
 
 // TestTST062_ThePolicyComesToFourRequestsAnHourForOneLocation reads this
 // module's half of
-// SRS047<!-- The weather module asks its source at most four times an hour for a location -->:
+// SRS047<!-- The weather module asks an answering source at most four times an hour for a location -->:
 // the figures it registers, against what obliged them rather than against
 // themselves. What the framework then does with a cache interval — one upstream
 // call per interval for one location, and never a second in flight while a first
@@ -472,6 +472,26 @@ func TestTST062_ThePolicyComesToFourRequestsAnHourForOneLocation(t *testing.T) {
 	}
 }
 
+// TestTST066_ThePolicyComesToOneRequestEveryFiveMinutesForOneLocation reads this
+// module's half of
+// SRS049<!-- The weather module asks a failing source no more often than once every five minutes -->:
+// the interval it registers, against what obliged it rather than against itself.
+// What the framework then does with that interval — one upstream call per
+// interval for one location while the source is down — is the router package's
+// to read, against a fixture rather than against this number.
+func TestTST066_ThePolicyComesToOneRequestEveryFiveMinutesForOneLocation(t *testing.T) {
+	policy := Config()
+
+	// The interval is what holds the rate on this path: the route answers from
+	// the held failure until it lapses, so one location costs one upstream call
+	// per interval for as long as the source is failing.
+	const bound = 5 * time.Minute
+	if policy.NegativeTTL < bound {
+		t.Errorf("a %s failure interval asks for one location oftener than once every %s, want no oftener than that",
+			policy.NegativeTTL, bound)
+	}
+}
+
 // TestThePolicyIsCompleteAndItsFailureRetryIsSooner reads what an entry requires
 // of any policy, and the one relation between two of this module's figures that
 // no requirement states.
@@ -484,8 +504,9 @@ func TestThePolicyIsCompleteAndItsFailureRetryIsSooner(t *testing.T) {
 		t.Errorf("SuccessTTL = %s, want no more than 15m", policy.SuccessTTL)
 	}
 
-	// Every value is required of an entry, and a zero one panics at construction
-	// rather than at a request.
+	// Every value is required of an entry, and nothing in the framework supplies
+	// one or checks that an entry declared it
+	// (docs/ARCHITECTURE.md § Backend), so this is where a zero one is caught.
 	if policy.NegativeTTL <= 0 || policy.RequestsPerMinute <= 0 ||
 		policy.Burst <= 0 || policy.Timeout <= 0 || policy.MaxBytes <= 0 {
 		t.Errorf("the policy leaves a value unset: %+v", policy)

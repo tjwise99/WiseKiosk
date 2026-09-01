@@ -1,0 +1,45 @@
+active: true
+derived: false
+header: |
+  The weather region draws day and night apart
+level: 87
+links:
+- SRS050: xZ72QJb4nfMLTO2dub1U-6XUImUaODQLoyKfoMpQdT8=
+normative: true
+rationale: |
+  The two payloads differ only in the distinction, so whatever moves in the rendered output is the
+  distinction's. A test reading one payload passes a component that draws the same mark whatever it is
+  handed, which is the failure the item names.
+  The hours next to come are read under a present reading on the other side of the day from the last
+  of them. A component working the distinction out for itself has one answer for the page it draws,
+  and one answer cannot be both, so a payload that splits across its hours is what tells that
+  component from one following what it was handed. The configured place need not be in the same part
+  of the world as the display either, which is why the derivation would be wrong even where a page
+  has one answer to give.
+ref: ''
+references:
+- keyword: test('draws the present reading on the side of the day the payload gives
+    it', async ({ page }) => {
+  path: frontend/src/modules/weather/weather.spec.ts
+  sha: 48ef49411c1dd193664f2d2cdcff82300f177d9cd851699b0cadf2e5f8299517
+  type: file
+- keyword: test('draws each hour on its own side of the day, not the present reading’s',
+    async ({ page }) => {
+  path: frontend/src/modules/weather/weather.spec.ts
+  sha: 48ef49411c1dd193664f2d2cdcff82300f177d9cd851699b0cadf2e5f8299517
+  type: file
+reviewed: ZwdqfE3ho0S3hHvqrqDq0oH6ekYFor6M_9TH2SLf0XY=
+status: proposed
+text: |
+  Render test handing the component two payloads differing only in whether the present weather is a
+  day's or a night's, asserting the mark drawn for it follows the payload under each; and a payload
+  whose hours next to come fall from day into night beneath a present reading that is a day's,
+  asserting the mark drawn for each hour follows that hour's own side of the day rather than the
+  present reading's or one answer taken for the page.
+verification-justification: |
+  Settles that what is drawn follows the distinction the payload carries rather than the page's clock.
+  Leaves unproven that a viewer reads the marks as day and night, which is a judgement about a real
+  display in a real room and not something a rendered page settles, and that the distinction the
+  payload carries is true of the sky at that place, the source being outside this system. It is
+  bounded by the payloads the suite supplies.
+verification-method: test

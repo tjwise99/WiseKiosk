@@ -1,0 +1,38 @@
+active: true
+derived: false
+header: |
+  The weather module draws day and night apart
+level: 53
+links:
+- SYS010: dgflQFtHGeswH-PgjWmcBkfuJujSp-a-Z5JtN4H0Low=
+normative: true
+rationale: |
+  A payload carrying the distinction is drawn by a component free to ignore it, and a night sky drawn
+  in a day's marks is invisible to the shaping and visible only on a page. That is the same reason
+  showing the parts apart is its own item rather than a second clause of the payload's, and it is why
+  this is not a clause of that item either: a region that runs the present and both outlooks together
+  can still mark every one of them night, and one that separates them cleanly can mark them all day.
+  The two fail independently, so they are two items.
+  The distinction is taken rather than derived, and that is the half a check is fooled on. A component
+  working day and night out from the browser's clock draws the right answer for as long as the place
+  reported on and the place the display hangs are in the same part of the world, and the place
+  reported on is the configuration's; it would also need one answer per forecast hour rather than one
+  for the page. What is obliged is that what is drawn follows the distinction the module was handed.
+  What is not obliged is how the difference is drawn. Which marks stand for a day and which for a
+  night, and whether anything else changes with them, is the module's rendering and the styling
+  contract's, both already obliged of every module.
+ref: ''
+reviewed: 8U5rlerhjrfWIiiOjiqazCiWHS1ayyqZF8WAOqmQ5Rc=
+status: accepted
+text: |
+  The weather module shall show, for the present weather and for each of the hours next to come,
+  whether what it shows is a day's weather or a night's, following the distinction it is handed.
+verification-justification: |
+  Read from a rendered page handed payloads differing only in that distinction: what is drawn for the
+  present and for each hour follows the payload, and does not follow the page's own clock where the
+  two disagree.
+  What it cannot settle is whether a viewer reads the marks as day and night - which is a judgement
+  about a real display in a real room, and a check reads a rendered page rather than a viewer - nor
+  that the distinction the payload carries is true of the sky at that place, the source being another
+  party's system and outside this one.
+verification-method: test

@@ -1,0 +1,50 @@
+active: true
+derived: false
+header: |
+  The weather module asks a failing source no more often than once every five minutes
+level: 52
+links:
+- SYS010: dgflQFtHGeswH-PgjWmcBkfuJujSp-a-Z5JtN4H0Low=
+normative: true
+rationale: |
+  A source that is failing is asked on a different argument from a source that is answering, and the
+  figure that follows is not the same one. The bound on the answering path is read out of how stale a
+  viewer's weather may be
+  (SRS046<!-- The weather a viewer sees is no more than fifteen minutes behind its source -->):
+  asking oftener buys a viewer nothing, the answer already held being fresh enough. None of that
+  holds during a failure. There is no answer held, the region is telling a viewer its weather is
+  unavailable, and what a retry buys is the difference between a source that recovered a minute ago
+  and a display that has not noticed.
+  So the figure is argued from the other side and comes out shorter: short enough that a recovered
+  source reaches the display well inside the tolerance the freshness figure sets, and long enough
+  that a source in trouble is asked twelve times an hour rather than once per poll or once per
+  incoming request. The moment a source is least able to bear load is the moment it is failing, and a
+  module that answers a failure by asking harder is precisely what a politeness bound exists to
+  forbid - which is why the failure path needs a stated bound of its own rather than being left as
+  whatever falls out of the interval a failure happens to be held for.
+  The figure sits in a requirement for the reason the module's other two timing figures do: the
+  interval the route holds a failure for is read out of this item rather than picked at the keyboard,
+  and a value with a comment beside it is a value with no argument behind it (module-contract.md,
+  Writing the module's requirements).
+  What is not restated is that the rate is bounded at all and not left for an operator to raise
+  (SRS011<!-- Upstream request rate is bounded, and the bound is not operator-tunable -->), whose own
+  rationale already forbids a sustained outage causing an upstream request per incoming request. The
+  framework obliges there be a bound; this says what this module's is on the path where the other
+  item's figure does not reach.
+ref: ''
+reviewed: ZdSLdSk86kozJ5Ar7kgCfItzrNBTtmCKvI4gsFKoJPQ=
+status: accepted
+text: |
+  The weather module shall issue no more than one request to its source for any one location in any
+  five minutes while that source is failing to answer.
+verification-justification: |
+  Read over the requests the module's route issues against a source staged to fail and a driven
+  clock, with the route called far oftener than the bound permits: no more than one request leaves
+  for one location in any five minutes.
+  What it cannot settle is what the source makes of being retried while it is down - another party's
+  tolerance for that is its own policy, published or not and changed without notice - nor whether
+  five minutes is the right trade between noticing a recovery and leaving a struggling source alone,
+  which is argued in the item rather than decided by any check. It is asserted under a clock the
+  harness drives and over the window the suite runs, so a failure lasting longer than the suite
+  stages is outside it.
+verification-method: test

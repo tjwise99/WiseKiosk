@@ -35,7 +35,7 @@ const (
 // SuccessTTL is what holds the upstream rate down: an answer is served from
 // cache for fifteen minutes however often the display asks, which is four
 // requests an hour for one location and is where
-// SRS047<!-- The weather module asks its source at most four times an hour for a location -->'s
+// SRS047<!-- The weather module asks an answering source at most four times an hour for a location -->'s
 // figure is met. The token bucket is a coarse backstop over the source as a
 // whole and cannot express that figure — its rate is per minute and its bucket
 // is not per location — so it is set to catch a runaway rather than to be the

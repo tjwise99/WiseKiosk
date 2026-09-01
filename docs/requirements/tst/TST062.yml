@@ -4,7 +4,7 @@ header: |
   The weather module's success-path rate and concurrency bounds hold
 level: 84
 links:
-- SRS047: 4QyJkk1fU7vKwq0YrR5f0J4HRnNPHhs8p3P9hSwCGKo=
+- SRS047: nEjWRriRqUEg1FACOWylXaK1fe0bWGC38TGf_6G4HxE=
 normative: true
 rationale: |
   The source is staged slow deliberately. The concurrency half can only fail while an answer is
@@ -29,9 +29,9 @@ references:
   type: file
 - keyword: func TestTST062_ThePolicyComesToFourRequestsAnHourForOneLocation
   path: backend/internal/modules/weather/weather_test.go
-  sha: 00a5b8dae7188313ff862ea8e8c08c6b5720a4e360619c0513c23415cab3285c
+  sha: ffa361137d24db1f1d5f1f14b3b3c043d661dd2562ce4efc894d2f4514068fe5
   type: file
-reviewed: V-llc8t-0gcByluvWZomEfvQuBR6BXbjerSgQG3_5zc=
+reviewed: PxYHksp9ji3sk_FndYukNPwAZEIV02T_vjFAx1bdTYw=
 status: proposed
 text: |
   Integration test driving the module's route under a driven clock and a slow staged source that

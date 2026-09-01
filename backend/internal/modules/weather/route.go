@@ -61,7 +61,7 @@ func (WeatherRoute) PostApiWeather(w http.ResponseWriter, r *http.Request) {
 // key names what an answer is about. It is the decoded point written this
 // module's one way, so two spellings of one place are one cache entry and one
 // rate budget rather than two
-// (SRS047<!-- The weather module asks its source at most four times an hour for a location -->).
+// (SRS047<!-- The weather module asks an answering source at most four times an hour for a location -->).
 func key(request boundary.WeatherRequest) string {
 	return degrees(request.Lat) + "," + degrees(request.Lon)
 }
