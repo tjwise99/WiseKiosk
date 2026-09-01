@@ -1,15 +1,24 @@
 # 0008 — Boundary contract: one OpenAPI schema, the whole wire contract generated from it
 
 **Status:** accepted
-**Decided:** 2026-08-31 (rev 4's registry seam, met at the first module data route on #220 weather
-module; the types-to-wire-contract pivot taken 2026-08-23 in the #188 boundary codegen session, and
-the surrounding model 2026-07-23 at the boundary-contract requirements round #37, with the
-codegen-mechanism trade carried by #7). This ADR records the mechanism **decision**; the **build** is
-#7, and rev 3's migration is #188.
-**Rev:** 4
+**Decided:** 2026-08-31 (rev 5's input shape and seam location, both taken at the first module data
+route on #220 weather module; the types-to-wire-contract pivot taken 2026-08-23 in the #188 boundary
+codegen session, and the surrounding model 2026-07-23 at the boundary-contract requirements round
+#37, with the codegen-mechanism trade carried by #7). This ADR records the mechanism **decision**;
+the **build** is #7, and rev 3's migration is #188.
+**Rev:** 5
 
 ## Revisions
 
+- **rev 5** — 2026-08-31 — the first module data route is built, and rev 4's two answers do not
+  survive it. A module data route carries its inputs as a **generated JSON request body** rather than
+  as request parameters, which is the only shape that binds nothing outside the standard library
+  while leaving both sides' field names generated; the **overlay is deleted**, so the two generators
+  read one document again. And the generated method is **the module's own**, provided from the
+  module's package rather than written in the registry, so the shared tree carries one line per
+  module and no module logic. `router.Entry` loses `Validate` and `BuildURL` to the module's handler,
+  which is what makes the generated request type a thing the code reads rather than a thing it
+  merely emits (#220 weather module).
 - **rev 4** — 2026-08-31 — rev 3's open question is answered by the first module data route: the
   generated `ServerInterface` method **delegates into the registry**, implemented in the registry's
   own file beside the entry it reaches. The Go generator reads that route **without its request
@@ -76,9 +85,9 @@ notch too narrow, so rev 3 widens it to the whole wire contract rather than addi
 - **Go via `oapi-codegen`** with `models`, `std-http-server` and `client`. `std-http-server` binds
   against the standard library's own `net/http.ServeMux` through a structural interface `*http.ServeMux`
   already satisfies, so **no router dependency and no new module requirement** — the process keeps
-  its own `main` and its own multiplexer, and the generated half is one file. Rev 4 records what the
-  second half of that turns on: the one part of the emitted Go that would need a module is parameter
-  binding, and the overlay below is what removes it.
+  its own `main` and its own multiplexer, and the generated half is one file. The one part of the
+  emitted Go that would need a module is parameter binding, which is why rev 5 puts a module data
+  route's inputs where no binding is generated at all.
 - **TypeScript via `orval`** (its `fetch` client), which replaces `openapi-typescript`. It emits one
   self-contained file whose every declaration is local — nothing resolves into `node_modules`, which
   is what SRS016<!-- Both sides consume the generated types --> requires of a boundary value's
@@ -104,54 +113,73 @@ notch too narrow, so rev 3 widens it to the whole wire contract rather than addi
   acquire one. Read unscoped, the clause is false the moment an infrastructure route exists, and the
   reading that repairs it — adding registry plumbing for a liveness route — would invent a module
   where there is none.
-- **A generated module-route method delegates into the registry, and lives beside the entry it
-  reaches.** Rev 3 left open how a generated `ServerInterface` method meets a registry whose whole
-  interface is one element of a literal. The answer: the method is written once per module data
-  route, in the registry's own file, and its body hands the request to the handler built over that
-  literal — so the *path* is the schema's, the *behaviour* is the framework's, and nothing about the
-  request is decided in both. Three properties follow. The generated pattern shadowing the `/api/`
-  seam stops being a hazard and becomes the mechanism, because what it shadows the seam with is the
-  seam's own handler. A route the schema declares and the registry has not taken up is a build
-  failure rather than a path that answers from somewhere else, which is the compile-time tie the
-  types already had and the routes did not. And the per-route hand code rev 3 objected to is a
-  delegation naming no path, no method and no parameter — the *drift* the objection was about
-  cannot live in it.
-  Rejected — a registry read at build time to synthesise the methods: code generation of our own, a
-  second generator in the drift gate, against a population of about five routes. Rejected — keeping
-  module paths out of the schema: it buys back the hand-authored request on the frontend, which is
-  the property this ADR exists to hold.
-  The cost is honest and is the reason the alternatives were weighed: a module now costs the shared
-  tree **two** things rather than one — its element of the registration list and its delegation —
-  both in the one file [the module contract](../contracts/module-contract.md) part 5 already admits
-  framework code naming a module in.
-- **The Go generator reads a module data route without its request parameters, through an overlay.**
-  Those parameters are the route's registration entry's to judge — the entry reads the raw query,
-  which is also what the response cache is keyed on — so a generated handler that bound them into a
-  struct would be parsing two floats the delegation immediately discards. That binding is the *one*
-  thing in the emitted Go needing anything outside the standard library
-  (`github.com/oapi-codegen/runtime`, and two modules beneath it), so removing it removes them. The
-  overlay is a subtraction, declared in the Go generator's configuration and applied before
-  generation: the schema is unchanged and stays the single authored source, the route and the payload
-  types are still generated on this side, and the **frontend generates from the schema itself**, so
-  its client still carries the parameters and the request is hand-authored nowhere.
-  It selects on the `module-route` tag rather than on any path, so no module's name reaches the Go
-  generator's configuration and the overlay is written once. Two things make a mistake in it loud:
-  the generator is strict about a selector matching nothing, and a module route the selector misses
-  keeps its parameters, so the emitted code imports a module `backend/go.mod` does not carry and the
-  build stops at the import.
-  Two properties fall out that are worth having in their own right. There is **one validator** of a
-  request's parameters rather than two — the entry's — where a generated binding would have refused
-  some requests before the entry ever saw them. And no response can leave this backend outside the
-  shapes this schema declares: an unbindable request would have been answered by the generator's
-  `ErrorHandlerFunc`, whose default writes `net/http`'s plain text on a path this schema declares.
-  Rejected — accepting the dependency for a parse that is thrown away. Rejected — dropping the Go
-  `client` target to shed it, which does not work (the server binding needs the module too) and would
-  cost the liveness probe its generated path. Rejected — excluding module data routes from the server
-  generation altogether, which sheds the dependency but gives up the generated route this ADR exists
-  to hold.
+- **A module data route's generated method is the module's own, provided from the module's own
+  package.** Rev 4 wrote it in the registry, beside the entry it reached, and that put a module's
+  name and a module's import inside shared framework code — which [the module
+  contract](../contracts/module-contract.md)'s dependency direction and its build step 7 both
+  forbid, and which no reading of part 5's *entry* licenses. The answer is to move what the module
+  owns to where the module is: the module's package holds its registration entry, the route built
+  from it, and a zero-value type carrying the method the generated `ServerInterface` declares for
+  its path. The shared registration list is then a struct with **one embedded field per module** and
+  nothing else — no import beyond the module's own package, no method body, no policy, no name
+  appearing twice.
+
+  The compile-time tie is unchanged in kind and stronger in placement: the composite of the
+  infrastructure routes' handler and that list is asserted against the generated interface at the
+  assembly point, so a route the schema declares and no module has taken up is a missing method on a
+  named type rather than a path answered from somewhere else. Nothing registers at runtime and
+  nothing registers itself.
+
+  **The composite is hand-written, and it cannot be otherwise.** Generating it into the generated
+  package would make that package import a module's package, and a module imports it for the
+  payload type — an import cycle, not a matter of taste. `oapi-codegen` emits into one package and
+  overrides built-in templates only, so it cannot emit a second file or a second package at all.
+  Rejected — a generator of our own to synthesise the composite: that is rev 4's rejection held
+  rather than revisited, and against a population of about five routes one line per module is the
+  cheaper of the two. Rejected — keeping the method in the registry, which is where it was and what
+  the contract refuses.
+- **A module data route carries its inputs as a JSON request body, declared as a named component
+  in the schema, and the overlay is deleted.** The driver is
+  [ADR 0001 rev 1](0001-backend-language-go.md)'s near-zero dependency stance, which this decision
+  treats as **load-bearing rather than a preference**: the backend is to run natively on
+  Pi-Zero-class hardware — a separately scoped concern this record does not design for — and what
+  that asks of the boundary is only that nothing here adds a runtime dependency, under any option.
+
+  What decides the dependency is not configuration but **how a parameter is declared**. In the
+  pinned generator a parameter carrying a `schema:` is *styled*, and styled binds through
+  `github.com/oapi-codegen/runtime` on the server **and independently again in the client**, which
+  is not droppable — the liveness probe uses it
+  ([ADR 0020 rev 2](0020-release-artifact-set-and-operator-tooling.md)). No `output-options` flag
+  changes that. A request body does not go through that path at all: the non-strict handler is
+  handed the request untouched, the body type is generated from the schema on both sides, and the
+  decoding is `encoding/json`. Measured on the whole contract: zero imports of that module, zero
+  references to it, the emitted package compiling against an unchanged `go.mod`.
+
+  Three properties follow, and the first two are what rev 4 spent the overlay to buy. There is
+  **one validator** of a request's inputs — the module's — where a generated binding would refuse
+  some requests before the module ever saw them. **No response can leave this backend outside the
+  shapes this schema declares**, because the generated wrapper has nothing to fail on and never
+  reaches its `ErrorHandlerFunc`. And the request's field **names are generated on both sides**,
+  which the overlay's subtraction had cost: the Go side had come to spell them in a pair of
+  hand-written constants, a second definition site
+  SRS015<!-- One schema, all boundary value classes --> does not admit and
+  SRS016<!-- Both sides consume the generated types --> forbids in as many words. Those constants
+  are deleted rather than relocated.
+
+  **The overlay goes with them**, and with it a second document between the schema and one
+  generator, the strictness ritual that document needed, and a jsonpath dialect the generator
+  already calls deprecated and would eventually refuse. The claim rev 3 made and rev 4 qualified —
+  one schema, both sides generated from it — is again true without a footnote.
+
+  The verb is a consequence rather than a choice: a body is what carries generated field names, and
+  `GET` is not the method to carry one under. What is given up is the idiom of a read being a `GET`,
+  which costs this system nothing it has — nothing between the display and the backend caches, and
+  the response cache is in the process. What is gained beyond the above is a cache key over
+  **decoded values** rather than over a query string, so two spellings of one location stop being
+  two cache entries and two rate budgets.
 - **The schema defines every value class that crosses the boundary**
-  (SRS015<!-- One schema, all boundary value classes -->): request parameter names and types,
-  success payloads, the structured body for the upstream failure
+  (SRS015<!-- One schema, all boundary value classes -->): the names and types of everything a
+  request carries, success payloads, the structured body for the upstream failure
   SRS001<!-- A failed module shows why, and only that module --> obliges a module to render, the
   client-error rejection body SRS013<!-- Client-facing contract for rejected requests --> requires
   the frontend to be able to render, and every response status code the frontend discriminates on.
@@ -225,6 +253,30 @@ notch too narrow, so rev 3 widens it to the whole wire contract rather than addi
   the architecture refuses.
 - **Frontend runtime validation (schema→zod/ajv)** — rejected: bundle weight and per-render cost on
   a Pi-Zero browser against a version-skew case foreclosed by single-image co-deploy.
+- **A module data route keeping `GET` and its query parameters, accepting
+  `github.com/oapi-codegen/runtime`** — rejected on the zero-dependency constraint, which this
+  revision treats as hard. It is the shape with the least to explain and it costs three modules in
+  `go.mod`, a dependency-vulnerability surface, and the property ADR 0001 rev 1 bought deliberately.
+- **Declaring the query parameters in the schema's `content:` form**, which the generator binds with
+  the standard library — rejected, and rejected on measurement rather than taste: `orval` refuses
+  the document outright (*"Query parameter \"lat\" has no schema or content definition"*), so the
+  frontend cannot be generated at all. A shape only one of two generators accepts is not a shape
+  this design can take.
+- **An overlay rewriting the parameters into that form for the Go side alone** — rejected, and it is
+  the closest runner-up: it is zero-dependency, keeps `GET`, and leaves the frontend untouched. It
+  fails on what it does to the record. The overlay would stop subtracting and start reshaping, so
+  the two generators would read the same parameter at different types; the generated wrapper would
+  reject a missing input before the module's validator, restoring the second validator and putting a
+  plain-text error on a path this schema declares; and the deprecated jsonpath would stay, with two
+  selectors instead of one. It buys idiom and pays in the properties this ADR exists to hold.
+- **Path parameters** (`/api/weather/{lat}/{lon}`) — rejected. The pinned generator binds an
+  ordinary path parameter through the runtime module as well; `r.PathValue` appears only as that
+  call's argument. The `content:`-form variant is zero-dependency but loses the frontend's types
+  (`orval` emits `lat: unknown`) and makes the Go handler's inputs **positional**, so a schema that
+  reorders two segments silently swaps their meaning in code that still compiles.
+- **User templates overriding the binding** — rejected. It would mean vendoring copies of two
+  upstream templates pinned to this generator's version, and the drift gate regenerates *through*
+  them, so an upstream change to either is a difference no gate can see.
 
 ## Consequences
 
@@ -243,32 +295,25 @@ notch too narrow, so rev 3 widens it to the whole wire contract rather than addi
   answered above; what it correctly predicted is that `health.Route` stops satisfying the widened
   interface the moment a module data route exists. The generated interface is one and its two kinds
   of path are owned by different packages, so neither owner can implement the whole of it: the
-  process's `main` composes the infrastructure routes' handler and the registry's into the one value
-  the generated router takes. A package's own tests reach the generated router the same way, by
+  process's `main` composes the infrastructure routes' handler and the module registration list into
+  the one value the generated router takes, and each module data route's method arrives on that value
+  from the module's own package. A package's own tests reach the generated router the same way, by
   standing in for the routes that are not theirs — which is what keeps another package's path out of
   their assertions.
-- **The backend's runtime dependency set stays empty, and it takes the overlay to keep it that way.**
-  `backend/go.mod` and `backend/go.sum` carry nothing the emitted code imports; without the overlay
-  the first parameterised route adds `github.com/oapi-codegen/runtime` plus
+- **The backend's runtime dependency set stays empty, and the input shape is what keeps it that way.**
+  `backend/go.mod` and `backend/go.sum` carry nothing the emitted code imports. A module data route
+  declaring request parameters would add `github.com/oapi-codegen/runtime` plus
   `github.com/apapsch/go-jsonmerge/v2` and `github.com/google/uuid` beneath it, against
-  [ADR 0001 rev 1](0001-backend-language-go.md)'s "near-zero third-party dependencies" and into the
-  dependency-vulnerability gate ([`../CI.md`](../CI.md)). **Reopen if a module data route ever needs
-  the generated handler to read the request** — a request body to decode, a header to honour — since
-  the trade is struck on a handler that delegates without looking. **Reopen too if `oapi-codegen`
-  comes to bind a simple query parameter with the standard library alone**: the subtraction would
-  then buy nothing, and leaving it in place would mean a module route that forgot the tag generated a
-  binding while the tagged ones did not — a difference between two module routes that no reader of
-  the schema could account for, and one that would no longer stop the build.
-- **A second file stands between the schema and the Go generator**, and that is the overlay's
-  cost. Reading what this side generates means reading two files rather than one, and the drift gate
-  regenerates through both — so an overlay that stopped applying is a difference the gate sees, but
-  only because the generator refuses a selector that matches nothing. It is one action, and it is
-  written once rather than per module.
-- **The Go client's view of a module data route carries no parameters.** The overlay applies to the
-  whole document, so the `client` target emits `GetApiWeather` without them. Nothing calls it — the
-  Go client exists for the liveness probe ([ADR 0020 rev 2](0020-release-artifact-set-and-operator-tooling.md))
-  — and a caller that tried would be refused by the entry's validator rather than answered wrongly.
-  The frontend's client, generated from the schema itself, is unaffected.
+  [ADR 0001 rev 1](0001-backend-language-go.md)'s near-zero third-party dependencies and into the
+  dependency-vulnerability gate ([`../CI.md`](../CI.md)). **Reopen if the zero-dependency constraint
+  is ever lifted** — the whole of this shape is argued from it, and a `GET` with query parameters is
+  what it would revert to. **Reopen too if `oapi-codegen` comes to bind a simple query parameter with
+  the standard library alone**, which removes the reason without removing the constraint.
+- **The Go client's view of a module data route carries its request body.** The `client` target emits
+  the operation taking the generated request type, marshalled with `encoding/json`. Nothing calls it
+  — the Go client exists for the liveness probe
+  ([ADR 0020 rev 2](0020-release-artifact-set-and-operator-tooling.md)) — and it is generated rather
+  than trimmed because trimming it is what would cost the probe its generated path.
 - **The generated Go surface is larger than the types were.** `std-http-server` emits a parameter-error
   set and a middleware hook whether or not any route has parameters. Accepted: it is one file, it
   compiles, and it adds no dependency.
@@ -300,6 +345,27 @@ notch too narrow, so rev 3 widens it to the whole wire contract rather than addi
   meanwhile.
 - **ARCHITECTURE.md's "boundary contract" section** (its "open question 2") is answered by this ADR;
   the fuller prose is written when the mechanism is built, under #7 boundary-contract codegen.
+- **The framework's request seam moves into the module, and that is the price of the generated
+  type being read.** `router.Entry` loses `Validate` and `BuildURL`, which took `url.Values`: the
+  generated request type is one type per operation and no shared struct field can name it, so
+  keeping them would mean rebuilding `url.Values` from the generated struct — spelling the field
+  names by hand again, which is the defect being fixed. The module's handler decodes, checks and
+  names the cache key; the entry keeps the policies and the shaping. **A generated type nothing
+  reads is not single-definition, it is emission.**
+- **A module data route is a `POST` for a read, and the `Allow` header of the `/api/` seam says so.**
+  The generated pattern is method-scoped, so what an unlisted method gets is that seam's answer.
+  Nothing between the display and this backend caches, so the idiom is the whole of what is spent.
+- **The `module-route` tag stops being load-bearing.** The overlay was the only thing reading it;
+  regenerating with the tag removed produces byte-identical output from both generators. It stays as
+  the mark of which kind of path this is and as what
+  TST032<!-- Pending: boundary schema is single and complete --> will select on, and a route that
+  omits it now builds cleanly — so nothing may be written anywhere claiming that omitting it breaks
+  the build.
+- **A module costs the shared tree one line.** Rev 4 made it two and called the cost honest; rev 5
+  makes it one embedded field, and everything else a module needs is in the module's own package.
+  **Reopen if the module population ever grows enough that one line each is a burden** — that is the
+  premise under which generating the composite, rejected above and in rev 4, would be worth its own
+  generator.
 - **Requirement text stays mechanism-agnostic**
   (SYS005<!-- Single-definition internal contract -->,
   SRS015<!-- One schema, all boundary value classes -->–SRS016<!-- Both sides consume the generated types -->):

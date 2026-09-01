@@ -192,7 +192,7 @@ the upstream client all module-owned and leave the framework half empty — agai
 dependency direction, under which framework code "is shared code from the moment it is written". Parts
 2 and 6 earn no component either: a module's configuration is a section of the one schema the frontend
 validates against, and the boundary-schema fragment belongs to the one schema, which
-[ADR 0008 rev 4](0008-boundary-contract-openapi-codegen.md) gives to neither side. Part 3 is
+[ADR 0008 rev 5](0008-boundary-contract-openapi-codegen.md) gives to neither side. Part 3 is
 tests, which run nowhere in either container and are [`../TESTING.md`](../TESTING.md)'s.
 
 **Only the framework half is drawn.** [ADR 0012 rev 2](0012-module-requirements-in-tree.md) makes a

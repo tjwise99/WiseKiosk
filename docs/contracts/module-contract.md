@@ -270,8 +270,9 @@ An upstream-backed module's timing is stated in its requirements, and each figur
 with the rationale that produced it — the figure in the item, argued in the item, rather than a
 constant somewhere with a comment beside it. **Before any of them is written, the author enumerates
 every observable figure the module will ship**: both cache TTLs, the poll cadence, the upstream rate
-bound, how far ahead anything it forecasts reaches, how long the page gives one read before
-abandoning it, and how much of a request body its route reads before refusing the rest. Each one
+bound, the burst its rate bucket holds, how far ahead anything it forecasts reaches, how long the
+page gives one read before abandoning it, and how much of a request body its route reads before
+refusing the rest. Each one
 leaves that list in one of two ways — into a requirement that argues it, or into a written record
 that it is a free choice and why nothing constrains it. **A figure that leaves the list by neither
 route is an invented figure**, and it is invented whether or not it is a good number: what makes it
@@ -284,6 +285,14 @@ it, and how much of a request body a module data route reads before refusing the
 choices with a record rather than requirements — nothing in the specification settles either — and
 both are chosen once for every module rather than once per module, so a module that restated either
 would be arguing a figure it does not set.
+
+**One figure on that list is the module's own and still leaves it by the free-choice route.** The
+burst its rate bucket holds has no framework default and no requirement behind it: the bucket is a
+coarse backstop over the source as a whole and cannot express a bound the way the requirements state
+one — its rate is per minute and it is not keyed on what a request is about — so nothing in the
+specification could have been read to produce a figure for it. What it is chosen against is written
+beside the value: loose enough not to refuse the polling the cache interval already answers from
+held data, and there to catch a runaway rather than to be the bound.
 
 Three of those figures are argued **at the capability** rather than from a supplier's published
 behaviour. Freshness states how stale the data a viewer sees may be, argued from how often the thing

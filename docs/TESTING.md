@@ -124,7 +124,7 @@ hand-maintained type declarations checked for agreement by a test — it is **on
 sides generated from it**, and the tier's job in CI is to prove the generation is real and current:
 
 - Generation from the one schema by the codegen mechanism
-  ([ADR 0008 rev 4](decisions/0008-boundary-contract-openapi-codegen.md)), the CI drift gate failing
+  ([ADR 0008 rev 5](decisions/0008-boundary-contract-openapi-codegen.md)), the CI drift gate failing
   on committed output that differs from a fresh regeneration, and version-pinned generators so
   regeneration is deterministic. What is generated is the whole wire contract on each side — types,
   the route table and a client — so a route that moves in the schema alone is inside what the gate
@@ -139,7 +139,7 @@ sides generated from it**, and the tier's job in CI is to prove the generation i
   **SYS005<!-- Single-definition internal contract -->**.
 - That the frontend adds no second, runtime validator over proxied payloads, so agreement rests on
   the schema and the drift gate rather than a bundled re-check —
-  [ADR 0008 rev 4](decisions/0008-boundary-contract-openapi-codegen.md), which carries the decision
+  [ADR 0008 rev 5](decisions/0008-boundary-contract-openapi-codegen.md), which carries the decision
   and its premise. No requirement states this: it was deleted as a prohibition against a case that
   does not exist.
 
@@ -243,7 +243,7 @@ is a defect in the suite's architecture, not a neutral choice.
 
 The test architecture is reviewed **whenever a module is added** and **whenever the boundary
 transport** (the OpenAPI schema / codegen mechanism,
-[ADR 0008 rev 4](decisions/0008-boundary-contract-openapi-codegen.md)) **changes**. This is
+[ADR 0008 rev 5](decisions/0008-boundary-contract-openapi-codegen.md)) **changes**. This is
 scheduled deliberately: removing or reshaping a test feels like a regression even when the test
 proves nothing, so without a scheduled review the suite silently becomes permanent architecture
 nobody revisits. Code gets that review by default; tests must be given it explicitly.

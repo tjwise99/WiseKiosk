@@ -58,7 +58,7 @@ EXTENSIONS = {
     "Doorstop item and silo config YAML, Dependabot YAML (ADR 0017 rev 8)",
     "yaml": "derived — a toolchain's own required input format: pre-commit's "
     ".pre-commit-config.yaml (ADR 0016 rev 5), the boundary schema both code generators "
-    "read and oapi-codegen's own configuration (ADR 0008 rev 4, ADR 0017 rev 8)",
+    "read and oapi-codegen's own configuration (ADR 0008 rev 5, ADR 0017 rev 8)",
     "mod": "derived — the Go toolchain's own manifest format: backend/go.mod "
     "(ADR 0017 rev 8)",
     "sum": "derived — the Go toolchain's own lockfile format: backend/go.sum "

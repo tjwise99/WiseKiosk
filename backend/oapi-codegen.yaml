@@ -1,6 +1,6 @@
 # oapi-codegen's own configuration. The whole wire contract — types, the route table, and the client
 # the backend probes itself with — so no route is hand-authored on this side and the drift gate sees
-# routes rather than types alone (ADR 0008 rev 4). `std-http-server` binds against the standard
+# routes rather than types alone (ADR 0008 rev 5). `std-http-server` binds against the standard
 # library's own ServeMux and pulls no router (ADR 0001 rev 1), and no route binds a parameter, so the
 # emitted Go imports nothing outside the standard library at all.
 # Paths are resolved against the working directory, which is `backend/` (the `codegen` recipe).
