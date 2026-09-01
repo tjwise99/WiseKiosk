@@ -1,6 +1,6 @@
-// Package router serves the API from the route registration list: one route per
-// entry, and the request flow from parameter validation, through the upstream
-// pipeline, to the boundary body it answers with (ADR 0026 rev 2).
+// Package router serves a module's data route: the policy the route runs under,
+// and the request flow from the module's own judgement of the request, through
+// the upstream pipeline, to the boundary body it answers with (ADR 0026 rev 2).
 package router
 
 import (
@@ -11,7 +11,6 @@ import (
 	"log"
 	"net/http"
 	"net/url"
-	"strings"
 	"time"
 
 	"github.com/tjwise99/WiseKiosk/backend/internal/boundary"
@@ -19,26 +18,21 @@ import (
 	"github.com/tjwise99/WiseKiosk/backend/internal/upstream"
 )
 
-// Entry is one upstream-backed module's route registration: the module's own
-// functions, the secret it needs, and every policy governing its route. It is
-// the seam between the framework here and a module's shaping library.
+// Entry is one upstream-backed module's route registration: the secret the
+// source needs, the shaping of its answer, and every policy governing the
+// route. It is the seam between the framework here and a module's shaping
+// library. What a request carries is not among them: the module reads its own
+// generated request body and hands this side the two strings below.
 type Entry struct {
 	// Config is the six policies this route runs under, all required.
 	upstream.Config
 
-	// Source names the route GET /api/<Source>, the cache namespace and the
-	// rate bucket.
+	// Source names the cache namespace, the rate bucket, and the module a
+	// failure body is contained to.
 	Source string
-	// Validate judges a request's parameters against the pattern this source
-	// declares, returning an error naming the rejection. The error's text is
-	// what the rejection renders. Required.
-	Validate func(url.Values) error
 	// Secret is the logical name of the secret this source needs, empty where
 	// it needs none.
 	Secret string
-	// BuildURL builds the upstream URL from the request's parameters, without
-	// the secret and without I/O. Required.
-	BuildURL func(url.Values) (string, error)
 	// InjectSecret places the resolved secret value in the outbound request.
 	// Set exactly where Secret is, and reached only then.
 	InjectSecret func(req *http.Request, secretValue string)
@@ -52,20 +46,30 @@ type Entry struct {
 const (
 	// apiPrefix is the path space every route sits in.
 	apiPrefix = "/api/"
-	// allowedMethods is the 405 response's Allow header. A GET pattern serves
-	// HEAD as well.
-	allowedMethods = "GET, HEAD"
+	// moduleRouteMethod is the method the boundary schema declares every module
+	// data route under, and so the method the generated router registers each
+	// of them by. It is read here to tell a path the schema declares from one
+	// it does not, which is a question about the schema rather than about any
+	// module.
+	moduleRouteMethod = http.MethodPost
+	// allowedMethods is the 405 response's Allow header.
+	allowedMethods = moduleRouteMethod
 	// contentTypeJSON is the type every body here is written as.
 	contentTypeJSON = "application/json"
 )
 
+// InvalidParameters is the cause a request naming values its source will not
+// carry upstream is rejected under. It is exported because a module judges its
+// own request body and answers with this itself, this side reading nothing of a
+// request (ADR 0026 rev 2).
+const InvalidParameters = "invalid-parameters"
+
 // The causes a rejected request carries, distinguishing what the framework
 // refused before any upstream call.
 const (
-	causeInvalidParameters = "invalid-parameters"
-	causeUnknownSource     = "unknown-source"
-	causeMethodNotAllowed  = "method-not-allowed"
-	causeRateLimited       = "rate-limited"
+	causeUnknownSource    = "unknown-source"
+	causeMethodNotAllowed = "method-not-allowed"
+	causeRateLimited      = "rate-limited"
 )
 
 // The causes a failed data request carries, one per outcome the pipeline
@@ -88,11 +92,6 @@ const (
 // malformedMessage is what a module's own reshaping failure renders as.
 const malformedMessage = "the source's response could not be read as this module's payload"
 
-// invalidParametersMessage is what a request whose query string would not parse
-// renders as. A request that parses is judged by the entry's own validator, and
-// the text a caller reads there is the module's.
-const invalidParametersMessage = "the request parameters could not be read"
-
 // outbound is the client every route's fetch makes its call with. It follows no
 // redirect, returning the 3xx as the response, and sets no timeout of its own:
 // the deadline is the one the pipeline puts on the call's context.
@@ -100,33 +99,18 @@ var outbound = &http.Client{
 	CheckRedirect: func(*http.Request, []*http.Request) error { return http.ErrUseLastResponse },
 }
 
-// NewRouter returns the handler serving one route per entry, against the wall
-// clock.
-func NewRouter(entries []Entry) http.Handler {
-	return newRouter(entries, time.Now)
+// NewRoute returns the route serving entry, against the wall clock. An entry
+// the framework cannot serve panics here rather than at the request it would
+// fail.
+func NewRoute(e Entry) *Route {
+	return newRoute(e, time.Now)
 }
 
-// newRouter builds the handler against the clock now, which each route's cache
-// TTLs and rate limit are measured on. It registers GET /api/<Source> once per
-// entry, and one fallback over the rest of the API path space. An entry the
-// framework cannot serve panics here rather than at the request it would fail.
-func newRouter(entries []Entry, now func() time.Time) http.Handler {
-	mux := http.NewServeMux()
-	sources := make(map[string]struct{}, len(entries))
-
-	for _, entry := range entries {
-		entry.check()
-		if _, duplicate := sources[entry.Source]; duplicate {
-			panic("router: two entries register source " + entry.Source)
-		}
-		sources[entry.Source] = struct{}{}
-
-		route := &route{entry: entry, proxy: upstream.New(entry.Config, now)}
-		mux.Handle(http.MethodGet+" "+apiPrefix+entry.Source, route)
-	}
-
-	mux.Handle(apiPrefix, &fallback{sources: sources})
-	return mux
+// newRoute builds the route against the clock now, which its cache TTLs and its
+// rate limit are measured on.
+func newRoute(e Entry, now func() time.Time) *Route {
+	e.check()
+	return &Route{entry: e, proxy: upstream.New(e.Config, now)}
 }
 
 // check panics on an entry missing a part the request flow calls.
@@ -134,10 +118,6 @@ func (e Entry) check() {
 	switch {
 	case e.Source == "":
 		panic("router: an entry names no source")
-	case e.Validate == nil:
-		panic("router: entry " + e.Source + " carries no validator")
-	case e.BuildURL == nil:
-		panic("router: entry " + e.Source + " carries no URL builder")
 	case e.Shape == nil:
 		panic("router: entry " + e.Source + " carries no shaping function")
 	case e.Secret != "" && e.InjectSecret == nil:
@@ -147,28 +127,20 @@ func (e Entry) check() {
 	}
 }
 
-// route serves one entry's requests.
-type route struct {
+// Route serves one entry's requests.
+type Route struct {
 	entry Entry
 	proxy *upstream.Proxy
 }
 
-// ServeHTTP validates the request's parameters, then asks the pipeline for the
-// answer under the canonicalised query string. A rejection is answered before
-// any upstream call; the pipeline's error means this caller's context ended,
-// and is answered as this module's failure.
-func (rt *route) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	params, err := url.ParseQuery(r.URL.RawQuery)
-	if err != nil {
-		reject(w, http.StatusBadRequest, causeInvalidParameters, invalidParametersMessage)
-		return
-	}
-	if err := rt.entry.Validate(params); err != nil {
-		reject(w, http.StatusBadRequest, causeInvalidParameters, err.Error())
-		return
-	}
-
-	result, err := rt.proxy.Do(r.Context(), rt.entry.Source, params.Encode(), rt.fetch(params))
+// Serve answers the request from the pipeline. The module has already judged
+// what the request named and reduced it to the two strings here: key names what
+// the answer is about, and is what the response cache and the rate budget are
+// held against, so two spellings of one thing are one entry and one budget;
+// target is the upstream URL the module built for it. The pipeline's error
+// means this caller's context ended, and is answered as this module's failure.
+func (rt *Route) Serve(w http.ResponseWriter, r *http.Request, key, target string) {
+	result, err := rt.proxy.Do(r.Context(), rt.entry.Source, key, rt.fetch(target))
 	if err != nil {
 		// The pipeline errors only where this caller's context ended: a client
 		// that has gone, which is what ends one here, or a server shutting down
@@ -181,15 +153,10 @@ func (rt *route) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	rt.respond(w, result)
 }
 
-// fetch returns the call the pipeline makes on a cache miss: the module builds
-// the URL, the entry places its secret, and the shared client makes the call.
-func (rt *route) fetch(params url.Values) upstream.Fetcher {
+// fetch returns the call the pipeline makes on a cache miss: the entry places
+// its secret, and the shared client makes the call to the module's target.
+func (rt *Route) fetch(target string) upstream.Fetcher {
 	return func(ctx context.Context) (*upstream.Response, error) {
-		target, err := rt.entry.BuildURL(params)
-		if err != nil {
-			return nil, err
-		}
-
 		request, err := http.NewRequestWithContext(ctx, http.MethodGet, target, nil)
 		if err != nil {
 			return nil, err
@@ -234,7 +201,7 @@ func (e *outboundError) Unwrap() error {
 // renders the request URL, with one carrying the cause and no URL. An entry's
 // injector may place its secret in the query string, and this error is held in
 // Result.Err for the negative TTL (ADR 0023 rev 2).
-func (rt *route) outboundFailed(err error) error {
+func (rt *Route) outboundFailed(err error) error {
 	var wrapped *url.Error
 	if errors.As(err, &wrapped) {
 		err = wrapped.Err
@@ -245,7 +212,7 @@ func (rt *route) outboundFailed(err error) error {
 // respond writes the boundary body the result calls for: the shaped payload on
 // a success, a rejection where no outbound call was made, and this module's
 // upstream failure otherwise.
-func (rt *route) respond(w http.ResponseWriter, result upstream.Result) {
+func (rt *Route) respond(w http.ResponseWriter, result upstream.Result) {
 	switch result.Kind {
 	case upstream.Success:
 		rt.succeed(w, result.Body)
@@ -259,7 +226,7 @@ func (rt *route) respond(w http.ResponseWriter, result upstream.Result) {
 
 // succeed writes the module's payload. It is encoded before the status is, and
 // a payload that cannot be encoded is answered as this module's failure.
-func (rt *route) succeed(w http.ResponseWriter, body []byte) {
+func (rt *Route) succeed(w http.ResponseWriter, body []byte) {
 	payload, err := rt.entry.Shape(body)
 	if err != nil {
 		rt.fail(w, http.StatusBadGateway, causeMalformedPayload, malformedMessage)
@@ -279,7 +246,7 @@ func (rt *route) succeed(w http.ResponseWriter, body []byte) {
 // the error before the outcome is; the message carries the secret's name and
 // neither its value nor the path it was looked for at. An outcome no case names
 // is logged and rendered under the undistinguished cause.
-func (rt *route) failure(result upstream.Result) (int, string, string) {
+func (rt *Route) failure(result upstream.Result) (int, string, string) {
 	var unresolvable *secret.UnresolvableError
 	if errors.As(result.Err, &unresolvable) {
 		return http.StatusBadGateway, causeSecretUnresolvable,
@@ -302,23 +269,65 @@ func (rt *route) failure(result upstream.Result) (int, string, string) {
 }
 
 // fail writes this module's upstream-failure body.
-func (rt *route) fail(w http.ResponseWriter, status int, cause, message string) {
+func (rt *Route) fail(w http.ResponseWriter, status int, cause, message string) {
 	writeJSON(w, status, boundary.UpstreamFailure{Module: rt.entry.Source, Cause: cause, Message: message})
 }
 
-// fallback answers the API paths no entry registered: a registered source
-// reached by a method its route does not serve, and anything else.
-type fallback struct {
-	sources map[string]struct{}
+// NewFallback returns the handler for the API paths the schema's own routes did
+// not take. It is mounted over the API path space beneath those routes, on the
+// multiplexer they registered on.
+func NewFallback(mux *http.ServeMux) http.Handler {
+	return &fallback{mux: mux}
 }
 
+// fallback answers the API paths the schema's own routes did not take: a
+// declared route reached by a method it does not serve, and anything else.
+type fallback struct {
+	mux *http.ServeMux
+}
+
+// ServeHTTP tells the two apart by asking the multiplexer the schema's routes
+// registered on which pattern would take this path under the method a module
+// data route is declared with. A pattern of its own is a route that exists and
+// refused the method; this handler's own pattern is a path no route declares. So
+// the set of sources is the schema's, rather than a list kept beside it naming
+// every module.
 func (f *fallback) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	if _, known := f.sources[strings.TrimPrefix(r.URL.Path, apiPrefix)]; known {
+	probe := &http.Request{Method: moduleRouteMethod, URL: r.URL, Host: r.Host}
+	if _, pattern := f.mux.Handler(probe); pattern != apiPrefix {
 		w.Header().Set("Allow", allowedMethods)
 		reject(w, http.StatusMethodNotAllowed, causeMethodNotAllowed, "this source answers "+allowedMethods+" only")
 		return
 	}
 	reject(w, http.StatusNotFound, causeUnknownSource, "this backend serves no such source")
+}
+
+// maxRequestBytes is how much of a request body a module data route reads before
+// refusing the rest.
+//
+// It is a free choice rather than a figure any requirement or source settles: no
+// obligation names a request size, and nothing upstream constrains one. What it
+// is chosen against is the shape of a module route's request — a small JSON
+// object naming what the answer is to be about — and the cost of the alternative,
+// which is an unauthenticated caller deciding how much this process buffers. A
+// kilobyte is far above every request the boundary schema declares and far below
+// a size worth reading from a caller that means nothing good by it.
+const maxRequestBytes = 1 << 10
+
+// BoundBody caps what a module reads of a request before it decodes one, so a
+// body past the cap fails the module's decode and is answered as a rejection.
+// The bound is the framework's and not the module's: how much this process can
+// be made to buffer is a property of the process rather than of the source
+// behind any one route.
+func BoundBody(w http.ResponseWriter, r *http.Request) {
+	r.Body = http.MaxBytesReader(w, r.Body, maxRequestBytes)
+}
+
+// Reject writes the rejection a module answers a request it will not carry
+// upstream with. The text is the module's, so it says what that source accepts
+// (ADR 0026 rev 2).
+func Reject(w http.ResponseWriter, cause, message string) {
+	reject(w, http.StatusBadRequest, cause, message)
 }
 
 // reject writes the client-rejection body (ADR 0026 rev 2).

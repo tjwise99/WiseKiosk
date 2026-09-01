@@ -1,5 +1,5 @@
 // Package weather is the weather module's shaping library: the policy its route
-// runs under, the pattern its location must match, the upstream request it
+// runs under, the constraint its location must satisfy, the upstream request it
 // builds and the boundary payload it reads the answer into. Every function here
 // is pure — no I/O, no clock, no secret — so the whole of it is exercisable
 // against a captured response (the module contract, part 4).
@@ -10,7 +10,6 @@ import (
 	"errors"
 	"fmt"
 	"net/url"
-	"regexp"
 	"strconv"
 	"time"
 
@@ -18,32 +17,16 @@ import (
 	"github.com/tjwise99/WiseKiosk/backend/internal/upstream"
 )
 
-// Source names this module's route, its cache namespace and its rate bucket. It
-// is the same word the boundary schema's path ends in, and the registration
-// test is what compares the two.
+// Source names this module's cache namespace and its rate bucket. It is the same
+// word the boundary schema's path ends in, and the registration test is what
+// compares the two.
 const Source = "weather"
-
-// The parameters a request names its location with. Both are required and
-// neither may be repeated: the response cache is keyed on the whole query
-// string, so a request carrying anything else would buy a second rate budget
-// for the same place.
-const (
-	paramLat = "lat"
-	paramLon = "lon"
-)
 
 // The bounds a point on the earth's surface lies within (SRS043).
 const (
 	maxLatitude  = 90
 	maxLongitude = 180
 )
-
-// decimal is the spelling a coordinate is accepted in: an optional sign, digits
-// with an optional fractional part, and an optional decimal exponent. It admits
-// no hexadecimal, no NaN and no infinity, each of which Go's float parser takes
-// and none of which names a point. The exponent is admitted because a coordinate
-// near the equator or the prime meridian serialises as `1e-7`.
-var decimal = regexp.MustCompile(`^[-+]?(\d+(\.\d*)?|\.\d+)([eE][-+]?\d+)?$`)
 
 // Config is the policy this route runs under, carried here so the registration
 // entry assembles it from the module rather than restating it.
@@ -67,49 +50,33 @@ func Config() upstream.Config {
 	}
 }
 
-// Validate judges a request's parameters against the pattern this module
-// declares: a latitude and a longitude, each a plain decimal within its range,
-// each given once, and nothing else (SRS043).
+// validate judges the point a request names against the constraint this module
+// declares: a latitude and a longitude, each within its range (SRS043). How the
+// two are spelled is the boundary schema's, refused by the generated body's own
+// decoding before anything here is reached.
 // The returned error's text is what the rejection renders, so it says what is
 // accepted and never echoes what was sent.
-func Validate(params url.Values) error {
-	for name := range params {
-		if name != paramLat && name != paramLon {
-			return errors.New("this source takes a latitude and a longitude and no other parameter")
-		}
-	}
-	if _, err := coordinate(params, paramLat, maxLatitude); err != nil {
+func validate(request boundary.WeatherRequest) error {
+	if err := inRange("latitude", request.Lat, maxLatitude); err != nil {
 		return err
 	}
-	_, err := coordinate(params, paramLon, maxLongitude)
-	return err
+	return inRange("longitude", request.Lon, maxLongitude)
 }
 
-// coordinate reads one coordinate from params, rejecting a parameter that is
-// absent, given more than once, spelled as anything but a plain decimal, or
-// outside bound degrees either side of zero.
-func coordinate(params url.Values, name string, bound float64) (float64, error) {
-	given := params[name]
-	if len(given) != 1 {
-		return 0, fmt.Errorf("this source takes exactly one %s parameter", name)
-	}
-	if !decimal.MatchString(given[0]) {
-		return 0, fmt.Errorf("the %s parameter must be a decimal number of degrees", name)
-	}
-
-	// The pattern above admits no spelling the parser refuses, so a failure here
-	// is a magnitude too large to hold rather than a spelling — which the range
-	// below would refuse in any case.
-	degrees, err := strconv.ParseFloat(given[0], 64)
-	if err != nil {
-		return 0, fmt.Errorf("the %s parameter is not a number of degrees this source can read", name)
-	}
+// inRange refuses a coordinate outside bound degrees either side of zero.
+func inRange(name string, given, bound float64) error {
 	// Written as the range it must be inside rather than the two it must not,
 	// which is what refuses a value that compares false against both.
-	if !(degrees >= -bound && degrees <= bound) {
-		return 0, fmt.Errorf("the %s parameter must be between -%g and %g degrees", name, bound, bound)
+	if !(given >= -bound && given <= bound) {
+		return fmt.Errorf("the %s must be between -%g and %g degrees", name, bound, bound)
 	}
-	return degrees, nil
+	return nil
+}
+
+// degrees writes a coordinate the one way this module writes one, so the upstream
+// request and the key an answer is held under agree on what a point is called.
+func degrees(given float64) string {
+	return strconv.FormatFloat(given, 'f', -1, 64)
 }
 
 // The upstream request. One call carries the present conditions and both forward
@@ -121,7 +88,7 @@ const (
 	// currentFields, hourlyFields and dailyFields are the measurements each part
 	// of the payload is read from, in the source's own vocabulary.
 	currentFields = "temperature_2m,apparent_temperature,relative_humidity_2m,wind_speed_10m,weather_code,is_day"
-	hourlyFields  = "temperature_2m,weather_code,precipitation_probability"
+	hourlyFields  = "temperature_2m,weather_code,precipitation_probability,is_day"
 	dailyFields   = "weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max"
 )
 
@@ -134,25 +101,25 @@ const (
 	// hoursRequested is one more, because the source's hourly range starts at the
 	// hour in progress — which is behind rather than ahead, and is dropped.
 	hoursRequested = hoursShown + 1
-	// daysShown is how many days the payload carries, today included: a day is
-	// still ahead of a viewer for most of it.
+	// daysShown is how many days the payload carries, all of them after today:
+	// what today is doing is the present section's, and a day already begun is
+	// not one of the days next to come.
 	daysShown = 5
+	// daysRequested is one more, because the source's daily range starts at today
+	// — which is the day the payload drops.
+	daysRequested = daysShown + 1
 )
 
-// BuildURL builds the upstream request for the location params names. It asks
+// buildURL builds the upstream request for the point a request named. It asks
 // for imperial units, which is what the boundary schema declares the payload in,
 // and for the source's own local time so a timestamp can be given the offset it
 // belongs to.
-func BuildURL(params url.Values) (string, error) {
-	// Read through the same function the pattern is declared in, so the request
-	// cannot be built from a location the pattern would refuse.
-	if err := Validate(params); err != nil {
-		return "", err
-	}
-
+// It is total: the constraint is judged before this is reached, and every other
+// value here is this module's own.
+func buildURL(request boundary.WeatherRequest) string {
 	values := url.Values{
-		"latitude":           {params.Get(paramLat)},
-		"longitude":          {params.Get(paramLon)},
+		"latitude":           {degrees(request.Lat)},
+		"longitude":          {degrees(request.Lon)},
 		"current":            {currentFields},
 		"hourly":             {hourlyFields},
 		"daily":              {dailyFields},
@@ -160,10 +127,10 @@ func BuildURL(params url.Values) (string, error) {
 		"wind_speed_unit":    {"mph"},
 		"precipitation_unit": {"inch"},
 		"forecast_hours":     {strconv.Itoa(hoursRequested)},
-		"forecast_days":      {strconv.Itoa(daysShown)},
+		"forecast_days":      {strconv.Itoa(daysRequested)},
 		"timezone":           {"auto"},
 	}
-	return forecastURL + "?" + values.Encode(), nil
+	return forecastURL + "?" + values.Encode()
 }
 
 // The units the request above asks for, as the source spells them back. They are
@@ -227,6 +194,7 @@ type seriesBlock struct {
 	Temperature                 []*float64 `json:"temperature_2m"`
 	WeatherCode                 []*int     `json:"weather_code"`
 	PrecipitationProbability    []*float64 `json:"precipitation_probability"`
+	IsDay                       []*int     `json:"is_day"`
 	TemperatureMax              []*float64 `json:"temperature_2m_max"`
 	TemperatureMin              []*float64 `json:"temperature_2m_min"`
 	PrecipitationProbabilityMax []*float64 `json:"precipitation_probability_max"`
@@ -337,7 +305,8 @@ func shapeHourly(block *seriesBlock, units *unitsBlock, local *time.Location) ([
 	}
 
 	steps := len(block.Time)
-	if steps != len(block.Temperature) || steps != len(block.WeatherCode) || steps != len(block.PrecipitationProbability) {
+	if steps != len(block.Temperature) || steps != len(block.WeatherCode) ||
+		steps != len(block.PrecipitationProbability) || steps != len(block.IsDay) {
 		return nil, errors.New("the hourly range's measurements do not run to the same length")
 	}
 	if steps <= 1 {
@@ -362,15 +331,23 @@ func shapeHourly(block *seriesBlock, units *unitsBlock, local *time.Location) ([
 		if err != nil {
 			return nil, err
 		}
+		// Read per hour rather than from the present reading: the hours to come
+		// cross the location's own sunrise or sunset, and a weather code says
+		// nothing about which side of it an hour falls.
+		daylight, err := value("whether an hour is in daylight", block.IsDay[step])
+		if err != nil {
+			return nil, err
+		}
 
 		hours = append(hours, boundary.WeatherHour{
-			Time: at, Temp: temperature, WeatherCode: code, PrecipProbability: chance,
+			Time: at, Temp: temperature, WeatherCode: code, PrecipProbability: chance, IsDay: daylight == 1,
 		})
 	}
 	return hours, nil
 }
 
-// shapeDaily reads the days next to come.
+// shapeDaily reads the days next to come, dropping today that the source's range
+// opens with: what today is doing is the present section's.
 func shapeDaily(block *seriesBlock, units *unitsBlock, local *time.Location) ([]boundary.WeatherDay, error) {
 	if block == nil || units == nil {
 		return nil, errors.New("the response carries no daily range")
@@ -390,12 +367,12 @@ func shapeDaily(block *seriesBlock, units *unitsBlock, local *time.Location) ([]
 		steps != len(block.TemperatureMin) || steps != len(block.PrecipitationProbabilityMax) {
 		return nil, errors.New("the daily range's measurements do not run to the same length")
 	}
-	if steps == 0 {
-		return nil, errors.New("the daily range carries no day")
+	if steps <= 1 {
+		return nil, errors.New("the daily range carries no day after today")
 	}
 
 	days := make([]boundary.WeatherDay, 0, daysShown)
-	for step := 0; step < steps && len(days) < daysShown; step++ {
+	for step := 1; step < steps && len(days) < daysShown; step++ {
 		at, err := stamp("a daily", dayLayout, block.Time[step], local)
 		if err != nil {
 			return nil, err

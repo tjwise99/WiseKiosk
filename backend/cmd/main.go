@@ -38,29 +38,28 @@ func main() {
 		return
 	}
 
-	api := router.NewRouter(registry.Entries)
-	log.Fatal(http.ListenAndServe(addr, newServer(staticserve.New(http.Dir(*root)), api)))
+	log.Fatal(http.ListenAndServe(addr, newServer(staticserve.New(http.Dir(*root)), nil)))
 }
 
-// newServer assembles the routes: the boundary schema's own, the API, and the
-// served tree for everything else. A nil api answers 404 for every path under
-// /api/. The schema's paths are registered by the generated router, so no path
-// it declares is written here (ADR 0008 rev 4).
+// newServer assembles the routes: the boundary schema's own, the seam over the
+// rest of the API path space, and the served tree for everything else. A nil
+// seam is the framework's own, which answers for every API path the schema
+// declares no route at. The schema's paths are registered by the generated
+// router, so no path it declares is written here (ADR 0008 rev 5).
 //
 // A module data route's generated pattern is more specific than the /api/ seam,
-// so it takes that path and hands it back to the same handler the seam holds —
-// the schema decides where the route is and the registry decides what it does.
-// The generated wrapper reads nothing of the request on the way: this side of
-// the schema is read without a module route's parameters, so it has none to bind
-// and no rejection of its own to write.
-func newServer(static, api http.Handler) http.Handler {
-	if api == nil {
-		api = http.NotFoundHandler()
-	}
-
+// so it takes that path — the schema decides where a route is and the module
+// embedded below decides what it does. The generated wrapper reads nothing of
+// the request on the way: a module route's inputs are its JSON body, which the
+// module reads itself, so the wrapper binds nothing and has no rejection of its
+// own to write.
+func newServer(static, seam http.Handler) http.Handler {
 	mux := http.NewServeMux()
-	boundary.HandlerFromMux(schemaRoutes{Routes: registry.NewRoutes(api)}, mux)
-	mux.Handle("/api/", api)
+	boundary.HandlerFromMux(schemaRoutes{}, mux)
+	if seam == nil {
+		seam = router.NewFallback(mux)
+	}
+	mux.Handle("/api/", seam)
 	mux.Handle("/", static)
 	return mux
 }
@@ -68,9 +67,13 @@ func newServer(static, api http.Handler) http.Handler {
 // schemaRoutes is the whole of the boundary schema's server interface. The
 // generated interface is one, and its two kinds of path are owned by different
 // packages — an infrastructure route by the package that answers it, every
-// module data route by the registry — so the two are composed at the assembly
-// point rather than in either of them.
+// module data route by the module itself through the registry — so the two are
+// composed at the assembly point rather than in either of them.
 type schemaRoutes struct {
 	health.Route
-	registry.Routes
+	registry.Modules
 }
+
+// The tie the composite exists for, asserted where it is read rather than at the
+// call above: a schema route no embedded type serves is a missing method here.
+var _ boundary.ServerInterface = schemaRoutes{}
