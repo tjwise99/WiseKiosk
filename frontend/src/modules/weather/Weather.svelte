@@ -17,13 +17,23 @@
    */
   const { reachable, config, payload }: WeatherProps = $props();
 
+  /** Every WMO 4677 present-weather code a source of this payload emits, and the whole of the set. */
+  const SKY_CODES = new Set([
+    0, 1, 2, 3, 45, 48, 51, 53, 55, 56, 57, 61, 63, 65, 66, 67, 71, 73, 75, 77, 80, 81, 82, 85, 86,
+    95, 96, 99,
+  ]);
+
   /**
    * What a WMO 4677 present-weather code says the sky is doing. The payload carries the code rather
    * than a supplier's own words, so putting it into words is the drawing's — and it is banded rather
    * than enumerated because the standard's codes are grouped by intensity within a kind, which is a
    * distinction a display glanced at rather than consulted does not carry.
+   *
+   * A code outside the set above is not named: nothing is drawn for it, rather than the nearest band
+   * reported as though the sky had been read.
    */
-  function describeSky(code: number): string {
+  function describeSky(code: number): string | undefined {
+    if (!SKY_CODES.has(code)) return undefined;
     if (code === 0) return 'Clear';
     if (code <= 3) return 'Cloudy';
     if (code <= 48) return 'Fog';
@@ -70,11 +80,14 @@
       <p class="waiting" data-module-unavailable>{payload.failure.message}</p>
     {:else}
       {@const reading = payload.data}
+      {@const sky = describeSky(reading.current.weatherCode)}
       <!-- Three parts, each drawn on its own: what it is doing now, the hours next to come and the
            days next to come (SRS045). -->
       <section class="present" data-weather-present>
         <p class="temp" data-weather-temp>{round(reading.current.temp)}°F</p>
-        <p class="sky" data-weather-sky>{describeSky(reading.current.weatherCode)}</p>
+        {#if sky !== undefined}
+          <p class="sky" data-weather-sky>{sky}</p>
+        {/if}
         <p class="detail" data-weather-detail>
           Feels like {round(reading.current.apparentTemp)}°F · {round(reading.current.humidity)}%
           humidity · {round(reading.current.windSpeed)} mph
@@ -85,10 +98,13 @@
         <h2 class="heading">Next hours</h2>
         <ol class="entries">
           {#each reading.hourly as hour (hour.time)}
+            {@const hourSky = describeSky(hour.weatherCode)}
             <li class="entry" data-weather-hour>
               <span class="when">{atLocation(hour.time)}</span>
               <span class="reading">{round(hour.temp)}°F</span>
-              <span class="reading">{describeSky(hour.weatherCode)}</span>
+              {#if hourSky !== undefined}
+                <span class="reading">{hourSky}</span>
+              {/if}
               <span class="reading">{round(hour.precipProbability)}%</span>
             </li>
           {/each}
@@ -99,10 +115,13 @@
         <h2 class="heading">Next days</h2>
         <ol class="entries">
           {#each reading.daily as day (day.time)}
+            {@const daySky = describeSky(day.weatherCode)}
             <li class="entry" data-weather-day>
               <span class="when">{dayName(day.time)}</span>
               <span class="reading">{round(day.max)}°F / {round(day.min)}°F</span>
-              <span class="reading">{describeSky(day.weatherCode)}</span>
+              {#if daySky !== undefined}
+                <span class="reading">{daySky}</span>
+              {/if}
               <span class="reading">{round(day.precipProbability)}%</span>
             </li>
           {/each}

@@ -36,6 +36,9 @@ const READ_INTERVAL_MS = 5 * 60 * 1000;
 /** The last stretch of that interval, held back so the read can be shown to fall inside it. */
 const ALMOST = 10_000;
 
+/** A present-weather code outside the set WMO 4677 defines, so nothing can be said of the sky. */
+const UNREADABLE = 42;
+
 /** An instant to hold the host clock at, wherever a case drives time rather than waiting it out. */
 const HOST_TIME = new Date('2026-08-31T14:00:00Z');
 
@@ -85,6 +88,7 @@ function placed(location: { lat: number; lon: number }, region = 'middle_center'
 const WEATHER = '[data-weather]';
 const TEMP = '[data-weather-temp]';
 const PRESENT = '[data-weather-present]';
+const SKY = '[data-weather-sky]';
 const HOURLY = '[data-weather-hourly]';
 const DAILY = '[data-weather-daily]';
 const LOADING = '[data-module-loading]';
@@ -358,6 +362,34 @@ test('renders why its own source failed, in its own place, while the backend is 
   // the page raised no outage report, this being one module's failure and not the backend's.
   await expect(page.locator(TEMP)).toHaveCount(0);
   await expect(page.locator('[data-backend-unreachable]')).toHaveCount(0);
+});
+
+test('puts no words to a sky whose code it does not recognise', async ({ page }) => {
+  // A code outside WMO 4677's set, which a source can send at any time. Read through bands with no
+  // floor under the last of them it comes out as a thunderstorm, so the display reports a sky nobody
+  // read — the one thing worse than reporting none.
+  const unread = forecast(WARM);
+  const answer = {
+    ...unread,
+    current: { ...unread.current, weatherCode: UNREADABLE },
+    hourly: unread.hourly.map((hour) => ({ ...hour, weatherCode: UNREADABLE })),
+    daily: unread.daily.map((day) => ({ ...day, weatherCode: UNREADABLE })),
+  };
+  await serveModuleData(page, () => ({ status: 200, data: answer }));
+  await render(page, placed(HERE));
+
+  // The reading is drawn, this being a payload that arrived rather than a failure, and every entry
+  // it carried is on screen — without which the absences below would read the same as a module that
+  // drew nothing at all.
+  await expect(page.locator(TEMP)).toContainText(String(WARM));
+  await expect(page.locator('[data-weather-hour]')).toHaveCount(5);
+  await expect(page.locator('[data-weather-day]')).toHaveCount(5);
+
+  // And no part of it names the sky.
+  await expect(page.locator(SKY)).toHaveCount(0);
+  for (const part of [PRESENT, HOURLY, DAILY]) {
+    await expect(page.locator(part)).not.toContainText('Thunderstorm');
+  }
 });
 
 test('says something in the module’s place when the answer carries no reason it can read', async ({
