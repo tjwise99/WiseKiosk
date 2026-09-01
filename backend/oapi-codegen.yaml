@@ -1,7 +1,7 @@
 # oapi-codegen's own configuration. The whole wire contract — types, the route table, and the client
 # the backend probes itself with — so no route is hand-authored on this side and the drift gate sees
 # routes rather than types alone (ADR 0008 rev 4). `std-http-server` binds against the standard
-# library's own ServeMux and pulls no router (ADR 0001 rev 1), and with the overlay below the
+# library's own ServeMux and pulls no router (ADR 0001 rev 1), and no route binds a parameter, so the
 # emitted Go imports nothing outside the standard library at all.
 # Paths are resolved against the working directory, which is `backend/` (the `codegen` recipe).
 package: boundary
@@ -14,8 +14,3 @@ output-options:
   # A component no path references is pruned by default, and the error bodies are contributed by
   # the schema ahead of the module routes that carry them.
   skip-prune: true
-  # What this side does not read of the one schema, and why, is that file's (ADR 0008 rev 4). It
-  # subtracts only; the schema stays the single authored source and the frontend generates from it
-  # unaltered.
-  overlay:
-    path: openapi-overlay.yaml

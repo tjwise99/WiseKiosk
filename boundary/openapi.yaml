@@ -5,14 +5,13 @@
 # Two kinds of path live here. A **module data route** carries the full component set — its success
 # payload, the upstream failure and the client rejection below — and a module contributes its payload
 # as a named component here rather than as a file of its own. It is marked with the `module-route`
-# tag, which is the only tag this schema uses and which the Go generator's overlay
-# (`backend/openapi-overlay.yaml`) selects on. An **infrastructure route** answers about the process
+# tag, which is the only tag this schema uses. An **infrastructure route** answers about the process
 # rather than about a source, declares its own response and nothing more, and is not a module's to
 # contribute. Which paths of either kind exist is what `paths` below says; no document counts them.
 #
-# Both sides generate their routes from this file. What the Go side does *not* read is one thing and
-# is stated in that overlay: a module data route's request parameters, which the route's registration
-# entry judges instead. Nothing is added or renamed for either side, and nothing is authored twice.
+# Both sides generate their routes from this file, and from this file alone: there is no second
+# document between it and either generator. Nothing is added or renamed for either side, and nothing
+# is authored twice.
 #
 # The two error bodies below are the compact shapes ADR 0026 rev 2 decides. `cause` is an open
 # string in both: which causes there are is a verification item's, not this schema's.
@@ -37,33 +36,21 @@ paths:
   # route declares the full set — the payload, every rejection the framework answers before an
   # upstream call, and every failure it answers after one (ADR 0026 rev 2).
   /api/weather:
-    get:
-      operationId: getApiWeather
+    post:
+      operationId: postApiWeather
       summary: Report the weather at a point on the earth's surface.
-      # Every module data route carries this tag and nothing else carries it. It is what the Go
-      # generator's overlay selects, so that side reads the route without its parameters and binds
-      # none: the registration entry serving this path is what judges them (ADR 0008 rev 4).
+      # Every module data route carries this tag and nothing else carries it. It is what marks the
+      # kind of path this is for a reader and for anything selecting over the schema; neither
+      # generator reads it (ADR 0008 rev 5).
       tags:
         - module-route
-      parameters:
-        # The two of them together are the point. Which values are admitted — the ranges, and the
-        # rejection of anything that is not a plain decimal — is the route's registration entry's,
-        # so the figures are stated there once rather than here as well; what this schema fixes is
-        # the two names and their type.
-        - name: lat
-          in: query
-          required: true
-          description: Latitude of the point, in decimal degrees north of the equator.
-          schema:
-            type: number
-            format: double
-        - name: lon
-          in: query
-          required: true
-          description: Longitude of the point, in decimal degrees east of the prime meridian.
-          schema:
-            type: number
-            format: double
+      requestBody:
+        required: true
+        description: The point the answer is about.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WeatherRequest'
       responses:
         '200':
           description: The weather at the point the request named.
@@ -137,6 +124,23 @@ components:
         message:
           type: string
           description: Plain-language text the frontend renders.
+    WeatherRequest:
+      type: object
+      description: >-
+        The point a request names. It is the whole of what this route reads of a request, so the
+        two names below are defined here and nowhere else on either side.
+      required:
+        - lat
+        - lon
+      properties:
+        lat:
+          type: number
+          format: double
+          description: Latitude of the point, in decimal degrees north of the equator.
+        lon:
+          type: number
+          format: double
+          description: Longitude of the point, in decimal degrees east of the prime meridian.
     WeatherPayload:
       type: object
       description: >-
@@ -206,6 +210,7 @@ components:
         - temp
         - weatherCode
         - precipProbability
+        - isDay
       properties:
         time:
           type: string
@@ -223,6 +228,12 @@ components:
           type: number
           format: double
           description: The chance of precipitation, as a percentage.
+        isDay:
+          type: boolean
+          description: >-
+            Whether it is daylight at the location for this hour. Carried per hour rather than read
+            off the current reading, because the hours to come cross the location's own sunrise or
+            sunset and a WMO code says nothing about which side of it an hour falls.
     WeatherDay:
       type: object
       description: The weather expected at the location for one day to come.

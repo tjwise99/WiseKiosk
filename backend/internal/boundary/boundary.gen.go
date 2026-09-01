@@ -6,6 +6,7 @@
 package boundary
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
 	"fmt"
@@ -77,6 +78,9 @@ type WeatherDay struct {
 
 // WeatherHour The weather expected at the location for one hour to come.
 type WeatherHour struct {
+	// IsDay Whether it is daylight at the location for this hour. Carried per hour rather than read off the current reading, because the hours to come cross the location's own sunrise or sunset and a WMO code says nothing about which side of it an hour falls.
+	IsDay bool `json:"isDay"`
+
 	// PrecipProbability The chance of precipitation, as a percentage.
 	PrecipProbability float64 `json:"precipProbability"`
 
@@ -101,6 +105,18 @@ type WeatherPayload struct {
 	// Hourly The hours next to come, nearest first. How many is the shaping library's.
 	Hourly []WeatherHour `json:"hourly"`
 }
+
+// WeatherRequest The point a request names. It is the whole of what this route reads of a request, so the two names below are defined here and nowhere else on either side.
+type WeatherRequest struct {
+	// Lat Latitude of the point, in decimal degrees north of the equator.
+	Lat float64 `json:"lat"`
+
+	// Lon Longitude of the point, in decimal degrees east of the prime meridian.
+	Lon float64 `json:"lon"`
+}
+
+// PostApiWeatherJSONRequestBody defines body for PostApiWeather for application/json ContentType.
+type PostApiWeatherJSONRequestBody = WeatherRequest
 
 // RequestEditorFn is the function signature for the RequestEditor callback function
 type RequestEditorFn func(ctx context.Context, req *http.Request) error
@@ -176,10 +192,19 @@ func WithRequestEditorFn(fn RequestEditorFn) ClientOption {
 // The interface specification for the client above.
 type ClientInterface interface {
 
-	// GetApiWeather Report the weather at a point on the earth's surface.
+	// PostApiWeatherWithBody Report the weather at a point on the earth's surface.
 	//
-	// Corresponds with GET /api/weather (the `GetApiWeather` operationId).
-	GetApiWeather(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
+	// Takes any type of body and a specified content type.
+	//
+	// Corresponds with POST /api/weather (the `PostApiWeather` operationId).
+	PostApiWeatherWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// PostApiWeather Report the weather at a point on the earth's surface.
+	//
+	// Takes a body of the `application/json` content type.
+	//
+	// Corresponds with POST /api/weather (the `PostApiWeather` operationId).
+	PostApiWeather(ctx context.Context, body PostApiWeatherJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// GetHealthz Report that the backend process is serving.
 	//
@@ -187,11 +212,30 @@ type ClientInterface interface {
 	GetHealthz(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
 }
 
-// GetApiWeather Report the weather at a point on the earth's surface.
+// PostApiWeatherWithBody Report the weather at a point on the earth's surface.
 //
-// Corresponds with GET /api/weather (the `GetApiWeather` operationId).
-func (c *Client) GetApiWeather(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewGetApiWeatherRequest(c.Server)
+// Takes any type of body and a specified content type.
+//
+// Corresponds with POST /api/weather (the `PostApiWeather` operationId).
+func (c *Client) PostApiWeatherWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewPostApiWeatherRequestWithBody(c.Server, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// PostApiWeather Report the weather at a point on the earth's surface.
+//
+// Takes a body of the `application/json` content type.
+//
+// Corresponds with POST /api/weather (the `PostApiWeather` operationId).
+func (c *Client) PostApiWeather(ctx context.Context, body PostApiWeatherJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewPostApiWeatherRequest(c.Server, body)
 	if err != nil {
 		return nil, err
 	}
@@ -217,8 +261,19 @@ func (c *Client) GetHealthz(ctx context.Context, reqEditors ...RequestEditorFn) 
 	return c.Client.Do(req)
 }
 
-// NewGetApiWeatherRequest constructs an http.Request for the GetApiWeather method
-func NewGetApiWeatherRequest(server string) (*http.Request, error) {
+// NewPostApiWeatherRequest calls the generic PostApiWeather builder with application/json body
+func NewPostApiWeatherRequest(server string, body PostApiWeatherJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewPostApiWeatherRequestWithBody(server, "application/json", bodyReader)
+}
+
+// NewPostApiWeatherRequestWithBody constructs an http.Request for the PostApiWeather method, with any body, and a specified content type
+func NewPostApiWeatherRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
 	var err error
 
 	serverURL, err := url.Parse(server)
@@ -236,10 +291,12 @@ func NewGetApiWeatherRequest(server string) (*http.Request, error) {
 		return nil, err
 	}
 
-	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	req, err := http.NewRequest(http.MethodPost, queryURL.String(), body)
 	if err != nil {
 		return nil, err
 	}
+
+	req.Header.Add("Content-Type", contentType)
 
 	return req, nil
 }
@@ -315,12 +372,19 @@ func WithBaseURL(baseURL string) ClientOption {
 // ClientWithResponsesInterface is the interface specification for the client with responses above.
 type ClientWithResponsesInterface interface {
 
-	// GetApiWeatherWithResponse Report the weather at a point on the earth's surface.
+	// PostApiWeatherWithBodyWithResponse Report the weather at a point on the earth's surface.
 	//
-	// Returns a wrapper object for the known response body format(s).
+	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
 	//
-	// Corresponds with GET /api/weather (the `GetApiWeather` operationId).
-	GetApiWeatherWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetApiWeatherResponse, error)
+	// Corresponds with POST /api/weather (the `PostApiWeather` operationId).
+	PostApiWeatherWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*PostApiWeatherResponse, error)
+
+	// PostApiWeatherWithResponse Report the weather at a point on the earth's surface.
+	//
+	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /api/weather (the `PostApiWeather` operationId).
+	PostApiWeatherWithResponse(ctx context.Context, body PostApiWeatherJSONRequestBody, reqEditors ...RequestEditorFn) (*PostApiWeatherResponse, error)
 
 	// GetHealthzWithResponse Report that the backend process is serving.
 	//
@@ -330,7 +394,7 @@ type ClientWithResponsesInterface interface {
 	GetHealthzWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetHealthzResponse, error)
 }
 
-type GetApiWeatherResponse struct {
+type PostApiWeatherResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
 	// JSON200 the response for an HTTP 200 `application/json` response
@@ -348,42 +412,42 @@ type GetApiWeatherResponse struct {
 }
 
 // GetJSON200 returns the response for an HTTP 200 `application/json` response
-func (r GetApiWeatherResponse) GetJSON200() *WeatherPayload {
+func (r PostApiWeatherResponse) GetJSON200() *WeatherPayload {
 	return r.JSON200
 }
 
 // GetJSON400 returns the response for an HTTP 400 `application/json` response
-func (r GetApiWeatherResponse) GetJSON400() *ClientRejection {
+func (r PostApiWeatherResponse) GetJSON400() *ClientRejection {
 	return r.JSON400
 }
 
 // GetJSON429 returns the response for an HTTP 429 `application/json` response
-func (r GetApiWeatherResponse) GetJSON429() *ClientRejection {
+func (r PostApiWeatherResponse) GetJSON429() *ClientRejection {
 	return r.JSON429
 }
 
 // GetJSON502 returns the response for an HTTP 502 `application/json` response
-func (r GetApiWeatherResponse) GetJSON502() *UpstreamFailure {
+func (r PostApiWeatherResponse) GetJSON502() *UpstreamFailure {
 	return r.JSON502
 }
 
 // GetJSON503 returns the response for an HTTP 503 `application/json` response
-func (r GetApiWeatherResponse) GetJSON503() *UpstreamFailure {
+func (r PostApiWeatherResponse) GetJSON503() *UpstreamFailure {
 	return r.JSON503
 }
 
 // GetJSON504 returns the response for an HTTP 504 `application/json` response
-func (r GetApiWeatherResponse) GetJSON504() *UpstreamFailure {
+func (r PostApiWeatherResponse) GetJSON504() *UpstreamFailure {
 	return r.JSON504
 }
 
 // GetBody returns the raw response body bytes
-func (r GetApiWeatherResponse) GetBody() []byte {
+func (r PostApiWeatherResponse) GetBody() []byte {
 	return r.Body
 }
 
 // Status returns HTTPResponse.Status
-func (r GetApiWeatherResponse) Status() string {
+func (r PostApiWeatherResponse) Status() string {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.Status
 	}
@@ -391,7 +455,7 @@ func (r GetApiWeatherResponse) Status() string {
 }
 
 // StatusCode returns HTTPResponse.StatusCode
-func (r GetApiWeatherResponse) StatusCode() int {
+func (r PostApiWeatherResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -399,7 +463,7 @@ func (r GetApiWeatherResponse) StatusCode() int {
 }
 
 // ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
-func (r GetApiWeatherResponse) ContentType() string {
+func (r PostApiWeatherResponse) ContentType() string {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.Header.Get("Content-Type")
 	}
@@ -440,17 +504,30 @@ func (r GetHealthzResponse) ContentType() string {
 	return ""
 }
 
-// GetApiWeatherWithResponse Report the weather at a point on the earth's surface.
+// PostApiWeatherWithBodyWithResponse Report the weather at a point on the earth's surface.
 //
-// Returns a wrapper object for the known response body format(s).
+// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
 //
-// Corresponds with GET /api/weather (the `GetApiWeather` operationId).
-func (c *ClientWithResponses) GetApiWeatherWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetApiWeatherResponse, error) {
-	rsp, err := c.GetApiWeather(ctx, reqEditors...)
+// Corresponds with POST /api/weather (the `PostApiWeather` operationId).
+func (c *ClientWithResponses) PostApiWeatherWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*PostApiWeatherResponse, error) {
+	rsp, err := c.PostApiWeatherWithBody(ctx, contentType, body, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
-	return ParseGetApiWeatherResponse(rsp)
+	return ParsePostApiWeatherResponse(rsp)
+}
+
+// PostApiWeatherWithResponse Report the weather at a point on the earth's surface.
+//
+// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /api/weather (the `PostApiWeather` operationId).
+func (c *ClientWithResponses) PostApiWeatherWithResponse(ctx context.Context, body PostApiWeatherJSONRequestBody, reqEditors ...RequestEditorFn) (*PostApiWeatherResponse, error) {
+	rsp, err := c.PostApiWeather(ctx, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParsePostApiWeatherResponse(rsp)
 }
 
 // GetHealthzWithResponse Report that the backend process is serving.
@@ -466,15 +543,15 @@ func (c *ClientWithResponses) GetHealthzWithResponse(ctx context.Context, reqEdi
 	return ParseGetHealthzResponse(rsp)
 }
 
-// ParseGetApiWeatherResponse parses an HTTP response from a GetApiWeatherWithResponse call
-func ParseGetApiWeatherResponse(rsp *http.Response) (*GetApiWeatherResponse, error) {
+// ParsePostApiWeatherResponse parses an HTTP response from a PostApiWeatherWithResponse call
+func ParsePostApiWeatherResponse(rsp *http.Response) (*PostApiWeatherResponse, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
 	defer func() { _ = rsp.Body.Close() }()
 	if err != nil {
 		return nil, err
 	}
 
-	response := &GetApiWeatherResponse{
+	response := &PostApiWeatherResponse{
 		Body:         bodyBytes,
 		HTTPResponse: rsp,
 	}
@@ -545,9 +622,9 @@ func ParseGetHealthzResponse(rsp *http.Response) (*GetHealthzResponse, error) {
 
 // ServerInterface represents all server handlers.
 type ServerInterface interface {
-	// GetApiWeather Report the weather at a point on the earth's surface.
-	// (GET /api/weather)
-	GetApiWeather(w http.ResponseWriter, r *http.Request)
+	// PostApiWeather Report the weather at a point on the earth's surface.
+	// (POST /api/weather)
+	PostApiWeather(w http.ResponseWriter, r *http.Request)
 	// GetHealthz Report that the backend process is serving.
 	// (GET /healthz)
 	GetHealthz(w http.ResponseWriter, r *http.Request)
@@ -562,11 +639,11 @@ type ServerInterfaceWrapper struct {
 
 type MiddlewareFunc func(http.Handler) http.Handler
 
-// GetApiWeather operation middleware
-func (siw *ServerInterfaceWrapper) GetApiWeather(w http.ResponseWriter, r *http.Request) {
+// PostApiWeather operation middleware
+func (siw *ServerInterfaceWrapper) PostApiWeather(w http.ResponseWriter, r *http.Request) {
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		siw.Handler.GetApiWeather(w, r)
+		siw.Handler.PostApiWeather(w, r)
 	}))
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -710,8 +787,8 @@ func HandlerWithOptions(si ServerInterface, options StdHTTPServerOptions) http.H
 		ErrorHandlerFunc:   options.ErrorHandlerFunc,
 	}
 
-	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/api/weather", wrapper.GetApiWeather)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/healthz", wrapper.GetHealthz)
+	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/api/weather", wrapper.PostApiWeather)
 
 	return m
 }

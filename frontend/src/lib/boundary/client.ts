@@ -27,6 +27,16 @@ export interface ClientRejection {
 }
 
 /**
+ * The point a request names. It is the whole of what this route reads of a request, so the two names below are defined here and nowhere else on either side.
+ */
+export interface WeatherRequest {
+  /** Latitude of the point, in decimal degrees north of the equator. */
+  lat: number;
+  /** Longitude of the point, in decimal degrees east of the prime meridian. */
+  lon: number;
+}
+
+/**
  * The weather at the location at present.
  */
 export interface WeatherCurrent {
@@ -56,6 +66,8 @@ export interface WeatherHour {
   weatherCode: number;
   /** The chance of precipitation, as a percentage. */
   precipProbability: number;
+  /** Whether it is daylight at the location for this hour. Carried per hour rather than read off the current reading, because the hours to come cross the location's own sunrise or sunset and a WMO code says nothing about which side of it an hour falls. */
+  isDay: boolean;
 }
 
 /**
@@ -84,17 +96,6 @@ export interface WeatherPayload {
   /** The days next to come, nearest first. How many is the shaping library's. */
   daily: WeatherDay[];
 }
-
-export type GetApiWeatherParams = {
-  /**
-   * Latitude of the point, in decimal degrees north of the equator.
-   */
-  lat: number;
-  /**
-   * Longitude of the point, in decimal degrees east of the prime meridian.
-   */
-  lon: number;
-};
 
 export type getHealthzResponse200 = {
   data: void;
@@ -131,86 +132,87 @@ export const getHealthz = async (
   } as getHealthzResponse;
 };
 
-export type getApiWeatherResponse200 = {
+export type postApiWeatherResponse200 = {
   data: WeatherPayload;
   status: 200;
 };
 
-export type getApiWeatherResponse400 = {
+export type postApiWeatherResponse400 = {
   data: ClientRejection;
   status: 400;
 };
 
-export type getApiWeatherResponse429 = {
+export type postApiWeatherResponse429 = {
   data: ClientRejection;
   status: 429;
 };
 
-export type getApiWeatherResponse502 = {
+export type postApiWeatherResponse502 = {
   data: UpstreamFailure;
   status: 502;
 };
 
-export type getApiWeatherResponse503 = {
+export type postApiWeatherResponse503 = {
   data: UpstreamFailure;
   status: 503;
 };
 
-export type getApiWeatherResponse504 = {
+export type postApiWeatherResponse504 = {
   data: UpstreamFailure;
   status: 504;
 };
 
-export type getApiWeatherResponseSuccess = getApiWeatherResponse200 & {
+export type postApiWeatherResponseSuccess = postApiWeatherResponse200 & {
   headers: Headers;
 };
-export type getApiWeatherResponseError = (
-  | getApiWeatherResponse400
-  | getApiWeatherResponse429
-  | getApiWeatherResponse502
-  | getApiWeatherResponse503
-  | getApiWeatherResponse504
+export type postApiWeatherResponseError = (
+  | postApiWeatherResponse400
+  | postApiWeatherResponse429
+  | postApiWeatherResponse502
+  | postApiWeatherResponse503
+  | postApiWeatherResponse504
 ) & {
   headers: Headers;
 };
 
-export type getApiWeatherResponse =
-  getApiWeatherResponseSuccess | getApiWeatherResponseError;
+export type postApiWeatherResponse =
+  postApiWeatherResponseSuccess | postApiWeatherResponseError;
 
-export const getGetApiWeatherUrl = (params: GetApiWeatherParams) => {
-  const normalizedParams = new URLSearchParams();
-
-  Object.entries(params || {}).forEach(([key, value]) => {
-    if (value !== undefined) {
-      normalizedParams.append(key, value === null ? "null" : String(value));
-    }
-  });
-
-  const stringifiedParams = normalizedParams.toString();
-
-  return stringifiedParams.length > 0
-    ? `/api/weather?${stringifiedParams}`
-    : `/api/weather`;
+export const getPostApiWeatherUrl = () => {
+  return `/api/weather`;
 };
 
 /**
  * @summary Report the weather at a point on the earth's surface.
  */
-export const getApiWeather = async (
-  params: GetApiWeatherParams,
+export const postApiWeather = async (
+  weatherRequest: WeatherRequest,
   options?: RequestInit,
-): Promise<getApiWeatherResponse> => {
-  const res = await fetch(getGetApiWeatherUrl(params), {
+): Promise<postApiWeatherResponse> => {
+  const getHeaders = (
+    h?: NonNullable<RequestInit["headers"]>,
+  ): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Array.isArray(h)) return Object.fromEntries(h);
+    return h;
+  };
+  const res = await fetch(getPostApiWeatherUrl(), {
     ...options,
-    method: "GET",
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      ...getHeaders(options?.headers),
+    },
+    body: JSON.stringify(weatherRequest),
   });
 
   const body = [204, 205, 304].includes(res.status) ? null : await res.text();
 
-  const data: getApiWeatherResponse["data"] = body ? JSON.parse(body) : {};
+  const data: postApiWeatherResponse["data"] = body ? JSON.parse(body) : {};
   return {
     data,
     status: res.status,
     headers: res.headers,
-  } as getApiWeatherResponse;
+  } as postApiWeatherResponse;
 };
