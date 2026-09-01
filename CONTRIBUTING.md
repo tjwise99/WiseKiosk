@@ -110,8 +110,15 @@ appended for the same reason; inserting one is permitted
 
 5. **Mechanism, not reason.** Does each comment state what the code or configuration does, or how?
    Reason, history and judgement are authored in a documentation home and cited from the comment.
-6. **Citation, not restatement.** Strip the cited identifier out of a comment: if any assertion still
-   stands on its own, it restates rather than cites.
+6. **Citation, not restatement.** Strip the whole citation out of a comment — the identifier and the
+   header comment closed up to it are one token, not two — and read what is left: if any assertion
+   still stands on its own, it restates rather than cites. The header inside the comment is the
+   citation's own machinery and not an assertion of the comment's. It is carried verbatim so that a
+   renumber becomes a mismatch a machine can see
+   ([`docs/CI.md` § Documentation integrity](docs/CI.md#documentation-integrity)), it is the
+   sanctioned form in every context including source, and a reader of the rendered page sees none of
+   it. Stripping the identifier and leaving the header behind would condemn the one form the
+   repository requires.
 
 **Code**
 

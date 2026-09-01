@@ -162,6 +162,15 @@ or [`DEPLOYMENT.md`](DEPLOYMENT.md) where it is not
   SRS015<!-- One schema, all boundary value classes --> /
   SRS016<!-- Both sides consume the generated types -->, and
   [above](#the-boundary-tier-is-generated-not-hand-written).
+- **A figure a requirement states is asserted by a check some `TST` item names.** Where an item's own
+  text carries a number — an interval, a bound, a count, a horizon — the trace must reach a check
+  that reads *that* number, through a `references` entry. This does not make uncited tests
+  illegitimate: a test needs no item to earn its place, and most behaviour is covered by tests no
+  item names. It is the narrower claim that a figure the specification argues cannot be left to
+  coverage nothing points at, because then the tree asserts a number whose only evidence is a test
+  the tree cannot see, and deleting that test breaks nothing anybody is told about. **The failure to
+  look for is a check that reads the module's own constant instead of the figure** — that asserts the
+  module agrees with itself and passes at any value.
 - **Every module supplies a render test for its component, and — where it registers against an
   external source — unit tests for its shaping library.** A module with no registration entry is a
   local module and is not expected to have one. A module missing either is an incomplete module, not
@@ -180,6 +189,14 @@ or [`DEPLOYMENT.md`](DEPLOYMENT.md) where it is not
   rewritten under a pending check fails a gate in the commit that rewrites it. What it cannot decide
   is the question activation exists to ask, and that stays a human read — does this check still
   assert a clause its parent still states?
+
+  **Two things are read, not one.** The clause: name the sentence in the parent that this check
+  asserts, and if none can be named, the check belongs under a different parent or asserts something
+  nobody required. And the item's own text: a stub's text was written before the code and describes
+  the test somebody planned, so at activation it is read against the test that exists and rewritten
+  where the two differ. An item activated with its stub wording intact describes a test nobody wrote,
+  and it reads in the trace exactly like verification — which is worse than an absent item, because
+  an absent item is visible to the gate and this is not.
 - **A test's declaration is its trace, and no test names a requirement.** The `TST` item that a test
   discharges names *it* — one `references` entry per verifying site, keyed on the line that declares
   the test ([ADR 0005 rev 2](decisions/0005-traceability-gating.md)). Nothing in a test file carries
