@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"io"
 	"log"
 	"net/http"
 	"net/http/httptest"
@@ -127,22 +128,13 @@ func testConfig() upstream.Config {
 	}
 }
 
-// testEntry is a fake module's registration: a request is valid when it names a
-// station, the URL is the fake upstream's, and the payload is the upstream body
-// read as an object.
+// testEntry is a fake module's registration: the policy the route runs under,
+// and the payload as the upstream body read as an object. What a request names
+// is not the entry's any more — it is the fixture's, below.
 func testEntry(fake *upstreamFake, source string) Entry {
 	return Entry{
 		Config: testConfig(),
 		Source: source,
-		Validate: func(params url.Values) error {
-			if params.Get("station") == "" {
-				return errors.New("a station is required")
-			}
-			return nil
-		},
-		BuildURL: func(params url.Values) (string, error) {
-			return fake.server.URL + "/?station=" + url.QueryEscape(params.Get("station")), nil
-		},
 		Shape: func(body []byte) (any, error) {
 			var payload map[string]any
 			if err := json.Unmarshal(body, &payload); err != nil {
@@ -151,6 +143,60 @@ func testEntry(fake *upstreamFake, source string) Entry {
 			return payload, nil
 		},
 	}
+}
+
+// fixture is one fake module: the entry the framework serves it under, and the
+// half the framework no longer holds — what the module makes of a request,
+// which is either a rejection of its own or the two strings a route is served
+// with. A real module reads its generated request body; a fixture reads a query,
+// and the framework cannot tell the difference because it reads neither.
+type fixture struct {
+	entry Entry
+	serve func(route *Route, w http.ResponseWriter, r *http.Request)
+}
+
+// station is what a fixture request names, and what the answer to it is held
+// under.
+func station(r *http.Request) string {
+	return r.URL.Query().Get("station")
+}
+
+// staged is the fixture for source, answering from fake: a request naming no
+// station is the module's own rejection, and one that names a station is served
+// under that station from the fake upstream.
+func staged(fake *upstreamFake, source string) fixture {
+	return fixture{
+		entry: testEntry(fake, source),
+		serve: func(route *Route, w http.ResponseWriter, r *http.Request) {
+			named := station(r)
+			if named == "" {
+				Reject(w, InvalidParameters, "a station is required")
+				return
+			}
+			route.Serve(w, r, named, fake.server.URL+"/?station="+url.QueryEscape(named))
+		},
+	}
+}
+
+// newRouter assembles a mux the way the process assembles one: a module data
+// route per fixture, registered under the method the boundary schema declares
+// them with, and the framework's seam over the rest of the API path space.
+//
+// The framework ships no such constructor — a module registers its own route
+// through the generated server interface, and the composite is the assembly
+// point's — so what a case needs is built here rather than kept in the package
+// under test.
+func newRouter(fixtures []fixture, now func() time.Time) http.Handler {
+	mux := http.NewServeMux()
+	for _, f := range fixtures {
+		route := newRoute(f.entry, now)
+		serve := f.serve
+		mux.Handle(moduleRouteMethod+" "+apiPrefix+f.entry.Source,
+			http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) { serve(route, w, r) }))
+	}
+
+	mux.Handle(apiPrefix, NewFallback(mux))
+	return mux
 }
 
 // ask runs one request against a handler.
@@ -223,15 +269,15 @@ func wantFailure(t *testing.T, recorder *httptest.ResponseRecorder, status int, 
 func TestAnIdenticalRequestIsServedFromCacheUntilTheTTLExpires(t *testing.T) {
 	clock := newFakeClock()
 	fake := newUpstreamFake(t)
-	entry := testEntry(fake, "readings")
-	handler := newRouter([]Entry{entry}, clock.now)
+	staged := staged(fake, "readings")
+	handler := newRouter([]fixture{staged}, clock.now)
 
-	first := ask(handler, http.MethodGet, "/api/readings?station=one")
+	first := ask(handler, http.MethodPost, "/api/readings?station=one")
 	if first.Code != http.StatusOK {
 		t.Fatalf("first request: status = %d, want %d (%s)", first.Code, http.StatusOK, first.Body)
 	}
 
-	second := ask(handler, http.MethodGet, "/api/readings?station=one")
+	second := ask(handler, http.MethodPost, "/api/readings?station=one")
 	if second.Body.String() != first.Body.String() {
 		t.Errorf("second body = %q, want the first's %q", second.Body, first.Body)
 	}
@@ -239,8 +285,8 @@ func TestAnIdenticalRequestIsServedFromCacheUntilTheTTLExpires(t *testing.T) {
 		t.Errorf("upstream calls within the TTL = %d, want 1", calls)
 	}
 
-	clock.advance(entry.SuccessTTL)
-	third := ask(handler, http.MethodGet, "/api/readings?station=one")
+	clock.advance(staged.entry.SuccessTTL)
+	third := ask(handler, http.MethodPost, "/api/readings?station=one")
 	if third.Code != http.StatusOK {
 		t.Errorf("after the TTL: status = %d, want %d", third.Code, http.StatusOK)
 	}
@@ -249,14 +295,19 @@ func TestAnIdenticalRequestIsServedFromCacheUntilTheTTLExpires(t *testing.T) {
 	}
 }
 
+// TestNonConformingParametersAreRejectedWithNoUpstreamCall reads the rejection
+// contract rather than any judgement: what the module makes of a request is the
+// module's, and what this asserts is that the answer it is given to write is the
+// client rejection the boundary declares and that nothing goes upstream behind
+// it. Which values a source admits is that module's own item to fail.
 // TST029
 func TestNonConformingParametersAreRejectedWithNoUpstreamCall(t *testing.T) {
 	fake := newUpstreamFake(t)
-	handler := newRouter([]Entry{testEntry(fake, "readings")}, newFakeClock().now)
+	handler := newRouter([]fixture{staged(fake, "readings")}, newFakeClock().now)
 
-	recorder := ask(handler, http.MethodGet, "/api/readings")
+	recorder := ask(handler, moduleRouteMethod, "/api/readings")
 
-	wantRejection(t, recorder, http.StatusBadRequest, causeInvalidParameters)
+	wantRejection(t, recorder, http.StatusBadRequest, InvalidParameters)
 	if calls := fake.count(); calls != 0 {
 		t.Errorf("upstream calls = %d, want none", calls)
 	}
@@ -279,6 +330,13 @@ func keyedEntry(fake *upstreamFake, source string) Entry {
 		request.Header.Set(secretHeader, secretValue)
 	}
 	return entry
+}
+
+// stagedKeyed is the staged fixture for a source needing secretName.
+func stagedKeyed(fake *upstreamFake, source string) fixture {
+	keyed := staged(fake, source)
+	keyed.entry = keyedEntry(fake, source)
+	return keyed
 }
 
 // writeSecretFile writes contents to a named file under a fresh directory at
@@ -337,9 +395,9 @@ func TestAnUnresolvableSecretFailsOnlyItsOwnSource(t *testing.T) {
 			t.Setenv(secretName+"_FILE", path)
 
 			fake := newUpstreamFake(t)
-			handler := newRouter([]Entry{keyedEntry(fake, "keyed"), testEntry(fake, "open")}, newFakeClock().now)
+			handler := newRouter([]fixture{stagedKeyed(fake, "keyed"), staged(fake, "open")}, newFakeClock().now)
 
-			failed := ask(handler, http.MethodGet, "/api/keyed?station=one")
+			failed := ask(handler, http.MethodPost, "/api/keyed?station=one")
 			decoded := wantFailure(t, failed, http.StatusBadGateway, "keyed", causeSecretUnresolvable)
 			if message, _ := decoded["message"].(string); !strings.Contains(message, secretName) {
 				t.Errorf("message = %q, want the secret named", message)
@@ -356,7 +414,7 @@ func TestAnUnresolvableSecretFailsOnlyItsOwnSource(t *testing.T) {
 				t.Errorf("upstream calls for the keyed source = %d, want none", calls)
 			}
 
-			served := ask(handler, http.MethodGet, "/api/open?station=one")
+			served := ask(handler, http.MethodPost, "/api/open?station=one")
 			if served.Code != http.StatusOK {
 				t.Errorf("the source needing no secret: status = %d, want %d (%s)", served.Code, http.StatusOK, served.Body)
 			}
@@ -375,9 +433,9 @@ func TestAResolvedSecretReachesUpstreamAndNoResponse(t *testing.T) {
 	t.Setenv(secretName+"_FILE", path)
 
 	fake := newUpstreamFake(t)
-	handler := newRouter([]Entry{keyedEntry(fake, "keyed")}, newFakeClock().now)
+	handler := newRouter([]fixture{stagedKeyed(fake, "keyed")}, newFakeClock().now)
 
-	recorder := ask(handler, http.MethodGet, "/api/keyed?station=one")
+	recorder := ask(handler, http.MethodPost, "/api/keyed?station=one")
 	if recorder.Code != http.StatusOK {
 		t.Fatalf("status = %d, want %d (%s)", recorder.Code, http.StatusOK, recorder.Body)
 	}
@@ -413,11 +471,16 @@ func TestASecretDoesNotFollowARedirect(t *testing.T) {
 	}))
 	t.Cleanup(redirecting.Close)
 
-	entry := keyedEntry(elsewhere, "keyed")
-	entry.BuildURL = func(url.Values) (string, error) { return redirecting.URL, nil }
-	handler := newRouter([]Entry{entry}, newFakeClock().now)
+	// The module hands the framework the redirecting server, so what the secret
+	// is placed on is the call this route makes rather than the one it is sent on
+	// to.
+	keyed := stagedKeyed(elsewhere, "keyed")
+	keyed.serve = func(route *Route, w http.ResponseWriter, r *http.Request) {
+		route.Serve(w, r, station(r), redirecting.URL)
+	}
+	handler := newRouter([]fixture{keyed}, newFakeClock().now)
 
-	wantFailure(t, ask(handler, http.MethodGet, "/api/keyed?station=one"),
+	wantFailure(t, ask(handler, http.MethodPost, "/api/keyed?station=one"),
 		http.StatusBadGateway, "keyed", causeUpstreamStatus)
 
 	if calls := elsewhere.count(); calls != 0 {
@@ -429,11 +492,11 @@ func TestASecretDoesNotFollowARedirect(t *testing.T) {
 }
 
 // TST029
-func TestARouteAnswersGetOnly(t *testing.T) {
+func TestARouteAnswersTheModuleRouteMethodOnly(t *testing.T) {
 	fake := newUpstreamFake(t)
-	handler := newRouter([]Entry{testEntry(fake, "readings")}, newFakeClock().now)
+	handler := newRouter([]fixture{staged(fake, "readings")}, newFakeClock().now)
 
-	for _, method := range []string{http.MethodPost, http.MethodPut, http.MethodDelete} {
+	for _, method := range []string{http.MethodGet, http.MethodHead, http.MethodPut, http.MethodDelete} {
 		recorder := ask(handler, method, "/api/readings?station=one")
 
 		wantRejection(t, recorder, http.StatusMethodNotAllowed, causeMethodNotAllowed)
@@ -446,20 +509,20 @@ func TestARouteAnswersGetOnly(t *testing.T) {
 		t.Errorf("upstream calls = %d, want none", calls)
 	}
 
-	// The 405 above advertises HEAD, so a route that did not serve it would be
-	// advertising a method it refuses.
-	if served := ask(handler, http.MethodHead, "/api/readings?station=one"); served.Code != http.StatusOK {
-		t.Errorf("HEAD: status = %d, want %d (%s)", served.Code, http.StatusOK, served.Body)
+	// The method the 405 above advertises, so a route refusing it would be
+	// refusing the one method it names.
+	if served := ask(handler, allowedMethods, "/api/readings?station=one"); served.Code != http.StatusOK {
+		t.Errorf("%s: status = %d, want %d (%s)", allowedMethods, served.Code, http.StatusOK, served.Body)
 	}
 }
 
 // TST029
 func TestAPathNoEntryRegisteredIsUnknown(t *testing.T) {
 	fake := newUpstreamFake(t)
-	handler := newRouter([]Entry{testEntry(fake, "readings")}, newFakeClock().now)
+	handler := newRouter([]fixture{staged(fake, "readings")}, newFakeClock().now)
 
 	for _, target := range []string{"/api/unknown", "/api/", "/api/readings/extra"} {
-		wantRejection(t, ask(handler, http.MethodGet, target), http.StatusNotFound, causeUnknownSource)
+		wantRejection(t, ask(handler, http.MethodPost, target), http.StatusNotFound, causeUnknownSource)
 	}
 
 	if calls := fake.count(); calls != 0 {
@@ -467,26 +530,20 @@ func TestAPathNoEntryRegisteredIsUnknown(t *testing.T) {
 	}
 }
 
-func TestAnEmptyRegistrationListServesNoSource(t *testing.T) {
-	handler := newRouter(nil, newFakeClock().now)
-
-	wantRejection(t, ask(handler, http.MethodGet, "/api/readings"), http.StatusNotFound, causeUnknownSource)
-}
-
 // TST027, TST029
 func TestARequestOverTheRateLimitIsRejected(t *testing.T) {
 	fake := newUpstreamFake(t)
-	entry := testEntry(fake, "readings")
-	entry.RequestsPerMinute, entry.Burst = 1, 1
-	handler := newRouter([]Entry{entry}, newFakeClock().now)
+	limited := staged(fake, "readings")
+	limited.entry.RequestsPerMinute, limited.entry.Burst = 1, 1
+	handler := newRouter([]fixture{limited}, newFakeClock().now)
 
-	if served := ask(handler, http.MethodGet, "/api/readings?station=one"); served.Code != http.StatusOK {
+	if served := ask(handler, http.MethodPost, "/api/readings?station=one"); served.Code != http.StatusOK {
 		t.Fatalf("the first request: status = %d, want %d (%s)", served.Code, http.StatusOK, served.Body)
 	}
 
 	// A second station, so the answer is decided by the bucket rather than by
 	// the cache.
-	refused := ask(handler, http.MethodGet, "/api/readings?station=two")
+	refused := ask(handler, http.MethodPost, "/api/readings?station=two")
 
 	wantRejection(t, refused, http.StatusTooManyRequests, causeRateLimited)
 	if calls := fake.count(); calls != 1 {
@@ -496,26 +553,26 @@ func TestARequestOverTheRateLimitIsRejected(t *testing.T) {
 
 func TestAFailedExchangeIsThisModulesFailure(t *testing.T) {
 	fake := newUpstreamFake(t)
-	handler := newRouter([]Entry{testEntry(fake, "readings")}, newFakeClock().now)
+	handler := newRouter([]fixture{staged(fake, "readings")}, newFakeClock().now)
 
 	fake.answers(http.StatusServiceUnavailable, "upstream is down")
-	decoded := wantFailure(t, ask(handler, http.MethodGet, "/api/readings?station=one"),
+	decoded := wantFailure(t, ask(handler, http.MethodPost, "/api/readings?station=one"),
 		http.StatusBadGateway, "readings", causeUpstreamStatus)
 	if message, _ := decoded["message"].(string); !strings.Contains(message, "503") {
 		t.Errorf("message = %q, want the upstream status named", message)
 	}
 
 	fake.answers(http.StatusOK, "this is not JSON")
-	wantFailure(t, ask(handler, http.MethodGet, "/api/readings?station=two"),
+	wantFailure(t, ask(handler, http.MethodPost, "/api/readings?station=two"),
 		http.StatusBadGateway, "readings", causeMalformedPayload)
 }
 
 func TestASourceThatCannotBeReachedIsThisModulesFailure(t *testing.T) {
 	fake := newUpstreamFake(t)
-	handler := newRouter([]Entry{testEntry(fake, "readings")}, newFakeClock().now)
+	handler := newRouter([]fixture{staged(fake, "readings")}, newFakeClock().now)
 	fake.server.Close()
 
-	wantFailure(t, ask(handler, http.MethodGet, "/api/readings?station=one"),
+	wantFailure(t, ask(handler, http.MethodPost, "/api/readings?station=one"),
 		http.StatusBadGateway, "readings", causeUnreachable)
 }
 
@@ -525,24 +582,19 @@ func TestASourceThatCannotBeReachedIsThisModulesFailure(t *testing.T) {
 // reusing an upstream cause would blame an upstream that was never called.
 func TestACallerWhoseContextEndedIsStillAnswered(t *testing.T) {
 	fake := newUpstreamFake(t)
-	entry := testEntry(fake, "readings")
 
-	// The flight holds here, so the pipeline has no result to hand back and the
-	// ended context is what decides the answer.
-	held := make(chan struct{})
-	t.Cleanup(func() { close(held) })
-	entry.BuildURL = func(url.Values) (string, error) {
-		<-held
-		return fake.server.URL, nil
-	}
+	// The staged source holds every call, so the pipeline has no result to hand
+	// back and the ended context is what decides the answer.
+	release := fake.hold()
+	t.Cleanup(release)
 
-	rt := &route{entry: entry, proxy: upstream.New(entry.Config, newFakeClock().now)}
+	rt := newRoute(testEntry(fake, "readings"), newFakeClock().now)
 	ended, cancel := context.WithCancel(context.Background())
 	cancel()
 
 	recorder := httptest.NewRecorder()
-	request := httptest.NewRequest(http.MethodGet, "/api/readings?station=one", nil).WithContext(ended)
-	rt.ServeHTTP(recorder, request)
+	request := httptest.NewRequest(moduleRouteMethod, "/api/readings?station=one", nil).WithContext(ended)
+	rt.Serve(recorder, request, "one", fake.server.URL)
 
 	wantFailure(t, recorder, http.StatusServiceUnavailable, "readings", causeShuttingDown)
 }
@@ -553,7 +605,7 @@ func TestEveryOutcomeCarriesItsOwnStatusAndCause(t *testing.T) {
 	// carry.
 	const lookedFor = "/run/secrets/source-key"
 
-	rt := &route{entry: keyedEntry(newUpstreamFake(t), "keyed")}
+	rt := &Route{entry: keyedEntry(newUpstreamFake(t), "keyed")}
 	cases := []struct {
 		name   string
 		result upstream.Result
@@ -601,6 +653,42 @@ func TestEveryOutcomeCarriesItsOwnStatusAndCause(t *testing.T) {
 	}
 }
 
+// TestARequestBodyIsReadNoFurtherThanTheBound covers the cap on what a module
+// route reads of a request: how much this process can be made to buffer is the
+// framework's to decide, not a caller's. It is read against a handler that reads
+// the body whole rather than through a module, because a module's own decoder
+// refuses a long body for reasons of its own and would pass this either way.
+func TestARequestBodyIsReadNoFurtherThanTheBound(t *testing.T) {
+	// read returns what a handler applying the bound got of a body of size bytes.
+	read := func(size int) (int, error) {
+		var got int
+		var err error
+		handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			BoundBody(w, r)
+			body, readErr := io.ReadAll(r.Body)
+			got, err = len(body), readErr
+		})
+		handler.ServeHTTP(httptest.NewRecorder(),
+			httptest.NewRequest(moduleRouteMethod, "/api/readings", strings.NewReader(strings.Repeat("x", size))))
+		return got, err
+	}
+
+	// Inside the bound first: without this the case below passes on a bound that
+	// refuses every body there is, which reads as working and serves nothing.
+	if got, err := read(maxRequestBytes); err != nil || got != maxRequestBytes {
+		t.Errorf("a body of the %d bytes the bound allows read %d bytes and %v, want it read whole",
+			maxRequestBytes, got, err)
+	}
+
+	got, err := read(maxRequestBytes + 1)
+	if err == nil {
+		t.Errorf("a body one byte past the bound read %d bytes and no error, want the read to stop", got)
+	}
+	if got > maxRequestBytes {
+		t.Errorf("%d bytes were read, want no more than the %d the bound allows", got, maxRequestBytes)
+	}
+}
+
 // TST029
 func TestNoTwoCausesShareASpelling(t *testing.T) {
 	// Every cause constant, compared against every other. The sweep above reads
@@ -612,7 +700,7 @@ func TestNoTwoCausesShareASpelling(t *testing.T) {
 		name  string
 		cause string
 	}{
-		{"causeInvalidParameters", causeInvalidParameters},
+		{"InvalidParameters", InvalidParameters},
 		{"causeUnknownSource", causeUnknownSource},
 		{"causeMethodNotAllowed", causeMethodNotAllowed},
 		{"causeRateLimited", causeRateLimited},
@@ -646,7 +734,7 @@ func TestAnOutcomeNoCaseNamesIsStillRenderable(t *testing.T) {
 	log.SetOutput(&logged)
 	t.Cleanup(func() { log.SetOutput(previous) })
 
-	rt := &route{entry: testEntry(newUpstreamFake(t), "readings")}
+	rt := &Route{entry: testEntry(newUpstreamFake(t), "readings")}
 
 	// Beyond the pipeline's own set, which is where a kind added to it later
 	// arrives here.
@@ -670,11 +758,8 @@ func TestAnEntryTheFrameworkCannotServePanicsAtConstruction(t *testing.T) {
 	fake := newUpstreamFake(t)
 
 	cases := map[string]func(Entry) Entry{
-		"no validator": func(entry Entry) Entry { entry.Validate = nil; return entry },
-		"no URL builder": func(entry Entry) Entry {
-			entry.BuildURL = nil
-			return entry
-		},
+		"no source":                  func(entry Entry) Entry { entry.Source = ""; return entry },
+		"no shaping function":        func(entry Entry) Entry { entry.Shape = nil; return entry },
 		"a secret it does not place": func(entry Entry) Entry { entry.Secret = secretName; return entry },
 		"a placement for a secret it does not name": func(entry Entry) Entry {
 			entry.InjectSecret = func(*http.Request, string) {}
@@ -689,18 +774,7 @@ func TestAnEntryTheFrameworkCannotServePanicsAtConstruction(t *testing.T) {
 					t.Error("construction returned, want a panic")
 				}
 			}()
-			newRouter([]Entry{break_(testEntry(fake, "readings"))}, newFakeClock().now)
+			newRoute(break_(testEntry(fake, "readings")), newFakeClock().now)
 		})
 	}
-}
-
-func TestTwoEntriesCannotRegisterOneSource(t *testing.T) {
-	fake := newUpstreamFake(t)
-
-	defer func() {
-		if recovered := recover(); recovered == nil {
-			t.Error("construction returned, want a panic")
-		}
-	}()
-	newRouter([]Entry{testEntry(fake, "readings"), testEntry(fake, "readings")}, newFakeClock().now)
 }

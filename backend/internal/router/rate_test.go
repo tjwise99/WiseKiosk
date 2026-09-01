@@ -24,6 +24,15 @@ const (
 	polledEvery = 5 * time.Minute
 	// overOneHour is the window the calls are counted in, and heldFor divides it.
 	overOneHour = time.Hour
+	// retriedEvery is how long the fixture route holds a failure for. It is
+	// shorter than heldFor, a source that is down being worth retrying sooner
+	// than one that answered is worth asking again, and it divides overOneHour.
+	retriedEvery = 10 * time.Minute
+	// askedEvery is how often the failure-path case calls the route. It is far
+	// shorter than retriedEvery: a module passing every incoming request upstream
+	// and one holding the failure are indistinguishable under a caller that asks
+	// once.
+	askedEvery = time.Minute
 )
 
 // oneQuery and anotherQuery are two locations in the fixture's own vocabulary.
@@ -32,13 +41,21 @@ const (
 	anotherQuery = "/api/readings?station=two"
 )
 
-// heldEntry is the fixture registration these cases stage: the testEntry above
-// under a cache interval long enough for the polling below to spend most of it
-// on the cache.
-func heldEntry(fake *upstreamFake) Entry {
-	entry := testEntry(fake, "readings")
-	entry.SuccessTTL = heldFor
-	return entry
+// held is the fixture these cases stage: the staged fixture above under a cache
+// interval long enough for the polling below to spend most of it on the cache.
+func held(fake *upstreamFake) fixture {
+	staged := staged(fake, "readings")
+	staged.entry.SuccessTTL = heldFor
+	return staged
+}
+
+// failing is the fixture the failure-path case stages: the same source under the
+// interval a failure is held for, which is the only thing holding the rate down
+// when there is no answer to serve.
+func failing(fake *upstreamFake) fixture {
+	staged := staged(fake, "readings")
+	staged.entry.NegativeTTL = retriedEvery
+	return staged
 }
 
 // TST062: the first clause's mechanism. A display polling faster than the route
@@ -49,10 +66,10 @@ func heldEntry(fake *upstreamFake) Entry {
 func TestTST062_ASourceIsAskedOncePerCacheIntervalForOneLocation(t *testing.T) {
 	clock := newFakeClock()
 	fake := newUpstreamFake(t)
-	handler := newRouter([]Entry{heldEntry(fake)}, clock.now)
+	handler := newRouter([]fixture{held(fake)}, clock.now)
 
 	for elapsed := time.Duration(0); elapsed < overOneHour; elapsed += polledEvery {
-		served := ask(handler, http.MethodGet, oneQuery)
+		served := ask(handler, moduleRouteMethod, oneQuery)
 		if served.Code != http.StatusOK {
 			t.Fatalf("the poll at %s: status = %d, want %d (%s)", elapsed, served.Code, http.StatusOK, served.Body)
 		}
@@ -70,7 +87,7 @@ func TestTST062_ASourceIsAskedOncePerCacheIntervalForOneLocation(t *testing.T) {
 	// The bound is per location: the cache is keyed on the query, so a second
 	// place is a second conversation and the first having spent its budget is not
 	// a reason to starve it.
-	if served := ask(handler, http.MethodGet, anotherQuery); served.Code != http.StatusOK {
+	if served := ask(handler, moduleRouteMethod, anotherQuery); served.Code != http.StatusOK {
 		t.Errorf("a second location: status = %d, want %d (%s)", served.Code, http.StatusOK, served.Body)
 	}
 }
@@ -89,7 +106,7 @@ func TestTST062_ASecondRequestIsNeverOutstandingWhileAFirstHasNotAnswered(t *tes
 	)
 
 	fake := newUpstreamFake(t)
-	handler := newRouter([]Entry{heldEntry(fake)}, newFakeClock().now)
+	handler := newRouter([]fixture{held(fake)}, newFakeClock().now)
 
 	release := fake.hold()
 	t.Cleanup(release)
@@ -99,7 +116,7 @@ func TestTST062_ASecondRequestIsNeverOutstandingWhileAFirstHasNotAnswered(t *tes
 	for range callers {
 		go func() {
 			arrived <- struct{}{}
-			answered <- ask(handler, http.MethodGet, oneQuery).Code
+			answered <- ask(handler, moduleRouteMethod, oneQuery).Code
 		}()
 	}
 	for range callers {
@@ -124,6 +141,38 @@ func TestTST062_ASecondRequestIsNeverOutstandingWhileAFirstHasNotAnswered(t *tes
 	}
 	if calls := fake.count(); calls != 1 {
 		t.Errorf("upstream calls for %d concurrent requests = %d, want the one they shared", callers, calls)
+	}
+}
+
+// The mechanism the failure path's bound is met by. It is the sibling of the
+// first case above and not the same one: what holds the rate down here is the
+// interval a failure is held for, and a source that answers exercises the other
+// interval instead. Which interval a module registers, and what that comes to,
+// is the module's own package to assert.
+func TestASourceIsAskedOncePerFailureIntervalForOneLocation(t *testing.T) {
+	clock := newFakeClock()
+	fake := newUpstreamFake(t)
+	handler := newRouter([]fixture{failing(fake)}, clock.now)
+
+	// The source is staged to fail rather than to be slow: a slow source that
+	// eventually answers is held for the success interval and measures nothing
+	// about this one.
+	fake.answers(http.StatusServiceUnavailable, "the source is down")
+
+	for elapsed := time.Duration(0); elapsed < overOneHour; elapsed += askedEvery {
+		refused := ask(handler, moduleRouteMethod, oneQuery)
+		if refused.Code != http.StatusBadGateway {
+			t.Fatalf("the call at %s: status = %d, want %d (%s)", elapsed, refused.Code, http.StatusBadGateway, refused.Body)
+		}
+		clock.advance(askedEvery)
+	}
+
+	// Exactly the window over the interval, from a caller asking ten times as
+	// often: more would be a failure not held, and fewer would be one held past
+	// its interval, which a recovered source would then go unnoticed for.
+	want := int(overOneHour / retriedEvery)
+	if calls := fake.count(); calls != want {
+		t.Errorf("upstream calls in %s at a %s failure interval = %d, want %d", overOneHour, retriedEvery, calls, want)
 	}
 }
 

@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
 	"log"
 	"net/http"
@@ -139,16 +138,7 @@ func keyedEntry(source *keyedSource) router.Entry {
 			MaxBytes:          1 << 16,
 		},
 		Source: "keyed",
-		Validate: func(params url.Values) error {
-			if params.Get("station") == "" {
-				return errors.New("a station is required")
-			}
-			return nil
-		},
 		Secret: canarySecret,
-		BuildURL: func(params url.Values) (string, error) {
-			return source.server.URL + "/?station=" + url.QueryEscape(params.Get("station")), nil
-		},
 		InjectSecret: func(request *http.Request, secretValue string) {
 			request.Header.Set(canaryHeader, secretValue)
 			query := request.URL.Query()
@@ -163,6 +153,29 @@ func keyedEntry(source *keyedSource) router.Entry {
 			return decoded, nil
 		},
 	}
+}
+
+// keyedSeam is the /api/ seam these cases assemble the server over: one source
+// at a path of its own, judged and addressed the way a module judges and
+// addresses its own, and the framework's own answer for every other API path.
+//
+// It stands in for a module rather than using one: what these cases measure is
+// the assembled process, and a real module would tie them to that module's
+// source and its upstream.
+func keyedSeam(source *keyedSource) http.Handler {
+	route := router.NewRoute(keyedEntry(source))
+
+	seam := http.NewServeMux()
+	seam.HandleFunc("POST /api/keyed", func(w http.ResponseWriter, r *http.Request) {
+		station := r.URL.Query().Get("station")
+		if station == "" {
+			router.Reject(w, router.InvalidParameters, "a station is required")
+			return
+		}
+		route.Serve(w, r, station, source.server.URL+"/?station="+url.QueryEscape(station))
+	})
+	seam.Handle("/api/", router.NewFallback(seam))
+	return seam
 }
 
 // servedTree writes an index and a configuration file into a temporary
@@ -203,11 +216,11 @@ func TestNoSecretValueReachesAnyServedSurface(t *testing.T) {
 	logged := captureLog(t)
 
 	source := newKeyedSource(t)
-	server := newServer(staticserve.New(http.Dir(servedTree(t))), router.NewRouter([]router.Entry{keyedEntry(source)}))
+	server := newServer(staticserve.New(http.Dir(servedTree(t))), keyedSeam(source))
 
-	served := get(server, "/api/keyed?station=one")
+	served := send(server, http.MethodPost, "/api/keyed?station=one")
 	if served.Code != http.StatusOK {
-		t.Fatalf("GET /api/keyed: status = %d, want %d (%s)", served.Code, http.StatusOK, served.Body)
+		t.Fatalf("POST /api/keyed: status = %d, want %d (%s)", served.Code, http.StatusOK, served.Body)
 	}
 
 	// Without this the sweep below passes on a server that placed no secret at
@@ -223,7 +236,7 @@ func TestNoSecretValueReachesAnyServedSurface(t *testing.T) {
 	// A second station, so the failure is fetched rather than served from the
 	// first answer's cache entry.
 	source.answers(http.StatusUnauthorized, `{"error":"key `+canary+` is not valid"}`)
-	failed := get(server, "/api/keyed?station=two")
+	failed := send(server, http.MethodPost, "/api/keyed?station=two")
 
 	// The status each surface is swept under, so a surface answering something
 	// other than what it serves cannot pass the sweep on an empty body.
@@ -236,8 +249,8 @@ func TestNoSecretValueReachesAnyServedSurface(t *testing.T) {
 		{"GET /", get(server, "/"), http.StatusOK},
 		{"GET /config.json", get(server, "/config.json"), http.StatusOK},
 		{"GET /no-such-asset.js", get(server, "/no-such-asset.js"), http.StatusNotFound},
-		{"GET /api/keyed", served, http.StatusOK},
-		{"GET /api/keyed, upstream failed", failed, http.StatusBadGateway},
+		{"POST /api/keyed", served, http.StatusOK},
+		{"POST /api/keyed, upstream failed", failed, http.StatusBadGateway},
 	}
 	for _, swept := range surfaces {
 		if swept.recorder.Code != swept.status {

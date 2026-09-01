@@ -2,6 +2,8 @@ package weather
 
 import (
 	"encoding/json"
+	"net/http"
+	"net/http/httptest"
 	"net/url"
 	"os"
 	"path/filepath"
@@ -9,19 +11,29 @@ import (
 	"strings"
 	"testing"
 	"time"
+
+	"github.com/tjwise99/WiseKiosk/backend/internal/boundary"
 )
 
 // captured is the recorded response every shaping case runs against: one real
 // answer from the source, for the location below, taken with the request
-// BuildURL builds. No case here reaches a network.
+// buildURL builds. No case here reaches a network.
+//
+// It carries more of each range than the payload holds — eight hours and seven
+// days against five and five — because a shaping that truncates and one that
+// passes the source's own length straight through are told apart only by a
+// response longer than the figure. It also spans the location's sunset, so the
+// hours it carries are not all of one kind: a shaping answering the same
+// day-or-night flag whatever it read would pass against a capture taken wholly
+// in daylight.
 const captured = "testdata/open-meteo-forecast.json"
 
 // The location the capture was taken for, and the offset the source reported for
 // it. A timestamp in the payload carries that offset rather than the reader's.
 const (
-	capturedLat    = "40.7128"
-	capturedLon    = "-74.006"
-	capturedOffset = "-04:00"
+	capturedLat    = 25.2048
+	capturedLon    = 55.2708
+	capturedOffset = "+04:00"
 )
 
 // response reads the captured response.
@@ -36,131 +48,114 @@ func response(t *testing.T) []byte {
 }
 
 // point is a request naming a location.
-func point(lat, lon string) url.Values {
-	return url.Values{paramLat: {lat}, paramLon: {lon}}
+func point(lat, lon float64) boundary.WeatherRequest {
+	return boundary.WeatherRequest{Lat: lat, Lon: lon}
+}
+
+// serve runs one request against this module's own schema handler, which is what
+// judges a body and what answers a rejection.
+func serve(t *testing.T, body string) *httptest.ResponseRecorder {
+	t.Helper()
+
+	recorder := httptest.NewRecorder()
+	request := httptest.NewRequest(http.MethodPost, "/api/weather", strings.NewReader(body))
+	WeatherRoute{}.PostApiWeather(recorder, request)
+	return recorder
 }
 
 // TestTST058_ThePatternAdmitsAPointAndRejectsEveryOtherValue reads SRS043
-// against the pattern itself. No case reaches a network, and the rejected ones
-// build no URL — which is what says nothing goes upstream for a request the
-// pattern refuses.
+// against the constraint itself. No case reaches a network: the admitted ones
+// are read against the constraint and the request built from them, and the
+// rejected ones are read through the module's own handler, which answers before
+// any upstream call is reachable.
+//
+// The rejected cases are values rather than spellings. What a coordinate may be
+// written as is the boundary schema's, refused by the generated body's own
+// decoding, so the two rows below that are not numbers at all stand for that
+// half arriving as a rejection rather than for anything this module judges.
 func TestTST058_ThePatternAdmitsAPointAndRejectsEveryOtherValue(t *testing.T) {
 	admitted := []struct {
 		name     string
-		lat, lon string
+		lat, lon float64
 	}{
 		{"the captured location", capturedLat, capturedLon},
-		{"the null island", "0", "0"},
-		{"the poles and the antimeridian", "-90", "-180"},
-		{"the other end of both ranges", "90", "180"},
-		{"a whole number of degrees", "51", "-1"},
-		// What a JavaScript number formats a near-zero coordinate as. Refusing
-		// this refused a legal point for how it was printed.
-		{"a near-zero longitude in exponent form", capturedLat, "1e-7"},
-		{"a negative near-zero latitude in exponent form", "-1.5e-7", capturedLon},
-		{"an exponent standing for a whole coordinate", "4.07128e1", capturedLon},
-		{"a signed-positive latitude", "+40.7128", capturedLon},
-		{"a latitude with no whole part", ".5", capturedLon},
-		{"a latitude with no fractional part after its point", "40.", capturedLon},
+		{"the null island", 0, 0},
+		{"the poles and the antimeridian", -90, -180},
+		{"the other end of both ranges", 90, 180},
+		{"a whole number of degrees", 51, -1},
+		{"a near-zero longitude", capturedLat, 1e-7},
+		{"a negative near-zero latitude", -1.5e-7, capturedLon},
 	}
 
 	for _, c := range admitted {
 		t.Run("admits "+c.name, func(t *testing.T) {
-			params := point(c.lat, c.lon)
-			if err := Validate(params); err != nil {
-				t.Fatalf("Validate: unexpected rejection: %v", err)
+			request := point(c.lat, c.lon)
+			if err := validate(request); err != nil {
+				t.Fatalf("validate: unexpected rejection: %v", err)
 			}
 
-			// The pattern admitting a value is worth nothing if the request it
+			// The constraint admitting a value is worth nothing if the request it
 			// then builds does not carry it.
-			target, err := BuildURL(params)
+			built, err := url.Parse(buildURL(request))
 			if err != nil {
-				t.Fatalf("BuildURL: unexpected error: %v", err)
+				t.Fatalf("buildURL returned a value that is not a URL: %v", err)
 			}
-			built, err := url.Parse(target)
-			if err != nil {
-				t.Fatalf("BuildURL returned %q, which is not a URL: %v", target, err)
+			if got := built.Query().Get("latitude"); got != degrees(c.lat) {
+				t.Errorf("the request's latitude = %q, want %q", got, degrees(c.lat))
 			}
-			if got := built.Query().Get("latitude"); got != c.lat {
-				t.Errorf("the request's latitude = %q, want %q", got, c.lat)
-			}
-			if got := built.Query().Get("longitude"); got != c.lon {
-				t.Errorf("the request's longitude = %q, want %q", got, c.lon)
+			if got := built.Query().Get("longitude"); got != degrees(c.lon) {
+				t.Errorf("the request's longitude = %q, want %q", got, degrees(c.lon))
 			}
 		})
 	}
 
 	rejected := []struct {
-		name   string
-		params url.Values
+		name string
+		body string
 	}{
-		{"no parameters at all", url.Values{}},
-		{"a latitude and no longitude", url.Values{paramLat: {capturedLat}}},
-		{"a longitude and no latitude", url.Values{paramLon: {capturedLon}}},
-		{"an empty latitude", point("", capturedLon)},
-		{"an empty longitude", point(capturedLat, "")},
-		{"a latitude past the pole", point("90.1", capturedLon)},
-		{"a longitude past the antimeridian", point(capturedLat, "-180.1")},
-		{"a latitude that is not a number", point("here", capturedLon)},
-		{"a longitude that is not a number", point(capturedLat, "east")},
-		{"a latitude written as not-a-number", point("NaN", capturedLon)},
-		{"a longitude written as infinite", point(capturedLat, "Inf")},
-		{"a longitude in hexadecimal", point(capturedLat, "0x4a")},
-		{"a latitude in hexadecimal float form", point("0x1p4", capturedLon)},
-		{"a latitude written as infinity in full", point("Infinity", capturedLon)},
-		{"an exponent with no digits", point("40.7e", capturedLon)},
-		{"a latitude past the pole in exponent form", point("9.1e1", capturedLon)},
-		{"a magnitude too large to hold", point("1e400", capturedLon)},
-		{"a place name instead of a point", url.Values{"place": {"the observatory"}}},
-		{"a repeated latitude", url.Values{paramLat: {capturedLat, "0"}, paramLon: {capturedLon}}},
-		{"a repeated longitude", url.Values{paramLat: {capturedLat}, paramLon: {capturedLon, "0"}}},
-		{"a point and a parameter this source does not take", url.Values{
-			paramLat: {capturedLat}, paramLon: {capturedLon}, "units": {"metric"},
-		}},
-		{"a point and an empty parameter this source does not take", url.Values{
-			paramLat: {capturedLat}, paramLon: {capturedLon}, "x": {""},
-		}},
+		{"a latitude past the pole", `{"lat":90.1,"lon":55.2708}`},
+		{"a longitude past the antimeridian", `{"lat":25.2048,"lon":-180.1}`},
+		{"a latitude past the pole by the smallest step there is", `{"lat":90.00000000000001,"lon":0}`},
+		{"a magnitude too large to hold", `{"lat":1e400,"lon":0}`},
+		{"a latitude that is not a number", `{"lat":"here","lon":55.2708}`},
+		{"a longitude written as not-a-number", `{"lat":25.2048,"lon":NaN}`},
+		{"a point and a parameter this source does not take", `{"lat":25.2048,"lon":55.2708,"units":"metric"}`},
+		{"a point and an empty parameter this source does not take", `{"lat":25.2048,"lon":55.2708,"x":""}`},
+		{"a place name instead of a point", `{"place":"the observatory"}`},
+		{"no body at all", ``},
+		{"a body that is not an object", `[25.2048,55.2708]`},
 	}
 
 	for _, c := range rejected {
 		t.Run("rejects "+c.name, func(t *testing.T) {
-			err := Validate(c.params)
-			if err == nil {
-				t.Fatal("Validate: admitted, want a rejection")
+			recorder := serve(t, c.body)
+
+			if recorder.Code != http.StatusBadRequest {
+				t.Fatalf("status = %d, want the rejection %d (%s)", recorder.Code, http.StatusBadRequest, recorder.Body)
 			}
-			if err.Error() == "" {
+
+			var rejection boundary.ClientRejection
+			if err := json.Unmarshal(recorder.Body.Bytes(), &rejection); err != nil {
+				t.Fatalf("reading the rejection %q: %v", recorder.Body, err)
+			}
+			if rejection.Message == "" {
 				t.Error("the rejection carries no text to render")
 			}
-
 			// The rejection's text is rendered, so what was sent must not be in it.
-			for _, given := range c.params {
-				for _, value := range given {
-					if value != "" && strings.Contains(err.Error(), value) {
-						t.Errorf("the rejection %q echoes what was sent: %q", err, value)
-					}
-				}
-			}
-
-			// Nothing goes upstream for a request the pattern refuses, and the URL
-			// builder is the only thing here that names an upstream.
-			if target, err := BuildURL(c.params); err == nil {
-				t.Errorf("BuildURL built %q for a location the pattern refuses", target)
+			if strings.Contains(rejection.Message, c.body) && c.body != "" {
+				t.Errorf("the rejection %q echoes what was sent", rejection.Message)
 			}
 		})
 	}
 }
 
 // TestTheRequestAsksTheSourceForWhatThePayloadCarries reads the other half of
-// BuildURL: the units the boundary schema declares, and both forward ranges in
+// buildURL: the units the boundary schema declares, and both forward ranges in
 // the one call this module's route can make.
 func TestTheRequestAsksTheSourceForWhatThePayloadCarries(t *testing.T) {
-	target, err := BuildURL(point(capturedLat, capturedLon))
+	built, err := url.Parse(buildURL(point(capturedLat, capturedLon)))
 	if err != nil {
-		t.Fatalf("BuildURL: unexpected error: %v", err)
-	}
-	built, err := url.Parse(target)
-	if err != nil {
-		t.Fatalf("BuildURL returned %q, which is not a URL: %v", target, err)
+		t.Fatalf("buildURL returned a value that is not a URL: %v", err)
 	}
 
 	if built.Scheme != "https" {
@@ -186,13 +181,20 @@ func TestTheRequestAsksTheSourceForWhatThePayloadCarries(t *testing.T) {
 		}
 	}
 
-	// One hour more than the payload carries, because the source's range opens
-	// with the hour in progress and the payload drops it.
+	// One more of each than the payload carries, because the source's ranges open
+	// with the hour in progress and with today, both of which the payload drops.
 	if hours := horizon(t, built, "forecast_hours"); hours != hoursShown+1 {
 		t.Errorf("the request asks for %d hours and the payload carries %d, want one more than it carries", hours, hoursShown)
 	}
-	if days := horizon(t, built, "forecast_days"); days != daysShown {
-		t.Errorf("the request asks for %d days and the payload carries %d", days, daysShown)
+	if days := horizon(t, built, "forecast_days"); days != daysShown+1 {
+		t.Errorf("the request asks for %d days and the payload carries %d, want one more than it carries", days, daysShown)
+	}
+
+	// The day-or-night flag is asked for per hour as well as for the present
+	// reading: the payload requires it on each hour, so a request that did not
+	// ask for it makes every hour unshapeable.
+	if fields := built.Query().Get("hourly"); !strings.Contains(fields, "is_day") {
+		t.Errorf("the request asks for hourly %q, want the day-or-night flag among them", fields)
 	}
 }
 
@@ -237,21 +239,34 @@ func TestTST059_ShapingTheCapturedResponseCarriesEverythingAViewerIsOwed(t *test
 		t.Error("the capture was taken in daylight, and the payload says otherwise")
 	}
 
-	if len(payload.Hourly) != hoursShown {
-		t.Errorf("the payload carries %d hours, want %d", len(payload.Hourly), hoursShown)
-	}
-	if len(payload.Daily) != daysShown {
-		t.Errorf("the payload carries %d days, want %d", len(payload.Daily), daysShown)
-	}
-
-	// The hour in progress is what the source's range opens with, so the first
-	// hour the payload carries is the one after it.
+	// The hour in progress and today are what the source's ranges open with, so
+	// the first of each the payload carries is the one after it.
 	var raw forecast
 	if err := json.Unmarshal(response(t), &raw); err != nil {
 		t.Fatalf("reading the captured response: %v", err)
 	}
 	if strings.HasPrefix(payload.Hourly[0].Time, raw.Hourly.Time[0]) {
 		t.Errorf("the first hour shown is %q, which is the hour the source opened with", payload.Hourly[0].Time)
+	}
+	if strings.HasPrefix(payload.Daily[0].Time, raw.Daily.Time[0]) {
+		t.Errorf("the first day shown is %q, which is today", payload.Daily[0].Time)
+	}
+
+	// The fifth respect, carried on each hour as well as on the present reading.
+	// The capture spans the location's sunset, so the hours are not all of one
+	// kind and a shaping answering the same flag throughout fails here.
+	daylit := 0
+	for index, hour := range payload.Hourly {
+		if hour.IsDay != (*raw.Hourly.IsDay[index+1] == 1) {
+			t.Errorf("hour %d is drawn as daylight=%v, want the capture's", index, hour.IsDay)
+		}
+		if hour.IsDay {
+			daylit++
+		}
+	}
+	if daylit == 0 || daylit == len(payload.Hourly) {
+		t.Errorf("all %d hours are daylight=%v, so the capture cannot tell a carried flag from a constant one",
+			len(payload.Hourly), daylit != 0)
 	}
 
 	for index, hour := range payload.Hourly {
@@ -284,6 +299,44 @@ func TestTST059_ShapingTheCapturedResponseCarriesEverythingAViewerIsOwed(t *test
 	}
 }
 
+// TestTheOutlooksAreAsLongAsTheRequirementStates reads the horizon against a
+// capture carrying more of each range than the payload is to hold: a shaping
+// that truncates and one that passes the source's own length straight through
+// are told apart only by a response longer than the figure.
+//
+// The expected lengths are written here rather than read from the module's own
+// constants. A check reading the constant asserts that the module agrees with
+// itself, which is equally true of a module that shows one hour.
+func TestTheOutlooksAreAsLongAsTheRequirementStates(t *testing.T) {
+	const (
+		wantHours = 5
+		wantDays  = 5
+	)
+
+	var raw forecast
+	if err := json.Unmarshal(response(t), &raw); err != nil {
+		t.Fatalf("reading the captured response: %v", err)
+	}
+	// Without this the lengths below are asserted against a capture that never
+	// had more to give, which passes whether or not anything truncates.
+	if len(raw.Hourly.Time) <= wantHours || len(raw.Daily.Time) <= wantDays {
+		t.Fatalf("the capture carries %d hours and %d days, want more than the %d and %d the payload holds",
+			len(raw.Hourly.Time), len(raw.Daily.Time), wantHours, wantDays)
+	}
+
+	payload, err := Shape(response(t))
+	if err != nil {
+		t.Fatalf("Shape: unexpected error: %v", err)
+	}
+
+	if len(payload.Hourly) != wantHours {
+		t.Errorf("the payload carries %d hours, want %d", len(payload.Hourly), wantHours)
+	}
+	if len(payload.Daily) != wantDays {
+		t.Errorf("the payload carries %d days, want %d", len(payload.Daily), wantDays)
+	}
+}
+
 // TestTST059_AResponseMissingAValueThePayloadNeedsIsNotShaped is the other half
 // of the shaping obligation: a source that answers with a value missing is a
 // payload this module cannot build, rather than one carrying a zero nobody
@@ -306,8 +359,24 @@ func TestTST059_AResponseMissingAValueThePayloadNeedsIsNotShaped(t *testing.T) {
 		"an hourly temperature the source did not report": func(read map[string]any) {
 			read["hourly"].(map[string]any)["temperature_2m"].([]any)[1] = nil
 		},
+		// Index one in both ranges: index nought is the hour in progress and today,
+		// which the payload drops, so a value missing there is one nothing reads.
 		"a daily maximum the source did not report": func(read map[string]any) {
-			read["daily"].(map[string]any)["temperature_2m_max"].([]any)[0] = nil
+			read["daily"].(map[string]any)["temperature_2m_max"].([]any)[1] = nil
+		},
+		"an hour the source did not say was in daylight": func(read map[string]any) {
+			read["hourly"].(map[string]any)["is_day"].([]any)[1] = nil
+		},
+		"no hourly day-or-night flag at all": func(read map[string]any) {
+			delete(read["hourly"].(map[string]any), "is_day")
+		},
+		"a daily range holding only today": func(read map[string]any) {
+			daily := read["daily"].(map[string]any)
+			for _, measurement := range []string{
+				"time", "weather_code", "temperature_2m_max", "temperature_2m_min", "precipitation_probability_max",
+			} {
+				daily[measurement] = daily[measurement].([]any)[:1]
+			}
 		},
 		"an hourly range one measurement short": func(read map[string]any) {
 			hourly := read["hourly"].(map[string]any)
@@ -315,7 +384,7 @@ func TestTST059_AResponseMissingAValueThePayloadNeedsIsNotShaped(t *testing.T) {
 		},
 		"an hourly range holding only the hour in progress": func(read map[string]any) {
 			hourly := read["hourly"].(map[string]any)
-			for _, measurement := range []string{"time", "temperature_2m", "weather_code", "precipitation_probability"} {
+			for _, measurement := range []string{"time", "temperature_2m", "weather_code", "precipitation_probability", "is_day"} {
 				hourly[measurement] = hourly[measurement].([]any)[:1]
 			}
 		},

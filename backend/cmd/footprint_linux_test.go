@@ -15,7 +15,6 @@ import (
 	"testing"
 	"time"
 
-	"github.com/tjwise99/WiseKiosk/backend/internal/router"
 	"github.com/tjwise99/WiseKiosk/backend/internal/staticserve"
 )
 
@@ -53,18 +52,19 @@ const (
 // the preflight pass asserts, so the mix is known to reach those paths before
 // any of it is driven at volume.
 var requests = []struct {
+	method string
 	target string
 	want   int
 	vary   bool
 }{
-	{target: healthPath, want: http.StatusOK},
-	{target: "/", want: http.StatusOK},
-	{target: "/config.json", want: http.StatusOK},
-	{target: "/no-such-asset.js", want: http.StatusNotFound},
-	{target: "/api/keyed?station=cached", want: http.StatusOK},
-	{target: "/api/keyed?station=varied-", want: http.StatusOK, vary: true},
-	{target: "/api/unknown?station=one", want: http.StatusNotFound},
-	{target: "/api/keyed", want: http.StatusBadRequest},
+	{method: http.MethodGet, target: healthPath, want: http.StatusOK},
+	{method: http.MethodGet, target: "/", want: http.StatusOK},
+	{method: http.MethodGet, target: "/config.json", want: http.StatusOK},
+	{method: http.MethodGet, target: "/no-such-asset.js", want: http.StatusNotFound},
+	{method: http.MethodPost, target: "/api/keyed?station=cached", want: http.StatusOK},
+	{method: http.MethodPost, target: "/api/keyed?station=varied-", want: http.StatusOK, vary: true},
+	{method: http.MethodPost, target: "/api/unknown?station=one", want: http.StatusNotFound},
+	{method: http.MethodPost, target: "/api/keyed", want: http.StatusBadRequest},
 }
 
 // TestRunningFootprintStaysBounded drives the assembled server under sustained
@@ -76,7 +76,7 @@ var requests = []struct {
 func TestRunningFootprintStaysBounded(t *testing.T) {
 	plant(t)
 	source := newKeyedSource(t)
-	server := newServer(staticserve.New(http.Dir(servedTree(t))), router.NewRouter([]router.Entry{keyedEntry(source)}))
+	server := newServer(staticserve.New(http.Dir(servedTree(t))), keyedSeam(source))
 
 	// Before preflight, not after: preflight's two upstream calls leave pooled
 	// sockets behind, and a baseline holding them counts them into itself
@@ -143,8 +143,8 @@ func preflight(t *testing.T, server http.Handler) {
 		if spec.vary {
 			target += "preflight"
 		}
-		if recorder := get(server, target); recorder.Code != spec.want {
-			t.Fatalf("GET %s: status = %d, want %d (%s)", target, recorder.Code, spec.want, recorder.Body)
+		if recorder := send(server, spec.method, target); recorder.Code != spec.want {
+			t.Fatalf("%s %s: status = %d, want %d (%s)", spec.method, target, recorder.Code, spec.want, recorder.Body)
 		}
 	}
 }
@@ -165,7 +165,7 @@ func drive(server http.Handler, worker int, stop <-chan struct{}, issued *atomic
 		if spec.vary {
 			target += strconv.Itoa(n)
 		}
-		get(server, target)
+		send(server, spec.method, target)
 		issued.Add(1)
 		time.Sleep(requestPause)
 	}
