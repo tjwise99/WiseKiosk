@@ -4,7 +4,7 @@ header: |
   The weather payload carries the present and both outlooks
 level: 81
 links:
-- SRS044: 6uZim7o-jdWfmjHib1Aeoz4uBfmjGv27rci1xYdgEHw=
+- SRS044: 6vTvZZWMJ0t-OlCL16ROHJyhva3fsUmBd4Fyr1BTgn0=
 normative: true
 rationale: |
   Read against a captured response rather than a live source, so what is asserted is the shaping rather
@@ -13,25 +13,29 @@ rationale: |
   All four present respects and both ranges are asserted rather than the payload being checked for
   shape, because a shaping that dropped one of them produces a payload that still parses and still
   renders.
+  The day-or-night distinction is asserted with the rest rather than separately because it fails the
+  same way they do - a shaping that dropped it produces a payload that still parses and still renders,
+  and a component drawing a night as a day has nothing wrong in what it was handed.
 ref: ''
 references:
 - keyword: func TestTST059_ShapingTheCapturedResponseCarriesEverythingAViewerIsOwed
   path: backend/internal/modules/weather/weather_test.go
-  sha: 48cdd4054c0ef948c22221d21d239d7de0486051d39a8e2d68caccb9ff9a688e
+  sha: a07a46eb65301961042d4d1451e0b0a7e7d8ac4cee71a682ff7950f1d023ba1e
   type: file
 - keyword: func TestTST059_AResponseMissingAValueThePayloadNeedsIsNotShaped
   path: backend/internal/modules/weather/weather_test.go
-  sha: 48cdd4054c0ef948c22221d21d239d7de0486051d39a8e2d68caccb9ff9a688e
+  sha: a07a46eb65301961042d4d1451e0b0a7e7d8ac4cee71a682ff7950f1d023ba1e
   type: file
-reviewed: 8LRABbjKIM8Le0O1Uv4tGO4lqasgMVxmWyxwbeeNIk8=
+reviewed: I1SyVTbXEL9Azs0qmL9X7vmllhkx8Rrt1pVkQbHiz4E=
 status: proposed
 text: |
   Unit test running the module's shaping over a captured response from its source, with no network,
   and asserting the payload it produces carries, for the location the request named, the present
-  weather in each of the four respects and both forward ranges.
+  weather in each of the five respects and both forward ranges, with the day-or-night distinction
+  carried on the present and on each hour of the forward range that carries hours.
 verification-justification: |
   Settles that a captured response is reshaped into everything a viewer is owed.
   Leaves unproven the truth of any value in it, the source being outside this system, and bounds
   coverage by the captures the suite holds: a response the source can return and no capture contains -
-  a value missing, a range short - is unasserted here.
+  a value missing, a range short, a day-or-night flag absent - is unasserted here.
 verification-method: test

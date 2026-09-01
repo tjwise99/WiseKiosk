@@ -1,7 +1,7 @@
 active: true
 derived: false
 header: |
-  The weather module's upstream rate and concurrency bounds hold
+  The weather module's success-path rate and concurrency bounds hold
 level: 84
 links:
 - SRS047: 4QyJkk1fU7vKwq0YrR5f0J4HRnNPHhs8p3P9hSwCGKo=
@@ -13,28 +13,33 @@ rationale: |
   not anything enforces it.
   The clock is driven for the same reason the freshness reading drives it: an hourly bound cannot be
   read from a suite that runs for seconds.
+  The staged source answers as well as being slow, and that is now load-bearing rather than
+  incidental. The bound this item reads is the one that holds while there are answers to have; a run
+  against a failing source emits at the other figure, which is the higher of the two, and would read
+  as a violation of a bound that never applied to it.
 ref: ''
 references:
 - keyword: func TestTST062_ASourceIsAskedOncePerCacheIntervalForOneLocation
   path: backend/internal/router/rate_test.go
-  sha: 4c44ffccdcdda14c0f8aef5c63f97500d54cad9b604f1160e4ef2dcf66354977
+  sha: d525ad0e4ea2797b18d60baadad4afbbab7008aeed680de3460b95cd35650020
   type: file
 - keyword: func TestTST062_ASecondRequestIsNeverOutstandingWhileAFirstHasNotAnswered
   path: backend/internal/router/rate_test.go
-  sha: 4c44ffccdcdda14c0f8aef5c63f97500d54cad9b604f1160e4ef2dcf66354977
+  sha: d525ad0e4ea2797b18d60baadad4afbbab7008aeed680de3460b95cd35650020
   type: file
 - keyword: func TestTST062_ThePolicyComesToFourRequestsAnHourForOneLocation
   path: backend/internal/modules/weather/weather_test.go
-  sha: 48cdd4054c0ef948c22221d21d239d7de0486051d39a8e2d68caccb9ff9a688e
+  sha: a07a46eb65301961042d4d1451e0b0a7e7d8ac4cee71a682ff7950f1d023ba1e
   type: file
-reviewed: kCEZdvA53Bd3n17b2EEAZvb05SX9wTXmUxykLVB2Q3w=
+reviewed: BEUMfOLRq8GImNwTy2aVTbHgzlOgb5g8EDOYXJLWE-I=
 status: proposed
 text: |
-  Integration test driving the module's route under a driven clock and a slow staged source, asserting
-  the requests that leave stay within the hourly bound the requirement states for one location, and
-  that a second is never outstanding while a first has not answered.
+  Integration test driving the module's route under a driven clock and a slow staged source that
+  answers, asserting the requests that leave stay within the hourly bound the requirement states for
+  one location while that source is answering, and that a second is never outstanding while a first
+  has not answered.
 verification-justification: |
-  Settles what this system emits, under a clock the harness drives.
+  Settles what this system emits while its source is answering, under a clock the harness drives.
   Leaves unproven what the source will tolerate: another party's rate policy is published or not at its
   own discretion, changed without notice, and not decidable here. It is asserted over the window the
   suite runs rather than over a deployment left running for years, so a drift that only appears over

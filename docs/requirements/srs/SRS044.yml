@@ -13,6 +13,20 @@ rationale: |
   a coat is chosen against and the two part company in wind and in damp. The forward half is stated as
   two ranges rather than one because the hours ahead answer whether to go out now and the days ahead
   answer whether to plan for tomorrow, and a single range answers one of those badly.
+  Day or night is the fifth respect, and it is carried rather than worked out. What a source reports
+  a sky with says what is happening and not when: the same condition stands for a clear morning and a
+  clear midnight, so a display drawing one for the other has nothing in its payload that was wrong. It
+  cannot be settled on the page either - the place reported on is the configuration's and need not be
+  where the display hangs, and an hour of a forecast is a different sun's position from the hour the
+  page is drawn in - so it is a distinct signal the module puts across for the present and for each
+  hour it forecasts. The days ahead carry no such flag: a day is not day or night.
+  The two ranges carry figures for the same reason the timing items do. Stated only as the hours next
+  to come, the obligation is met by a payload carrying one of them, and a shaping that silently
+  returned fewer would leave a viewer reading a shorter outlook than the display was built for with
+  nothing to fail against - while a check written against the module's own constant asserts only that
+  the module agrees with itself. Five hours is far enough to answer whether to go out now and get back
+  dry, and five days far enough to plan around while still being a forecast worth reading rather than
+  a guess.
   The item states what a viewer is owed and not the shape it arrives in. The names of the fields, their
   units, their types and however the source happens to encode a sky are the boundary schema's and the
   shaping library's; a requirement fixing any of them would settle an interface those records are the
@@ -21,16 +35,18 @@ rationale: |
   runs on a captured response with no browser and no network, and a module handed everything a viewer is
   owed can still draw half of it.
 ref: ''
-reviewed: UYmOxCnBxlbiAf36RM4VLyQ5N2WJcMTthMXhHoqAVxY=
+reviewed: vbh5u4kwHZCW8LDSybEy3GrT2vqKrP9TKm0dHFrbAQc=
 status: accepted
 text: |
-  The weather module shall put across the boundary, for the location a request names, the weather there
-  at present - what it is doing, how warm it is, how warm it feels and how the wind stands - together
-  with what the weather is expected to be over the hours next to come and over the days next to come.
+  The weather module shall put across the boundary, for the location a request names, the weather
+  there at present - what it is doing, whether it is day or night, how warm it is, how warm it feels
+  and how the wind stands - together with what the weather is expected to be over each of the five
+  hours next to come, day or night with each of them, and over each of the five days next to come.
 verification-justification: |
-  Read from the module's shaping run against a captured response from its source, without a network: for
-  the location the request named, what it produces carries the present weather in each of the four
-  respects and both forward ranges.
+  Read from the module's shaping run against a captured response from its source, without a network:
+  for the location the request named, what it produces carries the present weather in each of the five
+  respects, both forward ranges at the lengths the item states, and the day-or-night distinction with
+  each hour of the forward range that carries hours.
   What it cannot settle is that any of it is true of the sky, the source being another party's system
   and outside this one. It is also bounded by the captures a suite holds: a response the source can
   return and no capture contains is unasserted here, which includes a source that answers with a value

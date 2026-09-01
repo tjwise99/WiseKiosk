@@ -11,6 +11,11 @@ rationale: |
   or run the three parts together so that a glance cannot tell what is happening now from what is
   expected later. That failure is invisible to the shaping and visible only on a page, which is why this
   is its own item rather than a second clause of the payload's.
+  The lengths are stated here as well as on the payload because the two fail differently and neither
+  obligation reaches the other's failure: a component handed five hours can draw three, and a payload
+  carrying three cannot be repaired by any component. This is the same split the item already rests
+  on - what is handed over and what is drawn are settled by different evidence - applied to the
+  figure rather than to the presence.
   What is obliged is that the parts are told apart, not how. Where each sits, in what order and in what
   styling is the page's layout and the styling contract's, both already obliged of every module; a
   viewer confusing this afternoon's rain for the rain outside is the failure this forbids, and there are
@@ -26,15 +31,15 @@ rationale: |
   That is a property of the rendering rather than of the data, and no obligation on the payload reaches
   it.
 ref: ''
-reviewed: rhrY4v2HUEE5X3kHm6bQ94Et4AKOIdBTnMQ38PX6oUw=
+reviewed: rDM6yzO6Lh--QaHrT2v-bEf9lXy2h3zqSuU32nk4kBM=
 status: accepted
 text: |
-  The weather module shall show both the present weather and the weather expected next, the present
-  distinguishable from the expected, and the hours next to come distinguishable from the days next to
-  come.
+  The weather module shall show both the present weather and the weather expected over the five hours
+  next to come and the five days next to come, the present distinguishable from the expected, and the
+  hours next to come distinguishable from the days next to come.
 verification-justification: |
   Read from a rendered page handed a payload: the present weather and both forward ranges are all
-  present, and each is separable from the other two by what is drawn.
+  present at the lengths the item states, and each is separable from the other two by what is drawn.
   What it cannot settle is whether the arrangement chosen is a good one. That a viewer can tell the
   parts apart at a glance across the room is a judgement about a real display in a real room, and a
   check reads a rendered page rather than a viewer. It is also bounded by the payloads a suite supplies:
