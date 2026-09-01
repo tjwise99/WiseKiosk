@@ -93,6 +93,25 @@ const HOURLY = '[data-weather-hourly]';
 const DAILY = '[data-weather-daily]';
 const LOADING = '[data-module-loading]';
 const UNAVAILABLE = '[data-module-unavailable]';
+const GLYPH = '[data-weather-glyph]';
+
+/**
+ * The marks the cases below read for, written out here rather than imported from the component: a
+ * case taking its expectation from the map it is checking asserts the map against itself and passes
+ * whatever the map says. Codepoints are the icon face's own.
+ */
+const GLYPHS = {
+  /** Code 0, the two sides of the day: a sun, and a full moon. */
+  clearDay: '\uF00D',
+  clearNight: '\uF02E',
+  /** Code 61, whose two sides differ. */
+  rainDay: '\uF008',
+  rainNight: '\uF028',
+  /** Code 3, one of the seven carrying one mark for both sides. */
+  overcast: '\uF013',
+  /** What is drawn for a code the map does not carry. */
+  unread: '\uF07B',
+};
 
 /** The box the browser gave one element, which every case below asserts is there before reading it. */
 async function boxOf(page: import('@playwright/test').Page, selector: string): Promise<Box> {
@@ -362,6 +381,108 @@ test('renders why its own source failed, in its own place, while the backend is 
   // the page raised no outage report, this being one module's failure and not the backend's.
   await expect(page.locator(TEMP)).toHaveCount(0);
   await expect(page.locator('[data-backend-unreachable]')).toHaveCount(0);
+});
+
+/** The same answer, with the present reading and each hour set to the sides of the day given. */
+function withDaylight(
+  temp: number,
+  current: { code: number; isDay: boolean },
+  hours: { code: number; isDay: boolean }[],
+): WeatherPayload {
+  const base = forecast(temp);
+  return {
+    ...base,
+    current: { ...base.current, weatherCode: current.code, isDay: current.isDay },
+    hourly: base.hourly.map((hour, index) => ({
+      ...hour,
+      weatherCode: hours[index]!.code,
+      isDay: hours[index]!.isDay,
+    })),
+  };
+}
+
+/** Five hours of one code and one side of the day, for a case reading the present reading alone. */
+function everyHour(code: number, isDay: boolean): { code: number; isDay: boolean }[] {
+  return Array.from({ length: 5 }, () => ({ code, isDay }));
+}
+
+test('draws the present reading on the side of the day the payload gives it', async ({ page }) => {
+  // The two payloads differ in the flag alone — same code, same figures — so whatever moves between
+  // them is the distinction's and nothing else's.
+  await serveModuleData(page, () => ({
+    status: 200,
+    data: withDaylight(WARM, { code: 0, isDay: true }, everyHour(0, true)),
+  }));
+  await render(page, placed(HERE));
+
+  const present = page.locator(`${PRESENT} ${GLYPH}`);
+  await expect(present).toHaveText(GLYPHS.clearDay);
+
+  await serveModuleData(page, () => ({
+    status: 200,
+    data: withDaylight(WARM, { code: 0, isDay: false }, everyHour(0, false)),
+  }));
+  await render(page, placed(HERE));
+
+  // Read beside the day mark above: a component drawing one constant mark passes an assertion made
+  // about the night one only if the day one was never asserted.
+  await expect(present).toHaveText(GLYPHS.clearNight);
+});
+
+test('draws each hour on its own side of the day, not the present reading’s', async ({ page }) => {
+  // A day reading with the night falling across the hours to come — the case the present reading's
+  // own flag cannot answer, and the case a component reading the page's clock gets wrong wherever
+  // the display does not hang at the place reported on.
+  await serveModuleData(page, () => ({
+    status: 200,
+    data: withDaylight(WARM, { code: 0, isDay: true }, [
+      { code: 61, isDay: true },
+      { code: 61, isDay: true },
+      { code: 61, isDay: false },
+      { code: 61, isDay: false },
+      { code: 61, isDay: false },
+    ]),
+  }));
+  await render(page, placed(HERE));
+
+  await expect(page.locator(`${PRESENT} ${GLYPH}`)).toHaveText(GLYPHS.clearDay);
+  await expect(page.locator(`${HOURLY} ${GLYPH}`)).toHaveText([
+    GLYPHS.rainDay,
+    GLYPHS.rainDay,
+    GLYPHS.rainNight,
+    GLYPHS.rainNight,
+    GLYPHS.rainNight,
+  ]);
+});
+
+test('draws one mark for both sides of the day where the code carries one', async ({ page }) => {
+  // Seven codes share a mark between day and night. Asserted on both sides rather than one, because
+  // a component that ignored the flag entirely would pass either half alone.
+  for (const isDay of [true, false]) {
+    await serveModuleData(page, () => ({
+      status: 200,
+      data: withDaylight(WARM, { code: 3, isDay }, everyHour(3, isDay)),
+    }));
+    await render(page, placed(HERE));
+
+    await expect(page.locator(`${PRESENT} ${GLYPH}`)).toHaveText(GLYPHS.overcast);
+    await expect(page.locator(`${HOURLY} ${GLYPH}`).first()).toHaveText(GLYPHS.overcast);
+  }
+});
+
+test('draws the not-available mark for a code it has no mark for', async ({ page }) => {
+  // Fails closed on both sides of the day: an unrecognised code has no day form and no night form,
+  // so neither flag may produce a mark that names a condition.
+  for (const isDay of [true, false]) {
+    await serveModuleData(page, () => ({
+      status: 200,
+      data: withDaylight(WARM, { code: UNREADABLE, isDay }, everyHour(UNREADABLE, isDay)),
+    }));
+    await render(page, placed(HERE));
+
+    await expect(page.locator(`${PRESENT} ${GLYPH}`)).toHaveText(GLYPHS.unread);
+    await expect(page.locator(`${HOURLY} ${GLYPH}`).first()).toHaveText(GLYPHS.unread);
+  }
 });
 
 test('puts no words to a sky whose code it does not recognise', async ({ page }) => {

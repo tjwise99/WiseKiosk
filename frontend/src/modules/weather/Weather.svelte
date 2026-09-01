@@ -17,11 +17,56 @@
    */
   const { reachable, config, payload }: WeatherProps = $props();
 
+  /**
+   * The glyph each WMO 4677 present-weather code draws, on the side of the day the reading falls —
+   * codepoints in the bundled icon face
+   * ([the display styling contract](../../../docs/contracts/display-styling-contract.md)
+   * § Typeface). Seven codes carry one glyph for both sides: overcast, and the heaviest member of
+   * each family.
+   */
+  const SKY_GLYPHS: Record<number, { day: string; night: string }> = {
+    0: { day: '\uF00D', night: '\uF02E' },
+    1: { day: '\uF00C', night: '\uF081' },
+    2: { day: '\uF002', night: '\uF086' },
+    3: { day: '\uF013', night: '\uF013' },
+    45: { day: '\uF003', night: '\uF04A' },
+    48: { day: '\uF003', night: '\uF04A' },
+    51: { day: '\uF00B', night: '\uF02B' },
+    53: { day: '\uF00B', night: '\uF02B' },
+    55: { day: '\uF00B', night: '\uF02B' },
+    56: { day: '\uF0B2', night: '\uF0B4' },
+    57: { day: '\uF0B2', night: '\uF0B4' },
+    61: { day: '\uF008', night: '\uF028' },
+    63: { day: '\uF008', night: '\uF028' },
+    65: { day: '\uF019', night: '\uF019' },
+    66: { day: '\uF006', night: '\uF026' },
+    67: { day: '\uF017', night: '\uF017' },
+    71: { day: '\uF00A', night: '\uF02A' },
+    73: { day: '\uF00A', night: '\uF02A' },
+    75: { day: '\uF01B', night: '\uF01B' },
+    77: { day: '\uF01B', night: '\uF01B' },
+    80: { day: '\uF009', night: '\uF029' },
+    81: { day: '\uF009', night: '\uF029' },
+    82: { day: '\uF008', night: '\uF028' },
+    85: { day: '\uF00A', night: '\uF02A' },
+    86: { day: '\uF01B', night: '\uF01B' },
+    95: { day: '\uF010', night: '\uF02D' },
+    96: { day: '\uF010', night: '\uF02D' },
+    99: { day: '\uF01E', night: '\uF01E' },
+  };
+
+  /** The face's own not-available mark, drawn where the code names no glyph. */
+  const UNREAD_SKY = '\uF07B';
+
   /** Every WMO 4677 present-weather code a source of this payload emits, and the whole of the set. */
-  const SKY_CODES = new Set([
-    0, 1, 2, 3, 45, 48, 51, 53, 55, 56, 57, 61, 63, 65, 66, 67, 71, 73, 75, 77, 80, 81, 82, 85, 86,
-    95, 96, 99,
-  ]);
+  const SKY_CODES = new Set(Object.keys(SKY_GLYPHS).map(Number));
+
+  /** The mark for one reading. A code the map does not carry draws the not-available one. */
+  function skyGlyph(code: number, isDay: boolean): string {
+    const pair = SKY_GLYPHS[code];
+    if (pair === undefined) return UNREAD_SKY;
+    return isDay ? pair.day : pair.night;
+  }
 
   /**
    * What a WMO 4677 present-weather code says the sky is doing. The payload carries the code rather
@@ -84,6 +129,12 @@
       <!-- Three parts, each drawn on its own: what it is doing now, the hours next to come and the
            days next to come (SRS045). -->
       <section class="present" data-weather-present>
+        <!-- Day and night are drawn as the mark itself. Which side of the day it is, is the
+             payload's rather than the host's clock: the place reported on need not be the place the
+             display hangs. -->
+        <p class="glyph glyph-present" data-weather-glyph>
+          {skyGlyph(reading.current.weatherCode, reading.current.isDay)}
+        </p>
         <p class="temp" data-weather-temp>{round(reading.current.temp)}°F</p>
         {#if sky !== undefined}
           <p class="sky" data-weather-sky>{sky}</p>
@@ -101,6 +152,9 @@
             {@const hourSky = describeSky(hour.weatherCode)}
             <li class="entry" data-weather-hour>
               <span class="when">{atLocation(hour.time)}</span>
+              <!-- Each hour carries its own side of the day: the hours to come cross the location's
+                   own sunrise or sunset. -->
+              <span class="glyph" data-weather-glyph>{skyGlyph(hour.weatherCode, hour.isDay)}</span>
               <span class="reading">{round(hour.temp)}°F</span>
               {#if hourSky !== undefined}
                 <span class="reading">{hourSky}</span>
@@ -161,6 +215,19 @@
        around it. */
     font-variant-numeric: tabular-nums;
     line-height: 1;
+  }
+
+  .glyph {
+    /* The icon face and nothing else: no other face carries these marks, so there is no fallback to
+       compose. Colour and weight are left unset, so both are inherited whichever glyph is drawn. */
+    font-family: 'Weather Icons';
+    line-height: 1;
+  }
+
+  .glyph-present {
+    margin: 0;
+    /* The mark for the present reading is set at the reading's own step. */
+    font-size: var(--type-headline);
   }
 
   .sky {
