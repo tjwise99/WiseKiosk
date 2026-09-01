@@ -1,6 +1,7 @@
 import { expect, type Page } from '@playwright/test';
 
 import { LIVENESS_TIMEOUT_MS } from '../../src/lib/liveness';
+import type { ModuleAnswer } from '../../src/lib/payload';
 
 /** A configuration the page is driven with, in the shape `config.json` carries. */
 export interface Fixture {
@@ -89,25 +90,21 @@ export async function advanceHostClock(page: Page, ms: number): Promise<void> {
   }
 }
 
-/** What a module's data route answers with: the status, and the body carried at it. */
-export interface ModuleAnswer {
-  status: number;
-  body: unknown;
-}
-
 /** What a served module route was handed, for a test to read the ask back off. */
 export interface Served {
   /** Every ask this stub answered, path and query, in the order it answered them. */
   readonly urls: string[];
+  /** The body each of those asks carried, at the same index as its entry above. */
+  readonly bodies: unknown[];
 }
 
 /**
  * Answers the module data routes with whatever `answer` makes of each ask. One glob over every such
  * route rather than one per module, because the harness is shared framework code
  * (docs/contracts/module-contract.md § Dependency direction). What distinguishes one module's ask
- * from another's is therefore the ask itself: `answer` is handed the parsed URL and reads
- * `searchParams`, which is also how two placements at two locations get two answers from one
- * registration.
+ * from another's is therefore the ask itself: `answer` is handed the parsed URL and the parsed
+ * request body, which is also how two placements at two locations get two answers from one
+ * registration — a module data route carries what it is asked about in its body.
  *
  * Registered before `render`, since the component asks on mount and a route added after the
  * navigation misses that first ask. Playwright matches routes most-recently-registered first, so
@@ -115,26 +112,29 @@ export interface Served {
  * transition a freshness case asserts, driven by the clock rather than by waiting.
  *
  * The record is what proves the ask carried what the configuration said, and it is kept here because
- * `asksBeyondTheShell` reads paths alone and would drop the query the location travels in. Paths and
- * queries are recorded rather than whole URLs: the origin is the tier's own dev server, which is not
- * what any case is asserting.
+ * `asksBeyondTheShell` reads paths alone and never sees a body at all. Paths and queries are recorded
+ * rather than whole URLs: the origin is the tier's own dev server, which is not what any case is
+ * asserting.
  */
 export async function serveModuleData(
   page: Page,
-  answer: (asked: URL) => ModuleAnswer,
+  answer: (asked: URL, body: unknown) => ModuleAnswer,
 ): Promise<Served> {
   const urls: string[] = [];
+  const bodies: unknown[] = [];
   await page.route('**/api/*', async (route) => {
     const asked = new URL(route.request().url());
+    const body: unknown = route.request().postDataJSON();
     urls.push(`${asked.pathname}${asked.search}`);
-    const { status, body } = answer(asked);
+    bodies.push(body);
+    const answered = answer(asked, body);
     await route.fulfill({
-      status,
+      status: answered.status,
       contentType: 'application/json',
-      body: JSON.stringify(body),
+      body: JSON.stringify(answered.data),
     });
   });
-  return { urls };
+  return { urls, bodies };
 }
 
 /** What the page asked for, and what it opened, while a test watched. */

@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test';
 
-import type { WeatherPayload } from '../../lib/boundary/client';
+import type { WeatherPayload, WeatherRequest } from '../../lib/boundary/client';
 import { LIVENESS_INTERVAL_MS } from '../../lib/liveness';
 import {
   advanceHostClock,
@@ -19,7 +19,7 @@ import {
 /**
  * The weather module's render tests. Every one of them answers the module's route from the test
  * rather than letting anything reach a real source, so what is on screen is attributable to an answer
- * the case wrote. The stub answers by the parameters it is handed, which is what lets one
+ * the case wrote. The stub answers by the request body it is handed, which is what lets one
  * registration serve two placements reporting on two different points.
  */
 
@@ -60,6 +60,7 @@ function forecast(temp: number): WeatherPayload {
       temp: temp + index,
       weatherCode: 61,
       precipProbability: 10 * index,
+      isDay: true,
     })),
     daily: Array.from({ length: 5 }, (_, index) => ({
       time: `2026-09-0${index + 1}T00:00:00-04:00`,
@@ -72,8 +73,8 @@ function forecast(temp: number): WeatherPayload {
 }
 
 /** The temperature a point is answered with: the two configured points, told apart by latitude. */
-function temperatureAt(lat: string | null): number {
-  return lat === String(HERE.lat) ? WARM : COLD;
+function temperatureAt(asked: unknown): number {
+  return (asked as WeatherRequest | null)?.lat === HERE.lat ? WARM : COLD;
 }
 
 /** A display carrying one weather module, reporting on `location`. */
@@ -104,7 +105,7 @@ test('TST056: draws the weather its own route answered with, and reads no other 
   // Registered before the page loads: a listener added afterwards would miss the load's own asks,
   // and an absence measured over nothing is not an absence.
   const traffic = watchTraffic(page);
-  const served = await serveModuleData(page, () => ({ status: 200, body: forecast(WARM) }));
+  const served = await serveModuleData(page, () => ({ status: 200, data: forecast(WARM) }));
   await render(page, placed(HERE));
 
   // The value is the one this route answered with, which is what makes it the route's rather than
@@ -129,9 +130,9 @@ test('TST057: reports on the point its configuration names, in the region it nam
 }) => {
   // One stub, two placements: the answer is a function of the ask, so the two points are told apart
   // by what each request carried rather than by the order the module happened to ask in.
-  const served = await serveModuleData(page, (asked) => ({
+  const served = await serveModuleData(page, (_asked, body) => ({
     status: 200,
-    body: forecast(temperatureAt(asked.searchParams.get('lat'))),
+    data: forecast(temperatureAt(body)),
   }));
 
   await render(page, {
@@ -141,13 +142,12 @@ test('TST057: reports on the point its configuration names, in the region it nam
     ],
   });
 
-  // The configured point reached the request. Read off the URLs the stub was handed, because that is
-  // the only place the location appears on the wire — `asksBeyondTheShell` keeps paths alone.
-  const asked = served.urls.join(' ');
-  expect(asked, 'the first point was asked for').toContain(`lat=${HERE.lat}`);
-  expect(asked, 'its longitude went with it').toContain(`lon=${HERE.lon}`);
-  expect(asked, 'the second point was asked for').toContain(`lat=${THERE.lat}`);
-  expect(asked, 'its longitude went with it').toContain(`lon=${THERE.lon}`);
+  // The configured point reached the request. Read off the bodies the stub was handed, because that
+  // is the only place the location appears on the wire — the route's path names no point. Asserted
+  // as a pair rather than a value at a time, so two placements cannot pass by contributing one
+  // coordinate each.
+  expect(served.bodies, 'the first point was asked for whole').toContainEqual(HERE);
+  expect(served.bodies, 'the second point was asked for whole').toContainEqual(THERE);
 
   // And it reached the region: each region carries the reading for the point that region's own
   // placement named. Driving both placements is what separates this from a module that asks for one
@@ -166,7 +166,7 @@ test('TST057: reports on the point its configuration names, in the region it nam
 test('TST060: draws what it is doing now, the hours to come and the days to come, each separably', async ({
   page,
 }) => {
-  await serveModuleData(page, () => ({ status: 200, body: forecast(WARM) }));
+  await serveModuleData(page, () => ({ status: 200, data: forecast(WARM) }));
   await render(page, placed(HERE));
 
   const present = page.locator(PRESENT);
@@ -206,7 +206,7 @@ test('TST061: follows its source to a new reading inside the freshness bound, wi
   page,
 }) => {
   await holdHostClock(page, HOST_TIME);
-  await serveModuleData(page, () => ({ status: 200, body: forecast(WARM) }));
+  await serveModuleData(page, () => ({ status: 200, data: forecast(WARM) }));
   await render(page, placed(HERE));
 
   const temp = page.locator(TEMP);
@@ -222,7 +222,7 @@ test('TST061: follows its source to a new reading inside the freshness bound, wi
   // is what a later poll is answered with.
   const afterTheChange = await serveModuleData(page, () => ({
     status: 200,
-    body: forecast(COLD),
+    data: forecast(COLD),
   }));
 
   // Advanced by the module's own read interval rather than waited out in real seconds. The interval
@@ -258,7 +258,7 @@ test('stands down to nothing while the backend is unreachable, and stops asking 
   // The control first: the same fixture, against a backend that is serving, draws the module and
   // goes on polling. Without it the suppression below reads the same as a module that never worked,
   // and the silence below reads the same as a module that never asked.
-  const whileServing = await serveModuleData(page, () => ({ status: 200, body: forecast(WARM) }));
+  const whileServing = await serveModuleData(page, () => ({ status: 200, data: forecast(WARM) }));
   await render(page, placed(HERE));
   await expect(page.locator(WEATHER)).toBeVisible();
   const askedOnce = whileServing.urls.length;
@@ -268,7 +268,7 @@ test('stands down to nothing while the backend is unreachable, and stops asking 
     .poll(() => whileServing.urls.length, { message: 'it keeps polling while the backend serves' })
     .toBeGreaterThan(askedOnce);
 
-  const whileGone = await serveModuleData(page, () => ({ status: 200, body: forecast(WARM) }));
+  const whileGone = await serveModuleData(page, () => ({ status: 200, data: forecast(WARM) }));
   await render(page, placed(HERE), 'frame', { healthz: 'abort' });
 
   // The outage is up first, or what follows would be read against a display that never staged one.
@@ -293,7 +293,7 @@ test('stands down to nothing while the backend is unreachable, and stops asking 
 });
 
 test('does not draw its reading from before an outage as current after one', async ({ page }) => {
-  await serveModuleData(page, () => ({ status: 200, body: forecast(WARM) }));
+  await serveModuleData(page, () => ({ status: 200, data: forecast(WARM) }));
   await render(page, placed(HERE));
   await expect(page.locator(TEMP)).toContainText(String(WARM));
 
@@ -344,7 +344,7 @@ test('renders why its own source failed, in its own place, while the backend is 
   const REASON = 'The weather source did not answer.';
   await serveModuleData(page, () => ({
     status: 502,
-    body: { module: 'weather', cause: 'upstream_unavailable', message: REASON },
+    data: { module: 'weather', cause: 'upstream_unavailable', message: REASON },
   }));
   await render(page, placed(HERE));
 
@@ -367,7 +367,7 @@ test('says something in the module’s place when the answer carries no reason i
   // the route can still produce, carrying a body with no message in it. The shell has no reason to
   // render and must not draw an empty box: on an unattended display a box with nothing in it is
   // indistinguishable from a broken one.
-  await serveModuleData(page, () => ({ status: 500, body: { detail: 'gateway exploded' } }));
+  await serveModuleData(page, () => ({ status: 500, data: { detail: 'gateway exploded' } }));
   await render(page, placed(HERE));
 
   const box = page.locator(`[data-region="middle_center"] ${UNAVAILABLE}`);
