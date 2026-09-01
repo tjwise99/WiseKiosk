@@ -149,12 +149,24 @@ it is behind an object rather than dim, which a failure state cannot afford
 ## Typeface
 
 Inter, bundled and self-hosted from the backend's own origin — the display page reaches no other
-(SRS010<!-- The display page reaches no origin but the backend's -->) — as a single variable font
+(SRS010<!-- The display page reaches no origin but the backend's -->) — as one variable font
 file, Latin subset, its weight priced against the bundle ceiling a Pi Zero-class host holds the
 frontend to (SRS021<!-- Frontend runs on a Pi Zero-class browser host -->). The slashed-zero
 OpenType feature (`"zero" 1`) is on throughout, to keep `0` and `O` apart at every size in the
 scale above. Rendered only at the full emission the emission rule above states — Inter carries no
 exception to it.
+
+**The icon face.** One second face is bundled beside Inter, self-hosted from the same origin for the
+same reason: Weather Icons, subset to the condition glyphs the weather module draws and nothing
+else. **It carries no text.** Every readable character on the display is Inter's; this face is
+reached only through the module's own condition-to-glyph map, never as a `font-family` an author
+styles with, and it is not part of the type scale above. Its weight is priced against the same
+bundle ceiling, which is why it ships subset — 28 glyphs against the whole face's 247 — rather than
+whole. Its glyphs are content: they carry the condition and nothing else does, so they render at the
+full emission SRS032<!-- Readable text is carried at full emission --> states, exactly as Inter's
+do. Day and night differ by **which glyph is drawn**, never by emission, weight or colour — a
+dimmed or tinted icon is barred by that rule, and the greyed tiers of the reference implementation
+this map is drawn from sit above the emission ceiling besides (**Calibrated bounds** above).
 
 **Considered and set aside:**
 
@@ -165,6 +177,13 @@ exception to it.
 - Roboto Condensed — spartan; a width-only fallback, not the primary face.
 - A webfont CDN — a third-party origin, forbidden by
   SRS010<!-- The display page reaches no origin but the backend's -->.
+- **The whole icon face rather than a subset** — no derived artifact to keep honest, but 5.6× the
+  weight for 219 glyphs nothing draws.
+- **Condition icons as inline SVG, no second face** — no font file, but each icon becomes a
+  component edit rather than a map entry, and an icon then has no glyph metric to size against the
+  `vh` type scale.
+- **Weather characters from Inter's own coverage** — its Latin subset contains none of them, and
+  Unicode does not distinguish the condition families the map needs.
 
 ## Token delivery and styling approach
 

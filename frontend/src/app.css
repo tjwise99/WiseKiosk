@@ -14,6 +14,30 @@
   src: url('./assets/inter-latin-wght-normal.woff2') format('woff2');
 }
 
+/* Weather Icons, subset to the twenty-eight condition glyphs the weather module draws — bundled and
+   served from the backend's own origin. It carries no text and is reached only through that module's
+   own code-to-glyph map. Licence text and attribution for both faces:
+   docs/third-party-licences.md.
+
+   Derived from `weathericons` 2.1.0's `font/weathericons-regular-webfont.woff2` (font version
+   1.100), with fontTools 4.64.0:
+
+     pyftsubset weathericons-regular-webfont.woff2 \
+       --unicodes=U+F002,U+F003,U+F006,U+F008,U+F009,U+F00A,U+F00B,U+F00C,U+F00D,U+F010,U+F013,U+F017,U+F019,U+F01B,U+F01E,U+F026,U+F028,U+F029,U+F02A,U+F02B,U+F02D,U+F02E,U+F04A,U+F07B,U+F081,U+F086,U+F0B2,U+F0B4 \
+       --flavor=woff2 --layout-features='' --no-hinting --desubroutinize \
+       --drop-tables+=DSIG --name-IDs='*' \
+       --output-file=weathericons-subset.woff2
+
+   `--name-IDs='*'` retains the name table, which carries the copyright notice OFL 1.1 requires a
+   modified version to keep. `block` matches Inter's, so no fallback face is ever composited. */
+@font-face {
+  font-family: 'Weather Icons';
+  font-style: normal;
+  font-weight: 400;
+  font-display: block;
+  src: url('./assets/weathericons-subset.woff2') format('woff2');
+}
+
 :root {
   color-scheme: dark;
 
