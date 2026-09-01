@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { ModuleOptions } from '../config/types';
   import type { ModuleEntry } from './modules';
-  import type { Payload } from './payload';
+  import type { Payload, PayloadFailure } from './payload';
 
   /**
    * One placement of one module: it reads that module's payload, if the module has one, and hands the
@@ -64,7 +64,7 @@
     // the module renders that rather than words composed here (SRS001). A status the schema does not
     // describe carries no such body, so it is reported as an answer that did not arrive rather than
     // drawn as an empty box.
-    const failure = answer.data as { message?: unknown };
+    const failure = answer.data as Partial<PayloadFailure>;
     const message = typeof failure?.message === 'string' ? failure.message : UNANSWERED;
     return { state: 'unavailable', failure: { message } };
   }

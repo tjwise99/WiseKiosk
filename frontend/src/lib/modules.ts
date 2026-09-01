@@ -3,7 +3,7 @@ import type { Component } from 'svelte';
 import type { ModuleOptions, WeatherOptions } from '../config/types';
 import Clock from '../modules/clock/Clock.svelte';
 import Weather from '../modules/weather/Weather.svelte';
-import { getApiWeather } from './boundary/client';
+import { postApiWeather } from './boundary/client';
 import type { ModuleAnswer } from './payload';
 
 /**
@@ -34,7 +34,11 @@ export const modules: Record<string, ModuleEntry> = {
     component: Weather,
     // The narrowing is what validation already guarantees rather than an assumption: the schema
     // requires a weather placement to carry its location, and the configuration has been through
-    // that schema before any of this runs.
-    read: (config, options) => getApiWeather((config as WeatherOptions).location, options),
+    // that schema before any of this runs. The two names are taken off it and handed over one at a
+    // time, so the request body carries the point and nothing else the placement holds.
+    read: (config, options) => {
+      const { lat, lon } = (config as WeatherOptions).location;
+      return postApiWeather({ lat, lon }, options);
+    },
   },
 };

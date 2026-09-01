@@ -5,6 +5,8 @@
  * being the module's own type (docs/contracts/module-contract.md § Dependency direction).
  */
 
+import type { ClientRejection, UpstreamFailure } from './boundary/client';
+
 /**
  * One answer from a module's route: the status it answered at, and the body carried at it. The
  * status is what tells a reading from a failure, the boundary schema carrying a different body at
@@ -27,8 +29,7 @@ export type Payload<Data> =
 
 /**
  * Why a module has no reading. Both bodies the boundary carries at a failing status spell the reason
- * for a reader the same way, so this is the part of either that a module renders (SRS001).
+ * for a reader the same way, so this is the part of either that a module renders (SRS001) — projected
+ * off the two rather than declared beside them.
  */
-export interface PayloadFailure {
-  readonly message: string;
-}
+export type PayloadFailure = Pick<UpstreamFailure | ClientRejection, 'message'>;
