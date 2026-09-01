@@ -1,0 +1,39 @@
+active: true
+derived: false
+header: |
+  The weather payload's outlooks are as long as the requirement states
+level: 86
+links:
+- SRS044: 6vTvZZWMJ0t-OlCL16ROHJyhva3fsUmBd4Fyr1BTgn0=
+normative: true
+rationale: |
+  The captured response carries more of each range than the payload is to hold, because a shaping that
+  truncates silently and one that passes the source's own length straight through are told apart only
+  by a response longer than the figure.
+  The expected lengths are written into the test rather than read from the module's own constants. A
+  check reading the constant asserts that the module agrees with itself, which is equally true of a
+  module that shows one hour, and is the assertion this item exists to replace.
+  Nothing else enforces the figure. Stating a maximum in the boundary schema emits no check on either
+  side of it - one JSDoc line and nothing generated that reads it - so a length declared there would
+  read as a constraint while enforcing nothing, and this item is the only thing standing between the
+  figure the requirement states and a payload silently shorter than it.
+ref: ''
+references:
+- keyword: func TestTheOutlooksAreAsLongAsTheRequirementStates
+  path: backend/internal/modules/weather/weather_test.go
+  sha: a07a46eb65301961042d4d1451e0b0a7e7d8ac4cee71a682ff7950f1d023ba1e
+  type: file
+reviewed: B78bbWH5kYR8GnnOn8_g-qKUkyCo_Yi2YG6cQ5-nv8Y=
+status: proposed
+text: |
+  Unit test running the module's shaping over a captured response carrying more hours and more days
+  than the payload is to hold, with no network, asserting the payload it produces carries as many
+  hours next to come and as many days next to come as the requirement states, against those figures
+  written into the test rather than read from the module's own constants.
+verification-justification: |
+  Settles that the shaping produces ranges of the stated lengths from a response with more to give.
+  Leaves unproven that the hours and days produced are the right ones or in the right order, which a
+  length does not read, and bounds coverage by the captures the suite holds. It settles nothing about
+  a response carrying fewer than the figure: what the payload should be then is not an obligation any
+  item states.
+verification-method: test

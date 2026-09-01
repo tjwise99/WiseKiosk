@@ -1,25 +1,39 @@
-active: false
+active: true
 derived: false
 header: |
-  Pending: both sides consume the generated boundary types
+  Both sides consume the generated boundary types
 level: 1.31
 links:
 - SRS016: hVQCRJ-6Bfgxlzn8FkpR-gonQWctL67--tefiCtcID8=
 normative: true
 rationale: ''
 ref: ''
-reviewed: I-Wroq3rKssbEb3cxHKNhV86Ik9KDLezEZ0XcIsJa_U=
+references:
+- keyword: var _ boundary.ServerInterface = schemaRoutes{}
+  path: backend/cmd/main.go
+  sha: 4efe24c33727bb254c684efabcc5da36de5aa95d8bb737446911a2313b8263d1
+  type: file
+- path: frontend/src/modules/weather/props.ts
+  sha: 5f74a749ec6e54cde7e28e48b7fbc33b7f8b245830a92cb8f5737dd3a1b69520
+  type: file
+reviewed: zRmLwhSATaCT1t-woTghUX0yX6xzywsiB7zTZNlhdIQ=
 status: proposed
 text: |
-  Pending: test asserting that for every route in the static registration list the handler's request
-  and response types resolve to declarations under the generated package; and, on the frontend, that
-  for each module holding a boundary fragment the component's payload prop type, and the error-render
-  path's failure and rejection prop types, resolve to declarations under the generated boundary
-  directory. A module with no fragment has no payload prop and is not expected to have one. Both halves
-  are positive: they name where a type must come from rather than where it must not, so a hand-declared
-  twin fails by not resolving rather than by matching a pattern. Lands with the codegen mechanism (#7).
+  Test asserting that for every route the backend serves through the generated server interface the
+  handler's request and response types resolve to declarations under the generated package; and, on
+  the frontend, that for each module holding a boundary fragment the component's payload prop type,
+  and the error-render path's failure and rejection prop types, resolve to declarations under the
+  generated boundary directory. A module with no fragment has no payload prop and is not expected to
+  have one. Both halves are positive: they name where a type must come from rather than where it must
+  not, so a hand-declared twin fails by not resolving rather than by matching a pattern.
 verification-justification: |
-  Settles that handler and component types resolve to declarations under the generated package.
-  Leaves unproven a boundary value that crosses without appearing in a handler signature or a
-  component prop.
+  Settles that the module component's props and the backend handlers' signatures are the generated
+  declarations, compiled against output regenerated from the schema in the same run. Leaves unproven a
+  boundary value that crosses without appearing in a handler signature or a component prop; and, on
+  the TypeScript side, origin is carried by the site's own imports rather than by the type system -
+  TypeScript is structural, so a hand-declared twin identical to the generated declaration passes
+  until the schema moves it, at which point it fails.
+  The error-render path's failure type is derived from the generated error bodies rather than being
+  them, so a body losing or renaming the rendered field fails to compile while a hand-written
+  projection of the same single field does not.
 verification-method: test

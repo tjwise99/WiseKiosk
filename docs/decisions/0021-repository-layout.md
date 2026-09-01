@@ -102,7 +102,7 @@ somebody adds a second exception.
 **Generated boundary types are committed inside the package that compiles them**, each in one package
 of its own named for the boundary — `backend/internal/boundary/` and `frontend/src/lib/boundary/` — so
 that "the generated package" is a place rather than a pattern, which is what
-TST034<!-- Pending: both sides consume the generated boundary types --> asks a type to resolve into.
+TST034<!-- Both sides consume the generated boundary types --> asks a type to resolve into.
 
 **The configuration schema is the frontend's, and it is one file**, under `frontend/src/config/`,
 beside the one engine that enforces it ([ADR 0007 rev 2](0007-config-validation-allocation.md)).
