@@ -1,7 +1,5 @@
 <script lang="ts">
-  import type { WeatherOptions } from '../../config/types';
-  import type { WeatherPayload } from '../../lib/boundary/client';
-  import type { Payload } from '../../lib/payload';
+  import type { WeatherProps } from './props';
 
   /**
    * The module draws from its props and fetches nothing
@@ -17,11 +15,7 @@
    * `config` is declared because part 1 hands every module its configuration. The location in it is
    * what the shell reads the route with, so nothing below has to read it a second time.
    */
-  const {
-    reachable,
-    config,
-    payload,
-  }: { reachable: boolean; config: WeatherOptions; payload: Payload<WeatherPayload> } = $props();
+  const { reachable, config, payload }: WeatherProps = $props();
 
   /**
    * What a WMO 4677 present-weather code says the sky is doing. The payload carries the code rather

@@ -1,4 +1,4 @@
 {
   "extends": "./tsconfig.json",
-  "include": ["src/lib/boundary"]
+  "include": ["src/lib/boundary", "src/modules/*/props.ts"]
 }
