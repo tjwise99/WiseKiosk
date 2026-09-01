@@ -32,6 +32,12 @@
    * How long one read is given before it is abandoned. Without it a request that never settles leaves
    * the module in its first-paint state for as long as the display runs, and a loading state that
    * never resolves cannot be told from a module that is broken.
+   *
+   * Ten seconds, sitting between the two figures either side of it
+   * ([`ARCHITECTURE.md`](../../../docs/ARCHITECTURE.md) § Frontend): above the outbound timeout a
+   * route gives its own source, so a slow source is reported by the backend as that module's failure
+   * rather than cut off here as an answer that never came, and far below the cadence above, so an
+   * abandoned read is retired before the next one is due.
    */
   const REQUEST_TIMEOUT_MS = 10_000;
 
