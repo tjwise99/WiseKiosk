@@ -4,44 +4,44 @@ header: |
   Rejected-request client-contract test
 level: 1.26
 links:
-- SRS013: X6Ms9rGBH5Dm-XIEnqmhsPiSZp7_T1e0VN5IFFNI2_s=
+- SRS013: fL4vSINKQCFNPkpznfp4-PGuWJOyDnnQ5T8XvBu6_vE=
 normative: true
 rationale: ''
 ref: ''
 references:
 - keyword: func TestNonConformingParametersAreRejectedWithNoUpstreamCall
   path: backend/internal/router/router_test.go
-  sha: 29cccffaf6bc8354db029f9c4ccf57a1b13abf26e1933df43288dab039bcc516
+  sha: 4e58b206fc5ffed2cd7ea2960b4f2f6b2251d642be49e8ba0fc5575e8e67085b
   type: file
-- keyword: func TestARouteAnswersGetOnly
+- keyword: func TestARouteAnswersTheModuleRouteMethodOnly
   path: backend/internal/router/router_test.go
-  sha: 29cccffaf6bc8354db029f9c4ccf57a1b13abf26e1933df43288dab039bcc516
+  sha: 4e58b206fc5ffed2cd7ea2960b4f2f6b2251d642be49e8ba0fc5575e8e67085b
   type: file
 - keyword: func TestAPathNoEntryRegisteredIsUnknown
   path: backend/internal/router/router_test.go
-  sha: 29cccffaf6bc8354db029f9c4ccf57a1b13abf26e1933df43288dab039bcc516
+  sha: 4e58b206fc5ffed2cd7ea2960b4f2f6b2251d642be49e8ba0fc5575e8e67085b
   type: file
 - keyword: func TestARequestOverTheRateLimitIsRejected
   path: backend/internal/router/router_test.go
-  sha: 29cccffaf6bc8354db029f9c4ccf57a1b13abf26e1933df43288dab039bcc516
+  sha: 4e58b206fc5ffed2cd7ea2960b4f2f6b2251d642be49e8ba0fc5575e8e67085b
   type: file
 - keyword: func TestEveryOutcomeCarriesItsOwnStatusAndCause
   path: backend/internal/router/router_test.go
-  sha: 29cccffaf6bc8354db029f9c4ccf57a1b13abf26e1933df43288dab039bcc516
+  sha: 4e58b206fc5ffed2cd7ea2960b4f2f6b2251d642be49e8ba0fc5575e8e67085b
   type: file
 - keyword: func TestNoTwoCausesShareASpelling
   path: backend/internal/router/router_test.go
-  sha: 29cccffaf6bc8354db029f9c4ccf57a1b13abf26e1933df43288dab039bcc516
+  sha: 4e58b206fc5ffed2cd7ea2960b4f2f6b2251d642be49e8ba0fc5575e8e67085b
   type: file
 - keyword: func TestAnOutcomeNoCaseNamesIsStillRenderable
   path: backend/internal/router/router_test.go
-  sha: 29cccffaf6bc8354db029f9c4ccf57a1b13abf26e1933df43288dab039bcc516
+  sha: 4e58b206fc5ffed2cd7ea2960b4f2f6b2251d642be49e8ba0fc5575e8e67085b
   type: file
-reviewed: HmnOTjCVvF2opPGyXhxM_J18gh9Y9M2x7LGqv4NqSao=
+reviewed: 9ZLQ7CyaHjgEc5kjpxugTnQX1Qk_yv9hxZlhZJSzo4o=
 status: proposed
 text: |
-  Test asserting the backend returns 400 (invalid parameter), 404 (unknown source), 405 (non-GET
-  method), and 429 (over rate limit), each with a renderable body distinct from the
+  Test asserting the backend returns 400 (invalid parameter), 404 (unknown source), 405 (a method
+  the route does not answer), and 429 (over rate limit), each with a renderable body distinct from the
   upstream-failure shape and each without an upstream call.
 verification-justification: |
   Settles that each rejection cause produces its own status with a renderable body, before any

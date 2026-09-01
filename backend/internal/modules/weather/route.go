@@ -35,7 +35,8 @@ type WeatherRoute struct{}
 // PostApiWeather serves the schema's POST /api/weather. What a request carries
 // is the generated request body, so the two names in it are the schema's and are
 // spelled nowhere in this package; what this module judges is the point they
-// stand for (SRS043).
+// stand for
+// (SRS043<!-- The weather module declares the known-good constraint the location it is asked about must satisfy -->).
 func (WeatherRoute) PostApiWeather(w http.ResponseWriter, r *http.Request) {
 	router.BoundBody(w, r)
 
@@ -43,7 +44,8 @@ func (WeatherRoute) PostApiWeather(w http.ResponseWriter, r *http.Request) {
 	decoder := json.NewDecoder(r.Body)
 	// A body carrying anything beyond the two the schema names is refused rather
 	// than read past: the answer is held under the point alone, so a request
-	// carrying more would buy a second rate budget for the same place (SRS012).
+	// carrying more would buy a second rate budget for the same place
+	// (SRS012<!-- Request parameters validated against known-good per-source constraints -->).
 	decoder.DisallowUnknownFields()
 	if err := decoder.Decode(&request); err != nil {
 		router.Reject(w, router.InvalidParameters, "the request body could not be read as this source's parameters")

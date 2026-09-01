@@ -63,7 +63,8 @@ func serve(t *testing.T, body string) *httptest.ResponseRecorder {
 	return recorder
 }
 
-// TestTST058_ThePatternAdmitsAPointAndRejectsEveryOtherValue reads SRS043
+// TestTST058_ThePatternAdmitsAPointAndRejectsEveryOtherValue reads
+// SRS043<!-- The weather module declares the known-good constraint the location it is asked about must satisfy -->
 // against the constraint itself. No case reaches a network: the admitted ones
 // are read against the constraint and the request built from them, and the
 // rejected ones are read through the module's own handler, which answers before

@@ -4,7 +4,7 @@ header: |
   Every source reachable through the backend, statelessly
 level: '1.20'
 links:
-- SYS004: zDeVzrtkJX0x8iRss9MhCXDMfx62PK7NqmJJoh2OQ9c=
+- SYS004: CL2rrf7W4yEFlTl8ZUo2BhXDlqPBLLhy82YUJcZhktI=
 - SYS006: v3qSjDNbCins9CcqouJY2Vp6K1NhBAlUsPS8az2R1Kc=
 normative: true
 rationale: |

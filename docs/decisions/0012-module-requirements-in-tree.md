@@ -38,7 +38,7 @@ the same prefixes and the same gate.
 and failure rendering are already obliged for every module by framework items. A module need
 decomposes into what is true of that module and nothing else. The decomposition list above is
 bounded by this: an earlier draft named *parameters* and *failure states*, which are
-`SRS012`<!-- Request parameters validated against known-good per-source patterns --> and
+`SRS012`<!-- Request parameters validated against known-good per-source constraints --> and
 `SRS001`<!-- A failed module shows why, and only that module --> — a module author following it
 literally would have written both twice.
 

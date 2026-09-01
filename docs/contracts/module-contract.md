@@ -261,9 +261,10 @@ position. Beneath a module need, position already says which module the item is 
 is what the item is for.
 
 One overlap with the framework is legitimate, and it is an upstream-backed module's parameter
-pattern. The framework obliges the validating and the rejecting
-(SRS012<!-- Request parameters validated against known-good per-source patterns -->); which pattern
-that is, that item's own rationale hands to the module, and it is stated as a module `SRS`.
+constraint. The framework obliges the validating and the rejecting
+(SRS012<!-- Request parameters validated against known-good per-source constraints -->); which
+constraint that is, that item's own rationale hands to the module, and it is stated as a module
+`SRS`.
 
 An upstream-backed module's timing is stated in its requirements, and each figure is carried together
 with the rationale that produced it — the figure in the item, argued in the item, rather than a

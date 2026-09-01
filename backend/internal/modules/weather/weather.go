@@ -22,7 +22,8 @@ import (
 // compares the two.
 const Source = "weather"
 
-// The bounds a point on the earth's surface lies within (SRS043).
+// The bounds a point on the earth's surface lies within
+// (SRS043<!-- The weather module declares the known-good constraint the location it is asked about must satisfy -->).
 const (
 	maxLatitude  = 90
 	maxLongitude = 180
@@ -52,9 +53,10 @@ func Config() upstream.Config {
 }
 
 // validate judges the point a request names against the constraint this module
-// declares: a latitude and a longitude, each within its range (SRS043). How the
-// two are spelled is the boundary schema's, refused by the generated body's own
-// decoding before anything here is reached.
+// declares: a latitude and a longitude, each within its range
+// (SRS043<!-- The weather module declares the known-good constraint the location it is asked about must satisfy -->).
+// How the two are spelled is the boundary schema's, refused by the generated
+// body's own decoding before anything here is reached.
 // The returned error's text is what the rejection renders, so it says what is
 // accepted and never echoes what was sent.
 func validate(request boundary.WeatherRequest) error {
