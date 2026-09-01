@@ -29,7 +29,8 @@ export type Payload<Data> =
 
 /**
  * Why a module has no reading. Both bodies the boundary carries at a failing status spell the reason
- * for a reader the same way, so this is the part of either that a module renders (SRS001) — projected
- * off the two rather than declared beside them.
+ * for a reader the same way, so this is the part of either that a module renders
+ * (SRS001<!-- A failed module shows why, and only that module -->) — projected off the two rather
+ * than declared beside them.
  */
 export type PayloadFailure = Pick<UpstreamFailure | ClientRejection, 'message'>;

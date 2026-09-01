@@ -13,9 +13,11 @@ registry augmented by the tier's stubs. Each fixture is a configuration the test
 asserts against.
 
 Each seed below is applied to the working tree, the recipe run at the kiosk viewport, and the seed
-reverted. `passed`/`failed` are the counts the run reported, taken at `b2ab5fc`. A seed that trips
-more than one read reports more than one failure, which is why several rows name the reads they
-moved — a count that drops when a read is deleted is the first sign the seed stopped covering it.
+reverted. `passed`/`failed` are the counts the run reported, the seed rows taken at `b2ab5fc` and the
+must-pass row at the tier as it stands. A seed that trips more than one read reports more than one
+failure, which is why several rows name the reads they moved — a count that drops when a read is
+deleted is the first sign the seed stopped covering it. A seed row's counts are read against the
+must-pass total of its own run rather than against the row below it.
 
 | Direction | Case | Input | Result |
 |---|---|---|---|
@@ -43,7 +45,7 @@ moved — a count that drops when a read is deleted is the first sign the seed s
 | Must fail | The read cadence is the one the module owes | the host's read interval halved | 1 failed, 6 passed |
 | Must fail | The read cadence is the one the module owes | the host's read interval doubled | 2 failed, 5 passed |
 | Must fail | An answer carrying no reason it can read still says something | the host rendering the missing reason as an empty string | 1 failed, 7 passed |
-| Must pass | The tree as it stands | — | 174 passed across the three viewports |
+| Must pass | The tree as it stands | — | 192 passed across the three viewports |
 
 **The emission seeds are tests rather than seeds.** Each device
 TST045<!-- Emitting-surface test --> names is a stub module the emission spec places and then asserts

@@ -169,8 +169,9 @@ neither side, and a hand-edit of either, both fail.
   parser falls back to an older configuration schema rather than refusing a mis-shaped one — so a
   whole target can go missing from a non-empty file. The backend consumes each target (the routes
   through the generated router, the error bodies through the generated models), which turns a missing
-  one into an undefined symbol. The TypeScript half is narrowed to the generated directory — the
-  general frontend typecheck is #67 typecheck gate's.
+  one into an undefined symbol. The TypeScript half is narrowed to the generated directory and to the
+  per-module `props.ts` sites declared to consume it, each compiled against output regenerated in the
+  same run — the general frontend typecheck is #67 typecheck gate's.
 
 **What it leaves unproven** is whether the schema says what the boundary actually carries; the gate
 compares the schema against its own output and nothing against the running system.
@@ -180,8 +181,11 @@ compares the schema against its own output and nothing against the running syste
 Comments state mechanism. Reason, history and evaluative judgement are authored in a documentation
 home and cited from the comment.
 
-- A requirement ID or ADR number cited in a comment that names no existing item or decision fails —
-  `check-citations` runs tree-wide, code comments included.
+- A requirement ID or ADR number cited in a comment names an existing item or decision, and carries
+  the item's header in the form § *Documentation integrity* sets out. This is a convention carried by
+  review rather than by a gate: `check-citations` reads tracked Markdown outside `.claude/` and every
+  item's `rationale` and `verification-justification`, so a comment in Go or TypeScript source is
+  outside the population it scans. Widening it to source is #220 weather module's filed follow-up.
 
 Whether a comment is narrative rather than mechanism, and whether added comment volume earns its
 place, is a review habit rather than a gate: #59 comment-discipline gate closed not-planned (owner,

@@ -67,7 +67,8 @@
     }
 
     // Every other status the route answers at carries a body spelling the reason for a reader, and
-    // the module renders that rather than words composed here (SRS001). A status the schema does not
+    // the module renders that rather than words composed here
+    // (SRS001<!-- A failed module shows why, and only that module -->). A status the schema does not
     // describe carries no such body, so it is reported as an answer that did not arrive rather than
     // drawn as an empty box.
     const failure = answer.data as Partial<PayloadFailure>;

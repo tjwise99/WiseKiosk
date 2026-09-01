@@ -298,7 +298,8 @@ test('stands down to nothing while the backend is unreachable, and stops asking 
   await expect(page.locator('[data-backend-unreachable]')).toBeVisible();
 
   // Nothing of the module's own stands in its region — not its content, not an unavailable box of
-  // its own, not the state it was waiting in. The page carries the one report (SRS026).
+  // its own, not the state it was waiting in. The page carries the one report
+  // (SRS026<!-- The display says when the backend is gone -->).
   await expect(page.locator(`[data-region="middle_center"] ${WEATHER}`)).toHaveCount(0);
   await expect(page.locator(UNAVAILABLE)).toHaveCount(0);
   await expect(page.locator(LOADING)).toHaveCount(0);
@@ -371,8 +372,9 @@ test('renders why its own source failed, in its own place, while the backend is 
   }));
   await render(page, placed(HERE));
 
-  // The route's own words, in the module's own region (SRS001) — not a message this module composed,
-  // which is what reading the served body back proves.
+  // The route's own words, in the module's own region
+  // (SRS001<!-- A failed module shows why, and only that module -->) — not a message this module
+  // composed, which is what reading the served body back proves.
   const box = page.locator(`[data-region="middle_center"] ${UNAVAILABLE}`);
   await expect(box).toBeVisible();
   await expect(box).toContainText(REASON);

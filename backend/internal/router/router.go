@@ -306,7 +306,10 @@ func (f *fallback) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 // refusing the rest.
 //
 // It is a free choice rather than a figure any requirement or source settles: no
-// obligation names a request size, and nothing upstream constrains one. What it
+// obligation names a request size, and nothing upstream constrains one. It leaves
+// the enumeration every module author walks by that route, as one of the two
+// figures the framework holds rather than a module
+// (docs/contracts/module-contract.md § Writing the module's requirements). What it
 // is chosen against is the shape of a module route's request — a small JSON
 // object naming what the answer is to be about — and the cost of the alternative,
 // which is an unauthenticated caller deciding how much this process buffers. A

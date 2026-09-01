@@ -33,8 +33,9 @@ const (
 //
 // SuccessTTL is what holds the upstream rate down: an answer is served from
 // cache for fifteen minutes however often the display asks, which is four
-// requests an hour for one location and is where SRS047's figure is met. The
-// token bucket is a coarse backstop over the source as a
+// requests an hour for one location and is where
+// SRS047<!-- The weather module asks its source at most four times an hour for a location -->'s
+// figure is met. The token bucket is a coarse backstop over the source as a
 // whole and cannot express that figure — its rate is per minute and its bucket
 // is not per location — so it is set to catch a runaway rather than to be the
 // bound. NegativeTTL is shorter than SuccessTTL because a source that is down is
@@ -81,7 +82,8 @@ func degrees(given float64) string {
 
 // The upstream request. One call carries the present conditions and both forward
 // ranges, which is what lets this module read its source through the one URL and
-// one body the framework gives it (SRS041).
+// one body the framework gives it
+// (SRS041<!-- The weather module takes what it shows from one external weather source -->).
 const (
 	// forecastURL is the source's forecast endpoint. It needs no credential.
 	forecastURL = "https://api.open-meteo.com/v1/forecast"
@@ -92,9 +94,12 @@ const (
 	dailyFields   = "weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max"
 )
 
-// How far ahead the two forward ranges run. No requirement names a number: SYS010
-// leaves how far ahead to the decomposition and the decomposition leaves it here,
-// there being no operator choice behind it.
+// How far ahead the two forward ranges run. The figures are the requirements'
+// rather than this file's: five hours next to come and five days next to come
+// (SRS044<!-- The weather module puts the present conditions and the near-term outlook across the boundary -->),
+// obliged again over what is drawn
+// (SRS045<!-- The weather module shows the present weather and the outlook apart from each other -->).
+// There is no operator choice behind either.
 const (
 	// hoursShown is how many hours the payload carries.
 	hoursShown = 5
@@ -201,8 +206,9 @@ type seriesBlock struct {
 }
 
 // Shape reads the source's response into the payload the boundary schema
-// declares: the present conditions in each of the four respects, and both
-// forward ranges (SRS044).
+// declares: the present conditions in each of the five respects, and both
+// forward ranges
+// (SRS044<!-- The weather module puts the present conditions and the near-term outlook across the boundary -->).
 // A response missing a value the payload requires is an error rather than a
 // payload carrying a zero nobody reported. The body is the cached response every
 // caller it is served to holds, and nothing here writes to it.
