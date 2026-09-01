@@ -51,8 +51,13 @@ themeparks.wiki — and a new module joins it the same way.
    whether the backend is serving — and what a module does with it is
    [§ An unavailable module and an unreachable backend are different states](#an-unavailable-module-and-an-unreachable-backend-are-different-states).
    Where the module has a payload, the component consumes the type generated from the boundary schema
-   rather than one declared by hand
-   ([ADR 0008 rev 4](../decisions/0008-boundary-contract-openapi-codegen.md)).
+   rather than one declared by hand, **and so does whatever it renders a failure from**: the bodies a
+   failing route answers with are declared in that same schema and generated on both sides, so a
+   module reading a failure reads the generated type rather than a shape restated in the frontend
+   ([ADR 0008 rev 5](../decisions/0008-boundary-contract-openapi-codegen.md);
+   SRS016<!-- Both sides consume the generated types -->). A payload's field names, a request's field
+   names and a failure body's field names are all values crossing the boundary, and none of the three
+   is declared twice.
 2. **A configuration-schema section** *(every module).* Declares what this module accepts, as a named
    section of the one configuration schema — authored there rather than in a file of its own, and
    nothing recomposes it — and enforced at apply time in the page, which is where validation runs, per
@@ -69,30 +74,71 @@ themeparks.wiki — and a new module joins it the same way.
    exercisable in isolation against a captured upstream response without network access — which is
    what the Unit tier in [`TESTING.md`](../TESTING.md) rests on.
 5. **A route registration** *(upstream-backed only).* Exactly one entry in the static, compile-time
-   list, binding `GET /api/<source>` to that library and carrying every policy governing that route:
-   parameter validation, success cache TTL, negative cache TTL, rate limit, outbound timeout, and
-   maximum accepted upstream response size. Those values live in the entry and nowhere else in code;
-   the timing ones are read out of the module's requirements, which carry each value with its
-   rationale ([§ Writing the module's requirements](#writing-the-modules-requirements)).
-6. **A boundary-schema fragment** *(upstream-backed only).* Declares the payload this module returns
-   across the boundary, as a named component in the one boundary schema — a section of that schema
-   rather than a file of its own, and nothing recomposes it
-   ([ADR 0008 rev 4](../decisions/0008-boundary-contract-openapi-codegen.md)). This is what makes the
-   module's generated payload type exist.
+   list: one field naming the module's own route type, which is what binds the schema's path for this
+   source to the library above. The entry is written **in the module's own package**, beside the
+   shaping library it is assembled from, and carries every policy governing the route — success cache
+   TTL, negative cache TTL, rate limit, outbound timeout, and maximum accepted upstream response
+   size. Those values live in the entry and nowhere else in code, and **all four timing figures are
+   read out of the module's requirements**, which carry each value with its rationale
+   ([§ Writing the module's requirements](#writing-the-modules-requirements)). They live there rather
+   than in a framework default because a figure chosen against one source is that source's, and a
+   second module arriving at the same figures is what would make them worth holding centrally.
+
+   The module provides, in that same package, **the route's schema handler**: the method the
+   generated server interface declares for this path, whose body reads the request and hands it to
+   the route built from the entry. Reading the request is the module's because what a request carries
+   is the module's — the constraint its location must satisfy, and the key its answer is cached and
+   rate-budgeted under, are both named in the module's requirements and neither is a framework
+   universal. **The registration entry of this part is that one field**, and it is the whole of what
+   the module costs the shared tree.
+6. **A boundary-schema fragment** *(upstream-backed only).* Declares what this module puts across the
+   boundary **and what it reads back across it**, as named components in the one boundary schema —
+   sections of that schema rather than files of their own, and nothing recomposes them
+   ([ADR 0008 rev 5](../decisions/0008-boundary-contract-openapi-codegen.md)). One component is the
+   module's payload; the other is the request it answers, which the route carries as a JSON body
+   rather than as request parameters. These are what make the module's generated payload and request
+   types exist, on both sides.
+
+   The path carries the `module-route` tag, which is what marks it a module data route rather than an
+   infrastructure one. Nothing in the build reads the tag: it is there for a reader, and for the
+   verification item that compares the schema's module data routes against the modules registered
+   (TST032<!-- Pending: boundary schema is single and complete -->).
+
+   **Every field a component declares required is a field something reads.** A required field with no
+   consumer is carried across the boundary, asserted by the generated types on both sides, and read
+   by nothing — which looks in every review exactly like a field that is used. If what would read it
+   has not been written yet, the field is not required yet.
 
 ## An unavailable module and an unreachable backend are different states
 
-A module renders an unavailable state of its own for one cause and no other: its own source failed
-while the backend was reachable — the module's route answered, and the structured failure body it
-answered with is what the module renders in its own place, distinct to that cause
-(SRS001<!-- A failed module shows why, and only that module -->).
+A module has three states and no fourth, and it renders every one of them: it has not read yet, it
+has read, or it read and has no reading to show. There is no absent payload — a component is never
+handed nothing and never leaves its region blank — and **the first of the three is a real state
+rather than a gap before the others**. A display is watched while it starts, and a region that is
+blank until its first answer lands is indistinguishable from a region that is broken.
+
+The third state is the module's own, and it is reached while the backend is reachable and its route
+answered something other than a reading. Three things reach it: the route answered at a failing
+status, and the structured body it answered with is what the module renders, distinct to its cause
+(SRS001<!-- A failed module shows why, and only that module -->); the read did not come back at all,
+within the deadline the page gives one; or the route answered at a status the boundary schema does
+not describe, which carries no body to take a reason off. The last two have no cause of the module's
+to render and are reported as an answer that did not arrive, rather than drawn as an empty box.
+
+What that state is **not** reached by is the backend being gone. That is the next paragraph's, and
+the distinction is the whole point of this section: a module that treated an outage as its own
+failure would restate one outage once per region.
 
 Where the backend itself is unreachable, no module reports anything. The page shell asks whether the
 backend is still serving and reports an outage once for the whole display. Every module is handed
 that answer and only an upstream-backed one acts on it: such a module, handed a false reachability
 signal, stands down and renders nothing — no unavailable state, no placeholder, no last-known
-content. A module that reported for itself here would restate the one outage once per region, which
-is what the display is obliged not to do (SRS026<!-- The display says when the backend is gone -->).
+content. What it holds is dropped with the signal, so it returns to not-having-read rather than
+keeping a reading from before the outage. A module that kept one would draw weather from an hour ago
+as now for the window between the backend coming back and the first read after it landing, and a
+display that cannot say how old what it shows is must not do that. A module that reported for itself
+here would restate the one outage once per region, which is what the display is obliged not to do
+(SRS026<!-- The display says when the backend is gone -->).
 
 Reachability reaches the component the way its configuration and payload do (part 1): as a prop,
 threaded from the page shell through the frame to every module. The frame forwards it to every module
@@ -109,9 +155,19 @@ against a module it supplies rather than against this one.
 
 ## Dependency direction
 
-Modules depend on the shared framework; the framework does not depend on a module. No shared
-framework source names a specific module, except the single registration entry of part 5, and no
-shared package imports a module's package.
+Modules depend on the shared framework; the framework does not depend on a module. **The whole of
+the exception is one file per side, and it is the registration those files hold.** On the backend it
+is the route registration list of part 5, whose one field per module names that module's route type
+and which therefore imports that module's package; on the frontend it is the roster that binds each
+module's component, and its reading where it has one, to the name a configuration places into a
+region. No other shared source names a specific module, and no other shared package imports a
+module's package.
+
+That the registration crosses at all is what a compile-time registration costs: a list of modules
+that the compiler checks is a list that names them, and the alternative — a module registering
+itself as the process starts — buys the direction back by giving up the check, so a route the schema
+declares and no module serves would become a fault found by running rather than by building. The
+crossing is bounded to those two files, which is the property worth having, rather than removed.
 
 That is the property that keeps a module removable: deleting its files and its registration entry
 leaves nothing behind that referred to it. It is a statement about direction, not about the size of
@@ -122,10 +178,15 @@ refused ([`CONTRIBUTING.md`](../../CONTRIBUTING.md)).
 
 ## Cadence and TTL are chosen together
 
-The route's response-cache TTL (part 5) and the module's poll cadence are picked as a pair, not
-independently: the display refreshes no faster than the cache can answer differently, and the cache
-holds no longer than the display's tolerance for stale data. Both are constants in code, and neither
-is an operator-tunable configuration key.
+The route's two cache TTLs (part 5) and the module's poll cadence are picked together, not
+independently. The display refreshes no faster than the success cache can answer differently, and
+that cache holds no longer than the display's tolerance for stale data. The negative TTL is picked
+against a different question and comes out at a different figure: it is how long a failure is held,
+which is how often a source that is down is asked again, and a source is least able to bear load
+exactly when it is failing. **Neither TTL is the other's consequence, so neither is left to fall out
+of the other** — each is read out of a requirement of its own
+([§ Writing the module's requirements](#writing-the-modules-requirements)). All three are constants
+in code, and none is an operator-tunable configuration key.
 
 ## Writing the module's requirements
 
@@ -185,9 +246,8 @@ this document.** The tree is not the only place an obligation on every module ca
 contract states structure directly, and what it states is binding without a tree item behind it
 ([ADR 0011 rev 2](../decisions/0011-requirement-or-convention.md) decides which of the two an
 obligation belongs in). *An upstream-backed module reads exactly one source* is part 5's "exactly
-one entry in the static, compile-time list, binding `GET /api/<source>`", and an author who searches
-the `SRS` tier for it finds nothing and concludes the obligation is homeless. It is not; it is
-written down one document over.
+one entry in the static, compile-time list", and an author who searches the `SRS` tier for it finds
+nothing and concludes the obligation is homeless. It is not; it is written down one document over.
 
 So the second stage asks two questions rather than one. Does a framework item say it — if yes, drop
 the draft. Does **this contract** say it — if yes, the draft cites the clause in its own
@@ -205,17 +265,36 @@ pattern. The framework obliges the validating and the rejecting
 (SRS012<!-- Request parameters validated against known-good per-source patterns -->); which pattern
 that is, that item's own rationale hands to the module, and it is stated as a module `SRS`.
 
-Two of an upstream-backed module's items are about timing, and each carries a value together with
-the rationale that produced it — the figure in the item, argued in the item, rather than a constant
-somewhere with a comment beside it.
+An upstream-backed module's timing is stated in its requirements, and each figure is carried together
+with the rationale that produced it — the figure in the item, argued in the item, rather than a
+constant somewhere with a comment beside it. **Before any of them is written, the author enumerates
+every observable figure the module will ship**: both cache TTLs, the poll cadence, the upstream rate
+bound, how far ahead anything it forecasts reaches, how long the page gives one read before
+abandoning it, and how much of a request body its route reads before refusing the rest. Each one
+leaves that list in one of two ways — into a requirement that argues it, or into a written record
+that it is a free choice and why nothing constrains it. **A figure that leaves the list by neither
+route is an invented figure**, and it is invented whether or not it is a good number: what makes it
+invention is that nothing in the specification could have been read differently to produce a
+different one, so nothing can ever find it wrong.
 
-Both are argued **at the capability**, not from a supplier's published behaviour. Freshness states
-how stale the data a viewer sees may be, argued from how often the thing the module reports on
-actually changes and from what a display glanced at rather than consulted needs: refetching faster
-than the world moves buys a viewer nothing, and a display has no way to tell a viewer that what it
-shows has aged. Upstream rate states a politeness bound — how often this module may ask its source —
-chosen low enough that a display left running for years is not throttled or cut off by any free
-upstream for asking too often.
+**Two figures on that list are the framework's rather than any module's**, and an author confirms the
+module fits inside them rather than arguing them: how long the page gives one read before abandoning
+it, and how much of a request body a module data route reads before refusing the rest. Both are free
+choices with a record rather than requirements — nothing in the specification settles either — and
+both are chosen once for every module rather than once per module, so a module that restated either
+would be arguing a figure it does not set.
+
+Three of those figures are argued **at the capability** rather than from a supplier's published
+behaviour. Freshness states how stale the data a viewer sees may be, argued from how often the thing
+the module reports on actually changes and from what a display glanced at rather than consulted
+needs. Upstream rate states a politeness bound while the source is answering — how often this module
+may ask — chosen low enough that a display left running for years is not throttled or cut off by any
+free upstream for asking too often. **And the failure path states its own bound**, because the
+argument behind the answering one does not survive a source that has not answered: asking oftener
+than freshness requires buys a viewer nothing only while there is a fresh answer to hold, and while
+there is none what a retry buys is the difference between a source that recovered and a display that
+has not noticed. Left to fall out of the success figure, the failure path is either forbidden a retry
+worth making or permitted a rate nobody argued for.
 
 Arguing them that way is what makes them **capability requirements that double as
 provider-suitability criteria**. A figure read off one service's refresh interval or its published
@@ -225,8 +304,8 @@ capability survives the swap and becomes the test a candidate supplier is held t
 moves slower than the freshness figure, or that will not be asked as often as the rate figure
 allows, is a source this module cannot use.
 
-The route's two cache TTLs, its rate limit and the module's poll cadence are read out of those two
-items rather than picked at the keyboard. What a module does not restate is that the rate is bounded
+The route's two cache TTLs, its rate limit and the module's poll cadence are read out of those items
+rather than picked at the keyboard. What a module does not restate is that the rate is bounded
 at all and not left for an operator to tune
 (SRS011<!-- Upstream request rate is bounded, and the bound is not operator-tunable -->) — the
 framework obliges that there be a bound, and the module says what it is.
@@ -298,12 +377,18 @@ written against the type its boundary-schema fragment generates.
    a captured upstream response.
 2. *(every module)* Add the module's section to the configuration schema and check an example
    configuration by loading it in the page.
-3. *(upstream-backed only)* Add the registration entry, carrying all six of that route's policies —
-   parameter validation, success TTL, negative TTL, rate limit, outbound timeout, maximum response
-   size — with the timing values the module's requirements already settled
-   ([§ Writing the module's requirements](#writing-the-modules-requirements)).
-4. *(upstream-backed only)* Add the module's payload to the boundary schema as a named component;
-   the generated type the component consumes is emitted from it.
+3. *(upstream-backed only)* Write the registration entry in the module's own package, carrying all
+   five of that route's policies — success TTL, negative TTL, rate limit, outbound timeout, maximum
+   response size — with the timing values the module's requirements already settled
+   ([§ Writing the module's requirements](#writing-the-modules-requirements)); write the route's
+   schema handler beside it, reading the request through the generated request type and handing it to
+   the route the entry builds; then add the one field naming that route type to the shared
+   registration list.
+4. *(upstream-backed only)* Add the module's payload and the request it answers to the boundary
+   schema as named components, and tag the path `module-route`; the generated types both sides
+   consume are emitted from them. Nothing in the build reads the tag, so it is not a step a red build
+   will remind you of — it is what says which kind of path this is
+   ([§ The six parts](#the-six-parts), part 6).
 5. *(every module)* Write the component, plus its render test. Where the module has a payload, write
    the component against the generated type rather than hand-declaring it. Where the module is
    upstream-backed, declare the `reachable` prop and honour the stand-down it signals
@@ -316,6 +401,32 @@ written against the type its boundary-schema fragment generates.
    ([§ Dependency direction](#dependency-direction)).
 8. *(every module)* Adding a module is a test-architecture review trigger — run it, per
    [`TESTING.md` § Review cadence](../TESTING.md#review-cadence).
+9. *(every module)* Reconcile the documents the module has just falsified, in this change rather than
+   after it: this contract where the module's shape is not the shape described, the architecture
+   model and `ARCHITECTURE.md` where the drawing or the prose no longer matches
+   ([§ Drawing the module in the architecture model](#drawing-the-module-in-the-architecture-model)),
+   and the decision record where a decision was taken here rather than recorded there. Which of those
+   a given fact belongs in is [ADR 0011 rev 2](../decisions/0011-requirement-or-convention.md)'s to
+   say, and a reason living in a code comment because no document was found for it is a reason that
+   has not been recorded. **A module is not done while a document describes something else.**
+
+## Adding an obligation to this contract
+
+What this page states is binding without a tree item behind it, which makes an obligation written
+here as costly to get wrong as one written in the tree and harder to notice: a requirement that no
+code satisfies fails a check, and a sentence here that no code satisfies simply sits.
+
+So an obligation added here is checked against a module that conforms, before it lands. Walk the
+build steps against the module in the tree that most nearly matches the new sentence and confirm each
+one can be carried out and confirmed — not that it ought to be, that it can. A step that the module
+in the repository cannot pass is not a standard the tree has yet to meet; it is a defect in this
+page, and it will be read as licence by the next author who finds the code and the contract
+disagreeing and picks the code.
+
+The same walk is what an obligation's **removal** owes: a clause deleted here may be the only place a
+real obligation was written down, this page being one of the two homes
+([ADR 0011 rev 2](../decisions/0011-requirement-or-convention.md) decides which), so a deletion says
+where the obligation went rather than that it is gone.
 
 ## A shape this contract does not fit
 
