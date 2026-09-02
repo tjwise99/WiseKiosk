@@ -218,6 +218,16 @@ nowhere else in code ([the module contract](contracts/module-contract.md)); that
 components read rather than a component of its own. What a request carries is not among them: the
 module reads it through the type the boundary schema generates and judges it there.
 
+**How much of a request the framework reads is the framework's figure, and it is a free choice.** No
+obligation names a request size and nothing upstream constrains one, so the cap leaves the enumeration
+every module author walks by the free-choice route rather than into a requirement
+([the module contract](contracts/module-contract.md)). It is chosen against the shape of a module data
+route's request — a small JSON object naming what the answer is to be about — and against the cost of
+the alternative, which is an unauthenticated caller deciding how much this process buffers. A kilobyte
+is far above every request the boundary schema declares and far below a size worth reading from a
+caller that means nothing good by it. The value lives in the `router` package and only there, so the
+figure and the reasoning are one thing described twice rather than two that agree today.
+
 <!-- arch-export:begin generated/backendComponents.mmd -->
 
 ```mermaid
