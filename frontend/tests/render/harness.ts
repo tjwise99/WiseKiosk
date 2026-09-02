@@ -16,16 +16,48 @@ export type Rendered = 'frame' | 'configuration-error';
 export type Liveness = 'ok' | 'abort';
 
 /**
+ * Answers the page's liveness ask from inside the page. Serialised into it, so it reaches nothing
+ * declared out here and spells the path itself. The first call over a document is what patches
+ * `fetch`; every call sets the answer that patch gives, which is what makes a later one a change of
+ * answer rather than a second patch. The served answer carries no body, because the schema declares
+ * none and the generated client parses whatever one it is handed, and `abort` rejects with the
+ * `TypeError` a refused connection rejects with.
+ */
+function answerLiveness(liveness: Liveness): void {
+  const held = window as unknown as { livenessAnswer?: Liveness; fetch: typeof fetch };
+  const patched = held.livenessAnswer !== undefined;
+  held.livenessAnswer = liveness;
+  if (patched) {
+    return;
+  }
+  const asked = held.fetch;
+  held.fetch = (input, init) => {
+    const url = new URL(input instanceof Request ? input.url : String(input), location.href);
+    if (url.pathname !== '/healthz') {
+      return asked(input, init);
+    }
+    return held.livenessAnswer === 'ok'
+      ? Promise.resolve(new Response(null, { status: 200 }))
+      : Promise.reject(new TypeError('Failed to fetch'));
+  };
+}
+
+/**
  * Answers the page's liveness ask, `abort` being the connection failing the way a stopped service
- * fails it. Playwright matches routes most-recently-registered first, so calling this again over a
- * served page is what induces the transition a test is asserting. One spelling of the glob, for the
- * same reason the configuration's is one. The served answer carries no body, because the route
- * declares none and the generated client parses whatever one it is handed.
+ * fails it. Calling this again over a served page is what induces the transition a test asserts: the
+ * init script carries the answer across the navigation `render` makes, and the evaluation sets it on
+ * a document already loaded, so a test stages the state either side of the load. Init scripts run in
+ * the order they were registered, so the last call decides.
+ *
+ * Answered in the page rather than from a route because the shell measures its own deadline with
+ * `AbortSignal.timeout`, which `page.clock` fakes: a deadline in driven time against an answer
+ * travelling to a route handler and back in real time is missed under load, which stands the backend
+ * down and back up under a test measuring something else. An answer given here settles in a
+ * microtask of the clock the deadline is read from, so it cannot be stranded.
  */
 export async function serveLiveness(page: Page, liveness: Liveness): Promise<void> {
-  await page.route('**/healthz', (route) =>
-    liveness === 'ok' ? route.fulfill({ status: 200 }) : route.abort('failed'),
-  );
+  await page.addInitScript(answerLiveness, liveness);
+  await page.evaluate(answerLiveness, liveness);
 }
 
 /**
@@ -69,19 +101,20 @@ export async function holdHostClock(page: Page, when: Date): Promise<void> {
 }
 
 /**
- * Advances the held clock by `ms`, in steps short enough that each of the page shell's liveness asks
- * settles before its own deadline is reached.
+ * Advances the held clock by `ms`, in steps short enough that an ask in flight is answered before the
+ * deadline it is measured against.
  *
  * One `runFor` over a long span fires every timer in that span before any ask those timers issued can
- * resolve, so each liveness ask meets its `AbortSignal.timeout` deadline unanswered and the shell
- * reads the backend as gone and then back again — repeatedly, over a span holding many intervals.
- * Nothing is wrong with the page; the flap is the driven clock's. But a module fed by the backend
- * stands down and re-reads across one, so a case that advances time in a single jump measures a
- * module remounting where it meant to measure the module polling, and passes whether or not the poll
- * it is about works at all.
+ * be answered from the runner, and `page.clock` fakes `AbortSignal.timeout`, so an ask carrying one
+ * has its deadline measured in that same driven time and meets it unanswered. A case advancing time
+ * in a single jump then measures the page recovering from that rather than the cadence it is about,
+ * and passes whether or not the cadence works at all. The liveness ask is not among them, being
+ * answered in the page (`serveLiveness`); a module's read is, and the deadline it is held to is the
+ * module's own read timeout.
  *
- * The step is taken from the deadline it has to stay inside rather than written here as a figure of
- * its own, so a change to the shell's timeout carries to this by itself.
+ * The step is taken from the shell's liveness deadline rather than written here as a figure of its
+ * own: it is the shortest the page holds, so an ask kept inside it is inside every other, and a
+ * change to that timeout carries to this by itself.
  */
 export async function advanceHostClock(page: Page, ms: number): Promise<void> {
   const step = Math.max(1, Math.floor(LIVENESS_TIMEOUT_MS / 2));
@@ -173,7 +206,9 @@ export const ASKING_RESOURCE_TYPES = new Set(['fetch', 'xhr', 'eventsource']);
 
 /**
  * The paths the page shell asks for on its own account: its configuration, once at mount, and the
- * backend's liveness, on the shell's own interval. Every other ask is some module's.
+ * backend's liveness, on the shell's own interval. Every other ask is some module's. The liveness ask
+ * is answered inside the page (`serveLiveness`), so it reaches no listener `watchTraffic` holds; it is
+ * named here regardless, so what is left over is attributable to a module whether or not it does.
  */
 export const SHELL_PATHS = new Set(['/config.json', '/healthz']);
 
