@@ -581,17 +581,28 @@ func TestTST066_ThePolicyComesToOneRequestEveryFiveMinutesForOneLocation(t *test
 	}
 }
 
+// TestTST061_TheCacheIntervalHoldsAnAnswerNoLongerThanTheFreshnessBound reads
+// this module's half of
+// SRS046<!-- The weather a viewer sees is no more than fifteen minutes behind its source -->:
+// the interval it holds an answer for, against the figure the requirement states
+// rather than against itself. What the display then does with an answer — reading
+// again on its own interval, without being reloaded — is the render test's to
+// assert.
+func TestTST061_TheCacheIntervalHoldsAnAnswerNoLongerThanTheFreshnessBound(t *testing.T) {
+	policy := Config()
+
+	// An answer held longer than the bound is one a viewer could be shown past it.
+	const bound = 15 * time.Minute
+	if policy.SuccessTTL > bound {
+		t.Errorf("SuccessTTL = %s, want an answer held no longer than %s", policy.SuccessTTL, bound)
+	}
+}
+
 // TestThePolicyIsCompleteAndItsFailureRetryIsSooner reads what an entry requires
 // of any policy, and the one relation between two of this module's figures that
 // no requirement states.
 func TestThePolicyIsCompleteAndItsFailureRetryIsSooner(t *testing.T) {
 	policy := Config()
-
-	// SRS046<!-- The weather a viewer sees is no more than fifteen minutes behind its source -->:
-	// an answer held longer than the bound is one a viewer could be shown past it.
-	if policy.SuccessTTL > 15*time.Minute {
-		t.Errorf("SuccessTTL = %s, want no more than 15m", policy.SuccessTTL)
-	}
 
 	// Every value is required of an entry, and nothing in the framework supplies
 	// one or checks that an entry declared it
