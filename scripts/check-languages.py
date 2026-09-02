@@ -72,7 +72,9 @@ EXTENSIONS = {
     "txt": "derived — a toolchain's own required input format (pip's requirements-dev.txt); also "
     "derived — data an authored check reads and does not itself author: the secret-pattern "
     "enumeration scripts/image/layer_secret_scan.py matches image layers against, rather "
-    "than restating it (docs/TESTING.md)",
+    "than restating it (docs/TESTING.md); also documentation — legal text, not an authored "
+    "program: the licence and attribution the bundled faces are redistributed under, beside "
+    "them in frontend/src/assets/ (ADR 0017 rev 8)",
     "regex": "derived — data an authored check reads and does not itself author: the "
     "single-source-of-truth branch pattern check-branch.py and branch-shape.py "
     "each read instead of restating it (docs/CI.md)",

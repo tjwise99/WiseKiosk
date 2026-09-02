@@ -18,7 +18,7 @@
    `font/weathericons-regular-webfont.woff2` (font version 1.100), redistributed whole and
    unmodified. What this face carries and how it is reached is
    docs/contracts/display-styling-contract.md § Typeface. Licence text and attribution for both
-   faces: docs/third-party-licences.md. `block` matches Inter's, so no fallback face is ever
+   faces: ./assets/font-licences.txt. `block` matches Inter's, so no fallback face is ever
    composited. */
 @font-face {
   font-family: 'Weather Icons';

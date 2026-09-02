@@ -1,45 +1,39 @@
-# Third-party licences
-
-Each font face the display bundles is a third-party work, redistributed under the SIL Open Font
-License 1.1. That licence conditions redistribution on the copyright notice and the licence itself
-travelling with the font, and a face is bundled here as a single file with no licence beside it, so
-this document is where that obligation is discharged. It carries no fact about WiseKiosk: what each
-face is used for is [the display styling contract](contracts/display-styling-contract.md)'s, and
-this is the attribution and the licence text each is redistributed under.
+Both faces bundled in this directory are redistributed under the SIL Open Font License 1.1, which
+conditions redistribution on the copyright notice and the licence travelling with the font. Each is
+a single file with no licence of its own, so this file is where that obligation is discharged. What
+each face is used for is docs/contracts/display-styling-contract.md.
 
 Each notice below is the one carried in that font file's own name table, read out of the file this
 repository ships rather than copied from a distribution page.
 
-## Inter
 
-- **File:** `frontend/src/assets/inter-latin-wght-normal.woff2`
-- **Version:** 4.001 (`Version 4.001;git-66647c0bb`)
-- **Provenance:** `@fontsource-variable/inter` 5.3.0's `inter-latin-wght-normal.woff2`, the Latin
-  subset of the weight axis, redistributed unmodified.
-- **Notice:** Copyright 2016 The Inter Project Authors (https://github.com/rsms/inter)
-- **Licence:** SIL Open Font License, Version 1.1 — the text below.
+INTER
 
-## Weather Icons
+  File:       inter-latin-wght-normal.woff2
+  Version:    4.001 (Version 4.001;git-66647c0bb)
+  Provenance: @fontsource-variable/inter 5.3.0's inter-latin-wght-normal.woff2, the Latin subset of
+              the weight axis, redistributed unmodified.
+  Notice:     Copyright 2016 The Inter Project Authors (https://github.com/rsms/inter)
+  Licence:    SIL Open Font License, Version 1.1 — the text below.
 
-- **File:** `frontend/src/assets/weathericons-subset.woff2`
-- **Version:** 1.100 (`Version 1.100;PS 001.100;hotconv 1.0.70;makeotf.lib2.5.58329`)
-- **Provenance:** `weathericons` 2.1.0's `font/weathericons-regular-webfont.woff2`, **modified** —
-  subset to the twenty-eight condition codepoints the weather module draws. The command that
-  produced it is recorded at the `@font-face` rule in `frontend/src/app.css`. The subset retains the
-  name table, so the notice below travels in the file itself as well as here. That package ships no
-  licence file of its own, which is what makes the text below the only copy travelling with it.
-- **Notice:** Weather Icons licensed under SIL OFL 1.1 — Code licensed under MIT License —
-  Documentation licensed under CC BY 3.0
-- **Design:** Erik Flowers, Lukas Bischoff (v1 Art)
-- **Licence:** SIL Open Font License, Version 1.1 — the text below. A modified version is
-  redistributed under the same licence. Upstream declares no Reserved Font Name, in the font's own
-  name table or beside it, so the family name is retained.
 
-## SIL Open Font License, Version 1.1
+WEATHER ICONS
+
+  File:       weathericons-regular.woff2
+  Version:    1.100 (Version 1.100;PS 001.100;hotconv 1.0.70;makeotf.lib2.5.58329)
+  Provenance: weathericons 2.1.0's font/weathericons-regular-webfont.woff2, redistributed whole and
+              unmodified. That package ships no licence file of its own, which is what makes this
+              copy the only one travelling with it.
+  Notice:     Weather Icons licensed under SIL OFL 1.1 — Code licensed under MIT License —
+              Documentation licensed under CC BY 3.0
+  Design:     Erik Flowers, Lukas Bischoff (v1 Art)
+  Licence:    SIL Open Font License, Version 1.1 — the text below.
+
+
+SIL OPEN FONT LICENSE, VERSION 1.1
 
 Both faces above are licensed under the text that follows, reproduced in full.
 
-```
 -----------------------------------------------------------
 SIL OPEN FONT LICENSE Version 1.1 - 26 February 2007
 -----------------------------------------------------------
@@ -126,4 +120,3 @@ INCLUDING ANY GENERAL, SPECIAL, INDIRECT, INCIDENTAL, OR CONSEQUENTIAL
 DAMAGES, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 FROM, OUT OF THE USE OR INABILITY TO USE THE FONT SOFTWARE OR FROM
 OTHER DEALINGS IN THE FONT SOFTWARE.
-```
