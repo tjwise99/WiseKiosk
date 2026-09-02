@@ -7,9 +7,9 @@ links:
 - SRS046: twOwP_ffa_ll4QDgilsFX0QBaqRfP1KwM6EUN9qcKwA=
 normative: true
 rationale: |
-  Two things are staged because neither alone makes the bound decidable. A source that never changes its
-  answer cannot show the page following one, and a wall clock cannot be run for the length of the bound
-  inside a suite, so the source is moved and the clock is driven.
+  Two things are staged in the render check because neither alone makes the bound decidable. A source
+  that never changes its answer cannot show the page following one, and a wall clock cannot be run for
+  the length of the bound inside a suite, so the source is moved and the clock is driven.
   The reload is what the assertion is against. A page that picked up the change only when it was loaded
   again would satisfy any reading taken after a reload while leaving a display that is never reloaded
   showing weather from whenever it started.
@@ -24,7 +24,7 @@ references:
   path: backend/internal/modules/weather/weather_test.go
   sha: 89ae0f1355d4506ebb263e37f9bfd08df7bf726a66a99fa36c909cbc3e9bd1e2
   type: file
-reviewed: LT3QTTr6HE0OmGj8ZiKkezBvxzIso6Adrdawj2SVoPs=
+reviewed: UDHoxT9b5lxku0JkQeH7ixBqZEZHpVpx8NRKl_Xg2Vk=
 status: proposed
 text: |
   Two checks, one per half of what the bound is met between. A unit test over the module's registered
