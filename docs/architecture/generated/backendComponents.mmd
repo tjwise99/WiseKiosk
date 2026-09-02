@@ -7,10 +7,10 @@ graph TB
   subgraph WisekioskBackend["`Backend`"]
     WisekioskBackend.StaticServing@{ shape: rectangle, label: "Static serving" }
     WisekioskBackend.RouteHandler@{ shape: rectangle, label: "Route handler" }
-    WisekioskBackend.RequestValidation@{ shape: rectangle, label: "Request validation" }
+    WisekioskBackend.WeatherShaping@{ shape: rectangle, label: "Weather shaping" }
     WisekioskBackend.ResponseCache@{ shape: rectangle, label: "Response cache" }
     WisekioskBackend.UpstreamClient@{ shape: rectangle, label: "Upstream client" }
-    WisekioskBackend.WeatherShaping@{ shape: rectangle, label: "Weather shaping" }
+    WisekioskBackend.RequestRejection@{ shape: rectangle, label: "Request rejection" }
   end
   OpenMeteo@{ shape: rectangle, label: "Open-Meteo" }
   Operator -. "`Places the configuration into the served 
@@ -19,11 +19,12 @@ tree`" .-> WisekioskBackend.StaticServing
   WisekioskFrontend -. "`Fetches the configuration, served back 
 unparsed`" .-> WisekioskBackend.StaticServing
   WisekioskFrontend -. "`Fetches the payload for each module`" .-> WisekioskBackend.RouteHandler
-  WisekioskBackend.RouteHandler -. "`Asks whether the parameters conform`" .-> WisekioskBackend.RequestValidation
   WisekioskBackend.RouteHandler -. "`Asks for a held answer, and stores what 
 it gets`" .-> WisekioskBackend.ResponseCache
   WisekioskBackend.RouteHandler -. "`Asks for a fresh response when nothing 
 is held`" .-> WisekioskBackend.UpstreamClient
+  WisekioskBackend.WeatherShaping -. "`Answers a request it will not carry with 
+the shared rejection`" .-> WisekioskBackend.RequestRejection
   WisekioskBackend.StaticServing -. "`Serves the single-page bundle`" .-> WisekioskFrontend
   WisekioskBackend.UpstreamClient -. "`Fetches the weather for the location a 
 request names`" .-> OpenMeteo

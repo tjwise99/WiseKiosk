@@ -142,7 +142,7 @@ model {
         '''
       }
 
-      requestValidation = component 'Request validation' {
+      requestRejection = component 'Request rejection' {
         #SRS012
         #SRS013
         link ../../../backend/internal/router
@@ -322,9 +322,9 @@ model {
     pageShell -> layout 'Hands over the configured modules and whether the backend is serving'
     layout -> moduleHost 'Mounts one host per configured placement'
 
-    routeHandler -> requestValidation 'Asks whether the parameters conform'
     routeHandler -> responseCache 'Asks for a held answer, and stores what it gets'
     routeHandler -> upstreamClient 'Asks for a fresh response when nothing is held'
+    weatherShaping -> requestRejection 'Answers a request it will not carry with the shared rejection'
 
     configuration -> staticServing 'Fetches the configuration, served back unparsed' {
       #SRS003
