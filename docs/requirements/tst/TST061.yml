@@ -18,13 +18,13 @@ references:
 - keyword: 'test(''TST061: follows its source to a new reading inside the freshness
     bound, without reloading'', async ({'
   path: frontend/src/modules/weather/weather.spec.ts
-  sha: 545f2a95140dbce79d5f6af870780ce7f60d83ebbfee23dae486e85da44fa113
+  sha: 228a31229b91f1a4f8a3e09cd2d253af9e17e75ca1f2c71fbfb519d279b536ae
   type: file
 - keyword: func TestTST061_TheCacheIntervalHoldsAnAnswerNoLongerThanTheFreshnessBound
   path: backend/internal/modules/weather/weather_test.go
-  sha: 89ae0f1355d4506ebb263e37f9bfd08df7bf726a66a99fa36c909cbc3e9bd1e2
+  sha: f5ba25f4a05d0ad930be295deff56e0eca35b49538251787368a84db9a22f6ae
   type: file
-reviewed: UDHoxT9b5lxku0JkQeH7ixBqZEZHpVpx8NRKl_Xg2Vk=
+reviewed: E9E0KSdTg1pEJfu4QoJ3UAqIksyhRWvaNCV3d-Al7Vc=
 status: proposed
 text: |
   Two checks, one per half of what the bound is met between. A unit test over the module's registered

@@ -407,7 +407,7 @@ function everyHour(code: number, isDay: boolean): { code: number; isDay: boolean
   return Array.from({ length: 5 }, () => ({ code, isDay }));
 }
 
-test('draws the present reading on the side of the day the payload gives it', async ({ page }) => {
+test('TST065: draws the present reading on the side of the day the payload gives it', async ({ page }) => {
   // The two payloads differ in the flag alone — same code, same figures — so whatever moves between
   // them is the distinction's and nothing else's.
   await serveModuleData(page, () => ({
@@ -430,7 +430,7 @@ test('draws the present reading on the side of the day the payload gives it', as
   await expect(present).toHaveText(GLYPHS.clearNight);
 });
 
-test('draws each hour on its own side of the day, not the present reading’s', async ({ page }) => {
+test('TST065: draws each hour on its own side of the day, not the present reading’s', async ({ page }) => {
   // A day reading with the night falling across the hours to come — the case the present reading's
   // own flag cannot answer, and the case a component reading the page's clock gets wrong wherever
   // the display does not hang at the place reported on.

@@ -416,7 +416,7 @@ func TestTST059_ShapingTheCapturedResponseCarriesEverythingAViewerIsOwed(t *test
 	}
 }
 
-// TestTheOutlooksAreAsLongAsTheRequirementStates reads the horizon against a
+// TestTST064_TheOutlooksAreAsLongAsTheRequirementStates reads the horizon against a
 // capture carrying more of each range than the payload is to hold: a shaping
 // that truncates and one that passes the source's own length straight through
 // are told apart only by a response longer than the figure.
@@ -424,7 +424,7 @@ func TestTST059_ShapingTheCapturedResponseCarriesEverythingAViewerIsOwed(t *test
 // The expected lengths are written here rather than read from the module's own
 // constants. A check reading the constant asserts that the module agrees with
 // itself, which is equally true of a module that shows one hour.
-func TestTheOutlooksAreAsLongAsTheRequirementStates(t *testing.T) {
+func TestTST064_TheOutlooksAreAsLongAsTheRequirementStates(t *testing.T) {
 	const (
 		wantHours = 5
 		wantDays  = 5

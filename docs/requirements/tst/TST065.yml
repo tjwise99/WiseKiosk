@@ -18,17 +18,17 @@ rationale: |
   has one answer to give.
 ref: ''
 references:
-- keyword: test('draws the present reading on the side of the day the payload gives
-    it', async ({ page }) => {
+- keyword: 'test(''TST065: draws the present reading on the side of the day the payload
+    gives it'', async ({ page }) => {'
   path: frontend/src/modules/weather/weather.spec.ts
-  sha: 545f2a95140dbce79d5f6af870780ce7f60d83ebbfee23dae486e85da44fa113
+  sha: 228a31229b91f1a4f8a3e09cd2d253af9e17e75ca1f2c71fbfb519d279b536ae
   type: file
-- keyword: test('draws each hour on its own side of the day, not the present reading’s',
-    async ({ page }) => {
+- keyword: 'test(''TST065: draws each hour on its own side of the day, not the present
+    reading’s'', async ({ page }) => {'
   path: frontend/src/modules/weather/weather.spec.ts
-  sha: 545f2a95140dbce79d5f6af870780ce7f60d83ebbfee23dae486e85da44fa113
+  sha: 228a31229b91f1a4f8a3e09cd2d253af9e17e75ca1f2c71fbfb519d279b536ae
   type: file
-reviewed: ehPNl83R6X7Mxgs4fT-ZoA50N2Ec4pK8I8RoM0spI3w=
+reviewed: tyXK86cr7jv8dB-BGusRyq1s8meWlNqS_5H_QvTbzjc=
 status: proposed
 text: |
   Render test handing the component two payloads differing only in whether the present weather is a

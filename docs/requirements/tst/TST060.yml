@@ -18,9 +18,9 @@ references:
 - keyword: 'test(''TST060: draws what it is doing now, the hours to come and the days
     to come, each separably'', async ({'
   path: frontend/src/modules/weather/weather.spec.ts
-  sha: 545f2a95140dbce79d5f6af870780ce7f60d83ebbfee23dae486e85da44fa113
+  sha: 228a31229b91f1a4f8a3e09cd2d253af9e17e75ca1f2c71fbfb519d279b536ae
   type: file
-reviewed: DUI7Uj3RTfKxyHxkem-_BuGCziahDSrFB0GoPzzavDk=
+reviewed: Pxja9XarL13EOJPXMU2CL8G9FKRL7SieNKdewi01U-A=
 status: proposed
 text: |
   Render test handing the component a payload and asserting the present weather and both forward
