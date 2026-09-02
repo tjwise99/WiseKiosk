@@ -78,8 +78,10 @@ themeparks.wiki — and a new module joins it the same way.
    source to the library above. The entry is written **in the module's own package**, beside the
    shaping library it is assembled from, and carries every policy governing the route — success cache
    TTL, negative cache TTL, rate limit, outbound timeout, and maximum accepted upstream response
-   size. Those values live in the entry and nowhere else in code, and **all four timing figures are
-   read out of the module's requirements**, which carry each value with its rationale
+   size. Those values live in the entry and nowhere else in code. **The two cache TTLs are read out
+   of the module's requirements**, which carry each value with its rationale; the rate limit, the
+   outbound timeout and the response size ceiling leave the enumeration by the other route, as the
+   module's own free choices with a written record
    ([§ Writing the module's requirements](#writing-the-modules-requirements)). They live there rather
    than in a framework default because a figure chosen against one source is that source's, and a
    second module arriving at the same figures is what would make them worth holding centrally.
@@ -274,9 +276,10 @@ An upstream-backed module's timing is stated in its requirements, and each figur
 with the rationale that produced it — the figure in the item, argued in the item, rather than a
 constant somewhere with a comment beside it. **Before any of them is written, the author enumerates
 every observable figure the module will ship**: both cache TTLs, the poll cadence, the upstream rate
-bound, the burst its rate bucket holds, how far ahead anything it forecasts reaches, how long the
-page gives one read before abandoning it, and how much of a request body its route reads before
-refusing the rest. Each one
+bound, the burst its rate bucket holds, how far ahead anything it forecasts reaches, how long it
+waits for its source to answer before abandoning the ask, how much of that source's answer it reads
+before refusing the rest, how long the page gives one read before abandoning it, and how much of a
+request body its route reads before refusing the rest. Each one
 leaves that list in one of two ways — into a requirement that argues it, or into a written record
 that it is a free choice and why nothing constrains it. **A figure that leaves the list by neither
 route is an invented figure**, and it is invented whether or not it is a good number: what makes it
@@ -290,13 +293,31 @@ choices with a record rather than requirements — nothing in the specification 
 both are chosen once for every module rather than once per module, so a module that restated either
 would be arguing a figure it does not set.
 
-**One figure on that list is the module's own and still leaves it by the free-choice route.** The
-burst its rate bucket holds has no framework default and no requirement behind it: the bucket is a
-coarse backstop over the source as a whole and cannot express a bound the way the requirements state
-one — its rate is per minute and it is not keyed on what a request is about — so nothing in the
-specification could have been read to produce a figure for it. What it is chosen against is written
-beside the value: loose enough not to refuse the polling the cache interval already answers from
-held data, and there to catch a runaway rather than to be the bound.
+**Four figures on that list are the module's own and still leave it by the free-choice route**, and
+this section is their record. A comment at the constant says what the constant does and cites this
+section; it is never itself the record, because a reason living only beside the code is unfindable by
+anyone reading the specification, which is where the next author looks to see whether a figure was a
+decision or an accident.
+
+**The rate its bucket admits and the burst that bucket holds** have no requirement behind either: the
+bucket is a coarse backstop over the source as a whole and cannot express a bound the way the
+requirements state one — its rate is per minute and it is not keyed on what a request is about — so
+nothing in the specification could have been read to produce a figure for either. The enumeration's
+upstream rate bound is met by the success cache holding an answer, not here. The rate is set loose
+enough not to refuse the polling that cache already answers from held data, and the burst above it so
+that a handful of distinct locations missing cache together are each served; both are there to catch
+a runaway rather than to be the bound.
+
+**The outbound timeout and the ceiling on an upstream answer** are obliged to exist and not to be
+anything in particular
+(SRS014<!-- No single upstream exchange can stall or exhaust the backend -->): any finite pair of
+figures discharges that item, so the figures themselves are chosen rather than read out of it. The
+timeout is set well inside the deadline the page holds one read
+to, so a source that has gone quiet is abandoned and reported rather than waited on past the point
+the display has stopped listening. The ceiling is set several times the captured response the shaping
+is exercised against, so an answer that runs away is refused rather than read, and no larger than
+that because it is a multiplicand in what the route can come to hold
+([`ARCHITECTURE.md`](../ARCHITECTURE.md) § Backend).
 
 Three of those figures are argued **at the capability** rather than from a supplier's published
 behaviour. Freshness states how stale the data a viewer sees may be, argued from how often the thing

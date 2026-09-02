@@ -31,14 +31,14 @@ const (
 // Config is the policy this route runs under, carried here so the registration
 // entry assembles it from the module rather than restating it.
 //
-// SuccessTTL is what holds the upstream rate down: an answer is served from
-// cache however often the display asks, which is where
+// SuccessTTL is how long an answer is served from cache however often the
+// display asks, which is where
 // SRS047<!-- The weather module asks an answering source at most four times an hour for a location -->'s
-// figure is met. The token bucket is a coarse backstop over the source as a
-// whole and cannot express that figure — its rate is per minute and its bucket
-// is not per location — so it is set to catch a runaway rather than to be the
-// bound. NegativeTTL is the failing path's own bound
+// figure is met; NegativeTTL is the failing path's own bound
 // (SRS049<!-- The weather module asks a failing source no more often than once every five minutes -->).
+// RequestsPerMinute, Burst, Timeout and MaxBytes are this module's free choices,
+// recorded in docs/contracts/module-contract.md § Writing the module's
+// requirements.
 func Config() upstream.Config {
 	return upstream.Config{
 		SuccessTTL:        15 * time.Minute,
