@@ -225,8 +225,9 @@ every module author walks by the free-choice route rather than into a requiremen
 route's request — a small JSON object naming what the answer is to be about — and against the cost of
 the alternative, which is an unauthenticated caller deciding how much this process buffers. A kilobyte
 is far above every request the boundary schema declares and far below a size worth reading from a
-caller that means nothing good by it. The value lives in the `router` package and only there, so the
-figure and the reasoning are one thing described twice rather than two that agree today.
+caller that means nothing good by it. The value itself lives in the `router` package and nowhere else
+in code; what is recorded here is the reasoning for it, which is what the constant's own comment
+points at.
 
 <!-- arch-export:begin generated/backendComponents.mmd -->
 
@@ -412,11 +413,10 @@ that has a reading at all. Two figures are constants there. The read interval is
 cadence, chosen against the route's success TTL
 ([the module contract](contracts/module-contract.md)), so a refresh no faster than the cache can
 answer differently reaches no upstream. The read deadline is ten seconds, far shorter and a different
-question:
-without it a request that never settles leaves a region in its first-paint state for as long as the
-display runs, and a waiting line that never resolves cannot be told from a module that is broken. It
-sits above the backend's own outbound timeout, so a slow source is reported by the backend as that
-module's failure rather than abandoned here as an answer that never came.
+question: without it a request that never settles leaves a region in its first-paint state for as
+long as the display runs, and a waiting line that never resolves cannot be told from a module that is
+broken. It sits above the backend's own outbound timeout, so a slow source is reported by the backend
+as that module's failure rather than abandoned here as an answer that never came.
 
 **Shared design tokens are delivered as `:root` custom properties** in `src/app.css`, whose values are
 [the display styling contract](contracts/display-styling-contract.md)'s. The edge band is one of them:
