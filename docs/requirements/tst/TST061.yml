@@ -20,7 +20,11 @@ references:
   path: frontend/src/modules/weather/weather.spec.ts
   sha: 48ef49411c1dd193664f2d2cdcff82300f177d9cd851699b0cadf2e5f8299517
   type: file
-reviewed: dh3IIaBE7S6J3L6sPvK03VUOnGix4pa71Y4atAPeSj4=
+- keyword: func TestTST061_TheCacheIntervalHoldsAnAnswerNoLongerThanTheFreshnessBound
+  path: backend/internal/modules/weather/weather_test.go
+  sha: af5c49f05209f016c553126d9e9324954cff3dd19eede15f80f54fc4f6e6b910
+  type: file
+reviewed: z5PC-CkIvsA0080zFZDCSUxxJ_Viabs9_x6lZICiK0I=
 status: proposed
 text: |
   Render test holding the page open against a source staged to change its answer and a driven clock,
