@@ -25,9 +25,8 @@
   /**
    * The glyph each WMO 4677 present-weather code draws, on the side of the day the reading falls —
    * codepoints in the bundled icon face
-   * ([the display styling contract](../../../docs/contracts/display-styling-contract.md)
-   * § Typeface). Seven codes carry one glyph for both sides: overcast, and the heaviest member of
-   * each family.
+   * (docs/contracts/display-styling-contract.md § Typeface). Seven codes carry one glyph for both
+   * sides: overcast, and the heaviest member of each family.
    */
   const SKY_GLYPHS: Record<number, { day: string; night: string }> = {
     0: { day: '\uF00D', night: '\uF02E' },
