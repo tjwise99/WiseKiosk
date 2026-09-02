@@ -18,8 +18,7 @@ import (
 )
 
 // Source names this module's cache namespace and its rate bucket. It is the same
-// word the boundary schema's path ends in, and the registration test is what
-// compares the two.
+// word the boundary schema's path ends in.
 const Source = "weather"
 
 // The bounds a point on the earth's surface lies within
@@ -33,14 +32,13 @@ const (
 // entry assembles it from the module rather than restating it.
 //
 // SuccessTTL is what holds the upstream rate down: an answer is served from
-// cache for fifteen minutes however often the display asks, which is four
-// requests an hour for one location and is where
+// cache however often the display asks, which is where
 // SRS047<!-- The weather module asks an answering source at most four times an hour for a location -->'s
 // figure is met. The token bucket is a coarse backstop over the source as a
 // whole and cannot express that figure — its rate is per minute and its bucket
 // is not per location — so it is set to catch a runaway rather than to be the
-// bound. NegativeTTL is shorter than SuccessTTL because a source that is down is
-// worth retrying sooner than a source that answered is worth asking again.
+// bound. NegativeTTL is the failing path's own bound
+// (SRS049<!-- The weather module asks a failing source no more often than once every five minutes -->).
 func Config() upstream.Config {
 	return upstream.Config{
 		SuccessTTL:        15 * time.Minute,
@@ -96,12 +94,10 @@ const (
 	dailyFields   = "weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max"
 )
 
-// How far ahead the two forward ranges run. The figures are the requirements'
-// rather than this file's: five hours next to come and five days next to come
-// (SRS044<!-- The weather module puts the present conditions and the near-term outlook across the boundary -->),
+// How far ahead the two forward ranges run — the figures are
+// SRS044<!-- The weather module puts the present conditions and the near-term outlook across the boundary -->'s,
 // obliged again over what is drawn
 // (SRS045<!-- The weather module shows the present weather and the outlook apart from each other -->).
-// There is no operator choice behind either.
 const (
 	// hoursShown is how many hours the payload carries.
 	hoursShown = 5
@@ -340,8 +336,8 @@ func shapeHourly(block *seriesBlock, units *unitsBlock, local *time.Location) ([
 			return nil, err
 		}
 		// Read per hour rather than from the present reading: the hours to come
-		// cross the location's own sunrise or sunset, and a weather code says
-		// nothing about which side of it an hour falls.
+		// cross the location's own sunrise or sunset
+		// (SRS050<!-- The weather module draws day and night apart -->).
 		daylight, err := value("whether an hour is in daylight", block.IsDay[step])
 		if err != nil {
 			return nil, err
