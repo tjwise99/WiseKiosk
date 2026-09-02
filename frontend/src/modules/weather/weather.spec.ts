@@ -335,8 +335,8 @@ test('does not draw its reading from before an outage as current after one', asy
 
   // The module is drawn again, and what it draws is the state of having nothing rather than the
   // reading it held before the outage. A held payload survives the stand-down otherwise, and the
-  // window between the backend answering and the first read landing shows old weather as now —
-  // which a display that cannot say how old what it shows is must not do.
+  // window between the backend answering and the first read landing shows old weather as now
+  // (SRS046<!-- The weather a viewer sees is no more than fifteen minutes behind its source -->).
   const loading = page.locator(`[data-region="middle_center"] ${LOADING}`);
   await expect(loading).toBeVisible({ timeout: 2 * LIVENESS_INTERVAL_MS });
   await expect(page.locator(TEMP)).toHaveCount(0);
@@ -350,8 +350,7 @@ test('shows that it is reading while its route has not answered yet', async ({ p
   await page.route('**/api/*', () => {});
   await render(page, placed(HERE));
 
-  // Drawn, and drawn where the module is: a region left blank is indistinguishable from a broken one
-  // on a display nobody is standing at.
+  // Drawn, and drawn where the module is.
   const loading = page.locator(`[data-region="middle_center"] ${LOADING}`);
   await expect(loading).toBeVisible();
   await expect(loading).not.toBeEmpty();
@@ -489,8 +488,8 @@ test('draws the not-available mark for a code it has no mark for', async ({ page
 
 test('puts no words to a sky whose code it does not recognise', async ({ page }) => {
   // A code outside WMO 4677's set, which a source can send at any time. Read through bands with no
-  // floor under the last of them it comes out as a thunderstorm, so the display reports a sky nobody
-  // read — the one thing worse than reporting none.
+  // floor under the last of them it comes out as a thunderstorm, so the display would report a sky
+  // nobody read.
   const unread = forecast(WARM);
   const answer = {
     ...unread,
@@ -520,8 +519,8 @@ test('says something in the module’s place when the answer carries no reason i
 }) => {
   // A status the boundary schema does not describe, which something standing between the page and
   // the route can still produce, carrying a body with no message in it. The shell has no reason to
-  // render and must not draw an empty box: on an unattended display a box with nothing in it is
-  // indistinguishable from a broken one.
+  // render and must not draw an empty box
+  // (SRS001<!-- A failed module shows why, and only that module -->).
   await serveModuleData(page, () => ({ status: 500, data: { detail: 'gateway exploded' } }));
   await render(page, placed(HERE));
 

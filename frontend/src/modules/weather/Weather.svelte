@@ -111,23 +111,28 @@
   }
 
   const round = (value: number) => Math.round(value);
+
+  /**
+   * What the markup below draws. An unavailable module carries the route's own words in the module's
+   * own place (SRS001<!-- A failed module shows why, and only that module -->), and a reading is drawn
+   * as three parts, each on its own
+   * (SRS045<!-- The weather module shows the present weather and the outlook apart from each other -->).
+   */
 </script>
 
 {#if reachable}
   <div class="weather" data-weather>
     {#if payload.state === 'loading'}
-      <!-- Drawn rather than left blank: on an unattended display an empty region reads as a broken
-           one, and a module that has been asked for but not yet answered is neither. -->
+      <!-- Drawn rather than left blank: a module that has been asked for but not yet answered is
+           neither a reading nor a failure. -->
       <p class="waiting" data-module-loading>Reading the weather…</p>
     {:else if payload.state === 'unavailable'}
-      <!-- The module's own place, and the route's own words for why (SRS001). The hook names the
-           state rather than this module, the state being one every upstream-backed module has. -->
+      <!-- The hook names the state rather than this module, the state being one every
+           upstream-backed module has. -->
       <p class="waiting" data-module-unavailable>{payload.failure.message}</p>
     {:else}
       {@const reading = payload.data}
       {@const sky = describeSky(reading.current.weatherCode)}
-      <!-- Three parts, each drawn on its own: what it is doing now, the hours next to come and the
-           days next to come (SRS045). -->
       <section class="present" data-weather-present>
         <!-- Day and night are drawn as the mark itself. Which side of the day it is, is the
              payload's rather than the host's clock: the place reported on need not be the place the

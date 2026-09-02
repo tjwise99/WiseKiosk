@@ -411,7 +411,8 @@ cadence, its abandoned reads and its stand-down are one component's and are the 
 that has a reading at all. Two figures are constants there. The read interval is the module's poll
 cadence, chosen against the route's success TTL
 ([the module contract](contracts/module-contract.md)), so a refresh no faster than the cache can
-answer differently reaches no upstream. The read deadline is far shorter and is a different question:
+answer differently reaches no upstream. The read deadline is ten seconds, far shorter and a different
+question:
 without it a request that never settles leaves a region in its first-paint state for as long as the
 display runs, and a waiting line that never resolves cannot be told from a module that is broken. It
 sits above the backend's own outbound timeout, so a slow source is reported by the backend as that

@@ -29,15 +29,8 @@
   const READ_INTERVAL_MS = 5 * 60 * 1000;
 
   /**
-   * How long one read is given before it is abandoned. Without it a request that never settles leaves
-   * the module in its first-paint state for as long as the display runs, and a loading state that
-   * never resolves cannot be told from a module that is broken.
-   *
-   * Ten seconds, sitting between the two figures either side of it
-   * ([`ARCHITECTURE.md`](../../../docs/ARCHITECTURE.md) § Frontend): above the outbound timeout a
-   * route gives its own source, so a slow source is reported by the backend as that module's failure
-   * rather than cut off here as an answer that never came, and far below the cadence above, so an
-   * abandoned read is retired before the next one is due.
+   * How long one read is given before it is abandoned, and why ten seconds
+   * ([`ARCHITECTURE.md`](../../../docs/ARCHITECTURE.md) § Frontend).
    */
   const REQUEST_TIMEOUT_MS = 10_000;
 
@@ -88,8 +81,8 @@
     // not running: a display left in an outage for days would otherwise go on asking every five
     // minutes for all of them. What is held from before the outage is dropped with it, because the
     // module would otherwise draw that reading as current for the window between the backend coming
-    // back and the first read after it landing — old weather presented as now, which is the one
-    // thing a display that cannot say how old it is must not do.
+    // back and the first read after it landing
+    // (SRS046<!-- The weather a viewer sees is no more than fifteen minutes behind its source -->).
     if (!reachable) {
       payload = { state: 'loading' };
       return;

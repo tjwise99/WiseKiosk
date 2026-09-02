@@ -18,13 +18,13 @@ references:
 - keyword: 'test(''TST061: follows its source to a new reading inside the freshness
     bound, without reloading'', async ({'
   path: frontend/src/modules/weather/weather.spec.ts
-  sha: 48ef49411c1dd193664f2d2cdcff82300f177d9cd851699b0cadf2e5f8299517
+  sha: 545f2a95140dbce79d5f6af870780ce7f60d83ebbfee23dae486e85da44fa113
   type: file
 - keyword: func TestTST061_TheCacheIntervalHoldsAnAnswerNoLongerThanTheFreshnessBound
   path: backend/internal/modules/weather/weather_test.go
   sha: af5c49f05209f016c553126d9e9324954cff3dd19eede15f80f54fc4f6e6b910
   type: file
-reviewed: z5PC-CkIvsA0080zFZDCSUxxJ_Viabs9_x6lZICiK0I=
+reviewed: vewJuSEaI8XHHnfydOffUeAtJY-_t5AlbdhYxXsnzkA=
 status: proposed
 text: |
   Render test holding the page open against a source staged to change its answer and a driven clock,
