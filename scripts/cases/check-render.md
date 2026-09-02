@@ -87,7 +87,7 @@ gone and then back, and a module fed by the backend stands down and re-reads acr
 those. Measured: over five driven minutes a display with no working poll at all still refetched seven
 times, and the value on screen changed each time — so the case was reading a remount and calling it a
 poll. `advanceHostClock` steps by less than that deadline so each ask settles inside its own step,
-which takes the flap to nil and the reads to the one the interval owes; the freshness case now also
+which takes the flap to nil and the reads to the one the interval owes; the freshness case also
 asserts that the new reading was *asked for*, since a case reading only the value on screen cannot
 tell the two mechanisms apart. This is a property of the page shell rather than of any module, so the
 next upstream-backed module meets it too.

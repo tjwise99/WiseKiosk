@@ -12,8 +12,7 @@ rationale: |
   the constraint is not refusing its own subject.
   The non-conforming cases are values rather than spellings. A body that is not a number at all never
   reaches the constraint, being refused by the decoding, so what this exercises is the half the module
-  owns - a well-formed number outside the earth's surface - and the malformed-spelling cases the
-  earlier query shape needed are no longer this item's to enumerate.
+  owns - a well-formed number outside the earth's surface.
   The no-request clause is read with them rather than separately: a rejection that still went upstream
   is exactly the failure the item forbids, and it is invisible in the status a caller gets back.
 ref: ''
@@ -22,7 +21,7 @@ references:
   path: backend/internal/modules/weather/weather_test.go
   sha: af5c49f05209f016c553126d9e9324954cff3dd19eede15f80f54fc4f6e6b910
   type: file
-reviewed: Gu8AgBfvBBtBDJAB54lmgNikXYz5R_-3rrtYpD9Drkw=
+reviewed: GNe5-hXk_Afv798Vw8TG1VTP0G4RXYcyFh_weRek_G0=
 status: proposed
 text: |
   Unit test exercising the constraint the module declares over conforming and non-conforming
