@@ -1,6 +1,6 @@
 // orval's own configuration. The frontend generates the whole wire contract from the one boundary
 // schema — its types and the fetch client that calls each route — so no route is hand-authored here
-// and the drift gate sees routes rather than types alone (ADR 0008 rev 5).
+// and the drift gate sees routes rather than types alone (ADR 0008 rev 4).
 //
 // `client: 'fetch'` emits a bare `fetch()` call against a relative URL: no runtime package enters
 // the browser module graph, and every declaration lands in the emitted file rather than in

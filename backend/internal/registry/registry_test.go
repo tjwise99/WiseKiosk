@@ -30,7 +30,7 @@ func registered() http.Handler {
 }
 
 // TestAModuleDataRouteReachesTheModulesOwnRouteUntouched reads the seam
-// ADR 0008 rev 5 decides: the schema registers the path, the generated interface
+// ADR 0008 rev 4 decides: the schema registers the path, the generated interface
 // obliges the method, and the method the embedded field promotes is the module's
 // own. The request carries a body naming a point no source will carry upstream,
 // so what comes back is a rejection only the module could have written — which

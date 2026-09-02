@@ -1,5 +1,5 @@
 // Package registry holds the boundary schema's module data routes: one embedded
-// field per upstream-backed module (ADR 0021 rev 2, ADR 0008 rev 5).
+// field per upstream-backed module (ADR 0021 rev 2, ADR 0008 rev 4).
 package registry
 
 import "github.com/tjwise99/WiseKiosk/backend/internal/modules/weather"

@@ -54,7 +54,7 @@ themeparks.wiki — and a new module joins it the same way.
    rather than one declared by hand, **and so does whatever it renders a failure from**: the bodies a
    failing route answers with are declared in that same schema and generated on both sides, so a
    module reading a failure reads the generated type rather than a shape restated in the frontend
-   ([ADR 0008 rev 5](../decisions/0008-boundary-contract-openapi-codegen.md);
+   ([ADR 0008 rev 4](../decisions/0008-boundary-contract-openapi-codegen.md);
    SRS016<!-- Both sides consume the generated types -->). A payload's field names, a request's field
    names and a failure body's field names are all values crossing the boundary, and none of the three
    is declared twice.
@@ -94,7 +94,7 @@ themeparks.wiki — and a new module joins it the same way.
 6. **A boundary-schema fragment** *(upstream-backed only).* Declares what this module puts across the
    boundary **and what it reads back across it**, as named components in the one boundary schema —
    sections of that schema rather than files of their own, and nothing recomposes them
-   ([ADR 0008 rev 5](../decisions/0008-boundary-contract-openapi-codegen.md)). One component is the
+   ([ADR 0008 rev 4](../decisions/0008-boundary-contract-openapi-codegen.md)). One component is the
    module's payload; the other is the request it answers, which the route carries as a JSON body
    rather than as request parameters. These are what make the module's generated payload and request
    types exist, on both sides.

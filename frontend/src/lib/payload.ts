@@ -10,7 +10,7 @@ import type { ClientRejection, UpstreamFailure } from './boundary/client';
 /**
  * One answer from a module's route: the status it answered at, and the body carried at it. The
  * status is what tells a reading from a failure, the boundary schema carrying a different body at
- * each (ADR 0008 rev 5), so nothing here parses a body to find out which it is.
+ * each (ADR 0008 rev 4), so nothing here parses a body to find out which it is.
  */
 export interface ModuleAnswer {
   readonly status: number;

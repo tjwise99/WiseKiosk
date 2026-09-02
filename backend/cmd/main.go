@@ -45,7 +45,7 @@ func main() {
 // rest of the API path space, and the served tree for everything else. A nil
 // seam is the framework's own, which answers for every API path the schema
 // declares no route at. The schema's paths are registered by the generated
-// router, so no path it declares is written here (ADR 0008 rev 5).
+// router, so no path it declares is written here (ADR 0008 rev 4).
 //
 // A module data route's generated pattern is more specific than the /api/ seam,
 // so it takes that path — the schema decides where a route is and the module
