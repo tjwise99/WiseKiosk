@@ -144,7 +144,7 @@ runs `just smoke-image` once per architecture. Both need Docker, which is why ne
 ## Generated boundary contract
 
 The one OpenAPI schema is hand-authored and both sides' **routes, client, server and types** are
-generated from it ([ADR 0008 rev 3](decisions/0008-boundary-contract-openapi-codegen.md)). The gate
+generated from it ([ADR 0008 rev 4](decisions/0008-boundary-contract-openapi-codegen.md)). The gate
 regenerates the Go and TypeScript output and fails on any difference, so a schema edit that reaches
 neither side, and a hand-edit of either, both fail.
 
@@ -169,8 +169,9 @@ neither side, and a hand-edit of either, both fail.
   parser falls back to an older configuration schema rather than refusing a mis-shaped one — so a
   whole target can go missing from a non-empty file. The backend consumes each target (the routes
   through the generated router, the error bodies through the generated models), which turns a missing
-  one into an undefined symbol. The TypeScript half is narrowed to the generated directory — the
-  general frontend typecheck is #67 typecheck gate's.
+  one into an undefined symbol. The TypeScript half is narrowed to the generated directory and to the
+  per-module `props.ts` sites declared to consume it, each compiled against output regenerated in the
+  same run — the general frontend typecheck is #67 typecheck gate's.
 
 **What it leaves unproven** is whether the schema says what the boundary actually carries; the gate
 compares the schema against its own output and nothing against the running system.
@@ -180,8 +181,11 @@ compares the schema against its own output and nothing against the running syste
 Comments state mechanism. Reason, history and evaluative judgement are authored in a documentation
 home and cited from the comment.
 
-- A requirement ID or ADR number cited in a comment that names no existing item or decision fails —
-  `check-citations` runs tree-wide, code comments included.
+- A requirement ID or ADR number cited in a comment names an existing item or decision, and carries
+  the item's header in the form § *Documentation integrity* sets out. This is a convention carried by
+  review rather than by a gate: `check-citations` reads tracked Markdown outside `.claude/` and every
+  item's `rationale` and `verification-justification`, so a comment in Go or TypeScript source is
+  outside the population it scans, and nothing widens it.
 
 Whether a comment is narrative rather than mechanism, and whether added comment volume earns its
 place, is a review habit rather than a gate: #59 comment-discipline gate closed not-planned (owner,
@@ -739,13 +743,13 @@ violate any of them, so they are checks here rather than obligations there.
   import graph or the frontend module graph. Runs on every commit rather than only on a module-adding
   change: a diff-scoped form cannot reliably classify which changes are module-adds, and passes
   vacuously on the rest while shared code accretes module knowledge (#12).
-- **Route registration has one call site.** Registration call sites appear in exactly one file, and
-  that file declares the registry as a package-level composite literal appearing in no append, index
-  assignment, or map insertion — a registry is exactly a list something writes to at run time, so its
-  absence is structural rather than a denylist of registry-shaped names. One entry per
-  upstream-backed module, each carrying a non-nil
-  validator and non-zero values for every policy the entry owns; constructing the router and comparing
-  its registered route set to the entry set closes the discovery case in both directions (#9).
+- **Route registration has one call site.** A module is registered in exactly one file, which declares
+  the registry as a package-level struct type carrying one embedded field per upstream-backed module
+  and appearing in no append, index assignment, or map insertion — a registry is exactly a list
+  something writes to at run time, so its absence is structural rather than a denylist of
+  registry-shaped names. A schema route no field serves is a compile error where that value meets the
+  generated server interface, so the discovery case is closed by the type checker rather than by
+  comparing two sets (#9).
 - **Shaping packages are pure by construction.** Each module's shaping package resolves a transitive
   import set that is a subset of a declared pure-package allowlist, so I/O is absent by construction
   rather than by a denylist of forbidden packages. No exported shaping function's parameters include

@@ -17,6 +17,19 @@ when the container build's two extensionless inputs — `Dockerfile` and `.docke
 `Dockerfile` at an undeclared path was added there, the `.dockerignore` half of the same claim run
 the same way. A passing run over this branch's head reports **315 tracked files**.
 
+Re-exercised under #220 weather module, script md5 `b4d8923e913b7f02fa9f36341bedad70`, when a second
+`.woff2` — the icon face — joined the bundled Inter one, and a `.txt` carrying the licence and
+attribution both faces are redistributed under joined them in the same directory. **The declared set
+did not widen**: `woff2` and `txt` were both already declared, so each is the *"new file with an
+already-declared extension"* row below rather than a new claim, and no must-fail row's reasoning
+moved. What changed in the script is those two extensions' justification prose — `woff2`'s named
+Inter alone, and `txt`'s carried no disposition for legal text. Run in both directions over this
+branch's head: the tree as it stands passes with both faces and the licence file tracked, and the
+three rows those files are the input to — a seeded `scripts/rogue.rs`, a
+`frontend/src/assets/rogue.ttf` copied from the face, and a `frontend/src/assets/rogue.license`
+copied from the licence file — are each still rejected by name. The other must-fail rows were
+**not** re-run — nothing they turn on moved.
+
 | Direction | Case | Input |
 |---|---|---|
 | Must fail | A tracked file carries an extension outside the declared set | `scripts/rogue.rs` added to the tree |

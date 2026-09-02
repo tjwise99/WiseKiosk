@@ -58,7 +58,7 @@ EXTENSIONS = {
     "Doorstop item and silo config YAML, Dependabot YAML (ADR 0017 rev 8)",
     "yaml": "derived — a toolchain's own required input format: pre-commit's "
     ".pre-commit-config.yaml (ADR 0016 rev 5), the boundary schema both code generators "
-    "read and oapi-codegen's own configuration (ADR 0008 rev 3, ADR 0017 rev 8)",
+    "read and oapi-codegen's own configuration (ADR 0008 rev 4, ADR 0017 rev 8)",
     "mod": "derived — the Go toolchain's own manifest format: backend/go.mod "
     "(ADR 0017 rev 8)",
     "sum": "derived — the Go toolchain's own lockfile format: backend/go.sum "
@@ -72,7 +72,9 @@ EXTENSIONS = {
     "txt": "derived — a toolchain's own required input format (pip's requirements-dev.txt); also "
     "derived — data an authored check reads and does not itself author: the secret-pattern "
     "enumeration scripts/image/layer_secret_scan.py matches image layers against, rather "
-    "than restating it (docs/TESTING.md)",
+    "than restating it (docs/TESTING.md); also documentation — legal text, not an authored "
+    "program: the licence and attribution the bundled faces are redistributed under, beside "
+    "them in frontend/src/assets/ (ADR 0017 rev 8)",
     "regex": "derived — data an authored check reads and does not itself author: the "
     "single-source-of-truth branch pattern check-branch.py and branch-shape.py "
     "each read instead of restating it (docs/CI.md)",
@@ -85,9 +87,10 @@ EXTENSIONS = {
     "html": "derived — Vite's own required input format: frontend/index.html is the single entry "
     "the build reads and rewrites (ADR 0018 rev 1, ADR 0017 rev 8); also documentation — an asset "
     "the Sphinx docs-site build serves (ADR 0017 rev 8)",
-    "woff2": "an asset a build serves — not an authored program: the bundled Inter variable font "
-    "the display styling contract states, self-hosted because the display page reaches no origin "
-    "but the backend's (ADR 0017 rev 8)",
+    "woff2": "an asset a build serves — not an authored program: the two bundled faces the display "
+    "styling contract states, Inter for every readable character and the icon face the weather "
+    "module's glyphs are drawn from, both self-hosted because the display page reaches no "
+    "origin but the backend's (ADR 0017 rev 8)",
 }
 
 # Exact repository-relative path -> which kind it is and what it serves, for a file with no

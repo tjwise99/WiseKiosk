@@ -82,6 +82,8 @@ specification {
   tag SRS046
   tag SRS047
   tag SRS048
+  tag SRS049
+  tag SRS050
 }
 
 model {
@@ -140,17 +142,18 @@ model {
         '''
       }
 
-      requestValidation = component 'Request validation' {
+      requestRejection = component 'Request rejection' {
         #SRS012
         #SRS013
         link ../../../backend/internal/router
         description '''
-          Checks a request's parameters against the pattern that route's entry
-          declares, before any upstream call is made, so the backend issues
-          only the upstream requests its configuration calls for. Builds the
-          rejection for one that does not conform: a status distinct to its
-          cause, and a body the frontend can render. It reads nothing about
-          who is asking.
+          Holds the rejection a request that does not conform is answered
+          with: a status distinct to its cause, and a body the frontend can
+          render, one shape for every route so no module composes its own. The
+          judging is each module's, made against the constraint that module
+          declares and before any upstream call is made, so the backend issues
+          only the upstream requests its configuration calls for. It reads
+          nothing about who is asking.
         '''
       }
 
@@ -183,14 +186,18 @@ model {
       weatherShaping = component 'Weather shaping' {
         #SRS043
         #SRS044
+        link ../../../backend/internal/modules/weather
         description '''
-          The weather module's half of this container. Builds the request for
-          the weather source from the location a caller named, and reshapes
-          what comes back into the payload that module puts across the
-          boundary — the present weather and what is expected over the coming
-          hours and days. Declares the pattern a location must match, which
-          the framework applies before anything goes upstream. Pure functions,
-          reading nothing and calling nothing.
+          The weather module's half of this container. Serves the route the
+          boundary schema declares for it: reads the location out of the
+          request through the type generated from that schema, judges it
+          against the constraint this module declares, builds the request for
+          the weather source, and reshapes what comes back into the payload
+          the module puts across the boundary — the present weather, whether
+          it is day or night, and what is expected over the coming hours and
+          days. Carries the policies its route runs under and hands the
+          request to the framework pipeline that applies them. Its shaping is
+          pure, reading nothing and calling nothing.
         '''
       }
     }
@@ -252,17 +259,20 @@ model {
         '''
       }
 
-      payloadClient = component 'Payload client' {
+      moduleHost = component 'Module host' {
         #SRS026
         description '''
-          Fetches each configured module's payload and hands back what it
-          gets, a failure included rather than absorbed — the structured
-          body a module renders its own unavailable state from, and the only
-          half of the distinction this component carries. Whether the backend
-          can be reached at all is not inferred here: the page shell decides
-          it from its own liveness ask, and each module component stands
-          itself down on that answer rather than every one of them rendering
-          an unavailable state over the one outage.
+          Stands between the layout and one module's component, one host per
+          placement. Fetches that module's payload on the module's own
+          cadence, abandons a read that has not come back inside the deadline
+          it gives one, and hands the component one of three states — not read
+          yet, read, or read and unavailable — so a component is never handed
+          nothing. A failure is passed on rather than absorbed: the structured
+          body a module renders its own unavailable state from is what it
+          receives. Whether the backend can be reached at all is not inferred
+          here — the page shell decides that from its own liveness ask — but
+          it is acted on: an unreachable backend stops the fetching, and what
+          is held from before is dropped rather than drawn on as current.
         '''
       }
 
@@ -288,13 +298,17 @@ model {
         #SRS042
         #SRS045
         #SRS046
+        #SRS050
         description '''
           Renders the weather into the region the configuration gives it: what
           it is doing now, and what is expected over the coming hours and the
-          coming days, each told apart from the others. Reports on the
-          location its configuration names, and asks again often enough that
-          what a viewer reads is never far behind the source. It fetches, so a
-          backend that is gone stands it down.
+          coming days, each told apart from the others, and each of the first
+          two marked for whether it is a day's weather or a night's, following
+          the distinction it is handed rather than working one out. Reports on
+          the location its configuration names. It draws what it is given and
+          fetches nothing: the reading is its host's, on the cadence that
+          keeps what a viewer reads from falling far behind the source, and a
+          backend that is gone stands this module down.
         '''
       }
     }
@@ -305,19 +319,19 @@ model {
     }
 
     pageShell -> configuration 'Asks for the configuration, and applies it once it validates'
-    pageShell -> payloadClient 'Asks for the payload of each configured module'
-    pageShell -> layout 'Hands over each configured module and its payload'
+    pageShell -> layout 'Hands over the configured modules and whether the backend is serving'
+    layout -> moduleHost 'Mounts one host per configured placement'
 
-    routeHandler -> requestValidation 'Asks whether the parameters conform'
     routeHandler -> responseCache 'Asks for a held answer, and stores what it gets'
     routeHandler -> upstreamClient 'Asks for a fresh response when nothing is held'
+    weatherShaping -> requestRejection 'Answers a request it will not carry with the shared rejection'
 
     configuration -> staticServing 'Fetches the configuration, served back unparsed' {
       #SRS003
       technology 'HTTP'
     }
 
-    payloadClient -> routeHandler 'Fetches the payload for each module' {
+    moduleHost -> routeHandler 'Fetches the payload for each module' {
       #SYS004
       #SYS005
       #SRS013
@@ -342,6 +356,7 @@ model {
   upstreamClient -> openMeteo 'Fetches the weather for the location a request names' {
     #SRS041
     #SRS047
+    #SRS049
     technology 'HTTPS'
   }
 

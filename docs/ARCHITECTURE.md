@@ -149,7 +149,7 @@ binary asks the question of a running instance from inside the image, which is w
 declare a `HEALTHCHECK` without carrying an HTTP client beside it
 ([ADR 0020 rev 2](decisions/0020-release-artifact-set-and-operator-tooling.md)). It answers `GET` and
 `HEAD` alone, because the schema declares a `get:` and the generated registration is method-scoped
-([ADR 0008 rev 3](decisions/0008-boundary-contract-openapi-codegen.md)); another verb on that path
+([ADR 0008 rev 4](decisions/0008-boundary-contract-openapi-codegen.md)); another verb on that path
 falls through to the served tree and gets its 404 rather than a 405, since the `/` seam matches the
 path that the method-scoped pattern does not. A handler mounted on the bare multiplexer — which is
 what a package's own test assembles — answers 405 there instead, so the two disagree by exactly the
@@ -158,12 +158,15 @@ question through the generated client, and reports an unanswered one once for th
 standing its modules down rather than letting each report the outage as its own
 (SRS026<!-- The display says when the backend is gone -->).
 
-**Adding a route is adding one element to a list.** The registration list is a package holding a
-literal, read by the bootstrap and by nothing else, and the framework refuses an entry it cannot
-serve — an incomplete or internally inconsistent one, or a second entry for a source another already
-claims — where the routes are built rather than at the first request that would fail. An incomplete
-registration therefore stops the process at start-up instead of leaving one that boots, looks healthy
-and serves one broken route.
+**Adding a route is adding one line.** The registration list is a package holding one type with one
+field per module, each field naming that module's own route; the composite of that list and the
+infrastructure routes is what the generated server interface is satisfied by, so a route the schema
+declares and no module has taken up is a compile error rather than a path answered from somewhere
+else. Everything the route runs on — its policies, the request it reads, the pipeline it hands to —
+is in the module's own package, and the framework refuses an entry it cannot serve where that
+package is initialised rather than at the first request that would fail. An incomplete registration
+therefore stops the process before it serves, instead of leaving one that boots, looks healthy and
+serves one broken route.
 
 **Every request runs the same three bounds in the same order: cache, budget, call.** The pipeline
 answers from the held response where there is one, spends one of that source's tokens where there is
@@ -204,14 +207,27 @@ SRS008<!-- No secret value in any backend output -->).
 
 **Components (C4 L3)**, diagrammed below; each box's responsibility is the model's, not restated here.
 A module's own half of this container is its shaping library, drawn when that module's need lands
-([ADR 0019 rev 6](decisions/0019-boundary-at-what-deploys-and-tag-tier.md)); the route handler calls
-it twice — to build the upstream request and to parse the answer — so the framework half drawn beside
-it cannot serve a payload on its own. The framework/module seam is drawn rather than inferred: one
-shaping box appears per upstream-backed module and every other box on this level is shared framework.
-A route's policies — parameter validation, both cache TTLs, rate limit, outbound
-timeout, maximum response size — are one entry in the static registration list and live nowhere else
-in code ([the module contract](contracts/module-contract.md)); that entry is data these components
-read rather than a component of its own.
+([ADR 0019 rev 6](decisions/0019-boundary-at-what-deploys-and-tag-tier.md)); that box serves its own
+route and hands the request to the framework pipeline, which calls back into it to parse the answer —
+so neither half serves a payload without the other. The framework/module seam is drawn rather than
+inferred: one shaping box appears per upstream-backed module and every other box on this level is
+shared framework.
+A route's policies — both cache TTLs, rate limit, outbound timeout, maximum response size — are one
+entry, written in that module's own package and named once by the static registration list, and live
+nowhere else in code ([the module contract](contracts/module-contract.md)); that entry is data these
+components read rather than a component of its own. What a request carries is not among them: the
+module reads it through the type the boundary schema generates and judges it there.
+
+**How much of a request the framework reads is the framework's figure, and it is a free choice.** No
+obligation names a request size and nothing upstream constrains one, so the cap leaves the enumeration
+every module author walks by the free-choice route rather than into a requirement
+([the module contract](contracts/module-contract.md)). It is chosen against the shape of a module data
+route's request — a small JSON object naming what the answer is to be about — and against the cost of
+the alternative, which is an unauthenticated caller deciding how much this process buffers. A kilobyte
+is far above every request the boundary schema declares and far below a size worth reading from a
+caller that means nothing good by it. The value itself lives in the `router` package and nowhere else
+in code; what is recorded here is the reasoning for it, which is what the constant's own comment
+points at.
 
 <!-- arch-export:begin generated/backendComponents.mmd -->
 
@@ -225,10 +241,10 @@ graph TB
   subgraph WisekioskBackend["`Backend`"]
     WisekioskBackend.StaticServing@{ shape: rectangle, label: "Static serving" }
     WisekioskBackend.RouteHandler@{ shape: rectangle, label: "Route handler" }
-    WisekioskBackend.RequestValidation@{ shape: rectangle, label: "Request validation" }
+    WisekioskBackend.WeatherShaping@{ shape: rectangle, label: "Weather shaping" }
     WisekioskBackend.ResponseCache@{ shape: rectangle, label: "Response cache" }
     WisekioskBackend.UpstreamClient@{ shape: rectangle, label: "Upstream client" }
-    WisekioskBackend.WeatherShaping@{ shape: rectangle, label: "Weather shaping" }
+    WisekioskBackend.RequestRejection@{ shape: rectangle, label: "Request rejection" }
   end
   OpenMeteo@{ shape: rectangle, label: "Open-Meteo" }
   Operator -. "`Places the configuration into the served 
@@ -237,11 +253,12 @@ tree`" .-> WisekioskBackend.StaticServing
   WisekioskFrontend -. "`Fetches the configuration, served back 
 unparsed`" .-> WisekioskBackend.StaticServing
   WisekioskFrontend -. "`Fetches the payload for each module`" .-> WisekioskBackend.RouteHandler
-  WisekioskBackend.RouteHandler -. "`Asks whether the parameters conform`" .-> WisekioskBackend.RequestValidation
   WisekioskBackend.RouteHandler -. "`Asks for a held answer, and stores what 
 it gets`" .-> WisekioskBackend.ResponseCache
   WisekioskBackend.RouteHandler -. "`Asks for a fresh response when nothing 
 is held`" .-> WisekioskBackend.UpstreamClient
+  WisekioskBackend.WeatherShaping -. "`Answers a request it will not carry with 
+the shared rejection`" .-> WisekioskBackend.RequestRejection
   WisekioskBackend.StaticServing -. "`Serves the single-page bundle`" .-> WisekioskFrontend
   WisekioskBackend.UpstreamClient -. "`Fetches the weather for the location a 
 request names`" .-> OpenMeteo
@@ -270,14 +287,11 @@ constants, not configuration: the bound they hold is SRS011's<!-- Upstream reque
   together at start-up — while still rejecting a client stuck in a fast retry loop. It reinforces the
   TTL bound rather than replacing it.
 
-**The outbound timeout, the response size ceiling and the bucket's burst have no default, and that is
-the decision rather than an omission.** No document in the tree names a value or a range for any of
-the three, so there is nothing for a constant to hold; `upstream.Config` records the same from the
-code side. Each registration entry therefore states its own, and a module author chooses rather than
-inherits. Nothing in the framework supplies one or checks that an entry did — the deadline and the
-ceiling SRS014<!-- No single upstream exchange can stall or exhaust the backend --> obliges rest on
-the entry declaring them, which is a gap a first real module either closes or gives a value worth
-defaulting.
+**The outbound timeout, the response size ceiling and the bucket's burst have no framework default.**
+Each registration entry states its own, and nothing in the framework supplies one or checks that an
+entry did — the deadline and the ceiling
+SRS014<!-- No single upstream exchange can stall or exhaust the backend --> obliges rest on the entry
+declaring them. The weather route declares all three, in the module's own package.
 
 **Three of those figures multiply, which is the arithmetic a module author is choosing against.** The
 cache sweeps expired entries on every write, so what a route can hold is what it can write inside one
@@ -332,19 +346,18 @@ graph TB
     WisekioskFrontend.Weather@{ shape: rectangle, label: "Weather" }
     WisekioskFrontend.Configuration@{ shape: rectangle, label: "Configuration load and validation" }
     WisekioskFrontend.Layout@{ shape: rectangle, label: "Layout assembly" }
-    WisekioskFrontend.PayloadClient@{ shape: rectangle, label: "Payload client" }
+    WisekioskFrontend.ModuleHost@{ shape: rectangle, label: "Module host" }
   end
   Viewer@{ icon: "fa:user", shape: rounded, label: "Viewer" }
   WisekioskBackend@{ shape: rectangle, label: "Backend" }
   WisekioskFrontend.PageShell -. "`Asks for the configuration, and applies 
 it once it validates`" .-> WisekioskFrontend.Configuration
-  WisekioskFrontend.PageShell -. "`Hands over each configured module and 
-its payload`" .-> WisekioskFrontend.Layout
-  WisekioskFrontend.PageShell -. "`Asks for the payload of each configured 
-module`" .-> WisekioskFrontend.PayloadClient
+  WisekioskFrontend.PageShell -. "`Hands over the configured modules and 
+whether the backend is serving`" .-> WisekioskFrontend.Layout
+  WisekioskFrontend.Layout -. "`Mounts one host per configured placement`" .-> WisekioskFrontend.ModuleHost
   WisekioskFrontend.Configuration -. "`Fetches the configuration, served back 
 unparsed`" .-> WisekioskBackend
-  WisekioskFrontend.PayloadClient -. "`Fetches the payload for each module`" .-> WisekioskBackend
+  WisekioskFrontend.ModuleHost -. "`Fetches the payload for each module`" .-> WisekioskBackend
   WisekioskFrontend -. "`Renders the configured modules, legibly 
 says when one failed, and mirrors the 
 rest`" .-> Viewer
@@ -386,10 +399,25 @@ large for one leaves it rather than growing it
 (SRS031<!-- Content too large for its region overflows -->).
 
 **Layout assembly places what it is handed and fetches nothing.** A configuration entry's module name
-resolves through a registry in `src/lib/`; a name it cannot resolve renders as that region's own state
-rather than as an empty region. The render tier augments that registry with its own stubs rather than
-replacing it, so a module's render test exercises the registration the display ships with while the
-framework's obligations are still read against shapes no product module has to supply.
+resolves through a registry in `src/lib/` that carries two things per module: the component that draws
+it, and — where the module is fed by the backend — how its payload is read. That second half is what
+makes a module upstream-backed on this side, and it is bound in the registry rather than in the module
+so the component stays fed by its props alone. A name the registry cannot resolve renders as that
+region's own state rather than as an empty region. The render tier augments the registry with its own
+stubs rather than replacing it, so a module's render test exercises the registration the display ships
+with while the framework's obligations are still read against shapes no product module has to supply.
+
+**Each placement gets a host of its own, and the host is where a module's reading lives.** Layout
+assembly mounts one per configured placement rather than reading anything itself, so a module's
+cadence, its abandoned reads and its stand-down are one component's and are the same for every module
+that has a reading at all. Two figures are constants there. The read interval is the module's poll
+cadence, chosen against the route's success TTL
+([the module contract](contracts/module-contract.md)), so a refresh no faster than the cache can
+answer differently reaches no upstream. The read deadline is ten seconds, far shorter and a different
+question: without it a request that never settles leaves a region in its first-paint state for as
+long as the display runs, and a waiting line that never resolves cannot be told from a module that is
+broken. It sits above the backend's own outbound timeout, so a slow source is reported by the backend
+as that module's failure rather than abandoned here as an answer that never came.
 
 **Shared design tokens are delivered as `:root` custom properties** in `src/app.css`, whose values are
 [the display styling contract](contracts/display-styling-contract.md)'s. The edge band is one of them:
@@ -403,12 +431,15 @@ One schema definition, both sides generated from it — the load-bearing structu
 whole system (SYS005<!-- Single-definition internal contract -->,
 SRS015<!-- One schema, all boundary value classes -->–SRS016<!-- Both sides consume the generated types -->,
 [ADR 0001 rev 1](decisions/0001-backend-language-go.md)). The mechanism is
-[ADR 0008 rev 3](decisions/0008-boundary-contract-openapi-codegen.md): one hand-authored OpenAPI schema
+[ADR 0008 rev 4](decisions/0008-boundary-contract-openapi-codegen.md): one hand-authored OpenAPI schema
 (3.0.3, with 3.1 the stated migration target), owned by neither package, the Go side generated by
 `oapi-codegen` and the TypeScript side by `orval`, kept honest by a CI drift gate that
 regenerates both sides and fails on any difference. The schema owns every value crossing the boundary —
-request parameters, success payloads, the structured upstream-failure and client-error rejection bodies,
-and the status codes the frontend discriminates on.
+the fields a request carries, success payloads, the structured upstream-failure and client-error
+rejection bodies, and the status codes the frontend discriminates on. A module data route carries its
+request as a JSON body rather than as parameters, which is what keeps both sides' field names
+generated and this backend's runtime dependency set empty
+([ADR 0008 rev 4](decisions/0008-boundary-contract-openapi-codegen.md)).
 
 The one schema is `boundary/openapi.yaml`, and what is generated from it is committed inside the
 package that compiles it ([ADR 0021 rev 2](decisions/0021-repository-layout.md)). What the drift

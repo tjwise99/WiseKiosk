@@ -76,6 +76,11 @@ a deliberate stub, which stays `proposed` — see [pending-stub](../pending-stub
 - **`text` names no other item.** The obligation reads on its own; an identifier inside it defeats that
   and survives a renumber pointing at whatever now holds the number. Cite freely in `rationale` and
   `verification-justification` instead.
+- **A `TST` item's text describes the check that exists, not the one that was planned.** A stub's
+  wording is a plan; the activating change re-reads it against the test that landed and rewrites it
+  where they differ, and names the parent clause the test asserts —
+  [pending-stub](../pending-stub/SKILL.md) § Activation, later carries the three questions. An item
+  whose text describes a test nobody wrote passes every gate in this repository.
 - **A citation carries the header verbatim in a comment, closed up**:
   `SRS026<!-- The display says when the backend is gone -->`. Every occurrence, not just the first —
   a second bare mention in the same paragraph fails the gate. Reword to avoid the repeat rather than

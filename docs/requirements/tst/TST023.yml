@@ -4,7 +4,7 @@ header: |
   Pending: proxy endpoint & statelessness test
 level: '1.20'
 links:
-- SRS009: 4jk44XrAvWnXRYpgoAftickQVmaZ6YVrovUZhCUTzL0=
+- SRS009: 9nJvLZyBDwvXZnstLPCGNrLi1asJE7xu0moDZKnMj_Y=
 normative: true
 rationale: |
   Cache-hit/miss behaviour is TST025's<!-- TTL cache-behaviour test (liveness canary) -->,

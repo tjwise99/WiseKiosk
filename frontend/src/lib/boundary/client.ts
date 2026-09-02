@@ -26,6 +26,77 @@ export interface ClientRejection {
   message: string;
 }
 
+/**
+ * The point a request names. It is the whole of what this route reads of a request.
+ */
+export interface WeatherRequest {
+  /** Latitude of the point, in decimal degrees north of the equator. */
+  lat: number;
+  /** Longitude of the point, in decimal degrees east of the prime meridian. */
+  lon: number;
+}
+
+/**
+ * The weather at the location at present.
+ */
+export interface WeatherCurrent {
+  /** Air temperature, in degrees Fahrenheit. */
+  temp: number;
+  /** How warm it feels, in degrees Fahrenheit. */
+  apparentTemp: number;
+  /** Relative humidity, as a percentage. */
+  humidity: number;
+  /** Wind speed, in miles per hour. */
+  windSpeed: number;
+  /** What the sky is doing, as a WMO 4677 present-weather code. */
+  weatherCode: number;
+  /** Whether it is daylight at the location. */
+  isDay: boolean;
+}
+
+/**
+ * The weather expected at the location for one hour to come.
+ */
+export interface WeatherHour {
+  /** The hour this entry is for, as an ISO 8601 timestamp carrying the location's own UTC offset — `2026-08-31T14:00:00-04:00` — so the hour is unambiguous wherever it is read. */
+  time: string;
+  /** Air temperature expected, in degrees Fahrenheit. */
+  temp: number;
+  /** What the sky is expected to be doing, as a WMO 4677 present-weather code. */
+  weatherCode: number;
+  /** The chance of precipitation, as a percentage. */
+  precipProbability: number;
+  /** Whether it is daylight at the location for this hour. */
+  isDay: boolean;
+}
+
+/**
+ * The weather expected at the location for one day to come.
+ */
+export interface WeatherDay {
+  /** The day this entry is for, as an ISO 8601 timestamp at that day's start carrying the location's own UTC offset — `2026-08-31T00:00:00-04:00`. */
+  time: string;
+  /** What the sky is expected to be doing, as a WMO 4677 present-weather code. */
+  weatherCode: number;
+  /** The warmest the day is expected to get, in degrees Fahrenheit. */
+  max: number;
+  /** The coldest the day is expected to get, in degrees Fahrenheit. */
+  min: number;
+  /** The chance of precipitation, as a percentage. */
+  precipProbability: number;
+}
+
+/**
+ * The weather module's payload: what the weather is doing at one location now, and what it is expected to do over the hours and the days next to come. Every temperature here is in degrees Fahrenheit and every wind speed in miles per hour.
+ */
+export interface WeatherPayload {
+  current: WeatherCurrent;
+  /** The hours next to come, nearest first. How many is the shaping library's. */
+  hourly: WeatherHour[];
+  /** The days next to come, nearest first. How many is the shaping library's. */
+  daily: WeatherDay[];
+}
+
 export type getHealthzResponse200 = {
   data: void;
   status: 200;
@@ -59,4 +130,89 @@ export const getHealthz = async (
     status: res.status,
     headers: res.headers,
   } as getHealthzResponse;
+};
+
+export type postApiWeatherResponse200 = {
+  data: WeatherPayload;
+  status: 200;
+};
+
+export type postApiWeatherResponse400 = {
+  data: ClientRejection;
+  status: 400;
+};
+
+export type postApiWeatherResponse429 = {
+  data: ClientRejection;
+  status: 429;
+};
+
+export type postApiWeatherResponse502 = {
+  data: UpstreamFailure;
+  status: 502;
+};
+
+export type postApiWeatherResponse503 = {
+  data: UpstreamFailure;
+  status: 503;
+};
+
+export type postApiWeatherResponse504 = {
+  data: UpstreamFailure;
+  status: 504;
+};
+
+export type postApiWeatherResponseSuccess = postApiWeatherResponse200 & {
+  headers: Headers;
+};
+export type postApiWeatherResponseError = (
+  | postApiWeatherResponse400
+  | postApiWeatherResponse429
+  | postApiWeatherResponse502
+  | postApiWeatherResponse503
+  | postApiWeatherResponse504
+) & {
+  headers: Headers;
+};
+
+export type postApiWeatherResponse =
+  postApiWeatherResponseSuccess | postApiWeatherResponseError;
+
+export const getPostApiWeatherUrl = () => {
+  return `/api/weather`;
+};
+
+/**
+ * @summary Report the weather at a point on the earth's surface.
+ */
+export const postApiWeather = async (
+  weatherRequest: WeatherRequest,
+  options?: RequestInit,
+): Promise<postApiWeatherResponse> => {
+  const getHeaders = (
+    h?: NonNullable<RequestInit["headers"]>,
+  ): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Array.isArray(h)) return Object.fromEntries(h);
+    return h;
+  };
+  const res = await fetch(getPostApiWeatherUrl(), {
+    ...options,
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      ...getHeaders(options?.headers),
+    },
+    body: JSON.stringify(weatherRequest),
+  });
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+
+  const data: postApiWeatherResponse["data"] = body ? JSON.parse(body) : {};
+  return {
+    data,
+    status: res.status,
+    headers: res.headers,
+  } as postApiWeatherResponse;
 };

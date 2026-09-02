@@ -115,22 +115,28 @@ func (s *canarySource) answers(status int, answer string) {
 	s.status, s.body = status, answer
 }
 
-// canaryEntry registers a source needing secretName and placing it in both an
-// outbound header and an outbound query parameter.
+// canaryStaged is the fixture for a source needing secretName and placing it in
+// both an outbound header and an outbound query parameter.
+func canaryStaged(source *canarySource, name string) fixture {
+	return fixture{
+		entry: canaryEntry(source, name),
+		serve: func(route *Route, w http.ResponseWriter, r *http.Request) {
+			named := station(r)
+			if named == "" {
+				Reject(w, InvalidParameters, "a station is required")
+				return
+			}
+			route.Serve(w, r, named, source.server.URL+"/?station="+url.QueryEscape(named))
+		},
+	}
+}
+
+// canaryEntry registers a source needing secretName.
 func canaryEntry(source *canarySource, name string) Entry {
 	return Entry{
 		Config: testConfig(),
 		Source: name,
-		Validate: func(params url.Values) error {
-			if params.Get("station") == "" {
-				return errors.New("a station is required")
-			}
-			return nil
-		},
 		Secret: secretName,
-		BuildURL: func(params url.Values) (string, error) {
-			return source.server.URL + "/?station=" + url.QueryEscape(params.Get("station")), nil
-		},
 		InjectSecret: func(request *http.Request, secretValue string) {
 			request.Header.Set(secretHeader, secretValue)
 			query := request.URL.Query()
@@ -169,9 +175,9 @@ func TestNoSecretValueReachesAnyResponseOrLog(t *testing.T) {
 	t.Run("a resolved secret reaches the upstream and no client surface", func(t *testing.T) {
 		plant(t)
 		source := newCanarySource(t)
-		handler := newRouter([]Entry{canaryEntry(source, "keyed")}, newFakeClock().now)
+		handler := newRouter([]fixture{canaryStaged(source, "keyed")}, newFakeClock().now)
 
-		recorder := ask(handler, http.MethodGet, "/api/keyed?station=one")
+		recorder := ask(handler, moduleRouteMethod, "/api/keyed?station=one")
 		if recorder.Code != http.StatusOK {
 			t.Fatalf("status = %d, want %d (%s)", recorder.Code, http.StatusOK, recorder.Body)
 		}
@@ -195,9 +201,9 @@ func TestNoSecretValueReachesAnyResponseOrLog(t *testing.T) {
 				plant(t)
 				source := newCanarySource(t)
 				source.answers(status, `{"error":"key `+canary+` is not valid"}`)
-				handler := newRouter([]Entry{canaryEntry(source, "keyed")}, newFakeClock().now)
+				handler := newRouter([]fixture{canaryStaged(source, "keyed")}, newFakeClock().now)
 
-				recorder := ask(handler, http.MethodGet, "/api/keyed?station=one")
+				recorder := ask(handler, moduleRouteMethod, "/api/keyed?station=one")
 
 				wantFailure(t, recorder, http.StatusBadGateway, "keyed", causeUpstreamStatus)
 				if header, _ := source.placements(); header != canary {
@@ -212,12 +218,12 @@ func TestNoSecretValueReachesAnyResponseOrLog(t *testing.T) {
 		plant(t)
 		source := newCanarySource(t)
 		proxy := upstream.New(testConfig(), newFakeClock().now)
-		rt := &route{entry: canaryEntry(source, "keyed"), proxy: proxy}
-		params := url.Values{"station": {"one"}}
+		rt := &Route{entry: canaryEntry(source, "keyed"), proxy: proxy}
+		target := source.server.URL + "/?station=one"
 
 		// The live call first, so the sweep below is known to be sweeping an
 		// error raised over a URL that carried the secret.
-		if _, err := rt.fetch(params)(context.Background()); err != nil {
+		if _, err := rt.fetch(target)(context.Background()); err != nil {
 			t.Fatalf("the live call: %v", err)
 		}
 		if _, query := source.placements(); query != canary {
@@ -225,7 +231,7 @@ func TestNoSecretValueReachesAnyResponseOrLog(t *testing.T) {
 		}
 
 		source.server.Close()
-		result, err := proxy.Do(context.Background(), "keyed", params.Encode(), rt.fetch(params))
+		result, err := proxy.Do(context.Background(), "keyed", "one", rt.fetch(target))
 		if err != nil {
 			t.Fatalf("the pipeline returned %v, want a result", err)
 		}
@@ -251,9 +257,9 @@ func TestNoSecretValueReachesAnyResponseOrLog(t *testing.T) {
 		t.Setenv(secretName+"_FILE", "")
 
 		source := newCanarySource(t)
-		handler := newRouter([]Entry{canaryEntry(source, "keyed")}, newFakeClock().now)
+		handler := newRouter([]fixture{canaryStaged(source, "keyed")}, newFakeClock().now)
 
-		recorder := ask(handler, http.MethodGet, "/api/keyed?station=one")
+		recorder := ask(handler, moduleRouteMethod, "/api/keyed?station=one")
 
 		decoded := wantFailure(t, recorder, http.StatusBadGateway, "keyed", causeSecretUnresolvable)
 		if message, _ := decoded["message"].(string); !strings.Contains(message, secretName) {
@@ -268,13 +274,13 @@ func TestNoSecretValueReachesAnyResponseOrLog(t *testing.T) {
 	t.Run("the API paths no route serves", func(t *testing.T) {
 		plant(t)
 		source := newCanarySource(t)
-		handler := newRouter([]Entry{canaryEntry(source, "keyed")}, newFakeClock().now)
+		handler := newRouter([]fixture{canaryStaged(source, "keyed")}, newFakeClock().now)
 
 		requests := []struct{ method, target string }{
-			{http.MethodGet, "/api/unknown"},
-			{http.MethodGet, "/api/"},
-			{http.MethodPost, "/api/keyed?station=one"},
-			{http.MethodGet, "/api/keyed"},
+			{moduleRouteMethod, "/api/unknown"},
+			{moduleRouteMethod, "/api/"},
+			{http.MethodGet, "/api/keyed?station=one"},
+			{moduleRouteMethod, "/api/keyed"},
 		}
 		for _, request := range requests {
 			recorder := ask(handler, request.method, request.target)
@@ -284,7 +290,7 @@ func TestNoSecretValueReachesAnyResponseOrLog(t *testing.T) {
 
 	t.Run("an outcome no case names", func(t *testing.T) {
 		plant(t)
-		route := &route{entry: canaryEntry(newCanarySource(t), "keyed")}
+		route := &Route{entry: canaryEntry(newCanarySource(t), "keyed")}
 
 		recorder := httptest.NewRecorder()
 		// Beyond the pipeline's own set, which is the branch reaching the one

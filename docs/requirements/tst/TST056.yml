@@ -1,10 +1,10 @@
-active: false
+active: true
 derived: false
 header: |
-  Pending: the weather comes from one source and no other
+  The weather comes from one source and no other
 level: 78
 links:
-- SRS041: nOOTagO3XUWnLikYkiB4XHmUvvFMSSwQymfhVvStxxs=
+- SRS041: W4LOnOy7fawaKOfUheFfR60xlThUdJSstFHdtIqiSeI=
 normative: true
 rationale: |
   Two things are asserted together because either alone passes a module that fails the item.
@@ -13,13 +13,18 @@ rationale: |
   be reading a second one beside it - blending, or falling back - so the traffic the module causes is
   watched as well.
 ref: ''
-reviewed: r92llrTfQFdsdHk5Is1bHSj8VAyv0x8zS4fSjBl6ZRE=
+references:
+- keyword: 'test(''TST056: draws the weather its own route answered with, and reads
+    no other source'', async ({'
+  path: frontend/src/modules/weather/weather.spec.ts
+  sha: 228a31229b91f1a4f8a3e09cd2d253af9e17e75ca1f2c71fbfb519d279b536ae
+  type: file
+reviewed: 6ke-JgsZAXk27gSiK_djexmbK_BiEKMg3_Vxb2Sm16Q=
 status: proposed
 text: |
-  Pending: unit and render test driving the module against one staged weather source and asserting the
-  weather rendered is that source's answer, with no part of it drawn from anywhere else, while observing
-  the traffic the module's route causes and asserting no request reaches a second source. Lands with the
-  first vertical slice (#12); activated and given a references entry then.
+  Unit and render test driving the module against one staged weather source and asserting the weather
+  rendered is that source's answer, with no part of it drawn from anywhere else, while observing the
+  traffic the module's route causes and asserting no request reaches a second source.
 verification-justification: |
   Settles that what a viewer reads is the one staged source's answer, over the traffic the harness
   observes.

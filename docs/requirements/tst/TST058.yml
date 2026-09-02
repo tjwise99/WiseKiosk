@@ -1,25 +1,32 @@
-active: false
+active: true
 derived: false
 header: |
-  Pending: the weather module's location pattern admits and rejects
+  The weather module's location constraint admits and rejects
 level: 80
 links:
-- SRS043: fjACy6gOsReWpBFv5bGdBSnAdpY7DaKyZx8w34vV-TI=
+- SRS043: rFg2Wzv4P8LHpir69U-rSIpHFSkzgA2K72zWWFD8s5E=
 normative: true
 rationale: |
   The rejecting half is where a check is fooled. A module admitting everything passes a test fed only
   good input, so the non-conforming cases carry the assertion and the admitting ones only establish that
-  the pattern is not refusing its own subject.
+  the constraint is not refusing its own subject.
+  The non-conforming cases are values rather than spellings. A body that is not a number at all never
+  reaches the constraint, being refused by the decoding, so what this exercises is the half the module
+  owns - a well-formed number outside the earth's surface.
   The no-request clause is read with them rather than separately: a rejection that still went upstream
   is exactly the failure the item forbids, and it is invisible in the status a caller gets back.
 ref: ''
-reviewed: z9HH5aueTnJ1CSOgjRIbpgj8ITCaV-epXaVuPCrb1LM=
+references:
+- keyword: func TestTST058_ThePatternAdmitsAPointAndRejectsEveryOtherValue
+  path: backend/internal/modules/weather/weather_test.go
+  sha: f5ba25f4a05d0ad930be295deff56e0eca35b49538251787368a84db9a22f6ae
+  type: file
+reviewed: LO9UZ5OQxh8JEyYQPbseYzUkj1Fc5YyUbvHrIETTxEI=
 status: proposed
 text: |
-  Pending: unit test exercising the pattern the module declares over conforming and non-conforming
+  Unit test exercising the constraint the module declares over conforming and non-conforming
   locations, asserting that a point on the earth's surface is admitted, that every other value is
-  rejected, and that no upstream request is issued for a rejected one. Lands with the first vertical
-  slice (#12); activated and given a references entry then.
+  rejected, and that no upstream request is issued for a rejected one.
 verification-justification: |
   Settles which values the module admits, and that a rejected request costs no upstream call.
   Leaves unproven that an admitted location is one the source can answer for - a well-formed point the

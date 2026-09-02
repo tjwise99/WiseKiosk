@@ -21,6 +21,8 @@ is what makes a regeneration reproducible.
 | Must fail | A generator exits zero having emitted no route table | drop `std-http-server` from `backend/oapi-codegen.yaml` — `go build` reports `cmd/main.go: undefined: boundary.HandlerFromMux` |
 | Must fail | A generator's configuration silently parses as an older schema | `generate: [models, std-http-server, client]` with no `output-options` — accepted as the v1 configuration, exits zero, prunes the models; `go build` reports `internal/router/router.go: undefined: boundary.UpstreamFailure` |
 | Must fail | Generated TypeScript that does not compile | a component named `Headers` in the schema **carrying a required property**, which shadows the DOM type orval's own response wrapper uses — `tsc` reports `TS2352` |
+| Must fail | A module's prop type stops matching the payload its route answers with | `payload: Payload<Omit<WeatherPayload, 'hourly'>>` in `frontend/src/modules/weather/props.ts` — `tsc` reports `TS2741`, the missing member named |
+| Must pass | A prop type written as a projection of the generated bodies | the tree's own `props.ts`, whose failure arm is `Pick<postApiWeatherResponseError['data'], 'message'>` |
 | Must pass | The tree as it stands | — |
 
 **What the cases prove, beyond what the table shows on its own.**
@@ -71,8 +73,26 @@ is what makes a regeneration reproducible.
   right verdict for the wrong reason, which would read as evidence that the `tsc` step decides
   nothing.
 
+- **The per-module rows read a different population from every row above them.** The gate's
+  TypeScript program is `frontend/tsconfig.boundary.json`, whose `include` carries
+  `src/modules/*/props.ts` beside the generated directory, so a module's declared prop type is
+  compiled against output regenerated in the same run. These two rows are also the only ones that
+  need no committed seed: the drift diff covers the generated directories alone, so a seed in
+  `props.ts` is read by the `tsc` step from the worktree.
+
 **Known gaps.**
 
+- **A hand-written twin of a one-field projection is not caught, and the must-pass row above is where
+  that shows.** Declaring the served failure arm as `{ readonly message: string }` rather than as the
+  `Pick<>` exits **0**: TypeScript is structural, so a type reproducing the projection member for
+  member is indistinguishable from it. What the assertion holds is the *shape*, and origin on a
+  one-member projection rests on review. Any one-field projection is reproducible by hand, so this is
+  a property of the projection's arity rather than something a sharper assertion would close, and it
+  is recorded in TST034<!-- Both sides consume the generated boundary types -->'s own bound.
+- **A schema rename of the rendered field is caught, but not here.** Renaming `message` throughout
+  `boundary/openapi.yaml` exits non-zero at `go build`, before the `tsc` step is reached, so that seed
+  measures the Go consumer rather than the TypeScript assertion. It is recorded so a later reader does
+  not take it for evidence about the frontend half.
 - **The schema is never wrong here.** Every row seeds either the generated side or the generator's
   configuration; nothing asks whether the schema describes what the boundary actually carries.
   `docs/CI.md` states that as the gate's own limit, and it is the gate's scope rather than a gap in

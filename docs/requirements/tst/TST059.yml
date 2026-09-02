@@ -1,10 +1,10 @@
-active: false
+active: true
 derived: false
 header: |
-  Pending: the weather payload carries the present and both outlooks
+  The weather payload carries the present and both outlooks
 level: 81
 links:
-- SRS044: 6uZim7o-jdWfmjHib1Aeoz4uBfmjGv27rci1xYdgEHw=
+- SRS044: 6vTvZZWMJ0t-OlCL16ROHJyhva3fsUmBd4Fyr1BTgn0=
 normative: true
 rationale: |
   Read against a captured response rather than a live source, so what is asserted is the shaping rather
@@ -13,17 +13,29 @@ rationale: |
   All four present respects and both ranges are asserted rather than the payload being checked for
   shape, because a shaping that dropped one of them produces a payload that still parses and still
   renders.
+  The day-or-night distinction is asserted with the rest rather than separately because it fails the
+  same way they do - a shaping that dropped it produces a payload that still parses and still renders,
+  and a component drawing a night as a day has nothing wrong in what it was handed.
 ref: ''
-reviewed: 4lHyTplfM_wr0ZZhs5ZMZ2_2pt3NzDZNe5GAIcj4v7U=
+references:
+- keyword: func TestTST059_ShapingTheCapturedResponseCarriesEverythingAViewerIsOwed
+  path: backend/internal/modules/weather/weather_test.go
+  sha: f5ba25f4a05d0ad930be295deff56e0eca35b49538251787368a84db9a22f6ae
+  type: file
+- keyword: func TestTST059_AResponseMissingAValueThePayloadNeedsIsNotShaped
+  path: backend/internal/modules/weather/weather_test.go
+  sha: f5ba25f4a05d0ad930be295deff56e0eca35b49538251787368a84db9a22f6ae
+  type: file
+reviewed: RojPi58Ok9_RItURFDoztFplU-8K5bjCXBL-PXZIofs=
 status: proposed
 text: |
-  Pending: unit test running the module's shaping over a captured response from its source, with no
-  network, and asserting the payload it produces carries, for the location the request named, the
-  present weather in each of the four respects and both forward ranges. Lands with the first vertical
-  slice (#12); activated and given a references entry then.
+  Unit test running the module's shaping over a captured response from its source, with no network,
+  and asserting the payload it produces carries, for the location the request named, the present
+  weather in each of the five respects and both forward ranges, with the day-or-night distinction
+  carried on the present and on each hour of the forward range that carries hours.
 verification-justification: |
   Settles that a captured response is reshaped into everything a viewer is owed.
   Leaves unproven the truth of any value in it, the source being outside this system, and bounds
   coverage by the captures the suite holds: a response the source can return and no capture contains -
-  a value missing, a range short - is unasserted here.
+  a value missing, a range short, a day-or-night flag absent - is unasserted here.
 verification-method: test

@@ -29,6 +29,43 @@ something already present, fetches nothing, and has no shaping library, no route
 boundary-schema fragment — so no source, parameter-pattern, payload or timing items, and one drawn
 element. Settle this first; most of the contract's clauses are marked with the shape they apply to.
 
+**What crosses the boundary is generated on both sides, and that reaches further than the payload.**
+The names of the parameters a request carries and the props the failure path renders are boundary
+values like any other — [`docs/TESTING.md` § Tiers](../../../docs/TESTING.md) enumerates the classes
+the Boundary tier covers, and SRS016<!-- Both sides consume the generated types --> obliges both
+sides to consume them rather than declare a twin. So a module author writes none of them by hand: not
+a parameter name in Go, not an error prop type in the component. Where a value has to exist for the
+module to work, it goes into the schema fragment (the contract's part 6) and is read back from the
+generated types.
+
+## Enumerate the figures before you write any
+
+**Do this before step 1.** Every observable number the module will ship is written down in one list,
+first, while the list is still short enough to be honest. What is on that list is the contract's
+([`docs/contracts/module-contract.md` § Writing the module's
+requirements](../../../docs/contracts/module-contract.md)) and is not restated here — a second copy
+goes stale against the governing one with nothing comparing them. This is the place in the sequence
+where that enumeration is discharged.
+
+**Each figure leaves the list by one of exactly two routes.** Into a requirement that argues it — and
+then the figure is in the item, argued in the item, and the code reads it from there. Or into the
+module's own written record that nothing constrains it, saying which choice it is and why the
+specification could not have decided it. A figure that leaves by neither route is invented, and it is
+invented whether or not it is a good number: what makes it invention is that nothing in the
+specification could have been read differently to produce a different one, so nothing can ever find
+it wrong.
+
+**The record is documentation, not a comment at the constant.** A comment says what the constant does
+and may cite the record; it is not the record. A comment carrying the argument as well is the shape
+the framework's own timeout constants take, and it is still not the record: what makes the reason
+findable is the citation in it, pointing at the document where the figure is written down. A reason
+living only beside the code is unfindable by anyone reading the specification, which is where the
+next author looks to see whether the figure was a decision or an accident.
+
+Write the list into the change that carries the module's items — a commit message or the pull request
+— with the route each figure took. It costs a paragraph and it is the artifact that makes a missing
+figure visible to a reviewer, who otherwise sees only the figures that were written.
+
 ## The sequence
 
 1. **One `SYS` need.** What a viewer gets, one sentence, one `shall`, enumerating nothing — a need
@@ -100,6 +137,28 @@ configuration key's name and default are the configuration schema's, not a requi
 states what the choice *does*. Where the specification is silent on something observable, halt and
 ask.
 
+**Halt and ask is a rule with a list, because as an instinct it does not fire.** Every one of these
+reviews as ordinary work when it is invented, which is what makes it worth naming them rather than
+trusting care:
+
+- **An interface name** — a route, a type, a field, a constant something else must spell the same.
+- **A payload shape** — what crosses the boundary, and which of it is required. A field declared
+  required ahead of anything that reads it is its own case, and the contract rules on it (part 6).
+- **A configuration key** — its name, its default, and whether it is offered at all.
+- **A failure behaviour** — what the module does when its source answers wrongly, partially, or not
+  at all, and what a viewer sees while that lasts.
+- **A threshold** — every figure the enumeration above collects, plus any bound a check would have to
+  be told.
+- **A new file or a new dependency** — where it sits, what it brings with it, and whether an existing
+  home would do.
+- **The input transport** — how a request carries what it carries. It is the schema's to state and a
+  module author's to ask about, never to pick.
+- **The cache policy** — what an answer is keyed under, how long each kind of answer is held, and
+  what a second asker gets while the first is outstanding.
+
+Asking costs a message. Each of these, invented, costs a review round at best and ships a decision
+nobody made at worst — and it ships looking exactly like a decision somebody did make.
+
 ## Closing
 
 `just check-reqs`, `just check-citations`, `just check-arch-trace`, `just check-arch`. Those four are
@@ -117,6 +176,23 @@ early in the list means every gate after it did not run and the change was not m
 Neither failure says anything about the module spec. When `verify` stops on one, run the rest by
 name rather than reading the stop as a verdict — the recipe list is in the `verify` line of the
 [justfile](../../../justfile). **CI is the source of truth either way**, and it has both.
+
+## Done when the documents agree again
+
+The gates above prove the tree is consistent and the model is drawn. **None of them reads whether the
+prose still describes what was built**, so it is a step rather than a consequence:
+
+- Every document the change falsified is corrected in the same change. Which document describes what
+  is the [documentation index](../../../docs/README.md)'s, and which *kind* of statement belongs in
+  which home is
+  [ADR 0011 rev 2](../../../docs/decisions/0011-requirement-or-convention.md)'s: an obligation on the
+  running software is a requirement, a convention a machine settles is a check, an obligation on an
+  author that leaves no artifact is a checklist question.
+- **A reason that ended up in the wrong home is the common case, not a rare one.** A decision written
+  into an as-built description, a rationale written into a code comment, a figure argued in a commit
+  message — each reads as documented and none of them is findable where the next author looks.
+- The review checklist's questions 1 and 2 (*Formalised prose*, *Described code*) are the same
+  obligation put to a reviewer; answering them here means the reviewer confirms rather than finds.
 
 Adding a module is a test-architecture review trigger
 ([`docs/TESTING.md` § Review cadence](../../../docs/TESTING.md)).

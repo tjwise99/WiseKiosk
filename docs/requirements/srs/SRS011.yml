@@ -4,7 +4,7 @@ header: |
   Upstream request rate is bounded, and the bound is not operator-tunable
 level: 1.22
 links:
-- SYS004: zDeVzrtkJX0x8iRss9MhCXDMfx62PK7NqmJJoh2OQ9c=
+- SYS004: CL2rrf7W4yEFlTl8ZUo2BhXDlqPBLLhy82YUJcZhktI=
 normative: true
 rationale: |
   The bound exists to keep WiseKiosk a well-behaved consumer of somebody else's API no matter how

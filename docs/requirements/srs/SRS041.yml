@@ -17,8 +17,8 @@ rationale: |
   Abstracted, the item reads that an upstream-backed module takes what it shows from exactly one
   source, and that sentence is module-contract.md's rather than the tree's - under Writing the
   module's requirements, which places it in part 5's exactly one entry in the static, compile-time
-  list, binding GET /api/<source>. Nothing here is promoted and nothing is escalated: what this item
-  adds to the structure that clause already binds is which kind of source the weather module's one is.
+  list. Nothing here is promoted and nothing is escalated: what this item adds to the structure that
+  clause already binds is which kind of source the weather module's one is.
   One source rather than several is the choice being made. A second source for the same weather would
   need a rule for which answer wins when the two disagree, and a viewer reading one region cannot be
   told which one answered - so the display would carry a disagreement nobody can see and nobody can
@@ -27,7 +27,7 @@ rationale: |
   No supplier is named. The obligation is on the kind of source and on there being one of it, and a
   requirement naming the party would make replacing that party a specification change.
 ref: ''
-reviewed: j7si2tUFHdMEef69P199MK-juLGWyQxkD03a1cJu_qA=
+reviewed: kJsJRiqi_rgWRSxgfQyoVdxkX8qVh4tEZYg-tCz0y5I=
 status: accepted
 text: |
   The weather module shall take the weather it shows from one external weather source, and shall derive

@@ -1,10 +1,10 @@
-active: false
+active: true
 derived: false
 header: |
-  Pending: the weather module's upstream rate and concurrency bounds hold
+  The weather module's success-path rate and concurrency bounds hold
 level: 84
 links:
-- SRS047: 4QyJkk1fU7vKwq0YrR5f0J4HRnNPHhs8p3P9hSwCGKo=
+- SRS047: nEjWRriRqUEg1FACOWylXaK1fe0bWGC38TGf_6G4HxE=
 normative: true
 rationale: |
   The source is staged slow deliberately. The concurrency half can only fail while an answer is
@@ -13,16 +13,33 @@ rationale: |
   not anything enforces it.
   The clock is driven for the same reason the freshness reading drives it: an hourly bound cannot be
   read from a suite that runs for seconds.
+  The staged source answers as well as being slow, and that is load-bearing: the bound this item
+  reads is the one that holds while there are answers to have; a run against a failing source emits
+  at the other figure, which is the higher of the two, and would read as a violation of a bound that
+  never applied to it.
 ref: ''
-reviewed: GNCFiFMFcRgLDnchnz4yG_K_lz3JT8EJfcaFMHpuEY4=
+references:
+- keyword: func TestASourceIsAskedOncePerCacheIntervalForOneLocation
+  path: backend/internal/router/rate_test.go
+  sha: 12eb33f26aff07a7ede3001b122505d5e867cb2b8425b55d619306192eea4dee
+  type: file
+- keyword: func TestASecondRequestIsNeverOutstandingWhileAFirstHasNotAnswered
+  path: backend/internal/router/rate_test.go
+  sha: 12eb33f26aff07a7ede3001b122505d5e867cb2b8425b55d619306192eea4dee
+  type: file
+- keyword: func TestTST062_ThePolicyComesToFourRequestsAnHourForOneLocation
+  path: backend/internal/modules/weather/weather_test.go
+  sha: f5ba25f4a05d0ad930be295deff56e0eca35b49538251787368a84db9a22f6ae
+  type: file
+reviewed: Hwx0dac7VDgd8As4msPIVEdN4FcQivIH57_pu_H1cg8=
 status: proposed
 text: |
-  Pending: integration test driving the module's route under a driven clock and a slow staged source,
-  asserting the requests that leave stay within the hourly bound the requirement states for one
-  location, and that a second is never outstanding while a first has not answered. Lands with the first
-  vertical slice (#12); activated and given a references entry then.
+  Integration test driving the module's route under a driven clock and a slow staged source that
+  answers, asserting the requests that leave stay within the hourly bound the requirement states for
+  one location while that source is answering, and that a second is never outstanding while a first
+  has not answered.
 verification-justification: |
-  Settles what this system emits, under a clock the harness drives.
+  Settles what this system emits while its source is answering, under a clock the harness drives.
   Leaves unproven what the source will tolerate: another party's rate policy is published or not at its
   own discretion, changed without notice, and not decidable here. It is asserted over the window the
   suite runs rather than over a deployment left running for years, so a drift that only appears over

@@ -11,11 +11,11 @@ rationale: |
   running it. If a caller can choose what the backend requests, the display becomes an open proxy —
   someone else's traffic against WiseKiosk's key and rate limit. Stating the obligation positively
   (the set of calls is fixed by configuration) rather than as a prohibition on relaying is what
-  makes SRS012<!-- Request parameters validated against known-good per-source patterns --> and
+  makes SRS012<!-- Request parameters validated against known-good per-source constraints --> and
   SRS013<!-- Client-facing contract for rejected requests --> trace to it; three earlier wordings
   named the failure and none of them did.
 ref: ''
-reviewed: zDeVzrtkJX0x8iRss9MhCXDMfx62PK7NqmJJoh2OQ9c=
+reviewed: CL2rrf7W4yEFlTl8ZUo2BhXDlqPBLLhy82YUJcZhktI=
 status: accepted
 text: |
   All upstream data shall reach the display only through the backend, which shall issue only the

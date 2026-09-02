@@ -75,3 +75,21 @@ flip it back.
 The change that activates a stub re-reads it in full, drops the `Pending:` prefixes, adds the
 `references` entry, and stamps it then — never before, never scripted. Dropping the prefix without
 re-stamping unreviews its parent's trace.
+
+**The re-read answers three questions, and none of them is answerable by looking at the stub alone.**
+
+1. **Does the text describe the test that exists?** The stub's text is a plan written before the
+   code, and by the time the code lands it is usually wrong in some particular — a different staging,
+   a narrower scope, an assertion that turned out to be two. Rewrite it to describe what was built.
+   This is the reason activation is never scripted: a script can drop a prefix and cannot read a
+   test.
+2. **Which clause of the parent does that test assert?** Name it — quote it. If no clause can be
+   quoted, the item belongs under a different parent, the parent is missing a clause, or the test
+   verifies something nobody required. Each of those is a finding rather than a formality.
+3. **Does the parent state a figure, and does this check read it?** A number in the parent's text that
+   no cited check asserts is the gap
+   [`docs/TESTING.md` § Standing obligations](../../../docs/TESTING.md) names.
+
+An item activated without this reads, in the trace, exactly like a verified requirement. That is what
+makes it worse than leaving the stub pending: a pending item is visibly incomplete, and this is
+invisibly wrong.

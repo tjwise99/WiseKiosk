@@ -24,11 +24,17 @@ func assembled(t *testing.T, api http.Handler) http.Handler {
 	return newServer(staticserve.New(http.Dir(dir)), api)
 }
 
-// get runs one GET against a handler.
-func get(handler http.Handler, target string) *httptest.ResponseRecorder {
+// send runs one request against a handler.
+func send(handler http.Handler, method, target string) *httptest.ResponseRecorder {
 	recorder := httptest.NewRecorder()
-	handler.ServeHTTP(recorder, httptest.NewRequest(http.MethodGet, target, nil))
+	handler.ServeHTTP(recorder, httptest.NewRequest(method, target, nil))
 	return recorder
+}
+
+// get runs one GET against a handler, which is every served surface but a
+// module data route.
+func get(handler http.Handler, target string) *httptest.ResponseRecorder {
+	return send(handler, http.MethodGet, target)
 }
 
 // healthPath is the path the boundary schema declares for liveness. It is

@@ -4,10 +4,10 @@ header: |
   Client-facing contract for rejected requests
 level: 1.26
 links:
-- SYS004: zDeVzrtkJX0x8iRss9MhCXDMfx62PK7NqmJJoh2OQ9c=
+- SYS004: CL2rrf7W4yEFlTl8ZUo2BhXDlqPBLLhy82YUJcZhktI=
 normative: true
 rationale: |
-  SRS012<!-- Request parameters validated against known-good per-source patterns --> and
+  SRS012<!-- Request parameters validated against known-good per-source constraints --> and
   SRS011<!-- Upstream request rate is bounded, and the bound is not operator-tunable --> reject
   invalid and over-limit requests but do not say what the client receives; a module still needs
   something renderable, and it must be able to tell an operator misconfiguration from a source
@@ -19,7 +19,7 @@ rationale: |
   TST032<!-- Pending: boundary schema is single and complete -->, where they can change without a
   specification edit.
 ref: ''
-reviewed: EgtLU_ze9fWZ3erXPOwqxbeA6n9kn-EkoNnXnOW_bQg=
+reviewed: PVMOJ-D2rv-eQvuNvbWrQppErqC6rmXgZmNJuYj_0kU=
 status: accepted
 text: |
   A request the backend rejects before making any upstream call shall return a client-error

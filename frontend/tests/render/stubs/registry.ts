@@ -1,6 +1,4 @@
-import type { Component } from 'svelte';
-
-import { modules as product } from '../../../src/lib/modules';
+import { modules as product, type ModuleEntry } from '../../../src/lib/modules';
 import BrightImage from './BrightImage.svelte';
 import Card from './Card.svelte';
 import Fits from './Fits.svelte';
@@ -24,23 +22,23 @@ import Unavailable from './Unavailable.svelte';
  * a stub cannot take a module's name and a module's render test reads the registration the display
  * ships rather than a fixture standing in for it.
  */
-export const modules: Record<string, Component> = {
-  fits: Fits,
-  overflows: Overflows,
-  'type-scale': TypeScale,
-  grouped: Grouped,
-  'bright-image': BrightImage,
-  unavailable: Unavailable,
+export const modules: Record<string, ModuleEntry> = {
+  fits: { component: Fits },
+  overflows: { component: Overflows },
+  'type-scale': { component: TypeScale },
+  grouped: { component: Grouped },
+  'bright-image': { component: BrightImage },
+  unavailable: { component: Unavailable },
 
   // Seeds. A fixture placing one of these is asserting that the emission scan reports it.
-  'lit-panel': LitPanel,
-  card: Card,
-  'region-fill': RegionFill,
-  outlined: Outlined,
-  scrim: Scrim,
-  'gradient-fill': GradientFill,
-  'gradient-scrim': GradientScrim,
-  'modern-colour': ModernColour,
+  'lit-panel': { component: LitPanel },
+  card: { component: Card },
+  'region-fill': { component: RegionFill },
+  outlined: { component: Outlined },
+  scrim: { component: Scrim },
+  'gradient-fill': { component: GradientFill },
+  'gradient-scrim': { component: GradientScrim },
+  'modern-colour': { component: ModernColour },
 
   ...product,
 };
