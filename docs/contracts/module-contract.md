@@ -89,7 +89,11 @@ themeparks.wiki — and a new module joins it the same way.
    the route built from the entry. Reading the request is the module's because what a request carries
    is the module's — the constraint its location must satisfy, and the key its answer is cached and
    rate-budgeted under, are both named in the module's requirements and neither is a framework
-   universal. **The registration entry of this part is that one field**, and it is the whole of what
+   universal. **A field the schema fragment marks `required` obliges nothing on the Go side**: the
+   generator emits a plain scalar, which has no spelling for absence, so a body that omits the field
+   decodes to that type's zero and reaches the module's own judgement as a value the caller never
+   sent. Establishing that a request named a value is the handler's, before the value is judged.
+   **The registration entry of this part is that one field**, and it is the whole of what
    the module costs the shared tree.
 6. **A boundary-schema fragment** *(upstream-backed only).* Declares what this module puts across the
    boundary **and what it reads back across it**, as named components in the one boundary schema —

@@ -24,16 +24,19 @@ references:
   path: backend/internal/modules/weather/weather_test.go
   sha: 864484bb1b878edac63ca8046dc281d7ff291ffc50b0ff57004f72f0258c730d
   type: file
-reviewed: XSyGp9g0-hrGXLv1GaaxjWvnbHtp-zbxT4rhvtODRBM=
+reviewed: -XvVhU44-l9nCy75iri1t9CPVPUrCD5Q0pWf7YBxVMA=
 status: proposed
 text: |
-  Render test holding the page open against a source staged to change its answer and a driven clock,
-  asserting the region carries the changed answer within the freshness bound the requirement states
-  and without the page being reloaded.
+  Two checks, one per half of what the bound is met between. A unit test over the module's registered
+  policy, asserting the interval a served answer is held for is no longer than the freshness bound the
+  requirement states. And a render test holding the page open against a source staged to change its
+  answer and a driven clock, asserting the region carries the changed answer on the display's own
+  cadence and without the page being reloaded.
 verification-justification: |
-  Settles that what is drawn follows a change at the source inside the bound, on a page nobody reloaded.
-  Leaves unproven how far behind the weather the source itself runs, which is another party's and
-  outside this system. It is asserted against a clock the harness drives rather than a wall clock, so
-  what is settled is the module's behaviour as time is presented to it, and a page left running far
+  Settles both halves: that an answer is held no longer than the figure the requirement states, and
+  that what is drawn follows a change at the source on a page nobody reloaded. Leaves unproven how far
+  behind the weather the source itself runs, which is another party's and outside this system. The
+  render half is asserted against a clock the harness drives rather than a wall clock, so what is
+  settled there is the module's behaviour as time is presented to it, and a page left running far
   longer than the suite runs is outside it.
 verification-method: test
