@@ -65,7 +65,13 @@
   /** Every WMO 4677 present-weather code a source of this payload emits, and the whole of the set. */
   const SKY_CODES = new Set(Object.keys(SKY_GLYPHS).map(Number));
 
-  /** The mark for one reading. A code the map does not carry draws the not-available one. */
+  /**
+   * The mark for one reading, drawn on the side of the day that reading itself carries rather than
+   * the side the page's own clock is on: the present reading is handed its flag and each hour to
+   * come is handed its own
+   * (SRS050<!-- The weather module draws day and night apart -->). A code the map does not carry
+   * draws the not-available one.
+   */
   function skyGlyph(code: number, isDay: boolean): string {
     const pair = SKY_GLYPHS[code];
     if (pair === undefined) return UNREAD_SKY;
@@ -131,9 +137,7 @@
       {@const reading = payload.data}
       {@const sky = describeSky(reading.current.weatherCode)}
       <section class="present" data-weather-present>
-        <!-- Day and night are drawn as the mark itself. Which side of the day it is, is the
-             payload's rather than the host's clock: the place reported on need not be the place the
-             display hangs. -->
+        <!-- Day and night are drawn as the mark itself. -->
         <p class="glyph glyph-present" data-weather-glyph>
           {skyGlyph(reading.current.weatherCode, reading.current.isDay)}
         </p>
@@ -154,8 +158,6 @@
             {@const hourSky = describeSky(hour.weatherCode)}
             <li class="entry" data-weather-hour>
               <span class="when">{atLocation(hour.time)}</span>
-              <!-- Each hour carries its own side of the day: the hours to come cross the location's
-                   own sunrise or sunset. -->
               <span class="glyph" data-weather-glyph>{skyGlyph(hour.weatherCode, hour.isDay)}</span>
               <span class="reading">{round(hour.temp)}°F</span>
               {#if hourSky !== undefined}
