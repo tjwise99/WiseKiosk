@@ -157,14 +157,14 @@ scale above. Rendered only at the full emission the emission rule above states �
 exception to it.
 
 **The icon face.** One second face is bundled beside Inter, self-hosted from the same origin for the
-same reason: Weather Icons, subset to the condition glyphs the weather module draws and nothing
-else. **It carries no text.** Every readable character on the display is Inter's; this face is
-reached only through the module's own condition-to-glyph map, never as a `font-family` an author
-styles with, and it is not part of the type scale above. Its weight is priced against the same
-bundle ceiling, which is why it ships subset — 28 glyphs against the whole face's 247 — rather than
-whole. Its glyphs are content: they carry the condition and nothing else does, so they render at the
-full emission SRS032<!-- Readable text is carried at full emission --> states, exactly as Inter's
-do. Day and night differ by **which glyph is drawn**, never by emission, weight or colour — a
+same reason: Weather Icons, shipped whole and unmodified as upstream publishes it. **It carries no
+text.** Every readable character on the display is Inter's; this face is reached only through the
+module's own condition-to-glyph map, never as a `font-family` an author styles with, and it is not
+part of the type scale above — so the glyphs that map does not name are carried and never drawn. Its
+weight is priced against the same bundle ceiling. Its glyphs are content: they carry the condition
+and nothing else does, so they render at the full emission
+SRS032<!-- Readable text is carried at full emission --> states, exactly as Inter's do.
+Day and night differ by **which glyph is drawn**, never by emission, weight or colour — a
 dimmed or tinted icon is barred by that rule, and the greyed tiers of the reference implementation
 this map is drawn from sit above the emission ceiling besides (**Calibrated bounds** above).
 
@@ -177,8 +177,9 @@ this map is drawn from sit above the emission ceiling besides (**Calibrated boun
 - Roboto Condensed — spartan; a width-only fallback, not the primary face.
 - A webfont CDN — a third-party origin, forbidden by
   SRS010<!-- The display page reaches no origin but the backend's -->.
-- **The whole icon face rather than a subset** — no derived artifact to keep honest, but 5.6× the
-  weight for 219 glyphs nothing draws.
+- **A subset of the icon face rather than the whole** — 5.6× lighter, carrying only the 28 glyphs
+  the module draws, but it makes the bundled file a derived artifact to keep honest against that
+  map and a modified version to redistribute under the face's licence.
 - **Condition icons as inline SVG, no second face** — no font file, but each icon becomes a
   component edit rather than a map entry, and an icon then has no glyph metric to size against the
   `vh` type scale.

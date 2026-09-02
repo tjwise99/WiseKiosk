@@ -86,8 +86,8 @@ EXTENSIONS = {
     "the build reads and rewrites (ADR 0018 rev 1, ADR 0017 rev 8); also documentation — an asset "
     "the Sphinx docs-site build serves (ADR 0017 rev 8)",
     "woff2": "an asset a build serves — not an authored program: the two bundled faces the display "
-    "styling contract states, Inter for every readable character and the subset icon face the "
-    "weather module's glyphs are drawn from, both self-hosted because the display page reaches no "
+    "styling contract states, Inter for every readable character and the icon face the weather "
+    "module's glyphs are drawn from, both self-hosted because the display page reaches no "
     "origin but the backend's (ADR 0017 rev 8)",
 }
 

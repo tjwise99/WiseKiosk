@@ -17,13 +17,15 @@ when the container build's two extensionless inputs — `Dockerfile` and `.docke
 `Dockerfile` at an undeclared path was added there, the `.dockerignore` half of the same claim run
 the same way. A passing run over this branch's head reports **315 tracked files**.
 
-Re-exercised under #220 weather module, script md5 `03ff431305ae478d8f9d3dd22563471b`, when a second
-`.woff2` — the subset icon face — joined the bundled Inter one. **The declared set did not widen**:
+Re-exercised under #220 weather module, script md5 `d8dd58e1ab1dc7adc16e3fd9d013be50`, when a second
+`.woff2` — the icon face — joined the bundled Inter one. **The declared set did not widen**:
 `woff2` was already declared, so this is the *"new file with an already-declared extension"* row
 below rather than a new claim, and no must-fail row's reasoning moved. What changed in the script is
 that extension's justification prose, which named Inter alone. Run in both directions over this
-branch's head: the tree as it stands passes with both faces tracked, and a seeded `scripts/rogue.rs`
-is still rejected by name. The other must-fail rows were **not** re-run — nothing they turn on moved.
+branch's head: the tree as it stands passes with both faces tracked, and the two rows the bundled
+face is the input to — a seeded `scripts/rogue.rs`, and a `frontend/src/assets/rogue.ttf` copied
+from it — are each still rejected by name. The other must-fail rows were **not** re-run — nothing
+they turn on moved.
 
 | Direction | Case | Input |
 |---|---|---|
