@@ -81,8 +81,7 @@
     // not running: a display left in an outage for days would otherwise go on asking every five
     // minutes for all of them. What is held from before the outage is dropped with it, because the
     // module would otherwise draw that reading as current for the window between the backend coming
-    // back and the first read after it landing
-    // (SRS046<!-- The weather a viewer sees is no more than fifteen minutes behind its source -->).
+    // back and the first read after it landing.
     if (!reachable) {
       payload = { state: 'loading' };
       return;
