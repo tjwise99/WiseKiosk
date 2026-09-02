@@ -456,10 +456,13 @@ func TestTST062_ThePolicyComesToFourRequestsAnHourForOneLocation(t *testing.T) {
 	policy := Config()
 
 	// The interval is what holds the rate: the route answers from cache until it
-	// lapses, so one location costs one upstream call per interval.
-	if perHour := time.Hour / policy.SuccessTTL; perHour > 4 {
-		t.Errorf("a %s cache interval comes to %d requests an hour for one location, want no more than 4",
-			policy.SuccessTTL, perHour)
+	// lapses, so one location costs one upstream call per interval. It is read
+	// against the interval four an hour implies rather than against a quotient of
+	// the two, which truncates.
+	const bound = time.Hour / 4
+	if policy.SuccessTTL < bound {
+		t.Errorf("a %s cache interval asks for one location oftener than %d times an hour, want no oftener than that",
+			policy.SuccessTTL, time.Hour/bound)
 	}
 
 	// The bucket cannot express the bound — its rate is per minute and it is
