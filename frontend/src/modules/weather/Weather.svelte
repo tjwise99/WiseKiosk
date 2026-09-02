@@ -14,6 +14,11 @@
    *
    * `config` is declared because part 1 hands every module its configuration. The location in it is
    * what the shell reads the route with, so nothing below has to read it a second time.
+   *
+   * The markup draws each of `payload`'s states. An unavailable module carries the route's own words
+   * in the module's own place (SRS001<!-- A failed module shows why, and only that module -->), and a
+   * reading is drawn as three parts, each on its own
+   * (SRS045<!-- The weather module shows the present weather and the outlook apart from each other -->).
    */
   const { reachable, config, payload }: WeatherProps = $props();
 
@@ -111,13 +116,6 @@
   }
 
   const round = (value: number) => Math.round(value);
-
-  /**
-   * What the markup below draws. An unavailable module carries the route's own words in the module's
-   * own place (SRS001<!-- A failed module shows why, and only that module -->), and a reading is drawn
-   * as three parts, each on its own
-   * (SRS045<!-- The weather module shows the present weather and the outlook apart from each other -->).
-   */
 </script>
 
 {#if reachable}
