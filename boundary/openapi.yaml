@@ -183,9 +183,7 @@ components:
         apparentTemp:
           type: number
           format: double
-          description: >-
-            How warm it feels, in degrees Fahrenheit. Carried apart from the temperature because it
-            is what a coat is chosen against, and the two part company in wind and in damp.
+          description: How warm it feels, in degrees Fahrenheit.
         humidity:
           type: number
           format: double
@@ -230,10 +228,7 @@ components:
           description: The chance of precipitation, as a percentage.
         isDay:
           type: boolean
-          description: >-
-            Whether it is daylight at the location for this hour. Carried per hour rather than read
-            off the current reading, because the hours to come cross the location's own sunrise or
-            sunset and a WMO code says nothing about which side of it an hour falls.
+          description: Whether it is daylight at the location for this hour.
     WeatherDay:
       type: object
       description: The weather expected at the location for one day to come.

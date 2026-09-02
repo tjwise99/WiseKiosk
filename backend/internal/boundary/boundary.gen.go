@@ -39,7 +39,7 @@ type UpstreamFailure struct {
 
 // WeatherCurrent The weather at the location at present.
 type WeatherCurrent struct {
-	// ApparentTemp How warm it feels, in degrees Fahrenheit. Carried apart from the temperature because it is what a coat is chosen against, and the two part company in wind and in damp.
+	// ApparentTemp How warm it feels, in degrees Fahrenheit.
 	ApparentTemp float64 `json:"apparentTemp"`
 
 	// Humidity Relative humidity, as a percentage.
@@ -78,7 +78,7 @@ type WeatherDay struct {
 
 // WeatherHour The weather expected at the location for one hour to come.
 type WeatherHour struct {
-	// IsDay Whether it is daylight at the location for this hour. Carried per hour rather than read off the current reading, because the hours to come cross the location's own sunrise or sunset and a WMO code says nothing about which side of it an hour falls.
+	// IsDay Whether it is daylight at the location for this hour.
 	IsDay bool `json:"isDay"`
 
 	// PrecipProbability The chance of precipitation, as a percentage.

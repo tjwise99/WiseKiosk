@@ -42,7 +42,7 @@ export interface WeatherRequest {
 export interface WeatherCurrent {
   /** Air temperature, in degrees Fahrenheit. */
   temp: number;
-  /** How warm it feels, in degrees Fahrenheit. Carried apart from the temperature because it is what a coat is chosen against, and the two part company in wind and in damp. */
+  /** How warm it feels, in degrees Fahrenheit. */
   apparentTemp: number;
   /** Relative humidity, as a percentage. */
   humidity: number;
@@ -66,7 +66,7 @@ export interface WeatherHour {
   weatherCode: number;
   /** The chance of precipitation, as a percentage. */
   precipProbability: number;
-  /** Whether it is daylight at the location for this hour. Carried per hour rather than read off the current reading, because the hours to come cross the location's own sunrise or sunset and a WMO code says nothing about which side of it an hour falls. */
+  /** Whether it is daylight at the location for this hour. */
   isDay: boolean;
 }
 
