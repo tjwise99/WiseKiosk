@@ -19,7 +19,9 @@ mechanism **decision**; the **build** is #7 boundary-contract codegen, and rev 3
   method is **the module's own**, provided from the module's package rather than written in the
   registry, so the shared tree carries one line per module and no module logic. `router.Entry` loses
   `Validate` and `BuildURL` to the module's handler, which is what makes the generated request type a
-  thing the code reads rather than a thing it merely emits (#220 weather module).
+  thing the code reads rather than a thing it merely emits. Runtime self-registration joins
+  *Alternatives considered*, moved out of the module contract, whose index row bars a rejected
+  alternative (#220 weather module).
 - **rev 3** — 2026-08-23 — both sides generate the **whole wire contract** — routes, client, server
   and types — where rev 2 generated types alone and left every route hand-authored on each side. That
   gap put the route outside what the drift gate compares, and a hand-rolled per-route drift script was

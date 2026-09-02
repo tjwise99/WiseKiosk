@@ -170,8 +170,8 @@ region. No other shared source names a specific module, and no other shared pack
 module's package.
 
 That the registration crosses at all is what a compile-time registration costs: a list of modules
-that the compiler checks is a list that names them. The alternative was weighed and rejected where a
-rejected alternative belongs
+that the compiler checks is a list that names them. The alternative — a module registering itself as
+the process starts — was weighed and rejected where a rejected alternative belongs
 ([ADR 0008 rev 4](../decisions/0008-boundary-contract-openapi-codegen.md)). The crossing is bounded
 to those two files, which is the property worth having, rather than removed.
 
@@ -276,10 +276,10 @@ An upstream-backed module's timing is stated in its requirements, and each figur
 with the rationale that produced it — the figure in the item, argued in the item, rather than a
 constant somewhere with a comment beside it. **Before any of them is written, the author enumerates
 every observable figure the module will ship**: both cache TTLs, the poll cadence, the upstream rate
-bound, the burst its rate bucket holds, how far ahead anything it forecasts reaches, how long it
-waits for its source to answer before abandoning the ask, how much of that source's answer it reads
-before refusing the rest, how long the page gives one read before abandoning it, and how much of a
-request body its route reads before refusing the rest. Each one
+bound, the rate its rate bucket admits and the burst that bucket holds, how far ahead anything it
+forecasts reaches, how long it waits for its source to answer before abandoning the ask, how much of
+that source's answer it reads before refusing the rest, how long the page gives one read before
+abandoning it, and how much of a request body its route reads before refusing the rest. Each one
 leaves that list in one of two ways — into a requirement that argues it, or into a written record
 that it is a free choice and why nothing constrains it. **A figure that leaves the list by neither
 route is an invented figure**, and it is invented whether or not it is a good number: what makes it
@@ -299,22 +299,31 @@ section; it is never itself the record, because a reason living only beside the 
 anyone reading the specification, which is where the next author looks to see whether a figure was a
 decision or an accident.
 
-**The rate its bucket admits and the burst that bucket holds** have no requirement behind either: the
-bucket is a coarse backstop over the source as a whole and cannot express a bound the way the
-requirements state one — its rate is per minute and it is not keyed on what a request is about — so
-nothing in the specification could have been read to produce a figure for either. The enumeration's
-upstream rate bound is met by the success cache holding an answer, not here. The rate is set loose
-enough not to refuse the polling that cache already answers from held data, and the burst above it so
-that a handful of distinct locations missing cache together are each served; both are there to catch
-a runaway rather than to be the bound.
+**The rate its bucket admits and the burst that bucket holds.** That there is a bound at all, and
+that no operator tunes it, is obliged
+(SRS011<!-- Upstream request rate is bounded, and the bound is not operator-tunable -->); what the
+two figures are is not. The bucket is a coarse backstop over the source as a whole and cannot express
+a bound the way the requirements state one — its rate is per minute and it is not keyed on what a
+request is about — so nothing in the specification could have been read to produce a figure for
+either. The enumeration's upstream rate bound is met by the success cache holding an answer, not
+here, and the rate is set loose enough not to refuse the polling that cache already answers from held
+data.
+
+What the burst above it admits is bounded by the region roster rather than by a handful. The bucket
+is one per source and the roster admits eleven placements, so a display can hold eleven of this
+module at eleven distinct points behind this one bucket of eight. In the steady state none of them
+reaches it — a read landing inside the cache's hold is answered from held data and spends no token.
+A cold start at more than eight distinct points is what meets the burst, and past the eighth the rest
+are refused; a refusal is not held in the cache, so each of those placements is served on the
+display's next read rather than after a cache interval. Both figures are there to catch a runaway
+rather than to be the bound.
 
 **The outbound timeout and the ceiling on an upstream answer** are obliged to exist and not to be
 anything in particular
 (SRS014<!-- No single upstream exchange can stall or exhaust the backend -->): any finite pair of
 figures discharges that item, so the figures themselves are chosen rather than read out of it. The
-timeout is set well inside the deadline the page holds one read
-to, so a source that has gone quiet is abandoned and reported rather than waited on past the point
-the display has stopped listening. The ceiling is set several times the captured response the shaping
+timeout is set well inside the deadline the page holds one read to, so a source that has gone quiet
+is abandoned and reported rather than waited on past the point the display has stopped listening. The ceiling is set several times the captured response the shaping
 is exercised against, so an answer that runs away is refused rather than read, and no larger than
 that because it is a multiplicand in what the route can come to hold
 ([`ARCHITECTURE.md`](../ARCHITECTURE.md) § Backend).
@@ -339,11 +348,12 @@ capability survives the swap and becomes the test a candidate supplier is held t
 moves slower than the freshness figure, or that will not be asked as often as the rate figure
 allows, is a source this module cannot use.
 
-The route's two cache TTLs, its rate limit and the module's poll cadence are read out of those items
-rather than picked at the keyboard. What a module does not restate is that the rate is bounded
-at all and not left for an operator to tune
+The route's two cache TTLs and the module's poll cadence are read out of those items rather than
+picked at the keyboard. Its rate limit is not: what the entry's rate figure is, is a free choice with
+the record above, and what a module does not restate is that the rate is bounded at all and not left
+for an operator to tune
 (SRS011<!-- Upstream request rate is bounded, and the bound is not operator-tunable -->) — the
-framework obliges that there be a bound, and the module says what it is.
+framework obliges that there be a bound, and the module says what the figure is.
 
 Four of [`TESTING.md`](../TESTING.md)'s tiers bear on a module's decomposition, and one of them
 bears on every module's. The Render tier reads the component of part 1, which is what that document
