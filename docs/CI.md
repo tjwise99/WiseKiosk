@@ -185,7 +185,7 @@ home and cited from the comment.
   the item's header in the form § *Documentation integrity* sets out. This is a convention carried by
   review rather than by a gate: `check-citations` reads tracked Markdown outside `.claude/` and every
   item's `rationale` and `verification-justification`, so a comment in Go or TypeScript source is
-  outside the population it scans. Widening it to source is #220 weather module's filed follow-up.
+  outside the population it scans, and nothing widens it.
 
 Whether a comment is narrative rather than mechanism, and whether added comment volume earns its
 place, is a review habit rather than a gate: #59 comment-discipline gate closed not-planned (owner,
@@ -743,13 +743,13 @@ violate any of them, so they are checks here rather than obligations there.
   import graph or the frontend module graph. Runs on every commit rather than only on a module-adding
   change: a diff-scoped form cannot reliably classify which changes are module-adds, and passes
   vacuously on the rest while shared code accretes module knowledge (#12).
-- **Route registration has one call site.** Registration call sites appear in exactly one file, and
-  that file declares the registry as a package-level composite literal appearing in no append, index
-  assignment, or map insertion — a registry is exactly a list something writes to at run time, so its
-  absence is structural rather than a denylist of registry-shaped names. One entry per
-  upstream-backed module, each carrying a non-nil
-  validator and non-zero values for every policy the entry owns; constructing the router and comparing
-  its registered route set to the entry set closes the discovery case in both directions (#9).
+- **Route registration has one call site.** A module is registered in exactly one file, which declares
+  the registry as a package-level struct type carrying one embedded field per upstream-backed module
+  and appearing in no append, index assignment, or map insertion — a registry is exactly a list
+  something writes to at run time, so its absence is structural rather than a denylist of
+  registry-shaped names. A schema route no field serves is a compile error where that value meets the
+  generated server interface, so the discovery case is closed by the type checker rather than by
+  comparing two sets (#9).
 - **Shaping packages are pure by construction.** Each module's shaping package resolves a transitive
   import set that is a subset of a declared pure-package allowlist, so I/O is absent by construction
   rather than by a denylist of forbidden packages. No exported shaping function's parameters include
