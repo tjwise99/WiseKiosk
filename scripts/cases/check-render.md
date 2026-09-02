@@ -13,11 +13,12 @@ registry augmented by the tier's stubs. Each fixture is a configuration the test
 asserts against.
 
 Each seed below is applied to the working tree, the recipe run at the kiosk viewport, and the seed
-reverted. `passed`/`failed` are the counts the run reported, the seed rows taken at `b2ab5fc` and the
-must-pass row at the tier as it stands. A seed that trips more than one read reports more than one
-failure, which is why several rows name the reads they moved — a count that drops when a read is
-deleted is the first sign the seed stopped covering it. A seed row's counts are read against the
-must-pass total of its own run rather than against the row below it.
+reverted. `passed`/`failed` are the counts the run reported, the seed rows taken at `b2ab5fc`, the
+weather rows re-taken at `0ab1ec4` against a module population of fourteen, and the must-pass row at
+the tier as it stands. A seed that trips more than one read reports more than one failure, which is
+why several rows name the reads they moved — a count that drops when a read is deleted is the first
+sign the seed stopped covering it. A seed row's counts are read against the must-pass total of its
+own run rather than against the row below it.
 
 | Direction | Case | Input | Result |
 |---|---|---|---|
@@ -33,18 +34,23 @@ must-pass total of its own run rather than against the row below it.
 | Must fail | The declared band is ignored | `edgeBandLength` returns `0px` whatever it is given | 4 failed (clearance), 3 failed 1 passed (depth) |
 | Must fail | A band is compiled in where none is declared | `edgeBandLength` returns `3vh` for an absent depth | 1 failed, 3 passed |
 | Must fail | Any emitting surface clears the ceiling | eight stub modules, one per device the ceiling refuses — a lit panel, a card's border, a region fill, an outline, a shadow scrim, the fill and the scrim spelled as gradients, and a ground spelled outside sRGB | each is a standing test rather than a reverted seed |
-| Must fail | The weather drawn is the one its route answered with | the present temperature drawn as a constant instead of from the payload prop | 3 failed, 4 passed — the reading, the two-point and the freshness reads |
-| Must fail | The configured point drives the request | the registry's fetcher asking a fixed latitude and longitude instead of the placement's | 1 failed, 6 passed |
-| Must fail | The three parts are drawn separably | one element carrying all three parts' hooks | 1 failed, 6 passed |
-| Must fail | An upstream-backed module stands down while the backend is gone | `{#if reachable}` around the module's content replaced by `{#if true}` | 1 failed, 6 passed |
-| Must fail | The read timer stops while the backend is gone | the host effect's `!reachable` early return removed | 1 failed, 6 passed |
-| Must fail | The host re-reads on its own interval | the interval's callback emptied, leaving the mount read alone | 2 failed, 5 passed — the freshness read and the polling control |
-| Must fail | A module with no reading yet draws a visible waiting state | the waiting line emptied of its text | 1 failed, 6 passed |
-| Must fail | A failed module renders its route's own words | the host composing a failure message of its own | 1 failed, 6 passed |
-| Must fail | A new reading replaces the one on screen | the host keeping the first reading once it has one | 1 failed, 6 passed |
-| Must fail | The read cadence is the one the module owes | the host's read interval halved | 1 failed, 6 passed |
-| Must fail | The read cadence is the one the module owes | the host's read interval doubled | 2 failed, 5 passed |
-| Must fail | An answer carrying no reason it can read still says something | the host rendering the missing reason as an empty string | 1 failed, 7 passed |
+| Must fail | The weather drawn is the one its route answered with | the present temperature drawn as a constant instead of from the payload prop | 5 failed, 9 passed — the reading, the two-point, the freshness, the stale-reading and the unrecognised-sky reads |
+| Must fail | The configured point drives the request | the registry's fetcher asking a fixed latitude and longitude instead of the placement's | 1 failed, 13 passed |
+| Must fail | The three parts are drawn separably | one element carrying all three parts' hooks | 5 failed, 9 passed — the separability read and the four day-and-night reads |
+| Must fail | An upstream-backed module stands down while the backend is gone | `{#if reachable}` around the module's content replaced by `{#if true}` | 1 failed, 13 passed |
+| Must fail | The read timer stops while the backend is gone | the host effect's `!reachable` early return removed | 2 failed, 12 passed — the stand-down read and the stale-reading read |
+| Must fail | The host re-reads on its own interval | the interval's callback emptied, leaving the mount read alone | 2 failed, 12 passed — the freshness read and the polling control |
+| Must fail | A module with no reading yet draws a visible waiting state | the waiting line emptied of its text | 2 failed, 12 passed — the waiting read and the stale-reading read |
+| Must fail | A failed module renders its route's own words | the host composing a failure message of its own | 1 failed, 13 passed |
+| Must fail | A new reading replaces the one on screen | the host keeping the first reading once it has one | 1 failed, 13 passed |
+| Must fail | The read cadence is the one the module owes | the host's read interval halved | 1 failed, 13 passed |
+| Must fail | The read cadence is the one the module owes | the host's read interval doubled | 2 failed, 12 passed — the freshness read and the polling control |
+| Must fail | An answer carrying no reason it can read still says something | the host rendering the missing reason as an empty string | 1 failed, 13 passed |
+| Must fail | The present reading is drawn on the payload's side of the day | `skyGlyph` returning the day form whatever side it is handed | 2 failed, 12 passed — the present-reading and the hourly day-and-night reads |
+| Must fail | Each hour is drawn on its own side of the day | the hourly mark drawn from the present reading's flag instead of the hour's | 1 failed, 13 passed |
+| Must fail | A code carrying one mark for both sides draws it on both | the overcast code's night form set to a different mark from its day one | 1 failed, 13 passed |
+| Must fail | A code the module has no mark for draws the not-available one | `skyGlyph`'s unmapped branch returning the clear-day mark instead of the not-available one | 1 failed, 13 passed |
+| Must fail | A sky whose code is not recognised is put into no words | `describeSky`'s membership guard removed, leaving the banded fall-through | 1 failed, 13 passed |
 | Must pass | The tree as it stands | — | 192 passed across the three viewports |
 
 **The emission seeds are tests rather than seeds.** Each device
@@ -64,7 +70,7 @@ now turns the legal run red naming `bright-image`, seeded and confirmed. What st
 is stated rather than implied: an image's own pixels. Imagery is exempt **by element type**, so a
 dark `<img>` and a blinding one are treated alike.
 
-**The weather rows are counted within that module's own seven at the kiosk viewport**, each seed
+**The weather rows are counted within that module's own fourteen at the kiosk viewport**, each seed
 being applied to one file and the rest of the tier being unable to see it. Each was applied, run and
 reverted, and the tier re-run clean afterwards — an earlier pass of these left one seed in place
 across the runs that followed it and inflated their counts, which the revert check is there to catch.
@@ -86,11 +92,20 @@ liveness asks meets its own `AbortSignal.timeout` deadline unanswered; the shell
 gone and then back, and a module fed by the backend stands down and re-reads across every one of
 those. Measured: over five driven minutes a display with no working poll at all still refetched seven
 times, and the value on screen changed each time — so the case was reading a remount and calling it a
-poll. `advanceHostClock` steps by less than that deadline so each ask settles inside its own step,
-which takes the flap to nil and the reads to the one the interval owes; the freshness case also
-asserts that the new reading was *asked for*, since a case reading only the value on screen cannot
-tell the two mechanisms apart. This is a property of the page shell rather than of any module, so the
-next upstream-backed module meets it too.
+poll.
+
+**What takes the flap to nil is answering the liveness ask inside the page.** Stepping
+`advanceHostClock` by less than that deadline was the first fix and it does not hold under
+contention: an answer travelling out to a `page.route` handler and back travels in real time, while
+the deadline it is measured against is read off the driven clock, so a loaded machine strands it
+however short the step is. Measured under twelve busy loops on eight cores,
+`-g TST061 --repeat-each=10 --workers=8`: **22 failures of 60** with the route stub, **0 of 90** with
+`serveLiveness` patching `window.fetch` in the page, where the answer settles in a microtask of the
+clock the deadline is read from. The step stays short for the other half of the reason — a module's
+own read *is* answered from a route, and is held to the deadline the shell gives one read. The
+freshness case also asserts that the new reading was *asked for*, since a case reading only the value
+on screen cannot tell the two mechanisms apart. This is a property of the page shell rather than of
+any module, so the next upstream-backed module meets it too.
 
 **Colour is resolved by painting, not by parsing.** Each computed value is filled into a 1×1 canvas
 over black and the pixel read back. The first form of this scan matched `rgb()`/`rgba()` with a
