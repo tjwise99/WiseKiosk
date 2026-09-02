@@ -15,6 +15,7 @@ import (
 	"time"
 
 	"github.com/tjwise99/WiseKiosk/backend/internal/boundary"
+	"github.com/tjwise99/WiseKiosk/backend/internal/router"
 )
 
 // captured is the recorded response every shaping case runs against: one real
@@ -140,14 +141,27 @@ func TestTST058_ThePatternAdmitsAPointAndRejectsEveryOtherValue(t *testing.T) {
 	// presence check the handler makes before it. This one drives an admitted
 	// body through the handler, where a guard reading a coordinate of nought as
 	// one the body did not carry would refuse a point on the prime meridian. The
-	// staged source answers nothing, so an admitted body comes back as this
-	// module's upstream failure; only a rejection is the guard failing.
+	// staged source answers nothing, so an admitted body reaches it and comes
+	// back as this module's upstream failure. The counter is what says the body
+	// got that far: a status that is merely not the rejection would be satisfied
+	// by anything refusing it short of the source.
 	t.Run("admits a body that names both coordinates as nought", func(t *testing.T) {
-		stagedSource(t)
+		asked := stagedSource(t)
+		// The package's route is one per process, and this is the only case here
+		// that drives it to completion: it spends a rate token and holds the
+		// failure under this point for the negative TTL. A route of its own keeps
+		// both off whatever runs next.
+		held := served
+		served = router.NewRoute(entry())
+		t.Cleanup(func() { served = held })
+
 		recorder := serve(t, `{"lat":0,"lon":0}`)
 
-		if recorder.Code == http.StatusBadRequest {
-			t.Fatalf("status = %d, want any answer but the rejection (%s)", recorder.Code, recorder.Body)
+		if calls := asked.Load(); calls == 0 {
+			t.Error("an admitted body reached no upstream call, so nothing says it got past the guard")
+		}
+		if recorder.Code != http.StatusBadGateway {
+			t.Fatalf("status = %d, want the staged source's failure %d (%s)", recorder.Code, http.StatusBadGateway, recorder.Body)
 		}
 	})
 
