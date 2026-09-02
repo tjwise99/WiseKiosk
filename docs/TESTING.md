@@ -197,10 +197,15 @@ or [`DEPLOYMENT.md`](DEPLOYMENT.md) where it is not
   where the two differ. An item activated with its stub wording intact describes a test nobody wrote,
   and it reads in the trace exactly like verification — which is worse than an absent item, because
   an absent item is visible to the gate and this is not.
-- **A test's declaration is its trace, and no test names a requirement.** The `TST` item that a test
+- **A test's declaration is its trace, and the item owns that trace.** The `TST` item that a test
   discharges names *it* — one `references` entry per verifying site, keyed on the line that declares
-  the test ([ADR 0005 rev 2](decisions/0005-traceability-gating.md)). Nothing in a test file carries
-  a requirement ID; reading a test's obligation means reading the item. What such an entry
+  the test ([ADR 0005 rev 2](decisions/0005-traceability-gating.md)). **A cited test's name is
+  prefixed with the id of the item citing it** — `TestTST0NN_…`, `test('TST0NN: …')` — so a run
+  naming a failure names the obligation with it. The prefix is legibility rather than trace: nothing
+  reads it, a test no item cites carries none, and a framework test that a module's item cites
+  carries none either, a shared file naming no module
+  ([`CI.md § Module and framework structure`](CI.md#module-and-framework-structure)). Reading a
+  test's obligation means reading the item, whatever its name says. What such an entry
   guarantees, and what editing a referenced test costs, is a property of the specification rather
   than of the suite, so it is stated where the specification is:
   [`requirements/README.md`](requirements/README.md) § The V&V model.

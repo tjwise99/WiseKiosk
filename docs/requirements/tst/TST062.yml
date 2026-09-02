@@ -19,19 +19,19 @@ rationale: |
   as a violation of a bound that never applied to it.
 ref: ''
 references:
-- keyword: func TestTST062_ASourceIsAskedOncePerCacheIntervalForOneLocation
+- keyword: func TestASourceIsAskedOncePerCacheIntervalForOneLocation
   path: backend/internal/router/rate_test.go
-  sha: d525ad0e4ea2797b18d60baadad4afbbab7008aeed680de3460b95cd35650020
+  sha: 12eb33f26aff07a7ede3001b122505d5e867cb2b8425b55d619306192eea4dee
   type: file
-- keyword: func TestTST062_ASecondRequestIsNeverOutstandingWhileAFirstHasNotAnswered
+- keyword: func TestASecondRequestIsNeverOutstandingWhileAFirstHasNotAnswered
   path: backend/internal/router/rate_test.go
-  sha: d525ad0e4ea2797b18d60baadad4afbbab7008aeed680de3460b95cd35650020
+  sha: 12eb33f26aff07a7ede3001b122505d5e867cb2b8425b55d619306192eea4dee
   type: file
 - keyword: func TestTST062_ThePolicyComesToFourRequestsAnHourForOneLocation
   path: backend/internal/modules/weather/weather_test.go
   sha: 89ae0f1355d4506ebb263e37f9bfd08df7bf726a66a99fa36c909cbc3e9bd1e2
   type: file
-reviewed: AB1BkF3rs_LyfxJP05655C_oUd8_X-CLyDIu-WH_FsA=
+reviewed: p0NiG3sYPDIM9pGl_vee56T_3Nt33XkaOMpfiJaN4tE=
 status: proposed
 text: |
   Integration test driving the module's route under a driven clock and a slow staged source that

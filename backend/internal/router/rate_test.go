@@ -58,12 +58,12 @@ func failing(fake *upstreamFake) fixture {
 	return staged
 }
 
-// TST062: the first clause's mechanism. A display polling faster than the route
-// holds its answer spends the surplus on the cache, so what reaches the source
-// over a window is that window divided by the interval and no more. Which
-// interval a module registers, and what that comes to, is the module's own
-// package to assert.
-func TestTST062_ASourceIsAskedOncePerCacheIntervalForOneLocation(t *testing.T) {
+// The mechanism a success-path rate bound is met by. A display polling faster
+// than the route holds its answer spends the surplus on the cache, so what
+// reaches the source over a window is that window divided by the interval and no
+// more. Which interval a module registers, and what that comes to, is the
+// module's own package to assert.
+func TestASourceIsAskedOncePerCacheIntervalForOneLocation(t *testing.T) {
 	clock := newFakeClock()
 	fake := newUpstreamFake(t)
 	handler := newRouter([]fixture{held(fake)}, clock.now)
@@ -92,10 +92,11 @@ func TestTST062_ASourceIsAskedOncePerCacheIntervalForOneLocation(t *testing.T) {
 	}
 }
 
-// TST062: the second clause's mechanism, which no policy value reaches — every
-// entry gets it. Reissuing on top of a slow answer would multiply a route's rate
-// exactly when the source is least able to bear it.
-func TestTST062_ASecondRequestIsNeverOutstandingWhileAFirstHasNotAnswered(t *testing.T) {
+// The mechanism that keeps a second ask off a source while a first has not
+// answered, which no policy value reaches — every entry gets it. Reissuing on top
+// of a slow answer would multiply a route's rate exactly when the source is least
+// able to bear it.
+func TestASecondRequestIsNeverOutstandingWhileAFirstHasNotAnswered(t *testing.T) {
 	// How many ask at once, and how long the ones after the first are given to
 	// reach the pipeline. The wait is scheduling slack rather than part of the
 	// property: what it buys is that the assertions below are made with all four
