@@ -95,6 +95,11 @@ const malformedMessage = "the source's response could not be read as this module
 // outbound is the client every route's fetch makes its call with. It follows no
 // redirect, returning the 3xx as the response, and sets no timeout of its own:
 // the deadline is the one the pipeline puts on the call's context.
+//
+// Its Transport is nil, so each call resolves http.DefaultTransport as it is
+// made. A module suite stages its source by swapping that global, so naming a
+// Transport here would leave those suites counting calls that no longer reach
+// them, with nothing failing to say so.
 var outbound = &http.Client{
 	CheckRedirect: func(*http.Request, []*http.Request) error { return http.ErrUseLastResponse },
 }

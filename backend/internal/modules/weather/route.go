@@ -55,6 +55,10 @@ func (WeatherRoute) PostApiWeather(w http.ResponseWriter, r *http.Request) {
 		router.Reject(w, router.InvalidParameters, "the request body could not be read as this source's parameters")
 		return
 	}
+	// The pre-fill above is the load-bearing half: the constraint is written as
+	// the range a coordinate must be inside, which NaN is not, so validate below
+	// refuses an omitted one on its own. This block buys the message naming what
+	// the body left out rather than a range it never fell outside.
 	if math.IsNaN(request.Lat) || math.IsNaN(request.Lon) {
 		router.Reject(w, router.InvalidParameters, "the request must name both a latitude and a longitude")
 		return

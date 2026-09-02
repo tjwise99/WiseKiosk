@@ -22,9 +22,9 @@ references:
   type: file
 - keyword: func TestTST061_TheCacheIntervalHoldsAnAnswerNoLongerThanTheFreshnessBound
   path: backend/internal/modules/weather/weather_test.go
-  sha: af5c49f05209f016c553126d9e9324954cff3dd19eede15f80f54fc4f6e6b910
+  sha: 864484bb1b878edac63ca8046dc281d7ff291ffc50b0ff57004f72f0258c730d
   type: file
-reviewed: vewJuSEaI8XHHnfydOffUeAtJY-_t5AlbdhYxXsnzkA=
+reviewed: XSyGp9g0-hrGXLv1GaaxjWvnbHtp-zbxT4rhvtODRBM=
 status: proposed
 text: |
   Render test holding the page open against a source staged to change its answer and a driven clock,

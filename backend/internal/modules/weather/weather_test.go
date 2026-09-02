@@ -136,6 +136,21 @@ func TestTST058_ThePatternAdmitsAPointAndRejectsEveryOtherValue(t *testing.T) {
 		})
 	}
 
+	// The rows above take the constraint directly, so none of them reaches the
+	// presence check the handler makes before it. This one drives an admitted
+	// body through the handler, where a guard reading a coordinate of nought as
+	// one the body did not carry would refuse a point on the prime meridian. The
+	// staged source answers nothing, so an admitted body comes back as this
+	// module's upstream failure; only a rejection is the guard failing.
+	t.Run("admits a body that names both coordinates as nought", func(t *testing.T) {
+		stagedSource(t)
+		recorder := serve(t, `{"lat":0,"lon":0}`)
+
+		if recorder.Code == http.StatusBadRequest {
+			t.Fatalf("status = %d, want any answer but the rejection (%s)", recorder.Code, recorder.Body)
+		}
+	})
+
 	rejected := []struct {
 		name string
 		body string
@@ -162,8 +177,11 @@ func TestTST058_ThePatternAdmitsAPointAndRejectsEveryOtherValue(t *testing.T) {
 			asked := stagedSource(t)
 			recorder := serve(t, c.body)
 
-			// The status alone leaves the item's other clause unread: a rejection
-			// answered after the request went upstream carries the same 400.
+			// The counter reads what the status cannot. A recorder keeps the first
+			// code written, so a call made before the rejection is written shows
+			// up in the status too; what would not is a shape that asks upstream
+			// without answering from it — a cache warm, a call left running
+			// beside the rejection. It also keeps this suite off the network.
 			if calls := asked.Load(); calls != 0 {
 				t.Errorf("a rejected request cost %d upstream calls, want none", calls)
 			}
@@ -606,7 +624,8 @@ func TestThePolicyIsCompleteAndItsFailureRetryIsSooner(t *testing.T) {
 
 	// Every value is required of an entry, and nothing in the framework supplies
 	// one or checks that an entry declared it
-	// (docs/ARCHITECTURE.md § Backend), so this is where a zero one is caught.
+	// (docs/ARCHITECTURE.md § Backend), so a zero one is caught here — SuccessTTL
+	// excepted, which the two interval bounds above hold from either side.
 	if policy.NegativeTTL <= 0 || policy.RequestsPerMinute <= 0 ||
 		policy.Burst <= 0 || policy.Timeout <= 0 || policy.MaxBytes <= 0 {
 		t.Errorf("the policy leaves a value unset: %+v", policy)
