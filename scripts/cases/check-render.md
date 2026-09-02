@@ -98,8 +98,9 @@ poll.
 `advanceHostClock` by less than that deadline was the first fix and it does not hold under
 contention: an answer travelling out to a `page.route` handler and back travels in real time, while
 the deadline it is measured against is read off the driven clock, so a loaded machine strands it
-however short the step is. Measured under twelve busy loops on eight cores,
-`-g TST061 --repeat-each=10 --workers=8`: **22 failures of 60** with the route stub, **0 of 90** with
+however short the step is. Measured under twelve busy loops on eight cores, the freshness case
+(TST061<!-- The weather shown follows its source inside the freshness bound -->) run
+`--repeat-each=10 --workers=8`: **22 failures of 60** with the route stub, **0 of 90** with
 `serveLiveness` patching `window.fetch` in the page, where the answer settles in a microtask of the
 clock the deadline is read from. The step stays short for the other half of the reason — a module's
 own read *is* answered from a route, and is held to the deadline the shell gives one read. The

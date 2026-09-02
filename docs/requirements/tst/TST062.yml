@@ -13,10 +13,10 @@ rationale: |
   not anything enforces it.
   The clock is driven for the same reason the freshness reading drives it: an hourly bound cannot be
   read from a suite that runs for seconds.
-  The staged source answers as well as being slow, and that is now load-bearing rather than
-  incidental. The bound this item reads is the one that holds while there are answers to have; a run
-  against a failing source emits at the other figure, which is the higher of the two, and would read
-  as a violation of a bound that never applied to it.
+  The staged source answers as well as being slow, and that is load-bearing: the bound this item
+  reads is the one that holds while there are answers to have; a run against a failing source emits
+  at the other figure, which is the higher of the two, and would read as a violation of a bound that
+  never applied to it.
 ref: ''
 references:
 - keyword: func TestASourceIsAskedOncePerCacheIntervalForOneLocation
@@ -31,7 +31,7 @@ references:
   path: backend/internal/modules/weather/weather_test.go
   sha: 89ae0f1355d4506ebb263e37f9bfd08df7bf726a66a99fa36c909cbc3e9bd1e2
   type: file
-reviewed: p0NiG3sYPDIM9pGl_vee56T_3Nt33XkaOMpfiJaN4tE=
+reviewed: KKxmplOZ_BGk7dhxVyLxLnErFL0FuauJr8vzWdWvu7U=
 status: proposed
 text: |
   Integration test driving the module's route under a driven clock and a slow staged source that

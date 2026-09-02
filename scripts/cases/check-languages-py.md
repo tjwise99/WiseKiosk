@@ -17,7 +17,7 @@ when the container build's two extensionless inputs — `Dockerfile` and `.docke
 `Dockerfile` at an undeclared path was added there, the `.dockerignore` half of the same claim run
 the same way. A passing run over this branch's head reports **315 tracked files**.
 
-Re-exercised under #220 weather module, script md5 `503c302638187cccbc5260b51f9ddbb8`, when a second
+Re-exercised under #220 weather module, script md5 `b4d8923e913b7f02fa9f36341bedad70`, when a second
 `.woff2` — the icon face — joined the bundled Inter one, and a `.txt` carrying the licence and
 attribution both faces are redistributed under joined them in the same directory. **The declared set
 did not widen**: `woff2` and `txt` were both already declared, so each is the *"new file with an
