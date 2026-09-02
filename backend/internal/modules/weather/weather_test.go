@@ -2,6 +2,7 @@ package weather
 
 import (
 	"encoding/json"
+	"errors"
 	"net/http"
 	"net/http/httptest"
 	"net/url"
@@ -9,6 +10,7 @@ import (
 	"path/filepath"
 	"strconv"
 	"strings"
+	"sync/atomic"
 	"testing"
 	"time"
 
@@ -61,6 +63,30 @@ func serve(t *testing.T, body string) *httptest.ResponseRecorder {
 	request := httptest.NewRequest(http.MethodPost, "/api/weather", strings.NewReader(body))
 	WeatherRoute{}.PostApiWeather(recorder, request)
 	return recorder
+}
+
+// roundTrip is a transport written as a function.
+type roundTrip func(*http.Request) (*http.Response, error)
+
+func (f roundTrip) RoundTrip(r *http.Request) (*http.Response, error) {
+	return f(r)
+}
+
+// stagedSource puts a transport that answers nothing in front of every outbound
+// call for the length of the test, and returns the count of the calls that reach
+// it. The module's target is the source's own URL, so this is what a request that
+// got past the handler's judgement lands on rather than the network.
+func stagedSource(t *testing.T) *atomic.Int64 {
+	t.Helper()
+
+	var calls atomic.Int64
+	held := http.DefaultTransport
+	http.DefaultTransport = roundTrip(func(*http.Request) (*http.Response, error) {
+		calls.Add(1)
+		return nil, errors.New("no case in this package asks the source")
+	})
+	t.Cleanup(func() { http.DefaultTransport = held })
+	return &calls
 }
 
 // TestTST058_ThePatternAdmitsAPointAndRejectsEveryOtherValue reads
@@ -129,8 +155,14 @@ func TestTST058_ThePatternAdmitsAPointAndRejectsEveryOtherValue(t *testing.T) {
 
 	for _, c := range rejected {
 		t.Run("rejects "+c.name, func(t *testing.T) {
+			asked := stagedSource(t)
 			recorder := serve(t, c.body)
 
+			// The status alone leaves the item's other clause unread: a rejection
+			// answered after the request went upstream carries the same 400.
+			if calls := asked.Load(); calls != 0 {
+				t.Errorf("a rejected request cost %d upstream calls, want none", calls)
+			}
 			if recorder.Code != http.StatusBadRequest {
 				t.Fatalf("status = %d, want the rejection %d (%s)", recorder.Code, http.StatusBadRequest, recorder.Body)
 			}
