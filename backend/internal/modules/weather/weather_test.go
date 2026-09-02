@@ -220,8 +220,17 @@ func TestTST059_ShapingTheCapturedResponseCarriesEverythingAViewerIsOwed(t *test
 		t.Fatalf("Shape: unexpected error: %v", err)
 	}
 
+	var raw forecast
+	if err := json.Unmarshal(response(t), &raw); err != nil {
+		t.Fatalf("reading the captured response: %v", err)
+	}
+
 	// Each of the respects the item names, read as a value the source reported
 	// rather than a zero shaped from a value it did not.
+	if payload.Current.WeatherCode != *raw.Current.WeatherCode {
+		t.Errorf("the present weather code = %d, want the captured response's %d",
+			payload.Current.WeatherCode, *raw.Current.WeatherCode)
+	}
 	if payload.Current.Temp == 0 {
 		t.Error("the present temperature is nought, want the captured response's")
 	}
@@ -243,10 +252,6 @@ func TestTST059_ShapingTheCapturedResponseCarriesEverythingAViewerIsOwed(t *test
 
 	// The hour in progress and today are what the source's ranges open with, so
 	// the first of each the payload carries is the one after it.
-	var raw forecast
-	if err := json.Unmarshal(response(t), &raw); err != nil {
-		t.Fatalf("reading the captured response: %v", err)
-	}
 	if strings.HasPrefix(payload.Hourly[0].Time, raw.Hourly.Time[0]) {
 		t.Errorf("the first hour shown is %q, which is the hour the source opened with", payload.Hourly[0].Time)
 	}
@@ -282,6 +287,10 @@ func TestTST059_ShapingTheCapturedResponseCarriesEverythingAViewerIsOwed(t *test
 		if hour.PrecipProbability < 0 || hour.PrecipProbability > 100 {
 			t.Errorf("hour %d carries a precipitation probability of %v", index, hour.PrecipProbability)
 		}
+		if hour.WeatherCode != *raw.Hourly.WeatherCode[index+1] {
+			t.Errorf("hour %d carries weather code %d, want the capture's %d",
+				index, hour.WeatherCode, *raw.Hourly.WeatherCode[index+1])
+		}
 	}
 
 	for index, day := range payload.Daily {
@@ -297,6 +306,44 @@ func TestTST059_ShapingTheCapturedResponseCarriesEverythingAViewerIsOwed(t *test
 		}
 		if day.Max < day.Min {
 			t.Errorf("day %d is warmest at %v and coldest at %v", index, day.Max, day.Min)
+		}
+		if day.WeatherCode != *raw.Daily.WeatherCode[index+1] {
+			t.Errorf("day %d carries weather code %d, want the capture's %d",
+				index, day.WeatherCode, *raw.Daily.WeatherCode[index+1])
+		}
+	}
+
+	// The capture reports one code — a clear sky — for the present reading and for
+	// every hour, so an equality against it tells a code carried from the step it
+	// belongs to from a constant only over the daily range. The two the capture
+	// cannot separate are read again over a copy of it carrying a distinct code at
+	// every position.
+	var read map[string]any
+	if err := json.Unmarshal(response(t), &read); err != nil {
+		t.Fatalf("reading the captured response: %v", err)
+	}
+	const presentCode = 95
+	read["current"].(map[string]any)["weather_code"] = presentCode
+	hourlyCodes := read["hourly"].(map[string]any)["weather_code"].([]any)
+	for step := range hourlyCodes {
+		hourlyCodes[step] = step
+	}
+	rewritten, err := json.Marshal(read)
+	if err != nil {
+		t.Fatalf("writing the rewritten response: %v", err)
+	}
+
+	distinct, err := Shape(rewritten)
+	if err != nil {
+		t.Fatalf("Shape: unexpected error: %v", err)
+	}
+	if distinct.Current.WeatherCode != presentCode {
+		t.Errorf("the present weather code = %d, want the %d the response reported",
+			distinct.Current.WeatherCode, presentCode)
+	}
+	for index, hour := range distinct.Hourly {
+		if want := index + 1; hour.WeatherCode != want {
+			t.Errorf("hour %d carries weather code %d, want the %d at its step", index, hour.WeatherCode, want)
 		}
 	}
 }
@@ -354,6 +401,9 @@ func TestTST059_AResponseMissingAValueThePayloadNeedsIsNotShaped(t *testing.T) {
 		},
 		"no present wind speed": func(read map[string]any) {
 			delete(read["current"].(map[string]any), "wind_speed_10m")
+		},
+		"no present weather code": func(read map[string]any) {
+			delete(read["current"].(map[string]any), "weather_code")
 		},
 		"a present temperature the source did not report": func(read map[string]any) {
 			read["current"].(map[string]any)["temperature_2m"] = nil
