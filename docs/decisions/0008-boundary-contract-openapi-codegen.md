@@ -4,8 +4,9 @@
 **Decided:** 2026-08-31 (rev 4's input shape and seam location, both taken at the first module data
 route on #220 weather module; the types-to-wire-contract pivot taken 2026-08-23 in the #188 boundary
 codegen session, and the surrounding model 2026-07-23 at the boundary-contract requirements round
-#37, with the codegen-mechanism trade carried by #7). This ADR records the mechanism **decision**;
-the **build** is #7, and rev 3's migration is #188.
+#37, with the codegen-mechanism trade carried by #7 boundary-contract codegen). This ADR records the
+mechanism **decision**; the **build** is #7 boundary-contract codegen, and rev 3's migration is
+#188 boundary codegen.
 **Rev:** 4
 
 ## Revisions
@@ -267,6 +268,13 @@ notch too narrow, so rev 3 widens it to the whole wire contract rather than addi
 - **User templates overriding the binding** — rejected. It would mean vendoring copies of two
   upstream templates pinned to this generator's version, and the drift gate regenerates *through*
   them, so an upstream change to either is a difference no gate can see.
+- **A module registering itself as the process starts**, rather than a static compile-time list —
+  rejected. It buys back the dependency direction the list gives up, a list the compiler checks
+  being a list that names every module; it pays with the check. A route this schema declares and no
+  module serves would become a fault found by running rather than by building, which is the whole of
+  what binding the generated `ServerInterface` at compile time is for. The crossing the list costs is
+  bounded to two files instead ([the module contract](../contracts/module-contract.md)
+  § Dependency direction).
 
 ## Consequences
 

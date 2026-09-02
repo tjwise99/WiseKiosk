@@ -170,10 +170,10 @@ region. No other shared source names a specific module, and no other shared pack
 module's package.
 
 That the registration crosses at all is what a compile-time registration costs: a list of modules
-that the compiler checks is a list that names them, and the alternative — a module registering
-itself as the process starts — buys the direction back by giving up the check, so a route the schema
-declares and no module serves would become a fault found by running rather than by building. The
-crossing is bounded to those two files, which is the property worth having, rather than removed.
+that the compiler checks is a list that names them. The alternative was weighed and rejected where a
+rejected alternative belongs
+([ADR 0008 rev 4](../decisions/0008-boundary-contract-openapi-codegen.md)). The crossing is bounded
+to those two files, which is the property worth having, rather than removed.
 
 That is the property that keeps a module removable: deleting its files and its registration entry
 leaves nothing behind that referred to it. It is a statement about direction, not about the size of
