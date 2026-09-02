@@ -51,7 +51,7 @@ type WeatherCurrent struct {
 	// Temp Air temperature, in degrees Fahrenheit.
 	Temp float64 `json:"temp"`
 
-	// WeatherCode What the sky is doing, as a WMO 4677 present-weather code. An open standard rather than a supplier's vocabulary, so what draws it maps the code to its own icon.
+	// WeatherCode What the sky is doing, as a WMO 4677 present-weather code.
 	WeatherCode int `json:"weatherCode"`
 
 	// WindSpeed Wind speed, in miles per hour.
@@ -94,7 +94,7 @@ type WeatherHour struct {
 	WeatherCode int `json:"weatherCode"`
 }
 
-// WeatherPayload The weather module's payload: what the weather is doing at one location now, and what it is expected to do over the hours and the days next to come. Every temperature here is in degrees Fahrenheit and every wind speed in miles per hour — the units are the schema's, so no value on the wire carries one and no consumer converts.
+// WeatherPayload The weather module's payload: what the weather is doing at one location now, and what it is expected to do over the hours and the days next to come. Every temperature here is in degrees Fahrenheit and every wind speed in miles per hour.
 type WeatherPayload struct {
 	// Current The weather at the location at present.
 	Current WeatherCurrent `json:"current"`
@@ -106,7 +106,7 @@ type WeatherPayload struct {
 	Hourly []WeatherHour `json:"hourly"`
 }
 
-// WeatherRequest The point a request names. It is the whole of what this route reads of a request, so the two names below are defined here and nowhere else on either side.
+// WeatherRequest The point a request names. It is the whole of what this route reads of a request.
 type WeatherRequest struct {
 	// Lat Latitude of the point, in decimal degrees north of the equator.
 	Lat float64 `json:"lat"`

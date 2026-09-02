@@ -27,7 +27,7 @@ export interface ClientRejection {
 }
 
 /**
- * The point a request names. It is the whole of what this route reads of a request, so the two names below are defined here and nowhere else on either side.
+ * The point a request names. It is the whole of what this route reads of a request.
  */
 export interface WeatherRequest {
   /** Latitude of the point, in decimal degrees north of the equator. */
@@ -48,7 +48,7 @@ export interface WeatherCurrent {
   humidity: number;
   /** Wind speed, in miles per hour. */
   windSpeed: number;
-  /** What the sky is doing, as a WMO 4677 present-weather code. An open standard rather than a supplier's vocabulary, so what draws it maps the code to its own icon. */
+  /** What the sky is doing, as a WMO 4677 present-weather code. */
   weatherCode: number;
   /** Whether it is daylight at the location. */
   isDay: boolean;
@@ -87,7 +87,7 @@ export interface WeatherDay {
 }
 
 /**
- * The weather module's payload: what the weather is doing at one location now, and what it is expected to do over the hours and the days next to come. Every temperature here is in degrees Fahrenheit and every wind speed in miles per hour — the units are the schema's, so no value on the wire carries one and no consumer converts.
+ * The weather module's payload: what the weather is doing at one location now, and what it is expected to do over the hours and the days next to come. Every temperature here is in degrees Fahrenheit and every wind speed in miles per hour.
  */
 export interface WeatherPayload {
   current: WeatherCurrent;
