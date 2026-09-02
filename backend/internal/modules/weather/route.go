@@ -2,6 +2,7 @@ package weather
 
 import (
 	"encoding/json"
+	"math"
 	"net/http"
 
 	"github.com/tjwise99/WiseKiosk/backend/internal/boundary"
@@ -40,7 +41,10 @@ type WeatherRoute struct{}
 func (WeatherRoute) PostApiWeather(w http.ResponseWriter, r *http.Request) {
 	router.BoundBody(w, r)
 
-	var request boundary.WeatherRequest
+	// Pre-set to NaN: a coordinate still NaN after a decode is one the body did
+	// not carry, JSON having no NaN literal to write, which is distinct from a
+	// coordinate of nought.
+	request := boundary.WeatherRequest{Lat: math.NaN(), Lon: math.NaN()}
 	decoder := json.NewDecoder(r.Body)
 	// A body carrying anything beyond the two the schema names is refused rather
 	// than read past: the answer is held under the point alone, so a request
@@ -49,6 +53,10 @@ func (WeatherRoute) PostApiWeather(w http.ResponseWriter, r *http.Request) {
 	decoder.DisallowUnknownFields()
 	if err := decoder.Decode(&request); err != nil {
 		router.Reject(w, router.InvalidParameters, "the request body could not be read as this source's parameters")
+		return
+	}
+	if math.IsNaN(request.Lat) || math.IsNaN(request.Lon) {
+		router.Reject(w, router.InvalidParameters, "the request must name both a latitude and a longitude")
 		return
 	}
 	if err := validate(request); err != nil {
