@@ -205,8 +205,8 @@ or [`DEPLOYMENT.md`](DEPLOYMENT.md) where it is not
   **A module's cited tests carry the citing item's id in the name they declare as well** —
   `TestTST0NN_…`, `test('TST0NN: …')` — so a run naming a failure names the obligation with it. That
   is a reading aid local to a module's own test files rather than a rule of the tree, and it obliges
-  nothing: measured over the tree's 80 cited declarations, the 19 in module test files carry the id
-  and the 61 in framework files do not, and a cited framework test carrying none is correctly named.
+  nothing: a cited test in a module's own files carries the id, a cited test in a framework file does
+  not, and the framework one carrying none is correctly named.
   What such an entry guarantees, and what editing a referenced test costs, is a property of the
   specification rather than of the suite, so it is stated where the specification is:
   [`requirements/README.md`](requirements/README.md) § The V&V model.

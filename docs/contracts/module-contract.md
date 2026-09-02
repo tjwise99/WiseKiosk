@@ -306,26 +306,18 @@ two figures are is not. The bucket is a coarse backstop over the source as a who
 a bound the way the requirements state one — its rate is per minute and it is not keyed on what a
 request is about — so nothing in the specification could have been read to produce a figure for
 either. The enumeration's upstream rate bound is met by the success cache holding an answer, not
-here, and the rate is set loose enough not to refuse the polling that cache already answers from held
-data.
-
-What the burst above it admits is bounded by the region roster rather than by a handful. The bucket
-is one per source and the roster admits eleven placements, so a display can hold eleven of this
-module at eleven distinct points behind this one bucket of eight. In the steady state none of them
-reaches it — a read landing inside the cache's hold is answered from held data and spends no token.
-A cold start at more than eight distinct points is what meets the burst, and past the eighth the rest
-are refused; a refusal is not held in the cache, so each of those placements is served on the
-display's next read rather than after a cache interval. Both figures are there to catch a runaway
-rather than to be the bound.
+here. Both are set loose enough not to refuse the legitimate polling the cache already answers, and
+both are there to catch a runaway rather than to be the bound. Neither value is derived.
 
 **The outbound timeout and the ceiling on an upstream answer** are obliged to exist and not to be
 anything in particular
 (SRS014<!-- No single upstream exchange can stall or exhaust the backend -->): any finite pair of
 figures discharges that item, so the figures themselves are chosen rather than read out of it. The
 timeout is set well inside the deadline the page holds one read to, so a source that has gone quiet
-is abandoned and reported rather than waited on past the point the display has stopped listening. The ceiling is set several times the captured response the shaping
-is exercised against, so an answer that runs away is refused rather than read, and no larger than
-that because it is a multiplicand in what the route can come to hold
+is abandoned and reported rather than waited on past the point the display has stopped listening.
+The ceiling is set several times the captured response the shaping is exercised against, so an
+answer that runs away is refused rather than read, and no larger than that because it is a
+multiplicand in what the route can come to hold
 ([`ARCHITECTURE.md`](../ARCHITECTURE.md) § Backend).
 
 Three of those figures are argued **at the capability** rather than from a supplier's published
@@ -424,8 +416,10 @@ written against the type its boundary-schema fragment generates.
    configuration by loading it in the page.
 3. *(upstream-backed only)* Write the registration entry in the module's own package, carrying all
    five of that route's policies — success TTL, negative TTL, rate limit, outbound timeout, maximum
-   response size — with the timing values the module's requirements already settled
-   ([§ Writing the module's requirements](#writing-the-modules-requirements)); write the route's
+   response size. The two cache TTLs carry the values the module's requirements settled; the rate
+   limit, the outbound timeout and the response size are free choices, and this step is where each
+   one's record is owed
+   ([§ Writing the module's requirements](#writing-the-modules-requirements)). Write the route's
    schema handler beside it, reading the request through the generated request type and handing it to
    the route the entry builds; then add the one field naming that route type to the shared
    registration list.
