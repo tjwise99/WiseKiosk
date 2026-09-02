@@ -130,7 +130,7 @@ func testConfig() upstream.Config {
 
 // testEntry is a fake module's registration: the policy the route runs under,
 // and the payload as the upstream body read as an object. What a request names
-// is not the entry's any more — it is the fixture's, below.
+// is not the entry's — it is the fixture's, below.
 func testEntry(fake *upstreamFake, source string) Entry {
 	return Entry{
 		Config: testConfig(),
@@ -146,7 +146,7 @@ func testEntry(fake *upstreamFake, source string) Entry {
 }
 
 // fixture is one fake module: the entry the framework serves it under, and the
-// half the framework no longer holds — what the module makes of a request,
+// half the framework does not hold — what the module makes of a request,
 // which is either a rejection of its own or the two strings a route is served
 // with. A real module reads its generated request body; a fixture reads a query,
 // and the framework cannot tell the difference because it reads neither.

@@ -319,9 +319,6 @@ const maxRequestBytes = 1 << 10
 
 // BoundBody caps what a module reads of a request before it decodes one, so a
 // body past the cap fails the module's decode and is answered as a rejection.
-// The bound is the framework's and not the module's: how much this process can
-// be made to buffer is a property of the process rather than of the source
-// behind any one route.
 func BoundBody(w http.ResponseWriter, r *http.Request) {
 	r.Body = http.MaxBytesReader(w, r.Body, maxRequestBytes)
 }

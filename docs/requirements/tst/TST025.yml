@@ -11,13 +11,13 @@ ref: ''
 references:
 - keyword: func TestAnIdenticalRequestIsServedFromCacheUntilTheTTLExpires
   path: backend/internal/router/router_test.go
-  sha: 4e58b206fc5ffed2cd7ea2960b4f2f6b2251d642be49e8ba0fc5575e8e67085b
+  sha: aa3c66f58888f8d76414d1f2c204d7ea6c9012a9525d43aea300487005eb47ed
   type: file
 - keyword: func TestCachedResultIsServedWithoutAnUpstreamCallAndRefetchesAfterTheTTL
   path: backend/internal/upstream/proxy_test.go
   sha: 02f9058aef8ab8f8867e1a524c2447c7b6cf28fa2f3f1b87b5ae0b366883711e
   type: file
-reviewed: 1vT7JUiph1hgECG5yMaX2J8skqIgMSuwnD9bKSZ4iyc=
+reviewed: iSrUkCLi5He77KqLDZmtanlT5j5PTD2Ni3xpn8bEUAo=
 status: proposed
 text: |
   Integration test asserting the (source, query) TTL cache serves an identical request from cache
