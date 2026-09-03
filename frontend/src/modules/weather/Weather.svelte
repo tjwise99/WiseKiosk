@@ -17,8 +17,9 @@
    *
    * The markup draws each of `payload`'s states. An unavailable module carries the route's own words
    * in the module's own place (SRS001<!-- A failed module shows why, and only that module -->), and a
-   * reading is drawn as three parts, each on its own
-   * (SRS045<!-- The weather module shows the present weather and the outlook apart from each other -->).
+   * reading is drawn as three differently-treated parts — a block, a curve, a strip — each on its own
+   * (SRS045<!-- The weather module shows the present weather and the outlook apart from each other -->),
+   * per the module's own UI design spec (./README.md).
    */
   const { reachable, config, payload }: WeatherProps = $props();
 
@@ -121,6 +122,39 @@
   }
 
   const round = (value: number) => Math.round(value);
+
+  /** The curve's own coordinate system: arbitrary units a `viewBox` maps onto whatever width and
+      height the layout gives the SVG, with `vector-effect="non-scaling-stroke"` on the polyline
+      keeping the drawn stroke a constant rendered width regardless of that mapping. */
+  const CURVE_VIEWBOX_WIDTH = 100;
+  const CURVE_VIEWBOX_HEIGHT = 30;
+  const CURVE_PADDING = 6;
+
+  /**
+   * The polyline `points` for the hourly temperature curve, one vertex per hour, computed fresh from
+   * the props each render rather than measured from the laid-out page — the module never reads its
+   * own layout back. A vertex's x is its column's centre in an n-column strip, matching the strip
+   * cells and labels sharing the same column count beneath it; its y is the temperature's place
+   * between the coldest and warmest hour shown, inverted because SVG y grows downward. A flat set of
+   * hours (min equals max) draws a level line at the row's centre rather than dividing by zero.
+   */
+  function curvePoints(hours: { temp: number }[]): string {
+    const temps = hours.map((hour) => hour.temp);
+    const min = Math.min(...temps);
+    const max = Math.max(...temps);
+    const span = max - min;
+    const usableHeight = CURVE_VIEWBOX_HEIGHT - 2 * CURVE_PADDING;
+    return hours
+      .map((hour, index) => {
+        const x = ((index + 0.5) / hours.length) * CURVE_VIEWBOX_WIDTH;
+        const y =
+          span === 0
+            ? CURVE_VIEWBOX_HEIGHT / 2
+            : CURVE_PADDING + ((max - hour.temp) / span) * usableHeight;
+        return `${x},${y}`;
+      })
+      .join(' ');
+  }
 </script>
 
 {#if reachable}
@@ -136,12 +170,14 @@
     {:else}
       {@const reading = payload.data}
       {@const sky = describeSky(reading.current.weatherCode)}
+      <!-- Present, per ./README.md § Present. -->
       <section class="present" data-weather-present>
-        <!-- Day and night are drawn as the mark itself. -->
-        <p class="glyph glyph-present" data-weather-glyph>
-          {skyGlyph(reading.current.weatherCode, reading.current.isDay)}
-        </p>
-        <p class="temp" data-weather-temp>{round(reading.current.temp)}°F</p>
+        <div class="present-reading">
+          <p class="glyph glyph-present" data-weather-glyph>
+            {skyGlyph(reading.current.weatherCode, reading.current.isDay)}
+          </p>
+          <p class="temp tabular-figures" data-weather-temp>{round(reading.current.temp)}°F</p>
+        </div>
         {#if sky !== undefined}
           <p class="sky" data-weather-sky>{sky}</p>
         {/if}
@@ -151,36 +187,51 @@
         </p>
       </section>
 
+      <!-- Next hours, per ./README.md § Next hours. -->
       <section class="series" data-weather-hourly>
-        <h2 class="heading">Next hours</h2>
-        <ol class="entries">
-          {#each reading.hourly as hour (hour.time)}
-            {@const hourSky = describeSky(hour.weatherCode)}
-            <li class="entry" data-weather-hour>
-              <span class="when">{atLocation(hour.time)}</span>
-              <span class="glyph" data-weather-glyph>{skyGlyph(hour.weatherCode, hour.isDay)}</span>
-              <span class="reading">{round(hour.temp)}°F</span>
-              {#if hourSky !== undefined}
-                <span class="reading">{hourSky}</span>
-              {/if}
-              <span class="reading">{round(hour.precipProbability)}%</span>
-            </li>
-          {/each}
-        </ol>
+        <h2 class="heading section-label">Next hours</h2>
+        <div class="curve">
+          <div class="curve-labels" style="--strip-count:{reading.hourly.length}">
+            {#each reading.hourly as hour (hour.time)}
+              <span class="curve-label tabular-figures">{round(hour.temp)}°F</span>
+            {/each}
+          </div>
+          <svg
+            class="curve-svg"
+            viewBox="0 0 {CURVE_VIEWBOX_WIDTH} {CURVE_VIEWBOX_HEIGHT}"
+            preserveAspectRatio="none"
+            aria-hidden="true"
+          >
+            <polyline
+              class="curve-line"
+              points={curvePoints(reading.hourly)}
+              vector-effect="non-scaling-stroke"
+            />
+          </svg>
+          <ol class="strip" style="--strip-count:{reading.hourly.length}">
+            {#each reading.hourly as hour (hour.time)}
+              <li class="cell" data-weather-hour>
+                <span class="when">{atLocation(hour.time)}</span>
+                <span class="glyph" data-weather-glyph>{skyGlyph(hour.weatherCode, hour.isDay)}</span>
+                <span class="reading tabular-figures">{round(hour.precipProbability)}%</span>
+              </li>
+            {/each}
+          </ol>
+        </div>
       </section>
 
+      <!-- Next days, per ./README.md § Next days. -->
       <section class="series" data-weather-daily>
-        <h2 class="heading">Next days</h2>
-        <ol class="entries">
+        <h2 class="heading section-label">Next days</h2>
+        <ol class="strip" style="--strip-count:{reading.daily.length}">
           {#each reading.daily as day (day.time)}
-            {@const daySky = describeSky(day.weatherCode)}
-            <li class="entry" data-weather-day>
+            <li class="cell" data-weather-day>
               <span class="when">{dayName(day.time)}</span>
-              <span class="reading">{round(day.max)}°F / {round(day.min)}°F</span>
-              {#if daySky !== undefined}
-                <span class="reading">{daySky}</span>
-              {/if}
-              <span class="reading">{round(day.precipProbability)}%</span>
+              <span class="glyph" data-weather-glyph>{skyGlyph(day.weatherCode, true)}</span>
+              <span class="reading tabular-figures"
+                >{round(day.max)}°F / {round(day.min)}°F</span
+              >
+              <span class="reading tabular-figures">{round(day.precipProbability)}%</span>
             </li>
           {/each}
         </ol>
@@ -193,7 +244,8 @@
   .weather {
     display: flex;
     flex-direction: column;
-    gap: var(--space-md);
+    /* Sibling groups sharing this region — present, hours, days. */
+    gap: var(--space-lg);
     /* The region holds its track and the content leaves it, which is the frame's rule rather than
        something this module decides for itself. */
     min-width: 0;
@@ -208,6 +260,12 @@
   .present {
     display: flex;
     flex-direction: column;
+    gap: var(--space-sm);
+  }
+
+  .present-reading {
+    display: flex;
+    align-items: baseline;
     gap: var(--space-xs);
   }
 
@@ -215,9 +273,6 @@
     margin: 0;
     font-size: var(--type-headline);
     font-weight: var(--type-headline-weight);
-    /* Digits of one width, so a reading that changes under the display does not shift the layout
-       around it. */
-    font-variant-numeric: tabular-nums;
     line-height: 1;
   }
 
@@ -255,35 +310,64 @@
   }
 
   .heading {
-    margin: 0;
+    margin: 0 0 var(--space-md) 0;
+    padding-bottom: var(--space-xs);
     font-size: var(--type-section-header);
     font-weight: var(--type-section-header-weight);
-    letter-spacing: var(--type-section-header-tracking);
-    text-transform: uppercase;
+    /* Enhancement only, per ./README.md § Grouping, and coherence with the rest of the display. */
+    border-bottom: var(--divider-stroke-width) solid var(--emission-stroke);
   }
 
-  .entries {
+  /* The curve, its per-hour temperature labels and the strip beneath it all read against the same
+     n-column layout, so a vertex the curve draws lines up under its own label and its own strip
+     cell without measuring anything laid out. */
+  .curve {
     display: flex;
     flex-direction: column;
     gap: var(--space-xs);
+  }
+
+  .curve-labels,
+  .strip {
+    display: grid;
+    grid-template-columns: repeat(var(--strip-count), 1fr);
     margin: 0;
     padding: 0;
     list-style: none;
   }
 
-  .entry {
-    display: flex;
-    gap: var(--space-sm);
+  .curve-label {
     font-size: var(--type-caption);
     font-weight: var(--type-caption-weight);
-    font-variant-numeric: tabular-nums;
     line-height: 1;
+    text-align: center;
   }
 
-  .when {
-    /* The column the readings start from, so the rows line up without a table. Stated against the
-       display's own height, in the unit the rest of the scale is stated in. */
-    flex: 0 0 8vh;
+  .curve-svg {
+    display: block;
+    width: 100%;
+    height: var(--space-lg);
+  }
+
+  .curve-line {
+    fill: none;
+    /* Content, so drawn at the display's full emission like the glyphs and figures around it
+       (SRS032<!-- Readable text is carried at full emission -->), correct by construction: the
+       stroke is the same token every readable glyph on the page is coloured with. */
+    stroke: var(--emission-content);
+    stroke-width: var(--curve-stroke-width);
+    stroke-linejoin: round;
+  }
+
+  .cell {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-xs);
+    text-align: center;
+    font-size: var(--type-caption);
+    font-weight: var(--type-caption-weight);
+    line-height: 1;
   }
 
   .reading {

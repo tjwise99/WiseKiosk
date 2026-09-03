@@ -193,13 +193,27 @@ this map is drawn from sit above the emission ceiling besides (**Calibrated boun
 Shared design tokens — the scales above — live as `:root` custom properties in
 `frontend/src/app.css` (frontend source sits under `frontend/src/`,
 [ADR 0021 rev 2](../decisions/0021-repository-layout.md)); this contract states their values, not
-the file. A module's own styling — its layout, its use of these tokens — stays in that module's own
-Svelte `<style>` block, never in a standalone stylesheet of its own. A standalone product `.css`
-file is a disposition [ADR 0017 rev 8](../decisions/0017-authored-language-set.md) grants; this
-contract's shared tokens are what it holds.
+the file. Two role-named stroke-width tokens live beside them — a dim grouping divider and a
+full-white content curve stroke — deliberately provisional pixel figures an author confirms in
+place rather than a calibrated bound this contract fixes, so their values stay in `app.css` alone.
+Alongside the tokens, `app.css` also carries a small set of shared CSS classes for an idiom two or
+more modules reach for identically in shape — not size, weight or placement, which stay the
+consuming module's own. The uppercase-tracked label and tabular-figure classes above are the first
+of these, permitted for cross-module coherence: the weather module is their first consumer, with
+the clock module's own recompose (ticket #236, "recompose the clock module") the concrete second
+(owner, 2026-09-03). A module's own layout, and anything not shared by name with another module,
+stays in that module's own Svelte `<style>` block, never in a standalone stylesheet of its own. A
+standalone product `.css` file is a disposition
+[ADR 0017 rev 8](../decisions/0017-authored-language-set.md) grants; this contract's shared tokens
+and classes are what it holds.
 
 **Considered and set aside:**
 
+- Tokens only, no shared rules — `app.css` limited to `:root` custom properties, every class left
+  to each module's own `<style>` block. Set aside once a second module reaches for an idiom the
+  first already carries: duplicating a rule by hand is what a shared class exists to avoid, and the
+  coherence both modules are built for otherwise lives as two copies kept in sync by a comment
+  rather than in one place.
 - All shared styling in the root component's global `<style>` block — real, and needs no
   [ADR 0017 rev 8](../decisions/0017-authored-language-set.md) disposition at all, but couples
   every module to `App.svelte` rather than to a token sheet each imports from.
