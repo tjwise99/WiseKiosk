@@ -406,10 +406,23 @@ active item nothing carries fails it, and a tag naming an item still `proposed` 
 way ([`CI.md § Documentation integrity`](../CI.md#documentation-integrity)) — which is why the model
 lands with the status flip rather than before or after it.
 
+## The module's UI design spec
+
+Before the module's component is built, its on-screen composition is written down: a UI design spec,
+colocated as `frontend/src/modules/<module>/README.md`. It states how the module's content is
+composed — which type step each element takes, the alignment, the grouping devices, and the look of
+each state — carries a reference render of that composition, and cites the requirements it realises
+and the [styling contract](display-styling-contract.md)'s tokens it uses. Composition is not a
+requirement and does not enter the tree
+([the display design study](../design/display-design-study.md), *What belongs in the specification*);
+this spec is where it is written down instead. The `clock` and `weather` modules' `README.md` are the
+worked instances.
+
 ## Building the module
 
 The steps run in the order each one's inputs are produced: an upstream-backed module's component is
-written against the type its boundary-schema fragment generates.
+written against the type its boundary-schema fragment generates. The component realises the module's
+UI design spec above.
 
 1. *(upstream-backed only)* Write the shaping library as pure functions, with its unit tests against
    a captured upstream response.

@@ -38,6 +38,10 @@
   --type-display-weight: 700;
   --type-headline: 10vh;
   --type-headline-weight: 700;
+  --type-title: 5vh;
+  --type-title-weight: 700;
+  --type-annotation: 3.2vh;
+  --type-annotation-weight: 600;
   --type-section-header: 1.9vh;
   --type-section-header-weight: 700;
   --type-section-header-tracking: 0.12em;
