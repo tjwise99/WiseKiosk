@@ -2,6 +2,7 @@
   import type { ModuleOptions } from '../config/types';
   import type { ModuleEntry } from './modules';
   import type { Payload, PayloadFailure } from './payload';
+  import { REQUEST_TIMEOUT_MS } from './reads';
 
   /**
    * One placement of one module: it reads that module's payload, if the module has one, and hands the
@@ -18,21 +19,6 @@
     config,
     reachable,
   }: { entry: ModuleEntry; config: ModuleOptions; reachable: boolean } = $props();
-
-  /**
-   * How often a module's payload is re-read. The freshness obligation is met between this and the
-   * route's own response cache rather than here alone: the cache bounds how far behind its source a
-   * served answer can be, and this decides how often the display picks that answer up
-   * (docs/contracts/module-contract.md § Cadence and TTL are chosen together). Reads landing inside
-   * the cache's hold are answered from it, so this is a refresh cadence and not a request rate.
-   */
-  const READ_INTERVAL_MS = 5 * 60 * 1000;
-
-  /**
-   * How long one read is given before it is abandoned, and why ten seconds
-   * (docs/ARCHITECTURE.md § Frontend).
-   */
-  const REQUEST_TIMEOUT_MS = 10_000;
 
   /** What a module reports when a read did not come back at all, there being no body to take a reason off. */
   const UNANSWERED = 'The reading did not come back in time.';
@@ -98,7 +84,9 @@
     };
 
     void once();
-    const polling = setInterval(() => void once(), READ_INTERVAL_MS);
+    // The module's own cadence, per its entry
+    // (docs/contracts/module-contract.md § Cadence and TTL are chosen together).
+    const polling = setInterval(() => void once(), entry.readIntervalMs);
     return () => {
       current = false;
       clearInterval(polling);
