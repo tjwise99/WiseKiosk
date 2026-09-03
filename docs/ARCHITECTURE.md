@@ -399,25 +399,26 @@ large for one leaves it rather than growing it
 (SRS031<!-- Content too large for its region overflows -->).
 
 **Layout assembly places what it is handed and fetches nothing.** A configuration entry's module name
-resolves through a registry in `src/lib/` that carries two things per module: the component that draws
-it, and — where the module is fed by the backend — how its payload is read. That second half is what
-makes a module upstream-backed on this side, and it is bound in the registry rather than in the module
-so the component stays fed by its props alone. A name the registry cannot resolve renders as that
+resolves through a registry in `src/lib/` that carries what draws a module and, where it is fed by the
+backend, how its payload is read and how often. That second half is what makes a module
+upstream-backed on this side, and it is bound in the registry rather than in the module so the
+component stays fed by its props alone. A name the registry cannot resolve renders as that
 region's own state rather than as an empty region. The render tier augments the registry with its own
 stubs rather than replacing it, so a module's render test exercises the registration the display ships
 with while the framework's obligations are still read against shapes no product module has to supply.
 
 **Each placement gets a host of its own, and the host is where a module's reading lives.** Layout
 assembly mounts one per configured placement rather than reading anything itself, so a module's
-cadence, its abandoned reads and its stand-down are one component's and are the same for every module
-that has a reading at all. Two figures are constants there. The read interval is the module's poll
-cadence, chosen against the route's success TTL
-([the module contract](contracts/module-contract.md)), so a refresh no faster than the cache can
-answer differently reaches no upstream. The read deadline is ten seconds, far shorter and a different
-question: without it a request that never settles leaves a region in its first-paint state for as
-long as the display runs, and a waiting line that never resolves cannot be told from a module that is
-broken. It sits above the backend's own outbound timeout, so a slow source is reported by the backend
-as that module's failure rather than abandoned here as an answer that never came.
+cadence, its abandoned reads and its stand-down are that placement's own. The read interval is the
+module's own poll cadence, carried on its registry entry rather than one figure the host holds for
+every module: the route's success cache bounds how far behind its source a served answer can be, and
+the poll cadence bounds how long a fresh entry then waits before the display draws it, the two chosen
+together ([the module contract](contracts/module-contract.md)). The read deadline is a framework
+constant instead, and a different question: ten seconds, far shorter than any module's cadence.
+Without it a request that never settles leaves a region in its first-paint state for as long as the
+display runs, and a waiting line that never resolves cannot be told from a module that is broken. It
+sits above the backend's own outbound timeout, so a slow source is reported by the backend as that
+module's failure rather than abandoned here as an answer that never came.
 
 **Shared design tokens are delivered as `:root` custom properties** in `src/app.css`, whose values are
 [the display styling contract](contracts/display-styling-contract.md)'s. The edge band is one of them:
