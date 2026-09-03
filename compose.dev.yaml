@@ -1,0 +1,9 @@
+# Local development, not the release recipe (deploy/compose.yaml): build and run the working tree
+# with the local config mounted. `just run-container` invokes it.
+services:
+  kiosk:
+    build: .
+    ports:
+      - '8080:8080'
+    volumes:
+      - ./frontend/public/config.json:/srv/kiosk/config.json:ro

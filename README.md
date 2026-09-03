@@ -49,6 +49,24 @@ Nothing is inherited from any prior mirror framework, and there is no compatibil
 - **Frontend:** Svelte 5 + Vite, a static SPA. See [ADR 0018 rev 1](docs/decisions/0018-frontend-svelte-vite-static-spa.md).
 - **Boundary:** one schema, both sides generated from it — no hand-maintained parallel types.
 
+## Running it locally
+
+The backend serves the page, `/api/*` and `/healthz` from one origin. These recipes run the whole
+app against the working tree — no configuration authored by hand, no edit to the shipped recipe. The
+local display configuration is seeded from `deploy/config.example.json` into the gitignored
+`frontend/public/config.json` on first run, and edited there; weather is keyless (Open-Meteo), so the
+data is live with no secrets to supply.
+
+```sh
+just serve          # terminal 1: the backend, reloading on change
+just dev            # terminal 2: the page, hot-reloading; /api and /healthz proxy to `just serve`
+just run            # one process: build the bundle, serve the whole app on :8080 (no reload)
+just run-container  # build the working tree into the image and run it on :8080 (needs Docker)
+```
+
+`compose.dev.yaml` is the local container recipe; the release recipe is `deploy/compose.yaml`, whose
+bring-up is [`docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md)'s.
+
 ## Documentation
 
 **The requirements tree is the specification.** Every obligation WiseKiosk is built against is a

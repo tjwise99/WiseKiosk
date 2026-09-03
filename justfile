@@ -191,9 +191,29 @@ check-secret-unwrap:
     python3 scripts/check-secret-unwrap.py
 
 [group('run')]
-[doc('Serve the display page on a local dev server; the page fetches /config.json, which a deployment bind-mounts into the served tree and a local run reads from the gitignored frontend/public/config.json')]
-dev:
+[doc('Seed the gitignored local display configuration from the shipped example if absent — what `just dev`, `just run` and `just run-container` read')]
+config-seed:
+    @[ -f frontend/public/config.json ] || { mkdir -p frontend/public && cp deploy/config.example.json frontend/public/config.json; }
+
+[group('run')]
+[doc('Serve the display page on a local dev server (hot reload); /api and /healthz are proxied to `just serve`, and the page reads the gitignored frontend/public/config.json the `config-seed` prerequisite writes')]
+dev: config-seed
     frontend/node_modules/.bin/vite frontend
+
+[group('run')]
+[doc('Run the backend with reload on change, serving /api and /healthz for `just dev` to proxy to; weather is keyless (Open-Meteo), so this serves live data with no secret plumbing')]
+serve:
+    go -C backend run github.com/bokwoon95/wgo@v0.7.1 run ./cmd -static-root ../frontend/dist
+
+[group('run')]
+[doc('Build the bundle and serve the whole app from the backend on :8080 — the working tree as one process, no reload')]
+run: config-seed check-build
+    go -C backend run ./cmd -static-root ../frontend/dist
+
+[group('run')]
+[doc('Build the working tree into the container image and run it on :8080 with the local config mounted; needs Docker')]
+run-container: config-seed
+    docker compose -f compose.dev.yaml up --build
 
 # Depends on `check-build` so what is served is a bundle that exists and is current, rather than
 # whatever a previous run left in `dist/`.
