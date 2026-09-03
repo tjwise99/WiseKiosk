@@ -429,19 +429,28 @@ written against the type its boundary-schema fragment generates.
    consume are emitted from them. Nothing in the build reads the tag, so it is not a step a red build
    will remind you of — it is what says which kind of path this is
    ([§ The six parts](#the-six-parts), part 6).
-5. *(every module)* Write the component, plus its render test. Where the module has a payload, write
+5. *(every module)* Write the module's UI design spec, colocated as
+   `frontend/src/modules/<module>/README.md`, before the component below. It states how the module's
+   content is composed — which type step each element takes, the alignment, the grouping devices, and
+   the look of each state — carries a reference render of that composition, and cites the requirements
+   it realises and the [styling contract](display-styling-contract.md)'s tokens it uses. Composition
+   is not a requirement and does not enter the tree
+   ([the display design study](../design/display-design-study.md), *What belongs in the
+   specification*); this spec is where it is written down instead. The `clock` and `weather` modules'
+   `README.md` are the worked instances.
+6. *(every module)* Write the component, plus its render test. Where the module has a payload, write
    the component against the generated type rather than hand-declaring it. Where the module is
    upstream-backed, declare the `reachable` prop and honour the stand-down it signals
    ([§ An unavailable module and an unreachable backend are different states](#an-unavailable-module-and-an-unreachable-backend-are-different-states)).
-6. *(upstream-backed only)* Set the module's poll cadence to what its freshness obligation comes to,
+7. *(upstream-backed only)* Set the module's poll cadence to what its freshness obligation comes to,
    and check it against that route's TTL
    ([§ Cadence and TTL are chosen together](#cadence-and-ttl-are-chosen-together)).
-7. *(every module)* Confirm the dependency direction still runs modules → framework, and that no
+8. *(every module)* Confirm the dependency direction still runs modules → framework, and that no
    shared framework source names the new module beyond its registration entry
    ([§ Dependency direction](#dependency-direction)).
-8. *(every module)* Adding a module is a test-architecture review trigger — run it, per
+9. *(every module)* Adding a module is a test-architecture review trigger — run it, per
    [`TESTING.md` § Review cadence](../TESTING.md#review-cadence).
-9. *(every module)* Reconcile the documents the module has just falsified, in this change rather than
+10. *(every module)* Reconcile the documents the module has just falsified, in this change rather than
    after it: this contract where the module's shape is not the shape described, the architecture
    model and `ARCHITECTURE.md` where the drawing or the prose no longer matches
    ([§ Drawing the module in the architecture model](#drawing-the-module-in-the-architecture-model)),
