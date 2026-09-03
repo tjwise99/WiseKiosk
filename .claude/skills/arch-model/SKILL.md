@@ -12,7 +12,7 @@ description: >-
 
 Sources: [`docs/architecture/model/`](../../../docs/architecture/model/) — `wisekiosk.likec4` (logical),
 `deployment.likec4`, `views.likec4`. The boundary, what earns an element a place, and where a tag sits
-are [ADR 0019 rev 7](../../../docs/decisions/0019-boundary-at-what-deploys-and-tag-tier.md)'s;
+are [ADR 0019 rev 8](../../../docs/decisions/0019-boundary-at-what-deploys-and-tag-tier.md)'s;
 [`docs/architecture/README.md`](../../../docs/architecture/README.md) holds the declaring and editing
 rules.
 

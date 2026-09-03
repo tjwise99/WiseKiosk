@@ -14,7 +14,7 @@ boundary)
 `README.md` states a boundary this record reverses in one named part: "The kiosk host lies outside
 the system: its operating system, its container runtime, its browser, and whatever starts that
 browser on boot. Provisioning that machine is the operator's, and no requirement in the tree reaches
-it." [ADR 0019 rev 7](0019-boundary-at-what-deploys-and-tag-tier.md) draws the same line at the
+it." [ADR 0019 rev 8](0019-boundary-at-what-deploys-and-tag-tier.md) draws the same line at the
 architecture-model layer: "The boundary is what deploys — the published container image and what it
 serves. The provisioning material shipped beside it falls outside," reinforced by "the provisioning
 tooling gains no element." TST018<!-- Pending: emulated Pi Zero-class host, and performance bounds
@@ -51,7 +51,7 @@ the operator-facing container path is untouched.
 - **Appliance model, new.** `meta-wisekiosk` pins a WiseKiosk **commit hash** and builds the whole
   application in-layer, from source, at image build time. It does not consume the GHCR image: the
   display host sits below the floor for running the published container image at all, per
-  [ADR 0019 rev 7](0019-boundary-at-what-deploys-and-tag-tier.md)'s own Deployment-level reasoning
+  [ADR 0019 rev 8](0019-boundary-at-what-deploys-and-tag-tier.md)'s own Deployment-level reasoning
   about that host's resource class. A commit hash is the seam the two repositories share, and it is
   the whole of the coupling: `meta-wisekiosk` reads no other WiseKiosk-owned artifact, and WiseKiosk
   ships nothing new to be read.
@@ -71,13 +71,13 @@ Update delivery, image assembly and device provisioning are out of this reposito
 same boundary this record draws: WiseKiosk owns the requirements and the architecture diagram, full
 stop.
 
-**This amends [ADR 0019 rev 7](0019-boundary-at-what-deploys-and-tag-tier.md) in one named part.**
+**This amends [ADR 0019 rev 8](0019-boundary-at-what-deploys-and-tag-tier.md) in one named part.**
 The appliance-exclusion clause — "the provisioning material shipped beside it falls outside," and
 "the provisioning tooling gains no element" — does not hold for the appliance case: the appliance
 exchanges something with the system in the sense that record's own corollary tests for, being the
 running instance of what the system is. The boundary-is-what-deploys principle and the tag-tier rule
 stand untouched; only the named exclusion clause is reversed.
-[ADR 0019 rev 7](0019-boundary-at-what-deploys-and-tag-tier.md) is the rev that records this, per
+[ADR 0019 rev 8](0019-boundary-at-what-deploys-and-tag-tier.md) is the rev that records this, per
 [`README.md`](README.md)'s supersession mechanism — a named-part reversal, `Status:` left `accepted`.
 
 **`README.md`'s exclusion paragraph and
@@ -109,7 +109,7 @@ refuses to build a rootfs on the commit path for exactly that reason. One gate c
 cadences, and forcing them under one repository would either slow WiseKiosk's commit-path CI to the
 image build's pace or split the repository's own CI into two classes that a merge was supposed to
 avoid needing. The two repositories stay separate; the display host's resource class, per
-[ADR 0019 rev 7](0019-boundary-at-what-deploys-and-tag-tier.md), already forces a
+[ADR 0019 rev 8](0019-boundary-at-what-deploys-and-tag-tier.md), already forces a
 consume-a-pinned-artifact coupling between them regardless of repository boundary, so the separation
 costs nothing a merge would have bought back.
 
