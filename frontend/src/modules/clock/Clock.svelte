@@ -27,8 +27,9 @@
 
   // `formatToParts()` splits one Intl.DateTimeFormat covering hour, minute, second and — in
   // twelve-hour form — the day period into its named parts. Hour precedes minute in every locale's
-  // part ordering, so the two are joined into the core time by slicing up to and including minute;
-  // second and day period feed the two sibling annotations below (./README.md § The reading).
+  // part ordering, but the day period does not reliably follow both (some locales lead the whole
+  // string with it), so the core time is sliced from hour's own index rather than from 0; second and
+  // day period feed the two sibling annotations below (./README.md § The reading).
   const timeFormat = $derived(
     new Intl.DateTimeFormat(undefined, {
       hour: '2-digit',
@@ -40,7 +41,10 @@
   const timeParts = $derived(timeFormat.formatToParts(now));
   const hoursMinutes = $derived(
     timeParts
-      .slice(0, timeParts.findIndex((part) => part.type === 'minute') + 1)
+      .slice(
+        timeParts.findIndex((part) => part.type === 'hour'),
+        timeParts.findIndex((part) => part.type === 'minute') + 1,
+      )
       .map((part) => part.value)
       .join(''),
   );
@@ -107,7 +111,6 @@
   .annotations {
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
     align-items: flex-start;
   }
 
@@ -117,6 +120,13 @@
     font-size: var(--type-annotation);
     font-weight: var(--type-annotation-weight);
     line-height: 1;
+  }
+
+  /* Pinned to the bottom by its own margin rather than by `justify-content: space-between` on the
+     parent, so the meridiem still sits low when it is the annotations column's only child (seconds
+     off, twelve-hour form) rather than reverting to the column's top. */
+  .meridiem {
+    margin-top: auto;
   }
 
   /* The dim divider between time and date (./README.md § Grouping), rendered only alongside the
