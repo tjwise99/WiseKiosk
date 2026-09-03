@@ -69,10 +69,11 @@
 
   /* Stroke widths, role-named because the two answer to different requirements and are not
      interchangeable (display styling contract § Token delivery and styling approach): a dim
-     grouping divider (BackendUnreachable.svelte's own header rule, and every module's group
-     divider), and a full-white content curve drawn thin so it reads as a line rather than a
-     band. Both provisional — the divider matches the one hairline already in use; the curve
-     weight is confirmed against the deployed glass, not this file (weather module README). */
+     grouping divider — the weather module's own group-header rule is the one consumer today,
+     a future module's own divider a candidate — and a full-white content curve drawn thin so
+     it reads as a line rather than a band. Both provisional — the divider matches the one
+     hairline BackendUnreachable.svelte already hardcodes; the curve weight is confirmed
+     against the deployed glass, not this file (weather module README). */
   --divider-stroke-width: 1px;
   --curve-stroke-width: 2px;
 }
