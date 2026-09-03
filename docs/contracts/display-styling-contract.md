@@ -57,7 +57,7 @@ scatter rather than one shape.
 
 ## Type scale
 
-Five steps, sized against the display's own height so the scale holds across every resolution the
+Seven steps, sized against the display's own height so the scale holds across every resolution the
 display supports — the same reasoning
 SRS033<!-- Text holds a minimum size against the display, at every resolution --> states for the
 floor beneath all of them. `vh` rather than a device-pixel or root-relative unit, for the same
@@ -67,11 +67,13 @@ reason: it is what survives the panel changing.
 |---|---|---|---|
 | display | `16vh` | 700 | the one hero figure a region is built around (clock face) |
 | headline | `10vh` | 700 | a large standalone stat (current temperature) |
+| title | `5vh` | 700 | a label carried at co-equal presence beside a hero figure (the clock's date beside the time) |
+| annotation | `3.2vh` | 600 | a mark riding a hero figure (the clock's seconds and meridiem) |
 | section-header | `1.9vh`, uppercase, `0.12em` tracking | 700 | a module or group label sitting above a divider |
 | body | `2.2vh` | 500–600 | primary readable content lines |
 | caption | `1.7vh` | 600 | secondary or meta text — labels, units, timestamps |
 
-The floor beneath these five steps is chosen under **Calibrated bounds** below, rather than left to
+The floor beneath these seven steps is chosen under **Calibrated bounds** below, rather than left to
 the check that will assert it — this contract is its origin. Every step sits above the floor;
 `caption` — the smallest — is authored near it deliberately, as glanced meta-text, while the reading
 steps sit well above. An author who needs a step below `caption` checks it against that figure rather

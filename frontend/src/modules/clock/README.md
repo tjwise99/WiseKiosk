@@ -46,9 +46,9 @@ twelve-hour form (SRS038<!-- The clock's hour form is the one its configuration 
 | Element | Step |
 |---|---|
 | time | `display` — the hero step the scale reserves for the clock face |
-| seconds superscript, meridiem subscript | `caption` |
-| date weekday | uppercase, tracked — larger than the `section-header` step; the step it needs is an open design question (the scale has none between `body` and `headline`) |
-| date day/month/year | `body` |
+| seconds superscript, meridiem subscript | `annotation` |
+| date weekday | `title`, uppercase and tracked |
+| date day/month/year | `title` |
 
 The time and the date are separated by `lg`; within the date, the weekday and the full date by `sm`.
 All figures are `tabular-nums`, so the time re-rendering every second never shifts the layout around
