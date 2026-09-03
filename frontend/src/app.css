@@ -66,6 +66,15 @@
   /* The band every laid-out region stays clear of, on all four edges. The configuration's
      depth replaces this default; none supplied leaves it at none. */
   --edge-band: 0px;
+
+  /* Stroke widths, role-named because the two answer to different requirements and are not
+     interchangeable (display styling contract § Token delivery and styling approach): a dim
+     grouping divider (BackendUnreachable.svelte's own header rule, and every module's group
+     divider), and a full-white content curve drawn thin so it reads as a line rather than a
+     band. Both provisional — the divider matches the one hairline already in use; the curve
+     weight is confirmed against the deployed glass, not this file (weather module README). */
+  --divider-stroke-width: 1px;
+  --curve-stroke-width: 2px;
 }
 
 html,
@@ -82,4 +91,23 @@ body {
   font-size: var(--type-body);
   font-weight: var(--type-body-weight);
   font-feature-settings: 'zero' 1;
+}
+
+/* Shared cross-module idioms (display styling contract § Token delivery and styling approach):
+   an author reaches for these by class rather than hand-copying the rule into a module's own
+   `<style>` block. Each is the shape of the idiom only — size, weight and placement stay the
+   consuming module's, since they differ by context (a group label's own step, a hero figure
+   beside a caption). */
+
+/* The uppercase, tracked treatment for a label sitting above a divider or riding a hero figure —
+   a module's group headings, the clock's weekday. */
+.section-label {
+  text-transform: uppercase;
+  letter-spacing: var(--type-section-header-tracking);
+}
+
+/* Digits of one width, so a value that changes under the display never shifts the layout around
+   it and columns line up down a strip. */
+.tabular-figures {
+  font-variant-numeric: tabular-nums;
 }
