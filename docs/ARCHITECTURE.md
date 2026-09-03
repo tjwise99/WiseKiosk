@@ -411,12 +411,11 @@ with while the framework's obligations are still read against shapes no product 
 assembly mounts one per configured placement rather than reading anything itself, so a module's
 cadence, its abandoned reads and its stand-down are that placement's own. The read interval is the
 module's own poll cadence, carried on its registry entry rather than one figure the host holds for
-every module: the route's success cache bounds how far behind its source a served answer can be, and
-the poll cadence bounds how long a fresh entry then waits before the display draws it, the two chosen
-together ([the module contract](contracts/module-contract.md)). The read deadline is a framework
-constant instead, and a different question: ten seconds, far shorter than any module's cadence.
-Without it a request that never settles leaves a region in its first-paint state for as long as the
-display runs, and a waiting line that never resolves cannot be told from a module that is broken. It
+every module, chosen against the route's success TTL
+([the module contract](contracts/module-contract.md)). The read deadline is a framework constant
+instead, and a different question: ten seconds, far shorter than any module's cadence. Without it a
+request that never settles leaves a region in its first-paint state for as long as the display runs,
+and a waiting line that never resolves cannot be told from a module that is broken. It
 sits above the backend's own outbound timeout, so a slow source is reported by the backend as that
 module's failure rather than abandoned here as an answer that never came.
 
