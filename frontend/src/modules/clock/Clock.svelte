@@ -75,7 +75,7 @@
     <div class="rule"></div>
     <div class="date" data-clock-date>
       <p class="weekday section-label">{weekdayFormat.format(now)}</p>
-      <p class="full-date">{fullDateFormat.format(now)}</p>
+      <p class="full-date tabular-figures">{fullDateFormat.format(now)}</p>
     </div>
   {/if}
 </div>
