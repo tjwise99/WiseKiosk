@@ -201,11 +201,13 @@ test('TST060: draws what it is doing now, the hours to come and the days to come
   await expect(hourly).toBeVisible();
   await expect(daily).toBeVisible();
 
-  // Each carries its own content rather than the same content three times: the three parts were
-  // written with three different sky codes, and each entry list holds the entries the answer had.
+  // Each carries its own content rather than the same content three times. The present block is
+  // the one place the sky is put into words (./README.md § Present); the hours and days carry it
+  // as the glyph alone, so what tells their entry lists apart is the figures the answer gave each —
+  // the warmest hour shown and the warmest day shown, neither of which the other section carries.
   await expect(present).toContainText('Clear');
-  await expect(hourly).toContainText('Rain');
-  await expect(daily).toContainText('Snow');
+  await expect(hourly).toContainText(`${WARM + 4}°`);
+  await expect(daily).toContainText(`${WARM + 24}°`);
   await expect(page.locator('[data-weather-hour]')).toHaveCount(5);
   await expect(page.locator('[data-weather-day]')).toHaveCount(5);
 
