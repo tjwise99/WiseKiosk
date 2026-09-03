@@ -38,6 +38,11 @@ function placed(options: Record<string, unknown>): Fixture {
 
 const TIME = '[data-clock-time]';
 const DATE = '[data-clock-date]';
+// The whole clock, hours:minutes plus the seconds/meridiem siblings trailing it — the recomposed
+// module renders seconds (superscript) and the meridiem (subscript) as their own elements beside
+// `[data-clock-time]` rather than inside it (./README.md § The reading), so a check that needs either
+// of those reads this wrapper instead of the narrower one.
+const CLOCK = '[data-clock]';
 
 test('TST051: takes the time off the host clock, asking nothing for it', async ({
   page,
@@ -51,11 +56,13 @@ test('TST051: takes the time off the host clock, asking nothing for it', async (
 
   // The value is this clock's, which is what distinguishes reading the host from reading anywhere
   // else: nothing but the controlled clock says the time is this one. A placement asking for nothing
-  // takes the schema's defaults, the twelve-hour form among them, so 15:04:05 reads as 03:04:05; the
-  // digits are asserted as a substring, the meridiem indicator and its separator being presentation.
-  await expect(page.locator(TIME)).toContainText('03:04:05');
+  // takes the schema's defaults, the twelve-hour form among them, so 15:04:05 reads as 03:04:05. The
+  // seconds ride as their own sibling beside `[data-clock-time]` rather than inside it, so the check
+  // reads the whole clock and anchors the seconds to immediately follow the hours:minutes — the
+  // separator between them, the meridiem indicator and how either is written stay presentation.
+  await expect(page.locator(CLOCK)).toContainText(/03:04\D*05/);
   await page.clock.runFor(3000);
-  await expect(page.locator(TIME)).toContainText('03:04:08');
+  await expect(page.locator(CLOCK)).toContainText(/03:04\D*08/);
 
   // The watcher saw something first. Both assertions below are absences, and an absence read over a
   // population nobody filled is not an absence: a listener attached to the wrong page, or after the
@@ -73,17 +80,20 @@ test('TST051: takes the time off the host clock, asking nothing for it', async (
 test('TST052: keeps the displayed time moving as the host clock moves', async ({ page }) => {
   await holdHostClock(page, HOST_TIME);
   await render(page, placed({}));
-  const time = page.locator(TIME);
+  // The whole clock, not just `[data-clock-time]`: the first advance below moves only the seconds,
+  // which live in their own sibling element, so a check confined to the hours:minutes node could not
+  // tell an advancing clock from a frozen one across it.
+  const time = page.locator(CLOCK);
 
-  await expect(time).toContainText('03:04:05');
+  await expect(time).toContainText(/03:04\D*05/);
 
   // Twice, across one loaded page. A module that reads the clock once fails the first advance and a
   // module that updates once and stops fails the second, which the two together are here to separate.
   await page.clock.runFor(5000);
-  await expect(time).toContainText('03:04:10');
+  await expect(time).toContainText(/03:04\D*10/);
 
   await page.clock.runFor(65_000);
-  await expect(time).toContainText('03:05:15');
+  await expect(time).toContainText(/03:05\D*15/);
 });
 
 test('TST053: presents the hour in the form its configuration selects', async ({ page }) => {
@@ -91,9 +101,13 @@ test('TST053: presents the hour in the form its configuration selects', async ({
 
   await render(page, placed({ twenty_four_hour: true }));
   const asTwentyFour = (await page.locator(TIME).innerText()).trim();
+  // The meridiem sits outside `[data-clock-time]` as its own sibling, so its absence is read over
+  // the whole clock rather than the hours:minutes node alone.
+  const asTwentyFourClock = (await page.locator(CLOCK).innerText()).trim();
 
   await render(page, placed({ twenty_four_hour: false }));
   const asTwelve = (await page.locator(TIME).innerText()).trim();
+  const asTwelveClock = (await page.locator(CLOCK).innerText()).trim();
 
   // The hour each form names, and whether a meridiem indicator is there to tell the halves of the
   // day apart - not how either is spelled. The separator, the padding and how the indicator reads
@@ -101,9 +115,9 @@ test('TST053: presents the hour in the form its configuration selects', async ({
   // change the requirement permits. The host time makes the two hours distinguishable as substrings:
   // at 15:04:05 nothing but the hour reads 15, and nothing but the hour reads 3.
   expect(asTwentyFour).toContain('15');
-  expect(asTwentyFour).not.toMatch(/[ap]\.?m\.?/i);
+  expect(asTwentyFourClock).not.toMatch(/[ap]\.?m\.?/i);
   expect(asTwelve).toMatch(/(^|\D)0?3(\D|$)/);
-  expect(asTwelve).toMatch(/[ap]\.?m\.?/i);
+  expect(asTwelveClock).toMatch(/[ap]\.?m\.?/i);
   expect(asTwelve).not.toContain('15');
 
   // Both selections are driven, since a module hardcoding either form passes a check reading only
@@ -151,11 +165,13 @@ test('TST063: shows seconds when its configuration asks and omits them when it d
 }) => {
   await holdHostClock(page, HOST_TIME);
 
+  // Seconds are their own sibling beside `[data-clock-time]`, so both readings are taken over the
+  // whole clock rather than the hours:minutes node alone.
   await render(page, placed({ show_seconds: true }));
-  const withSeconds = (await page.locator(TIME).innerText()).trim();
+  const withSeconds = (await page.locator(CLOCK).innerText()).trim();
 
   await render(page, placed({ show_seconds: false }));
-  const without = (await page.locator(`[data-region="${REGION}"] ${TIME}`).innerText()).trim();
+  const without = (await page.locator(`[data-region="${REGION}"] ${CLOCK}`).innerText()).trim();
 
   // The host's own seconds rather than a seconds-shaped field: the held clock stands at :05, and at
   // 15:04:05 nothing but the seconds reads 05. Read as a substring rather than against the whole
@@ -178,13 +194,15 @@ test('TST055: goes on showing an advancing time while the backend is unreachable
   // The outage is up first, or what follows would be read against a display that never staged one.
   await expect(page.locator('[data-backend-unreachable]')).toBeVisible();
 
-  const time = page.locator(`[data-region="${REGION}"] ${TIME}`);
-  await expect(time).toContainText('03:04:05');
+  // The whole clock: the seconds that prove advancing live in their own sibling beside
+  // `[data-clock-time]` rather than inside it.
+  const time = page.locator(`[data-region="${REGION}"] ${CLOCK}`);
+  await expect(time).toContainText(/03:04\D*05/);
 
   // Advancing rather than presence alone: a clock frozen at the moment the backend went away is the
   // failure that would otherwise read as survival.
   await page.clock.runFor(2000);
-  await expect(time).toContainText('03:04:07');
+  await expect(time).toContainText(/03:04\D*07/);
 
   // And nothing of the module's own stands where the time was — the region carries the clock, not a
   // state it raised about an outage that is the page's to report.
