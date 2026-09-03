@@ -80,14 +80,20 @@ stand untouched; only the named exclusion clause is reversed.
 [ADR 0019 rev 7](0019-boundary-at-what-deploys-and-tag-tier.md) is the rev that records this, per
 [`README.md`](README.md)'s supersession mechanism — a named-part reversal, `Status:` left `accepted`.
 
-**`README.md`'s exclusion paragraph and `TST018`'s rationale are named superseded by this record.**
-Both assert the same premise this record reverses, from different angles — a human-facing
-restatement of the boundary and a test-tier rationale built on it — and both are superseded rather
-than merely inconsistent. The edit to `README.md`'s prose lands in the same pull request as this
-ADR. The edits to `SYS007`'s rationale and `TST018`'s YAML do not: they are deferred to child ticket
-#203, which reparents both against the new `SYS` item that ticket writes, so the tree-suspicion
-cascade (`SYS007 → SRS021 → TST018`) is not opened by a doc-only PR that carries no new tree item to
-resolve it against.
+**`README.md`'s exclusion paragraph and
+`TST018`<!-- Pending: emulated Pi Zero-class host, and performance bounds -->'s rationale are named
+superseded by this record.** Both assert the same premise this record reverses, from different
+angles — a human-facing restatement of the boundary and a test-tier rationale built on it — and both
+are superseded rather than merely inconsistent. The edit to `README.md`'s prose lands in the same
+pull request as this ADR. The edits to
+`SYS007`<!-- The declared minimum host, and staying within it -->'s rationale and
+`TST018`<!-- Pending: emulated Pi Zero-class host, and performance bounds -->'s YAML do not: they are
+deferred to child ticket #203, which reparents both against the new `SYS` item that ticket writes, so
+the tree-suspicion cascade
+(`SYS007`<!-- The declared minimum host, and staying within it --> →
+`SRS021`<!-- Frontend runs on a Pi Zero-class browser host --> →
+`TST018`<!-- Pending: emulated Pi Zero-class host, and performance bounds -->) is not opened by a
+doc-only PR that carries no new tree item to resolve it against.
 
 ## Alternatives considered
 
@@ -111,14 +117,16 @@ costs nothing a merge would have bought back.
 
 **Child ticket #203 does the requirements-tree and architecture-model work this record only names.**
 The new `SYS`/`SRS` items ("host boots and self-hosts"), the device-tier `TST`s that replace or
-reparent `TST018`, and the appliance's element in the LikeC4 model are #203's, not this record's. This
-ADR records the decision and the boundary it moves; it authors no `SYS`/`SRS`/`TST` and draws no
-model element.
+reparent
+`TST018`<!-- Pending: emulated Pi Zero-class host, and performance bounds -->, and the appliance's
+element in the LikeC4 model are #203's, not this record's. This ADR records the decision and the
+boundary it moves; it authors no `SYS`/`SRS`/`TST` and draws no model element.
 
-**`SYS007`'s rationale and `TST018`'s rationale read as superseded prose sitting on unedited YAML
-until #203 lands.** A reader of either file meets a rationale this record has already overtaken; the
-files are not wrong to trust once #203 reparents them, but between this PR and that one they describe
-a boundary this record has moved.
+**`SYS007`<!-- The declared minimum host, and staying within it -->'s rationale and
+`TST018`<!-- Pending: emulated Pi Zero-class host, and performance bounds -->'s rationale read as
+superseded prose sitting on unedited YAML until #203 lands.** A reader of either file meets a
+rationale this record has already overtaken; the files are not wrong to trust once #203 reparents
+them, but between this PR and that one they describe a boundary this record has moved.
 
 **No rev of [ADR 0020 rev 2](0020-release-artifact-set-and-operator-tooling.md).** It is cited, not
 changed: the operator model it decides is untouched by the appliance model existing beside it, and
