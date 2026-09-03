@@ -30,7 +30,12 @@ operator buys, and how they are provisioned, is theirs.
 container runtime, its browser, and whatever starts that browser on boot. Provisioning that machine is
 the operator's, and no requirement in the tree reaches it. That bounds what WiseKiosk can be failed
 against rather than what it is willing to ship — the release carries a deployment recipe and an example
-configuration precisely to shorten the path ([`docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md)).
+configuration precisely to shorten the path ([`docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md)). For the
+kiosk display appliance, this exclusion is superseded by
+[ADR 0029 rev 1](docs/decisions/0029-appliance-enters-the-boundary-pinned-commit-seam.md):
+[`tjwise99/meta-wisekiosk`](https://github.com/tjwise99/meta-wisekiosk) builds that appliance from a
+pinned WiseKiosk commit and sits inside WiseKiosk's requirements tree and architecture model, though
+the two repositories stay separate.
 
 **The operator is frequently not the author.** Deployments run at the author's house and at friends'
 and family's houses — separate networks, separate configs, separate owners. This constraint outranks
