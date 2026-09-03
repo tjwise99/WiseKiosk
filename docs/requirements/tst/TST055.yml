@@ -20,9 +20,9 @@ references:
 - keyword: 'test(''TST055: goes on showing an advancing time while the backend is
     unreachable'', async ({'
   path: frontend/src/modules/clock/clock.spec.ts
-  sha: bc5977d6c1698822b133bc6cab102363abc3b9c040e84407cd5f05fd73734c14
+  sha: cf9bd873406b6860baa4f0932aac59990d6bb32b4b692c982bc88fa3f5fc9f25
   type: file
-reviewed: q16X7dF09FtQflvhYtF6FNcGka_HvdkL2yTRS4RVJV0=
+reviewed: Fbk4Ckw0oIecmxJsunNh0KRjJ4VHup5mY3-xyaUF3Xc=
 status: proposed
 text: |
   Render test loading the page with the backend staged unreachable and asserting the clock's region
