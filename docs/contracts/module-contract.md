@@ -375,7 +375,7 @@ their parent then.
 The architecture model is drawn in the same change that accepts the module's `SYS` and `SRS` items —
 they are written active, so the `status` flip is what the model waits on — because every accepted,
 active `SYS` or `SRS` item binds to something the model draws
-([ADR 0019 rev 6](../decisions/0019-boundary-at-what-deploys-and-tag-tier.md)). The `TST` stubs are
+([ADR 0019 rev 7](../decisions/0019-boundary-at-what-deploys-and-tag-tier.md)). The `TST` stubs are
 outside that rule, and activating one later owes the model nothing. While the items sit `proposed`,
 no model work is owed.
 
@@ -383,14 +383,14 @@ Every module gains a component under the frontend for its Svelte component; an u
 module gains one under the backend for its shaping library, one external system for the upstream it
 reads, and the relationship from the upstream client to that system — the edge that carries the
 source-reachability obligation as the module lands
-([ADR 0019 rev 6](../decisions/0019-boundary-at-what-deploys-and-tag-tier.md) § Where a tag sits),
+([ADR 0019 rev 7](../decisions/0019-boundary-at-what-deploys-and-tag-tier.md) § Where a tag sits),
 and without which the drawn system is a box nothing reaches.
 
 **That external system is named for the supplier, and the requirements above it are not.** The two
 say different kinds of thing about the same module and the difference is expected rather than a
 seam left open: the model draws what deploys and what it exchanges with, so the box is the service
 actually reached and drawing it unnamed would leave the level asserting an upstream exists while
-refusing to say which — the aggregate placeholder ADR 0019 rev 6 refuses. The specification says
+refusing to say which — the aggregate placeholder ADR 0019 rev 7 refuses. The specification says
 what a viewer is owed, which the supplier is not ([§ A module is its capability, not its
 supplier](#a-module-is-its-capability-not-its-supplier)). A supplier swap therefore moves the model
 element and the route key and touches no item in the tree, which is the property the split exists

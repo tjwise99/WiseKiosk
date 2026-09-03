@@ -6,10 +6,16 @@ level the same day, #97 C4 phase 2 Container; the Component level 2026-08-05, #9
 Component; the binding rule 2026-08-08, #121 allocation completeness; the Deployment level
 2026-08-09, #123 C4 phase 4 Deployment; the disclaimer and composed-observable rules 2026-08-10,
 #135 bind the mirror and legibility requirements)
-**Rev:** 6
+**Rev:** 7
 
 ## Revisions
 
+- **rev 7** — 2026-09-03 — corrects two sentences left wrong by #220: the registration entry's list
+  no longer includes parameter validation, which is the schema handler's, in the same package
+  ([the module contract](../contracts/module-contract.md) part 5); and a module data route answers
+  `POST`, not `GET` (`boundary/openapi.yaml`, `router.go`'s `moduleRouteMethod`). Text-only — the
+  boundary, the earns-its-place rule and the tag-tier rule are unchanged, so the `Decided` date stands
+  (#226 weather follow-up).
 - **rev 6** — 2026-08-30 — corrects two sentences that still described a module's configuration as a
   fragment file composed into the schema; it is a section of the one authored schema
   ([ADR 0022 rev 2](0022-config-schema-format.md)). Terminology only — the boundary, the
@@ -81,9 +87,9 @@ the system and of ten thousand others.
 
 **A second seam is already written down, and its vocabulary collides with the Component level's.**
 [`../contracts/module-contract.md`](../contracts/module-contract.md) states a module's six parts, the
-direction modules and framework depend in, and that a route's parameter validation, both cache TTLs,
-its rate limit, its outbound timeout and its maximum response size live in one registration entry
-*and nowhere else*. That is structure in prose. The level either adopts it or derives boundaries
+direction modules and framework depend in, and that both cache TTLs, its rate limit, its outbound
+timeout and its maximum response size live in one registration entry *and nowhere else* — a route's
+parameter validation is the schema handler's, in the same package. That is structure in prose. The level either adopts it or derives boundaries
 beside it — and it must do so in a repository where *module* is the product's unit, *component* is
 already a Svelte file, and *container* already needed disambiguating once.
 
@@ -172,7 +178,7 @@ where a fact about where policy is *written* belongs.
 
 **What executes that entry is a component, and it is the one the registry's absence obscured.** The
 same test that excludes the data admits the code reading it: a route handler answers
-`GET /api/<source>`, which is what the source-reachability obligation names and what the frontend's
+`POST /api/<source>`, which is what the source-reachability obligation names and what the frontend's
 payload fetch terminates on. **Each container has
 exactly one such owner** — the route handler in the backend, the page shell in the frontend — and the
 remaining components are asked, never asking. Without one, a level has no subject for a relationship
