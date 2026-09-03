@@ -391,7 +391,8 @@ the validator and the layout read.
 
 **The frame is a grid the region names anchor into, not a set of cells content fills.** Three columns
 and seven rows: the two bars span the width at top and bottom, the corner rows anchor their three
-columns, and the centre column's three bands take equal shares of what the bars leave. Every region
+columns, and the three centre bands span the full width, taking equal shares of what the bars and
+corner rows leave. Every region
 is laid out beside the others rather than over them
 ([ADR 0025 rev 3](decisions/0025-display-region-roster.md)), and a region the configuration names no
 module for is not laid out at all. The bands are bounded rather than content-sized, so content too
