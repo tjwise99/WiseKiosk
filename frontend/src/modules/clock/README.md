@@ -19,10 +19,11 @@ vocabulary) and this spec owns only how the clock module reaches for it.
 
 ## The reading — time and date as peers
 
-The module shows the current time and the current date (SYS009, a viewer can know the current time
-and date without looking elsewhere). The two are **co-equal** — neither outranks the other, because
-the need names them together and the mirror ranks only content against non-content, not one content
-element against another. They are composed as two elements facing each other:
+The module shows the current time and the current date
+(SYS009<!-- A viewer can know the current time and date without looking elsewhere -->). The two are
+**co-equal** — neither outranks the other, because the need names them together and the mirror ranks
+only content against non-content, not one content element against another. They are composed as two
+elements facing each other:
 
 - the **time** on the left;
 - a dim vertical **rule**;
@@ -35,8 +36,10 @@ rather than as a caption trailing the time.
 
 **Seconds and the meridiem** ride with the time as a small stack trailing it — the seconds as a
 **superscript** (riding high), the meridiem as a **subscript** (sitting low) — so the composition
-stays two elements (time, date), never three. Both are config-gated: seconds appear only when the
-configuration selects them (SRS048), and the meridiem only in twelve-hour form (SRS038).
+stays two elements (time, date), never three. Both are config-gated: the seconds appear only when the
+configuration selects them
+(SRS048<!-- The clock shows or omits seconds per its configuration -->), and the meridiem only in
+twelve-hour form (SRS038<!-- The clock's hour form is the one its configuration selects -->).
 
 ## Type and spacing
 
@@ -49,7 +52,7 @@ configuration selects them (SRS048), and the meridiem only in twelve-hour form (
 
 The time and the date are separated by `lg`; within the date, the weekday and the full date by `sm`.
 All figures are `tabular-nums`, so the time re-rendering every second never shifts the layout around
-it (SRS037, the clock keeps up with real time while the page stays loaded).
+it (SRS037<!-- The clock keeps up with real time while the page stays loaded -->).
 
 ## Grouping, and coherence with the rest of the display
 
@@ -65,22 +68,23 @@ weekday and weather's group labels), the same **type scale**, and `tabular-nums`
 
 ## States
 
-The clock reads the time off the host running the browser and fetches nothing (SRS036, the clock
-reads the time off the host running the browser). It therefore has **no loading, unavailable, stale
-or failed state** — one designed look, and that is all. It declares no `reachable` prop: a backend
-outage takes nothing from it (the [module contract](../../../../docs/contracts/module-contract.md),
-*an unavailable module and an unreachable backend are different states*).
+The clock reads the time off the host running the browser and fetches nothing
+(SRS036<!-- The clock reads the time off the host running the browser -->). It therefore has **no
+loading, unavailable, stale or failed state** — one designed look, and that is all. It declares no
+`reachable` prop: a backend outage takes nothing from it (the
+[module contract](../../../../docs/contracts/module-contract.md), *an unavailable module and an
+unreachable backend are different states*).
 
 ## What each choice realises
 
 | Composition choice | Realises |
 |---|---|
-| time and date both present, co-equal | SYS009 — the current time and date |
-| time on the display step; date co-primary at full white | SRS032 / SRS033 — content at full emission, above the size floor |
-| meridiem shown only in twelve-hour form | SRS038 — the hour form the configuration selects |
-| date shown, spelled | SRS039 — the date shown when the configuration selects it |
-| seconds superscript, config-gated | SRS048 — seconds shown or omitted per configuration |
-| one look, no failure states | SRS036 — reads the host clock, fetches nothing |
+| time and date both present, co-equal | SYS009<!-- A viewer can know the current time and date without looking elsewhere --> |
+| time on the display step; date co-primary at full white | SRS032<!-- Readable text is carried at full emission --> / SRS033<!-- Text holds a minimum size against the display, at every resolution --> |
+| meridiem shown only in twelve-hour form | SRS038<!-- The clock's hour form is the one its configuration selects --> |
+| date shown, spelled | SRS039<!-- The clock shows the date when its configuration asks for it --> |
+| seconds a superscript, config-gated | SRS048<!-- The clock shows or omits seconds per its configuration --> |
+| one look, no failure states | SRS036<!-- The clock reads the time off the host running the browser --> |
 
 ## Orientation
 
