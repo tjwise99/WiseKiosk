@@ -6,10 +6,12 @@ level the same day, #97 C4 phase 2 Container; the Component level 2026-08-05, #9
 Component; the binding rule 2026-08-08, #121 allocation completeness; the Deployment level
 2026-08-09, #123 C4 phase 4 Deployment; the disclaimer and composed-observable rules 2026-08-10,
 #135 bind the mirror and legibility requirements)
-**Rev:** 7
+**Rev:** 8
 
 ## Revisions
 
+- **rev 8** — 2026-09-03 — the appliance-exclusion clause is superseded by ADR 0029 rev 1; the
+  boundary-is-what-deploys principle and the tag-tier decision stand (#202).
 - **rev 7** — 2026-09-03 — corrects two sentences left wrong by #220: the registration entry's list
   no longer includes parameter validation, which is the schema handler's, in the same package
   ([the module contract](../contracts/module-contract.md) part 5); and a module data route answers
