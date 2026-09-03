@@ -68,6 +68,7 @@ on.
 | [0026](0026-boundary-error-body-shape.md) | 2 | 2026-08-19 | Boundary error bodies are two compact custom components of required strings, `cause` left open; not RFC 7807 and not a closed enum; a request whose context ended mid-flight answers 503 under the cause `shutting-down`, in the module-carrying body |
 | [0027](0027-frontend-test-runners.md) | 1 | 2026-08-18 | The frontend's two test tiers run on two runners: Vitest for units, Playwright for render, the render tier needing a browser that computes layout and paint |
 | [0028](0028-bundled-config-validator.md) | 2 | 2026-08-18 | The configuration validator is ajv's 2020-12 build, compiled to a standalone function at build time; ajv is a devDependency and never reaches the bundle |
+| [0029](0029-appliance-enters-the-boundary-pinned-commit-seam.md) | 1 | 2026-09-02 | The kiosk appliance enters WiseKiosk's requirements tree and architecture model, not a merged repository; `meta-wisekiosk` builds the application in-layer from a pinned WiseKiosk commit, and the operator/GHCR image path is unchanged |
 
 ## Revisions
 
