@@ -1,8 +1,7 @@
 import { expect, type Page } from '@playwright/test';
 
-import { LIVENESS_TIMEOUT_MS } from '../../src/lib/liveness';
+import { LIVENESS_TIMEOUT_MS, REQUEST_TIMEOUT_MS } from '../../src/lib/liveness';
 import type { ModuleAnswer } from '../../src/lib/payload';
-import { REQUEST_TIMEOUT_MS } from '../../src/lib/reads';
 
 /** A configuration the page is driven with, in the shape `config.json` carries. */
 export interface Fixture {

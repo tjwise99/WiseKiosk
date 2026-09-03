@@ -1,8 +1,8 @@
 <script lang="ts">
   import type { ModuleOptions } from '../config/types';
+  import { REQUEST_TIMEOUT_MS } from './liveness';
   import type { ModuleEntry } from './modules';
   import type { Payload, PayloadFailure } from './payload';
-  import { REQUEST_TIMEOUT_MS } from './reads';
 
   /**
    * One placement of one module: it reads that module's payload, if the module has one, and hands the
