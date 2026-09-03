@@ -15,7 +15,7 @@ The living structural description of WiseKiosk **as built**. It grows with the c
 
 One published container image serving a full-screen, config-driven smart-mirror display: a Go backend
 proxying public APIs and serving the built frontend, and a Svelte SPA rendering modules into regions of
-the page ([ADR 0019 rev 6](decisions/0019-boundary-at-what-deploys-and-tag-tier.md)). The product
+the page ([ADR 0019 rev 7](decisions/0019-boundary-at-what-deploys-and-tag-tier.md)). The product
 definition is the [README](../README.md); the intended architecture until this section describes the
 built one is SYS002<!-- The display's rendering keeps nothing from a viewer -->,
 SYS004<!-- Upstream data reaches the display only through the backend --> and
@@ -37,7 +37,7 @@ overwritten on the next export, and drift fails the staleness gate. The workflow
 for, the boundary between them, which is what deploys — the published image and what it serves — and
 the one upstream outside it. An upstream data source is drawn individually and only once the module
 that reads it has a need in the tree
-([ADR 0019 rev 6](decisions/0019-boundary-at-what-deploys-and-tag-tier.md)), so the level carries one
+([ADR 0019 rev 7](decisions/0019-boundary-at-what-deploys-and-tag-tier.md)), so the level carries one
 box per such module and no aggregate standing in for the rest. The requirements name no supplier:
 which service a box is, is an edit to this repository rather than something the tree obliges.
 
@@ -66,7 +66,7 @@ request names`" .-> OpenMeteo
 **Containers (C4 L2)** — what runs inside the boundary: the backend process, and the frontend bundle
 executing in the browser on the display host. They share one origin, because the backend serves that
 bundle and the configuration file as static content it never interprets
-([ADR 0019 rev 6](decisions/0019-boundary-at-what-deploys-and-tag-tier.md),
+([ADR 0019 rev 7](decisions/0019-boundary-at-what-deploys-and-tag-tier.md),
 [ADR 0007 rev 2](decisions/0007-config-validation-allocation.md)). What parameterises a deployment
 (SYS003<!-- A deployment is parameterised from outside the image -->) reaches that filesystem as two
 separate supplies: the secret for each source, resolved per request
@@ -113,7 +113,7 @@ source implementing it; where that source sits is
 **Every accepted, active `SYS` or `SRS` item binds somewhere in this model, and where one cannot, the
 model grows to draw what it obliges** — there is no exemption record, and which items are unbound is
 `check-arch-trace`'s answer rather than this document's
-([ADR 0019 rev 6](decisions/0019-boundary-at-what-deploys-and-tag-tier.md)). The **kind** of absence is
+([ADR 0019 rev 7](decisions/0019-boundary-at-what-deploys-and-tag-tier.md)). The **kind** of absence is
 what a reader needs, and there is one: an item whose subject the model does not draw at all. The worked
 example is the published image — neither container nor component, so the obligations on it sit at the
 Deployment level, which is the level drawn to carry them.
@@ -207,7 +207,7 @@ SRS008<!-- No secret value in any backend output -->).
 
 **Components (C4 L3)**, diagrammed below; each box's responsibility is the model's, not restated here.
 A module's own half of this container is its shaping library, drawn when that module's need lands
-([ADR 0019 rev 6](decisions/0019-boundary-at-what-deploys-and-tag-tier.md)); that box serves its own
+([ADR 0019 rev 7](decisions/0019-boundary-at-what-deploys-and-tag-tier.md)); that box serves its own
 route and hands the request to the framework pipeline, which calls back into it to parse the answer —
 so neither half serves a payload without the other. The framework/module seam is drawn rather than
 inferred: one shaping box appears per upstream-backed module and every other box on this level is
@@ -321,7 +321,7 @@ restated here.
 
 **Components (C4 L3)**, diagrammed below; each box's responsibility is the model's, not restated here.
 A module's own half of this container is its Svelte component, drawn when that module's need lands
-([ADR 0019 rev 6](decisions/0019-boundary-at-what-deploys-and-tag-tier.md)). The framework/module seam
+([ADR 0019 rev 7](decisions/0019-boundary-at-what-deploys-and-tag-tier.md)). The framework/module seam
 is drawn rather than inferred: one component box appears per module whatever its shape — a local
 module has no other box anywhere in the model — and every other box on this level is shared
 framework. The edge to the Viewer still leaves this container rather than any one of those boxes,
@@ -399,25 +399,25 @@ large for one leaves it rather than growing it
 (SRS031<!-- Content too large for its region overflows -->).
 
 **Layout assembly places what it is handed and fetches nothing.** A configuration entry's module name
-resolves through a registry in `src/lib/` that carries two things per module: the component that draws
-it, and — where the module is fed by the backend — how its payload is read. That second half is what
-makes a module upstream-backed on this side, and it is bound in the registry rather than in the module
-so the component stays fed by its props alone. A name the registry cannot resolve renders as that
+resolves through a registry in `src/lib/` that carries what draws a module and, where it is fed by the
+backend, how its payload is read and how often. That second half is what makes a module
+upstream-backed on this side, and it is bound in the registry rather than in the module so the
+component stays fed by its props alone. A name the registry cannot resolve renders as that
 region's own state rather than as an empty region. The render tier augments the registry with its own
 stubs rather than replacing it, so a module's render test exercises the registration the display ships
 with while the framework's obligations are still read against shapes no product module has to supply.
 
 **Each placement gets a host of its own, and the host is where a module's reading lives.** Layout
 assembly mounts one per configured placement rather than reading anything itself, so a module's
-cadence, its abandoned reads and its stand-down are one component's and are the same for every module
-that has a reading at all. Two figures are constants there. The read interval is the module's poll
-cadence, chosen against the route's success TTL
-([the module contract](contracts/module-contract.md)), so a refresh no faster than the cache can
-answer differently reaches no upstream. The read deadline is ten seconds, far shorter and a different
-question: without it a request that never settles leaves a region in its first-paint state for as
-long as the display runs, and a waiting line that never resolves cannot be told from a module that is
-broken. It sits above the backend's own outbound timeout, so a slow source is reported by the backend
-as that module's failure rather than abandoned here as an answer that never came.
+cadence, its abandoned reads and its stand-down are that placement's own. The read interval is the
+module's own poll cadence, carried on its registry entry rather than one figure the host holds for
+every module, chosen against the route's success TTL
+([the module contract](contracts/module-contract.md)). The read deadline is a framework constant
+instead, and a different question: ten seconds, far shorter than any module's cadence. Without it a
+request that never settles leaves a region in its first-paint state for as long as the display runs,
+and a waiting line that never resolves cannot be told from a module that is broken. It
+sits above the backend's own outbound timeout, so a slow source is reported by the backend as that
+module's failure rather than abandoned here as an answer that never came.
 
 **Shared design tokens are delivered as `:root` custom properties** in `src/app.css`, whose values are
 [the display styling contract](contracts/display-styling-contract.md)'s. The edge band is one of them:
@@ -481,7 +481,7 @@ offers no secret-bearing key (SRS007<!-- Configuration schema offers no secret-b
 ## Deployment
 
 **Deployment** — what the project publishes, the hosts that run it, and the files the operator places
-beside them ([ADR 0019 rev 6](decisions/0019-boundary-at-what-deploys-and-tag-tier.md)). It is not one
+beside them ([ADR 0019 rev 7](decisions/0019-boundary-at-what-deploys-and-tag-tier.md)). It is not one
 of C4's four core levels: C4's fourth is Code, and deployment is a supplementary diagram mapping
 containers onto the infrastructure they run on.
 
@@ -520,7 +520,7 @@ the obligations on it are obligations on the artifact rather than on the process
 container host and the display host are **roles, not machines**, with different floors; in the
 configuration this is built for they are necessarily separate machines. Why each of those is so, and why
 a host carries a tag only where an item obliges the operator, is
-[ADR 0019 rev 6](decisions/0019-boundary-at-what-deploys-and-tag-tier.md)'s.
+[ADR 0019 rev 7](decisions/0019-boundary-at-what-deploys-and-tag-tier.md)'s.
 
 **The image carries a CA trust store.** Every module's upstream is fetched by the backend rather than
 by the browser (SYS004<!-- Upstream data reaches the display only through the backend -->), over

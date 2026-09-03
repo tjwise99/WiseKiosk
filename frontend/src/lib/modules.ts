@@ -8,12 +8,13 @@ import type { ModuleAnswer } from './payload';
 
 /**
  * One registered module: what draws it, and — where it is fed by the backend — how its payload is
- * read. A module with no `read` is a local one: it renders from something already present and the
- * shell fetches nothing for it.
+ * read and how often. A module with no `read` is a local one: it renders from something already
+ * present, needs no cadence, and the shell fetches nothing for it.
  */
 export interface ModuleEntry {
   readonly component: Component;
   readonly read?: (config: ModuleOptions, options?: RequestInit) => Promise<ModuleAnswer>;
+  readonly readIntervalMs?: number;
 }
 
 /**
@@ -40,5 +41,10 @@ export const modules: Record<string, ModuleEntry> = {
       const { lat, lon } = (config as WeatherOptions).location;
       return postApiWeather({ lat, lon }, options);
     },
+    // How often the module is re-read, which is where
+    // SRS046<!-- The weather a viewer sees is no more than fifteen minutes behind its source -->'s and
+    // SRS047<!-- The weather module asks an answering source at most four times an hour for a location -->'s
+    // figures are met.
+    readIntervalMs: 5 * 60 * 1000,
   },
 };

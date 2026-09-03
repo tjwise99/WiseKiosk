@@ -1,6 +1,6 @@
 import { expect, type Page } from '@playwright/test';
 
-import { LIVENESS_TIMEOUT_MS } from '../../src/lib/liveness';
+import { LIVENESS_TIMEOUT_MS, REQUEST_TIMEOUT_MS } from '../../src/lib/liveness';
 import type { ModuleAnswer } from '../../src/lib/payload';
 
 /** A configuration the page is driven with, in the shape `config.json` carries. */
@@ -112,12 +112,12 @@ export async function holdHostClock(page: Page, when: Date): Promise<void> {
  * answered in the page (`serveLiveness`); a module's read is, and the deadline it is held to is the
  * module's own read timeout.
  *
- * The step is taken from the shell's liveness deadline rather than written here as a figure of its
- * own: it is the shortest the page holds, so an ask kept inside it is inside every other, and a
- * change to that timeout carries to this by itself.
+ * The step is taken from the shorter of the deadlines the page holds under the fake clock —
+ * liveness's and a module read's — rather than written here as a figure of its own, so an ask kept
+ * inside either is inside every other, and a change to either timeout carries to this by itself.
  */
 export async function advanceHostClock(page: Page, ms: number): Promise<void> {
-  const step = Math.max(1, Math.floor(LIVENESS_TIMEOUT_MS / 2));
+  const step = Math.max(1, Math.floor(Math.min(LIVENESS_TIMEOUT_MS, REQUEST_TIMEOUT_MS) / 2));
   for (let advanced = 0; advanced < ms; advanced += step) {
     await page.clock.runFor(Math.min(step, ms - advanced));
   }

@@ -2,7 +2,7 @@
 //
 // What the project publishes, the hosts that run it, and the files the operator
 // places beside it. What earns a node here, and which obligations bind at this
-// depth rather than on a container, is ADR 0019 rev 6.
+// depth rather than on a container, is ADR 0019 rev 7.
 //
 // A tag parses only as the first entry of an element or relationship body.
 
