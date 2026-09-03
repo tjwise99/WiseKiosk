@@ -13,7 +13,7 @@ export interface RegionPlacement {
 }
 
 /**
- * The frame's tracks. The three bands of the centre column each take an equal share of what the
+ * The frame's tracks. The three full-width centre bands each take an equal share of what the
  * bars and the corner rows leave, which is what makes `upper_third`, `middle_center` and
  * `lower_third` thirds; every other row is sized to its content, so a row whose regions hold
  * nothing takes no height. The bands are `minmax(0, 1fr)` rather than `1fr`: a bare `fr` track has
@@ -35,9 +35,9 @@ export const REGION_PLACEMENTS: Record<Region, RegionPlacement> = {
   top_center: { column: '2', row: '2', horizontal: 'center', vertical: 'start' },
   top_right: { column: '3', row: '2', horizontal: 'end', vertical: 'start' },
 
-  upper_third: { column: '2', row: '3', horizontal: 'center', vertical: 'start' },
-  middle_center: { column: '2', row: '4', horizontal: 'center', vertical: 'center' },
-  lower_third: { column: '2', row: '5', horizontal: 'center', vertical: 'end' },
+  upper_third: { column: '1 / 4', row: '3', horizontal: 'center', vertical: 'start' },
+  middle_center: { column: '1 / 4', row: '4', horizontal: 'center', vertical: 'center' },
+  lower_third: { column: '1 / 4', row: '5', horizontal: 'center', vertical: 'end' },
 
   bottom_left: { column: '1', row: '6', horizontal: 'start', vertical: 'end' },
   bottom_center: { column: '2', row: '6', horizontal: 'center', vertical: 'end' },
