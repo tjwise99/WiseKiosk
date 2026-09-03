@@ -164,4 +164,17 @@ test.describe('the assembled page', () => {
     }));
     expect(scrollWidth).toBeLessThanOrEqual(clientWidth);
   });
+
+  test('spans the full frame width for each of the three centre bands', async ({ page }) => {
+    const laidOut = await regionBoxes(page);
+    const frame = await page.locator('[data-frame]').boundingBox();
+    expect(frame).not.toBeNull();
+
+    for (const region of ['upper_third', 'middle_center', 'lower_third']) {
+      const box = laidOut.get(region);
+      expect(box, region).toBeDefined();
+      expect(box!.left, `${region} left edge`).toBeCloseTo(frame!.x, 0);
+      expect(box!.right, `${region} right edge`).toBeCloseTo(frame!.x + frame!.width, 0);
+    }
+  });
 });
