@@ -1,9 +1,9 @@
 # Weather — UI design spec
 
 How the weather module composes its content on the display. This is the visual half of the module's
-specification: [`Weather.svelte`](./Weather.svelte) is implemented against it, and a review reads the
-component against it. It states composition — where each element sits, at what step, and how the
-groups are set apart — and cites the obligation each choice realises rather than restating it.
+specification — the composition the component [`Weather.svelte`](./Weather.svelte) is built to and
+reviewed against. It states composition — where each element sits, at what step, and how the groups
+are set apart — and cites the obligation each choice realises rather than restating it.
 
 ![Reference render of the weather module: the present conditions, an hourly temperature curve over an aligned strip, and a daily strip, drawn full-white on the black display.](./weather-composition.png)
 
@@ -65,13 +65,13 @@ Every element takes a named step from the
 [styling contract](../../../../docs/contracts/display-styling-contract.md)'s type scale; none is a
 one-off size.
 
-| Element | Step | Weight |
-|---|---|---|
-| present temperature, present glyph | `headline` | 700 |
-| condition word (present) | `body` | 600 |
-| present caption (feels/humidity/wind) | `caption` | 600 |
-| group labels — *Next hours*, *Next days* | `section-header` (uppercase, tracked) | 700 |
-| hourly temperature labels, strip and day cells | `caption` | 600 |
+| Element | Step |
+|---|---|
+| present temperature, present glyph | `headline` |
+| condition word (present) | `body` |
+| present caption (feels/humidity/wind) | `caption` |
+| group labels — *Next hours*, *Next days* | `section-header` (uppercase, tracked) |
+| hourly temperature labels, strip and day cells | `caption` |
 
 Groups are separated with `lg`; a header and its divider from what follows with `md`; rows and cells
 within a group with `sm`; an icon from its value with `xs`. All figures are `tabular-nums`, so a
@@ -81,7 +81,7 @@ value changing under the display never shifts the layout and columns line up dow
 
 Each group label sits above a **dim divider** — the styling contract's grouping vocabulary, earned
 here because the region stacks three independently-labelled groups (the contract's decision rule).
-The divider is drawn in `--emission-stroke` (`#444`), below the emission ceiling, and is
+The divider is drawn in `--emission-stroke`, below the emission ceiling, and is
 **enhancement only**: the spacing between groups carries the separation on its own, so a bright
 reflection erasing the stroke does not collapse the reading.
 
@@ -96,8 +96,8 @@ The module is upstream-backed, so it draws each state its payload can be in, in 
 language, never a blank region (the styling contract; the
 [module contract](../../../../docs/contracts/module-contract.md)):
 
-- **Loading** — a plain line (*Reading the weather…*) at the `body` step. A module asked for but not
-  yet answered is neither a reading nor a failure.
+- **Loading** — a plain line (*Reading the weather…*) at the `body` step. A module asked for but
+  unanswered is neither a reading nor a failure.
 - **Unavailable** — the failure's own plain-language message at the `body` step, in the module's own
   place, affecting no other module
   (SRS001<!-- A failed module shows why, and only that module -->).
@@ -111,7 +111,7 @@ language, never a blank region (the styling contract; the
 |---|---|
 | present / hours / days each a different treatment | SRS045<!-- The weather module shows the present weather and the outlook apart from each other --> |
 | the glyph on the present reading and on each hour | SRS050<!-- The weather module draws day and night apart --> |
-| present block carries condition, temp, feels, humidity, wind | SRS044<!-- The weather module puts the present conditions and the near-term outlook across the boundary --> |
+| present block draws the full present set, not half of it | SRS044<!-- The weather module puts the present conditions and the near-term outlook across the boundary --> |
 | full-white curve, glyphs and figures | SRS032<!-- Readable text is carried at full emission --> / SRS030<!-- Only content is rendered above the emission ceiling --> |
 | every step at or above the scale's floor | SRS033<!-- Text holds a minimum size against the display, at every resolution --> |
 

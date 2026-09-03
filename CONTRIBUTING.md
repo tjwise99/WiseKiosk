@@ -13,9 +13,8 @@ rejected alternative gets an [ADR](docs/decisions/README.md). Anything observabl
 state — an interface name, a payload shape, a config key, a failure behaviour, a threshold — becomes a
 requirement before it is built. A new module follows
 [`docs/contracts/module-contract.md`](docs/contracts/module-contract.md) and the test obligations in
-[`docs/TESTING.md`](docs/TESTING.md). Its visible surface is written down before its component too: a
-UI design spec, colocated as the module's own `README.md` and carrying a reference render, states how
-the module's content composes — the module contract's build sequence names it as a required step.
+[`docs/TESTING.md`](docs/TESTING.md). Its visible surface is written down before its component too,
+per the module contract's UI design spec.
 
 **Do not build generality against a case that does not exist** — no plugin system, no abstraction
 without a second consumer, no transport chosen before the access pattern, no comment-enforced

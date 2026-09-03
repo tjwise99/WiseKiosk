@@ -1,9 +1,9 @@
 # Clock — UI design spec
 
 How the clock module composes its content on the display. This is the visual half of the module's
-specification: [`Clock.svelte`](./Clock.svelte) is implemented against it, and a review reads the
-component against it. It states composition — where each element sits, at what step, and how the two
-are related — and cites the obligation each choice realises rather than restating it.
+specification — the composition the component [`Clock.svelte`](./Clock.svelte) is built to and
+reviewed against. It states composition — where each element sits, at what step, and how the two are
+related — and cites the obligation each choice realises rather than restating it.
 
 ![Reference render of the clock module: the time and a fully spelled date as two co-equal elements across a dim rule, on the black display.](./clock-composition.png)
 
@@ -43,12 +43,12 @@ twelve-hour form (SRS038<!-- The clock's hour form is the one its configuration 
 
 ## Type and spacing
 
-| Element | Step | Weight |
-|---|---|---|
-| time | `display` — the hero step the scale reserves for the clock face | 700 |
-| seconds superscript, meridiem subscript | `caption` | 600–700 |
-| date weekday | above `section-header`, uppercase and tracked | 800 |
-| date day/month/year | `body` | 600 |
+| Element | Step |
+|---|---|
+| time | `display` — the hero step the scale reserves for the clock face |
+| seconds superscript, meridiem subscript | `caption` |
+| date weekday | the `section-header` idiom — uppercase, tracked |
+| date day/month/year | `body` |
 
 The time and the date are separated by `lg`; within the date, the weekday and the full date by `sm`.
 All figures are `tabular-nums`, so the time re-rendering every second never shifts the layout around
@@ -57,7 +57,7 @@ it (SRS037<!-- The clock keeps up with real time while the page stays loaded -->
 ## Grouping, and coherence with the rest of the display
 
 The vertical rule between the two elements is the styling contract's dim stroke
-(`--emission-stroke`, `#444`, below the emission ceiling) and is **enhancement only**: the whitespace
+(`--emission-stroke`, below the emission ceiling) and is **enhancement only**: the whitespace
 gap carries the two-element separation on its own, so a bright reflection erasing the stroke does not
 collapse the reading into one run of text.
 
@@ -82,14 +82,12 @@ unreachable backend are different states*).
 | time and date both present, co-equal | SYS009<!-- A viewer can know the current time and date without looking elsewhere --> |
 | time on the display step; date co-primary at full white | SRS032<!-- Readable text is carried at full emission --> / SRS033<!-- Text holds a minimum size against the display, at every resolution --> |
 | meridiem shown only in twelve-hour form | SRS038<!-- The clock's hour form is the one its configuration selects --> |
-| date shown, spelled | SRS039<!-- The clock shows the date when its configuration asks for it --> |
-| seconds a superscript, config-gated | SRS048<!-- The clock shows or omits seconds per its configuration --> |
+| date shown per configuration | SRS039<!-- The clock shows the date when its configuration asks for it --> |
+| seconds shown per configuration | SRS048<!-- The clock shows or omits seconds per its configuration --> |
 | one look, no failure states | SRS036<!-- The clock reads the time off the host running the browser --> |
 
 ## Orientation
 
-This composition is **horizontal only** — time left, date right. A vertical (stacked) arrangement for
-a narrow region is deliberately **not built**: no configured placement requires it, and the styling
-contract's *form follows the display target* is served by the one orientation the placements need. If
-a narrow-region placement is introduced, a stacked orientation gated behind configuration is the
-natural extension.
+This composition is **horizontal only** — time left, date right. It is not built for a narrow,
+vertical region; the styling contract's *form follows the display target* is served by the one
+orientation the display's regions call for.
