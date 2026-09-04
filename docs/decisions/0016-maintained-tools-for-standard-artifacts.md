@@ -3,10 +3,13 @@
 **Status:** accepted
 **Decided:** 2026-08-03 (#103 authored-vs-adopted check trade, measured against the cases recorded in
 [`../../scripts/README.md`](../../scripts/README.md))
-**Rev:** 5
+**Rev:** 6
 
 ## Revisions
 
+- **rev 6** — 2026-09-03 — Dependabot is replaced by self-hosted Renovate (run from
+  tjwise99/renovate-runner) as the dependency updater; the version-comment ground names it; what was
+  chosen is unchanged, so the Decided date does not move (#223 renovate cutover).
 - **rev 5** — 2026-08-16 — extends the empty-population ruling to every check: an empty population
   reports success, authored checks included, collapsing this wave's three readings of the ruling to
   one. The boundary that stays: a failed or unreadable population enumeration is not an empty
@@ -157,8 +160,9 @@ later.
 
 - **The `# vN` version comment beside a pinned action.** The gate decides presence, not truth: a
   comment left stale against a hand-edited SHA passes clean, so it never secured the property it
-  appears to. Dependabot writes and updates the comment on the bumps it performs, which is nearly all
-  of them, and that continues — as a tool's behaviour, not as an obligation on anyone.
+  appears to. Renovate's `helpers:pinGitHubActionDigests` preset writes and updates the comment on the
+  bumps it performs, which is nearly all of them, and that continues — as a tool's behaviour, not as
+  an obligation on anyone.
   **Cost:** a hand-added pin may carry no version comment, and nothing will say so.
 - **The host allowlist.** It carries one entry, `github.com`, so its live effect is to refuse
   citations of the tools this repository runs. Documentation may link outward.
