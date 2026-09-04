@@ -21,8 +21,9 @@ as the sole argument and both paths return before the first API call.
 | Must fail | `task_0-name` and `task_087-name` — a zero, and a leading zero |
 | Must fail | `task_87-Name` — uppercase in the name |
 | Must fail | `task_87-name_`, `task_87--name`, `task_87-`, `task_-name` — malformed separators and empty parts |
+| Must fail | `dependabot/npm_and_yarn/foo-1.2.3` — the old exemption is gone; Dependabot no longer names branches here |
 | Must pass | `main` — the mainline is not a work branch |
-| Must pass | `dependabot/npm_and_yarn/foo-1.2.3` — Dependabot names its own branches |
+| Must pass | `renovate/npm_and_yarn/foo-1.2.3` — Renovate names its own branches |
 | Must fail | a number naming a pull request rather than an issue |
 | Must fail | a number naming nothing in the repository |
 | Must fail | a number naming a closed issue |

@@ -5,7 +5,7 @@ Runs as the `branch-shape` local pre-push hook in `.pre-commit-config.yaml` — 
 feedback; the binding gate is CI's `process` check (`just check-branch`), which also resolves the
 issue via the API. The pattern is defined once in scripts/branch-shape.regex, shared with
 check-branch.py and read the same way by both: each non-blank line is a pattern, and a name matches
-if any line does. `main` and `dependabot/*` are exempt, and a detached HEAD names no branch to judge.
+if any line does. `main` and `renovate/*` are exempt, and a detached HEAD names no branch to judge.
 
 What this has been run against, in both directions: cases/branch-shape-py.md
 """
@@ -28,7 +28,7 @@ def main():
     if result.returncode != 0:
         return 0
     branch = result.stdout.strip()
-    if branch == "main" or branch.startswith("dependabot/"):
+    if branch == "main" or branch.startswith("renovate/"):
         return 0
     lines = (ROOT / "scripts" / "branch-shape.regex").read_text().splitlines()
     patterns = [line for line in lines if line.strip()]

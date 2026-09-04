@@ -3,7 +3,7 @@
 defined once in scripts/branch-shape.regex, shared with the branch-shape pre-push hook;
 the number resolves via the GitHub API to an open issue carrying a milestone
 and exactly one type label, which is the branch type (ADR 0013 rev 4). main and
-dependabot/* are exempt. When an open PR exists, its Development field
+renovate/* are exempt. When an open PR exists, its Development field
 (closingIssuesReferences) must link the branch's issue — any base; body
 keywords only write the record against the default branch, so other bases
 need the manual link. The PR's base and the issue's parent must agree: a
@@ -82,8 +82,8 @@ def main():
     if branch == "main":
         print("Branch 'main' is exempt: the mainline is not a work branch.")
         return
-    if branch.startswith("dependabot/"):
-        print(f"Branch '{branch}' is exempt: Dependabot names its own branches.")
+    if branch.startswith("renovate/"):
+        print(f"Branch '{branch}' is exempt: Renovate names its own branches.")
         return
 
     patterns = read_patterns()
