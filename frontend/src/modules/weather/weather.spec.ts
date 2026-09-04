@@ -36,17 +36,33 @@ const READ_INTERVAL_MS = 5 * 60 * 1000;
 /** The last stretch of that interval, held back so the read can be shown to fall inside it. */
 const ALMOST = 10_000;
 
+/** The same, at the scale the series-switch cases advance the clock by. */
+const SWITCH_ALMOST = 500;
+
 /** A present-weather code outside the set WMO 4677 defines, so nothing can be said of the sky. */
 const UNREADABLE = 42;
 
 /** An instant to hold the host clock at, wherever a case drives time rather than waiting it out. */
 const HOST_TIME = new Date('2026-08-31T14:00:00Z');
 
+/** The ISO-8601 timestamp for the `index`th hour after 2026-08-31T14:00, at the fixture's own
+    -04:00 offset. Built from a plain `Date`'s own day/month rollover rather than written out by
+    hand, so a twelve-hour run crossing midnight is not twelve hand-typed strings to keep straight. */
+function hourTime(index: number): string {
+  const at = new Date(2026, 7, 31, 14 + index);
+  const y = at.getFullYear();
+  const m = String(at.getMonth() + 1).padStart(2, '0');
+  const d = String(at.getDate()).padStart(2, '0');
+  const h = String(at.getHours()).padStart(2, '0');
+  return `${y}-${m}-${d}T${h}:00:00-04:00`;
+}
+
 /**
  * An answer for one point. Every figure is a whole number, the module rounding what it draws, so a
  * case reads the value it wrote rather than the value it wrote as the module would have rounded it.
  * The three parts carry three different sky codes, so what each part drew is told apart by its own
- * content and not only by its place.
+ * content and not only by its place. The hourly range runs to twelve so a case can read the whole of
+ * what the module draws rather than a shorter stand-in for it.
  */
 function forecast(temp: number): WeatherPayload {
   return {
@@ -58,11 +74,11 @@ function forecast(temp: number): WeatherPayload {
       weatherCode: 0,
       isDay: true,
     },
-    hourly: Array.from({ length: 5 }, (_, index) => ({
-      time: `2026-08-31T${String(14 + index).padStart(2, '0')}:00:00-04:00`,
+    hourly: Array.from({ length: 12 }, (_, index) => ({
+      time: hourTime(index),
       temp: temp + index,
       weatherCode: 61,
-      precipProbability: 10 * index,
+      precipProbability: 5 * index,
       isDay: true,
     })),
     daily: Array.from({ length: 5 }, (_, index) => ({
@@ -85,15 +101,24 @@ function placed(location: { lat: number; lon: number }, region = 'middle_center'
   return { modules: [{ region, module: 'weather', options: { location } }] };
 }
 
+/** The same, with the switch interval set explicitly rather than left to the module's own default. */
+function placedWithSwitch(
+  location: { lat: number; lon: number },
+  seconds: number,
+  region = 'middle_center',
+): Fixture {
+  return { modules: [{ region, module: 'weather', options: { location, series_switch_seconds: seconds } }] };
+}
+
 const WEATHER = '[data-weather]';
 const TEMP = '[data-weather-temp]';
 const PRESENT = '[data-weather-present]';
-const SKY = '[data-weather-sky]';
 const HOURLY = '[data-weather-hourly]';
 const DAILY = '[data-weather-daily]';
 const LOADING = '[data-module-loading]';
 const UNAVAILABLE = '[data-module-unavailable]';
 const GLYPH = '[data-weather-glyph]';
+const SERIES = '[data-weather-series]';
 
 /**
  * The marks the cases below read for, written out here rather than imported from the component: a
@@ -201,17 +226,14 @@ test('TST060: draws what it is doing now, the hours to come and the days to come
   await expect(hourly).toBeVisible();
   await expect(daily).toBeVisible();
 
-  // Each carries its own content rather than the same content three times. The present block is
-  // the one place the sky is put into words (./README.md § Present); the days carry the daily
-  // high/low, an answer-given figure the hours never carry; the hours carry the fifth hour's own
-  // precipitation chance, `40%` (`forecast`'s `10 * index`), which the daily strip's own smaller
-  // range (`forecast`'s `5 * index`, up to `20%`) never reaches.
-  await expect(present).toContainText('Clear');
-  await expect(hourly).toContainText(`${10 * 4}%`);
-  // The high/low pinned whole, not a substring of the high alone: a substring match would still
-  // pass a daily strip that regressed to carrying a unit and a space between the two figures.
+  // Each carries its own content rather than the same content three times. The present block is the
+  // one place its stat cards are drawn; the hours are the one place a relative `+1` hour label
+  // appears; the days carry the daily high/low, an answer-given figure neither of the other two
+  // carries.
+  await expect(present).toContainText('Feels like');
+  await expect(hourly).toContainText('+1');
   await expect(daily).toContainText(`${WARM + 24}°/${WARM - 24}°`);
-  await expect(page.locator('[data-weather-hour]')).toHaveCount(5);
+  await expect(page.locator('[data-weather-hour]')).toHaveCount(12);
   await expect(page.locator('[data-weather-day]')).toHaveCount(5);
 
   // And each is drawn apart from the others rather than the three running together into one block —
@@ -230,12 +252,120 @@ test('TST060: draws what it is doing now, the hours to come and the days to come
   );
 
   // The curve is dot-vertexed, one dot per hour shown.
-  await expect(page.locator('[data-weather-vertex]')).toHaveCount(5);
+  await expect(page.locator('[data-weather-vertex]')).toHaveCount(12);
 
-  // The curve reads against a y-axis scale rather than floating a label at each vertex — always
-  // five nice-rounded ticks, evenly spaced bottom to top, regardless of how wide or narrow the
-  // hours' own range is.
+  // The hours are labelled relative to now rather than by clock time, one label per vertex, in order.
+  await expect(page.locator('[data-weather-xaxis-tick]')).toHaveText(
+    Array.from({ length: 12 }, (_, index) => `+${index + 1}`),
+  );
+
+  // The curve reads against a y-axis scale rather than floating a label at each vertex — a fixed
+  // five ticks over four equal bands regardless of the active series or its own range, so the axis
+  // reads the same shape every render rather than the tick count shifting with the data.
   await expect(page.locator('[data-weather-yaxis-tick]')).toHaveCount(5);
+});
+
+test('TST067: shows the temperature expected for each hour and each day of the outlook', async ({
+  page,
+}) => {
+  await serveModuleData(page, () => ({ status: 200, data: forecast(WARM) }));
+  await render(page, placed(HERE));
+
+  // Days: each card carries its own high/low, asserted for all five so a card silently dropping its
+  // own reading is caught rather than just the one a single sample would happen to catch.
+  const days = page.locator('[data-weather-day]');
+  await expect(days).toHaveCount(5);
+  for (let index = 0; index < 5; index++) {
+    await expect(days.nth(index).locator('.daily-reading').first()).toHaveText(
+      `${WARM + 20 + index}°/${WARM - 20 - index}°`,
+    );
+  }
+
+  // Hours: the curve opens on the temperature series (`active` starts there), so its y-axis brackets
+  // the fixture's own hourly temperature range end to end — the bottom and top ticks are read off
+  // the data rather than fixed, so a component drawing a constant or a dropped series would bracket a
+  // span other than the one the fixture actually carries.
+  await expect(page.locator(SERIES)).toHaveText('Temperature');
+  const ticks = await page.locator('[data-weather-yaxis-tick]').allTextContents();
+  expect(ticks[0], 'the bottom tick reads the lowest hourly temperature').toBe(`${WARM}°`);
+  expect(ticks[ticks.length - 1], 'the top tick reads the highest hourly temperature').toBe(
+    `${WARM + 11}°`,
+  );
+});
+
+test('TST068: shows the chance of precipitation expected for each hour and each day of the outlook', async ({
+  page,
+}) => {
+  await holdHostClock(page, HOST_TIME);
+  await serveModuleData(page, () => ({ status: 200, data: forecast(WARM) }));
+  await render(page, placedWithSwitch(HERE, 2));
+
+  // Days: each card carries its own precipitation figure alongside its high/low, both drawn together
+  // rather than toggled — asserted for all five.
+  const days = page.locator('[data-weather-day]');
+  for (let index = 0; index < 5; index++) {
+    await expect(days.nth(index).locator('.daily-reading').nth(1)).toHaveText(`${5 * index}%`);
+  }
+
+  // Hours: switch the curve to its precipitation half and read the same bracket proof TST067 reads
+  // for temperature — the fixture's own hourly range, 0% to 55%.
+  await advanceHostClock(page, 2 * 1000);
+  await expect(page.locator(SERIES)).toHaveText('Precipitation');
+  const ticks = await page.locator('[data-weather-yaxis-tick]').allTextContents();
+  expect(ticks[0], 'the bottom tick reads the lowest hourly precipitation chance').toBe('0%');
+  expect(ticks[ticks.length - 1], 'the top tick reads the highest hourly precipitation chance').toBe(
+    '55%',
+  );
+});
+
+test('TST069: draws one forecast measure at a time for the hours next to come, switching on its configured interval', async ({
+  page,
+}) => {
+  await holdHostClock(page, HOST_TIME);
+  await serveModuleData(page, () => ({ status: 200, data: forecast(WARM) }));
+  await render(page, placedWithSwitch(HERE, 4));
+
+  const series = page.locator(SERIES);
+  const curveArea = () => boxOf(page, '.curve-area');
+
+  // Exactly one series is ever drawn — the toggle is one element carrying which, not two drawn
+  // together.
+  await expect(series).toHaveCount(1);
+  await expect(series).toHaveText('Temperature');
+  const before = await curveArea();
+
+  // Not yet — a step short of the configured interval finds the same series still current.
+  await advanceHostClock(page, 4 * 1000 - SWITCH_ALMOST);
+  await expect(series).toHaveText('Temperature');
+
+  // The interval elapses, and the series flips — without moving the plot it is drawn in.
+  await advanceHostClock(page, SWITCH_ALMOST);
+  await expect(series).toHaveText('Precipitation');
+  expect(await curveArea(), 'the plot does not move when the series switches').toEqual(before);
+
+  // And back, at the same interval — the flip is a repeating alternation, not a one-time change.
+  await advanceHostClock(page, 4 * 1000);
+  await expect(series).toHaveText('Temperature');
+});
+
+test('TST069: the series-switch interval is the configuration’s and not one fixed in the module', async ({
+  page,
+}) => {
+  await holdHostClock(page, HOST_TIME);
+  await serveModuleData(page, () => ({ status: 200, data: forecast(WARM) }));
+  await render(page, placedWithSwitch(HERE, 20));
+
+  const series = page.locator(SERIES);
+  await expect(series).toHaveText('Temperature');
+
+  // A shorter interval than the one configured here does not flip a module configured for twenty
+  // seconds, proving the interval read is the configuration's rather than a value fixed in the
+  // component.
+  await advanceHostClock(page, 4 * 1000);
+  await expect(series).toHaveText('Temperature');
+
+  await advanceHostClock(page, 20 * 1000 - 4 * 1000);
+  await expect(series).toHaveText('Precipitation');
 });
 
 test('TST061: follows its source to a new reading inside the freshness bound, without reloading', async ({
@@ -415,9 +545,9 @@ function withDaylight(
   };
 }
 
-/** Five hours of one code and one side of the day, for a case reading the present reading alone. */
+/** Twelve hours of one code and one side of the day, for a case reading the present reading alone. */
 function everyHour(code: number, isDay: boolean): { code: number; isDay: boolean }[] {
-  return Array.from({ length: 5 }, () => ({ code, isDay }));
+  return Array.from({ length: 12 }, () => ({ code, isDay }));
 }
 
 test('TST065: draws the present reading on the side of the day the payload gives it', async ({ page }) => {
@@ -452,6 +582,13 @@ test('TST065: draws each hour on its own side of the day, not the present readin
     data: withDaylight(WARM, { code: 0, isDay: true }, [
       { code: 61, isDay: true },
       { code: 61, isDay: true },
+      { code: 61, isDay: true },
+      { code: 61, isDay: true },
+      { code: 61, isDay: true },
+      { code: 61, isDay: false },
+      { code: 61, isDay: false },
+      { code: 61, isDay: false },
+      { code: 61, isDay: false },
       { code: 61, isDay: false },
       { code: 61, isDay: false },
       { code: 61, isDay: false },
@@ -463,6 +600,13 @@ test('TST065: draws each hour on its own side of the day, not the present readin
   await expect(page.locator(`${HOURLY} ${GLYPH}`)).toHaveText([
     GLYPHS.rainDay,
     GLYPHS.rainDay,
+    GLYPHS.rainDay,
+    GLYPHS.rainDay,
+    GLYPHS.rainDay,
+    GLYPHS.rainNight,
+    GLYPHS.rainNight,
+    GLYPHS.rainNight,
+    GLYPHS.rainNight,
     GLYPHS.rainNight,
     GLYPHS.rainNight,
     GLYPHS.rainNight,
@@ -496,34 +640,6 @@ test('draws the not-available mark for a code it has no mark for', async ({ page
 
     await expect(page.locator(`${PRESENT} ${GLYPH}`)).toHaveText(GLYPHS.unread);
     await expect(page.locator(`${HOURLY} ${GLYPH}`).first()).toHaveText(GLYPHS.unread);
-  }
-});
-
-test('puts no words to a sky whose code it does not recognise', async ({ page }) => {
-  // A code outside WMO 4677's set, which a source can send at any time. Read through bands with no
-  // floor under the last of them it comes out as a thunderstorm, so the display would report a sky
-  // nobody read.
-  const unread = forecast(WARM);
-  const answer = {
-    ...unread,
-    current: { ...unread.current, weatherCode: UNREADABLE },
-    hourly: unread.hourly.map((hour) => ({ ...hour, weatherCode: UNREADABLE })),
-    daily: unread.daily.map((day) => ({ ...day, weatherCode: UNREADABLE })),
-  };
-  await serveModuleData(page, () => ({ status: 200, data: answer }));
-  await render(page, placed(HERE));
-
-  // The reading is drawn, this being a payload that arrived rather than a failure, and every entry
-  // it carried is on screen — without which the absences below would read the same as a module that
-  // drew nothing at all.
-  await expect(page.locator(TEMP)).toContainText(String(WARM));
-  await expect(page.locator('[data-weather-hour]')).toHaveCount(5);
-  await expect(page.locator('[data-weather-day]')).toHaveCount(5);
-
-  // And no part of it names the sky.
-  await expect(page.locator(SKY)).toHaveCount(0);
-  for (const part of [PRESENT, HOURLY, DAILY]) {
-    await expect(page.locator(part)).not.toContainText('Thunderstorm');
   }
 });
 
