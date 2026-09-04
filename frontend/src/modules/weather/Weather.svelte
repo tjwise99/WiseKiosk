@@ -133,10 +133,10 @@
       data calls for. */
   const NICE_MULTIPLES = [1, 2, 2.5, 5, 10];
 
-  /** The y-axis always carries exactly this many ticks — bottom, middle, top — rather than a count
-      that varies with the data's own range, which is what keeps the plot's required height (and so
-      the tick labels' own spacing) predictable regardless of what the hours show. */
-  const AXIS_TICK_COUNT = 3;
+  /** The y-axis always carries exactly this many ticks, evenly spaced from bottom to top, rather
+      than a count that varies with the data's own range, which is what keeps the plot's required
+      height (and so the tick labels' own spacing) predictable regardless of what the hours show. */
+  const AXIS_TICK_COUNT = 5;
   const AXIS_INTERVALS = AXIS_TICK_COUNT - 1;
 
   /** A nice-rounded tick value and its place on the y-axis, ascending from the scale's bottom tick
@@ -478,11 +478,11 @@
   }
 
   /* As tall as `.curve-area`, so a tick's `top` percentage (`tickLabelStyle`) lines up with the
-     gridline it labels — three tick labels' own line height plus the two gaps between them, which
-     is what keeps `AXIS_TICK_COUNT`'s three labels legible rather than overlapping. */
+     gridline it labels — twice the height that gave `AXIS_TICK_COUNT`'s labels room when there were
+     three of them, which is what keeps five legible rather than overlapping (owner sizing pass). */
   .yaxis {
     position: relative;
-    height: calc(var(--type-caption) * 3 + var(--space-xs) * 2);
+    height: calc((var(--type-caption) * 3 + var(--space-xs) * 2) * 2);
     padding-right: var(--space-xs);
   }
 
@@ -504,7 +504,7 @@
   .curve-area {
     position: relative;
     width: 100%;
-    height: calc(var(--type-caption) * 3 + var(--space-xs) * 2);
+    height: calc((var(--type-caption) * 3 + var(--space-xs) * 2) * 2);
     border-left: var(--divider-stroke-width) solid var(--emission-stroke);
     border-bottom: var(--divider-stroke-width) solid var(--emission-stroke);
   }

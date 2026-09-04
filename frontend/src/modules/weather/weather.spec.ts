@@ -233,9 +233,9 @@ test('TST060: draws what it is doing now, the hours to come and the days to come
   await expect(page.locator('[data-weather-vertex]')).toHaveCount(5);
 
   // The curve reads against a y-axis scale rather than floating a label at each vertex — always
-  // three nice-rounded ticks (bottom, middle, top), regardless of how wide or narrow the hours'
-  // own range is.
-  await expect(page.locator('[data-weather-yaxis-tick]')).toHaveCount(3);
+  // five nice-rounded ticks, evenly spaced bottom to top, regardless of how wide or narrow the
+  // hours' own range is.
+  await expect(page.locator('[data-weather-yaxis-tick]')).toHaveCount(5);
 });
 
 test('TST061: follows its source to a new reading inside the freshness bound, without reloading', async ({
