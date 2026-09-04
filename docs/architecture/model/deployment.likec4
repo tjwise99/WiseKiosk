@@ -24,7 +24,7 @@ deployment {
     description '''
       A host running a container runtime, of an architecture the published image
       is built for. Which architectures those are is the image's, not this host's:
-      the backend is never run outside the container.
+      on this host the backend runs only as an instance of that image.
     '''
 
     configurationFile = artifact 'Configuration file' {
@@ -48,6 +48,47 @@ deployment {
       description '''
         A running instance of the published image, with the configuration and the
         secret files mounted in. The backend executes here.
+      '''
+
+      instanceOf wisekiosk.backend
+    }
+  }
+
+  nativeHost = host 'Native host' {
+    description '''
+      A host running the backend as an ordinary process of its own operating
+      system, with no container runtime in the deployment at all. The backend is
+      built from source for this host's architecture rather than taken from the
+      published image, so nothing that artifact declares reaches here and the
+      deployment answers for the user the backend runs as. A host that also meets
+      the display host's floor may carry that role beside this one, which is what
+      the appliance layer at
+      [`tjwise99/meta-wisekiosk`](https://github.com/tjwise99/meta-wisekiosk)
+      builds.
+    '''
+
+    nativeConfigurationFile = artifact 'Configuration file' {
+      description '''
+        The operator's configuration, placed on the host in the tree the backend
+        serves. Carries every deployment-specific value, as the container host's
+        copy does.
+      '''
+    }
+
+    nativeSecretFiles = artifact 'Secret files' {
+      description '''
+        One file per secret, placed on the host. The backend is given each
+        secret's name; the value never travels in the configuration.
+      '''
+    }
+
+    nativeProcess = process 'Backend process' {
+      #SRS019
+      description '''
+        The backend executing directly on the host, reading the configuration and
+        the secret files placed beside it. It is an instance of the same Backend
+        execution context the running container holds; what differs is how it got
+        onto the host, not what it is.
       '''
 
       instanceOf wisekiosk.backend
@@ -79,6 +120,14 @@ deployment {
   }
 
   secretFiles -> runningContainer 'Mounted in' {
+    #SYS003
+  }
+
+  nativeConfigurationFile -> nativeProcess 'Read from the host' {
+    #SYS003
+  }
+
+  nativeSecretFiles -> nativeProcess 'Read from the host' {
     #SYS003
   }
 }

@@ -15,10 +15,23 @@ graph TB
       ContainerHost.RunningContainer.Backend@{ shape: rectangle, label: "Backend" }
     end
   end
+  subgraph NativeHost["`Native host`"]
+    NativeHost.NativeConfigurationFile@{ shape: rectangle, label: "Configuration file" }
+    NativeHost.NativeSecretFiles@{ shape: rectangle, label: "Secret files" }
+    subgraph NativeHost.NativeProcess["`Backend process`"]
+      NativeHost.NativeProcess.Backend@{ shape: rectangle, label: "Backend" }
+    end
+  end
   DisplayHost.DisplayBrowser.Frontend -. "`Fetches the configuration, served back 
 unparsed`" .-> ContainerHost.RunningContainer.Backend
   DisplayHost.DisplayBrowser.Frontend -. "`Fetches the payload for each module`" .-> ContainerHost.RunningContainer.Backend
+  DisplayHost.DisplayBrowser.Frontend -. "`Fetches the configuration, served back 
+unparsed`" .-> NativeHost.NativeProcess.Backend
+  DisplayHost.DisplayBrowser.Frontend -. "`Fetches the payload for each module`" .-> NativeHost.NativeProcess.Backend
   ContainerHost.RunningContainer.Backend -. "`Serves the single-page bundle`" .-> DisplayHost.DisplayBrowser.Frontend
+  NativeHost.NativeProcess.Backend -. "`Serves the single-page bundle`" .-> DisplayHost.DisplayBrowser.Frontend
   PublishedImage -. "`Runs as this container`" .-> ContainerHost.RunningContainer
   ContainerHost.ConfigurationFile -. "`Mounted in`" .-> ContainerHost.RunningContainer
   ContainerHost.SecretFiles -. "`Mounted in`" .-> ContainerHost.RunningContainer
+  NativeHost.NativeConfigurationFile -. "`Read from the host`" .-> NativeHost.NativeProcess
+  NativeHost.NativeSecretFiles -. "`Read from the host`" .-> NativeHost.NativeProcess

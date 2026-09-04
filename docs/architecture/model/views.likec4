@@ -52,10 +52,14 @@ views {
     // A node whose only child is an instance is drawn as that instance, losing the
     // node itself; naming it draws it.
     include containerHost.**
+    include nativeHost.**
     include displayHost.displayBrowser
     include displayHost.**
 
     include displayHost.displayBrowser.frontend -> containerHost.runningContainer.backend with {
+      multiple true
+    }
+    include displayHost.displayBrowser.frontend -> nativeHost.nativeProcess.backend with {
       multiple true
     }
   }
