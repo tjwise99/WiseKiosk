@@ -1,8 +1,7 @@
 active: true
 derived: false
 header: |
-  The weather module's hourly outlook switches which measure it draws, on an interval its
-  configuration sets
+  The weather module's hourly outlook switches which measure it draws, on an interval its configuration sets
 level: 56
 links:
 - SYS010: dgflQFtHGeswH-PgjWmcBkfuJujSp-a-Z5JtN4H0Low=
