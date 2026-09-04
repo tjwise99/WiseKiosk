@@ -1,6 +1,6 @@
 # What each check has been exercised against
 
-The inputs each check in this directory has been run against, in both directions: the defect it must
+The inputs each check has been run against, in both directions: the defect it must
 catch, and the legal input spelled differently that it must not reject. **One file per check, under
 [`cases/`](cases/)** — a reader touching one check reads that check's record and nothing else.
 
@@ -41,6 +41,7 @@ when a link breaks. Nothing enforces this — a wrong success line fails no buil
 | `check-go` | [cases](cases/check-go.md) |
 | `check-secret-unwrap.py` | [cases](cases/check-secret-unwrap.md) |
 | `check-dead-test.py` | [cases](cases/check-dead-test-py.md) |
+| `check-render` (the framework's own specs under `frontend/tests/render/` and each module's own, beside its component) | [cases](cases/check-render.md) |
 | `check-image` (the six harnesses it runs under `image/`) | [cases](cases/check-image.md) |
 | `smoke-native` (the harness under `native/`) | [cases](cases/smoke-native.md) |
 | `check-restart-policy.py` | [cases](cases/check-restart-policy-py.md) |

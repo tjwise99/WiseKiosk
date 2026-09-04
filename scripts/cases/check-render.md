@@ -51,7 +51,25 @@ own run rather than against the row below it.
 | Must fail | A code carrying one mark for both sides draws it on both | the overcast code's night form set to a different mark from its day one | 1 failed, 13 passed |
 | Must fail | A code the module has no mark for draws the not-available one | `skyGlyph`'s unmapped branch returning the clear-day mark instead of the not-available one | 1 failed, 13 passed |
 | Must fail | A sky whose code is not recognised is put into no words | `describeSky`'s membership guard removed, leaving the banded fall-through | 1 failed, 13 passed |
-| Must pass | The tree as it stands | — | 192 passed across the three viewports |
+| Must pass | The committed example configuration | `deploy/config.example.json` as shipped | 210 passed |
+| Must fail | A top-level key the schema does not offer | `"unknown_key": true` added alongside `edge_band` and `modules` | 3 failed, 207 passed — `[data-frame]` never appears, the page routing to the configuration-error report instead |
+| Must fail | A key the schema marks required, removed | the top-level `modules` array deleted, leaving `{"edge_band": 4}` | 3 failed, 207 passed — the same `[data-frame]` failure |
+| Must pass | The example with its top-level keys reordered | `modules` moved before `edge_band` | 210 passed |
+| Must pass | A different legal value for the same key | the clock placement's `region` changed from `top_bar` to `top_center` | 210 passed |
+| Must pass | The tree as it stands | — | 210 passed across the three viewports |
+
+**The example-configuration rows (#139) seed the shipped configuration itself, not application
+code, and each is run over the full `just check-render` — all three viewports — rather than the
+kiosk-only convention above.** What they cover is docs/CI.md § Deployment and bring-up's obligation
+that a configuration the schema accepts renders in the page and mounts the modules it names, which
+is a property of the input file, not a fault the tier's assertions need to be shown capable of
+catching in isolation. The check reads no module's own data (every module route answers 503) and
+asserts only what the frame mounted, off `[data-region]`'s `[data-modules]` token list — which is
+what makes the fifth row legal: a placement's `region` is the schema's only `enum`-keyword field,
+and the check's own assertions are derived from the example's `modules` array rather than pinned to
+a specific region, so moving a placement to a different legal region is exercised rather than
+excluded. Each row edits `deploy/config.example.json` in place and reverts with
+`git checkout -- deploy/config.example.json`; verified at 0b03740.
 
 **The emission seeds are tests rather than seeds.** Each device
 TST045<!-- Emitting-surface test --> names is a stub module the emission spec places and then asserts
