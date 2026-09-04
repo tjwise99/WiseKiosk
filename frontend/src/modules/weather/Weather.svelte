@@ -63,9 +63,6 @@
   /** The face's own not-available mark, drawn where the code names no glyph. */
   const UNREAD_SKY = '\uF07B';
 
-  /** Every WMO 4677 present-weather code a source of this payload emits, and the whole of the set. */
-  const SKY_CODES = new Set(Object.keys(SKY_GLYPHS).map(Number));
-
   /**
    * The mark for one reading, drawn on the side of the day that reading itself carries rather than
    * the side the page's own clock is on: the present reading is handed its flag and each hour to
@@ -77,28 +74,6 @@
     const pair = SKY_GLYPHS[code];
     if (pair === undefined) return UNREAD_SKY;
     return isDay ? pair.day : pair.night;
-  }
-
-  /**
-   * What a WMO 4677 present-weather code says the sky is doing. The payload carries the code rather
-   * than a supplier's own words, so putting it into words is the drawing's — and it is banded rather
-   * than enumerated because the standard's codes are grouped by intensity within a kind, which is a
-   * distinction a display glanced at rather than consulted does not carry.
-   *
-   * A code outside the set above is not named: nothing is drawn for it, rather than the nearest band
-   * reported as though the sky had been read.
-   */
-  function describeSky(code: number): string | undefined {
-    if (!SKY_CODES.has(code)) return undefined;
-    if (code === 0) return 'Clear';
-    if (code <= 3) return 'Cloudy';
-    if (code <= 48) return 'Fog';
-    if (code <= 57) return 'Drizzle';
-    if (code <= 67) return 'Rain';
-    if (code <= 77) return 'Snow';
-    if (code <= 82) return 'Showers';
-    if (code <= 86) return 'Snow showers';
-    return 'Thunderstorm';
   }
 
   /**
@@ -730,17 +705,16 @@
     min-width: 0;
   }
 
-  /* The daily strip's own bigger cascade (owner's design, recovered from their 13dc942 draft): the
-     day name and the day's own glyph read as the cell's anchor, the high/low and precipitation
-     readings a step below that — both a step up from `.cell`'s own caption size. */
+  /* The daily strip's own bigger cascade: the day name and the day's own glyph read as the cell's
+     anchor, the high/low and precipitation readings a step below that — both a step up from
+     `.cell`'s own caption size. */
   .daily-when {
     font-size: var(--type-annotation);
     font-weight: var(--type-annotation-weight);
   }
 
-  /* Scoped to the daily cell rather than the shared `.glyph` base class, so the still-open question
-     of whether the *hourly* glyphs should size up the same way stays open — the same
-     modifier-on-`.glyph` pattern `.glyph-present` already uses. */
+  /* Scoped to the daily cell rather than the shared `.glyph` base class, so it does not also size up
+     the hourly glyphs — the same modifier-on-`.glyph` pattern `.glyph-present` uses. */
   .glyph-daily {
     font-size: var(--type-annotation);
   }
