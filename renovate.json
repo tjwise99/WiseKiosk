@@ -1,4 +1,7 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["github>tjwise99/wise-renovate#v1.0.0"]
+  "extends": ["github>tjwise99/wise-renovate#v1.0.0"],
+  "packageRules": [
+    { "matchDatasources": ["docker"], "matchPackageNames": ["ghcr.io/tjwise99/wisekiosk"], "enabled": false }
+  ]
 }
