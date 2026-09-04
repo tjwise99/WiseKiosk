@@ -102,19 +102,10 @@
   }
 
   /**
-   * The hour a forecast entry is for, as it reads at the location, e.g. `23h`. The timestamp carries
-   * that location's own UTC offset, so its clock fields are already the local ones and are taken as
-   * written; handing the string to a Date would re-read them against the host's zone, which is a
-   * different place whenever the display is not at the location it reports on.
-   */
-  function atLocation(time: string): string {
-    return `${time.slice(11, 13)}h`;
-  }
-
-  /**
    * The day a forecast entry is for, by name. The calendar date is taken from the timestamp as
-   * written, for the reason above, and then named through UTC so the host's zone cannot move it
-   * across midnight.
+   * written — the timestamp carries the location's own UTC offset, so its fields are already the
+   * local ones and are taken without re-reading them against the host's zone — and then named
+   * through UTC so the host's zone cannot move it across midnight.
    */
   const weekday = new Intl.DateTimeFormat(undefined, { weekday: 'short', timeZone: 'UTC' });
   function dayName(time: string): string {
@@ -123,110 +114,187 @@
 
   const round = (value: number) => Math.round(value);
 
+  /**
+   * Which of the two hourly series the curve is currently drawing. Both share the plot; only one is
+   * ever on screen, so `active` is the one flag that says which.
+   */
+  type SeriesKind = 'temperature' | 'precipitation';
+
+  /** How often the curve swaps series.
+      TODO(#243): interval is fixed pending SRS011 config-key decision */
+  const SWITCH_INTERVAL_MS = 10_000;
+
+  let active = $state<SeriesKind>('temperature');
+  $effect(() => {
+    const toggle = setInterval(() => {
+      active = active === 'temperature' ? 'precipitation' : 'temperature';
+    }, SWITCH_INTERVAL_MS);
+    return () => clearInterval(toggle);
+  });
+
+  const SERIES_LABEL: Record<SeriesKind, string> = {
+    temperature: 'Temperature',
+    precipitation: 'Precipitation',
+  };
+  const SERIES_UNIT: Record<SeriesKind, string> = {
+    temperature: '°',
+    precipitation: '%',
+  };
+
+  /** The active series' own reading for one hour — what the curve, the y-axis and the vertex dots
+      are all drawn against. */
+  function seriesValues(hours: { temp: number; precipProbability: number }[], kind: SeriesKind): number[] {
+    return kind === 'temperature' ? hours.map((hour) => hour.temp) : hours.map((hour) => hour.precipProbability);
+  }
+
   /** The curve's own coordinate system: arbitrary units a `viewBox` maps onto whatever width and
       height the layout gives the SVG, with `vector-effect="non-scaling-stroke"` on the polyline
       keeping the drawn stroke a constant rendered width regardless of that mapping. */
   const CURVE_VIEWBOX_WIDTH = 100;
   const CURVE_VIEWBOX_HEIGHT = 30;
 
-  /** The nice-step progression a y-axis scale's step is drawn from, at whatever power of ten the
-      data calls for. */
-  const NICE_MULTIPLES = [0.25, 0.5, 1, 2, 2.5,3,4, 5, 10];
+  /** How many equal steps the y-axis aims to divide into, wide range or narrow — enough ticks to
+      read the scale by by without crowding the label strip beside it (owner-specified). */
+  const TARGET_INTERVALS = 4;
 
-  /** The y-axis always carries exactly this many ticks, evenly spaced from bottom to top, rather
-      than a count that varies with the data's own range, which is what keeps the plot's required
-      height (and so the tick labels' own spacing) predictable regardless of what the hours show. */
-  const AXIS_TICK_COUNT = 5;
-  const AXIS_INTERVALS = AXIS_TICK_COUNT - 1;
+  /** The whole-number progression a wide-range axis's step is drawn from — no 2.5 multiple, so the
+      step at any power of ten stays a whole number and the wide case never needs a decimal tick. */
+  const WIDE_STEP_MULTIPLES = [1, 2, 5, 10];
 
-  /** A nice-rounded tick value and its place on the y-axis, ascending from the scale's bottom tick
-      to its top. */
+  /** Above this range, in the active series' own units, the axis is bracketed to whole numbers; at
+      or below it the axis hugs the data instead, so a genuine one- or two-unit swing still fills the
+      plot's height rather than drowning in a forced whole-number span (owner-specified). */
+  const WIDE_RANGE_THRESHOLD = 1.5;
+
+  /** Never let two ticks of a narrow-range axis sit closer than this, in the active series' own
+      units — the floor that keeps a near-flat run of readings from being sliced into ticks finer
+      than are worth drawing. Data flatter than this floor (identical readings, or a genuinely
+      all-zero precipitation run) is drawn against the small fallback span below instead of against
+      its own near-zero range. */
+  const MIN_TICK_GRANULARITY = 0.25;
+
+  /** How wide a degenerate (flat, or all-zero) series' axis is drawn, so its curve still renders as
+      a flat line rather than a division by zero. */
+  const DEGENERATE_SPAN = 1;
+
+  /** A y-axis tick: its value, its label, and its place on the axis as a fraction (0 at the top,
+      1 at the bottom — inverted because SVG y grows downward). */
   interface YAxisTick {
     value: number;
     label: string;
-    /** This tick's y, as a fraction (0 at the top tick, 1 at the bottom) of the plot's vertical
-        extent — the one mapping the curve's vertices, its gridlines and its tick labels all share,
-        so nothing drawn against it can drift out of line with anything else drawn against it. */
     yFraction: number;
   }
 
-  /** The y-axis's scale: the tick step, and the bottom and top tick values it brackets the data
-      with. */
+  /** The y-axis's scale: the bottom and top tick values it brackets the data with, and the ticks
+      themselves. */
   interface YAxisScale {
     bottom: number;
     top: number;
-    step: number;
+    ticks: YAxisTick[];
   }
 
-  /** A step at or above `rawStep`, from the classic 1 / 2 / 2.5 / 5 progression at whatever power of
-      ten `rawStep` falls in, floored at one degree so a near-flat set of hours never yields a
-      fractional step. */
-  function niceStep(rawStep: number): number {
-    const floored = Math.max(rawStep, 0.25);
-    const magnitude = 10 ** Math.log10(floored);
-    const multiple = NICE_MULTIPLES.find((candidate) => candidate * magnitude >= floored - 1e-9);
-    return (multiple ?? 10) * magnitude;
-  }
-
-  /** The next step up the same 1 / 2 / 2.5 / 5 progression `step` itself sits on. */
-  function widerNiceStep(step: number): number {
-    const magnitude = 10 ** Math.floor(Math.log10(step));
-    const index = NICE_MULTIPLES.findIndex((candidate) => candidate * magnitude >= step - 1e-9);
-    return index + 1 < NICE_MULTIPLES.length
-      ? NICE_MULTIPLES[index + 1]! * magnitude
-      : NICE_MULTIPLES[0]! * magnitude * 10;
-  }
-
-  /**
-   * The y-axis's scale, bracketing the hourly temperatures with nice-rounded ticks rather than the
-   * raw data's own min and max. The step starts at whatever `AXIS_INTERVALS` steps across the data's
-   * own range would need, and the bottom tick is that step's own floor of `dataMin` — which can give
-   * away more of the step's budget than the starting step accounted for (`dataMin` sitting just above
-   * a multiple), so the step is widened one nice notch at a time until `AXIS_INTERVALS` of it, from
-   * its own floored bottom, still reaches at least `dataMax`. This is what keeps the tick count fixed
-   * at `AXIS_TICK_COUNT` for any data, a flat set of hours included (`dataMax - dataMin` of 0 needs no
-   * special case: `niceStep`'s one-degree floor already gives it a real, widenable step).
-   */
-  function yAxisScale(temps: number[]): YAxisScale {
-    const dataMin = Math.min(...temps);
-    const dataMax = Math.max(...temps);
-    let step = niceStep((dataMax - dataMin) / AXIS_INTERVALS);
-    let bottom = Math.floor(dataMin / step) * step;
-    let top = bottom + AXIS_INTERVALS * step;
-    while (top < dataMax - 1e-9) {
-      step = widerNiceStep(step);
-      bottom = Math.floor(dataMin / step) * step;
-      top = bottom + AXIS_INTERVALS * step;
-    }
-    return { bottom, top, step };
-  }
-
-  /** Where a temperature sits between the scale's bottom and top tick, as a fraction — 0 at the top
-      tick, 1 at the bottom, inverted because SVG y grows downward. */
-  function scaleFraction(value: number, scale: YAxisScale): number {
+  /** Where a value sits between the scale's bottom and top, as a fraction — 0 at the top, 1 at the
+      bottom. */
+  function scaleFraction(value: number, scale: { bottom: number; top: number }): number {
     return (scale.top - value) / (scale.top - scale.bottom);
   }
 
-  /**
-   * The y-axis's own ticks — always `AXIS_TICK_COUNT` of them — ascending from the scale's bottom
-   * tick to its top. A tick's value is always an exact multiple of the step, and the step is never
-   * more than one decimal place (the 2.5 case), so that is all a label ever needs to show.
-   */
-  function yAxisTicks(scale: YAxisScale, unit: String): YAxisTick[] {
-    return Array.from({ length: AXIS_TICK_COUNT }, (_, index) => {
-      const value = scale.bottom + index * scale.step;
+  /** A tick's label: a whole number for a wide-range axis, a decimal (rounded to hundredths, with
+      any trailing zeros dropped) for a narrow or degenerate one — decimals are only ever drawn where
+      the axis itself is tight enough for them to mean something. */
+  function tickLabel(value: number, unit: string, decimals: boolean): string {
+    const shown = decimals ? Math.round(value * 100) / 100 : Math.round(value);
+    return `${shown}${unit}`;
+  }
+
+  /** A step at or above `rawStep`, from the whole-number progression, at whatever power of ten
+      `rawStep` falls in — the classic nice-number step, floored at one unit so a wide axis's step is
+      always a whole number. */
+  function wholeStep(rawStep: number): number {
+    const floored = Math.max(rawStep, 1);
+    const magnitude = 10 ** Math.floor(Math.log10(floored));
+    const multiple = WIDE_STEP_MULTIPLES.find((candidate) => candidate * magnitude >= floored - 1e-9);
+    return (multiple ?? WIDE_STEP_MULTIPLES[WIDE_STEP_MULTIPLES.length - 1]!) * magnitude;
+  }
+
+  /** The wide-range axis: bounds bracketed out to whole numbers, ticks at nice whole-ish steps
+      within them. */
+  function wideScale(dataMin: number, dataMax: number, unit: string): YAxisScale {
+    const bottom = Math.floor(dataMin);
+    const top = Math.ceil(dataMax);
+    const step = wholeStep((top - bottom) / TARGET_INTERVALS);
+    const values: number[] = [];
+    for (let value = Math.ceil(bottom / step) * step; value <= top + 1e-9; value += step) {
+      values.push(value);
+    }
+    if (values.length < 2) {
+      values.splice(0, values.length, bottom, top);
+    }
+    return {
+      bottom,
+      top,
+      ticks: values.map((value) => ({
+        value,
+        label: tickLabel(value, unit, false),
+        yFraction: scaleFraction(value, { bottom, top }),
+      })),
+    };
+  }
+
+  /** The narrow-range axis: bounds hugging the data exactly, ticks evenly spaced between them at no
+      finer than `MIN_TICK_GRANULARITY`. */
+  function narrowScale(dataMin: number, dataMax: number, unit: string): YAxisScale {
+    const bottom = dataMin;
+    const top = dataMax;
+    const range = top - bottom;
+    const intervals = Math.max(1, Math.min(TARGET_INTERVALS, Math.floor(range / MIN_TICK_GRANULARITY)));
+    const step = range / intervals;
+    const ticks = Array.from({ length: intervals + 1 }, (_, index) => {
+      const value = bottom + index * step;
       return {
         value,
-        label: Number.isInteger(value) ? `${value}${unit}` : `${value.toFixed(1)}${unit}`,
-        yFraction: scaleFraction(value, scale),
+        label: tickLabel(value, unit, true),
+        yFraction: scaleFraction(value, { bottom, top }),
       };
     });
+    return { bottom, top, ticks };
+  }
+
+  /** The degenerate-range axis: a small fallback span centred on the data (or resting on zero, where
+      the data itself is zero — the common case for a quiet stretch of precipitation), so the curve
+      still draws as a flat line rather than dividing by a zero range. */
+  function degenerateScale(value: number, unit: string): YAxisScale {
+    const bottom = value === 0 ? 0 : value - DEGENERATE_SPAN / 2;
+    const top = value === 0 ? DEGENERATE_SPAN : value + DEGENERATE_SPAN / 2;
+    const step = (top - bottom) / TARGET_INTERVALS;
+    const ticks = Array.from({ length: TARGET_INTERVALS + 1 }, (_, index) => {
+      const v = bottom + index * step;
+      return { value: v, label: tickLabel(v, unit, true), yFraction: scaleFraction(v, { bottom, top }) };
+    });
+    return { bottom, top, ticks };
+  }
+
+  /**
+   * The y-axis's scale for whichever series is active, unit-agnostic — it runs identically on °F or
+   * on a percentage. A wide range (> `WIDE_RANGE_THRESHOLD`) is bracketed to whole numbers so the
+   * axis reads at a glance; a narrow one hugs the data instead, so a genuine small swing still fills
+   * the plot; data flatter than `MIN_TICK_GRANULARITY` — including an all-zero precipitation run —
+   * falls back to the small degenerate span (owner-specified, ./README.md).
+   */
+  function yAxisScale(values: number[], unit: string): YAxisScale {
+    const dataMin = Math.min(...values);
+    const dataMax = Math.max(...values);
+    const range = dataMax - dataMin;
+    if (range > WIDE_RANGE_THRESHOLD) return wideScale(dataMin, dataMax, unit);
+    if (range >= MIN_TICK_GRANULARITY) return narrowScale(dataMin, dataMax, unit);
+    return degenerateScale((dataMin + dataMax) / 2, unit);
   }
 
   /** One hourly vertex, in the curve's own viewBox units and as a fraction (0–1) of that viewBox.
-      The fraction is what DOM-positioned content — the vertex dots — lines up against: the viewBox
-      is stretched non-uniformly onto whatever box holds it (`preserveAspectRatio="none"`), so a
-      fraction of it, not a measured pixel, is the coordinate that still matches the drawn curve. */
+      The fraction is what DOM-positioned content — the vertex dots, the x-axis labels — line up
+      against: the viewBox is stretched non-uniformly onto whatever box holds it
+      (`preserveAspectRatio="none"`), so a fraction of it, not a measured pixel, is the coordinate
+      that still matches the drawn curve. */
   interface CurveVertex {
     x: number;
     y: number;
@@ -235,24 +303,16 @@
   }
 
   /**
-   * The hourly temperature curve's vertices, one per hour, computed fresh from the props each render
-   * rather than measured from the laid-out page — the module never reads its own layout back. A
-   * vertex's x is its column's centre in an n-column strip, matching the strip cells beneath it; its
-   * y is the raw (unrounded) temperature's place on the y-axis scale, the same mapping the axis's
-   * own ticks and gridlines are drawn against.
+   * The active series' vertices, one per hour, computed fresh from the props each render rather than
+   * measured from the laid-out page — the module never reads its own layout back. A vertex's x is
+   * its column's centre in an n-column strip (n up to twelve, whatever the payload hands it), the
+   * same strip the glyph row and the x-axis labels beneath it share; its y is the raw (unrounded)
+   * value's place on the y-axis scale, the same mapping the axis's own ticks and gridlines use.
    */
-  function curveVertices(hours: { temp: number }[], scale: YAxisScale): CurveVertex[] {
-    return hours.map((hour, index) => {
-      const x = ((index + 0.5) / hours.length) * CURVE_VIEWBOX_WIDTH;
-      const yFraction = scaleFraction(hour.temp, scale);
-      const y = yFraction * CURVE_VIEWBOX_HEIGHT;
-      return { x, y, xFraction: x / CURVE_VIEWBOX_WIDTH, yFraction };
-    });
-  }
-  function curvePrecipVertices(hours: { precipProbability: number }[], scale: YAxisScale): CurveVertex[] {
-    return hours.map((hour, index) => {
-      const x = ((index + 0.5) / hours.length) * CURVE_VIEWBOX_WIDTH;
-      const yFraction = scaleFraction(hour.precipProbability, scale);
+  function curveVertices(values: number[], scale: YAxisScale): CurveVertex[] {
+    return values.map((value, index) => {
+      const x = ((index + 0.5) / values.length) * CURVE_VIEWBOX_WIDTH;
+      const yFraction = scaleFraction(value, scale);
       const y = yFraction * CURVE_VIEWBOX_HEIGHT;
       return { x, y, xFraction: x / CURVE_VIEWBOX_WIDTH, yFraction };
     });
@@ -267,6 +327,12 @@
       plain fraction of it lines up with the drawn curve. */
   function vertexStyle(vertex: CurveVertex): string {
     return `left: ${vertex.xFraction * 100}%; top: ${vertex.yFraction * 100}%;`;
+  }
+
+  /** Where an x-axis label sits under its own vertex — the same fractional x, centred under the
+      point rather than the column. */
+  function xAxisLabelStyle(vertex: CurveVertex): string {
+    return `left: ${vertex.xFraction * 100}%;`;
   }
 
   /** A tick's own gridline, in viewBox y units — every tick but the bottom one, whose gridline is
@@ -297,12 +363,11 @@
     {:else}
       {@const reading = payload.data}
       {@const sky = describeSky(reading.current.weatherCode)}
-      {@const scale = yAxisScale(reading.hourly.map((hour) => hour.temp))}
-      {@const precipScale = yAxisScale(reading.hourly.map((hour) => hour.precipProbability))}
-      {@const ticks = yAxisTicks(scale, "°")}
-      {@const precipTicks = yAxisTicks(precipScale, "%")}
-      {@const vertices = curveVertices(reading.hourly, scale)}
-      {@const precipVertices = curvePrecipVertices(reading.hourly, precipScale)}
+      {@const unit = SERIES_UNIT[active]}
+      {@const values = seriesValues(reading.hourly, active)}
+      {@const scale = yAxisScale(values, unit)}
+      {@const ticks = scale.ticks}
+      {@const vertices = curveVertices(values, scale)}
       <!-- Present, per ./README.md § Present. -->
       <section class="present" data-weather-present>
         <div class="present-reading">
@@ -320,13 +385,15 @@
         </p>
       </section>
 
-      <!-- Next hours, per ./README.md § Next hours. -->
+      <!-- Next hours, per ./README.md § Next hours. One curve at a time, temperature or
+           precipitation, toggled by `active` — never both, never colour-coded apart. -->
       <section class="series" data-weather-hourly>
         <h2 class="heading section-label">Next hours</h2>
         <div class="curve">
+          <p class="series-label section-label" data-weather-series={active}>{SERIES_LABEL[active]}</p>
           <!-- The plot area — a left y-axis scale and the curve, dot-vertexed — the curve itself
                bracketed by a dim L-shaped axis on its left and bottom (border-left, border-bottom);
-               the strip below is outside the bracket, reading as the axis's own tick labels. -->
+               the strips below are outside the bracket, reading as the axis's own tick labels. -->
           <div class="plot">
             <div class="yaxis">
               {#each ticks as tick, index (tick.value)}
@@ -354,35 +421,28 @@
                     vector-effect="non-scaling-stroke"
                   />
                 {/each}
-                <polyline
-                  class="curve-line"
-                  points={curvePoints(vertices)}
-                  vector-effect="non-scaling-stroke"
-                />
-                <polyline
-                  class="precip-curve-line"
-                  points={curvePoints(precipVertices)}
-                  vector-effect="non-scaling-stroke"
-                />
+                <polyline class="curve-line" points={curvePoints(vertices)} vector-effect="non-scaling-stroke" />
               </svg>
               {#each reading.hourly as hour, index (hour.time)}
-                <span class="vertex" data-weather-vertex style={vertexStyle(vertices[index])}
-                ></span>
-                <span class="precip-vertex" data-weather-vertex style={vertexStyle(precipVertices[index])}
-                ></span>
+                <span class="vertex" data-weather-vertex style={vertexStyle(vertices[index])}></span>
               {/each}
             </div>
-            <div class="precipYaxis">
-              {#each precipTicks as tick, index (tick.value)}
-                <span
-                  class="precip-tick-label tabular-figures"
-                  data-weather-yaxis-tick
-                  style={tickLabelStyle(tick, index, ticks.length)}>{tick.label}</span
+            <div class="xaxis-spacer" aria-hidden="true"></div>
+            <div class="xaxis">
+              {#each reading.hourly as hour, index (hour.time)}
+                <span class="xaxis-label tabular-figures" data-weather-xaxis-tick style={xAxisLabelStyle(vertices[index])}
+                  >+{index + 1}</span
                 >
               {/each}
             </div>
-
           </div>
+          <ol class="glyph-strip" style="--strip-count:{reading.hourly.length}">
+            {#each reading.hourly as hour (hour.time)}
+              <li class="glyph-cell" data-weather-hour>
+                <span class="glyph" data-weather-glyph>{skyGlyph(hour.weatherCode, hour.isDay)}</span>
+              </li>
+            {/each}
+          </ol>
         </div>
       </section>
 
@@ -392,10 +452,10 @@
         <ol class="strip" style="--strip-count:{reading.daily.length}">
           {#each reading.daily as day (day.time)}
             <li class="cell" data-weather-day>
-              <span class="daily-when">{dayName(day.time)}</span>
+              <span class="when">{dayName(day.time)}</span>
               <span class="glyph" data-weather-glyph>{skyGlyph(day.weatherCode, true)}</span>
-              <span class="daily-reading tabular-figures">{round(day.max)}°/{round(day.min)}°</span>
-              <span class="daily-reading tabular-figures">{round(day.precipProbability)}%</span>
+              <span class="reading tabular-figures">{round(day.max)}°/{round(day.min)}°</span>
+              <span class="reading tabular-figures">{round(day.precipProbability)}%</span>
             </li>
           {/each}
         </ol>
@@ -440,20 +500,11 @@
     line-height: 1;
   }
 
-  .daily-when {
-    font-size: var(--type-annotation);
-  }
-
-  .daily-reading {
-    font-size: var(--type-section-header);
-  }
-
   .glyph {
     /* The icon face and nothing else: no other face carries these marks, so there is no fallback to
        compose. Colour and weight are left unset, so both are inherited whichever glyph is drawn. */
     font-family: 'Weather Icons';
     line-height: 1;
-    font-size: var(--type-annotation);
   }
 
   .glyph-present {
@@ -491,32 +542,44 @@
     border-bottom: var(--divider-stroke-width) solid var(--emission-stroke);
   }
 
-  /* The plot area and the strip beneath it read against the same n-column layout, so a vertex the
-     curve draws lines up under its own strip cell without measuring anything laid out. */
   .curve {
     display: flex;
     flex-direction: column;
     gap: var(--space-xs);
   }
 
-  /* The y-axis scale beside the curve, and the curve itself. */
+  /* Which of the two series is on screen, at the same uppercase-tracked step the strip below it and
+     the day cells use — a sub-label, so caption rather than the group heading's own step. */
+  .series-label {
+    margin: 0;
+    font-size: var(--type-caption);
+    font-weight: var(--type-caption-weight);
+    line-height: 1;
+  }
+
+  /* The y-axis scale beside the curve, the curve itself, and the x-axis strip beneath both — the
+     x-axis's own spacer keeps its labels out of the y-axis's column, so a label's fractional x still
+     matches the vertex it sits under. */
   .plot {
     display: grid;
-    grid-template-columns: 0.05fr minmax(0, 0.9fr) 0.05fr;
+    grid-template-columns: auto 1fr;
+    grid-template-rows: auto auto;
   }
 
   /* As tall as `.curve-area`, so a tick's `top` percentage (`tickLabelStyle`) lines up with the
-     gridline it labels — twice the height that gave `AXIS_TICK_COUNT`'s labels room when there were
-     three of them, which is what keeps five legible rather than overlapping (owner sizing pass). */
+     gridline it labels. An explicit width, rather than the grid column's own "auto" sizing: every
+     tick label inside is `position: absolute` and so is excluded from what its container
+     contributes to that sizing, which collapses `.yaxis` to its padding alone and pushes the labels
+     out past the plot's left edge. `ch`, so the width scales with the caption step the labels are
+     set in; sized for the widest label the axis draws — a negative two-decimal reading, e.g.
+     "-12.34°". */
   .yaxis {
     position: relative;
+    width: 7ch;
     height: calc((var(--type-caption) * 3 + var(--space-xs) * 2) * 2);
     padding-right: var(--space-xs);
-  }
-  .precipYaxis {
-    position: relative;
-    height: calc((var(--type-caption) * 3 + var(--space-xs) * 2) * 2);
-    padding-left: calc(var(--space-xs * 5));
+    grid-column: 1;
+    grid-row: 1;
   }
 
   /* Content, so drawn at full emission like the curve and its dots
@@ -530,25 +593,17 @@
     line-height: 1;
     white-space: nowrap;
   }
-  .precip-tick-label {
-    position: absolute;
-    font-size: var(--type-caption);
-    font-weight: var(--type-caption-weight);
-    line-height: 1;
-    white-space: nowrap;
-    color: #0000FF;
-   }
 
   /* Brackets the curve on its left and bottom — the same dim-stroke pairing `.heading`'s own divider
-     draws with. The bottom one is also the scale's own bottom gridline (`gridlines`), and the strip
-     stays outside the bracket, reading as the axis's tick labels. */
+     draws with. The bottom one is also the scale's own bottom gridline (`gridlines`). */
   .curve-area {
     position: relative;
     width: 100%;
     height: calc((var(--type-caption) * 3 + var(--space-xs) * 2) * 2);
-    border-right: var(--divider-stroke-width) solid var(--emission-stroke);
     border-left: var(--divider-stroke-width) solid var(--emission-stroke);
     border-bottom: var(--divider-stroke-width) solid var(--emission-stroke);
+    grid-column: 2;
+    grid-row: 1;
   }
 
   /* Decoration, dimmed the same as the axis lines either side of it
@@ -564,16 +619,6 @@
     height: 100%;
   }
 
-  .precip-curve-line {
-    fill: none;
-    /* Content, so drawn at the display's full emission like the glyphs and figures around it
-       (SRS032<!-- Readable text is carried at full emission -->), correct by construction: the
-       stroke is the same token every readable glyph on the page is coloured with. */
-    /* stroke: var(--emission-content); */
-    stroke-width: var(--curve-stroke-width);
-    stroke-linejoin: round;
-    stroke: #0000FF !important;
-  }
   .curve-line {
     fill: none;
     /* Content, so drawn at the display's full emission like the glyphs and figures around it
@@ -597,13 +642,49 @@
     background: var(--emission-content);
     transform: translate(-50%, -50%);
   }
-  .precip-vertex {
+
+  /* Matches the y-axis column's own width, so the x-axis strip starts at the plot area rather than
+     under the tick labels. */
+  .xaxis-spacer {
+    grid-column: 1;
+    grid-row: 2;
+  }
+
+  /* Relative-hour labels, one per vertex, each positioned at that vertex's own fractional x
+     (`xAxisLabelStyle`) rather than laid out as equal columns — so a label always sits under its own
+     vertex regardless of how many hours the payload hands the plot. Content, drawn at full emission
+     like the tick labels beside it (SRS032<!-- Readable text is carried at full emission -->). */
+  .xaxis {
+    position: relative;
+    height: var(--type-caption);
+    margin-top: var(--space-xs);
+    grid-column: 2;
+    grid-row: 2;
+  }
+
+  .xaxis-label {
     position: absolute;
-    width: 0.6vh;
-    height: 0.6vh;
-    border-radius: 50%;
-    background: #0000FF;
-    transform: translate(-50%, -50%);
+    top: 0;
+    transform: translateX(-50%);
+    font-size: var(--type-caption);
+    font-weight: var(--type-caption-weight);
+    line-height: 1;
+    white-space: nowrap;
+  }
+
+  /* One condition glyph per hour, aligned to the same n-column strip the curve's vertices sit
+     against (SRS050<!-- The weather module draws day and night apart -->). */
+  .glyph-strip {
+    display: grid;
+    grid-template-columns: repeat(var(--strip-count), 1fr);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .glyph-cell {
+    display: flex;
+    justify-content: center;
   }
 
   .strip {
