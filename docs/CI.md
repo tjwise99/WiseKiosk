@@ -30,7 +30,9 @@ Not everything CI does is a gate. These produce material a person acts on.
   milestone or type label; the ticket gates ([ADR 0013 rev 4](decisions/0013-work-tracking-invariants.md))
   read only the issue a branch names, so the dashboard issue is exempt by construction and no branch
   may be cut from it. That the root `renovate.json` resolves the pinned preset is § *Repository
-  shape*'s.
+  shape*'s. The project's own image is excluded from Renovate: the committed recipe names the
+  movable `latest` tag by design ([`DEPLOYMENT.md`](DEPLOYMENT.md) § *Bring-up*), and pinning it
+  would loop through `publish.yml` — a merged pin publishes a new digest, which opens the next pin.
 - **Code-scanning results.** Every static-analysis finding is reported to the repository's
   code-scanning dashboard and annotated on the pull request, whether or not it fails the build.
 - **Complete scan output.** The vulnerability gates report every advisory they resolve — at any
