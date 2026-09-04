@@ -30,7 +30,10 @@ operator buys, and how they are provisioned, is theirs.
 container runtime, its browser, and whatever starts that browser on boot. Provisioning that machine is
 the operator's, and no requirement in the tree reaches it. That bounds what WiseKiosk can be failed
 against rather than what it is willing to ship — the release carries a deployment recipe and an example
-configuration precisely to shorten the path ([`docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md)).
+configuration precisely to shorten the path ([`docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md)); building a
+full appliance image is likewise outside that boundary, and
+[`tjwise99/meta-wisekiosk`](https://github.com/tjwise99/meta-wisekiosk) is the Yocto/kas layer that does
+it, producing an image that runs this product.
 
 **The operator is frequently not the author.** Deployments run at the author's house and at friends'
 and family's houses — separate networks, separate configs, separate owners. This constraint outranks
