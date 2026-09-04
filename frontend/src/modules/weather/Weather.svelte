@@ -154,34 +154,18 @@
   const CURVE_VIEWBOX_WIDTH = 100;
   const CURVE_VIEWBOX_HEIGHT = 30;
 
-  /** How many equal steps the y-axis aims to divide into, wide range or narrow — enough ticks to
-      read the scale by by without crowding the label strip beside it (owner-specified). */
-  const TARGET_INTERVALS = 4;
+  /** The axis is always divided into this many equal bands — five ticks, five gridlines, four
+      regions between them — whatever the data's range, so the scale reads the same every render
+      rather than the tick count shifting with the data (owner-specified). */
+  const AXIS_BANDS = 4;
 
-  /** The whole-number progression a wide-range axis's step is drawn from — no 2.5 multiple, so the
-      step at any power of ten stays a whole number and the wide case never needs a decimal tick. */
-  const WIDE_STEP_CANDIDATES = [1, 2, 5, 10];
-
-  /** The progression a narrow-range axis's step is drawn from — the same nearest-fit method as the
-      wide case, at a finer decade so a tight-hugging axis still lands on a step worth reading rather
-      than an arbitrary fraction of the range. */
-  const NARROW_STEP_CANDIDATES = [0.25, 0.5, 1, 2];
-
-  /** Above this range, in the active series' own units, the axis is bracketed to whole numbers; at
-      or below it the axis hugs the data instead, so a genuine one- or two-unit swing still fills the
-      plot's height rather than drowning in a forced whole-number span (owner-specified). */
-  const WIDE_RANGE_THRESHOLD = 1.5;
-
-  /** Never let two ticks of a narrow-range axis sit closer than this, in the active series' own
-      units — the floor that keeps a near-flat run of readings from being sliced into ticks finer
-      than are worth drawing. Data flatter than this floor (identical readings, or a genuinely
-      all-zero precipitation run) is drawn against the small fallback span below instead of against
-      its own near-zero range. */
-  const MIN_TICK_GRANULARITY = 0.25;
-
-  /** How wide a degenerate (flat, or all-zero) series' axis is drawn, so its curve still renders as
-      a flat line rather than a division by zero. */
-  const DEGENERATE_SPAN = 1;
+  /** The smallest span, in the active series' own units, the axis is ever drawn over — the tightest
+      that still lands the four band boundaries on quarter units (a one-unit span over `AXIS_BANDS`
+      is a quarter-unit step; anything narrower would need a finer label than a quarter). A flat or
+      near-flat run is drawn against this span rather than its own near-zero one, so it reads as a
+      readable swing that fills the plot rather than a noise-height wiggle, and a genuinely flat run
+      still divides by a real span rather than zero (owner-specified: the small-range exception). */
+  const MIN_AXIS_SPAN = 1;
 
   /** A y-axis tick: its value, its label, and its place on the axis as a fraction (0 at the top,
       1 at the bottom — inverted because SVG y grows downward). */
@@ -205,100 +189,32 @@
     return (scale.top - value) / (scale.top - scale.bottom);
   }
 
-  /** A tick's label: a whole number for a wide-range axis, a decimal (rounded to hundredths, with
-      any trailing zeros dropped) for a narrow or degenerate one — decimals are only ever drawn where
-      the axis itself is tight enough for them to mean something. */
-  function tickLabel(value: number, unit: string, decimals: boolean): string {
-    const shown = decimals ? Math.round(value * 100) / 100 : Math.round(value);
-    return `${shown}${unit}`;
-  }
-
-  /** The step nearest `rawStep`, from `candidates` (ascending, one decade) at whatever power of ten
-      `rawStep` falls in — the standard nearest-fit nice-number method (Heckbert), picking the
-      candidate `rawStep` is *closest* to rather than the smallest one at least as big. The
-      smallest-at-least-as-big rule this replaced could overshoot by a whole tier whenever the raw
-      step sat just above a candidate (target ≈1.1 picking 2 over the much nearer 1), collapsing a
-      4-interval target into two or three real ticks — nearest-fit does not have that failure mode.
-      `floor` keeps a very small `rawStep` from dropping the magnitude below the candidates' own
-      decade (a wide axis's step would otherwise land under 1, breaking its whole-number rule; a
-      narrow one's under `MIN_TICK_GRANULARITY`). */
-  function niceStep(rawStep: number, candidates: number[], floor: number): number {
-    const floored = Math.max(rawStep, floor);
-    const magnitude = 10 ** Math.floor(Math.log10(floored));
-    const fraction = floored / magnitude;
-    for (let index = 0; index < candidates.length - 1; index++) {
-      const midpoint = (candidates[index]! + candidates[index + 1]!) / 2;
-      if (fraction < midpoint) return candidates[index]! * magnitude;
-    }
-    return candidates[candidates.length - 1]! * magnitude;
-  }
-
-  /** The ticks between `bottom` and `top`, one per multiple of `step` inside that range — the one
-      generation both the wide and the narrow axis draw their ticks from, so "nice step, real ticks
-      within fixed bounds" means the same thing in both. Falls back to just the two bounds themselves
-      should `step` leave fewer than two multiples inside the range (an unusually small span). */
-  function scaleTicks(bottom: number, top: number, step: number, unit: string, decimals: boolean): YAxisTick[] {
-    const values: number[] = [];
-    for (let value = Math.ceil(bottom / step) * step; value <= top + 1e-9; value += step) {
-      values.push(value);
-    }
-    if (values.length < 2) {
-      values.splice(0, values.length, bottom, top);
-    }
-    return values.map((value) => ({
-      value,
-      label: tickLabel(value, unit, decimals),
-      yFraction: scaleFraction(value, { bottom, top }),
-    }));
-  }
-
-  /** The wide-range axis: bounds bracketed out to whole numbers, ticks at the nearest whole step to
-      a `TARGET_INTERVALS`-way division of them. */
-  function wideScale(dataMin: number, dataMax: number, unit: string): YAxisScale {
-    const bottom = Math.floor(dataMin);
-    const top = Math.ceil(dataMax);
-    const step = niceStep((top - bottom) / TARGET_INTERVALS, WIDE_STEP_CANDIDATES, 1);
-    return { bottom, top, ticks: scaleTicks(bottom, top, step, unit, false) };
-  }
-
-  /** The narrow-range axis: bounds hugging the data exactly, ticks at the nearest step (down to
-      `MIN_TICK_GRANULARITY`) to a `TARGET_INTERVALS`-way division of them — the same nearest-fit and
-      the same tick generation `wideScale` uses, over the finer `NARROW_STEP_CANDIDATES` decade. */
-  function narrowScale(dataMin: number, dataMax: number, unit: string): YAxisScale {
-    const bottom = dataMin;
-    const top = dataMax;
-    const step = niceStep((top - bottom) / TARGET_INTERVALS, NARROW_STEP_CANDIDATES, MIN_TICK_GRANULARITY);
-    return { bottom, top, ticks: scaleTicks(bottom, top, step, unit, true) };
-  }
-
-  /** The degenerate-range axis: a small fallback span centred on the data (or resting on zero, where
-      the data itself is zero — the common case for a quiet stretch of precipitation), so the curve
-      still draws as a flat line rather than dividing by a zero range. */
-  function degenerateScale(value: number, unit: string): YAxisScale {
-    const bottom = value === 0 ? 0 : value - DEGENERATE_SPAN / 2;
-    const top = value === 0 ? DEGENERATE_SPAN : value + DEGENERATE_SPAN / 2;
-    const step = (top - bottom) / TARGET_INTERVALS;
-    const ticks = Array.from({ length: TARGET_INTERVALS + 1 }, (_, index) => {
-      const v = bottom + index * step;
-      return { value: v, label: tickLabel(v, unit, true), yFraction: scaleFraction(v, { bottom, top }) };
-    });
-    return { bottom, top, ticks };
+  /** A tick's label, to a quarter unit. The axis's bounds are whole numbers split into `AXIS_BANDS`,
+      so a whole number over four — every tick value is already a multiple of 0.25; this shows it with
+      only the decimals it carries ("70", "67.5", "62.75"), the unit appended. */
+  function tickLabel(value: number, unit: string): string {
+    return `${Math.round(value * 4) / 4}${unit}`;
   }
 
   /**
    * The y-axis's scale for whichever series is active, unit-agnostic — it runs identically on °F or
-   * on a percentage. A wide range (> `WIDE_RANGE_THRESHOLD`) is bracketed to whole numbers so the
-   * axis reads at a glance; a narrow one hugs the data instead, so a genuine small swing still fills
-   * the plot; data flatter than `MIN_TICK_GRANULARITY` — including an all-zero precipitation run —
-   * falls back to the small degenerate span (owner-specified, ./README.md).
+   * on a percentage. The axis brackets the data from `floor(min)` to `ceil(max)` and divides that
+   * into `AXIS_BANDS` equal bands: always five evenly-spaced ticks, and — the bounds being whole
+   * numbers and the band count four — every tick value a multiple of a quarter unit. Where the
+   * whole-number bracket is narrower than `MIN_AXIS_SPAN` (a flat or near-flat run, `floor` and
+   * `ceil` within two units of each other), the top is lifted to `bottom + MIN_AXIS_SPAN` so the
+   * axis never zooms below that span; the lift only ever raises the top, so data the bracket held it
+   * still holds (owner-specified, ./README.md).
    */
   function yAxisScale(values: number[], unit: string): YAxisScale {
-    const dataMin = Math.min(...values);
-    const dataMax = Math.max(...values);
-    const range = dataMax - dataMin;
-    if (range > WIDE_RANGE_THRESHOLD) return wideScale(dataMin, dataMax, unit);
-    if (range >= MIN_TICK_GRANULARITY) return narrowScale(dataMin, dataMax, unit);
-    return degenerateScale((dataMin + dataMax) / 2, unit);
+    const bottom = Math.floor(Math.min(...values));
+    const top = Math.max(Math.ceil(Math.max(...values)), bottom + MIN_AXIS_SPAN);
+    const step = (top - bottom) / AXIS_BANDS;
+    const ticks = Array.from({ length: AXIS_BANDS + 1 }, (_, index) => {
+      const value = bottom + index * step;
+      return { value, label: tickLabel(value, unit), yFraction: scaleFraction(value, { bottom, top }) };
+    });
+    return { bottom, top, ticks };
   }
 
   /** One hourly vertex, in the curve's own viewBox units and as a fraction (0–1) of that viewBox.
@@ -349,38 +265,21 @@
   }
 
   /** A tick's own gridline, in viewBox y units — every tick but the bottom one, whose gridline is
-      the plot's own bottom border and would otherwise be drawn twice. Unthinned: every tick the
-      scale computed still draws its own line, `labeledTicks` below only ever thinning the text
-      beside them. */
+      the plot's own bottom border and would otherwise be drawn twice. The scale draws a fixed five
+      ticks, so this is a fixed four lines above that border: the top bound and the three interior
+      ticks, one per label. */
   function gridlines(ticks: YAxisTick[]): number[] {
     return ticks.slice(1).map((tick) => tick.yFraction * CURVE_VIEWBOX_HEIGHT);
   }
 
-  /** How many y-axis tick labels `.yaxis`'s own band can hold before adjacent ones start to
-      overlap: the band's height (`.yaxis`'s own `calc()`, `(caption*3 + space-xs*2)*2`) divided by
-      a label's own line pitch (roughly `1.4` times its line-height, the same rule of thumb behind
-      the anchoring `tickLabelStyle` already does at the bottom and top tick) — both figures fixed
-      multiples of the same two tokens, so this is a constant derived from them rather than
-      something read off the rendered page (the module never measures its own layout back). */
-  const MAX_YAXIS_LABELS = 5;
-
-  /** Which of `ticks`'s own gridlines get a rendered label — every scale tick when they already fit
-      `MAX_YAXIS_LABELS`, otherwise every Nth one, thinned just enough to fit while always keeping
-      the bottom and top tick (the scale's own bounds, and the two `tickLabelStyle` anchors flush
-      rather than centres) labeled. */
-  function labeledTicks(ticks: YAxisTick[]): YAxisTick[] {
-    if (ticks.length <= MAX_YAXIS_LABELS) return ticks;
-    const stride = Math.ceil((ticks.length - 1) / (MAX_YAXIS_LABELS - 1));
-    return ticks.filter((_, index) => index % stride === 0 || index === ticks.length - 1);
+  /** Where a tick's label sits against its own gridline in `.yaxis`: centred on the line, every tick
+      alike — the top and bottom labels included, so each reads level with the tick it names rather
+      than hanging above or below it. The outermost two then extend half a line-height past the plot's
+      top and bottom edges, into the row's own gaps, which is theirs to take. */
+  function tickLabelStyle(tick: YAxisTick): string {
+    return `top: ${tick.yFraction * 100}%; transform: translateY(-50%);`;
   }
 
-  /** Where a tick's label sits against its own gridline in `.yaxis`: flush to the line's far edge at
-      the scale's bottom and top ticks, so the outermost labels never overflow the plot they are
-      drawn beside, and centred on the line for every tick between them. */
-  function tickLabelStyle(tick: YAxisTick, index: number, count: number): string {
-    const anchor = index === count - 1 ? '0%' : index === 0 ? '-100%' : '-50%';
-    return `top: ${tick.yFraction * 100}%; transform: translateY(${anchor});`;
-  }
 </script>
 
 {#if reachable}
@@ -395,12 +294,10 @@
       <p class="waiting" data-module-unavailable>{payload.failure.message}</p>
     {:else}
       {@const reading = payload.data}
-      {@const sky = describeSky(reading.current.weatherCode)}
       {@const unit = SERIES_UNIT[active]}
       {@const values = seriesValues(reading.hourly, active)}
       {@const scale = yAxisScale(values, unit)}
       {@const ticks = scale.ticks}
-      {@const labeled = labeledTicks(ticks)}
       {@const vertices = curveVertices(values, scale)}
       <!-- Present, per ./README.md § Present. -->
       <section class="present" data-weather-present>
@@ -410,13 +307,23 @@
           </p>
           <p class="temp tabular-figures" data-weather-temp>{round(reading.current.temp)}°F</p>
         </div>
-        {#if sky !== undefined}
-          <p class="sky" data-weather-sky>{sky}</p>
-        {/if}
-        <p class="detail" data-weather-detail>
-          Feels like {round(reading.current.apparentTemp)}°F · {round(reading.current.humidity)}%
-          humidity · {round(reading.current.windSpeed)} mph
-        </p>
+        <!-- Current conditions, one glanceable stat per reading rather than one dotted line: the
+             condition word is dropped — the present glyph already carries the sky (SRS050), so a word
+             for it beside the glyph is redundant on a surface where space is the scarce thing. -->
+        <dl class="conditions" data-weather-detail>
+          <div class="stat card">
+            <dt class="stat-label section-label">Feels like</dt>
+            <dd class="stat-value tabular-figures">{round(reading.current.apparentTemp)}°</dd>
+          </div>
+          <div class="stat card">
+            <dt class="stat-label section-label">Humidity</dt>
+            <dd class="stat-value tabular-figures">{round(reading.current.humidity)}%</dd>
+          </div>
+          <div class="stat card">
+            <dt class="stat-label section-label">Wind</dt>
+            <dd class="stat-value tabular-figures">{round(reading.current.windSpeed)} mph</dd>
+          </div>
+        </dl>
       </section>
 
       <!-- Next hours, per ./README.md § Next hours. One curve at a time, temperature or
@@ -430,11 +337,11 @@
                the strips below are outside the bracket, reading as the axis's own tick labels. -->
           <div class="plot">
             <div class="yaxis">
-              {#each labeled as tick, index (tick.value)}
+              {#each ticks as tick (tick.value)}
                 <span
                   class="tick-label tabular-figures"
                   data-weather-yaxis-tick
-                  style={tickLabelStyle(tick, index, labeled.length)}>{tick.label}</span
+                  style={tickLabelStyle(tick)}>{tick.label}</span
                 >
               {/each}
             </div>
@@ -484,9 +391,9 @@
       <!-- Next days, per ./README.md § Next days. -->
       <section class="series" data-weather-daily>
         <h2 class="heading section-label">Next days</h2>
-        <ol class="strip" style="--strip-count:{reading.daily.length}">
+        <ol class="strip">
           {#each reading.daily as day (day.time)}
-            <li class="cell" data-weather-day>
+            <li class="cell card" data-weather-day>
               <span class="when daily-when">{dayName(day.time)}</span>
               <span class="glyph glyph-daily" data-weather-glyph>{skyGlyph(day.weatherCode, true)}</span>
               <span class="reading daily-reading tabular-figures">{round(day.max)}°/{round(day.min)}°</span>
@@ -508,13 +415,11 @@
     /* The region holds its track and the content leaves it, which is the frame's rule rather than
        something this module decides for itself. */
     min-width: 0;
-    /* Every region anchors its content on its own named axis (RegionFrame's `placementStyle()`),
-       `middle_center`'s horizontal anchor being `center` — a flex item's default cross-axis sizing
-       under that is shrink-to-fit, which is right for a compact hero element (the clock) but leaves
-       this module's graph and daily strip a fraction of the region's own width. Stretching is this
-       module's own opt-out of that default, not a change to the shared anchor other modules still
-       get. */
-    align-self: stretch;
+    /* The module sizes to its own content and takes the region's anchor (RegionFrame's
+       `placementStyle()`), rather than stretching to the region's full width. The daily strip is the
+       widest group, so it sets one width the present block and the graph both fill — Next Hours and
+       Next Days read at a single consistent width, hugging the placed edge, rather than the graph
+       spanning the region while the days pack to a fraction of it. */
   }
 
   .waiting {
@@ -527,6 +432,9 @@
     display: flex;
     flex-direction: column;
     gap: var(--space-sm);
+    /* Justify the reading and its stats to the side the frame placed this module on — right against
+       a right-edge region, left against a left one (RegionFrame's `--content-anchor`). */
+    align-items: var(--content-anchor, flex-start);
   }
 
   .present-reading {
@@ -555,17 +463,54 @@
     font-size: var(--type-headline);
   }
 
-  .sky {
+  /* Current conditions as a row of glanceable stats, filling the space the dropped condition word
+     freed. Each stat names its reading above the value, so the block reads as a hero (glyph +
+     temperature) over a legible supporting row rather than trailing off into one near-caption line.
+     Wraps to a second row only if the region is ever narrowed below what three stats need. */
+  .conditions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-sm);
     margin: 0;
-    font-size: var(--type-body);
-    font-weight: var(--type-body-weight);
+    /* The stats hug the module's own justified side, the same as the reading above them. */
+    justify-content: var(--content-anchor, flex-start);
+  }
+
+  /* Each current-conditions reading is its own card, the same treatment as a day cell — content
+     centred within it (the owner's ask), the card doing the grouping. It still hugs the module's
+     justified side as one of a row (`.conditions`), but centres its own label and value. */
+  .stat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-xs);
+    padding: var(--space-sm) var(--space-md);
+    text-align: center;
+  }
+
+  /* The shared card chrome — a dim stroke a step heavier than the dividers, rounded — so a day cell
+     and a conditions stat read as the same kind of bound object. Weight and radius are local values:
+     two consumers now, but both inside this module, so no shared token is earned yet. */
+  .card {
+    border: calc(var(--divider-stroke-width) * 2) solid var(--emission-stroke);
+    border-radius: var(--space-sm);
+  }
+
+  /* Names the stat, in the display's shared uppercase-tracked label idiom (`.section-label`) at the
+     caption step — the same treatment the group headings and the clock's weekday carry. */
+  .stat-label {
+    font-size: var(--type-caption);
+    font-weight: var(--type-caption-weight);
     line-height: 1;
   }
 
-  .detail {
+  /* The reading itself, at `annotation` — well above the old caption line so it reads at distance,
+     and a clear step below the `headline` temperature so it supports the hero rather than competing
+     with it. */
+  .stat-value {
     margin: 0;
-    font-size: var(--type-caption);
-    font-weight: var(--type-caption-weight);
+    font-size: var(--type-annotation);
+    font-weight: var(--type-annotation-weight);
     line-height: 1;
   }
 
@@ -582,12 +527,20 @@
     font-weight: var(--type-section-header-weight);
     /* Enhancement only, per ./README.md § Grouping, and coherence with the rest of the display. */
     border-bottom: var(--divider-stroke-width) solid var(--emission-stroke);
+    /* A group heading names what follows and is read left-to-right, so it stays left-aligned whichever
+       side the module itself is justified to — only the readings below it hug the module's edge. */
+    text-align: left;
   }
 
   .curve {
     display: flex;
     flex-direction: column;
     gap: var(--space-xs);
+    /* The series label reads as the plot's own title, centred over it — the way a graph is titled,
+       and clear of the top y-axis label that sits at the plot's left edge. Centred rather than
+       following the module's justification, so it is pinned the same whichever side the module is
+       placed on. */
+    text-align: center;
   }
 
   /* Which of the two series is on screen, at the same uppercase-tracked step the strip below it and
@@ -608,20 +561,27 @@
     grid-template-columns: auto 1fr;
     grid-template-rows: auto auto auto;
     row-gap: var(--space-xs);
+    /* The breathing gap between the y-axis labels and the curve lives here, as the gap between the
+       grid's two columns — not as the label column's own `padding-right`, which (with the labels
+       anchored `right: 0`) is pushed to the *left* of the numbers instead and reads as a dead gutter
+       indenting them from the module's edge. */
+    column-gap: var(--space-xs);
   }
 
   /* As tall as `.curve-area`, so a tick's `top` percentage (`tickLabelStyle`) lines up with the
-     gridline it labels. An explicit width, rather than the grid column's own "auto" sizing: every
-     tick label inside is `position: absolute` and so is excluded from what its container
-     contributes to that sizing, which collapses `.yaxis` to its padding alone and pushes the labels
-     out past the plot's left edge. `ch`, so the width scales with the caption step the labels are
-     set in; sized for the widest label the axis draws — a negative two-decimal reading, e.g.
-     "-12.34°". */
+     gridline it labels. A fixed width, in `ch` at the labels' own caption step (`font-size` set here
+     so `ch` measures that step, not the container's) — three characters, a plain two-digit degree or
+     percentage. Fixed rather than sized to the widest label on screen: the widest differs between the
+     two series, so a data-driven width would resize the column and shift the whole plot every time
+     the curve toggles. A wider label (a fractional interior tick like "68.25°", or a three-digit
+     reading) is anchored `right: 0` and so overflows to its *left*, into the free margin beside the
+     module, rather than widening this column — the plot stays put and the axis carries no dead
+     gutter (owner-specified). */
   .yaxis {
     position: relative;
-    width: 7ch;
+    width: 3ch;
     height: calc((var(--type-caption) * 3 + var(--space-xs) * 2) * 2);
-    padding-right: var(--space-xs);
+    font-size: var(--type-caption);
     grid-column: 1;
     grid-row: 1;
   }
@@ -738,9 +698,14 @@
     transform: translateX(-50%);
   }
 
+  /* The days packed together with one gap between cells and justified to the module's own side,
+     rather than spread across the region's full width as equal columns — five narrow cells stretched
+     over the whole width read as five islands adrift, not one strip. */
   .strip {
-    display: grid;
-    grid-template-columns: repeat(var(--strip-count), 1fr);
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-sm);
+    justify-content: var(--content-anchor, flex-start);
     margin: 0;
     padding: 0;
     list-style: none;
@@ -755,6 +720,10 @@
     font-size: var(--type-caption);
     font-weight: var(--type-caption-weight);
     line-height: 1;
+    /* Bounded as its own card (`.card`) so a day reads as one self-contained reading; interior
+       padding here so the content clears that border. The card border carries the grouping, so the
+       gap between cards (`.strip`) is only a small separation. */
+    padding: var(--space-md) var(--space-sm);
   }
 
   .reading {
