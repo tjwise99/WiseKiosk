@@ -1,0 +1,31 @@
+active: true
+derived: false
+header: |
+  Native armv6l build and smoke test
+level: 89
+links:
+- SRS019: XkD-0ryqKdlH9rTn8x4Lg669WTN5oreBPILI_lZEpEg=
+normative: true
+rationale: ''
+ref: ''
+references:
+- path: scripts/native/smoke.py
+  sha: c04608273586d3010695fbf0784a4033b1c9ae40e734fb5e53d605763fd79621
+  type: file
+reviewed: hbShJFnlszjPrOQ1nTug_fj3unrsxpVf2KpNv5Ntilg=
+status: accepted
+text: |
+  A CI job builds the application from source for armv6l — the frontend bundle, and the backend
+  cross-compiled — and runs the native smoke harness over the pair on an amd64 runner under the
+  user-mode emulation the runner registers: the process comes up, answers liveness, serves the page
+  from the bundle it was pointed at, and passes the liveness check its own binary carries. A held
+  address is reported as having judged nothing rather than probed. The CI wiring lives under .github/
+  (not Doorstop-referenceable, ADR 0002 rev 4) and is cited here; the non-dot-dir smoke harness it
+  invokes is the references target.
+verification-justification: |
+  Settles that an armv6l build starts and serves the application it was built with, backend and
+  bundle together, which is what no published image can be asked - none carries that architecture.
+  Leaves unproven behaviour under load, and everything the emulation stands in for: the binary runs
+  on an amd64 runner through a binary-format handler, so instruction timing, memory pressure and a
+  real board's peripherals are outside what this decides.
+verification-method: test
