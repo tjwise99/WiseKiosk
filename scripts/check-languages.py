@@ -55,7 +55,7 @@ EXTENSIONS = {
     "py": "authored — Python, standard library only, what checks the repository (ADR 0017 rev 8)",
     # Derived — a toolchain's own required input format (ADR 0017 rev 8 Decision).
     "yml": "derived — a toolchain's own required input format: GitHub Actions workflow YAML, "
-    "Doorstop item and silo config YAML, Dependabot YAML (ADR 0017 rev 8)",
+    "Doorstop item and silo config YAML (ADR 0017 rev 8)",
     "yaml": "derived — a toolchain's own required input format: pre-commit's "
     ".pre-commit-config.yaml (ADR 0016 rev 6), the boundary schema both code generators "
     "read and oapi-codegen's own configuration (ADR 0008 rev 5, ADR 0017 rev 8)",
