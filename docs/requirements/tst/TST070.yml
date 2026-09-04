@@ -2,19 +2,19 @@ active: true
 derived: false
 header: |
   The weather region carries the temperature expected for the outlook
-level: 89
+level: 92
 links:
 - SRS051: iCm8ytp2uWqVnHw_CS4c3bcHM9KZ3SwgRunrWZGUFeM=
 normative: true
 rationale: ''
 ref: ''
 references:
-- keyword: 'test(''TST067: shows the temperature expected for each hour and each day
+- keyword: 'test(''TST070: shows the temperature expected for each hour and each day
     of the outlook'', async ({'
   path: frontend/src/modules/weather/weather.spec.ts
-  sha: bb3ad722a5d7b3b075f22ba51086462d93e7d5505ed153fdb89046ef7de2bb31
+  sha: 87a560acdc9a0cc8c18f875116e65c34bdd93ac819b1a5a1ee13607a5f48adf4
   type: file
-reviewed: 5so_EChENhFV_MOelC2pRDxmwt3uPtt7YmZQ7eqXjvc=
+reviewed: FhQSarNrRvj0MfzRmPvuaVAXaHUKF2TZHkbSOMkA_do=
 status: accepted
 text: |
   Render test handing the component a payload whose hours and days each carry a temperature figure,

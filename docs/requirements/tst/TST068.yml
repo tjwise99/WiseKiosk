@@ -12,9 +12,9 @@ references:
 - keyword: 'test(''TST068: shows the chance of precipitation expected for each hour
     and each day of the outlook'', async ({'
   path: frontend/src/modules/weather/weather.spec.ts
-  sha: bb3ad722a5d7b3b075f22ba51086462d93e7d5505ed153fdb89046ef7de2bb31
+  sha: 87a560acdc9a0cc8c18f875116e65c34bdd93ac819b1a5a1ee13607a5f48adf4
   type: file
-reviewed: V-6gprWwS9hrvUTGmCBKdGmHzwp_0rPeybOO50XqoEU=
+reviewed: K-8RJHyb7m6RS7LTJINY0oyRndJWGzEmFaSVtL_9Ex0=
 status: accepted
 text: |
   Render test handing the component a payload whose hours and days each carry a precipitation figure,
