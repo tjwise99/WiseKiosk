@@ -89,15 +89,16 @@ export async function render(
 }
 
 /**
- * Puts the browser host's clock under the test's control, standing at `when`. Installed before any
+ * Puts the browser host's clock under the test's control, paused at `when`. Installed before any
  * navigation, because it is delivered as an init script and a document already loaded has the real
- * one; it survives the navigations `render` makes afterwards. Time then stands still until a test
- * advances it with `page.clock.runFor`, which is what lets a check assert over an advancing clock
- * without waiting for real seconds — and what makes the value on screen attributable to this clock
- * rather than to whatever the runner's own happened to read.
+ * one; it survives the navigations `render` makes afterwards. A paused clock stands still until a
+ * test advances it with `page.clock.runFor` (or moves it with `page.clock.setSystemTime`), which is
+ * what lets a check assert over an advancing clock without waiting for real seconds — and what makes
+ * the value on screen attributable to this clock rather than to whatever the runner's own happened to
+ * read.
  */
 export async function holdHostClock(page: Page, when: Date): Promise<void> {
-  await page.clock.install({ time: when });
+  await page.clock.pauseAt(when);
 }
 
 /**
