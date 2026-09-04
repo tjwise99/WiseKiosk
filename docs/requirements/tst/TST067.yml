@@ -4,27 +4,31 @@ header: |
   Native armv6l build and smoke test
 level: 89
 links:
-- SRS019: B3xjeT7agnpZT_KdXaGKYphhnc9a22YpBzmoRj9kmvM=
+- SRS019: 0Rnv18jymYmvtCq6SDd9wHpE8wg_jwH6HEqDggeXUSA=
 normative: true
 rationale: ''
 ref: ''
 references:
 - path: scripts/native/smoke.py
-  sha: c31a06701cbc6995fd72e7e474a33387a544891d09800ded306c4b10a85c58de
+  sha: ad4b451f2c911f2b3cdc5392af1dd2b9d5494dddda68eb4f0e96d52fcbc5bfcf
   type: file
-reviewed: _1k1R9mnnf8oBq7H8aH8I6IKcxS5foDHIgqDfFfc9kw=
+reviewed: Vki5QnN05iikInM8d8ZuTjW8OdO9aWpa3WCFC39uhaQ=
 status: accepted
 text: |
   A CI job builds the application from source for armv6l — the frontend bundle, and the backend
   cross-compiled — and runs the native smoke harness over the pair on an amd64 runner under the
   user-mode emulation the runner registers: the process comes up, answers liveness, serves the page
-  from the bundle it was pointed at, and passes the liveness check its own binary carries. A held
+  from the bundle it was pointed at, and passes the liveness check its own binary carries. The binary
+  is first read for the architecture and ARM revision it was to be built for, the header carrying the
+  one and the toolchain's recorded build setting the other. A held
   address is reported as having judged nothing rather than probed. The CI wiring lives under .github/
   (not Doorstop-referenceable, ADR 0002 rev 4) and is cited here; the non-dot-dir smoke harness it
   invokes is the references target.
 verification-justification: |
-  Settles that an armv6l build starts and serves the application it was built with, backend and
-  bundle together, which is what no published image can be asked - none carries that architecture.
+  Settles that a 32-bit ARM binary the toolchain built for ARMv6 starts and serves the application it
+  was built with, backend and bundle together, which is what no published image can be asked - none
+  carries that architecture. The ARMv6 half rests on the build settings recorded in the binary rather
+  than on the instructions emitted.
   Leaves unproven behaviour under load, and everything the emulation stands in for: the binary runs
   on an amd64 runner through a binary-format handler, so instruction timing, memory pressure and a
   real board's peripherals are outside what this decides.

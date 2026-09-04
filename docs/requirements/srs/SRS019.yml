@@ -15,7 +15,7 @@ rationale: |
   Stated as an obligation on WiseKiosk rather than as a fact about the host, because a host's
   capabilities are not ours to require; what is ours is running on each of them.
 ref: ''
-reviewed: -HYfTHE-o7Ew_ID18kCMD61uK3wX3BL2PC-KnDZJRmA=
+reviewed: hrIAHrdfomL0Uwzltytn7xygyw-M_qD41kReLGlYuWI=
 status: accepted
 text: |
   The backend shall run on amd64, arm64 and armv6l hosts.
@@ -24,6 +24,7 @@ verification-justification: |
   architecture is reached in: two of them as the published image, and armv6l as the binary and
   bundle a build from source produces, no published image carrying it. What no check settles is
   behaviour under load on any of them - they establish that the application runs, not that it runs
-  well. Nor is the emulation the foreign legs run under the hardware itself: what it decides is that
-  the build is for the right architecture and starts, not how it behaves on a real board.
+  well. Nor is the emulation the foreign checks run under the hardware itself: what it decides is
+  that the binary is a 32-bit ARM binary the toolchain built for ARMv6, and that it starts and
+  serves, not how it behaves on a real board.
 verification-method: test

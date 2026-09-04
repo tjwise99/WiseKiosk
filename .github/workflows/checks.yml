@@ -406,13 +406,9 @@ jobs:
   native-arch:
     name: native-arch
     # The architecture no published image carries, smoke-tested as the application rather than an
-    # image: the frontend bundle is built, the backend is cross-compiled for armv6l, and the binary
-    # is executed on this amd64 runner under the user-mode emulation setup-qemu-action registers as
-    # a binary-format handler (docs/CI.md § Native binary run). A job rather than an image-arch leg
-    # because it shares neither the artifact nor the toolchains those legs need, and it needs
-    # emulation, which is why it is not a `just verify` dependency (docs/CI.md § Gate wiring). The
-    # recipe body is the one spelling of what runs, here and locally. No secrets: everything is
-    # built and run on the runner and pushed nowhere.
+    # image: the bundle is built, the backend cross-compiled for armv6l, and the binary run on this
+    # amd64 runner under the emulation setup-qemu-action registers (docs/CI.md § Native binary run).
+    # No secrets: everything is built and run on the runner and pushed nowhere.
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1

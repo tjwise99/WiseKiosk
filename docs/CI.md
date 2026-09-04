@@ -161,9 +161,10 @@ why it is not a `just verify` dependency either (§ *Gate wiring*).
 
 - **What is under test is the application, not an image.** The job builds both halves from the
   tracked tree and starts the binary as a process with the bundle as its static root, which is the
-  shape a deployment that compiles from source runs. Nothing here builds, loads or pushes an image,
-  and the container architectures stay the section above's — adding a leg there would assert
-  something no published artifact does. Recorded in
+  shape the native deployment model runs in ([`ARCHITECTURE.md`](ARCHITECTURE.md) draws it and this
+  summarises it). Nothing here builds, loads or pushes an image, and the container architectures stay
+  the section above's — adding a leg there would assert something no published artifact does.
+  Recorded in
   [`../scripts/cases/smoke-native.md`](../scripts/cases/smoke-native.md).
 - **The architecture is asserted, not printed.** The recipe holds the target in one place, which
   reaches both the build environment and the harness's expectation, so the binary cannot be built for
@@ -185,9 +186,9 @@ why it is not a `just verify` dependency either (§ *Gate wiring*).
   takes no flag for it, so a process already on that address answers liveness, the page and the
   binary's own `-health-check` while the binary under test dies on a bind it lost. That is
   indistinguishable from a clean run, so the address is refused before anything is probed.
-- **Emulation is not the board.** What the job decides is that the build is for the right
-  architecture and that it starts and serves. Instruction timing, memory pressure and a real board's
-  peripherals are outside it, and are named as unproven by the item the harness serves.
+- **Emulation is not the board.** What the job decides is that the binary is a 32-bit ARM binary the
+  toolchain built for ARMv6, and that it starts and serves. Instruction timing, memory pressure and a
+  real board's peripherals are outside it, and are named as unproven by the item the harness serves.
 
 ## Generated boundary contract
 

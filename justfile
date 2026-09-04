@@ -270,12 +270,9 @@ smoke-image platform:
     docker buildx build --platform {{platform}} --load --tag wisekiosk:citest .
     python3 scripts/image/smoke.py wisekiosk:citest
 
-# The architecture is fixed in the body rather than named by the caller, unlike `smoke-image`: no
-# published image carries it, so there is no leg to hand one in (docs/CI.md § Native binary run).
-# Depends on `check-build` so what is served is the bundle a build emits rather than whatever a
-# previous run left in `dist/`. The two settings below reach the build environment and the harness's
-# expectation from one spelling, so the binary cannot be built for one architecture and asserted
-# against another.
+# The architecture is fixed in the body rather than named by the caller, unlike `smoke-image`
+# (docs/CI.md § Native binary run). Depends on `check-build` so what is served is the bundle a
+# build emits. The two settings below reach both the build environment and the expectation.
 native_goarch := "arm"
 native_goarm := "6"
 
