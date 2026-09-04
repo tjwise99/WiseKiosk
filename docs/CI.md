@@ -384,16 +384,6 @@ What each of these obligations *is*, and why, is [`DEPLOYMENT.md`](DEPLOYMENT.md
   step of the sequence ([`DEPLOYMENT.md`](DEPLOYMENT.md) § *Bring-up*), so a run that skips it is a
   faithful bring-up and not a gap. Whether #138 bring-up check also exercises the optional step is
   that ticket's to decide. No human is in the loop at any point.
-- **The example configuration is one the page accepts.** It is loaded in the page and asserted to
-  render the configured display with no validation report. Asserting that the tag carries the file
-  decides its presence and nothing about its content, and the bring-up check above passes over a bad
-  one: validation runs in the page rather than the backend
-  ([ADR 0007 rev 2](decisions/0007-config-validation-allocation.md)), so a stale example still serves.
-  A schema change that leaves the example behind fails here or nowhere — and the example is what the
-  documented procedure tells an operator to copy, so it is the first configuration most deployments
-  ever run. **In the page** is the load-bearing part: a schema validator run as a step here would be a
-  second implementation of the schema's rules, which that ADR forbids. This exercises the one engine
-  rather than authoring another.
 - **The committed recipe carries a restart policy.** `scripts/check-restart-policy.py`, run by
   `just check-restart-policy` in the `docs-and-hygiene` job, failing where a service in
   `deploy/compose.yaml` declares no policy or declares one other than `unless-stopped` — the value
@@ -414,17 +404,28 @@ What each of these obligations *is*, and why, is [`DEPLOYMENT.md`](DEPLOYMENT.md
   fails rather than reading as a signal in neither direction, and a vector docker could not execute
   at all (125, 126 or 127) is reported as having judged nothing rather than as a correctly reported
   unhealthy state. Recorded in [`../scripts/cases/check-image.md`](../scripts/cases/check-image.md).
+- **The example configuration is one the page accepts.** It is loaded in the page and asserted to
+  render the configured display with no validation report. Asserting that the tag carries the file
+  decides its presence and nothing about its content, and the bring-up check above passes over a bad
+  one: validation runs in the page rather than the backend
+  ([ADR 0007 rev 2](decisions/0007-config-validation-allocation.md)), so a stale example still serves.
+  A schema change that leaves the example behind fails here or nowhere — and the example is what the
+  documented procedure tells an operator to copy, so it is the first configuration most deployments
+  ever run. **In the page** is the load-bearing part: a schema validator run as a step here would be a
+  second implementation of the schema's rules, which that ADR forbids. This exercises the one engine
+  rather than authoring another. Recorded in
+  [`../scripts/cases/check-render.md`](../scripts/cases/check-render.md).
 - **An image swap preserves the deployment.** A test runs published digest A with a mounted
   configuration and secret directory and asserts it is healthy and serving that configuration; stops
   and removes it; runs digest B with byte-identical mount arguments and asserts it is healthy, serving
   the same configuration, and reporting a changed version — with no builder invoked at any point.
 
-**Two are built and three are not.** The recipe and health-signal checks landed with #54 container
-build and publish, against the image and the recipe that ticket ships. The three that run against a
-published release are owned one ticket each — #138 bring-up check, #139 example-configuration check
-and #140 image-swap check — which is how this project records scoped work
-([ADR 0005 rev 2](decisions/0005-traceability-gating.md)); what each asserts was decided by #71
-release artifact set, which shipped no code.
+**Three are built and two are not.** The recipe and health-signal checks landed with #54 container
+build and publish, against the image and the recipe that ticket ships; the example-configuration
+check landed with #139, against the page it renders. The two that run against a published release
+are owned one ticket each — #138 bring-up check and #140 image-swap check — which is how this
+project records scoped work ([ADR 0005 rev 2](decisions/0005-traceability-gating.md)); what each
+asserts was decided by #71 release artifact set, which shipped no code.
 
 ## The exception register
 
