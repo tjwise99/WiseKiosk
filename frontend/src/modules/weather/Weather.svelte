@@ -349,9 +349,29 @@
   }
 
   /** A tick's own gridline, in viewBox y units — every tick but the bottom one, whose gridline is
-      the plot's own bottom border and would otherwise be drawn twice. */
+      the plot's own bottom border and would otherwise be drawn twice. Unthinned: every tick the
+      scale computed still draws its own line, `labeledTicks` below only ever thinning the text
+      beside them. */
   function gridlines(ticks: YAxisTick[]): number[] {
     return ticks.slice(1).map((tick) => tick.yFraction * CURVE_VIEWBOX_HEIGHT);
+  }
+
+  /** How many y-axis tick labels `.yaxis`'s own band can hold before adjacent ones start to
+      overlap: the band's height (`.yaxis`'s own `calc()`, `(caption*3 + space-xs*2)*2`) divided by
+      a label's own line pitch (roughly `1.4` times its line-height, the same rule of thumb behind
+      the anchoring `tickLabelStyle` already does at the bottom and top tick) — both figures fixed
+      multiples of the same two tokens, so this is a constant derived from them rather than
+      something read off the rendered page (the module never measures its own layout back). */
+  const MAX_YAXIS_LABELS = 5;
+
+  /** Which of `ticks`'s own gridlines get a rendered label — every scale tick when they already fit
+      `MAX_YAXIS_LABELS`, otherwise every Nth one, thinned just enough to fit while always keeping
+      the bottom and top tick (the scale's own bounds, and the two `tickLabelStyle` anchors flush
+      rather than centres) labeled. */
+  function labeledTicks(ticks: YAxisTick[]): YAxisTick[] {
+    if (ticks.length <= MAX_YAXIS_LABELS) return ticks;
+    const stride = Math.ceil((ticks.length - 1) / (MAX_YAXIS_LABELS - 1));
+    return ticks.filter((_, index) => index % stride === 0 || index === ticks.length - 1);
   }
 
   /** Where a tick's label sits against its own gridline in `.yaxis`: flush to the line's far edge at
@@ -380,6 +400,7 @@
       {@const values = seriesValues(reading.hourly, active)}
       {@const scale = yAxisScale(values, unit)}
       {@const ticks = scale.ticks}
+      {@const labeled = labeledTicks(ticks)}
       {@const vertices = curveVertices(values, scale)}
       <!-- Present, per ./README.md § Present. -->
       <section class="present" data-weather-present>
@@ -409,11 +430,11 @@
                the strips below are outside the bracket, reading as the axis's own tick labels. -->
           <div class="plot">
             <div class="yaxis">
-              {#each ticks as tick, index (tick.value)}
+              {#each labeled as tick, index (tick.value)}
                 <span
                   class="tick-label tabular-figures"
                   data-weather-yaxis-tick
-                  style={tickLabelStyle(tick, index, ticks.length)}>{tick.label}</span
+                  style={tickLabelStyle(tick, index, labeled.length)}>{tick.label}</span
                 >
               {/each}
             </div>
