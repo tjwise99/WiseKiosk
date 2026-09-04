@@ -16,13 +16,13 @@ where a gate is unbuilt its ticket is named. That is how this project records sc
 
 Not everything CI does is a gate. These produce material a person acts on.
 
-- **Grouped dependency update proposals.** Dependabot carries one entry per ecosystem present in the
-  tree — `github-actions` at the root, and the `pip` and `npm` entries pointing at the silos holding
-  the documentation toolchains' manifests; `gomod` and the application `npm` entry join them with the
-  manifests they need, and `docker` names the root, where the `Dockerfile` carrying its base-image
-  pins sits ([ADR 0021 rev 2](decisions/0021-repository-layout.md)). Each carries a non-empty `groups` key, so an ecosystem's updates arrive as one
-  reviewable change rather than a dozen. That the `github-actions` entry exists and every other entry
-  resolves to its manifest is § *Repository shape*'s.
+- **Dependency update proposals.** Renovate runs every six hours from `tjwise99/renovate-runner`,
+  opening pull requests under the runner's GitHub App `[bot]` login on `renovate/*` branches. Patch,
+  minor, pin and digest updates auto-merge through GitHub's native auto-merge once required checks
+  pass; major updates open a pull request and wait. A release sits for three days before its update
+  opens a branch. The Node version across `engines` fields, `setup-node` inputs and the `Dockerfile`
+  base image travels as one grouped pull request. That the root `renovate.json` resolves the pinned
+  preset is § *Repository shape*'s.
 - **Code-scanning results.** Every static-analysis finding is reported to the repository's
   code-scanning dashboard and annotated on the pull request, whether or not it fails the build.
 - **Complete scan output.** The vulnerability gates report every advisory they resolve — at any
@@ -630,8 +630,9 @@ changed, which the citation resolver above decides without anyone declaring anyt
   the authored hook runs regardless of the file set (`always_run`) and reports success over an empty
   tracked tree, under the same ruling. pre-commit itself is pinned in `scripts/requirements-dev.txt`
   — installed into `scripts/.venv` by `just hooks-install` and by CI's install step, and covered by
-  Dependabot's pip ecosystem; each hook repository is pinned by commit SHA in the config, which no
-  Dependabot ecosystem covers, so `pre-commit autoupdate`, run by hand, is its updater.
+  Renovate's `pip` manager; each hook repository is pinned by commit SHA in the config, which no
+  Renovate manager covers — its `pre-commit` manager stays off — so `pre-commit autoupdate`, run by
+  hand, is its updater.
 - **The pull-request title is a Conventional Commit, and so is each local commit message** — one
   obligation at two stages, delegated to `commitlint`
   ([ADR 0016 rev 6](decisions/0016-maintained-tools-for-standard-artifacts.md); the gate itself is
@@ -648,7 +649,7 @@ changed, which the citation resolver above decides without anyone declaring anyt
   through that the retired regex refused: an empty scope, which no rule can refuse without also
   refusing a scopeless header. The npm packages are
   pinned by exact version in the hooks' `additional_dependencies`, written once as a YAML anchor;
-  neither Dependabot nor `pre-commit autoupdate` reaches such a pin, so those versions are updated
+  neither Renovate nor `pre-commit autoupdate` reaches such a pin, so those versions are updated
   by hand, beside the hook-repository revs `autoupdate` does move.
 - The branch is named `type_number-snake_name`, links an open issue labelled with its type, and its
   default-base pull request records the ticket linkage.
@@ -677,15 +678,10 @@ changed, which the citation resolver above decides without anyone declaring anyt
   other kind of tooling. Detected from `just`'s own dump rather than from the file's text, so the
   shape is whatever `just` resolves it to.
 - A depth-1 listing of the repository root holds no `package.json`, `go.mod`, `pyproject.toml`,
-  `requirements*.txt` or `.venv/` — tooling is siloed with the feature it serves — and every
-  Dependabot entry that is not `github-actions` resolves to a directory holding the matching
-  manifest, non-root for every ecosystem but `docker`. **Two exemptions, of different kinds.**
-  `github-actions` is exempt from manifest resolution altogether, because its manifests are the
-  workflow files, which are siloed nowhere, so its entry is asserted to exist instead — an exemption
-  is otherwise granted to an entry nothing obliges, and without the entry the pins below stop being
-  updated and nothing says so. `docker` is exempt from the non-root half alone: the `Dockerfile` sits
-  at the root by [ADR 0021 rev 2](decisions/0021-repository-layout.md), and its entry is still held to
-  naming a directory that holds one, so a `docker` entry pointed anywhere else fails like any other.
+  `requirements*.txt` or `.venv/` — tooling is siloed with the feature it serves. The root
+  `renovate.json` parses as JSON and its `extends` list names the `github>tjwise99/renovate-runner`
+  preset, pinned to a tag — the one dependency-update configuration the repository carries directly,
+  the policy itself living in the preset the runner repository publishes.
 
 ## Action pins and workflow privilege
 
@@ -719,13 +715,11 @@ channel is decided.
   rather than an obligation on it (ADR 0016 rev 6's empty-population ruling).
 
 **What the gate deliberately lets through.** The `# vN` version comment beside a pin is retired as an
-obligation (ADR 0016 rev 6): a stale or absent comment passes, and Dependabot maintains the comments
-only on the bumps it performs. Everything outside `.github/workflows` is outside the input set —
-`.github/dependabot.yml` in particular, so `zizmor`'s `dependabot-cooldown` audit does not gate here.
+obligation (ADR 0016 rev 6): a stale or absent comment passes, and the adopted
+`helpers:pinGitHubActionDigests` preset maintains the comments only on the bumps it performs.
 The audits needing the GitHub API (`known-vulnerable-actions` and `ref-version-mismatch` among them)
 do not run: the gate runs the offline audit set, deterministically, so a verdict moves only when a
-workflow or a pinned image does. And the pinned image digests themselves are bumped by hand —
-Dependabot's `github-actions` ecosystem does not rewrite a `docker://` reference.
+workflow or a pinned image does.
 
 **The repository-level default is not decidable here either.** `GITHUB_TOKEN`'s default permission
 sits behind the same admin-only API as the settings in § *Secret scanning*. It is read-only; the

@@ -57,7 +57,7 @@ design_119-c4_model_completion
    └─ task | bug | design | module — the issue's template, and its label
 ```
 
-`main` and Dependabot branches are exempt. Every other branch must also satisfy all of:
+`main` and Renovate branches (`renovate/*`) are exempt. Every other branch must also satisfy all of:
 
 - the issue is **open**, **milestoned**, and carries **exactly one** type label — a second one makes
   the branch type ambiguous ([ADR 0013 rev 4](docs/decisions/0013-work-tracking-invariants.md));
