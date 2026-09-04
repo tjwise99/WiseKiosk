@@ -13,7 +13,7 @@ CI's `process` check.
 | Must fail | `task_0-leading_zero` — the number set is `[1-9][0-9]*` |
 | Must fail | `task_2-Upper_Case` — the name is lowercase snake_case |
 | Must fail | `feature/bar`, invoked through `pre-commit run branch-shape --hook-stage pre-push` — the wiring, not just the script |
-| Must fail | `dependabot/pip/foo-1.2.3` — the old exemption is gone; Dependabot no longer names branches here |
+| Must fail | `dependabot/pip/foo-1.2.3` — the old exemption is gone |
 | Must pass | `task_1-ok` |
 | Must pass | `main` — exempt: the mainline is not a work branch |
 | Must pass | `renovate/npm/foo-1.2.3` — exempt: Renovate names its own branches |
