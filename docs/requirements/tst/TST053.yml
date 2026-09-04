@@ -16,9 +16,9 @@ references:
 - keyword: 'test(''TST053: presents the hour in the form its configuration selects'',
     async ({ page }) => {'
   path: frontend/src/modules/clock/clock.spec.ts
-  sha: bc5977d6c1698822b133bc6cab102363abc3b9c040e84407cd5f05fd73734c14
+  sha: 0a97bc09da19412bb366af492088d48225c6dab1a553263c85efecec6c51fd82
   type: file
-reviewed: tk1CTrI27p7bC6XXxVRjBd-saCtNY5dxDwvnWX4ECK4=
+reviewed: unvfZvC0wuaHiI13pyLx7g5H85L5aYCq-_jwi0nb1XM=
 status: proposed
 text: |
   Render test loading the page under each of the two hour selections at an afternoon host time,
