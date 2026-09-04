@@ -90,8 +90,8 @@
   const round = (value: number) => Math.round(value);
 
   /**
-   * Which of the two hourly series the curve is currently drawing. Both share the plot; only one is
-   * ever on screen, so `active` is the one flag that says which.
+   * Which of the two hourly series the curve draws. Both share the plot; only one is ever on
+   * screen, so `active` is the one flag that says which.
    */
   type SeriesKind = 'temperature' | 'precipitation';
 
@@ -131,7 +131,7 @@
 
   /** The axis is always divided into this many equal bands — five ticks, five gridlines, four
       regions between them — whatever the data's range, so the scale reads the same every render
-      rather than the tick count shifting with the data (owner-specified). */
+      rather than the tick count shifting with the data. */
   const AXIS_BANDS = 4;
 
   /** The smallest span, in the active series' own units, the axis is ever drawn over — the tightest
@@ -139,7 +139,7 @@
       is a quarter-unit step; anything narrower would need a finer label than a quarter). A flat or
       near-flat run is drawn against this span rather than its own near-zero one, so it reads as a
       readable swing that fills the plot rather than a noise-height wiggle, and a genuinely flat run
-      still divides by a real span rather than zero (owner-specified: the small-range exception). */
+      still divides by a real span rather than zero. */
   const MIN_AXIS_SPAN = 1;
 
   /** A y-axis tick: its value, its label, and its place on the axis as a fraction (0 at the top,
@@ -179,7 +179,7 @@
    * whole-number bracket is narrower than `MIN_AXIS_SPAN` (a flat or near-flat run, `floor` and
    * `ceil` within two units of each other), the top is lifted to `bottom + MIN_AXIS_SPAN` so the
    * axis never zooms below that span; the lift only ever raises the top, so data the bracket held it
-   * still holds (owner-specified, ./README.md).
+   * still holds.
    */
   function yAxisScale(values: number[], unit: string): YAxisScale {
     const bottom = Math.floor(Math.min(...values));
@@ -452,8 +452,8 @@
   }
 
   /* Each current-conditions reading is its own card, the same treatment as a day cell — content
-     centred within it (the owner's ask), the card doing the grouping. It still hugs the module's
-     justified side as one of a row (`.conditions`), but centres its own label and value. */
+     centred within it, the card doing the grouping. It still hugs the module's justified side as
+     one of a row (`.conditions`), but centres its own label and value. */
   .stat {
     display: flex;
     flex-direction: column;
@@ -465,7 +465,7 @@
 
   /* The shared card chrome — a dim stroke a step heavier than the dividers, rounded — so a day cell
      and a conditions stat read as the same kind of bound object. Weight and radius are local values:
-     two consumers now, but both inside this module, so no shared token is earned yet. */
+     two consumers, both inside this module, so no shared token is earned. */
   .card {
     border: calc(var(--divider-stroke-width) * 2) solid var(--emission-stroke);
     border-radius: var(--space-sm);
@@ -551,7 +551,7 @@
      the curve toggles. A wider label (a fractional interior tick like "68.25°", or a three-digit
      reading) is anchored `right: 0` and so overflows to its *left*, into the free margin beside the
      module, rather than widening this column — the plot stays put and the axis carries no dead
-     gutter (owner-specified). */
+     gutter. */
   .yaxis {
     position: relative;
     width: 3ch;
