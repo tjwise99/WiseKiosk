@@ -120,15 +120,16 @@
    */
   type SeriesKind = 'temperature' | 'precipitation';
 
-  /** How often the curve swaps series.
-      TODO(#243): interval is fixed pending SRS011 config-key decision */
-  const SWITCH_INTERVAL_MS = 10_000;
+  /** The switch cadence to fall back to should the config arrive without the schema's own default
+      populated — the placement's `series_switch_seconds`, config/schema.json's own default. */
+  const DEFAULT_SWITCH_SECONDS = 10;
 
   let active = $state<SeriesKind>('temperature');
   $effect(() => {
+    const seconds = config.series_switch_seconds ?? DEFAULT_SWITCH_SECONDS;
     const toggle = setInterval(() => {
       active = active === 'temperature' ? 'precipitation' : 'temperature';
-    }, SWITCH_INTERVAL_MS);
+    }, seconds * 1000);
     return () => clearInterval(toggle);
   });
 
