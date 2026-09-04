@@ -471,7 +471,7 @@ not counted here.
 
 _To be documented as it is built._ The backend is config-blind and delivers the configuration
 byte-for-byte to the page ([ADR 0007 rev 2](decisions/0007-config-validation-allocation.md)); the
-configuration is a static file bind-mounted into the served tree
+configuration is a static file placed in the served tree from outside the image
 (SRS018<!-- One generic published image -->), validated in the page and nowhere else at apply time,
 where a module-scoped error is reported at that module
 (SRS002<!-- A module-scoped configuration error is reported at that module -->). A secret reaches the
@@ -506,21 +506,41 @@ graph TB
       ContainerHost.RunningContainer.Backend@{ shape: rectangle, label: "Backend" }
     end
   end
+  subgraph NativeHost["`Native host`"]
+    NativeHost.NativeConfigurationFile@{ shape: rectangle, label: "Configuration file" }
+    NativeHost.NativeSecretFiles@{ shape: rectangle, label: "Secret files" }
+    subgraph NativeHost.NativeProcess["`Backend process`"]
+      NativeHost.NativeProcess.Backend@{ shape: rectangle, label: "Backend" }
+    end
+  end
   DisplayHost.DisplayBrowser.Frontend -. "`Fetches the configuration, served back 
 unparsed`" .-> ContainerHost.RunningContainer.Backend
   DisplayHost.DisplayBrowser.Frontend -. "`Fetches the payload for each module`" .-> ContainerHost.RunningContainer.Backend
+  DisplayHost.DisplayBrowser.Frontend -. "`Fetches the configuration, served back 
+unparsed`" .-> NativeHost.NativeProcess.Backend
+  DisplayHost.DisplayBrowser.Frontend -. "`Fetches the payload for each module`" .-> NativeHost.NativeProcess.Backend
   ContainerHost.RunningContainer.Backend -. "`Serves the single-page bundle`" .-> DisplayHost.DisplayBrowser.Frontend
+  NativeHost.NativeProcess.Backend -. "`Serves the single-page bundle`" .-> DisplayHost.DisplayBrowser.Frontend
   PublishedImage -. "`Runs as this container`" .-> ContainerHost.RunningContainer
   ContainerHost.ConfigurationFile -. "`Mounted in`" .-> ContainerHost.RunningContainer
   ContainerHost.SecretFiles -. "`Mounted in`" .-> ContainerHost.RunningContainer
+  NativeHost.NativeConfigurationFile -. "`Read from the host`" .-> NativeHost.NativeProcess
+  NativeHost.NativeSecretFiles -. "`Read from the host`" .-> NativeHost.NativeProcess
 ```
 
 <!-- arch-export:end generated/deployment.mmd -->
 The published image is the one node here that exists before any deployment does, and it is drawn because
-the obligations on it are obligations on the artifact rather than on the process it becomes. The
-container host and the display host are **roles, not machines**, with different floors; in the
-configuration this is built for they are necessarily separate machines. Why each of those is so, and why
-a host carries a tag only where an item obliges the operator, is
+the obligations on it are obligations on the artifact rather than on the process it becomes.
+
+**Two deployment models, one Backend.** The Backend appears twice at this level: as an instance of the
+published image on the container host, and as a process of the host's own operating system on the
+native host. Both are instances of the same Backend container, so what differs is the Deployment-level
+subject rather than the software
+([ADR 0019 rev 7](decisions/0019-boundary-at-what-deploys-and-tag-tier.md)).
+
+The hosts here are **roles, not machines**. The container host and the display host have different
+floors, and in the configuration this is built for they are necessarily separate machines. Why each of
+those is so, and why a host carries a tag only where an item obliges the operator, is
 [ADR 0019 rev 7](decisions/0019-boundary-at-what-deploys-and-tag-tier.md)'s.
 
 **The image carries a CA trust store.** Every module's upstream is fetched by the backend rather than
