@@ -265,7 +265,7 @@ test('TST060: draws what it is doing now, the hours to come and the days to come
   await expect(page.locator('[data-weather-yaxis-tick]')).toHaveCount(5);
 });
 
-test('TST067: shows the temperature expected for each hour and each day of the outlook', async ({
+test('TST070: shows the temperature expected for each hour and each day of the outlook', async ({
   page,
 }) => {
   await serveModuleData(page, () => ({ status: 200, data: forecast(WARM) }));
@@ -307,7 +307,7 @@ test('TST068: shows the chance of precipitation expected for each hour and each 
     await expect(days.nth(index).locator('.daily-reading').nth(1)).toHaveText(`${5 * index}%`);
   }
 
-  // Hours: switch the curve to its precipitation half and read the same bracket proof TST067 reads
+  // Hours: switch the curve to its precipitation half and read the same bracket proof TST070 reads
   // for temperature — the fixture's own hourly range, 0% to 55%.
   await advanceHostClock(page, 2 * 1000);
   await expect(page.locator(SERIES)).toHaveText('Precipitation');
