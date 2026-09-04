@@ -7,29 +7,26 @@ links:
 - SYS010: dgflQFtHGeswH-PgjWmcBkfuJujSp-a-Z5JtN4H0Low=
 normative: true
 rationale: |
-  The payload has carried a temperature figure for every hour and every day in its outlook since the
-  module first shaped one, and the drawn outlook shows it, but nothing in the tree obliges it: the
-  boundary item (SRS044<!-- The weather module puts the present conditions and the near-term outlook
-  across the boundary -->) and the drawn item (SRS045<!-- The weather module shows the present weather
-  and the outlook apart from each other -->) are both written to avoid naming any specific measure, so
-  a shaping or a component that silently dropped the temperature figure would fail neither.
+  The boundary item (SRS044<!-- The weather module puts the present conditions and the near-term
+  outlook across the boundary -->) and the drawn item (SRS045<!-- The weather module shows the present
+  weather and the outlook apart from each other -->) each state that the outlook exists and is shown
+  without naming a specific measure it carries, so neither is broken by a shaping or a component that
+  drops the temperature figure - a viewer reads a thinner outlook than the display promises with
+  nothing catching it. A viewer reads the outlook to judge what to wear or whether to expect the day to
+  turn, so the temperature expected must reach them for each of the hours and each of the days it
+  covers.
   A forecast for temperature and a forecast for precipitation are two distinct things a viewer is
   owed, not two readings of one want, so each is its own item rather than one item naming both -
   dropping one is then a failure of its own item rather than a failure the other item's check happens
   to also catch.
-  This item and its precipitation counterpart (SRS052<!-- The weather module shows the chance of
-  precipitation across its outlook -->) are the first in the module's decomposition to name a measure
-  rather than describe the outlook abstractly, a departure from the boundary item's own reason for
-  staying abstract - fixing "the names of the fields, their units, their types" would tie a requirement
-  to the boundary schema's own vocabulary. Naming temperature as something a viewer is shown is a claim
-  about the outlook's content, not about a JSON field's name or type; SRS048<!-- The clock shows or
-  omits seconds per its configuration --> already sets the precedent for a requirement naming a
-  specific, viewer-facing quantity without tying itself to a schema key, and this item follows that
-  precedent rather than the boundary item's more cautious one.
+  Naming temperature as something a viewer is shown is a claim about the outlook's content, not about a
+  JSON field's name or type, so it ties no requirement to the boundary schema's own vocabulary - the
+  field's name, its unit, or its type - the way the boundary and the drawn item both avoid doing by
+  naming no measure at all.
   How the figure reaches a viewer - curve, strip, colour, or anything else - is deliberately unstated:
   that is the module's UI design spec's, not this item's.
 ref: ''
-reviewed: iMpOrDLktMIZiT_giNuyVs8b8tslL1Rax45dISK0sUU=
+reviewed: yaQZVI9fiw1NK67GruwpIWI1pfCcxcra_TsBSSpXoAk=
 status: accepted
 text: |
   The weather module shall show, for each of the hours next to come and each of the days next to
