@@ -10,12 +10,12 @@ rationale: |
   Decomposes SYS007<!-- The declared minimum host, and staying within it --> on the backend side.
   Deployment puts the backend on whatever small host is to hand — a Pi, a mini PC, a spare desktop —
   so a single-architecture build would make that choice for the operator. The smallest of those
-  boards is armv6l, and leaving it out narrows the set to the hosts a build happens to reach rather
+  hosts runs armv6l, and leaving it out narrows the set to the hosts a build happens to reach rather
   than the ones an operator is likely to have, which is the choice this item exists not to make.
   Stated as an obligation on WiseKiosk rather than as a fact about the host, because a host's
   capabilities are not ours to require; what is ours is running on each of them.
 ref: ''
-reviewed: fw4Y7WPRjsXQ72_W2ocbIz3nE304V_UlXv-_IEJA-D8=
+reviewed: -HYfTHE-o7Ew_ID18kCMD61uK3wX3BL2PC-KnDZJRmA=
 status: accepted
 text: |
   The backend shall run on amd64, arm64 and armv6l hosts.

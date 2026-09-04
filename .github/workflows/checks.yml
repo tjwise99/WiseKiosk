@@ -373,7 +373,7 @@ jobs:
 
   image-arch:
     name: image-arch
-    # Both architectures the backend is obliged to run on, one leg each: the image is built for the
+    # Both architectures a published image carries, one leg each: the image is built for the
     # leg's platform and smoke-tested on it (scripts/image/smoke.py). One leg per platform rather
     # than one job building both, so a failure names the architecture it happened on, and
     # fail-fast is off so the other architecture still reports. The arm64 leg builds and runs under
@@ -405,17 +405,14 @@ jobs:
 
   native-arch:
     name: native-arch
-    # The third architecture the backend is obliged to run on, which no published image carries and
-    # image-arch therefore cannot report. It is verified the way the deployment that reaches that
-    # architecture works: the application is built from source — the frontend bundle, and the backend
-    # cross-compiled for armv6l — and the binary is then executed on this runner, which is amd64, by
-    # the user-mode emulation setup-qemu-action registers as a binary-format handler. So what runs is
-    # the artifact itself rather than an image around it, and a binary the emulation cannot start
-    # fails here rather than reporting an architecture nothing ran on. No image is built and none
-    # gains a leg: the container architectures stay image-arch's. A job rather than a leg beside
-    # them, because it shares neither the artifact nor the toolchains those legs need. The recipe
-    # body is the one spelling of what runs, here and locally. No secrets: everything is built and
-    # run on the runner and pushed nowhere.
+    # The architecture no published image carries, smoke-tested as the application rather than an
+    # image: the frontend bundle is built, the backend is cross-compiled for armv6l, and the binary
+    # is executed on this amd64 runner under the user-mode emulation setup-qemu-action registers as
+    # a binary-format handler (docs/CI.md § Native binary run). A job rather than an image-arch leg
+    # because it shares neither the artifact nor the toolchains those legs need, and it needs
+    # emulation, which is why it is not a `just verify` dependency (docs/CI.md § Gate wiring). The
+    # recipe body is the one spelling of what runs, here and locally. No secrets: everything is
+    # built and run on the runner and pushed nowhere.
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1

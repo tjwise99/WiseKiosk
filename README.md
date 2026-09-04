@@ -18,10 +18,7 @@ the documented six-part contract in
 
 **Minimum specs.** The backend runs on `amd64`, `arm64` and `armv6l`
 (SRS019<!-- The backend runs on every supported architecture -->) — a Raspberry Pi, a mini PC, a
-spare desktop — as a container from the published image, or as an ordinary process of the host's own
-operating system, built from source and needing no container runtime at all. The published image
-carries the first two architectures, so `armv6l` is reached by the second route alone. The display is
-driven by a browser on a host of Raspberry Pi Zero capability
+spare desktop. The display is driven by a browser on a host of Raspberry Pi Zero capability
 (SRS021<!-- Frontend runs on a Pi Zero-class browser host -->). These are the minimum WiseKiosk
 declares, and SYS007<!-- The declared minimum host, and staying within it --> is the obligation to
 run on them and to keep running there. They are set by what an operator is likely to already have

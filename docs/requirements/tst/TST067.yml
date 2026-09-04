@@ -4,15 +4,15 @@ header: |
   Native armv6l build and smoke test
 level: 89
 links:
-- SRS019: XkD-0ryqKdlH9rTn8x4Lg669WTN5oreBPILI_lZEpEg=
+- SRS019: B3xjeT7agnpZT_KdXaGKYphhnc9a22YpBzmoRj9kmvM=
 normative: true
 rationale: ''
 ref: ''
 references:
 - path: scripts/native/smoke.py
-  sha: c04608273586d3010695fbf0784a4033b1c9ae40e734fb5e53d605763fd79621
+  sha: c31a06701cbc6995fd72e7e474a33387a544891d09800ded306c4b10a85c58de
   type: file
-reviewed: hbShJFnlszjPrOQ1nTug_fj3unrsxpVf2KpNv5Ntilg=
+reviewed: _1k1R9mnnf8oBq7H8aH8I6IKcxS5foDHIgqDfFfc9kw=
 status: accepted
 text: |
   A CI job builds the application from source for armv6l — the frontend bundle, and the backend

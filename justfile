@@ -270,17 +270,21 @@ smoke-image platform:
     docker buildx build --platform {{platform}} --load --tag wisekiosk:citest .
     python3 scripts/image/smoke.py wisekiosk:citest
 
-# The architecture is fixed in the body rather than named by the caller, unlike `smoke-image`: this
-# is the one architecture no published image carries, and the two that do are that recipe's legs.
+# The architecture is fixed in the body rather than named by the caller, unlike `smoke-image`: no
+# published image carries it, so there is no leg to hand one in (docs/CI.md § Native binary run).
 # Depends on `check-build` so what is served is the bundle a build emits rather than whatever a
-# previous run left in `dist/`. The harness is handed the pair — a binary and a bundle — because what
-# a native deployment runs is the application rather than an image.
+# previous run left in `dist/`. The two settings below reach the build environment and the harness's
+# expectation from one spelling, so the binary cannot be built for one architecture and asserted
+# against another.
+native_goarch := "arm"
+native_goarm := "6"
+
 [group('checks')]
-[doc('The backend cross-compiles for armv6l and the application comes up serving natively on it, backend and bundle together — the deployment model that builds from source rather than from the published image; needs emulation for a binary this host cannot execute')]
+[doc('The application builds from source for armv6l — the bundle, and the backend cross-compiled — and comes up serving on it; needs emulation for a binary this host cannot execute')]
 smoke-native: check-build
     mkdir -p bin
-    GOOS=linux GOARCH=arm GOARM=6 CGO_ENABLED=0 go -C backend build -o ../bin/wisekiosk-armv6 ./cmd
-    python3 scripts/native/smoke.py bin/wisekiosk-armv6 frontend/dist
+    GOOS=linux GOARCH={{native_goarch}} GOARM={{native_goarm}} CGO_ENABLED=0 go -C backend build -o ../bin/wisekiosk-armv6 ./cmd
+    python3 scripts/native/smoke.py bin/wisekiosk-armv6 frontend/dist {{native_goarch}}/{{native_goarm}}
 
 [group('config')]
 [doc('Regenerate the configuration-object TypeScript types from the configuration schema')]

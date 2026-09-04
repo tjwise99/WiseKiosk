@@ -129,7 +129,7 @@ without a detected race.
 The container image is built from the tracked tree and the Image tier is run over it, in two jobs of
 their own: `image-tests` runs `just check-image` — the five property harnesses under
 `scripts/image/`, plus the health-signal check § *Deployment and bring-up* states — and `image-arch`
-runs `just smoke-image` once per architecture. Both need Docker, which is why neither is a
+runs `just smoke-image` once per image architecture. Both need Docker, which is why neither is a
 `just verify` dependency (§ *Gate wiring*).
 
 - **The artifact under test is the one this commit builds**, not a published digest: the job builds
@@ -137,7 +137,8 @@ runs `just smoke-image` once per architecture. Both need Docker, which is why ne
   makes it. What the tier must guarantee is [`TESTING.md`](TESTING.md)'s and the obligations it
   answers are the tree's; what is decided here is that it is executed on the merge path rather than
   declared. Recorded in [`../scripts/cases/check-image.md`](../scripts/cases/check-image.md).
-- **Both architectures are smoke-tested, one matrix leg each.** A leg builds for its own platform and
+- **Both image architectures are smoke-tested, one matrix leg each** — `linux/amd64` and
+  `linux/arm64`, the set a release publishes. A leg builds for its own platform and
   runs `scripts/image/smoke.py` over what it loaded: the container answers on its published port, and
   answers the argument vector its own `HEALTHCHECK` declares. `fail-fast` is off, so one
   architecture's failure still leaves the other's verdict; the foreign leg builds and runs under the
@@ -152,8 +153,8 @@ runs `just smoke-image` once per architecture. Both need Docker, which is why ne
 ## Native binary run
 
 `native-arch` runs `just smoke-native`: it builds the frontend bundle, cross-compiles the backend for
-`armv6l`, and runs `scripts/native/smoke.py` over the pair. It answers the third architecture
-SRS019<!-- The backend runs on every supported architecture --> names, which the section above cannot
+`armv6l`, and runs `scripts/native/smoke.py` over the pair. It answers the architecture
+SRS019<!-- The backend runs on every supported architecture --> names that the section above cannot
 reach — no image is published for it, so there is no image to smoke-test. It has a local form and
 needs no Docker, but it does need emulation a contributor machine is not assumed to carry, which is
 why it is not a `just verify` dependency either (§ *Gate wiring*).
@@ -162,7 +163,16 @@ why it is not a `just verify` dependency either (§ *Gate wiring*).
   tracked tree and starts the binary as a process with the bundle as its static root, which is the
   shape a deployment that compiles from source runs. Nothing here builds, loads or pushes an image,
   and the container architectures stay the section above's — adding a leg there would assert
-  something no published artifact does.
+  something no published artifact does. Recorded in
+  [`../scripts/cases/smoke-native.md`](../scripts/cases/smoke-native.md).
+- **The architecture is asserted, not printed.** The recipe holds the target in one place, which
+  reaches both the build environment and the harness's expectation, so the binary cannot be built for
+  one architecture and judged against another. The harness reads the ELF header's machine and the
+  `GOARM` the toolchain records in the binary, and fails when either disagrees. Both halves are
+  needed: `EM_ARM` is one value for every ARM32 variant, the Go linker emits no `.ARM.attributes`
+  section carrying `Tag_CPU_arch`, and a `GOARM=6` and `GOARM=7` build have identical `e_flags`, so
+  the header alone would pass a build at the wrong revision — including one where `GOARM` was dropped
+  and the toolchain silently defaulted to `7`.
 - **The runner executes the foreign binary directly.** `docker/setup-qemu-action` registers
   user-mode emulation as a binary-format handler, so an `armv6l` executable runs on this amd64
   runner the way an `amd64` one does. A binary the emulation cannot start fails the job, reported as
