@@ -84,6 +84,9 @@ specification {
   tag SRS048
   tag SRS049
   tag SRS050
+  tag SRS051
+  tag SRS052
+  tag SRS053
 }
 
 model {
@@ -299,6 +302,9 @@ model {
         #SRS045
         #SRS046
         #SRS050
+        #SRS051
+        #SRS052
+        #SRS053
         description '''
           Renders the weather into the region the configuration gives it: what
           it is doing now, and what is expected over the coming hours and the

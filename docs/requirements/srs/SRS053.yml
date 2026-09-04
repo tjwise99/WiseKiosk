@@ -1,0 +1,44 @@
+active: true
+derived: false
+header: |
+  The weather module's hourly outlook switches which measure it draws, on an interval its configuration sets
+level: 56
+links:
+- SYS010: dgflQFtHGeswH-PgjWmcBkfuJujSp-a-Z5JtN4H0Low=
+normative: true
+rationale: |
+  Which measures the hourly outlook carries is what SRS051<!-- The weather module shows the
+  temperature expected across its outlook --> and SRS052<!-- The weather module shows the chance of
+  precipitation across its outlook --> oblige; this item does not restate their presence. What is left
+  is how the outlook shows two measures once both exist: never together, since a component drawing
+  both at once is not switching between anything, and a component that never switches has one of the
+  two on screen for the whole of every session - a failure this item catches on its own, independent
+  of whether the frozen measure keeps being present.
+  Which measure is current is stated as configuration-driven rather than as a fixed cadence for the
+  same reason the clock's seconds are (SRS048<!-- The clock shows or omits seconds per its
+  configuration -->): an interval that suits one deployment does not suit another, and the key's name
+  and its default belong to the module's configuration schema, not here - restated here they would
+  drift out of step with the schema the moment either changed. That the key produces an observable
+  difference between its default and another schema-valid value, and that the page renders without
+  error across the values it admits, is SRS024's<!-- Every offered configuration key is exercised at a
+  non-default value --> and is not restated here.
+ref: ''
+reviewed: BHwKeIo4rtToBWehTsM_xX_2RNrV0k-8aTLPsaaUQIc=
+status: accepted
+text: |
+  The weather module shall draw, for the hours next to come, only one of its two forecast measures at
+  a time, never both together, and shall change which one it is drawing at the interval its
+  configuration names rather than one fixed in the module.
+verification-justification: |
+  Read from a rendered page handed a payload carrying both measures and a driven clock, under at least
+  two distinct values of the switch-interval configuration: at any sampled moment only one of the two
+  measures is drawn for the hours next to come, never both, and which one is drawn changes when each
+  configuration's interval elapses and not before, so the mark follows configuration rather than a
+  value fixed in the component.
+  What it cannot settle is that the interval used is exactly the configured number to the second - a
+  driven-clock render assertion reads before/after a boundary, not a stopwatch - nor whether
+  alternating is a good way to present two measures, which is a design judgement this item does not
+  reach, nor whether the two measures switched between are the ones the temperature and precipitation
+  items oblige, which is those items' own check. It is bounded by the payloads and configurations the
+  suite supplies.
+verification-method: test

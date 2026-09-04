@@ -4,7 +4,7 @@ header: |
   The weather payload's outlooks are as long as the requirement states
 level: 86
 links:
-- SRS044: 6vTvZZWMJ0t-OlCL16ROHJyhva3fsUmBd4Fyr1BTgn0=
+- SRS044: owHTYOSghg6klqA7KFvbA7gPGFEyO-3eU4PHFJpWB0w=
 normative: true
 rationale: |
   The captured response carries more of each range than the payload is to hold, because a shaping that
@@ -21,9 +21,9 @@ ref: ''
 references:
 - keyword: func TestTST064_TheOutlooksAreAsLongAsTheRequirementStates
   path: backend/internal/modules/weather/weather_test.go
-  sha: f5ba25f4a05d0ad930be295deff56e0eca35b49538251787368a84db9a22f6ae
+  sha: ee835ceecf8fc37b5a6c8e9c85934537b237f470765777f668d3106d92a9ae84
   type: file
-reviewed: LRUMRy2Qq3iM5qTrsyds2NjzZx74Jcjc1qBH8tsPN9Y=
+reviewed: PbETNhDAZToVQFJghlyuqGUnIt6IOMLP1J9Uy5S8Dik=
 status: proposed
 text: |
   Unit test running the module's shaping over a captured response carrying more hours and more days

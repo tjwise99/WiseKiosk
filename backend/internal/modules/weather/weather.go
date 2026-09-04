@@ -100,7 +100,7 @@ const (
 // (SRS045<!-- The weather module shows the present weather and the outlook apart from each other -->).
 const (
 	// hoursShown is how many hours the payload carries.
-	hoursShown = 5
+	hoursShown = 12
 	// hoursRequested is one more, because the source's hourly range starts at the
 	// hour in progress — which is behind rather than ahead, and is dropped.
 	hoursRequested = hoursShown + 1
@@ -217,7 +217,9 @@ func Shape(body []byte) (boundary.WeatherPayload, error) {
 	}
 
 	if read.UTCOffsetSeconds == nil {
-		return boundary.WeatherPayload{}, errors.New("the response reports no UTC offset for the location")
+		return boundary.WeatherPayload{}, errors.New(
+			"the response reports no UTC offset for the location",
+		)
 	}
 	// Nameless, because the abbreviation is the source's presentation and what a
 	// timestamp needs is the offset.
@@ -297,14 +299,22 @@ func shapeCurrent(block *currentBlock, units *unitsBlock) (boundary.WeatherCurre
 
 // shapeHourly reads the hours next to come, dropping the hour in progress that
 // the source's range opens with.
-func shapeHourly(block *seriesBlock, units *unitsBlock, local *time.Location) ([]boundary.WeatherHour, error) {
+func shapeHourly(
+	block *seriesBlock,
+	units *unitsBlock,
+	local *time.Location,
+) ([]boundary.WeatherHour, error) {
 	if block == nil || units == nil {
 		return nil, errors.New("the response carries no hourly range")
 	}
 	if err := sameUnit("hourly temperature", units.Temperature, unitFahrenheit); err != nil {
 		return nil, err
 	}
-	if err := sameUnit("hourly precipitation probability", units.PrecipitationProbability, unitPercent); err != nil {
+	if err := sameUnit(
+		"hourly precipitation probability",
+		units.PrecipitationProbability,
+		unitPercent,
+	); err != nil {
 		return nil, err
 	}
 
@@ -331,7 +341,10 @@ func shapeHourly(block *seriesBlock, units *unitsBlock, local *time.Location) ([
 		if err != nil {
 			return nil, err
 		}
-		chance, err := value("an hourly precipitation probability", block.PrecipitationProbability[step])
+		chance, err := value(
+			"an hourly precipitation probability",
+			block.PrecipitationProbability[step],
+		)
 		if err != nil {
 			return nil, err
 		}
@@ -344,7 +357,11 @@ func shapeHourly(block *seriesBlock, units *unitsBlock, local *time.Location) ([
 		}
 
 		hours = append(hours, boundary.WeatherHour{
-			Time: at, Temp: temperature, WeatherCode: code, PrecipProbability: chance, IsDay: daylight == 1,
+			Time:              at,
+			Temp:              temperature,
+			WeatherCode:       code,
+			PrecipProbability: chance,
+			IsDay:             daylight == 1,
 		})
 	}
 	return hours, nil
@@ -352,17 +369,33 @@ func shapeHourly(block *seriesBlock, units *unitsBlock, local *time.Location) ([
 
 // shapeDaily reads the days next to come, dropping today that the source's range
 // opens with: what today is doing is the present section's.
-func shapeDaily(block *seriesBlock, units *unitsBlock, local *time.Location) ([]boundary.WeatherDay, error) {
+func shapeDaily(
+	block *seriesBlock,
+	units *unitsBlock,
+	local *time.Location,
+) ([]boundary.WeatherDay, error) {
 	if block == nil || units == nil {
 		return nil, errors.New("the response carries no daily range")
 	}
-	if err := sameUnit("daily maximum temperature", units.TemperatureMax, unitFahrenheit); err != nil {
+	if err := sameUnit(
+		"daily maximum temperature",
+		units.TemperatureMax,
+		unitFahrenheit,
+	); err != nil {
 		return nil, err
 	}
-	if err := sameUnit("daily minimum temperature", units.TemperatureMin, unitFahrenheit); err != nil {
+	if err := sameUnit(
+		"daily minimum temperature",
+		units.TemperatureMin,
+		unitFahrenheit,
+	); err != nil {
 		return nil, err
 	}
-	if err := sameUnit("daily precipitation probability", units.PrecipitationProbabilityMax, unitPercent); err != nil {
+	if err := sameUnit(
+		"daily precipitation probability",
+		units.PrecipitationProbabilityMax,
+		unitPercent,
+	); err != nil {
 		return nil, err
 	}
 
@@ -393,7 +426,10 @@ func shapeDaily(block *seriesBlock, units *unitsBlock, local *time.Location) ([]
 		if err != nil {
 			return nil, err
 		}
-		chance, err := value("a daily precipitation probability", block.PrecipitationProbabilityMax[step])
+		chance, err := value(
+			"a daily precipitation probability",
+			block.PrecipitationProbabilityMax[step],
+		)
 		if err != nil {
 			return nil, err
 		}
@@ -422,7 +458,10 @@ func sameUnit(measurement string, reported *string, want string) error {
 		return fmt.Errorf("the response reports no unit for %s", measurement)
 	}
 	if *reported != want {
-		return fmt.Errorf("the response reports %s in a unit this module did not ask for", measurement)
+		return fmt.Errorf(
+			"the response reports %s in a unit this module did not ask for",
+			measurement,
+		)
 	}
 	return nil
 }

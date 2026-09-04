@@ -1,0 +1,40 @@
+active: true
+derived: false
+header: |
+  The weather module shows the temperature expected across its outlook
+level: 54
+links:
+- SYS010: dgflQFtHGeswH-PgjWmcBkfuJujSp-a-Z5JtN4H0Low=
+normative: true
+rationale: |
+  The boundary item (SRS044<!-- The weather module puts the present conditions and the near-term
+  outlook across the boundary -->) and the drawn item (SRS045<!-- The weather module shows the present
+  weather and the outlook apart from each other -->) each state that the outlook exists and is shown
+  without naming a specific measure it carries, so neither is broken by a shaping or a component that
+  drops the temperature figure - a viewer reads a thinner outlook than the display promises with
+  nothing catching it. A viewer reads the outlook to judge what to wear or whether to expect the day to
+  turn, so the temperature expected must reach them for each of the hours and each of the days it
+  covers.
+  A forecast for temperature and a forecast for precipitation are two distinct things a viewer is
+  owed, not two readings of one want, so each is its own item rather than one item naming both -
+  dropping one is then a failure of its own item rather than a failure the other item's check happens
+  to also catch.
+  Naming temperature as something a viewer is shown is a claim about the outlook's content, not about a
+  JSON field's name or type, so it ties no requirement to the boundary schema's own vocabulary - the
+  field's name, its unit, or its type - the way the boundary and the drawn item both avoid doing by
+  naming no measure at all.
+  How the figure reaches a viewer - curve, strip, colour, or anything else - is deliberately unstated:
+  that is the module's UI design spec's, not this item's.
+ref: ''
+reviewed: yaQZVI9fiw1NK67GruwpIWI1pfCcxcra_TsBSSpXoAk=
+status: accepted
+text: |
+  The weather module shall show, for each of the hours next to come and each of the days next to
+  come, the temperature expected then.
+verification-justification: |
+  Read from a rendered page handed a payload whose hours and days each carry a temperature figure: the
+  temperature expected for each hour and each day is present somewhere in what is drawn for it.
+  What it cannot settle is where or how it is drawn - curve, strip, or otherwise - which is the
+  module's UI design spec's rather than this item's, nor whether the figure shown is the true
+  temperature, the source being outside this system. It is bounded by the payloads the suite supplies.
+verification-method: test
