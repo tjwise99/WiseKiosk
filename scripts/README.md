@@ -42,6 +42,7 @@ when a link breaks. Nothing enforces this — a wrong success line fails no buil
 | `check-secret-unwrap.py` | [cases](cases/check-secret-unwrap.md) |
 | `check-dead-test.py` | [cases](cases/check-dead-test-py.md) |
 | `check-image` (the six harnesses it runs under `image/`) | [cases](cases/check-image.md) |
+| `smoke-native` (the harness under `native/`) | [cases](cases/smoke-native.md) |
 | `check-restart-policy.py` | [cases](cases/check-restart-policy-py.md) |
 | `check-site` | [cases](cases/check-site.md) |
 | `the seven requirements-tree checks` | [cases](cases/the-requirements-tree-checks.md) |

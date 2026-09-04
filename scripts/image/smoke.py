@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """The image comes up and serves on the architecture it was built for.
 
-SRS019<!-- The backend runs on both supported architectures --> is settled one architecture at a
+SRS019<!-- The backend runs on every supported architecture --> is settled one architecture at a
 time, by a matrix that builds the image for each and runs this over what it loaded. What a leg has
 to establish about its own artifact is that it runs at all, two ways:
 

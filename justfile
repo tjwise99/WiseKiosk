@@ -270,6 +270,19 @@ smoke-image platform:
     docker buildx build --platform {{platform}} --load --tag wisekiosk:citest .
     python3 scripts/image/smoke.py wisekiosk:citest
 
+# The architecture is fixed in the body rather than named by the caller, unlike `smoke-image`
+# (docs/CI.md § Native binary run). Depends on `check-build` so what is served is the bundle a
+# build emits. The two settings below reach both the build environment and the expectation.
+native_goarch := "arm"
+native_goarm := "6"
+
+[group('checks')]
+[doc('The application builds from source for armv6l — the bundle, and the backend cross-compiled — and comes up serving on it; needs emulation for a binary this host cannot execute')]
+smoke-native: check-build
+    mkdir -p bin
+    GOOS=linux GOARCH={{native_goarch}} GOARM={{native_goarm}} CGO_ENABLED=0 go -C backend build -o ../bin/wisekiosk-armv6 ./cmd
+    python3 scripts/native/smoke.py bin/wisekiosk-armv6 frontend/dist {{native_goarch}}/{{native_goarm}}
+
 [group('config')]
 [doc('Regenerate the configuration-object TypeScript types from the configuration schema')]
 config-codegen:
@@ -305,5 +318,5 @@ check-restart-policy:
     python3 scripts/check-restart-policy.py
 
 [group('checks')]
-[doc('Run every check the PR gate runs that has a local form and needs no Docker; secret scanning, the PR-title check (commitlint, via the hook layer), the link check (lychee, from a digest-pinned image) and the workflow audit (zizmor, actionlint) are CI-only, and the image tier is `just check-image`')]
+[doc('Run every check the PR gate runs that has a local form and needs neither Docker nor emulation; secret scanning, the PR-title check (commitlint, via the hook layer), the link check (lychee, from a digest-pinned image) and the workflow audit (zizmor, actionlint) are CI-only, the image tier is `just check-image`, and the native armv6l run is `just smoke-native`')]
 verify: check-untracked check-hooks check-branch check-reqs check-citations check-arch check-arch-trace check-boundary check-go check-secret-unwrap check-config-types check-build check-static-bundle check-unit check-render check-site check-adr-index check-adr-revs check-docs-index check-repo-silo check-languages check-dead-test check-restart-policy
