@@ -18,9 +18,9 @@ references:
 - keyword: 'test(''TST057: reports on the point its configuration names, in the region
     it names'', async ({'
   path: frontend/src/modules/weather/weather.spec.ts
-  sha: 5890c78c59ba186c6c56ae322f68c66bddb3d9d746ab362f3d17f8ebc8d94985
+  sha: afa323ab70757743cb486c1f36ba66d06560da771879f90e019716c5cad6db98
   type: file
-reviewed: INZDLPhI9tjc0FjLz01Thf50GZxZtZBqiRLmrrTJRDg=
+reviewed: cYHAK2jJslAZ8prkg4eRxO0rsciFa-5QOXqD4IAzIFQ=
 status: proposed
 text: |
   Render test loading the page under two configurations naming two locations, against a source staged

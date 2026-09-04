@@ -17,9 +17,9 @@ references:
 - keyword: 'test(''TST056: draws the weather its own route answered with, and reads
     no other source'', async ({'
   path: frontend/src/modules/weather/weather.spec.ts
-  sha: 5890c78c59ba186c6c56ae322f68c66bddb3d9d746ab362f3d17f8ebc8d94985
+  sha: afa323ab70757743cb486c1f36ba66d06560da771879f90e019716c5cad6db98
   type: file
-reviewed: n15hnLPXsNBeRQ9kycVmXsxeU7LwZzuP6DxM_0OuWpg=
+reviewed: 5MerMNbswHHrdTLwJNWLWqCdmf-CnUm6BDdQi0edVxY=
 status: proposed
 text: |
   Unit and render test driving the module against one staged weather source and asserting the weather

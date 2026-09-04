@@ -122,7 +122,9 @@ async function boxOf(page: import('@playwright/test').Page, selector: string): P
 }
 
 /** Whether `inner` sits wholly inside `outer`, a sub-pixel tolerance absorbing the same fractional
-    geometry `overlaps` allows for. */
+    geometry `overlaps` (../../../tests/render/harness.ts) allows for — containment rather than
+    that function's intersection, and kept local rather than exported beside it, this being its
+    only consumer today. */
 function within(inner: Box, outer: Box, tolerance = 0.5): boolean {
   return (
     inner.left >= outer.left - tolerance &&
