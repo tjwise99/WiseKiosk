@@ -15,6 +15,11 @@ reach them, and the two `docker` rows it added belonged to the per-ecosystem che
 cutover retired. A passing run over this branch's head reports
 `renovate.json` resolving the pinned `tjwise99/wise-renovate` preset.
 
+Re-exercised under #260 Exclude the project's own image from Renovate digest pinning, when
+`renovate.json` gained a `packageRules` key beside the pinned `extends`. The script inspects
+`extends` alone, so the added key passes unread — a passing run over this branch's head reports the
+same message as above, `renovate.json` resolving the pinned `tjwise99/wise-renovate` preset.
+
 | Direction | Case | Input |
 |---|---|---|
 | Must fail | Manifest at the root | `package.json`, `go.mod`, `pyproject.toml` and `requirements.txt`, each at the repository root |
@@ -28,4 +33,5 @@ cutover retired. A passing run over this branch's head reports
 | Must fail | extends a same-prefix repo, not the preset | `extends: ["github>tjwise99/wise-renovate-fork#v1"]` — shares the prefix but names a different repository |
 | Must fail | file is not JSON | `renovate.json` edited to invalid JSON |
 | Must pass | The real `renovate.json` | the tree as it stands, `extends: ["github>tjwise99/wise-renovate#v1.0.0"]` |
+| Must pass | `renovate.json` carries a `packageRules` key beside the pinned `extends` | the tree as it stands after #260 Exclude the project's own image from Renovate digest pinning, `packageRules` disabling the `docker` datasource for `ghcr.io/tjwise99/wisekiosk` beside `extends: ["github>tjwise99/wise-renovate#v1.0.0"]` |
 | Must pass | Manifest below the root | `web/package.json` |
