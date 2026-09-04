@@ -40,7 +40,12 @@
 
 <div class="frame" class:below-report={!reachable} style={frameStyle} data-frame>
   {#each occupied as [region, placements] (region)}
-    <section class="region" data-region={region} style={placementStyle(region)}>
+    <section
+      class="region"
+      data-region={region}
+      data-modules={placements.map((placement) => placement.module).join(' ')}
+      style={placementStyle(region)}
+    >
       {#each placements as placement, index (index)}
         {@const entry = modules[placement.module]}
         {#if entry}
