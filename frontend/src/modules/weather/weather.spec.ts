@@ -218,7 +218,9 @@ test('TST060: draws what it is doing now, the hours to come and the days to come
   // the warmest hour shown and the warmest day shown, neither of which the other section carries.
   await expect(present).toContainText('Clear');
   await expect(hourly).toContainText(`${WARM + 4}°`);
-  await expect(daily).toContainText(`${WARM + 24}°`);
+  // The high/low pinned whole, not a substring of the high alone: a substring match would still
+  // pass a daily strip that regressed to carrying a unit and a space between the two figures.
+  await expect(daily).toContainText(`${WARM + 24}°/${WARM - 24}°`);
   await expect(page.locator('[data-weather-hour]')).toHaveCount(5);
   await expect(page.locator('[data-weather-day]')).toHaveCount(5);
 
