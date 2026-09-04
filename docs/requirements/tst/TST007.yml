@@ -12,7 +12,7 @@ references:
 - path: scripts/image/smoke.py
   sha: 3a44a1d7c8b69ce56145e90dc7c32c70cafe0eb9a5f1f7118e6286981079dbc2
   type: file
-reviewed: KFsDuS6BKZnipO5bS-9y3YctnOVLDUgte3L1rrUVwS8=
+reviewed: TvUsQHaVQeC_rtmBikTEdJq9ro2Hn2O2GFcpvOwG0g0=
 status: accepted
 text: |
   A CI matrix builds the published image on amd64 and arm64, one architecture per leg, and runs the
