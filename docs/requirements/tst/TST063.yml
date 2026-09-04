@@ -19,9 +19,9 @@ references:
 - keyword: 'test(''TST063: shows seconds when its configuration asks and omits them
     when it does not'', async ({'
   path: frontend/src/modules/clock/clock.spec.ts
-  sha: cf9bd873406b6860baa4f0932aac59990d6bb32b4b692c982bc88fa3f5fc9f25
+  sha: 0a97bc09da19412bb366af492088d48225c6dab1a553263c85efecec6c51fd82
   type: file
-reviewed: 3Ki0Cz_PBPAiBca0Ek2KdVbHfmyrXKKSGizW5cxguYY=
+reviewed: 7E3H06PaVy2i-rYFI9Ziz5NJ8KXNSe3N4N0zQEdT5zs=
 status: proposed
 text: |
   Render test loading the page under each of the two seconds selections against a held host clock,
