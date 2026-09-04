@@ -192,7 +192,7 @@ this map is drawn from sit above the emission ceiling besides (**Calibrated boun
 
 Shared design tokens — the scales above — live as `:root` custom properties in
 `frontend/src/app.css` (frontend source sits under `frontend/src/`,
-[ADR 0021 rev 2](../decisions/0021-repository-layout.md)); this contract states their values, not
+[ADR 0021 rev 3](../decisions/0021-repository-layout.md)); this contract states their values, not
 the file. Two role-named stroke-width tokens live beside them — a dim grouping divider and a
 full-white content curve stroke — deliberately provisional pixel figures an author confirms in
 place rather than a calibrated bound this contract fixes, so their values stay in `app.css` alone.

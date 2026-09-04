@@ -13,9 +13,10 @@ CI's `process` check.
 | Must fail | `task_0-leading_zero` — the number set is `[1-9][0-9]*` |
 | Must fail | `task_2-Upper_Case` — the name is lowercase snake_case |
 | Must fail | `feature/bar`, invoked through `pre-commit run branch-shape --hook-stage pre-push` — the wiring, not just the script |
+| Must fail | `dependabot/pip/foo-1.2.3` — only Renovate names its own branches; a Dependabot-shaped name has no exemption |
 | Must pass | `task_1-ok` |
 | Must pass | `main` — exempt: the mainline is not a work branch |
-| Must pass | `dependabot/pip/foo-1.2.3` — exempt: Dependabot names its own branches |
+| Must pass | `renovate/npm/foo-1.2.3` — exempt: Renovate names its own branches |
 | Must pass | a detached HEAD — no branch is checked out, so there is nothing to judge |
 | Must pass | `epic_7-name` against a seeded two-line regex file whose second line admits it — each non-blank line is a pattern, the reading `check-branch.py` shares |
 | Must fail | `nodashes` against the same two-line file, matching neither line |

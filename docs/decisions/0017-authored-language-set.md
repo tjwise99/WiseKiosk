@@ -3,7 +3,7 @@
 **Status:** accepted
 **Decided:** 2026-08-16 (CSS's product-stylesheet disposition added; the audience rule itself taken
 2026-08-04 in #60 authored-language set, taken after
-[ADR 0016 rev 5](0016-maintained-tools-for-standard-artifacts.md) settled which authored checks survive at all)
+[ADR 0016 rev 6](0016-maintained-tools-for-standard-artifacts.md) settled which authored checks survive at all)
 **Rev:** 8
 
 ## Revisions
@@ -57,7 +57,7 @@
 
 The product's languages were decided. Go is [ADR 0001 rev 1](0001-backend-language-go.md); the frontend is
 [ADR 0018 rev 1](0018-frontend-svelte-vite-static-spa.md); the boundary types are generated into both by
-[ADR 0008 rev 4](0008-boundary-contract-openapi-codegen.md). The languages the *repository* is written in were
+[ADR 0008 rev 5](0008-boundary-contract-openapi-codegen.md). The languages the *repository* is written in were
 never decided at all. Programs are authored here in POSIX sh, in Node ESM and in Python, none of
 those by anyone's choice, and the next contributor could add a fourth without meeting an argument.
 
@@ -69,15 +69,15 @@ facility, which costs a classifier arm and a fixture suite per language, and its
 fails on a language that has neither. A set nobody bounded is an obligation nobody can size.
 
 **One of the candidates is already owed and the other is not.** Python is unconditional here for
-reasons that have nothing to do with checks: Doorstop ([ADR 0002 rev 3](0002-requirements-management-doorstop.md))
-and Sphinx ([ADR 0004 rev 1](0004-docs-site-sphinx-needs.md)) both require it, and CI installs it for two jobs
+reasons that have nothing to do with checks: Doorstop ([ADR 0002 rev 4](0002-requirements-management-doorstop.md))
+and Sphinx ([ADR 0004 rev 2](0004-docs-site-sphinx-needs.md)) both require it, and CI installs it for two jobs
 whatever the check scripts are written in. Nothing obliges Node in the repository-checks layer at
 all — all seven `.mjs` scripts import only `node:fs`, `node:child_process` and `node:path`, and five
 carry a header comment recording that they deliberately scan plain text rather than reach for a
 parser, three of them naming the YAML parser they avoid. Consolidating the checks on Python therefore
 adds no toolchain and takes Node out of that layer; consolidating them on Node would keep both there
 indefinitely. Node does not leave the repository either way — LikeC4
-([ADR 0003 rev 2](0003-architecture-as-code-likec4.md)) and Vite
+([ADR 0003 rev 3](0003-architecture-as-code-likec4.md)) and Vite
 ([ADR 0018 rev 1](0018-frontend-svelte-vite-static-spa.md)) make it unconditional as an invoked toolchain. The
 asymmetry is about which layer owes which interpreter, not about which language is present.
 
@@ -122,7 +122,7 @@ place where the argument that a new language arrives as a new file extension, th
 diff, does not hold at all.
 
 Nothing above needs revising when a tool arrives with a format not yet seen here — which is the
-point, since [ADR 0016 rev 5](0016-maintained-tools-for-standard-artifacts.md) adopts four such tools.
+point, since [ADR 0016 rev 6](0016-maintained-tools-for-standard-artifacts.md) adopts four such tools.
 
 **Documentation, and the assets a build serves, are not authored programs and this decision does not
 reach them.** Which build is not the distinguishing fact — a rendered figure the docs site serves and
@@ -131,12 +131,12 @@ authors, and a carve-out naming only the documentation build would have refused 
 reason that never applied to it.
 
 **Node is an invoked toolchain and never an authoring language.** LikeC4
-([ADR 0003 rev 2](0003-architecture-as-code-likec4.md)) and Vite are invoked; so is whatever an adopted hook
+([ADR 0003 rev 3](0003-architecture-as-code-likec4.md)) and Vite are invoked; so is whatever an adopted hook
 provisions for itself. The distinction is who wrote the code being run.
 
 **POSIX sh authors nothing.** The rule that admitted it — sh only where no interpreter can be
 assumed — had `.githooks/` as its entire population, and
-[ADR 0016 rev 5](0016-maintained-tools-for-standard-artifacts.md) retires those for `pre-commit`, which is
+[ADR 0016 rev 6](0016-maintained-tools-for-standard-artifacts.md) retires those for `pre-commit`, which is
 itself Python. A rule with no subject is not kept for the one file that predates it.
 
 **TypeScript is product-only.** Extending it to repository tooling would leave the runtime, the
@@ -171,7 +171,7 @@ That list is a snapshot taken on the decision date, not a standing inventory —
 against the tree, and the rule above is what governs anything written after it.
 [`../../scripts/check-languages.py`](../../scripts/check-languages.py) keeps a second copy of it, of
 the files above written in a language that authors nothing plus the ones
-[ADR 0016 rev 5](0016-maintained-tools-for-standard-artifacts.md) disposes of in the same languages —
+[ADR 0016 rev 6](0016-maintained-tools-for-standard-artifacts.md) disposes of in the same languages —
 the remainder of that record's list carries a declared extension and needs no entry. That copy is
 grandfathered by exact path and fails once a path stops being tracked, so a disposition that lands
 takes its grant with it. **The two copies are not compared with each other**, so a conversion drops
@@ -216,7 +216,7 @@ unregistered language whatever this record said.
   language.
 - **Enumerate every permitted format instead of deriving them.** Rejected: an enumeration would need
   revising the first time an adopted tool brings a configuration format, and
-  [ADR 0016 rev 5](0016-maintained-tools-for-standard-artifacts.md) adopts four tools that bring TOML and a
+  [ADR 0016 rev 6](0016-maintained-tools-for-standard-artifacts.md) adopts four tools that bring TOML and a
   JavaScript-or-JSON-or-YAML configuration between them. An ADR revved one ticket after it is written
   was written too early.
 - **Gate the set with a check.** Machine-decidable, and [ADR 0011 rev 2](0011-requirement-or-convention.md)
@@ -224,7 +224,7 @@ unregistered language whatever this record said.
   Rejected: a new authored language usually arrives as a new file extension in a diff's file list,
   which is the loudest thing a review sees — the embedded case named in the Decision above is the
   exception, and it is a residue rather than the population — and
-  [ADR 0016 rev 5](0016-maintained-tools-for-standard-artifacts.md) had just ruled that one residual obligation
+  [ADR 0016 rev 6](0016-maintained-tools-for-standard-artifacts.md) had just ruled that one residual obligation
   does not earn a gate of its own. The two work in sequence rather than in parallel — the first sizes
   the case as a residue, which is the condition under which the second reaches it at all. The
   checklist question is what 0011 requires so the obligation is not a dead letter; a gate on top of it
@@ -250,9 +250,9 @@ unregistered language whatever this record said.
   verified by re-running the cases [`../../scripts/README.md`](../../scripts/README.md) records for
   the original, in both directions, because a conversion that is verified by inspection is a rewrite
   with a clean-looking diff.
-- **`check-branch` loses `curl` and `jq` for `urllib` and `json`.** [ADR 0006 rev 4](0006-process-gates.md)'s
+- **`check-branch` loses `curl` and `jq` for `urllib` and `json`.** [ADR 0006 rev 5](0006-process-gates.md)'s
   *plain sh + curl + jq — no toolchain* property, already corrected by
-  [ADR 0016 rev 5](0016-maintained-tools-for-standard-artifacts.md) when `commitlint` and `pre-commit` were
+  [ADR 0016 rev 6](0016-maintained-tools-for-standard-artifacts.md) when `commitlint` and `pre-commit` were
   adopted, ends completely. What replaces it is a weaker but real property: the interpreter the gates
   need is one this repository already owes for its requirements tree and its documentation site.
 - **A check that wants logic already written in TypeScript must reimplement it in Python or shell out
@@ -268,9 +268,9 @@ unregistered language whatever this record said.
   question, never a tree item.
 - **The review checklist gains a question, *Languages***, appended to its *Code* section rather than
   placed beside the dependency question it most resembles. Inserting it there would have renumbered
-  the questions below it, against [ADR 0002 rev 3](0002-requirements-management-doorstop.md),
-  [ADR 0003 rev 2](0003-architecture-as-code-likec4.md) and
-  [ADR 0016 rev 5](0016-maintained-tools-for-standard-artifacts.md), which cite one by number with
+  the questions below it, against [ADR 0002 rev 4](0002-requirements-management-doorstop.md),
+  [ADR 0003 rev 3](0003-architecture-as-code-likec4.md) and
+  [ADR 0016 rev 6](0016-maintained-tools-for-standard-artifacts.md), which cite one by number with
   nothing gating the citation. That constraint does not bind a later change:
   [`../../CONTRIBUTING.md`](../../CONTRIBUTING.md) requires a citation to carry the question's name
   beside its number, so a renumbered citation still names what it meant.
@@ -282,7 +282,7 @@ unregistered language whatever this record said.
 
 **Premise that would reopen this:** an artifact appears that neither audience covers — something that
 must run where neither Python nor a shipped toolchain is reachable — or Python stops being
-unconditional here, which means both Doorstop ([ADR 0002 rev 3](0002-requirements-management-doorstop.md)) and
-Sphinx ([ADR 0004 rev 1](0004-docs-site-sphinx-needs.md)) leaving. A single script that would have been shorter
+unconditional here, which means both Doorstop ([ADR 0002 rev 4](0002-requirements-management-doorstop.md)) and
+Sphinx ([ADR 0004 rev 2](0004-docs-site-sphinx-needs.md)) leaving. A single script that would have been shorter
 in another language is not that premise; it is the argument this decision rejected. Absent either, do
 not relitigate.

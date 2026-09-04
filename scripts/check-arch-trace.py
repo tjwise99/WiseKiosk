@@ -57,7 +57,7 @@ def export():
     """The model as LikeC4 resolves it. Reading the `.likec4` source instead would judge a
     re-implementation of the parser rather than the parser's own answer.
 
-    `validate` runs first for the reason ADR 0003 rev 2 records against `codegen`: `export json` also
+    `validate` runs first for the reason ADR 0003 rev 3 records against `codegen`: `export json` also
     succeeds on a broken model, emitting a degraded document whose tags have silently gone missing —
     which reads here as a model that tags nothing."""
     if not LIKEC4.exists():

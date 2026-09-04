@@ -5,7 +5,7 @@ The living structural description of WiseKiosk **as built**. It grows with the c
 > **Status: built as each part lands.** A narrative section carries _To be documented as it is built._
 > until the code it describes lands. The diagrams are the exception: they are generated from the
 > [architecture model](architecture/README.md), which is normative for structure
-> ([ADR 0003 rev 2](decisions/0003-architecture-as-code-likec4.md)). What `codegen mermaid` drops —
+> ([ADR 0003 rev 3](decisions/0003-architecture-as-code-likec4.md)). What `codegen mermaid` drops —
 > element descriptions, icons — is read in that model, and an element's responsibility statement stays
 > there rather than being copied beside it. What a component must *do* is the
 > [requirements tree](requirements/README.md) and the [ADRs](decisions/README.md). This document holds
@@ -25,7 +25,7 @@ shape is a repository check, in [`CI.md`](CI.md), rather than a need.
 Those two containers project onto two package roots — `backend/` and `frontend/` — with the one
 boundary schema at `boundary/openapi.yaml` because it belongs to neither, and the release material in
 `deploy/` because it is outside the boundary
-([ADR 0021 rev 2](decisions/0021-repository-layout.md)).
+([ADR 0021 rev 3](decisions/0021-repository-layout.md)).
 
 Every diagram below is **generated from the validated [LikeC4 model](architecture/README.md)**, not
 drawn by hand. Edit `docs/architecture/model/` and run `just arch-export`, which regenerates each
@@ -108,7 +108,7 @@ rest`" .-> Viewer
 The Component level (C4 L3) is drawn per container, in the two sections below, and the Deployment level
 in [§ Deployment](#deployment). The Backend container and each of its components carry a `link` to the
 source implementing it; where that source sits is
-[ADR 0021 rev 2](decisions/0021-repository-layout.md).
+[ADR 0021 rev 3](decisions/0021-repository-layout.md).
 
 **Every accepted, active `SYS` or `SRS` item binds somewhere in this model, and where one cannot, the
 model grows to draw what it obliges** — there is no exemption record, and which items are unbound is
@@ -122,7 +122,7 @@ Deployment level, which is the level drawn to carry them.
 
 Its source root is `backend/`, the Go module root, holding the shared framework under `internal/` and
 each upstream-backed module's shaping library under `internal/modules/<name>/`
-([ADR 0021 rev 2](decisions/0021-repository-layout.md)). Language and
+([ADR 0021 rev 3](decisions/0021-repository-layout.md)). Language and
 boundary-contract decision: [ADR 0001 rev 1](decisions/0001-backend-language-go.md); config-blindness:
 [ADR 0007 rev 2](decisions/0007-config-validation-allocation.md). What the backend must do is the
 [requirements tree](requirements/README.md); which obligations bind this container is the
@@ -149,7 +149,7 @@ binary asks the question of a running instance from inside the image, which is w
 declare a `HEALTHCHECK` without carrying an HTTP client beside it
 ([ADR 0020 rev 2](decisions/0020-release-artifact-set-and-operator-tooling.md)). It answers `GET` and
 `HEAD` alone, because the schema declares a `get:` and the generated registration is method-scoped
-([ADR 0008 rev 4](decisions/0008-boundary-contract-openapi-codegen.md)); another verb on that path
+([ADR 0008 rev 5](decisions/0008-boundary-contract-openapi-codegen.md)); another verb on that path
 falls through to the served tree and gets its 404 rather than a 405, since the `/` seam matches the
 path that the method-scoped pattern does not. A handler mounted on the bare multiplexer — which is
 what a package's own test assembles — answers 405 there instead, so the two disagree by exactly the
@@ -310,7 +310,7 @@ module revisits when its upstream lands.
 Its source root is `frontend/`, the npm package root, holding the
 framework half under `src/lib/`, each module's component under `src/modules/<name>/`, and the one
 configuration schema — carrying a named section per module, authored nowhere else — under
-`src/config/` ([ADR 0021 rev 2](decisions/0021-repository-layout.md)). Svelte 5 + Vite, a static single-page bundle
+`src/config/` ([ADR 0021 rev 3](decisions/0021-repository-layout.md)). Svelte 5 + Vite, a static single-page bundle
 served as static files ([ADR 0018 rev 1](decisions/0018-frontend-svelte-vite-static-spa.md)); each
 module's poll cadence is that module's own need
 ([the module contract](contracts/module-contract.md)); configuration validation is frontend-owned
@@ -432,7 +432,7 @@ One schema definition, both sides generated from it — the load-bearing structu
 whole system (SYS005<!-- Single-definition internal contract -->,
 SRS015<!-- One schema, all boundary value classes -->–SRS016<!-- Both sides consume the generated types -->,
 [ADR 0001 rev 1](decisions/0001-backend-language-go.md)). The mechanism is
-[ADR 0008 rev 4](decisions/0008-boundary-contract-openapi-codegen.md): one hand-authored OpenAPI schema
+[ADR 0008 rev 5](decisions/0008-boundary-contract-openapi-codegen.md): one hand-authored OpenAPI schema
 (3.0.3, with 3.1 the stated migration target), owned by neither package, the Go side generated by
 `oapi-codegen` and the TypeScript side by `orval`, kept honest by a CI drift gate that
 regenerates both sides and fails on any difference. The schema owns every value crossing the boundary —
@@ -440,10 +440,10 @@ the fields a request carries, success payloads, the structured upstream-failure 
 rejection bodies, and the status codes the frontend discriminates on. A module data route carries its
 request as a JSON body rather than as parameters, which is what keeps both sides' field names
 generated and this backend's runtime dependency set empty
-([ADR 0008 rev 4](decisions/0008-boundary-contract-openapi-codegen.md)).
+([ADR 0008 rev 5](decisions/0008-boundary-contract-openapi-codegen.md)).
 
 The one schema is `boundary/openapi.yaml`, and what is generated from it is committed inside the
-package that compiles it ([ADR 0021 rev 2](decisions/0021-repository-layout.md)). What the drift
+package that compiles it ([ADR 0021 rev 3](decisions/0021-repository-layout.md)). What the drift
 gate asserts, and what it leaves unproven, is [`CI.md`](CI.md) § *Generated boundary contract*.
 
 The generate step reads that one file twice. `oapi-codegen`, pinned by the Go module's `tool`

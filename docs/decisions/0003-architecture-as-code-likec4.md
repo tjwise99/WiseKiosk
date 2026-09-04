@@ -2,10 +2,13 @@
 
 **Status:** accepted
 **Decided:** 2026-07-22 (issue #15)
-**Rev:** 2
+**Rev:** 3
 
 ## Revisions
 
+- **rev 3** — 2026-09-04 — replaces the stale claim that this record wires a Dependabot `npm`
+  ecosystem with a timeless statement of npm dependency tracking for `/docs/architecture`; what was
+  chosen is unchanged, so the Decided date does not move (#223 renovate cutover).
 - **rev 2** — 2026-08-09 — the deferral of the Component level is superseded by ADR 0019 rev 3, which
   builds it; the deferral of the Code level, and every other part of this record, stand
   (#124 merge the C4 ADRs).
@@ -68,9 +71,9 @@ renderable browser-free.
 ## Consequences
 
 - **First `package.json` in the repo.** This activates the dormant npm supply-chain gates
-  ([`CI.md`](../CI.md)'s dependency-vulnerability scanning). This ADR wires the Dependabot `npm`
-  ecosystem now (pointed at `/docs/architecture`, so the manifest and its ecosystem entry sit in the
-  directory of the feature they serve, per `CI.md`'s repository-shape gate); the **`npm audit` CI
+  ([`CI.md`](../CI.md)'s dependency-vulnerability scanning). This ADR wires npm dependency tracking
+  for `/docs/architecture` (pointed at that directory, so the manifest and its tracking entry sit in
+  the directory of the feature they serve, per `CI.md`'s repository-shape gate); the **`npm audit` CI
   gate is deliberately left unbuilt** as a now-unblocked backlog item, to keep this change tight.
 - **Rendering is fully automated in CI** — because diagrams are codegen, not a browser export,
   `arch-export` runs on every push with no chromium. Image (PNG/SVG) export, which *does* need a

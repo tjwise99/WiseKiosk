@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-"""The branch name must follow type_number-snake_name (ADR 0006 rev 4): the shape is
+"""The branch name must follow type_number-snake_name (ADR 0006 rev 5): the shape is
 defined once in scripts/branch-shape.regex, shared with the branch-shape pre-push hook;
 the number resolves via the GitHub API to an open issue carrying a milestone
 and exactly one type label, which is the branch type (ADR 0013 rev 4). main and
-dependabot/* are exempt. When an open PR exists, its Development field
+renovate/* are exempt. When an open PR exists, its Development field
 (closingIssuesReferences) must link the branch's issue — any base; body
 keywords only write the record against the default branch, so other bases
 need the manual link. The PR's base and the issue's parent must agree: a
@@ -82,8 +82,8 @@ def main():
     if branch == "main":
         print("Branch 'main' is exempt: the mainline is not a work branch.")
         return
-    if branch.startswith("dependabot/"):
-        print(f"Branch '{branch}' is exempt: Dependabot names its own branches.")
+    if branch.startswith("renovate/"):
+        print(f"Branch '{branch}' is exempt: Renovate names its own branches.")
         return
 
     patterns = read_patterns()
@@ -266,7 +266,7 @@ def main():
             fail(
                 f"PR #{pr_number}'s base '{base_ref}' is neither the default branch "
                 "nor a conforming integration branch — an integration branch is a "
-                "branch, so it links a ticket of its own (ADR 0006 rev 4)"
+                "branch, so it links a ticket of its own (ADR 0006 rev 5)"
             )
         anchor = base_ref.partition("_")[2].partition("-")[0]
         if not parent:

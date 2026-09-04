@@ -10,7 +10,7 @@ upstream-backed — adding one registration entry. There is no mechanism to regi
 
 The concrete locations — which directory holds a module's files, and where the registration list
 lives — are fixed by the repository layout
-([ADR 0021 rev 2](../decisions/0021-repository-layout.md)). This page names the parts, not their
+([ADR 0021 rev 3](../decisions/0021-repository-layout.md)). This page names the parts, not their
 paths.
 
 ## Two module shapes
@@ -54,7 +54,7 @@ themeparks.wiki — and a new module joins it the same way.
    rather than one declared by hand, **and so does whatever it renders a failure from**: the bodies a
    failing route answers with are declared in that same schema and generated on both sides, so a
    module reading a failure reads the generated type rather than a shape restated in the frontend
-   ([ADR 0008 rev 4](../decisions/0008-boundary-contract-openapi-codegen.md);
+   ([ADR 0008 rev 5](../decisions/0008-boundary-contract-openapi-codegen.md);
    SRS016<!-- Both sides consume the generated types -->). A payload's field names, a request's field
    names and a failure body's field names are all values crossing the boundary, and none of the three
    is declared twice.
@@ -100,7 +100,7 @@ themeparks.wiki — and a new module joins it the same way.
 6. **A boundary-schema fragment** *(upstream-backed only).* Declares what this module puts across the
    boundary **and what it reads back across it**, as named components in the one boundary schema —
    sections of that schema rather than files of their own, and nothing recomposes them
-   ([ADR 0008 rev 4](../decisions/0008-boundary-contract-openapi-codegen.md)). One component is the
+   ([ADR 0008 rev 5](../decisions/0008-boundary-contract-openapi-codegen.md)). One component is the
    module's payload; the other is the request it answers, which the route carries as a JSON body
    rather than as request parameters. These are what make the module's generated payload and request
    types exist, on both sides.
@@ -172,7 +172,7 @@ module's package.
 That the registration crosses at all is what a compile-time registration costs: a list of modules
 that the compiler checks is a list that names them. The alternative — a module registering itself as
 the process starts — was weighed and rejected where a rejected alternative belongs
-([ADR 0008 rev 4](../decisions/0008-boundary-contract-openapi-codegen.md)). The crossing is bounded
+([ADR 0008 rev 5](../decisions/0008-boundary-contract-openapi-codegen.md)). The crossing is bounded
 to those two files, which is the property worth having, rather than removed.
 
 That is the property that keeps a module removable: deleting its files and its registration entry

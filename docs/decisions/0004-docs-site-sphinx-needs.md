@@ -2,10 +2,13 @@
 
 **Status:** accepted
 **Decided:** 2026-07-22 (issue #21)
-**Rev:** 1
+**Rev:** 2
 
 ## Revisions
 
+- **rev 2** — 2026-09-04 — replaces two stale references to a `pip` Dependabot ecosystem with
+  timeless statements of the `pip` update-tracking entry; what was chosen is unchanged, so the
+  Decided date does not move (#223 renovate cutover).
 - **rev 1** — 2026-08-05 — revision tracking begins; text as merged (#118 ADR revisions).
 
 ## Context
@@ -43,7 +46,7 @@ the single documentation toolchain.
   This machinery is mature, maintained, and purpose-built for exactly the SYS→SRS→TST shape; on
   every alternative it would be bespoke code owned here forever.
 - **Doorstop stays canonical.** This does **not** supersede
-  [ADR 0002 rev 3](0002-requirements-management-doorstop.md): the YAML items under
+  [ADR 0002 rev 4](0002-requirements-management-doorstop.md): the YAML items under
   `docs/requirements/` remain the requirements source and `doorstop --error-all` remains the gate.
   A **thin, presentation-free transform** generates need objects from the YAML at build time
   (generated, gitignored — never hand-authored); only Doorstop's HTML render is retired.
@@ -52,14 +55,15 @@ the single documentation toolchain.
   concession Sphinx demands, the root `toctree`, is confined to the site silo's shim files; it
   never touches a canonical document.
 - **Siloed and pinned.** The toolchain lives in `docs/site/` with an exact-pinned requirements
-  file and a local venv; Dependabot's `pip` ecosystem points at it. Theme selection (e.g.
+  file and a local venv; its dependency updates are tracked by a `pip` entry pointing at it. Theme
+  selection (e.g.
   `sphinx-immaterial`) is an implementation choice inside the silo, not part of this decision.
 - **Built identically local and CI.** A `just` recipe builds the site with warnings-as-errors;
   CI runs the same recipe. Pages deployment is a **separate workflow** from `checks.yml`, holding
   `pages: write` + `id-token: write` via OIDC — elevated *permissions*, still **no stored
   credentials**, so the secret-free-CI stance holds.
 - **Diagrams are not load-bearing in this choice.** The Mermaid splice
-  ([ADR 0003 rev 2](0003-architecture-as-code-likec4.md)) keeps serving GitHub; how LikeC4 output enters
+  ([ADR 0003 rev 3](0003-architecture-as-code-likec4.md)) keeps serving GitHub; how LikeC4 output enters
   the site (rendered Mermaid, SVG export, or LikeC4's interactive build) is decided at
   implementation and forecloses nothing here.
 
@@ -103,7 +107,7 @@ unchanged, Python silo, single toolchain) is still met.
   hand-authored `needtable`/`needflow`/matrix directives — are legitimate silo content, distinct
   from both the transform output and the toctree shims; hand-authoring them does not violate this
   boundary.
-- **Second Python silo.** Another pinned requirements file, venv, and Dependabot `pip` entry.
+- **Second Python silo.** Another pinned requirements file, venv, and `pip` update-tracking entry.
 - **First workflow with elevated permissions.** `checks.yml` stays read-only; the Pages workflow
   alone holds `write` scopes, kept separate so the verification pipeline's blast radius does not
   grow.

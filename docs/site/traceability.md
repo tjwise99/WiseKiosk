@@ -2,9 +2,9 @@
 
 The generated need objects (from Doorstop's `docs/requirements/` tree — see
 [`docs/requirements/README.md`](../requirements/README.md) and
-[ADR 0002 rev 3](../decisions/0002-requirements-management-doorstop.md)) rendered as tables and a
+[ADR 0002 rev 4](../decisions/0002-requirements-management-doorstop.md)) rendered as tables and a
 link graph.
-This page is hand-authored (ADR 0004 rev 1: the display of traceability is legitimate silo content,
+This page is hand-authored (ADR 0004 rev 2: the display of traceability is legitimate silo content,
 distinct from the transform that produces the need objects it displays).
 
 ## System needs

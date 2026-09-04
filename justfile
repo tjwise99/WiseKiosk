@@ -57,7 +57,7 @@ check-docs-index:
     python3 scripts/check-docs-index.py
 
 [group('checks')]
-[doc('No manifest or .venv/ at the repository root, no recipe is a shell script, github-actions is covered, and every other Dependabot entry resolves to a non-root directory holding its manifest')]
+[doc('No manifest or .venv/ at the repository root, no recipe is a shell script, and renovate.json extends the pinned tjwise99/wise-renovate preset')]
 check-repo-silo:
     python3 scripts/check-repo-silo.py
 

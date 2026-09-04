@@ -73,7 +73,7 @@ to name; drift is still carried by the entry's file `sha`. Every reference to a 
 test carries a declaration-anchored keyword.
 
 This reaffirms
-[ADR 0002 rev 3](0002-requirements-management-doorstop.md): a `TST` item's `references` point at the
+[ADR 0002 rev 4](0002-requirements-management-doorstop.md): a `TST` item's `references` point at the
 real verifying files, for every verification method, and rev 1's partial supersession of that
 mechanism is withdrawn.
 
@@ -174,7 +174,7 @@ The four stored attributes — `verification-method`, `status`, `verification-ju
   from the diff against the tree — a PR-body ID either restates that or contradicts it, and in a
   contradiction the diff is the truth. PR metadata lives outside the checked zone: no scanner reads
   it, no page renders it, nothing fails when it rots. Issues remain as scheduling views over the
-  backlog; branch shape is process-gated by [ADR 0006 rev 4](0006-process-gates.md) but stays outside the
+  backlog; branch shape is process-gated by [ADR 0006 rev 5](0006-process-gates.md) but stays outside the
   traceability evidence channel — the rejection here stands.
   The partition once obliged gate 4's claim mechanism to reach files Doorstop references cannot —
   paths under dot-directories, a limit 0002 records — but that gate is retired, so the obligation
@@ -205,12 +205,12 @@ The four stored attributes — `verification-method`, `status`, `verification-ju
 - **Editing a verified test costs a re-review.** The drift hook hashes whole files, so a comment, an
   import reorder or a lint fix in a referenced spec unreviews every item referencing it, and
   `doorstop review <UID>` is the only way to clear it. That is deliberate pressure in the direction
-  [ADR 0002 rev 3](0002-requirements-management-doorstop.md) warns about — re-blessing is a human act
+  [ADR 0002 rev 4](0002-requirements-management-doorstop.md) warns about — re-blessing is a human act
   and must not become a reflex — and it is the cost this rev accepts in exchange for the tree
   noticing when its evidence moves.
 - **No gate in the table is authored here.** Gate 1 is the tool's, configured — the drift hook is
   the extension point Doorstop documents, not a sibling script — and gate 3 is the coverage tool's.
-  That is the answer [ADR 0016 rev 5](0016-maintained-tools-for-standard-artifacts.md) asks for
+  That is the answer [ADR 0016 rev 6](0016-maintained-tools-for-standard-artifacts.md) asks for
   before a check is written, and dropping gate 2 is what leaves the table with no exception. The
   configuration that arms the hook is fragile in a way no gate here covers: keeping the `extensions:`
   block present is an obligation on whoever edits a `.doorstop.yml`, and it leaves no artifact, so a

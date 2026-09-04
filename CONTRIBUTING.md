@@ -43,7 +43,7 @@ configured, this repo's hook layer on demand via `just check-hooks`, and the bin
 ## Tickets, branches, and titles
 
 Open an issue from a template first: the branch name is derived from it. Enforced by the `process` CI
-check ([ADR 0006 rev 4](docs/decisions/0006-process-gates.md)). The `branch-shape` pre-push hook
+check ([ADR 0006 rev 5](docs/decisions/0006-process-gates.md)). The `branch-shape` pre-push hook
 from `pre-commit install` checks the shape only — not the issue conditions below — and only at push, when
 the branch and its commits already exist. **Nothing checks the name at `git switch -c`**, which is
 where it is chosen and where it goes wrong, so this section is in the file
@@ -57,7 +57,7 @@ design_119-c4_model_completion
    └─ task | bug | design | module — the issue's template, and its label
 ```
 
-`main` and Dependabot branches are exempt. Every other branch must also satisfy all of:
+`main` and Renovate branches (`renovate/*`) are exempt. Every other branch must also satisfy all of:
 
 - the issue is **open**, **milestoned**, and carries **exactly one** type label — a second one makes
   the branch type ambiguous ([ADR 0013 rev 4](docs/decisions/0013-work-tracking-invariants.md));

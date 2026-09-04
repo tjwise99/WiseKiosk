@@ -1,4 +1,4 @@
-"""Sphinx configuration for the WiseKiosk documentation site (ADR 0004 rev 1).
+"""Sphinx configuration for the WiseKiosk documentation site (ADR 0004 rev 2).
 
 srcdir is docs/, confdir is docs/site/ (see docs/site/README.md).
 """
