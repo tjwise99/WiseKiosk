@@ -60,9 +60,7 @@ deployment {
       system, with no container runtime in the deployment. The backend is built
       from source for this host's architecture rather than taken from the
       published image, so the deployment rather than an artifact declares the
-      user it runs as. The appliance layer at
-      [`tjwise99/meta-wisekiosk`](https://github.com/tjwise99/meta-wisekiosk)
-      builds such a deployment.
+      user it runs as.
     '''
 
     nativeConfigurationFile = artifact 'Configuration file' {
