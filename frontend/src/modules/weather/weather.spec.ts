@@ -121,18 +121,6 @@ async function boxOf(page: import('@playwright/test').Page, selector: string): P
   return { left: x, top: y, right: x + width, bottom: y + height };
 }
 
-/** Whether `inner` sits wholly inside `outer`, a sub-pixel tolerance absorbing the same fractional
-    geometry `overlaps` (../../../tests/render/harness.ts) allows for — containment rather than
-    that function's intersection. */
-function within(inner: Box, outer: Box, tolerance = 0.5): boolean {
-  return (
-    inner.left >= outer.left - tolerance &&
-    inner.right <= outer.right + tolerance &&
-    inner.top >= outer.top - tolerance &&
-    inner.bottom <= outer.bottom + tolerance
-  );
-}
-
 test('TST056: draws the weather its own route answered with, and reads no other source', async ({
   page,
   baseURL,
@@ -214,11 +202,12 @@ test('TST060: draws what it is doing now, the hours to come and the days to come
   await expect(daily).toBeVisible();
 
   // Each carries its own content rather than the same content three times. The present block is
-  // the one place the sky is put into words (./README.md § Present); the hours and days carry it
-  // as the glyph alone, so what tells their entry lists apart is the figures the answer gave each —
-  // the warmest hour shown and the warmest day shown, neither of which the other section carries.
+  // the one place the sky is put into words (./README.md § Present); the days carry the daily
+  // high/low, an answer-given figure the hours never carry; the hours carry the fifth hour's own
+  // precipitation chance, `40%` (`forecast`'s `10 * index`), which the daily strip's own smaller
+  // range (`forecast`'s `5 * index`, up to `20%`) never reaches.
   await expect(present).toContainText('Clear');
-  await expect(hourly).toContainText(`${WARM + 4}°`);
+  await expect(hourly).toContainText(`${10 * 4}%`);
   // The high/low pinned whole, not a substring of the high alone: a substring match would still
   // pass a daily strip that regressed to carrying a unit and a space between the two figures.
   await expect(daily).toContainText(`${WARM + 24}°/${WARM - 24}°`);
@@ -243,18 +232,10 @@ test('TST060: draws what it is doing now, the hours to come and the days to come
   // The curve is dot-vertexed, one dot per hour shown.
   await expect(page.locator('[data-weather-vertex]')).toHaveCount(5);
 
-  // Each hourly label rides above its own vertex, inside a band sized to hold its full travel — read
-  // against the hourly box above, so a label that overran it would draw over the daily strip beneath,
-  // the exact failure that box is read apart to catch.
-  const labels = await page.locator('[data-weather-hour-label]').all();
-  expect(labels, 'one tracking label per hour shown').toHaveLength(5);
-  for (const label of labels) {
-    const measured = await label.boundingBox();
-    expect(measured, 'a tracking label is laid out').not.toBeNull();
-    const { x, y, width, height } = measured!;
-    const box = { left: x, top: y, right: x + width, bottom: y + height };
-    expect(within(box, boxes.hourly), 'the tracking label stays inside the hourly box').toBe(true);
-  }
+  // The curve reads against a y-axis scale rather than floating a label at each vertex — always
+  // three nice-rounded ticks (bottom, middle, top), regardless of how wide or narrow the hours'
+  // own range is.
+  await expect(page.locator('[data-weather-yaxis-tick]')).toHaveCount(3);
 });
 
 test('TST061: follows its source to a new reading inside the freshness bound, without reloading', async ({

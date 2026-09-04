@@ -128,13 +128,105 @@
       keeping the drawn stroke a constant rendered width regardless of that mapping. */
   const CURVE_VIEWBOX_WIDTH = 100;
   const CURVE_VIEWBOX_HEIGHT = 30;
-  const CURVE_PADDING = 6;
+
+  /** The nice-step progression a y-axis scale's step is drawn from, at whatever power of ten the
+      data calls for. */
+  const NICE_MULTIPLES = [1, 2, 2.5, 5, 10];
+
+  /** The y-axis always carries exactly this many ticks — bottom, middle, top — rather than a count
+      that varies with the data's own range, which is what keeps the plot's required height (and so
+      the tick labels' own spacing) predictable regardless of what the hours show. */
+  const AXIS_TICK_COUNT = 3;
+  const AXIS_INTERVALS = AXIS_TICK_COUNT - 1;
+
+  /** A nice-rounded tick value and its place on the y-axis, ascending from the scale's bottom tick
+      to its top. */
+  interface YAxisTick {
+    value: number;
+    label: string;
+    /** This tick's y, as a fraction (0 at the top tick, 1 at the bottom) of the plot's vertical
+        extent — the one mapping the curve's vertices, its gridlines and its tick labels all share,
+        so nothing drawn against it can drift out of line with anything else drawn against it. */
+    yFraction: number;
+  }
+
+  /** The y-axis's scale: the tick step, and the bottom and top tick values it brackets the data
+      with. */
+  interface YAxisScale {
+    bottom: number;
+    top: number;
+    step: number;
+  }
+
+  /** A step at or above `rawStep`, from the classic 1 / 2 / 2.5 / 5 progression at whatever power of
+      ten `rawStep` falls in, floored at one degree so a near-flat set of hours never yields a
+      fractional step. */
+  function niceStep(rawStep: number): number {
+    const floored = Math.max(rawStep, 1);
+    const magnitude = 10 ** Math.floor(Math.log10(floored));
+    const multiple = NICE_MULTIPLES.find((candidate) => candidate * magnitude >= floored - 1e-9);
+    return (multiple ?? 10) * magnitude;
+  }
+
+  /** The next step up the same 1 / 2 / 2.5 / 5 progression `step` itself sits on. */
+  function widerNiceStep(step: number): number {
+    const magnitude = 10 ** Math.floor(Math.log10(step));
+    const index = NICE_MULTIPLES.findIndex((candidate) => candidate * magnitude >= step - 1e-9);
+    return index + 1 < NICE_MULTIPLES.length
+      ? NICE_MULTIPLES[index + 1]! * magnitude
+      : NICE_MULTIPLES[0]! * magnitude * 10;
+  }
+
+  /**
+   * The y-axis's scale, bracketing the hourly temperatures with nice-rounded ticks rather than the
+   * raw data's own min and max. The step starts at whatever `AXIS_INTERVALS` steps across the data's
+   * own range would need, and the bottom tick is that step's own floor of `dataMin` — which can give
+   * away more of the step's budget than the starting step accounted for (`dataMin` sitting just above
+   * a multiple), so the step is widened one nice notch at a time until `AXIS_INTERVALS` of it, from
+   * its own floored bottom, still reaches at least `dataMax`. This is what keeps the tick count fixed
+   * at `AXIS_TICK_COUNT` for any data, a flat set of hours included (`dataMax - dataMin` of 0 needs no
+   * special case: `niceStep`'s one-degree floor already gives it a real, widenable step).
+   */
+  function yAxisScale(temps: number[]): YAxisScale {
+    const dataMin = Math.min(...temps);
+    const dataMax = Math.max(...temps);
+    let step = niceStep((dataMax - dataMin) / AXIS_INTERVALS);
+    let bottom = Math.floor(dataMin / step) * step;
+    let top = bottom + AXIS_INTERVALS * step;
+    while (top < dataMax - 1e-9) {
+      step = widerNiceStep(step);
+      bottom = Math.floor(dataMin / step) * step;
+      top = bottom + AXIS_INTERVALS * step;
+    }
+    return { bottom, top, step };
+  }
+
+  /** Where a temperature sits between the scale's bottom and top tick, as a fraction — 0 at the top
+      tick, 1 at the bottom, inverted because SVG y grows downward. */
+  function scaleFraction(value: number, scale: YAxisScale): number {
+    return (scale.top - value) / (scale.top - scale.bottom);
+  }
+
+  /**
+   * The y-axis's own ticks — always `AXIS_TICK_COUNT` of them — ascending from the scale's bottom
+   * tick to its top. A tick's value is always an exact multiple of the step, and the step is never
+   * more than one decimal place (the 2.5 case), so that is all a label ever needs to show.
+   */
+  function yAxisTicks(scale: YAxisScale): YAxisTick[] {
+    return Array.from({ length: AXIS_TICK_COUNT }, (_, index) => {
+      const value = scale.bottom + index * scale.step;
+      return {
+        value,
+        label: Number.isInteger(value) ? `${value}°` : `${value.toFixed(1)}°`,
+        yFraction: scaleFraction(value, scale),
+      };
+    });
+  }
 
   /** One hourly vertex, in the curve's own viewBox units and as a fraction (0–1) of that viewBox.
-      The fraction is what DOM-positioned content — the vertex dots, the tracking labels — lines up
-      against: the viewBox is stretched non-uniformly onto whatever box holds it
-      (`preserveAspectRatio="none"`), so a fraction of it, not a measured pixel, is the coordinate
-      that still matches the drawn curve. */
+      The fraction is what DOM-positioned content — the vertex dots — lines up against: the viewBox
+      is stretched non-uniformly onto whatever box holds it (`preserveAspectRatio="none"`), so a
+      fraction of it, not a measured pixel, is the coordinate that still matches the drawn curve. */
   interface CurveVertex {
     x: number;
     y: number;
@@ -146,23 +238,15 @@
    * The hourly temperature curve's vertices, one per hour, computed fresh from the props each render
    * rather than measured from the laid-out page — the module never reads its own layout back. A
    * vertex's x is its column's centre in an n-column strip, matching the strip cells beneath it; its
-   * y is the temperature's place between the coldest and warmest hour shown, inverted because SVG y
-   * grows downward. A flat set of hours (min equals max) draws a level line at the row's centre
-   * rather than dividing by zero.
+   * y is the raw (unrounded) temperature's place on the y-axis scale, the same mapping the axis's
+   * own ticks and gridlines are drawn against.
    */
-  function curveVertices(hours: { temp: number }[]): CurveVertex[] {
-    const temps = hours.map((hour) => hour.temp);
-    const min = Math.min(...temps);
-    const max = Math.max(...temps);
-    const span = max - min;
-    const usableHeight = CURVE_VIEWBOX_HEIGHT - 2 * CURVE_PADDING;
+  function curveVertices(hours: { temp: number }[], scale: YAxisScale): CurveVertex[] {
     return hours.map((hour, index) => {
       const x = ((index + 0.5) / hours.length) * CURVE_VIEWBOX_WIDTH;
-      const y =
-        span === 0
-          ? CURVE_VIEWBOX_HEIGHT / 2
-          : CURVE_PADDING + ((max - hour.temp) / span) * usableHeight;
-      return { x, y, xFraction: x / CURVE_VIEWBOX_WIDTH, yFraction: y / CURVE_VIEWBOX_HEIGHT };
+      const yFraction = scaleFraction(hour.temp, scale);
+      const y = yFraction * CURVE_VIEWBOX_HEIGHT;
+      return { x, y, xFraction: x / CURVE_VIEWBOX_WIDTH, yFraction };
     });
   }
 
@@ -177,12 +261,18 @@
     return `left: ${vertex.xFraction * 100}%; top: ${vertex.yFraction * 100}%;`;
   }
 
-  /** Where a vertex's temperature label sits in `.labels` — `left` the same column as its dot,
-      `bottom` the same fraction inverted, scaled against the curve's own height (`--space-lg`)
-      rather than the label band's, which is taller by the label's own line height so the warmest
-      hour's label — the one riding highest — never clips the band it is drawn in. */
-  function labelStyle(vertex: CurveVertex): string {
-    return `left: ${vertex.xFraction * 100}%; bottom: calc(${1 - vertex.yFraction} * var(--space-lg));`;
+  /** A tick's own gridline, in viewBox y units — every tick but the bottom one, whose gridline is
+      the plot's own bottom border and would otherwise be drawn twice. */
+  function gridlines(ticks: YAxisTick[]): number[] {
+    return ticks.slice(1).map((tick) => tick.yFraction * CURVE_VIEWBOX_HEIGHT);
+  }
+
+  /** Where a tick's label sits against its own gridline in `.yaxis`: flush to the line's far edge at
+      the scale's bottom and top ticks, so the outermost labels never overflow the plot they are
+      drawn beside, and centred on the line for every tick between them. */
+  function tickLabelStyle(tick: YAxisTick, index: number, count: number): string {
+    const anchor = index === count - 1 ? '0%' : index === 0 ? '-100%' : '-50%';
+    return `top: ${tick.yFraction * 100}%; transform: translateY(${anchor});`;
   }
 </script>
 
@@ -199,7 +289,9 @@
     {:else}
       {@const reading = payload.data}
       {@const sky = describeSky(reading.current.weatherCode)}
-      {@const vertices = curveVertices(reading.hourly)}
+      {@const scale = yAxisScale(reading.hourly.map((hour) => hour.temp))}
+      {@const ticks = yAxisTicks(scale)}
+      {@const vertices = curveVertices(reading.hourly, scale)}
       <!-- Present, per ./README.md § Present. -->
       <section class="present" data-weather-present>
         <div class="present-reading">
@@ -221,17 +313,16 @@
       <section class="series" data-weather-hourly>
         <h2 class="heading section-label">Next hours</h2>
         <div class="curve">
-          <!-- The plot area — the tracking labels and the curve, dot-vertexed — bracketed by a dim
-               L-shaped axis on its left and bottom (border-left, border-bottom); the strip below is
-               outside the bracket, reading as the axis's own tick labels. -->
+          <!-- The plot area — a left y-axis scale and the curve, dot-vertexed — the curve itself
+               bracketed by a dim L-shaped axis on its left and bottom (border-left, border-bottom);
+               the strip below is outside the bracket, reading as the axis's own tick labels. -->
           <div class="plot">
-            <div class="labels">
-              {#each reading.hourly as hour, index (hour.time)}
+            <div class="yaxis">
+              {#each ticks as tick, index (tick.value)}
                 <span
-                  class="label tabular-figures"
-                  data-weather-hour-label
-                  style={labelStyle(vertices[index])}
-                  >{round(hour.temp)}°</span
+                  class="tick-label tabular-figures"
+                  data-weather-yaxis-tick
+                  style={tickLabelStyle(tick, index, ticks.length)}>{tick.label}</span
                 >
               {/each}
             </div>
@@ -242,6 +333,16 @@
                 preserveAspectRatio="none"
                 aria-hidden="true"
               >
+                {#each gridlines(ticks) as y (y)}
+                  <line
+                    class="gridline"
+                    x1="0"
+                    y1={y}
+                    x2={CURVE_VIEWBOX_WIDTH}
+                    y2={y}
+                    vector-effect="non-scaling-stroke"
+                  />
+                {/each}
                 <polyline
                   class="curve-line"
                   points={curvePoints(vertices)}
@@ -362,45 +463,57 @@
     border-bottom: var(--divider-stroke-width) solid var(--emission-stroke);
   }
 
-  /* The plot area (the labels and the curve) and the strip beneath it all read against the same
-     n-column layout, so a vertex the curve draws lines up under its own label and its own strip
-     cell without measuring anything laid out. */
+  /* The plot area and the strip beneath it read against the same n-column layout, so a vertex the
+     curve draws lines up under its own strip cell without measuring anything laid out. */
   .curve {
     display: flex;
     flex-direction: column;
     gap: var(--space-xs);
   }
 
-  /* Brackets the plot area only — the tracking labels and the curve — on its left and bottom, the
-     same dim-stroke pairing `.heading`'s own divider draws with. The strip stays outside it,
-     reading as the axis's tick labels. */
+  /* The y-axis scale beside the curve, and the curve itself. */
   .plot {
-    position: relative;
-    border-left: var(--divider-stroke-width) solid var(--emission-stroke);
-    border-bottom: var(--divider-stroke-width) solid var(--emission-stroke);
+    display: grid;
+    grid-template-columns: auto 1fr;
   }
 
-  /* Sized to hold every label's full vertical travel (`--space-lg`, the curve's own height) plus
-     one label's own line height, so a label positioned within it by `.label`'s `bottom` never
-     overflows the section this module is drawn in. */
-  .labels {
+  /* As tall as `.curve-area`, so a tick's `top` percentage (`tickLabelStyle`) lines up with the
+     gridline it labels — three tick labels' own line height plus the two gaps between them, which
+     is what keeps `AXIS_TICK_COUNT`'s three labels legible rather than overlapping. */
+  .yaxis {
     position: relative;
-    height: calc(var(--space-lg) + var(--type-caption) + var(--space-xs));
+    height: calc(var(--type-caption) * 3 + var(--space-xs) * 2);
+    padding-right: var(--space-xs);
   }
 
-  .label {
+  /* Content, so drawn at full emission like the curve and its dots
+     (SRS032<!-- Readable text is carried at full emission -->) — the readable half of the axis, the
+     gridlines and axis lines beside it being decoration only. */
+  .tick-label {
     position: absolute;
-    transform: translateX(-50%);
+    right: 0;
     font-size: var(--type-caption);
     font-weight: var(--type-caption-weight);
     line-height: 1;
     white-space: nowrap;
   }
 
+  /* Brackets the curve on its left and bottom — the same dim-stroke pairing `.heading`'s own divider
+     draws with. The bottom one is also the scale's own bottom gridline (`gridlines`), and the strip
+     stays outside the bracket, reading as the axis's tick labels. */
   .curve-area {
     position: relative;
     width: 100%;
-    height: var(--space-lg);
+    height: calc(var(--type-caption) * 3 + var(--space-xs) * 2);
+    border-left: var(--divider-stroke-width) solid var(--emission-stroke);
+    border-bottom: var(--divider-stroke-width) solid var(--emission-stroke);
+  }
+
+  /* Decoration, dimmed the same as the axis lines either side of it
+     (SRS030<!-- Only content is rendered above the emission ceiling -->). */
+  .gridline {
+    stroke: var(--emission-stroke);
+    stroke-width: var(--divider-stroke-width);
   }
 
   .curve-svg {
