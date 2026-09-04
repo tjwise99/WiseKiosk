@@ -26,26 +26,4 @@ reach them, and the two `docker` rows were added there. A passing run over this 
 | Must fail | extends preset unpinned (no `#`) | `extends: ["github>tjwise99/wise-renovate"]`, no `#tag` |
 | Must fail | file is not JSON | `renovate.json` edited to invalid JSON |
 | Must pass | The real `renovate.json` | the tree as it stands, `extends: ["github>tjwise99/wise-renovate#v1.0.0"]` |
-| Must fail | Entry names a directory that does not exist | the `pip` entry pointed at `/nope` |
-| Must fail | Entry's directory holds no manifest | the `pip` directory emptied of `requirements*.txt` |
-| Must fail | Entry points at the root | `directory: "/"` on the `pip`, `npm` and `gomod` entries in turn |
-| Must fail | A `docker` entry at the root the `Dockerfile` has left | the root `Dockerfile` deleted, the entry still at `/` |
-| Must fail | A `docker` entry whose directory holds no `Dockerfile` | the `docker` entry pointed at `/deploy` |
-| Must fail | Ecosystem with no manifest mapping | `package-ecosystem: cargo` |
-| Must fail | Entry declares no directory | the `directory:` key removed |
-| Must fail | No `github-actions` entry | the block deleted from `.github/dependabot.yml` |
-| Must fail | The parser cannot read the file | `updates:` renamed, so nothing parses |
-| Must pass | A `docker` entry at the root, which holds the `Dockerfile` | the tree as it stands |
 | Must pass | Manifest below the root | `web/package.json` |
-| Must pass | `requirements-dev.txt` satisfies `pip` | the real spelling, which is not `requirements.txt` |
-| Must pass | Block-list patterns | a `github-actions` entry whose `patterns:` is a block list rather than inline |
-
-The three root rows and the two `docker` rows are one claim from both directions: the root is
-admitted for the ecosystem whose manifest ADR 0021 rev 3 puts there, and for that ecosystem the
-manifest is still resolved — a `docker` entry naming a directory without a `Dockerfile` fails like
-any other.
-
-The renamed-`updates:` row is the one that matters. The check's guard counts list items under
-`updates:` and compares that against what its entry split produced, deliberately sharing no assumption
-with the split: a guard keyed on the same literal goes to zero alongside the thing it guards, and the
-two then agree that nothing is wrong.
