@@ -121,6 +121,17 @@ async function boxOf(page: import('@playwright/test').Page, selector: string): P
   return { left: x, top: y, right: x + width, bottom: y + height };
 }
 
+/** Whether `inner` sits wholly inside `outer`, a sub-pixel tolerance absorbing the same fractional
+    geometry `overlaps` allows for. */
+function within(inner: Box, outer: Box, tolerance = 0.5): boolean {
+  return (
+    inner.left >= outer.left - tolerance &&
+    inner.right <= outer.right + tolerance &&
+    inner.top >= outer.top - tolerance &&
+    inner.bottom <= outer.bottom + tolerance
+  );
+}
+
 test('TST056: draws the weather its own route answered with, and reads no other source', async ({
   page,
   baseURL,
@@ -225,6 +236,22 @@ test('TST060: draws what it is doing now, the hours to come and the days to come
   expect(overlaps(boxes.present, boxes.daily), 'the present and the days are drawn apart').toBe(
     false,
   );
+
+  // The curve is dot-vertexed, one dot per hour shown.
+  await expect(page.locator('[data-weather-vertex]')).toHaveCount(5);
+
+  // Each hourly label rides above its own vertex, inside a band sized to hold its full travel — read
+  // against the hourly box above, so a label that overran it would draw over the daily strip beneath,
+  // the exact failure that box is read apart to catch.
+  const labels = await page.locator('[data-weather-hour-label]').all();
+  expect(labels, 'one tracking label per hour shown').toHaveLength(5);
+  for (const label of labels) {
+    const measured = await label.boundingBox();
+    expect(measured, 'a tracking label is laid out').not.toBeNull();
+    const { x, y, width, height } = measured!;
+    const box = { left: x, top: y, right: x + width, bottom: y + height };
+    expect(within(box, boxes.hourly), 'the tracking label stays inside the hourly box').toBe(true);
+  }
 });
 
 test('TST061: follows its source to a new reading inside the freshness bound, without reloading', async ({

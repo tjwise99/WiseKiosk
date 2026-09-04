@@ -227,7 +227,10 @@
           <div class="plot">
             <div class="labels">
               {#each reading.hourly as hour, index (hour.time)}
-                <span class="label tabular-figures" style={labelStyle(vertices[index])}
+                <span
+                  class="label tabular-figures"
+                  data-weather-hour-label
+                  style={labelStyle(vertices[index])}
                   >{round(hour.temp)}°</span
                 >
               {/each}
