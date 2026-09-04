@@ -141,20 +141,19 @@
     display: flex;
     flex-direction: column;
     gap: var(--space-sm);
-    min-width: 0;
   }
 
-  .weekday {
-    margin: 0;
-    font-size: var(--type-title);
-    font-weight: var(--type-title-weight);
-    line-height: 1;
-  }
-
+  /* Two lines, never more: `.clock`'s own `min-width: 0` is the one place this module lets its box
+     shrink to its track (../README.md's composition is two date lines, not three from a wrapped
+     one); `nowrap` keeps each line unbreakable so a region too narrow for it is exceeded rather than
+     folded onto a further line, the same overflow the frame itself leaves to the content
+     (../../../lib/RegionFrame.svelte's `.region`, no clipping rule of its own). */
+  .weekday,
   .full-date {
     margin: 0;
     font-size: var(--type-title);
     font-weight: var(--type-title-weight);
     line-height: 1;
+    white-space: nowrap;
   }
 </style>

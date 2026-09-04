@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test';
+import { expect, test, type Page } from '@playwright/test';
 
 import {
   asksBeyondTheShell,
@@ -207,4 +207,39 @@ test('TST055: goes on showing an advancing time while the backend is unreachable
   // And nothing of the module's own stands where the time was — the region carries the clock, not a
   // state it raised about an outage that is the page's to report.
   await expect(page.locator(`[data-region="${REGION}"] [data-clock]`)).toHaveCount(1);
+});
+
+/**
+ * Composition, not a requirement (../README.md § It is not a requirement) — no TST cites this one,
+ * since nothing in the tree obliges a line count. It stands anyway: the recompose once let a narrow
+ * region squeeze the day/month/year line into two, so the date read as three lines instead of the
+ * spec's two, and no behavioural check reads layout. Read via `Range.getClientRects()`, which counts
+ * one rect per rendered line of an element's text, so a wrapped line is caught directly rather than
+ * inferred from a height that could as easily come from a taller font.
+ */
+async function lineCounts(page: Page, selector: string): Promise<number[]> {
+  return page.$$eval(selector, (elements) =>
+    elements.map((element) => {
+      const range = document.createRange();
+      range.selectNodeContents(element);
+      return range.getClientRects().length;
+    }),
+  );
+}
+
+test('the date holds to two lines even in the narrowest region, not a third from a wrapped one', async ({
+  page,
+}) => {
+  await holdHostClock(page, HOST_TIME);
+  // A corner region is a third the width of a centre band (../../../lib/regions.ts) and the
+  // narrowest the frame lays out, so it is where the day/month/year line is most likely to be
+  // squeezed narrower than its own text.
+  await render(page, {
+    modules: [{ region: 'top_left', module: 'clock', options: { show_date: true } }],
+  });
+
+  const lines = await lineCounts(page, `${DATE} p`);
+  expect(lines, 'the weekday and the day/month/year line each render as one line, not wrapped').toEqual([
+    1, 1,
+  ]);
 });
