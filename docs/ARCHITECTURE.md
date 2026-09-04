@@ -543,9 +543,10 @@ what the appliance layer at
 [`tjwise99/meta-wisekiosk`](https://github.com/tjwise99/meta-wisekiosk) builds, and the container model
 is what a release ships.
 
-**Drawing the second model needs no revision of
-[ADR 0019 rev 7](decisions/0019-boundary-at-what-deploys-and-tag-tier.md).** Three of that record's own
-sentences settle it. Its vocabulary for this level is stated generically — "the Deployment level draws
+**Drawing the second model is not a revision of
+[ADR 0019 rev 7](decisions/0019-boundary-at-what-deploys-and-tag-tier.md), and that record stands
+unrevised.** It was argued rather than assumed, and three of the record's own sentences carry it. Its
+vocabulary for this level is stated generically — "the Deployment level draws
 three kinds of subject: hosts, the processes on them, and the files placed beside them" — so a native
 host, its process and its two files are chosen from the categories it already names rather than from an
 invented one. Its boundary line, "the boundary is what deploys — the published container image and what
@@ -557,7 +558,8 @@ such a walkthrough, left incomplete by a second host rather than contradicted by
 contradicted the record is a sentence the model itself carried, "the backend is never run outside the
 container" — and the record rejected that ground as "not generally true" in the alternative it declined,
 so dropping it from the container host's description returns the model to what the record decided rather
-than departing from it.
+than departing from it. What would reopen the question is a sentence in that record's own decision text
+the native model contradicts outright rather than leaves incomplete; there is none.
 
 The three hosts are **roles, not machines**. The container host and the display host have different
 floors, and in the configuration this is built for they are necessarily separate machines; a native host
