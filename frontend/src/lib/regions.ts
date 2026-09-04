@@ -55,9 +55,23 @@ export function edgeBandLength(depth: number | undefined): string {
   return depth === undefined ? '0px' : `${depth}vh`;
 }
 
+/**
+ * The horizontal anchor, spelled the two ways a module's own content reads it: `text` for the
+ * `text-align` every text element inherits, and `flex` for the `--content-anchor` custom property a
+ * module's flex rows align to. A module on the display's right edge justifies its content to the
+ * right, one on the left to the left — content hugging the edge it sits against rather than a fixed
+ * side — and this is what carries which way that is, without a module knowing its own placement.
+ */
+const CONTENT_ANCHOR: Record<RegionPlacement['horizontal'], { text: string; flex: string }> = {
+  start: { text: 'left', flex: 'flex-start' },
+  center: { text: 'center', flex: 'center' },
+  end: { text: 'right', flex: 'flex-end' },
+};
+
 /** The placement declarations for one region, as a `style` attribute value. */
 export function placementStyle(region: Region): string {
   const placement = REGION_PLACEMENTS[region];
+  const anchor = CONTENT_ANCHOR[placement.horizontal];
   return [
     `grid-column:${placement.column}`,
     `grid-row:${placement.row}`,
@@ -66,5 +80,9 @@ export function placementStyle(region: Region): string {
     // axes rather than for the properties is what keeps the two from being crossed.
     `justify-content:${placement.vertical}`,
     `align-items:${placement.horizontal}`,
+    // The same horizontal anchor, handed down for a module to justify its own content by — inherited
+    // as `text-align`, and as `--content-anchor` for the flex rows text-align cannot place.
+    `text-align:${anchor.text}`,
+    `--content-anchor:${anchor.flex}`,
   ].join(';');
 }
