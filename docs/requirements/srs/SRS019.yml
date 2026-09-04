@@ -1,7 +1,7 @@
 active: true
 derived: false
 header: |
-  The backend runs on both supported architectures
+  The backend runs on every supported architecture
 level: 1.51
 links:
 - SYS007: NFy-WbNRxUQwknLO07y9H-EFDWuo_jGKosorPOiOSes=
@@ -9,16 +9,22 @@ normative: true
 rationale: |
   Decomposes SYS007<!-- The declared minimum host, and staying within it --> on the backend side.
   Deployment puts the backend on whatever small host is to hand — a Pi, a mini PC, a spare desktop —
-  so a single-architecture build would make that choice for the operator. Stated as an obligation on
-  WiseKiosk rather than as a fact about the host, because a host's capabilities are not ours to
-  require; what is ours is running on both.
+  so a single-architecture build would make that choice for the operator. The smallest of those
+  hosts runs armv6l, and leaving it out narrows the set to the hosts a build happens to reach rather
+  than the ones an operator is likely to have, which is the choice this item exists not to make.
+  Stated as an obligation on WiseKiosk rather than as a fact about the host, because a host's
+  capabilities are not ours to require; what is ours is running on each of them.
 ref: ''
-reviewed: AEJ8FIxonzoXtBRb96oLb9hqPCtcJFgk7qy3xGCivBA=
+reviewed: hrIAHrdfomL0Uwzltytn7xygyw-M_qD41kReLGlYuWI=
 status: accepted
 text: |
-  The backend shall run on both amd64 and arm64 hosts.
+  The backend shall run on amd64, arm64 and armv6l hosts.
 verification-justification: |
-  Asserted by building for both architectures and running the smoke test on each. What no check
-  settles is behaviour under load on either - it establishes that the binary runs, not that it runs
-  well.
+  Asserted by building for each architecture and running a smoke test on each, in the form that
+  architecture is reached in: two of them as the published image, and armv6l as the binary and
+  bundle a build from source produces, no published image carrying it. What no check settles is
+  behaviour under load on any of them - they establish that the application runs, not that it runs
+  well. Nor is the emulation the foreign checks run under the hardware itself: what it decides is
+  that the binary is a 32-bit ARM binary the toolchain built for ARMv6, and that it starts and
+  serves, not how it behaves on a real board.
 verification-method: test
