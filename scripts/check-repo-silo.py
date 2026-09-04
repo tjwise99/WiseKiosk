@@ -58,7 +58,8 @@ else:
         preset_entries = [
             entry
             for entry in (extends if isinstance(extends, list) else [])
-            if isinstance(entry, str) and entry.startswith(RUNNER_PRESET_PREFIX)
+            if isinstance(entry, str)
+            and (entry == RUNNER_PRESET_PREFIX or entry.startswith(RUNNER_PRESET_PREFIX + "#"))
         ]
         if not preset_entries:
             problems.append(

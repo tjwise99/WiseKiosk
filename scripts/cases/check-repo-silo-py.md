@@ -24,6 +24,7 @@ reach them, and the two `docker` rows were added there. A passing run over this 
 | Must fail | renovate.json missing | `renovate.json` deleted from the repository root |
 | Must fail | extends lacks the runner preset | `extends` holds entries, none starting `github>tjwise99/wise-renovate` |
 | Must fail | extends preset unpinned (no `#`) | `extends: ["github>tjwise99/wise-renovate"]`, no `#tag` |
+| Must fail | extends a same-prefix repo, not the preset | `extends: ["github>tjwise99/wise-renovate-fork#v1"]` — shares the prefix but names a different repository |
 | Must fail | file is not JSON | `renovate.json` edited to invalid JSON |
 | Must pass | The real `renovate.json` | the tree as it stands, `extends: ["github>tjwise99/wise-renovate#v1.0.0"]` |
 | Must pass | Manifest below the root | `web/package.json` |
