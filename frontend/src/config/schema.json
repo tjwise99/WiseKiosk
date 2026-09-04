@@ -103,7 +103,7 @@
     },
     "weatherOptions": {
       "title": "Weather options",
-      "description": "The weather module's section: what a placement of the weather module asks of it. Unlike the clock's, its one key is required and carries no default — the module reports on a point on the earth's surface, and there is no point that would do in the absence of one the placement names.",
+      "description": "The weather module's section: what a placement of the weather module asks of it. Its one required key carries no default — the module reports on a point on the earth's surface, and there is no point that would do in the absence of one the placement names. Every other key is omissible, and a placement configured with none of them takes the defaults below.",
       "type": "object",
       "additionalProperties": false,
       "required": ["location"],
@@ -126,6 +126,13 @@
               "type": "number"
             }
           }
+        },
+        "series_switch_seconds": {
+          "title": "Series switch seconds",
+          "description": "Seconds the Next Hours graph shows each series — temperature, then precipitation — before switching between them. Floored at two seconds, below which the switch would strobe.",
+          "type": "number",
+          "minimum": 2,
+          "default": 10
         }
       }
     }

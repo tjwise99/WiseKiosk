@@ -12,7 +12,7 @@ rationale: |
   expected later. That failure is invisible to the shaping and visible only on a page, which is why this
   is its own item rather than a second clause of the payload's.
   The lengths are stated here as well as on the payload because the two fail differently and neither
-  obligation reaches the other's failure: a component handed five hours can draw three, and a payload
+  obligation reaches the other's failure: a component handed twelve hours can draw three, and a payload
   carrying three cannot be repaired by any component. This is the same split the item already rests
   on - what is handed over and what is drawn are settled by different evidence - applied to the
   figure rather than to the presence.
@@ -31,12 +31,12 @@ rationale: |
   That is a property of the rendering rather than of the data, and no obligation on the payload reaches
   it.
 ref: ''
-reviewed: rDM6yzO6Lh--QaHrT2v-bEf9lXy2h3zqSuU32nk4kBM=
+reviewed: i0HKdakuJcyOxb_P62tCfIaSWVXe9cFsIWq1siDZzDA=
 status: accepted
 text: |
-  The weather module shall show both the present weather and the weather expected over the five hours
-  next to come and the five days next to come, the present distinguishable from the expected, and the
-  hours next to come distinguishable from the days next to come.
+  The weather module shall show both the present weather and the weather expected over the twelve
+  hours next to come and the five days next to come, the present distinguishable from the expected,
+  and the hours next to come distinguishable from the days next to come.
 verification-justification: |
   Read from a rendered page handed a payload: the present weather and both forward ranges are all
   present at the lengths the item states, and each is separable from the other two by what is drawn.

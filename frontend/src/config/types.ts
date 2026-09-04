@@ -49,6 +49,10 @@ export type Latitude = number;
  */
 export type Longitude = number;
 /**
+ * Seconds the Next Hours graph shows each series — temperature, then precipitation — before switching between them. Floored at two seconds, below which the switch would strobe.
+ */
+export type SeriesSwitchSeconds = number;
+/**
  * Every module this deployment displays, each with the region it is laid out into. A region may carry several modules, and a region no entry names holds nothing.
  */
 export type Modules = ModulePlacement[];
@@ -75,10 +79,11 @@ export interface ClockOptions {
   show_date?: ShowDate;
 }
 /**
- * The weather module's section: what a placement of the weather module asks of it. Unlike the clock's, its one key is required and carries no default — the module reports on a point on the earth's surface, and there is no point that would do in the absence of one the placement names.
+ * The weather module's section: what a placement of the weather module asks of it. Its one required key carries no default — the module reports on a point on the earth's surface, and there is no point that would do in the absence of one the placement names. Every other key is omissible, and a placement configured with none of them takes the defaults below.
  */
 export interface WeatherOptions {
   location: WeatherLocation;
+  series_switch_seconds?: SeriesSwitchSeconds;
 }
 /**
  * The point the weather is reported at. Two placements of the module report on two points, each from its own entry.

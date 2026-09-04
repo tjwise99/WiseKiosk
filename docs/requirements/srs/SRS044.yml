@@ -24,9 +24,9 @@ rationale: |
   to come, the obligation is met by a payload carrying one of them, and a shaping that silently
   returned fewer would leave a viewer reading a shorter outlook than the display was built for with
   nothing to fail against - while a check written against the module's own constant asserts only that
-  the module agrees with itself. Five hours is far enough to answer whether to go out now and get back
-  dry, and five days far enough to plan around while still being a forecast worth reading rather than
-  a guess.
+  the module agrees with itself. Twelve hours reaches through the rest of a day already begun,
+  answering not only whether to go out now but whether conditions hold across what is left of it, and
+  five days far enough to plan around while still being a forecast worth reading rather than a guess.
   The item states what a viewer is owed and not the shape it arrives in. The names of the fields, their
   units, their types and however the source happens to encode a sky are the boundary schema's and the
   shaping library's; a requirement fixing any of them would settle an interface those records are the
@@ -35,12 +35,12 @@ rationale: |
   runs on a captured response with no browser and no network, and a module handed everything a viewer is
   owed can still draw half of it.
 ref: ''
-reviewed: vbh5u4kwHZCW8LDSybEy3GrT2vqKrP9TKm0dHFrbAQc=
+reviewed: iYPl_S9EkFE6Ltj8q0bfUxC1NkQBQbk7Wh1G3hkIquA=
 status: accepted
 text: |
   The weather module shall put across the boundary, for the location a request names, the weather
   there at present - what it is doing, whether it is day or night, how warm it is, how warm it feels
-  and how the wind stands - together with what the weather is expected to be over each of the five
+  and how the wind stands - together with what the weather is expected to be over each of the twelve
   hours next to come, day or night with each of them, and over each of the five days next to come.
 verification-justification: |
   Read from the module's shaping run against a captured response from its source, without a network:
