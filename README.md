@@ -16,14 +16,16 @@ deployment is independent, customised through configuration, never through a for
 the documented six-part contract in
 [`docs/contracts/module-contract.md`](docs/contracts/module-contract.md).
 
-**Minimum specs.** The backend runs as a container on `amd64` or `arm64`
-(SRS019<!-- The backend runs on both supported architectures -->) — a Raspberry Pi, a mini PC, a
-spare desktop. The display is driven by a browser on a host of Raspberry Pi Zero capability
+**Minimum specs.** The backend runs on `amd64`, `arm64` and `armv6l`
+(SRS019<!-- The backend runs on every supported architecture -->) — a Raspberry Pi, a mini PC, a
+spare desktop. The published image carries the first two; `armv6l` is reached by building from source
+and running the binary beside the bundle it serves, no image being published for it. The display is
+driven by a browser on a host of Raspberry Pi Zero capability
 (SRS021<!-- Frontend runs on a Pi Zero-class browser host -->). These are the minimum WiseKiosk
 declares, and SYS007<!-- The declared minimum host, and staying within it --> is the obligation to
 run on them and to keep running there. They are set by what an operator is likely to already have
 rather than by what WiseKiosk would prefer — requiring a particular machine would make that choice
-for them (SRS019<!-- The backend runs on both supported architectures -->). Which machines an
+for them (SRS019<!-- The backend runs on every supported architecture -->). Which machines an
 operator buys, and how they are provisioned, is theirs.
 
 **What WiseKiosk does not own.** The kiosk host lies outside the system: its operating system, its

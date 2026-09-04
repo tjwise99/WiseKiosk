@@ -149,6 +149,36 @@ runs `just smoke-image` once per architecture. Both need Docker, which is why ne
   with the architecture; the configuration, layer and isolation properties hold of the image on
   either, so a second run of them would be a repeat rather than a second assertion.
 
+## Native binary run
+
+`native-arch` runs `just smoke-native`: it builds the frontend bundle, cross-compiles the backend for
+`armv6l`, and runs `scripts/native/smoke.py` over the pair. It answers the third architecture
+SRS019<!-- The backend runs on every supported architecture --> names, which the section above cannot
+reach — no image is published for it, so there is no image to smoke-test. It has a local form and
+needs no Docker, but it does need emulation a contributor machine is not assumed to carry, which is
+why it is not a `just verify` dependency either (§ *Gate wiring*).
+
+- **What is under test is the application, not an image.** The job builds both halves from the
+  tracked tree and starts the binary as a process with the bundle as its static root, which is the
+  shape a deployment that compiles from source runs. Nothing here builds, loads or pushes an image,
+  and the container architectures stay the section above's — adding a leg there would assert
+  something no published artifact does.
+- **The runner executes the foreign binary directly.** `docker/setup-qemu-action` registers
+  user-mode emulation as a binary-format handler, so an `armv6l` executable runs on this amd64
+  runner the way an `amd64` one does. A binary the emulation cannot start fails the job, reported as
+  having judged no binary rather than as an architecture that came up.
+- **The bundle is part of what is asserted.** Liveness is answered by a route that never reads the
+  served tree, so a static root naming a tree that is not there answers it perfectly well. The
+  harness fetches the page as well, which is what makes the frontend build and the static root it is
+  pointed at something the job decides rather than arguments nothing reads.
+- **A held address is reported as having judged nothing.** The binary compiles its address in and
+  takes no flag for it, so a process already on that address answers liveness, the page and the
+  binary's own `-health-check` while the binary under test dies on a bind it lost. That is
+  indistinguishable from a clean run, so the address is refused before anything is probed.
+- **Emulation is not the board.** What the job decides is that the build is for the right
+  architecture and that it starts and serves. Instruction timing, memory pressure and a real board's
+  peripherals are outside it, and are named as unproven by the item the harness serves.
+
 ## Generated boundary contract
 
 The one OpenAPI schema is hand-authored and both sides' **routes, client, server and types** are

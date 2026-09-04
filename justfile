@@ -317,5 +317,5 @@ check-restart-policy:
     python3 scripts/check-restart-policy.py
 
 [group('checks')]
-[doc('Run every check the PR gate runs that has a local form and needs no Docker; secret scanning, the PR-title check (commitlint, via the hook layer), the link check (lychee, from a digest-pinned image) and the workflow audit (zizmor, actionlint) are CI-only, and the image tier is `just check-image`')]
+[doc('Run every check the PR gate runs that has a local form and needs neither Docker nor emulation; secret scanning, the PR-title check (commitlint, via the hook layer), the link check (lychee, from a digest-pinned image) and the workflow audit (zizmor, actionlint) are CI-only, the image tier is `just check-image`, and the native armv6l run is `just smoke-native`')]
 verify: check-untracked check-hooks check-branch check-reqs check-citations check-arch check-arch-trace check-boundary check-go check-secret-unwrap check-config-types check-build check-static-bundle check-unit check-render check-site check-adr-index check-adr-revs check-docs-index check-repo-silo check-languages check-dead-test check-restart-policy
