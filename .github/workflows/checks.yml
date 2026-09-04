@@ -403,6 +403,48 @@ jobs:
           PLATFORM: ${{ matrix.platform }}
         run: just smoke-image "$PLATFORM"
 
+  native-arch:
+    name: native-arch
+    # The third architecture the backend is obliged to run on, which no published image carries and
+    # image-arch therefore cannot report. It is verified the way the deployment that reaches that
+    # architecture works: the application is built from source — the frontend bundle, and the backend
+    # cross-compiled for armv6l — and the binary is then executed on this runner, which is amd64, by
+    # the user-mode emulation setup-qemu-action registers as a binary-format handler. So what runs is
+    # the artifact itself rather than an image around it, and a binary the emulation cannot start
+    # fails here rather than reporting an architecture nothing ran on. No image is built and none
+    # gains a leg: the container architectures stay image-arch's. A job rather than a leg beside
+    # them, because it shares neither the artifact nor the toolchains those legs need. The recipe
+    # body is the one spelling of what runs, here and locally. No secrets: everything is built and
+    # run on the runner and pushed nowhere.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: docker/setup-qemu-action@96fe6ef7f33517b61c61be40b68a1882f3264fb8 # v4.2.0
+
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 26
+
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with:
+          go-version: "1.26"
+
+      - uses: extractions/setup-just@53165ef7e734c5c07cb06b3c8e7b647c5aa16db3 # v4
+        with:
+          just-version: "1.58.0"
+
+      - name: Install the frontend toolchain into the silo (frontend/), locked
+        run: npm --prefix frontend ci
+
+      - name: Install the Go module's dependencies into the silo (backend/), locked
+        run: go -C backend mod download
+
+      - name: The backend cross-compiles for armv6l and the application comes up serving natively on it
+        run: just smoke-native
+
   process:
     name: process
     # Process gates (ADR 0006 rev 5): the branch is named type_number-snake_name and
