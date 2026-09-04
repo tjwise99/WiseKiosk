@@ -11,7 +11,8 @@ Re-exercised under #54 container image and publish, script md5
 one exception to the non-root rule — [ADR 0021 rev 3](../../docs/decisions/0021-repository-layout.md)
 puts the `Dockerfile` at the repository root. Every must-fail row below was re-run against the
 changed check; the root row was run once per language ecosystem, so the exception is shown not to
-reach them, and the two `docker` rows were added there. A passing run over this branch's head reports
+reach them, and the two `docker` rows it added belonged to the per-ecosystem check the Renovate
+cutover retired. A passing run over this branch's head reports
 `renovate.json` resolving the pinned `tjwise99/wise-renovate` preset.
 
 | Direction | Case | Input |
