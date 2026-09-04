@@ -124,6 +124,9 @@ language, never a blank region (the styling contract; the
 | present block draws the full present set, not half of it | SRS044<!-- The weather module puts the present conditions and the near-term outlook across the boundary --> |
 | full-white curve, glyphs and figures | SRS032<!-- Readable text is carried at full emission --> / SRS030<!-- Only content is rendered above the emission ceiling --> |
 | every step at or above the scale's floor | SRS033<!-- Text holds a minimum size against the display, at every resolution --> |
+| temperature drawn on the curve and on each day card | SRS051<!-- The weather module shows the temperature expected across its outlook --> |
+| precipitation chance drawn on the curve and on each day card | SRS052<!-- The weather module shows the chance of precipitation across its outlook --> |
+| the curve toggles between temperature and precipitation, never both at once | SRS053<!-- The weather module's hourly outlook switches which measure it draws, on an interval its configuration sets --> |
 
 ## To confirm in situ
 
