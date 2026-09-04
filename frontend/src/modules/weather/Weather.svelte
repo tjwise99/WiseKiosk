@@ -131,7 +131,7 @@
 
   /** The nice-step progression a y-axis scale's step is drawn from, at whatever power of ten the
       data calls for. */
-  const NICE_MULTIPLES = [1, 2, 2.5, 5, 10];
+  const NICE_MULTIPLES = [0.25, 0.5, 1, 2, 2.5,3,4, 5, 10];
 
   /** The y-axis always carries exactly this many ticks, evenly spaced from bottom to top, rather
       than a count that varies with the data's own range, which is what keeps the plot's required
@@ -162,8 +162,8 @@
       ten `rawStep` falls in, floored at one degree so a near-flat set of hours never yields a
       fractional step. */
   function niceStep(rawStep: number): number {
-    const floored = Math.max(rawStep, 1);
-    const magnitude = 10 ** Math.floor(Math.log10(floored));
+    const floored = Math.max(rawStep, 0.25);
+    const magnitude = 10 ** Math.log10(floored);
     const multiple = NICE_MULTIPLES.find((candidate) => candidate * magnitude >= floored - 1e-9);
     return (multiple ?? 10) * magnitude;
   }
@@ -212,12 +212,12 @@
    * tick to its top. A tick's value is always an exact multiple of the step, and the step is never
    * more than one decimal place (the 2.5 case), so that is all a label ever needs to show.
    */
-  function yAxisTicks(scale: YAxisScale): YAxisTick[] {
+  function yAxisTicks(scale: YAxisScale, unit: String): YAxisTick[] {
     return Array.from({ length: AXIS_TICK_COUNT }, (_, index) => {
       const value = scale.bottom + index * scale.step;
       return {
         value,
-        label: Number.isInteger(value) ? `${value}°` : `${value.toFixed(1)}°`,
+        label: Number.isInteger(value) ? `${value}${unit}` : `${value.toFixed(1)}${unit}`,
         yFraction: scaleFraction(value, scale),
       };
     });
@@ -245,6 +245,14 @@
     return hours.map((hour, index) => {
       const x = ((index + 0.5) / hours.length) * CURVE_VIEWBOX_WIDTH;
       const yFraction = scaleFraction(hour.temp, scale);
+      const y = yFraction * CURVE_VIEWBOX_HEIGHT;
+      return { x, y, xFraction: x / CURVE_VIEWBOX_WIDTH, yFraction };
+    });
+  }
+  function curvePrecipVertices(hours: { precipProbability: number }[], scale: YAxisScale): CurveVertex[] {
+    return hours.map((hour, index) => {
+      const x = ((index + 0.5) / hours.length) * CURVE_VIEWBOX_WIDTH;
+      const yFraction = scaleFraction(hour.precipProbability, scale);
       const y = yFraction * CURVE_VIEWBOX_HEIGHT;
       return { x, y, xFraction: x / CURVE_VIEWBOX_WIDTH, yFraction };
     });
@@ -290,8 +298,11 @@
       {@const reading = payload.data}
       {@const sky = describeSky(reading.current.weatherCode)}
       {@const scale = yAxisScale(reading.hourly.map((hour) => hour.temp))}
-      {@const ticks = yAxisTicks(scale)}
+      {@const precipScale = yAxisScale(reading.hourly.map((hour) => hour.precipProbability))}
+      {@const ticks = yAxisTicks(scale, "°")}
+      {@const precipTicks = yAxisTicks(precipScale, "%")}
       {@const vertices = curveVertices(reading.hourly, scale)}
+      {@const precipVertices = curvePrecipVertices(reading.hourly, precipScale)}
       <!-- Present, per ./README.md § Present. -->
       <section class="present" data-weather-present>
         <div class="present-reading">
@@ -348,22 +359,30 @@
                   points={curvePoints(vertices)}
                   vector-effect="non-scaling-stroke"
                 />
+                <polyline
+                  class="precip-curve-line"
+                  points={curvePoints(precipVertices)}
+                  vector-effect="non-scaling-stroke"
+                />
               </svg>
               {#each reading.hourly as hour, index (hour.time)}
                 <span class="vertex" data-weather-vertex style={vertexStyle(vertices[index])}
                 ></span>
+                <span class="precip-vertex" data-weather-vertex style={vertexStyle(precipVertices[index])}
+                ></span>
               {/each}
             </div>
+            <div class="precipYaxis">
+              {#each precipTicks as tick, index (tick.value)}
+                <span
+                  class="precip-tick-label tabular-figures"
+                  data-weather-yaxis-tick
+                  style={tickLabelStyle(tick, index, ticks.length)}>{tick.label}</span
+                >
+              {/each}
+            </div>
+
           </div>
-          <ol class="strip" style="--strip-count:{reading.hourly.length}">
-            {#each reading.hourly as hour (hour.time)}
-              <li class="cell" data-weather-hour>
-                <span class="when">{atLocation(hour.time)}</span>
-                <span class="glyph" data-weather-glyph>{skyGlyph(hour.weatherCode, hour.isDay)}</span>
-                <span class="reading tabular-figures">{round(hour.precipProbability)}%</span>
-              </li>
-            {/each}
-          </ol>
         </div>
       </section>
 
@@ -373,10 +392,10 @@
         <ol class="strip" style="--strip-count:{reading.daily.length}">
           {#each reading.daily as day (day.time)}
             <li class="cell" data-weather-day>
-              <span class="when">{dayName(day.time)}</span>
+              <span class="daily-when">{dayName(day.time)}</span>
               <span class="glyph" data-weather-glyph>{skyGlyph(day.weatherCode, true)}</span>
-              <span class="reading tabular-figures">{round(day.max)}°/{round(day.min)}°</span>
-              <span class="reading tabular-figures">{round(day.precipProbability)}%</span>
+              <span class="daily-reading tabular-figures">{round(day.max)}°/{round(day.min)}°</span>
+              <span class="daily-reading tabular-figures">{round(day.precipProbability)}%</span>
             </li>
           {/each}
         </ol>
@@ -421,11 +440,20 @@
     line-height: 1;
   }
 
+  .daily-when {
+    font-size: var(--type-annotation);
+  }
+
+  .daily-reading {
+    font-size: var(--type-section-header);
+  }
+
   .glyph {
     /* The icon face and nothing else: no other face carries these marks, so there is no fallback to
        compose. Colour and weight are left unset, so both are inherited whichever glyph is drawn. */
     font-family: 'Weather Icons';
     line-height: 1;
+    font-size: var(--type-annotation);
   }
 
   .glyph-present {
@@ -474,7 +502,7 @@
   /* The y-axis scale beside the curve, and the curve itself. */
   .plot {
     display: grid;
-    grid-template-columns: auto 1fr;
+    grid-template-columns: 0.05fr minmax(0, 0.9fr) 0.05fr;
   }
 
   /* As tall as `.curve-area`, so a tick's `top` percentage (`tickLabelStyle`) lines up with the
@@ -484,6 +512,11 @@
     position: relative;
     height: calc((var(--type-caption) * 3 + var(--space-xs) * 2) * 2);
     padding-right: var(--space-xs);
+  }
+  .precipYaxis {
+    position: relative;
+    height: calc((var(--type-caption) * 3 + var(--space-xs) * 2) * 2);
+    padding-left: calc(var(--space-xs * 5));
   }
 
   /* Content, so drawn at full emission like the curve and its dots
@@ -497,6 +530,14 @@
     line-height: 1;
     white-space: nowrap;
   }
+  .precip-tick-label {
+    position: absolute;
+    font-size: var(--type-caption);
+    font-weight: var(--type-caption-weight);
+    line-height: 1;
+    white-space: nowrap;
+    color: #0000FF;
+   }
 
   /* Brackets the curve on its left and bottom — the same dim-stroke pairing `.heading`'s own divider
      draws with. The bottom one is also the scale's own bottom gridline (`gridlines`), and the strip
@@ -505,6 +546,7 @@
     position: relative;
     width: 100%;
     height: calc((var(--type-caption) * 3 + var(--space-xs) * 2) * 2);
+    border-right: var(--divider-stroke-width) solid var(--emission-stroke);
     border-left: var(--divider-stroke-width) solid var(--emission-stroke);
     border-bottom: var(--divider-stroke-width) solid var(--emission-stroke);
   }
@@ -522,6 +564,16 @@
     height: 100%;
   }
 
+  .precip-curve-line {
+    fill: none;
+    /* Content, so drawn at the display's full emission like the glyphs and figures around it
+       (SRS032<!-- Readable text is carried at full emission -->), correct by construction: the
+       stroke is the same token every readable glyph on the page is coloured with. */
+    /* stroke: var(--emission-content); */
+    stroke-width: var(--curve-stroke-width);
+    stroke-linejoin: round;
+    stroke: #0000FF !important;
+  }
   .curve-line {
     fill: none;
     /* Content, so drawn at the display's full emission like the glyphs and figures around it
@@ -543,6 +595,14 @@
     height: 0.6vh;
     border-radius: 50%;
     background: var(--emission-content);
+    transform: translate(-50%, -50%);
+  }
+  .precip-vertex {
+    position: absolute;
+    width: 0.6vh;
+    height: 0.6vh;
+    border-radius: 50%;
+    background: #0000FF;
     transform: translate(-50%, -50%);
   }
 
