@@ -57,14 +57,12 @@ deployment {
   nativeHost = host 'Native host' {
     description '''
       A host running the backend as an ordinary process of its own operating
-      system, with no container runtime in the deployment at all. The backend is
-      built from source for this host's architecture rather than taken from the
-      published image, so nothing that artifact declares reaches here and the
-      deployment answers for the user the backend runs as. A host that also meets
-      the display host's floor may carry that role beside this one, which is what
-      the appliance layer at
+      system, with no container runtime in the deployment. The backend is built
+      from source for this host's architecture rather than taken from the
+      published image, so the deployment rather than an artifact declares the
+      user it runs as. The appliance layer at
       [`tjwise99/meta-wisekiosk`](https://github.com/tjwise99/meta-wisekiosk)
-      builds.
+      builds such a deployment.
     '''
 
     nativeConfigurationFile = artifact 'Configuration file' {
@@ -85,10 +83,8 @@ deployment {
     nativeProcess = process 'Backend process' {
       #SRS019
       description '''
-        The backend executing directly on the host, reading the configuration and
-        the secret files placed beside it. It is an instance of the same Backend
-        execution context the running container holds; what differs is how it got
-        onto the host, not what it is.
+        The backend executing directly on the host, reading the configuration
+        and the secret files placed beside it.
       '''
 
       instanceOf wisekiosk.backend

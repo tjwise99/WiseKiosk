@@ -532,16 +532,10 @@ unparsed`" .-> NativeHost.NativeProcess.Backend
 The published image is the one node here that exists before any deployment does, and it is drawn because
 the obligations on it are obligations on the artifact rather than on the process it becomes.
 
-**Two deployment models, one Backend.** The level draws both ways the backend reaches a host. On the
-container host it runs as an instance of the published image, with the configuration and the secret
-files mounted in. On the native host it runs as an ordinary process of the host's own operating system,
-built from source for that host's architecture, reading the same two files from the host — no container
-runtime, and no published image in its causal chain at all. Both are instances of the same Backend
-container, because a C4 container is an execution context rather than a shipping artifact; what differs
-is the Deployment-level subject, not the software. Neither is the other's fallback: the native model is
-what the appliance layer at
-[`tjwise99/meta-wisekiosk`](https://github.com/tjwise99/meta-wisekiosk) builds, and the container model
-is what a release ships.
+**Two deployment models, one Backend.** The Backend appears twice at this level: as an instance of the
+published image on the container host, and as a process of the host's own operating system on the
+native host. Both are instances of the same Backend container, so what differs is the Deployment-level
+subject rather than the software.
 
 **Drawing the second model is not a revision of
 [ADR 0019 rev 7](decisions/0019-boundary-at-what-deploys-and-tag-tier.md), and that record stands
@@ -561,11 +555,10 @@ so dropping it from the container host's description returns the model to what t
 than departing from it. What would reopen the question is a sentence in that record's own decision text
 the native model contradicts outright rather than leaves incomplete; there is none.
 
-The three hosts are **roles, not machines**. The container host and the display host have different
-floors, and in the configuration this is built for they are necessarily separate machines; a native host
-has no container runtime's floor to meet, which is what lets one board carry it and the display role
-together. Why each of those is so, and why a host carries a tag only where an item obliges the operator,
-is [ADR 0019 rev 7](decisions/0019-boundary-at-what-deploys-and-tag-tier.md)'s.
+The hosts here are **roles, not machines**. The container host and the display host have different
+floors, and in the configuration this is built for they are necessarily separate machines. Why each of
+those is so, and why a host carries a tag only where an item obliges the operator, is
+[ADR 0019 rev 7](decisions/0019-boundary-at-what-deploys-and-tag-tier.md)'s.
 
 **The image carries a CA trust store.** Every module's upstream is fetched by the backend rather than
 by the browser (SYS004<!-- Upstream data reaches the display only through the backend -->), over
