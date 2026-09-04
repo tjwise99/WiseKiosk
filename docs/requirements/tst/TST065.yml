@@ -21,14 +21,14 @@ references:
 - keyword: 'test(''TST065: draws the present reading on the side of the day the payload
     gives it'', async ({ page }) => {'
   path: frontend/src/modules/weather/weather.spec.ts
-  sha: afa323ab70757743cb486c1f36ba66d06560da771879f90e019716c5cad6db98
+  sha: 5bcf4f7877ffc6f0ea88ed95a457da71845b50363230f78996550a2eb2d7762e
   type: file
 - keyword: 'test(''TST065: draws each hour on its own side of the day, not the present
     reading’s'', async ({ page }) => {'
   path: frontend/src/modules/weather/weather.spec.ts
-  sha: afa323ab70757743cb486c1f36ba66d06560da771879f90e019716c5cad6db98
+  sha: 5bcf4f7877ffc6f0ea88ed95a457da71845b50363230f78996550a2eb2d7762e
   type: file
-reviewed: 5sk-d3s0nHxN4jGhewFqrCH_2D8j0U_XYRvjXhbBpq4=
+reviewed: 1sjISastvau3x2kwK9vKKAZo2aG7lNhqyauAjdI_Oa8=
 status: proposed
 text: |
   Render test handing the component two payloads differing only in whether the present weather is a
