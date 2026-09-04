@@ -487,6 +487,13 @@
     /* The region holds its track and the content leaves it, which is the frame's rule rather than
        something this module decides for itself. */
     min-width: 0;
+    /* Every region anchors its content on its own named axis (RegionFrame's `placementStyle()`),
+       `middle_center`'s horizontal anchor being `center` — a flex item's default cross-axis sizing
+       under that is shrink-to-fit, which is right for a compact hero element (the clock) but leaves
+       this module's graph and daily strip a fraction of the region's own width. Stretching is this
+       module's own opt-out of that default, not a change to the shared anchor other modules still
+       get. */
+    align-self: stretch;
   }
 
   .waiting {
@@ -503,10 +510,7 @@
 
   .present-reading {
     display: flex;
-    /* Centred rather than baseline-aligned: the glyph (`display`, 16vh) and the temperature
-       (`headline`, 10vh) no longer share a size, and the icon face's own baseline sits high enough
-       in its em-box that baseline alignment floated it above the figure instead of pairing with it. */
-    align-items: center;
+    align-items: baseline;
     gap: var(--space-xs);
   }
 
@@ -526,15 +530,14 @@
 
   .glyph-present {
     margin: 0;
-    /* The present block's own hero figure, bigger than the temperature beside it to balance it —
-       the temperature stays at `headline` (owner-specified). */
-    font-size: var(--type-display);
+    /* The mark for the present reading is set at the reading's own step. */
+    font-size: var(--type-headline);
   }
 
   .sky {
     margin: 0;
-    font-size: var(--type-title);
-    font-weight: var(--type-title-weight);
+    font-size: var(--type-body);
+    font-weight: var(--type-body-weight);
     line-height: 1;
   }
 
