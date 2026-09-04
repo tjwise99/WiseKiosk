@@ -330,9 +330,11 @@
     return `left: ${vertex.xFraction * 100}%; top: ${vertex.yFraction * 100}%;`;
   }
 
-  /** Where an x-axis label sits under its own vertex — the same fractional x, centred under the
-      point rather than the column. */
-  function xAxisLabelStyle(vertex: CurveVertex): string {
+  /** Where an hour's own column sits — the x-axis label under it, the day/night glyph above it, and
+      (via `vertexStyle`) the curve's own dot at it — all driven off this one fraction, so the three
+      cannot drift out of line with each other by construction. Centred under/over the point rather
+      than a column's own width, the same as `vertexStyle`'s `left`. */
+  function columnStyle(vertex: CurveVertex): string {
     return `left: ${vertex.xFraction * 100}%;`;
   }
 
@@ -431,19 +433,20 @@
             <div class="xaxis-spacer" aria-hidden="true"></div>
             <div class="xaxis">
               {#each reading.hourly as hour, index (hour.time)}
-                <span class="xaxis-label tabular-figures" data-weather-xaxis-tick style={xAxisLabelStyle(vertices[index])}
+                <span class="xaxis-label tabular-figures" data-weather-xaxis-tick style={columnStyle(vertices[index])}
                   >+{index + 1}</span
                 >
               {/each}
             </div>
+            <div class="glyph-spacer" aria-hidden="true"></div>
+            <div class="glyph-row">
+              {#each reading.hourly as hour, index (hour.time)}
+                <span class="glyph-column" data-weather-hour style={columnStyle(vertices[index])}>
+                  <span class="glyph" data-weather-glyph>{skyGlyph(hour.weatherCode, hour.isDay)}</span>
+                </span>
+              {/each}
+            </div>
           </div>
-          <ol class="glyph-strip" style="--strip-count:{reading.hourly.length}">
-            {#each reading.hourly as hour (hour.time)}
-              <li class="glyph-cell" data-weather-hour>
-                <span class="glyph" data-weather-glyph>{skyGlyph(hour.weatherCode, hour.isDay)}</span>
-              </li>
-            {/each}
-          </ol>
         </div>
       </section>
 
@@ -558,13 +561,15 @@
     line-height: 1;
   }
 
-  /* The y-axis scale beside the curve, the curve itself, and the x-axis strip beneath both — the
-     x-axis's own spacer keeps its labels out of the y-axis's column, so a label's fractional x still
-     matches the vertex it sits under. */
+  /* The y-axis scale, the curve, the x-axis strip and the glyph row — one grid, three rows sharing
+     one second column, so the x-axis labels and the glyphs sit in the exact same horizontal track
+     the curve itself is drawn in and every fractional x (`columnStyle`, `vertexStyle`) means the same
+     pixel column in all three. Each row's own spacer keeps it out of the y-axis's column. */
   .plot {
     display: grid;
     grid-template-columns: auto 1fr;
-    grid-template-rows: auto auto;
+    grid-template-rows: auto auto auto;
+    row-gap: var(--space-xs);
   }
 
   /* As tall as `.curve-area`, so a tick's `top` percentage (`tickLabelStyle`) lines up with the
@@ -644,21 +649,20 @@
     transform: translate(-50%, -50%);
   }
 
-  /* Matches the y-axis column's own width, so the x-axis strip starts at the plot area rather than
-     under the tick labels. */
+  /* Matches the y-axis column's own width, so the x-axis strip and the glyph row both start at the
+     plot area rather than under the tick labels. */
   .xaxis-spacer {
     grid-column: 1;
     grid-row: 2;
   }
 
   /* Relative-hour labels, one per vertex, each positioned at that vertex's own fractional x
-     (`xAxisLabelStyle`) rather than laid out as equal columns — so a label always sits under its own
+     (`columnStyle`) rather than laid out as equal columns — so a label always sits under its own
      vertex regardless of how many hours the payload hands the plot. Content, drawn at full emission
      like the tick labels beside it (SRS032<!-- Readable text is carried at full emission -->). */
   .xaxis {
     position: relative;
     height: var(--type-caption);
-    margin-top: var(--space-xs);
     grid-column: 2;
     grid-row: 2;
   }
@@ -673,19 +677,27 @@
     white-space: nowrap;
   }
 
-  /* One condition glyph per hour, aligned to the same n-column strip the curve's vertices sit
-     against (SRS050<!-- The weather module draws day and night apart -->). */
-  .glyph-strip {
-    display: grid;
-    grid-template-columns: repeat(var(--strip-count), 1fr);
-    margin: 0;
-    padding: 0;
-    list-style: none;
+  /* See `.xaxis-spacer`. */
+  .glyph-spacer {
+    grid-column: 1;
+    grid-row: 3;
   }
 
-  .glyph-cell {
-    display: flex;
-    justify-content: center;
+  /* One condition glyph per hour (SRS050<!-- The weather module draws day and night apart -->), each
+     positioned at its own vertex's fractional x (`columnStyle`) — the same mechanism the x-axis
+     labels use above, so a glyph, its label and its curve dot share one x by construction rather than
+     by three layouts happening to agree. */
+  .glyph-row {
+    position: relative;
+    height: var(--type-body);
+    grid-column: 2;
+    grid-row: 3;
+  }
+
+  .glyph-column {
+    position: absolute;
+    top: 0;
+    transform: translateX(-50%);
   }
 
   .strip {
