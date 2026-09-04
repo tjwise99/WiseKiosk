@@ -148,6 +148,29 @@ state insets its own content by it. The band is a mask fitted over the display, 
 it is behind an object rather than dim, which a failure state cannot afford
 (SYS001<!-- Failure is legible and proportionate -->).
 
+## Content anchor
+
+Each region's horizontal anchor — the same `start`/`center`/`end` the frame itself places the region
+by — is handed down to the region's own content, so a module can justify what it draws inward from
+the edge or side its region sits against without knowing its own placement. `RegionFrame` carries it
+two ways, both set alongside the region's own `grid-column`/`grid-row`/`justify-content`/`align-items`
+declarations (`frontend/src/lib/regions.ts`, `placementStyle()`):
+
+- **`text-align`**, set to `left` / `center` / `right` for a `start` / `center` / `end` anchor. Every
+  text element inherits it as ordinary CSS inheritance provides, with no module code required.
+- **`--content-anchor`**, a CSS custom property set to `flex-start` / `center` / `flex-end` for the
+  same three anchors — the equivalent value for a module's own flex row or column, which `text-align`
+  cannot reach. A module reads it as `justify-content: var(--content-anchor, flex-start)` or
+  `align-items: var(--content-anchor, flex-start)` on whichever axis carries its layout; `flex-start`
+  is the documented default, read the same way by every consumer, for a flex container rendered
+  outside a region context (a standalone story or test harness) where no `--content-anchor` is set.
+
+Both values exist so a module's own content hugs the edge its region sits against — a module in a
+right-edge region reading right, one in a left-edge region reading left — the same shape as
+`--edge-band` (**Spacing scale and the edge band**, above): a placement fact computed once by the
+frame and exposed as a value a module consumes, never recomputed per module. A module is not required
+to use either.
+
 ## Typeface
 
 Inter, bundled and self-hosted from the backend's own origin — the display page reaches no other
