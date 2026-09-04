@@ -17,12 +17,20 @@ where a gate is unbuilt its ticket is named. That is how this project records sc
 Not everything CI does is a gate. These produce material a person acts on.
 
 - **Dependency update proposals.** Renovate runs every six hours from `tjwise99/wise-renovate`,
-  opening pull requests under the runner's GitHub App `[bot]` login on `renovate/*` branches. Patch,
-  minor, pin and digest updates auto-merge through GitHub's native auto-merge once required checks
-  pass; major updates open a pull request and wait. A release sits for three days before its update
-  opens a branch. The Node version across `engines` fields, `setup-node` inputs and the `Dockerfile`
-  base image travels as one grouped pull request. That the root `renovate.json` resolves the pinned
-  preset is § *Repository shape*'s.
+  opening pull requests under the runner's GitHub App `[bot]` login on `renovate/*` branches. Every
+  dependency bump is its own pull request, except the Node runtime, which travels as one grouped
+  pull request across `engines` fields, `setup-node` inputs and the `Dockerfile` base image; the run
+  opens at most two new pull requests an hour and holds at most ten open at once. Patch, minor, pin
+  and digest updates auto-merge through GitHub's native auto-merge once required checks pass; major
+  updates open a pull request and wait. A release sits for three days before its update opens a
+  branch. Renovate's default title convention, `chore(deps): …`, is already a Conventional Commit, so
+  `checks.yml`'s process job runs its pre-commit install and title-lint steps unconditionally for
+  every pull request — the exemption Dependabot's capitalised `build(deps): Bump …` default needed
+  has no counterpart to carry. Renovate also keeps one open Dependency Dashboard issue, carrying no
+  milestone or type label; the ticket gates ([ADR 0013 rev 4](decisions/0013-work-tracking-invariants.md))
+  read only the issue a branch names, so the dashboard issue is exempt by construction and no branch
+  may be cut from it. That the root `renovate.json` resolves the pinned preset is § *Repository
+  shape*'s.
 - **Code-scanning results.** Every static-analysis finding is reported to the repository's
   code-scanning dashboard and annotated on the pull request, whether or not it fails the build.
 - **Complete scan output.** The vulnerability gates report every advisory they resolve — at any
@@ -681,7 +689,9 @@ changed, which the citation resolver above decides without anyone declaring anyt
   `requirements*.txt` or `.venv/` — tooling is siloed with the feature it serves. The root
   `renovate.json` parses as JSON and its `extends` list names the `github>tjwise99/wise-renovate`
   preset, pinned to a tag — the one dependency-update configuration the repository carries directly,
-  the policy itself living in the preset the runner repository publishes.
+  the policy itself living in the preset the runner repository publishes. The gate stops at that: it
+  does not verify that a manifest exists wherever a dependency lives, because Renovate discovers
+  manifests on its own, with no per-directory configuration entry for a gate to check against.
 
 ## Action pins and workflow privilege
 
