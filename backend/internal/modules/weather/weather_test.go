@@ -22,13 +22,13 @@ import (
 // answer from the source, for the location below, taken with the request
 // buildURL builds. No case here reaches a network.
 //
-// It carries more of each range than the payload holds — eight hours and seven
-// days against five and five — because a shaping that truncates and one that
-// passes the source's own length straight through are told apart only by a
-// response longer than the figure. It also spans the location's sunset, so the
-// hours it carries are not all of one kind: a shaping answering the same
-// day-or-night flag whatever it read would pass against a capture taken wholly
-// in daylight.
+// It carries more of each range than the payload holds — fourteen hours and
+// seven days against twelve and five — because a shaping that truncates and
+// one that passes the source's own length straight through are told apart
+// only by a response longer than the figure. It also spans the location's
+// sunset, so the hours it carries are not all of one kind: a shaping
+// answering the same day-or-night flag whatever it read would pass against a
+// capture taken wholly in daylight.
 const captured = "testdata/open-meteo-forecast.json"
 
 // The location the capture was taken for, and the offset the source reported for
@@ -426,7 +426,7 @@ func TestTST059_ShapingTheCapturedResponseCarriesEverythingAViewerIsOwed(t *test
 // itself, which is equally true of a module that shows one hour.
 func TestTST064_TheOutlooksAreAsLongAsTheRequirementStates(t *testing.T) {
 	const (
-		wantHours = 5
+		wantHours = 12
 		wantDays  = 5
 	)
 
