@@ -8,7 +8,7 @@ resolving to the pinned `tjwise99/wise-renovate` preset.
 
 Re-exercised under #54 container image and publish, script md5
 `71b6118115840c94d5d4aa3a5ce1c850`, when the `docker` ecosystem gained a manifest mapping and the
-one exception to the non-root rule — [ADR 0021 rev 2](../../docs/decisions/0021-repository-layout.md)
+one exception to the non-root rule — [ADR 0021 rev 3](../../docs/decisions/0021-repository-layout.md)
 puts the `Dockerfile` at the repository root. Every must-fail row below was re-run against the
 changed check; the root row was run once per language ecosystem, so the exception is shown not to
 reach them, and the two `docker` rows were added there. A passing run over this branch's head reports
@@ -41,7 +41,7 @@ reach them, and the two `docker` rows were added there. A passing run over this 
 | Must pass | Block-list patterns | a `github-actions` entry whose `patterns:` is a block list rather than inline |
 
 The three root rows and the two `docker` rows are one claim from both directions: the root is
-admitted for the ecosystem whose manifest ADR 0021 rev 2 puts there, and for that ecosystem the
+admitted for the ecosystem whose manifest ADR 0021 rev 3 puts there, and for that ecosystem the
 manifest is still resolved — a `docker` entry naming a directory without a `Dockerfile` fails like
 any other.
 

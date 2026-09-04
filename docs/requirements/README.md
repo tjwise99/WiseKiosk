@@ -5,7 +5,7 @@ Git-native requirements-management tool that gives every requirement a **stable 
 stakeholder needs into testable software requirements and then into verification items, and **fails
 CI** when a change leaves the trace stale ([what that comes to](#running-the-gate)). Why this exists
 and why Doorstop specifically:
-[ADR 0002 rev 3](../decisions/0002-requirements-management-doorstop.md).
+[ADR 0002 rev 4](../decisions/0002-requirements-management-doorstop.md).
 
 ## The three documents
 
@@ -256,7 +256,7 @@ run is a property of the process rather than of the specification, so what that 
 stated in [`../CI.md`](../CI.md) § Gate wiring.
 
 The browsable, click-through traceability view of this tree (needtables, link graphs, matrices) is
-built by the documentation site silo, [`../site/README.md`](../site/README.md) (ADR 0004 rev 1); this
+built by the documentation site silo, [`../site/README.md`](../site/README.md) (ADR 0004 rev 2); this
 directory is the requirements' canonical source and gate, not its presentation.
 
 ## Adding or changing requirements
@@ -268,7 +268,7 @@ Run all commands with the venv (`docs/requirements/.venv/bin/doorstop …`).
 | Add an item | `doorstop add SRS` | Creates the next `SRS0NN.yml`. Edit its `text` to a single "shall" statement; write a `header` summarising it |
 | Link it up | `doorstop link SRS0NN SYS0MM` (child first, parent second) | Every `SRS` needs a `SYS` parent and every `TST` a `SRS` parent, or the gate flags an orphan. The link is written **unstamped** — see the next row |
 | Stamp a new item | `doorstop review <UID>` **and** `doorstop clear <UID>` | Both, because they write different fields: `review` stamps the item body into `reviewed:`, `clear` writes the parent fingerprint into `links:`. `review` alone leaves the link reading `- SYS0MM: null` and `check-unreviewed.py` fails on that null, so an item added, linked and reviewed but never cleared reds the gate. Their order is immaterial — neither reads what the other writes, and the two sequences produce byte-identical files. The re-blessing row below is not a different order but a different obligation: a human re-reading a child after its parent moved |
-| Point a `TST` at its check | add one `references` entry per verifying site: `{path: <repo-relative-file>, type: file, keyword: <the test's declaration>}`, then `doorstop review <UID>` to stamp the file hash | The path must resolve to a real tracked file and the keyword to the line declaring the test — `func TestXxx`, `test('<title>'` — never the bare name, which also matches the doc comment above it. A whole-file check artifact no runner discovers omits `keyword`, per ADR 0005 rev 2. **Doorstop cannot reference a file under a dot-directory** (e.g. anything in `.github/`) — see ADR 0002 rev 3; cite such wiring in the item's `text` instead |
+| Point a `TST` at its check | add one `references` entry per verifying site: `{path: <repo-relative-file>, type: file, keyword: <the test's declaration>}`, then `doorstop review <UID>` to stamp the file hash | The path must resolve to a real tracked file and the keyword to the line declaring the test — `func TestXxx`, `test('<title>'` — never the bare name, which also matches the doc comment above it. A whole-file check artifact no runner discovers omits `keyword`, per ADR 0005 rev 2. **Doorstop cannot reference a file under a dot-directory** (e.g. anything in `.github/`) — see ADR 0002 rev 4; cite such wiring in the item's `text` instead |
 | Re-bless a child after editing its parent | `doorstop clear <UID>`, then `doorstop review <UID>` | `clear` updates the stored parent fingerprint in the child's `links:`; `review` alone re-stamps the item but leaves the link suspect. Re-blessing is the human act of re-reading a downstream item after its parent moved — do not script it blindly |
 | Re-bless an item after moving it to a different parent | `doorstop review <UID>` | `clear` is not enough: the item's parent UIDs are inside its own stamp, so the item itself is unreviewed. Read it against the parent it now has. `--error-all` reports it as `unreviewed changes` until you do |
 | Baseline a round | — | Its `SYS`/`SRS` items land `accepted` + `active: true`, reviewed in the same change; only items awaiting decomposition or a verifying artifact stay `active: false` (see *Pending* above). "Active" and "reviewed" arrive together — an active-but-unreviewed item fails `--error-all` — so a domain's requirements are never left `proposed`/inactive, which would leave them un-baselined and outside the gate |

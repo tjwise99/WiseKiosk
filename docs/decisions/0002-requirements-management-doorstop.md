@@ -2,10 +2,13 @@
 
 **Status:** accepted
 **Decided:** 2026-07-21 (requirements-system spike, issue #14)
-**Rev:** 3
+**Rev:** 4
 
 ## Revisions
 
+- **rev 4** — 2026-09-04 — replaces the stale claim that a `pip` Dependabot ecosystem entry is what
+  tracks the venv's dependencies with a timeless statement of the update-tracking entry itself; what
+  was chosen is unchanged, so the Decided date does not move (#223 renovate cutover).
 - **rev 3** — 2026-08-23 — drops the Status note recording that the Test-method linkage mechanism was
   superseded: [ADR 0005 rev 2](0005-traceability-gating.md) withdraws that supersession and
   reaffirms the mechanism this record decides — a `TST` item's `references` point at the real
@@ -64,7 +67,7 @@ requirements it serves, not at the repo root; it is dev tooling only, no applica
   to a file only proves the link is real — that the check *passes* is proven by `just verify` and the
   test suite. This division is deliberate and is the mental model to hold: Doorstop = the graph is
   complete and current; the runner = the checks in the graph actually pass.
-- **Python enters the dev toolchain.** A venv and a `pip` Dependabot ecosystem are added. This is
+- **Python enters the dev toolchain.** A venv and a `pip` update-tracking entry are added. This is
   contained to dev tooling; the shipped artifact (a Go static binary) is untouched.
 - **Doorstop cannot reference files under dot-directories.** Its reference finder skips any path with
   a dot-prefixed component, so a `type: file` reference to `.github/workflows/checks.yml` (or anything

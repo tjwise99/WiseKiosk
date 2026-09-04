@@ -39,15 +39,15 @@ that exist only in CI: the pull-request-title check and the `secret-scan` job. T
 when this was decided; the roster is `just --list`, and no count written here is compared against it. Nearly
 every obligation they assert was authored here, and that was never a decision. The gate records argue
 at length about *which hand-rolled form* a check should take — [ADR 0005 rev 2](0005-traceability-gating.md) on
-where evidence lives, [ADR 0006 rev 4](0006-process-gates.md) on what the gate reads,
+where evidence lives, [ADR 0006 rev 5](0006-process-gates.md) on what the gate reads,
 [ADR 0014 rev 4](0014-documentation-index-claims-documents.md) on whether a list may be hand-maintained — and
 never about whether to author one at all.
 
 The exceptions show the question has an answer whenever it is actually asked, and there are four of
 them. `check-site` is a Sphinx build with warnings-as-errors, adopted by
-[ADR 0004 rev 1](0004-docs-site-sphinx-needs.md). `check-arch` validates the model with `likec4 validate`,
-adopted by [ADR 0003 rev 2](0003-architecture-as-code-likec4.md). `check-reqs` delegates tree integrity to
-`doorstop --error-all`, adopted by [ADR 0002 rev 3](0002-requirements-management-doorstop.md) — a delegation
+[ADR 0004 rev 2](0004-docs-site-sphinx-needs.md). `check-arch` validates the model with `likec4 validate`,
+adopted by [ADR 0003 rev 3](0003-architecture-as-code-likec4.md). `check-reqs` delegates tree integrity to
+`doorstop --error-all`, adopted by [ADR 0002 rev 4](0002-requirements-management-doorstop.md) — a delegation
 [`../CI.md`](../CI.md) relies on explicitly when it scopes the dead-test gate away from the
 requirements tier. `secret-scan` is `gitleaks`. So the precedent
 exists and is four times recorded; it had simply never been generalised, and in its absence every new
@@ -83,7 +83,7 @@ Four adoptions follow, each replacing its authored check outright:
 **`commitlint` must preserve the two-stage distinction the authored check carries.** `fixup!` and
 `squash!` are permitted at the commit-message stage because the squash discards them, and refused on
 the pull-request title because the squash makes that title the commit on `main`
-([ADR 0006 rev 4](0006-process-gates.md)). `commitlint`'s `defaultIgnores` *pass* such subjects, so the
+([ADR 0006 rev 5](0006-process-gates.md)). `commitlint`'s `defaultIgnores` *pass* such subjects, so the
 pull-request-title invocation runs with them disabled. The pattern keeps the single definition
 `conventional-commit.regex` holds today; whether one configuration can serve both stages, or one must
 `extends` the other, is left to the implementation.
@@ -207,7 +207,7 @@ later.
   `allowed_merge_methods`, `dismiss_stale_reviews_on_push`, `require_code_owner_review`,
   `require_last_push_approval`, `required_approving_review_count`,
   `required_review_thread_resolution` and `required_reviewers`, and nothing for a linked issue.
-  Branch-name enforcement remains a ruleset metadata restriction, which [ADR 0006 rev 4](0006-process-gates.md)
+  Branch-name enforcement remains a ruleset metadata restriction, which [ADR 0006 rev 5](0006-process-gates.md)
   already rejected as Enterprise-only. What remains are single-maintainer marketplace actions, which
   the maintenance test excludes.
 - **`conventional-pre-commit` for commit messages instead of `commitlint`.** Rejected: CI gates the
@@ -226,7 +226,7 @@ later.
 - **Practice adapts to the tool, not the reverse.** Two commit titles on `main` exceed `commitlint`'s
   default `header-max-length` of 100, the longest at 122. The default stands and titles get shorter;
   configuring the tool around existing practice would forfeit the reason for adopting it.
-- **[ADR 0006 rev 4](0006-process-gates.md) is corrected, not superseded.** The gate path it was
+- **[ADR 0006 rev 5](0006-process-gates.md) is corrected, not superseded.** The gate path it was
   decided under was *plain sh + curl + jq — no toolchain*; `commitlint` and `pre-commit` reverse that
   property while leaving its four gates standing. That record carries the property under its own
   *Alternatives considered*, as one given up, at a rev of its own.

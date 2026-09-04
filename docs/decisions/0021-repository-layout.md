@@ -5,10 +5,16 @@
 #156 config-schema composer; the layout itself taken 2026-08-12 at #5 repo layout, once #97 C4
 phase 2 Container closed and the decomposition this projects landed as
 [ADR 0019 rev 7](0019-boundary-at-what-deploys-and-tag-tier.md))
-**Rev:** 2
+**Rev:** 3
 
 ## Revisions
 
+- **rev 3** — 2026-09-04 — restates the three Dependabot-entry mechanism passages as the rule holds
+  under Renovate: manifests live in their package-root directories, which Renovate discovers there
+  without per-directory configuration; the silo gate asserts the root holds no manifest and that
+  `renovate.json` names the pinned preset; and the Dockerfile's base-image reference at the root is
+  tracked by Renovate's `docker` manager. What was chosen is unchanged, so the Decided date does not
+  move (#223 renovate cutover).
 - **rev 2** — 2026-08-30 — the configuration schema is one central file under
   `frontend/src/config/` and a module directory holds the component and the render test only; the
   per-module configuration-schema fragment is gone (owner, 2026-08-30). This changes what was
@@ -21,7 +27,7 @@ phase 2 Container closed and the decomposition this projects landed as
 **Documents across the tree deferred a location to this decision by name.**
 [The module contract](../contracts/module-contract.md) states a module's parts and leaves their
 concrete locations — which directory holds a module's files, and where the registration list lives —
-to the repository layout. [ADR 0008 rev 4](0008-boundary-contract-openapi-codegen.md) chose the
+to the repository layout. [ADR 0008 rev 5](0008-boundary-contract-openapi-codegen.md) chose the
 boundary-contract mechanism and left the schema's location open, which is what held #7
 boundary-contract codegen from building it. No element of the architecture model carried a source
 `link`, and where that source would sit was undecided. So the layout was a blocking dependency rather
@@ -31,8 +37,10 @@ and what it unblocks is a set of paths other work resolves.
 **Half the answer is already forced, by a rule written for another reason.**
 [`../CI.md`](../CI.md) § *Repository shape* gates that a depth-1 listing of the root holds no
 `go.mod`, `package.json`, `pyproject.toml`, `requirements*.txt` or `.venv/` — tooling is siloed with
-the feature it serves — and that every Dependabot entry outside `github-actions` resolves to a
-non-root directory holding its manifest. Neither package root can therefore be the repository root.
+the feature it serves — and that the root `renovate.json` parses as JSON and names the pinned
+`wise-renovate` preset. Manifests live in their package-root directories, which Renovate discovers
+there without any per-directory configuration. Neither package root can therefore be the repository
+root.
 What is left to decide is what the roots are called, what sits in neither, and where a module's files
 go.
 
@@ -41,7 +49,7 @@ this decision waited on one. [ADR 0019 rev 7](0019-boundary-at-what-deploys-and-
 two containers behind one origin, and that the provisioning material shipped beside the image falls
 outside the boundary altogether. The third thing the projection has to hold is older: the boundary
 schema belongs to neither container, which is
-[ADR 0008 rev 4](0008-boundary-contract-openapi-codegen.md)'s and which ADR 0019 rev 7 reasons from
+[ADR 0008 rev 5](0008-boundary-contract-openapi-codegen.md)'s and which ADR 0019 rev 7 reasons from
 rather than decides.
 
 **The module is where the projection stops being obvious.** A module is "added and removed as a unit",
@@ -54,7 +62,7 @@ with test files, and one registration entry per upstream-backed
 module — walking populations that can be read off the tree.
 
 **Generated output has no say in where it sits.** A compiler reads a package where the package is, so
-the Go and TypeScript types [ADR 0008 rev 4](0008-boundary-contract-openapi-codegen.md) emits are
+the Go and TypeScript types [ADR 0008 rev 5](0008-boundary-contract-openapi-codegen.md) emits are
 inside the package that consumes them whatever this record prefers, and they are committed because
 that ADR's drift gate is a `git diff`.
 
@@ -71,7 +79,7 @@ product rather than running in it.
 - **`frontend/` is the npm package root.** `package.json` sits there; `src/` holds the sources Vite
   builds, with the framework half under `src/lib/`.
 - **`boundary/openapi.yaml` is the one boundary schema.** It is owned by neither package
-  ([ADR 0008 rev 4](0008-boundary-contract-openapi-codegen.md)), so it is inside neither, and the
+  ([ADR 0008 rev 5](0008-boundary-contract-openapi-codegen.md)), so it is inside neither, and the
   directory is named for what the repository already calls the thing.
 - **`deploy/` holds what a release carries beside the image** — the deployment recipe and the example
   configuration file ([ADR 0020 rev 2](0020-release-artifact-set-and-operator-tooling.md)). Outside
@@ -137,13 +145,13 @@ project with documentation inside it.
 
 **`api/openapi.yaml`**, the widely used Go project-layout convention for exactly this file. Rejected
 because it names the wrong thing: sitting beside `backend/`, an `api/` directory reads as the API the
-backend serves — the ownership [ADR 0008 rev 4](0008-boundary-contract-openapi-codegen.md) refuses,
+backend serves — the ownership [ADR 0008 rev 5](0008-boundary-contract-openapi-codegen.md) refuses,
 since a schema owned by one side is a schema that side can change alone. *Boundary* is the word this
 repository already uses for the contract and for the types generated from it.
 
 **`openapi.yaml` at the repository root**, expressing "owned by neither" as strongly as a path can and
 adding no directory for one file. The honest position is that it works, and that the directory holds
-one file with no second occupant anyone can name — ADR 0008 rev 4 puts each generator in a package
+one file with no second occupant anyone can name — ADR 0008 rev 5 puts each generator in a package
 toolchain and makes the drift gate repo-level, so nothing there is waiting for a home. It is rejected
 on the top level's own shape rather than on a future file: the roots here each name what they hold,
 and the loose files beside them are the repository's front matter — the README, the licence, the task
@@ -182,18 +190,17 @@ the second one to be invented would have to argue against the first rather than 
   joining `docs/requirements/`, `docs/site/` and `docs/architecture/`. That is the existing pattern
   rather than a new one, and it is why the root-manifest rule reads as a constraint here instead of an
   obstacle.
-- **Dependabot gains an entry per package root when the manifest exists, and not before.**
-  [`../CI.md`](../CI.md) § *Repository shape* requires every non-`github-actions` entry to resolve to a
-  directory holding its manifest, so an entry added ahead of the code fails the gate it belongs to.
+- **Renovate discovers a new package root's manifest without any entry to add.** Manifests live in
+  their package-root directories, and Renovate discovers them there without per-directory
+  configuration, so nothing in `renovate.json` needs updating when a package root's manifest arrives.
 - **A `README.md` in any of these roots needs a row in [`README.md`](../README.md).** Under
   [ADR 0014 rev 4](0014-documentation-index-claims-documents.md) a row is the only thing that claims a
   document, the sole exception being a top-level dot-directory, and none of these roots is one. A new
   top-level directory is cheap; a document inside one is not, and that is deliberate.
-- **A base-image Dependabot entry has no home under the rule above.** A `docker` ecosystem entry
-  pointing at the root fails § *Repository shape*'s non-root requirement, and the check maps a fixed
-  set of ecosystems, failing an unmapped one outright rather than passing it — so such an entry needs
-  a script edit wherever the Dockerfile sits. Recorded for #54 container build and publish, which is
-  where the trade lands; neither half is decided here.
+- **The Dockerfile's base-image reference needs no home under the rule above.** It sits at the
+  repository root, and Renovate's `docker` manager tracks it there directly, with no per-ecosystem
+  entry mapping a directory to a manifest. Recorded for #54 container build and publish, which is
+  where the Dockerfile's root placement lands.
 - **The model's `link` properties gain their targets with the source they point at.** This record
   supplies the layout a `link` needs; no source exists, and that is what keeps every element without
   one. How ADR 0019 rev 7 words its own deferral is that record's to change, so this one does not

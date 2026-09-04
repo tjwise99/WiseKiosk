@@ -152,7 +152,7 @@ runs `just smoke-image` once per architecture. Both need Docker, which is why ne
 ## Generated boundary contract
 
 The one OpenAPI schema is hand-authored and both sides' **routes, client, server and types** are
-generated from it ([ADR 0008 rev 4](decisions/0008-boundary-contract-openapi-codegen.md)). The gate
+generated from it ([ADR 0008 rev 5](decisions/0008-boundary-contract-openapi-codegen.md)). The gate
 regenerates the Go and TypeScript output and fails on any difference, so a schema edit that reaches
 neither side, and a hand-edit of either, both fail.
 
@@ -644,7 +644,7 @@ changed, which the citation resolver above decides without anyone declaring anyt
 - **The pull-request title is a Conventional Commit, and so is each local commit message** — one
   obligation at two stages, delegated to `commitlint`
   ([ADR 0016 rev 6](decisions/0016-maintained-tools-for-standard-artifacts.md); the gate itself is
-  [ADR 0006 rev 4](decisions/0006-process-gates.md)'s). Both stages run through the hook layer's
+  [ADR 0006 rev 5](decisions/0006-process-gates.md)'s). Both stages run through the hook layer's
   `repo: local` hooks and one base configuration, `.commitlintrc.json` —
   `@commitlint/config-conventional`, plus a `scope-case` rule restoring the retired check's
   lowercase-scope refusal, which the preset does not carry. The `commit-msg` hook is the

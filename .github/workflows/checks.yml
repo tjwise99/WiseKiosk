@@ -203,7 +203,7 @@ jobs:
     # staleness gate for the boundary layer, the same shape the architecture job
     # runs for the architecture layer. Because the routes are generated too, a
     # renamed path is drift the gate sees rather than a hand-written string on
-    # each side (ADR 0008 rev 4). The gate clears and regenerates before it
+    # each side (ADR 0008 rev 5). The gate clears and regenerates before it
     # diffs, so a generator that cannot run leaves absent output that reads as a
     # deletion rather than a false clean; that it can fail is recorded in
     # scripts/cases/check-boundary.md, not re-tested here. Each generator is
@@ -405,7 +405,7 @@ jobs:
 
   process:
     name: process
-    # Process gates (ADR 0006 rev 4): the branch is named type_number-snake_name and
+    # Process gates (ADR 0006 rev 5): the branch is named type_number-snake_name and
     # links an open issue labeled with its type; the PR title — the commit that
     # reaches main under squash-merge — is a Conventional Commit. The branch check
     # is `just check-branch`, handed the PR's head ref, reading its pattern from

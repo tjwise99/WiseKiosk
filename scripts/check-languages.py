@@ -58,7 +58,7 @@ EXTENSIONS = {
     "Doorstop item and silo config YAML, Dependabot YAML (ADR 0017 rev 8)",
     "yaml": "derived — a toolchain's own required input format: pre-commit's "
     ".pre-commit-config.yaml (ADR 0016 rev 6), the boundary schema both code generators "
-    "read and oapi-codegen's own configuration (ADR 0008 rev 4, ADR 0017 rev 8)",
+    "read and oapi-codegen's own configuration (ADR 0008 rev 5, ADR 0017 rev 8)",
     "mod": "derived — the Go toolchain's own manifest format: backend/go.mod "
     "(ADR 0017 rev 8)",
     "sum": "derived — the Go toolchain's own lockfile format: backend/go.sum "
@@ -66,7 +66,7 @@ EXTENSIONS = {
     "json": "derived — a toolchain's own required input format: npm's package.json and "
     "package-lock.json, Claude Code's settings.json, commitlint's .commitlintrc*.json",
     "likec4": "derived — LikeC4's own model format, named in ADR 0017 rev 8 "
-    "(ADR 0003 rev 2)",
+    "(ADR 0003 rev 3)",
     "mmd": "derived — generated Mermaid output of the LikeC4 export/splice toolchain "
     "(scripts/splice-arch-diagrams.py), never hand-authored",
     "txt": "derived — a toolchain's own required input format (pip's requirements-dev.txt); also "
@@ -100,7 +100,7 @@ NO_EXTENSION = {
     "justfile": "derived — invoking `just`, named explicitly in ADR 0017 rev 8",
     "LICENSE": "documentation — legal text, not an authored program",
     "Dockerfile": "derived — the container build's own required input format, named explicitly in "
-    "ADR 0017 rev 8 (ADR 0021 rev 2)",
+    "ADR 0017 rev 8 (ADR 0021 rev 3)",
     ".gitignore": "derived — git's own required input format",
     ".gitattributes": "derived — git's own required input format",
     ".editorconfig": "derived — EditorConfig's own required input format",

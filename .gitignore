@@ -66,6 +66,6 @@ frontend/test-results/
 frontend/playwright-report/
 
 # A local configuration for `just dev`, served from Vite's static directory. A deployment's
-# configuration is bind-mounted into the served tree and is never committed (ADR 0021 rev 2,
+# configuration is bind-mounted into the served tree and is never committed (ADR 0021 rev 3,
 # ADR 0020 rev 2), so neither is the local stand-in for it.
 frontend/public/config.json

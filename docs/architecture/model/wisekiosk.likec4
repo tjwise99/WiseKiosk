@@ -2,7 +2,7 @@
 // Component (L3) and Deployment, the last in ./deployment.likec4.
 //
 // Single source of truth for the diagrams in ../../ARCHITECTURE.md. Edit here, then
-// run `just arch-export` (ADR 0003 rev 2).
+// run `just arch-export` (ADR 0003 rev 3).
 //
 // A tag parses only as the first entry of an element or relationship body.
 //

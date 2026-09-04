@@ -5,10 +5,14 @@
 write-scoped-token alternative supplies; gate path corrected by
 [ADR 0016 rev 6](0016-maintained-tools-for-standard-artifacts.md)
 **Decided:** 2026-07-22 (process-gates design discussion, ticket #27)
-**Rev:** 4
+**Rev:** 5
 
 ## Revisions
 
+- **rev 5** — 2026-09-04 — replaces two stale Dependabot references — the branch-shape exemption and
+  the rationale for it — with timeless statements naming the dependency updater's own branch prefix
+  and title convention; what was chosen is unchanged, so the Decided date does not move (#223
+  renovate cutover).
 - **rev 4** — 2026-08-17 — corrects the local mirror of the advisory hooks: `just install-hooks`
   named a recipe that no longer exists, renamed `just hooks-install` (toolchain install) with
   `pre-commit install` as the separate step that wires the hooks, when #108 pre-commit adoption
@@ -39,8 +43,8 @@ mirrored locally by `just check-branch` and the advisory hooks `pre-commit insta
 
 1. **Branch shape.** Branches are named `type_number-snake_name` — `type` one of `task`, `bug`,
    `design`, `module`; `number` a GitHub issue number; `snake_name` lowercase snake_case. The full
-   pattern is `^(task|bug|design|module)_[1-9][0-9]*-[a-z0-9]+(_[a-z0-9]+)*$`. `main` and
-   `dependabot/**` are exempt and pass with the reason stated.
+   pattern is `^(task|bug|design|module)_[1-9][0-9]*-[a-z0-9]+(_[a-z0-9]+)*$`. `main` and the
+   dependency updater's own branch prefix (`renovate/*`) are exempt and pass with the reason stated.
 2. **Ticket link.** The `number` must resolve via the GitHub API to a real issue (not a pull
    request), currently open, whose labels include the branch `type`. A shape-valid branch naming a
    dead or mislabeled ticket fails.
@@ -111,4 +115,5 @@ mirrored locally by `just check-branch` and the advisory hooks `pre-commit insta
   gate job, by someone with no reason to open this record.
 - A branch that predates this rule is blocked until renamed and its ticket labeled, the gate reading
   the branch it is given rather than when it was created.
-- Dependabot is exempt from branch shape; its PR titles already conform (`build(deps): …`).
+- The dependency updater is exempt from branch shape; its PR titles already conform to the
+  convention this gate checks.
