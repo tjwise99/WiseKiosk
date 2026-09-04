@@ -102,13 +102,13 @@
   }
 
   /**
-   * The hour a forecast entry is for, as it reads at the location. The timestamp carries that
-   * location's own UTC offset, so its clock fields are already the local ones and are taken as
+   * The hour a forecast entry is for, as it reads at the location, e.g. `23h`. The timestamp carries
+   * that location's own UTC offset, so its clock fields are already the local ones and are taken as
    * written; handing the string to a Date would re-read them against the host's zone, which is a
    * different place whenever the display is not at the location it reports on.
    */
   function atLocation(time: string): string {
-    return time.slice(11, 16);
+    return `${time.slice(11, 13)}h`;
   }
 
   /**
@@ -130,30 +130,59 @@
   const CURVE_VIEWBOX_HEIGHT = 30;
   const CURVE_PADDING = 6;
 
+  /** One hourly vertex, in the curve's own viewBox units and as a fraction (0–1) of that viewBox.
+      The fraction is what DOM-positioned content — the vertex dots, the tracking labels — lines up
+      against: the viewBox is stretched non-uniformly onto whatever box holds it
+      (`preserveAspectRatio="none"`), so a fraction of it, not a measured pixel, is the coordinate
+      that still matches the drawn curve. */
+  interface CurveVertex {
+    x: number;
+    y: number;
+    xFraction: number;
+    yFraction: number;
+  }
+
   /**
-   * The polyline `points` for the hourly temperature curve, one vertex per hour, computed fresh from
-   * the props each render rather than measured from the laid-out page — the module never reads its
-   * own layout back. A vertex's x is its column's centre in an n-column strip, matching the strip
-   * cells and labels sharing the same column count beneath it; its y is the temperature's place
-   * between the coldest and warmest hour shown, inverted because SVG y grows downward. A flat set of
-   * hours (min equals max) draws a level line at the row's centre rather than dividing by zero.
+   * The hourly temperature curve's vertices, one per hour, computed fresh from the props each render
+   * rather than measured from the laid-out page — the module never reads its own layout back. A
+   * vertex's x is its column's centre in an n-column strip, matching the strip cells beneath it; its
+   * y is the temperature's place between the coldest and warmest hour shown, inverted because SVG y
+   * grows downward. A flat set of hours (min equals max) draws a level line at the row's centre
+   * rather than dividing by zero.
    */
-  function curvePoints(hours: { temp: number }[]): string {
+  function curveVertices(hours: { temp: number }[]): CurveVertex[] {
     const temps = hours.map((hour) => hour.temp);
     const min = Math.min(...temps);
     const max = Math.max(...temps);
     const span = max - min;
     const usableHeight = CURVE_VIEWBOX_HEIGHT - 2 * CURVE_PADDING;
-    return hours
-      .map((hour, index) => {
-        const x = ((index + 0.5) / hours.length) * CURVE_VIEWBOX_WIDTH;
-        const y =
-          span === 0
-            ? CURVE_VIEWBOX_HEIGHT / 2
-            : CURVE_PADDING + ((max - hour.temp) / span) * usableHeight;
-        return `${x},${y}`;
-      })
-      .join(' ');
+    return hours.map((hour, index) => {
+      const x = ((index + 0.5) / hours.length) * CURVE_VIEWBOX_WIDTH;
+      const y =
+        span === 0
+          ? CURVE_VIEWBOX_HEIGHT / 2
+          : CURVE_PADDING + ((max - hour.temp) / span) * usableHeight;
+      return { x, y, xFraction: x / CURVE_VIEWBOX_WIDTH, yFraction: y / CURVE_VIEWBOX_HEIGHT };
+    });
+  }
+
+  /** The polyline `points` attribute for a curve's vertices. */
+  function curvePoints(vertices: CurveVertex[]): string {
+    return vertices.map((vertex) => `${vertex.x},${vertex.y}`).join(' ');
+  }
+
+  /** Where a vertex's dot sits over the curve — the same box the SVG fills, so `left`/`top` as a
+      plain fraction of it lines up with the drawn curve. */
+  function vertexStyle(vertex: CurveVertex): string {
+    return `left: ${vertex.xFraction * 100}%; top: ${vertex.yFraction * 100}%;`;
+  }
+
+  /** Where a vertex's temperature label sits in `.labels` — `left` the same column as its dot,
+      `bottom` the same fraction inverted, scaled against the curve's own height (`--space-lg`)
+      rather than the label band's, which is taller by the label's own line height so the warmest
+      hour's label — the one riding highest — never clips the band it is drawn in. */
+  function labelStyle(vertex: CurveVertex): string {
+    return `left: ${vertex.xFraction * 100}%; bottom: calc(${1 - vertex.yFraction} * var(--space-lg));`;
   }
 </script>
 
@@ -170,6 +199,7 @@
     {:else}
       {@const reading = payload.data}
       {@const sky = describeSky(reading.current.weatherCode)}
+      {@const vertices = curveVertices(reading.hourly)}
       <!-- Present, per ./README.md § Present. -->
       <section class="present" data-weather-present>
         <div class="present-reading">
@@ -191,23 +221,36 @@
       <section class="series" data-weather-hourly>
         <h2 class="heading section-label">Next hours</h2>
         <div class="curve">
-          <div class="curve-labels" style="--strip-count:{reading.hourly.length}">
-            {#each reading.hourly as hour (hour.time)}
-              <span class="curve-label tabular-figures">{round(hour.temp)}°F</span>
-            {/each}
+          <!-- The plot area — the tracking labels and the curve, dot-vertexed — bracketed by a dim
+               L-shaped axis on its left and bottom (border-left, border-bottom); the strip below is
+               outside the bracket, reading as the axis's own tick labels. -->
+          <div class="plot">
+            <div class="labels">
+              {#each reading.hourly as hour, index (hour.time)}
+                <span class="label tabular-figures" style={labelStyle(vertices[index])}
+                  >{round(hour.temp)}°</span
+                >
+              {/each}
+            </div>
+            <div class="curve-area">
+              <svg
+                class="curve-svg"
+                viewBox="0 0 {CURVE_VIEWBOX_WIDTH} {CURVE_VIEWBOX_HEIGHT}"
+                preserveAspectRatio="none"
+                aria-hidden="true"
+              >
+                <polyline
+                  class="curve-line"
+                  points={curvePoints(vertices)}
+                  vector-effect="non-scaling-stroke"
+                />
+              </svg>
+              {#each reading.hourly as hour, index (hour.time)}
+                <span class="vertex" data-weather-vertex style={vertexStyle(vertices[index])}
+                ></span>
+              {/each}
+            </div>
           </div>
-          <svg
-            class="curve-svg"
-            viewBox="0 0 {CURVE_VIEWBOX_WIDTH} {CURVE_VIEWBOX_HEIGHT}"
-            preserveAspectRatio="none"
-            aria-hidden="true"
-          >
-            <polyline
-              class="curve-line"
-              points={curvePoints(reading.hourly)}
-              vector-effect="non-scaling-stroke"
-            />
-          </svg>
           <ol class="strip" style="--strip-count:{reading.hourly.length}">
             {#each reading.hourly as hour (hour.time)}
               <li class="cell" data-weather-hour>
@@ -228,9 +271,7 @@
             <li class="cell" data-weather-day>
               <span class="when">{dayName(day.time)}</span>
               <span class="glyph" data-weather-glyph>{skyGlyph(day.weatherCode, true)}</span>
-              <span class="reading tabular-figures"
-                >{round(day.max)}°F / {round(day.min)}°F</span
-              >
+              <span class="reading tabular-figures">{round(day.max)}°/{round(day.min)}°</span>
               <span class="reading tabular-figures">{round(day.precipProbability)}%</span>
             </li>
           {/each}
@@ -318,7 +359,7 @@
     border-bottom: var(--divider-stroke-width) solid var(--emission-stroke);
   }
 
-  /* The curve, its per-hour temperature labels and the strip beneath it all read against the same
+  /* The plot area (the labels and the curve) and the strip beneath it all read against the same
      n-column layout, so a vertex the curve draws lines up under its own label and its own strip
      cell without measuring anything laid out. */
   .curve {
@@ -327,26 +368,42 @@
     gap: var(--space-xs);
   }
 
-  .curve-labels,
-  .strip {
-    display: grid;
-    grid-template-columns: repeat(var(--strip-count), 1fr);
-    margin: 0;
-    padding: 0;
-    list-style: none;
+  /* Brackets the plot area only — the tracking labels and the curve — on its left and bottom, the
+     same dim-stroke pairing `.heading`'s own divider draws with. The strip stays outside it,
+     reading as the axis's tick labels. */
+  .plot {
+    position: relative;
+    border-left: var(--divider-stroke-width) solid var(--emission-stroke);
+    border-bottom: var(--divider-stroke-width) solid var(--emission-stroke);
   }
 
-  .curve-label {
+  /* Sized to hold every label's full vertical travel (`--space-lg`, the curve's own height) plus
+     one label's own line height, so a label positioned within it by `.label`'s `bottom` never
+     overflows the section this module is drawn in. */
+  .labels {
+    position: relative;
+    height: calc(var(--space-lg) + var(--type-caption) + var(--space-xs));
+  }
+
+  .label {
+    position: absolute;
+    transform: translateX(-50%);
     font-size: var(--type-caption);
     font-weight: var(--type-caption-weight);
     line-height: 1;
-    text-align: center;
+    white-space: nowrap;
+  }
+
+  .curve-area {
+    position: relative;
+    width: 100%;
+    height: var(--space-lg);
   }
 
   .curve-svg {
     display: block;
     width: 100%;
-    height: var(--space-lg);
+    height: 100%;
   }
 
   .curve-line {
@@ -357,6 +414,28 @@
     stroke: var(--emission-content);
     stroke-width: var(--curve-stroke-width);
     stroke-linejoin: round;
+  }
+
+  /* One filled dot per hourly vertex, positioned by the same fraction the curve itself is drawn
+     with — a plain SVG `<circle>` would draw as an ellipse under the curve's non-uniform viewBox
+     (`preserveAspectRatio="none"`), so the dot is a DOM element over the same box instead. Content,
+     so drawn at full emission like the curve it sits on
+     (SRS032<!-- Readable text is carried at full emission -->). */
+  .vertex {
+    position: absolute;
+    width: 0.6vh;
+    height: 0.6vh;
+    border-radius: 50%;
+    background: var(--emission-content);
+    transform: translate(-50%, -50%);
+  }
+
+  .strip {
+    display: grid;
+    grid-template-columns: repeat(var(--strip-count), 1fr);
+    margin: 0;
+    padding: 0;
+    list-style: none;
   }
 
   .cell {
