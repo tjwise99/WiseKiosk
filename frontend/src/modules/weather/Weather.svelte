@@ -160,7 +160,12 @@
 
   /** The whole-number progression a wide-range axis's step is drawn from — no 2.5 multiple, so the
       step at any power of ten stays a whole number and the wide case never needs a decimal tick. */
-  const WIDE_STEP_MULTIPLES = [1, 2, 5, 10];
+  const WIDE_STEP_CANDIDATES = [1, 2, 5, 10];
+
+  /** The progression a narrow-range axis's step is drawn from — the same nearest-fit method as the
+      wide case, at a finer decade so a tight-hugging axis still lands on a step worth reading rather
+      than an arbitrary fraction of the range. */
+  const NARROW_STEP_CANDIDATES = [0.25, 0.5, 1, 2];
 
   /** Above this range, in the active series' own units, the axis is bracketed to whole numbers; at
       or below it the axis hugs the data instead, so a genuine one- or two-unit swing still fills the
@@ -208,22 +213,31 @@
     return `${shown}${unit}`;
   }
 
-  /** A step at or above `rawStep`, from the whole-number progression, at whatever power of ten
-      `rawStep` falls in — the classic nice-number step, floored at one unit so a wide axis's step is
-      always a whole number. */
-  function wholeStep(rawStep: number): number {
-    const floored = Math.max(rawStep, 1);
+  /** The step nearest `rawStep`, from `candidates` (ascending, one decade) at whatever power of ten
+      `rawStep` falls in — the standard nearest-fit nice-number method (Heckbert), picking the
+      candidate `rawStep` is *closest* to rather than the smallest one at least as big. The
+      smallest-at-least-as-big rule this replaced could overshoot by a whole tier whenever the raw
+      step sat just above a candidate (target ≈1.1 picking 2 over the much nearer 1), collapsing a
+      4-interval target into two or three real ticks — nearest-fit does not have that failure mode.
+      `floor` keeps a very small `rawStep` from dropping the magnitude below the candidates' own
+      decade (a wide axis's step would otherwise land under 1, breaking its whole-number rule; a
+      narrow one's under `MIN_TICK_GRANULARITY`). */
+  function niceStep(rawStep: number, candidates: number[], floor: number): number {
+    const floored = Math.max(rawStep, floor);
     const magnitude = 10 ** Math.floor(Math.log10(floored));
-    const multiple = WIDE_STEP_MULTIPLES.find((candidate) => candidate * magnitude >= floored - 1e-9);
-    return (multiple ?? WIDE_STEP_MULTIPLES[WIDE_STEP_MULTIPLES.length - 1]!) * magnitude;
+    const fraction = floored / magnitude;
+    for (let index = 0; index < candidates.length - 1; index++) {
+      const midpoint = (candidates[index]! + candidates[index + 1]!) / 2;
+      if (fraction < midpoint) return candidates[index]! * magnitude;
+    }
+    return candidates[candidates.length - 1]! * magnitude;
   }
 
-  /** The wide-range axis: bounds bracketed out to whole numbers, ticks at nice whole-ish steps
-      within them. */
-  function wideScale(dataMin: number, dataMax: number, unit: string): YAxisScale {
-    const bottom = Math.floor(dataMin);
-    const top = Math.ceil(dataMax);
-    const step = wholeStep((top - bottom) / TARGET_INTERVALS);
+  /** The ticks between `bottom` and `top`, one per multiple of `step` inside that range — the one
+      generation both the wide and the narrow axis draw their ticks from, so "nice step, real ticks
+      within fixed bounds" means the same thing in both. Falls back to just the two bounds themselves
+      should `step` leave fewer than two multiples inside the range (an unusually small span). */
+  function scaleTicks(bottom: number, top: number, step: number, unit: string, decimals: boolean): YAxisTick[] {
     const values: number[] = [];
     for (let value = Math.ceil(bottom / step) * step; value <= top + 1e-9; value += step) {
       values.push(value);
@@ -231,34 +245,30 @@
     if (values.length < 2) {
       values.splice(0, values.length, bottom, top);
     }
-    return {
-      bottom,
-      top,
-      ticks: values.map((value) => ({
-        value,
-        label: tickLabel(value, unit, false),
-        yFraction: scaleFraction(value, { bottom, top }),
-      })),
-    };
+    return values.map((value) => ({
+      value,
+      label: tickLabel(value, unit, decimals),
+      yFraction: scaleFraction(value, { bottom, top }),
+    }));
   }
 
-  /** The narrow-range axis: bounds hugging the data exactly, ticks evenly spaced between them at no
-      finer than `MIN_TICK_GRANULARITY`. */
+  /** The wide-range axis: bounds bracketed out to whole numbers, ticks at the nearest whole step to
+      a `TARGET_INTERVALS`-way division of them. */
+  function wideScale(dataMin: number, dataMax: number, unit: string): YAxisScale {
+    const bottom = Math.floor(dataMin);
+    const top = Math.ceil(dataMax);
+    const step = niceStep((top - bottom) / TARGET_INTERVALS, WIDE_STEP_CANDIDATES, 1);
+    return { bottom, top, ticks: scaleTicks(bottom, top, step, unit, false) };
+  }
+
+  /** The narrow-range axis: bounds hugging the data exactly, ticks at the nearest step (down to
+      `MIN_TICK_GRANULARITY`) to a `TARGET_INTERVALS`-way division of them — the same nearest-fit and
+      the same tick generation `wideScale` uses, over the finer `NARROW_STEP_CANDIDATES` decade. */
   function narrowScale(dataMin: number, dataMax: number, unit: string): YAxisScale {
     const bottom = dataMin;
     const top = dataMax;
-    const range = top - bottom;
-    const intervals = Math.max(1, Math.min(TARGET_INTERVALS, Math.floor(range / MIN_TICK_GRANULARITY)));
-    const step = range / intervals;
-    const ticks = Array.from({ length: intervals + 1 }, (_, index) => {
-      const value = bottom + index * step;
-      return {
-        value,
-        label: tickLabel(value, unit, true),
-        yFraction: scaleFraction(value, { bottom, top }),
-      };
-    });
-    return { bottom, top, ticks };
+    const step = niceStep((top - bottom) / TARGET_INTERVALS, NARROW_STEP_CANDIDATES, MIN_TICK_GRANULARITY);
+    return { bottom, top, ticks: scaleTicks(bottom, top, step, unit, true) };
   }
 
   /** The degenerate-range axis: a small fallback span centred on the data (or resting on zero, where
@@ -456,10 +466,10 @@
         <ol class="strip" style="--strip-count:{reading.daily.length}">
           {#each reading.daily as day (day.time)}
             <li class="cell" data-weather-day>
-              <span class="when">{dayName(day.time)}</span>
-              <span class="glyph" data-weather-glyph>{skyGlyph(day.weatherCode, true)}</span>
-              <span class="reading tabular-figures">{round(day.max)}°/{round(day.min)}°</span>
-              <span class="reading tabular-figures">{round(day.precipProbability)}%</span>
+              <span class="when daily-when">{dayName(day.time)}</span>
+              <span class="glyph glyph-daily" data-weather-glyph>{skyGlyph(day.weatherCode, true)}</span>
+              <span class="reading daily-reading tabular-figures">{round(day.max)}°/{round(day.min)}°</span>
+              <span class="reading daily-reading tabular-figures">{round(day.precipProbability)}%</span>
             </li>
           {/each}
         </ol>
@@ -493,7 +503,10 @@
 
   .present-reading {
     display: flex;
-    align-items: baseline;
+    /* Centred rather than baseline-aligned: the glyph (`display`, 16vh) and the temperature
+       (`headline`, 10vh) no longer share a size, and the icon face's own baseline sits high enough
+       in its em-box that baseline alignment floated it above the figure instead of pairing with it. */
+    align-items: center;
     gap: var(--space-xs);
   }
 
@@ -513,14 +526,15 @@
 
   .glyph-present {
     margin: 0;
-    /* The mark for the present reading is set at the reading's own step. */
-    font-size: var(--type-headline);
+    /* The present block's own hero figure, bigger than the temperature beside it to balance it —
+       the temperature stays at `headline` (owner-specified). */
+    font-size: var(--type-display);
   }
 
   .sky {
     margin: 0;
-    font-size: var(--type-body);
-    font-weight: var(--type-body-weight);
+    font-size: var(--type-title);
+    font-weight: var(--type-title-weight);
     line-height: 1;
   }
 
@@ -712,7 +726,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: var(--space-xs);
+    gap: var(--space-sm);
     text-align: center;
     font-size: var(--type-caption);
     font-weight: var(--type-caption-weight);
@@ -721,5 +735,25 @@
 
   .reading {
     min-width: 0;
+  }
+
+  /* The daily strip's own bigger cascade (owner's design, recovered from their 13dc942 draft): the
+     day name and the day's own glyph read as the cell's anchor, the high/low and precipitation
+     readings a step below that — both a step up from `.cell`'s own caption size. */
+  .daily-when {
+    font-size: var(--type-annotation);
+    font-weight: var(--type-annotation-weight);
+  }
+
+  /* Scoped to the daily cell rather than the shared `.glyph` base class, so the still-open question
+     of whether the *hourly* glyphs should size up the same way stays open — the same
+     modifier-on-`.glyph` pattern `.glyph-present` already uses. */
+  .glyph-daily {
+    font-size: var(--type-annotation);
+  }
+
+  .daily-reading {
+    font-size: var(--type-section-header);
+    font-weight: var(--type-section-header-weight);
   }
 </style>
