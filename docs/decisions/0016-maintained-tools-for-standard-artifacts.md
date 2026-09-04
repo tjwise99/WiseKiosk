@@ -8,7 +8,7 @@
 ## Revisions
 
 - **rev 6** — 2026-09-03 — Dependabot is replaced by self-hosted Renovate (run from
-  tjwise99/renovate-runner) as the dependency updater; the version-comment ground names it; what was
+  tjwise99/wise-renovate) as the dependency updater; the version-comment ground names it; what was
   chosen is unchanged, so the Decided date does not move (#223 renovate cutover).
 - **rev 5** — 2026-08-16 — extends the empty-population ruling to every check: an empty population
   reports success, authored checks included, collapsing this wave's three readings of the ruling to

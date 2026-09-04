@@ -16,7 +16,7 @@ where a gate is unbuilt its ticket is named. That is how this project records sc
 
 Not everything CI does is a gate. These produce material a person acts on.
 
-- **Dependency update proposals.** Renovate runs every six hours from `tjwise99/renovate-runner`,
+- **Dependency update proposals.** Renovate runs every six hours from `tjwise99/wise-renovate`,
   opening pull requests under the runner's GitHub App `[bot]` login on `renovate/*` branches. Patch,
   minor, pin and digest updates auto-merge through GitHub's native auto-merge once required checks
   pass; major updates open a pull request and wait. A release sits for three days before its update
@@ -679,7 +679,7 @@ changed, which the citation resolver above decides without anyone declaring anyt
   shape is whatever `just` resolves it to.
 - A depth-1 listing of the repository root holds no `package.json`, `go.mod`, `pyproject.toml`,
   `requirements*.txt` or `.venv/` — tooling is siloed with the feature it serves. The root
-  `renovate.json` parses as JSON and its `extends` list names the `github>tjwise99/renovate-runner`
+  `renovate.json` parses as JSON and its `extends` list names the `github>tjwise99/wise-renovate`
   preset, pinned to a tag — the one dependency-update configuration the repository carries directly,
   the policy itself living in the preset the runner repository publishes.
 
