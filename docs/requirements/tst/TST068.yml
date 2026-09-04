@@ -1,0 +1,27 @@
+active: true
+derived: false
+header: |
+  The weather region carries the chance of precipitation for the outlook
+level: 90
+links:
+- SRS052: J0h6jZacnAHfH7wrwWs_wQjK_1clu2rEQSu8P_r2NcM=
+normative: true
+rationale: ''
+ref: ''
+references:
+- keyword: 'test(''TST068: shows the chance of precipitation expected for each hour
+    and each day of the outlook'', async ({'
+  path: frontend/src/modules/weather/weather.spec.ts
+  sha: bb3ad722a5d7b3b075f22ba51086462d93e7d5505ed153fdb89046ef7de2bb31
+  type: file
+reviewed: V-6gprWwS9hrvUTGmCBKdGmHzwp_0rPeybOO50XqoEU=
+status: accepted
+text: |
+  Render test handing the component a payload whose hours and days each carry a precipitation figure,
+  and asserting the chance of precipitation for each hour and for each day is present somewhere in
+  what is rendered for it.
+verification-justification: |
+  Settles that a precipitation figure carried in the payload for every hour and every day reaches the
+  rendered output. Leaves unproven that the figure shown is the true chance, the source being outside
+  this system, and is bounded by the payloads the suite supplies.
+verification-method: test

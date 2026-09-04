@@ -1,0 +1,43 @@
+active: true
+derived: false
+header: |
+  The weather module shows the chance of precipitation across its outlook
+level: 55
+links:
+- SYS010: dgflQFtHGeswH-PgjWmcBkfuJujSp-a-Z5JtN4H0Low=
+normative: true
+rationale: |
+  The payload has carried a chance of precipitation for every hour and every day in its outlook since
+  the redesign shipped, and the drawn outlook shows it, but nothing in the tree obliges it: the
+  boundary item (SRS044<!-- The weather module puts the present conditions and the near-term outlook
+  across the boundary -->) and the drawn item (SRS045<!-- The weather module shows the present weather
+  and the outlook apart from each other -->) are both written to avoid naming any specific measure, so
+  a shaping or a component that silently dropped precipitation would fail neither.
+  A forecast for precipitation and a forecast for temperature are two distinct things a viewer is
+  owed, not two readings of one want, so this is its own item rather than folded into one covering
+  both - dropping precipitation is then a failure of this item rather than a failure its temperature
+  counterpart's check happens to also catch.
+  This item and its temperature counterpart (SRS051<!-- The weather module shows the temperature
+  expected across its outlook -->) are the first in the module's decomposition to name a measure
+  rather than describe the outlook abstractly, a departure from the boundary item's own reason for
+  staying abstract - fixing "the names of the fields, their units, their types" would tie a requirement
+  to the boundary schema's own vocabulary. Naming precipitation as something a viewer is shown is a
+  claim about the outlook's content, not about a JSON field's name or type; SRS048<!-- The clock shows
+  or omits seconds per its configuration --> already sets the precedent for a requirement naming a
+  specific, viewer-facing quantity without tying itself to a schema key, and this item follows that
+  precedent rather than the boundary item's more cautious one.
+  How the figure reaches a viewer - curve, strip, colour, or anything else - is deliberately unstated:
+  that is the module's UI design spec's, not this item's.
+ref: ''
+reviewed: NLzWZX9MwKbIvTO4NCZRc1RrymPKIpMG5_Xd47D56e0=
+status: accepted
+text: |
+  The weather module shall show, for each of the hours next to come and each of the days next to
+  come, the chance of precipitation expected then.
+verification-justification: |
+  Read from a rendered page handed a payload whose hours and days each carry a precipitation figure:
+  the chance of precipitation for each hour and each day is present somewhere in what is drawn for it.
+  What it cannot settle is where or how it is drawn - curve, strip, or otherwise - which is the
+  module's UI design spec's rather than this item's, nor whether the figure shown is the true chance,
+  the source being outside this system. It is bounded by the payloads the suite supplies.
+verification-method: test

@@ -1,0 +1,27 @@
+active: true
+derived: false
+header: |
+  The weather region carries the temperature expected for the outlook
+level: 89
+links:
+- SRS051: 47vNLnag6goKjwBbt35DnBWpSRirUYYa6YHOU43UOrc=
+normative: true
+rationale: ''
+ref: ''
+references:
+- keyword: 'test(''TST067: shows the temperature expected for each hour and each day
+    of the outlook'', async ({'
+  path: frontend/src/modules/weather/weather.spec.ts
+  sha: bb3ad722a5d7b3b075f22ba51086462d93e7d5505ed153fdb89046ef7de2bb31
+  type: file
+reviewed: 5so_EChENhFV_MOelC2pRDxmwt3uPtt7YmZQ7eqXjvc=
+status: accepted
+text: |
+  Render test handing the component a payload whose hours and days each carry a temperature figure,
+  and asserting the temperature expected for each hour and for each day is present somewhere in what
+  is rendered for it.
+verification-justification: |
+  Settles that a temperature figure carried in the payload for every hour and every day reaches the
+  rendered output. Leaves unproven that the figure shown is the true temperature, the source being
+  outside this system, and is bounded by the payloads the suite supplies.
+verification-method: test

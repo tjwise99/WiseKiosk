@@ -1,0 +1,38 @@
+active: true
+derived: false
+header: |
+  The weather region shows one forecast measure at a time, switching on its configured interval
+level: 91
+links:
+- SRS053: e0DHnZP7ZwsPfHCkqZhP_Ohxywn_5xy6fB79pPqxn4Q=
+normative: true
+rationale: ''
+ref: ''
+references:
+- keyword: 'test(''TST069: draws one forecast measure at a time for the hours next
+    to come, switching on its configured interval'', async ({'
+  path: frontend/src/modules/weather/weather.spec.ts
+  sha: bb3ad722a5d7b3b075f22ba51086462d93e7d5505ed153fdb89046ef7de2bb31
+  type: file
+- keyword: 'test(''TST069: the series-switch interval is the configuration’s and not
+    one fixed in the module'', async ({'
+  path: frontend/src/modules/weather/weather.spec.ts
+  sha: bb3ad722a5d7b3b075f22ba51086462d93e7d5505ed153fdb89046ef7de2bb31
+  type: file
+reviewed: bFb_b0BBogChlW_u2VEN7UsrCaCBfBe30ujV7_Dn8Z8=
+status: accepted
+text: |
+  Two render tests. The first drives the page under a driven clock and asserts exactly one of the
+  outlook's two forecast measures is drawn for the hours next to come at any sampled moment, never
+  both, and that which one is drawn changes when the configured interval elapses and not before,
+  without moving the plot it is drawn in. The second repeats the same read under a different
+  configured interval and asserts a shorter interval does not flip it, showing the interval read is
+  the configuration's rather than one fixed in the module.
+verification-justification: |
+  Settles that the module shows one of its two measures at a time, never both, and that the switch
+  follows configuration rather than a fixed value. Leaves unproven the exact timing to the second, any
+  judgement about the design choice to alternate, and whether the two measures switched between are
+  the ones SRS051<!-- The weather module shows the temperature expected across its outlook --> and
+  SRS052<!-- The weather module shows the chance of precipitation across its outlook --> oblige.
+  Bounded by the configurations and payloads the suite supplies.
+verification-method: test

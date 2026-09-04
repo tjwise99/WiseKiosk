@@ -4,7 +4,7 @@ header: |
   The weather region tells the present from what is expected
 level: 82
 links:
-- SRS045: aIOcmj5cGffbgemNY9Lblw0qlThaeon_650wDDAEF7U=
+- SRS045: PtNcUJnffQEJyUysBS0PfPjy4yjh14BGz5V-WeLibGo=
 normative: true
 rationale: |
   Presence alone would pass a component that ran the three parts together into one undifferentiated
@@ -18,9 +18,9 @@ references:
 - keyword: 'test(''TST060: draws what it is doing now, the hours to come and the days
     to come, each separably'', async ({'
   path: frontend/src/modules/weather/weather.spec.ts
-  sha: 7c15429329d7ab066b4dcccd4f5508b211601d697b77bcc37fe5b88b5dfc07e0
+  sha: bb3ad722a5d7b3b075f22ba51086462d93e7d5505ed153fdb89046ef7de2bb31
   type: file
-reviewed: 06gQNBx_qXWprdiZz41RA_tHcCAEpiafF3x0p4DyG1U=
+reviewed: PAXWu0KQsgRSv_jFiYQfF0F9Y_FNpeE617AF1M8zIcQ=
 status: proposed
 text: |
   Render test handing the component a payload and asserting the present weather and both forward
