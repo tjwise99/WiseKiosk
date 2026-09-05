@@ -270,7 +270,7 @@ jobs:
       - name: The committed configuration types are what the configuration schema generates
         run: just check-config-types
 
-      - name: The frontend is clean under eslint; svelte-check reports (not yet blocking, #275)
+      - name: The frontend is clean under eslint; svelte-check reports (not yet blocking, #275 resolve ModuleEntry.component prop-type variance so svelte-check blocks)
         run: just check-lint-frontend
 
       - name: The whole frontend typecheck (tsc --noEmit, TS 7) is clean
