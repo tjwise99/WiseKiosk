@@ -386,7 +386,7 @@ a posture resting on this section. Until #77 fences this document, read it as in
   `.description`, `.url`, `.source`, `.version`, `.created`, `.revision`, `.licenses` and
   `.documentation` — are present and non-empty **as labels on the image config and as annotations on
   the manifest**, which are separate metadata with separate readers
-  ([ADR 0015 rev 2](decisions/0015-container-toolchain-and-image-annotations.md)). Both are read: a check
+  ([ADR 0015 rev 3](decisions/0015-container-toolchain-and-image-annotations.md)). Both are read: a check
   reading one reports nothing about the other. No value is a `LABEL` line in the Dockerfile, and one
   is bound rather than merely present — **`.revision` is the commit the job published**, so presence
   alone passes on a stale hardcoded value while the binding is what fails it. The check reads the

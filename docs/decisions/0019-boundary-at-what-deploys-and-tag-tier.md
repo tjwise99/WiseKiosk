@@ -67,7 +67,7 @@ by the Go backend" in its decision but weighs only frameworks against each other
 [ADR 0007 rev 2](0007-config-validation-allocation.md) reasons *from* it — "the page runs in a browser
 on the display host, so config bytes reach it only over HTTP, from the origin that already serves the
 SPA bundle." Three records lean on the arrangement and none argues it, which is the shape
-[ADR 0015 rev 2](0015-container-toolchain-and-image-annotations.md) caught with the container
+[ADR 0015 rev 3](0015-container-toolchain-and-image-annotations.md) caught with the container
 toolchain. A Container level draws that arrangement, so it either argues it or presumes it a fourth
 time.
 
@@ -682,7 +682,7 @@ two pressures may answer only one; this one answers both.
 **The completeness direction needs no seeded defect fixture.** It fails on the tree's real state
 wherever an accepted, active item is bound nowhere, which is better evidence than a seed. The legal
 direction still needs one, and
-[ADR 0010 rev 1](0010-runtime-materialised-gate-fixtures.md) is the mechanism.
+[ADR 0010 rev 2](0010-runtime-materialised-gate-fixtures.md) is the mechanism.
 
 ### The record this one corrects
 
