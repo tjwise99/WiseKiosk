@@ -1,22 +1,30 @@
-active: false
+active: true
 derived: false
 header: |
-  Pending: same-origin CSP header test
+  same-origin CSP header test
 level: 1.55
 links:
-- SRS010: EQlTMWNvPWAOKpO_jzE-cMaYXeAXyZJVmsYjbijYSAo=
+- SRS010: KGtL9gFL2HzMbaRIjE-Xe7S61qbMTvJORHyJAImm6J8=
 normative: true
 rationale: ''
 ref: ''
-reviewed: wsCdklUIbssxnVO6RFkAdAfl-76GmKINE4DMJAgX-SA=
+references:
+- keyword: func TestServesTheHeaderSetOnEveryRoute
+  path: backend/internal/headers/headers_test.go
+  sha: 309ecc7ed4a695dee74228010e794b9fad5df11365301f82b2ccefdc444cc516
+  type: file
+- keyword: test('renders the shipped example configuration with no validation report'
+  path: frontend/tests/render/example-configuration.spec.ts
+  sha: 040e4affad7b2439fc46acc39075cf105fb0b736dbedd9d3638fdafbb37e457e
+  type: file
+reviewed: jaUKmT-EkXns_HqMxgyjz3OT3CWW-haVDBkXMoFTR7Y=
 status: proposed
 text: |
-  Pending: integration test requesting the backend's frontend-serving route and asserting the
-  response carries a Content-Security-Policy whose connect-src is exactly 'self' and whose
-  default-src is 'self', and asserting the page still renders under the served policy. Fails if the
-  header is absent, if connect-src admits any host, wildcard, scheme-source, or 'unsafe-' form, or
-  if the served policy breaks rendering. Lands with the backend that serves the frontend; activated
-  with a references entry to the integration test then. Owned by #67.
+  Integration test requesting the backend's frontend-serving route and asserting the response
+  carries a Content-Security-Policy whose connect-src is exactly 'self', whose default-src is
+  'self', and whose base-uri is exactly 'self', and asserting the page still renders under the
+  served policy. Fails if the header is absent, if connect-src, default-src or base-uri admits any
+  host, wildcard, scheme-source, or 'unsafe-' form, or if the served policy breaks rendering.
 verification-justification: |
   Settles that the served policy restricts connect-src and default-src to 'self' and that the page
   renders under it. Leaves unproven whether the browser in the field enforces the policy as served.

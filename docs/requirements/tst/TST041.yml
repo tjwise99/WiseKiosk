@@ -1,7 +1,7 @@
-active: false
+active: true
 derived: false
 header: |
-  Pending: denied device capabilities
+  denied device capabilities
 level: 65
 links:
 - SRS027: LjMydzcJ9ea0b2wkX-VruVtznDFA42uskNtdmWjr0vo=
@@ -15,16 +15,27 @@ rationale: |
   module fails, while against a list of denied ones a feature granted later is asserted about by
   nothing. The list is empty until a module asks.
 ref: ''
-reviewed: hg3tl7d7iMCw5mfbiUIX-ohcVKeCnATE9Q0yI1O2mJ4=
+references:
+- keyword: func TestServesTheHeaderSetOnEveryRoute
+  path: backend/internal/headers/headers_test.go
+  sha: 309ecc7ed4a695dee74228010e794b9fad5df11365301f82b2ccefdc444cc516
+  type: file
+- keyword: func TestPermissionsPolicyFileMatchesTheGeneration
+  path: backend/internal/headers/headers_test.go
+  sha: 309ecc7ed4a695dee74228010e794b9fad5df11365301f82b2ccefdc444cc516
+  type: file
+- keyword: test('renders the shipped example configuration with no validation report'
+  path: frontend/tests/render/example-configuration.spec.ts
+  sha: 040e4affad7b2439fc46acc39075cf105fb0b736dbedd9d3638fdafbb37e457e
+  type: file
+reviewed: Hk_bxbN0_wsPchWODX9ZsrTGcOERIzgFowU9kN9PfBY=
 status: proposed
 text: |
-  Pending: integration test asserting the frontend-serving response carries a Permissions-Policy, and
-  that the set of features the served policy grants equals a committed granted-feature allowlist -
-  empty until a module declares it needs one - with every other feature the policy names denied; and
-  that the page still renders under the served policy. Fails if the header is absent, if a granted
-  feature is not on the allowlist, or if an allowlist entry does not name the module that needs it.
-  Lands with the backend that serves the frontend; activated with a references entry to the integration
-  test then.
+  Integration test asserting the frontend-serving response carries a Permissions-Policy, and that the
+  set of features the served policy grants equals a committed granted-feature allowlist - empty until
+  a module declares it needs one - with every other feature the policy names denied; and that the
+  page still renders under the served policy. Fails if the header is absent, if a granted feature is
+  not on the allowlist, or if an allowlist entry does not name the module that needs it.
 verification-justification: |
   Settles that the page grants no capability outside the committed allowlist and still renders. Leaves
   unproven whether an allowlist entry is justified - no artifact lets a module declare the capabilities

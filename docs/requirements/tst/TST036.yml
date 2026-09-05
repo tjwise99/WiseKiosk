@@ -4,7 +4,7 @@ header: |
   Pending: page fetches same-origin only, statically and at runtime
 level: 1.42
 links:
-- SRS010: EQlTMWNvPWAOKpO_jzE-cMaYXeAXyZJVmsYjbijYSAo=
+- SRS010: KGtL9gFL2HzMbaRIjE-Xe7S61qbMTvJORHyJAImm6J8=
 normative: true
 rationale: ''
 ref: ''

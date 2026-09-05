@@ -1,21 +1,25 @@
-active: false
+active: true
 derived: false
 header: |
-  Pending: served responses declare a type and forbid inference
+  Served responses declare a type and forbid inference
 level: 1.56
 links:
 - SRS028: Iv7nsZAp5f0lovvI8zsJoUaFwXSBAqk5HJ3ivxgIJKw=
 normative: true
 rationale: ''
 ref: ''
-reviewed: w2kp8UWNWZKuSr9YJaeUdx85o1_79ufvgfmDPkNA4Mc=
+references:
+- keyword: func TestServesTheHeaderSetOnEveryRoute
+  path: backend/internal/headers/headers_test.go
+  sha: 309ecc7ed4a695dee74228010e794b9fad5df11365301f82b2ccefdc444cc516
+  type: file
+reviewed: wcHfNEfUTnu1262sdarZEB9ZMQQS7VR8LI2_tU2O_IQ=
 status: proposed
 text: |
-  Pending: integration test asserting the frontend-serving response and every proxy response carry a
+  Integration test asserting the frontend-serving response and every proxy response carry a
   Content-Type header with a concrete media type, and carry X-Content-Type-Options: nosniff. Fails if
   either is absent on any served route, if a Content-Type is empty or generic enough to leave the
-  type unstated, or if the nosniff value is weakened. Lands with the backend that serves the
-  frontend; activated with a references entry to the integration test then.
+  type unstated, or if the nosniff value is weakened.
 verification-justification: |
   Settles that a concrete media type and the no-inference header are present on every served route.
   Leaves unproven that a declared type is correct for the bytes beneath it - an upstream
