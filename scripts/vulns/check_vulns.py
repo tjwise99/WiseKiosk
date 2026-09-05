@@ -25,7 +25,9 @@ values run. Within that scope: every entry must be well-formed and current (toda
 today+90 days, UTC); an entry matching nothing this run's scanner reported is an orphan; an entry
 matching a finding in the scanned project's own package (a Go package path under this module, or the
 npm project's own package name) is refused regardless of currency, because first-party code has no
-exception path. The complete finding list is always printed, suppressed findings included.
+exception path; likewise a Go standard-library finding, which the register never covers at all
+(owner ruling, ticket #264) — the remedy is always the Go toolchain bump. The complete finding list
+is always printed, suppressed findings included.
 
 Usage: check_vulns.py --scope go|npm [--go-dir DIR] [--npm-dir DIR] [--register FILE]
 
@@ -129,6 +131,18 @@ def matches(entry, primary_id, aliases):
     return entry["advisory"] == primary_id or entry["advisory"] in aliases
 
 
+def entry_scope(raw):
+    """The entry's own `scope` field, read defensively (a malformed entry may carry no readable
+    one). Used to route an entry to the run that owns its scope *before* validating it: each of the
+    register's four assertions is decided within the scope being checked (docs/CI.md § *The
+    exception register*), so a run must never fail on the other scope's own malformed entry. An
+    entry whose `scope` cannot be read this way is examined by neither run — the known gap both case
+    files record."""
+    if isinstance(raw, dict) and isinstance(raw.get("scope"), str):
+        return raw["scope"]
+    return None
+
+
 # --- go scope -------------------------------------------------------------------------------------
 
 
@@ -203,6 +217,10 @@ def go_findings(go_dir):
             for affected in osv.get("affected", [])
         ]
         first_party = any(name == module or name.startswith(module + "/") for name in packages)
+        # Owner ruling (2026-09-04, ticket #264): a Go standard-library finding fails like any
+        # other, and the register never covers it — the remedy is the Go toolchain bump, not an
+        # exception. govulncheck's own JSON names the standard library's package exactly "stdlib".
+        stdlib = "stdlib" in packages
         reachable = any(len(finding.get("trace", [])) > 1 for finding in findings)
         records.append(
             {
@@ -211,6 +229,7 @@ def go_findings(go_dir):
                 "package": ", ".join(packages) or "(unknown)",
                 "severity": None,
                 "first_party": first_party,
+                "stdlib": stdlib,
                 "reachable": reachable,
             }
         )
@@ -269,16 +288,32 @@ def npm_findings(npm_dir):
 # --- shared gate ------------------------------------------------------------------------------------
 
 
+def no_exception_reason(finding):
+    """Why no register entry may ever cover `finding`, or None if a current, matching entry
+    legitimately could. First-party code has no exception path (docs/CI.md § *The exception
+    register*); neither does a Go standard-library finding (owner ruling, ticket #264) — the
+    register exists for a third-party dependency with no fix and no alternative, and stdlib has
+    neither of those failure shapes: the remedy is always the Go toolchain bump."""
+    if finding["first_party"]:
+        return "first-party — no entry may cover it"
+    if finding.get("stdlib"):
+        return "a Go standard-library finding — the exception register never covers those"
+    return None
+
+
 def run(scope, findings, register_entries, today):
     problems = []
 
     scoped_entries = []
     for index, raw in enumerate(register_entries):
+        # Scope is read before anything else is validated: each of the register's four assertions
+        # is decided within the scope being checked, so this run must never fail on a malformed
+        # entry that belongs to the other scope.
+        if entry_scope(raw) != scope:
+            continue
         well_formed, entry_problems = validate_entry(raw, index)
         if not well_formed:
             problems.extend(entry_problems)
-            continue
-        if raw["scope"] != scope:
             continue
         currency = currency_problem(raw, today)
         if currency:
@@ -293,23 +328,23 @@ def run(scope, findings, register_entries, today):
             for entry in scoped_entries
             if matches(entry, finding["primary_id"], finding["aliases"])
         ]
-        if finding["first_party"] and covering:
+        blocked = no_exception_reason(finding)
+        if blocked and covering:
             for entry in covering:
                 problems.append(
-                    f"register entry ('{entry['advisory']}') matches a first-party finding "
-                    f"({finding['primary_id']}, package {finding['package']}) — "
-                    "first-party code has no exception path"
+                    f"register entry ('{entry['advisory']}') matches a finding with no exception "
+                    f"path ({finding['primary_id']}, package {finding['package']}) — {blocked}"
                 )
             accounted_for.update(id(entry) for entry in covering)
-            covering = []  # a first-party finding cannot be suppressed by any entry
+            covering = []  # such a finding cannot be suppressed by any entry
         else:
             accounted_for.update(id(entry) for entry in covering)
 
         must_fail = finding["reachable"] if scope == "go" else True
         if must_fail and not covering:
             reason = "its trace reaches a called symbol" if scope == "go" else "npm audit reports it"
-            if finding["first_party"]:
-                reason += ", and it is first-party — no entry may cover it"
+            if blocked:
+                reason += f", and it is {blocked}"
             problems.append(f"{finding['primary_id']} ({finding['package']}) is unregistered — {reason}")
 
     for entry in scoped_entries:
@@ -338,8 +373,9 @@ def report_findings(scope, findings, scoped_entries):
             reach = "n/a"
         severity = finding["severity"] or "n/a"
         register_status = f"registered ({', '.join(covering)})" if covering else "unregistered"
-        if finding["first_party"]:
-            register_status = "first-party — no exception path"
+        blocked = no_exception_reason(finding)
+        if blocked:
+            register_status = f"{blocked} — no exception path"
         print(
             f"  {finding['primary_id']}  package={finding['package']}  severity={severity}  "
             f"reachability={reach}  register={register_status}"

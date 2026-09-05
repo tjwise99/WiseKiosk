@@ -52,14 +52,17 @@ the same fixture with one line of `main.go` or `go.mod` changed, each independen
 | Must pass | The fixture, importing but never calling the symbol | `main.go`'s call replaced by a blank import (`_ "golang.org/x/text/language"`), pinned at the vulnerable `v0.3.0` — exits 0; `GO-2021-0113` still prints, `reachability=informational (not called)`, and does not fail |
 | Must pass | The fixture, registered by its primary id | `{"advisory": "GO-2021-0113", "scope": "go", "no_fix_because": "upstream patch not yet vendored", "no_alternative_because": "no alternative BCP47 parser vetted", "review_by": "<today+30d>"}` — exits 0; `register=registered (GO-2021-0113)` |
 | Must pass | The same fixture, registered a second time by its GHSA alias instead | the same entry with `advisory` set to `GHSA-ppp9-7jff-5vj2` — exits 0; `register=registered (GHSA-ppp9-7jff-5vj2)` |
+| Must fail | A register entry naming a Go standard-library finding | this repository's own backend (empty register first, to confirm the finding is live), then `{"advisory": "GO-2026-6090", "scope": "go", "no_fix_because": "t", "no_alternative_because": "t", "review_by": "<today+30d>"}` against a reachable stdlib finding measured that run — exits 1 both times: unregistered, `GO-2026-6090 (stdlib) is unregistered — its trace reaches a called symbol`; registered, `register entry ('GO-2026-6090') matches a finding with no exception path (GO-2026-6090, package stdlib) — a Go standard-library finding — the exception register never covers those`, and the finding itself still fails unregistered too. The id is whichever reachable stdlib finding the toolchain reports that day (§ *Baseline measurement* below); the mechanism under test is that `stdlib` is never a coverable scope, not this particular id |
+| Must pass | A malformed entry belonging to the *other* scope | the fixture above, register `[{"advisory": "GHSA-xxxx-xxxx-xxxx", "scope": "npm", "no_fix_because": "t", "no_alternative_because": "t", "review_by": "not-a-date"}]` — exits 1 on the fixture's own unregistered finding as usual, but the malformed `review_by` is never reported: `check-vulns-go` never examines an entry whose `scope` reads `"npm"`. The same register run through `check-vulns-npm` (any `--npm-dir`) does report it: `register entry #0 ('GHSA-xxxx-xxxx-xxxx'): 'review_by' ('not-a-date') is not an ISO 8601 date` |
 
 **Baseline measurement, this repository's own backend, empty register:** govulncheck v1.7.0 against
 Go 1.26.5 reports 8 findings, all in the Go standard library, all fixed at `go1.26.6` — 5 reachable
 (`GO-2026-5026`, `GO-2026-5972`, `GO-2026-6089`, `GO-2026-6090`, `GO-2026-6218`) and 3 informational
 (`GO-2026-5942`, `GO-2026-6088`, `GO-2026-6091`). This is not a case row: it is the live tree, moving
-with the standard library's own advisory feed rather than fixed at a commit, and it is what decides
-this gate's reporting-vs-blocking wiring (§ *Dependency vulnerabilities*) against CI's own toolchain
-(`setup-go` `"1.27"`), which has not yet been measured.
+with the standard library's own advisory feed rather than fixed at a commit. CI's own toolchain
+(`setup-go` `"1.27"`) measured **0 findings** on this PR's own run — the reachable stdlib findings
+above are local-toolchain (Go 1.26.5) noise that CI's newer patch has already cleared — so this gate
+lands blocking rather than reporting.
 
 **Known gaps.**
 
@@ -74,10 +77,12 @@ this gate's reporting-vs-blocking wiring (§ *Dependency vulnerabilities*) again
   `{"path": "stdlib", "version": "v1.26.5"}`) — an OSV finding matches by comparing a module's
   version against an affected range, so a module with no version can never match one. The logic is
   therefore verified by inspection rather than by a seed, unlike every other row here.
-- **A register entry with no valid `scope` (missing, or neither `go` nor `npm`) fails completeness on
-  every run, but is never checked as an orphan, an expiry, or a first-party match by either scope**,
-  because both recipes filter to entries whose `scope` matches their own before applying those three
-  assertions. The malformed-entry row above is not scope-conditioned (an unknown `scope` value fails
-  the same "missing/invalid field" check regardless of which recipe runs), so this gap is narrower
-  than it first looks, but it is real: an entry that is otherwise well-formed except for naming the
-  wrong scope's advisory under the right scope's value is not caught by anything here.
+- **A register entry with no readable `scope` (missing, not a string, or a string neither `go` nor
+  `npm`) is examined by neither recipe at all** — not as malformed, not as an orphan, not as an
+  expiry, not as a first-party or standard-library match. Each recipe reads an entry's `scope` field
+  *before* validating anything else about it (the row above demonstrates that routing for a
+  well-formed-but-wrong-scope entry), and an entry whose `scope` cannot be read that way matches
+  neither recipe's filter and so is never routed to either. This is deliberate given the alternative
+  (validating every entry's shape regardless of scope, which the malformed-entry-belongs-to-the-
+  other-scope row above shows is the wrong behaviour), but it is a real gap: nothing here reports
+  such an entry as dead weight in the register.

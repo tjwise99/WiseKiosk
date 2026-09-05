@@ -296,6 +296,12 @@ a gate people learn to ignore is worse than none. A finding whose trace reaches 
 one govulncheck reports only at package or module level, with no call reaching it, prints as
 informational.
 
+**A Go standard-library finding fails like any other, and the register never covers it.** The
+register exists for a third-party dependency with no fix and no alternative available; the standard
+library has neither failure shape, since its remedy is always the next Go toolchain bump (which
+`main`'s `go.mod` unblocks and Renovate proposes) — an entry naming one is refused regardless of
+currency, the same as a first-party finding.
+
 Both recipes need the network on every run (`vuln.go.dev`, the npm registry), so neither is a `just
 verify` dependency (§ *Gate wiring*) — each runs instead as a blocking step in its own CI job,
 `backend-tests` for Go and `frontend` for npm.
@@ -503,9 +509,10 @@ window fails, which puts every live exception in front of a person quarterly. Co
 
 The gate asserts: every entry is complete and current; every finding suppressed in scan output has a
 matching entry; no entry matches a first-party finding — a Go package path under this repository's own
-module, or the npm project's own package name, neither of which has an exception path regardless of
-currency; and no entry exists for an advisory no scan reports — so the register cannot accumulate rows
-for problems that no longer exist. Each of the four is decided **within the scope being checked**:
+module, or the npm project's own package name — or a Go standard-library finding, none of which has an
+exception path regardless of currency (§ *Dependency vulnerabilities*); and no entry exists for an
+advisory no scan reports — so the register cannot accumulate rows for problems that no longer exist.
+Each of these is decided **within the scope being checked**:
 `check-vulns-go` examines only `scope: "go"` entries against what govulncheck reports, and
 `check-vulns-npm` only `scope: "npm"` entries against what npm audit reports — so validating the whole
 register needs both to run, which they do, as two separate CI steps.

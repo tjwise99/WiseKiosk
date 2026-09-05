@@ -37,10 +37,11 @@ same fixture with one field of `package.json` changed, each independently re-ins
 | Must fail | A `review_by` more than 90 days out | the same entry with `review_by` 200 days out — exits 1: `register entry ('GHSA-xvch-5gv4-984h'): review_by 2027-03-24 is more than 90 days out (limit 2026-12-04)` |
 | Must fail | An orphan entry | `{"advisory": "GHSA-0000-0000-0000", "scope": "npm", ...}`, an id no scan reports — exits 1: `register entry ('GHSA-0000-0000-0000') is an orphan — no npm finding this run reports matches it`, and the real advisory still fails unregistered |
 | Must fail | An entry missing a field | the same entry with `no_alternative_because` dropped — exits 1: `register entry #0 is missing field(s): no_alternative_because` |
-| Must fail | An entry naming a first-party finding | `package.json`'s own `name` set to `minimist` (matching the dependency it also requires) — `npm audit` then reports the advisory under the key `minimist`, equal to the scanned project's own declared name; registering `GHSA-xvch-5gv4-984h` still fails: `register entry ('GHSA-xvch-5gv4-984h') matches a first-party finding … — first-party code has no exception path`, and the finding itself still fails unregistered too (`register=first-party — no exception path`) |
+| Must fail | An entry naming a first-party finding | `package.json`'s own `name` set to `minimist` (matching the dependency it also requires) — `npm audit` then reports the advisory under the key `minimist`, equal to the scanned project's own declared name; registering `GHSA-xvch-5gv4-984h` still fails: `register entry ('GHSA-xvch-5gv4-984h') matches a finding with no exception path (GHSA-xvch-5gv4-984h, package minimist) — first-party — no entry may cover it`, and the finding itself still fails unregistered too (`register=first-party — no entry may cover it — no exception path`) |
 | Must pass | The fixture bumped past the advisory | `package.json`'s `minimist` pinned at `1.2.8` — exits 0; `npm audit` reports 0 vulnerabilities, nothing to fail on |
 | Must pass | The fixture, registered | `{"advisory": "GHSA-xvch-5gv4-984h", "scope": "npm", "no_fix_because": "t", "no_alternative_because": "t", "review_by": "<today+30d>"}` — exits 0; `register=registered (GHSA-xvch-5gv4-984h)` |
 | Must pass | The tree as it stands | this repository's `frontend/`, empty register — exits 0; `npm audit --json` reports 0 vulnerabilities (1 production dependency, 355 dev, per the ticket's own premise) |
+| Must pass | A malformed entry belonging to the *other* scope | the pinned fixture, register `[{"advisory": "GHSA-xxxx-xxxx-xxxx", "scope": "go", "no_fix_because": "t", "no_alternative_because": "t", "review_by": "not-a-date"}]` — exits 1 on the fixture's own unregistered advisory as usual, but the malformed `review_by` is never reported: `check-vulns-npm` never examines an entry whose `scope` reads `"go"`. The same register run through `check-vulns-go` (any `--go-dir`) does report it |
 
 **Known gaps.**
 
@@ -49,7 +50,6 @@ same fixture with one field of `package.json` changed, each independently re-ins
   advisory url`), so a change to npm's advisory URL format would surface as a hard failure here
   rather than a silently shrunk population; not measured as a row because every advisory `npm audit`
   has reported in practice carries a `github.com/advisories/GHSA-…` url.
-- **A register entry with no valid `scope`** (missing, or neither `go` nor `npm`) fails completeness
-  on every run but is never checked as an orphan, an expiry, or a first-party match by either scope,
-  because both recipes filter to entries whose `scope` matches their own before applying those three
-  assertions — the same gap [`check-vulns-go.md`](check-vulns-go.md) records.
+- **A register entry with no readable `scope`** (missing, not a string, or a string neither `go` nor
+  `npm`) is examined by neither recipe at all — the same gap
+  [`check-vulns-go.md`](check-vulns-go.md) records and demonstrates the routing for.
