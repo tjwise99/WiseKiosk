@@ -4,7 +4,7 @@ The inputs this check has been run against, in both directions. What it *asserts
 [`docs/CI.md`](../../docs/CI.md) § *Dependency vulnerabilities*'s and § *The exception register*'s;
 how to run a case is [`../README.md`](../README.md)'s.
 
-**No fixture is committed** — [ADR 0010 rev 1](../../docs/decisions/0010-runtime-materialised-gate-fixtures.md)
+**No fixture is committed** — [ADR 0010 rev 2](../../docs/decisions/0010-runtime-materialised-gate-fixtures.md)
 forbids a resolvable vulnerable artifact in the tracked tree. Every row below is a throwaway directory
 built at record time, run through the production script (`python3 scripts/vulns/check_vulns.py --scope
 npm --npm-dir <dir> --register <register>`) with `--npm-dir` pointed at it. npm 11.16.0, Node 24.18.0.

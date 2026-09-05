@@ -275,7 +275,7 @@ Whether a comment is narrative rather than mechanism, and whether added comment 
 place, is a review habit rather than a gate: #59 comment-discipline gate closed not-planned (owner,
 2026-08-16). The defect class it targeted is carried by the `review-diff.py` pre-commit hook, which
 surfaces [`CONTRIBUTING.md`](../CONTRIBUTING.md)'s *Comments* checklist questions before a commit, and by
-independent review — across the five-PR ADR 0016 rev 8 adoption wave this produced zero
+independent review — across the five-PR ADR 0016 rev 9 adoption wave this produced zero
 comment-discipline findings. Reopens if a narrative block or comment bloat reaches `main` past both.
 
 ## Dependency vulnerabilities
@@ -300,7 +300,7 @@ Both recipes need the network on every run (`vuln.go.dev`, the npm registry), so
 verify` dependency (§ *Gate wiring*) — each runs instead as a blocking step in its own CI job,
 `backend-tests` for Go and `frontend` for npm.
 
-**No fixture is committed** — [ADR 0010 rev 1](decisions/0010-runtime-materialised-gate-fixtures.md)
+**No fixture is committed** — [ADR 0010 rev 2](decisions/0010-runtime-materialised-gate-fixtures.md)
 forbids a resolvable vulnerable artifact in the tracked tree. Each case is built in a throwaway
 directory at record time (a Go `main` importing a named vulnerable module version and calling its
 symbol; a `package.json` pinning a dependency with a named advisory) and run through the production
@@ -520,14 +520,14 @@ resolve, a citation to something that does not exist, an index that has drifted 
 
 - Every relative Markdown link in every tracked file resolves inside the repository, decided by
   `lychee` run from its digest-pinned official image over the `git ls-files` Markdown set
-  ([ADR 0016 rev 8](decisions/0016-maintained-tools-for-standard-artifacts.md)). All three syntaxes
+  ([ADR 0016 rev 9](decisions/0016-maintained-tools-for-standard-artifacts.md)). All three syntaxes
   carrying a relative path are read — the inline form, a link-reference definition, and a raw HTML
   anchor's `href` — each held against the retired authored check's recorded cases, in both
   directions. A destination may be angle-bracketed or carry a title; neither is part of the path.
   **The gate runs `--offline`, and that is a decision rather than an inherited default.** Online
   checking makes third-party availability a merge condition, which § *Upstream contract checks*
   refuses for its own gates for the same reason; offline buys that stability by checking absolute
-  `http`/`https` links not at all. With the host allowlist retired (ADR 0016 rev 8), an absolute
+  `http`/`https` links not at all. With the host allowlist retired (ADR 0016 rev 9), an absolute
   link is entirely unconstrained: documentation may link outward, and nothing here reviews where to.
   **The gate is a CI-only exception rather than a `verify` check**: the image digest is the pin,
   and a contributor machine is not assumed to run docker. A local run is the same invocation — piping `git ls-files
@@ -538,13 +538,13 @@ resolve, a citation to something that does not exist, an index that has drifted 
   fence is a sample rather than a reference. A fragment naming no heading in a target whose path
   resolves: fragment checking is off, so only the path half of the destination is proven. A
   destination that leaves the repository and lands on a file that exists, by `../` or through a
-  tracked symlink: the escape and symlink obligations are retired knowingly (ADR 0016 rev 8), and
+  tracked symlink: the escape and symlink obligations are retired knowingly (ADR 0016 rev 9), and
   the CI container failing such a link because only the checkout is mounted is incidental, not
   asserted. A fence that never closes runs to the end of its document under CommonMark, so nothing
   past it is scanned and the run reports clean — seeded and confirmed, and the Sphinx build passes
-  the same seed; no residue guard is kept, on ADR 0016 rev 8's own bar that one residual obligation
+  the same seed; no residue guard is kept, on ADR 0016 rev 9's own bar that one residual obligation
   does not earn a second gate beside an adopted tool. lychee itself reports success over an
-  empty input set — the ruling ADR 0016 rev 8 records for adopted tools — but the CI step
+  empty input set — the ruling ADR 0016 rev 9 records for adopted tools — but the CI step
   materialises the tracked-file list and fails on a failed or empty listing before lychee runs: a
   failed measurement is not an empty population, and a scan of nothing must not read as clean. A
   root-relative destination fails, with a message naming the missing root rather than a wrong
@@ -728,7 +728,7 @@ changed, which the citation resolver above decides without anyone declaring anyt
   zero by design (§ *What is not gated here*), so there is no verdict for an untracked file to
   escape.
 - **Every hook in the local hook layer passes.** `.pre-commit-config.yaml` is that layer
-  ([ADR 0016 rev 8](decisions/0016-maintained-tools-for-standard-artifacts.md)): no private key, no
+  ([ADR 0016 rev 9](decisions/0016-maintained-tools-for-standard-artifacts.md)): no private key, no
   file over `check-added-large-files`' threshold, every YAML and JSON file parses, no merge-conflict
   marker committed while a merge is in progress (outside one, `check-merge-conflict` judges nothing —
   a bare `=======` is also a Markdown setext underline), no file mixing line-ending kinds — plus the
@@ -742,7 +742,7 @@ changed, which the citation resolver above decides without anyone declaring anyt
   advisory fast feedback at commit, on the commit message, and at push (`pre-commit install`, once
   per clone); the binding run for the file-scanning hooks is CI's, over every tracked file — the
   commitlint hooks of the bullet below run at their own stages, not in that run. **A hook whose file set is empty is skipped and reports
-  success** — pre-commit's own behaviour, which ADR 0016 rev 8's empty-population ruling permits;
+  success** — pre-commit's own behaviour, which ADR 0016 rev 9's empty-population ruling permits;
   the authored hook runs regardless of the file set (`always_run`) and reports success over an empty
   tracked tree, under the same ruling. pre-commit itself is pinned in `scripts/requirements-dev.txt`
   — installed into `scripts/.venv` by `just hooks-install` and by CI's install step, and covered by
@@ -751,7 +751,7 @@ changed, which the citation resolver above decides without anyone declaring anyt
   hand, is its updater.
 - **The pull-request title is a Conventional Commit, and so is each local commit message** — one
   obligation at two stages, delegated to `commitlint`
-  ([ADR 0016 rev 8](decisions/0016-maintained-tools-for-standard-artifacts.md); the gate itself is
+  ([ADR 0016 rev 9](decisions/0016-maintained-tools-for-standard-artifacts.md); the gate itself is
   [ADR 0006 rev 5](decisions/0006-process-gates.md)'s). Both stages run through the hook layer's
   `repo: local` hooks and one base configuration, `.commitlintrc.json` —
   `@commitlint/config-conventional`, plus a `scope-case` rule restoring the retired check's
@@ -804,7 +804,7 @@ changed, which the citation resolver above decides without anyone declaring anyt
 ## Action pins and workflow privilege
 
 The workflows are themselves a supply chain and themselves privileged. Both are audited from the
-files by two maintained tools ([ADR 0016 rev 8](decisions/0016-maintained-tools-for-standard-artifacts.md)),
+files by two maintained tools ([ADR 0016 rev 9](decisions/0016-maintained-tools-for-standard-artifacts.md)),
 each run in CI from a digest-pinned official image over the `.github/workflows` input set: `zizmor`
 at the `pedantic` persona for what a workflow may do — action pinning, permission grants, credential
 persistence and template injection among its audit set — and `actionlint` for whether a workflow is
@@ -830,10 +830,10 @@ channel is decided.
 - **An unreadable workflow fails rather than being skipped.** Both tools parse real YAML, so a layout
   that cannot be read is a syntax error, not a skip — GitHub itself would refuse the same file. A run
   discovering no workflow at all fails too, as `zizmor`'s own behaviour (`no inputs collected`)
-  rather than an obligation on it (ADR 0016 rev 8's empty-population ruling).
+  rather than an obligation on it (ADR 0016 rev 9's empty-population ruling).
 
 **What the gate deliberately lets through.** The `# vN` version comment beside a pin is retired as an
-obligation (ADR 0016 rev 8): a stale or absent comment passes, and the adopted
+obligation (ADR 0016 rev 9): a stale or absent comment passes, and the adopted
 `helpers:pinGitHubActionDigests` preset maintains the comments only on the bumps it performs.
 The audits needing the GitHub API (`known-vulnerable-actions` and `ref-version-mismatch` among them)
 do not run: the gate runs the offline audit set, deterministically, so a verdict moves only when a

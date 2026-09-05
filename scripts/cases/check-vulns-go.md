@@ -4,7 +4,7 @@ The inputs this check has been run against, in both directions. What it *asserts
 [`docs/CI.md`](../../docs/CI.md) § *Dependency vulnerabilities*'s and § *The exception register*'s;
 how to run a case is [`../README.md`](../README.md)'s.
 
-**No fixture is committed** — [ADR 0010 rev 1](../../docs/decisions/0010-runtime-materialised-gate-fixtures.md)
+**No fixture is committed** — [ADR 0010 rev 2](../../docs/decisions/0010-runtime-materialised-gate-fixtures.md)
 forbids a resolvable vulnerable artifact in the tracked tree. Every row below is a throwaway directory
 built at record time, run through the production script (`python3 scripts/vulns/check_vulns.py --scope
 go --go-dir <dir> --register <register>`) with `--go-dir` pointed at it. govulncheck v1.7.0 (the
@@ -65,7 +65,7 @@ this gate's reporting-vs-blocking wiring (§ *Dependency vulnerabilities*) again
 
 - **A finding whose scanner-reported package name genuinely names a first-party path passes uncaught
   if the register also names it — this cannot be seeded against a live run.**
-  [ADR 0016 rev 8](../../docs/decisions/0016-maintained-tools-for-standard-artifacts.md)'s obligation
+  [ADR 0016 rev 9](../../docs/decisions/0016-maintained-tools-for-standard-artifacts.md)'s obligation
   ("no entry matches a first-party finding") is implemented (`check_vulns.py`'s `first_party` field, compared
   against `--go-dir`'s own `go.mod` module line), but govulncheck cannot be made to report a finding
   against the module being scanned: Go refuses a module that requires itself (the self-import a seed
