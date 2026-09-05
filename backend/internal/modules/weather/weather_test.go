@@ -90,6 +90,47 @@ func stagedSource(t *testing.T) *atomic.Int64 {
 	return &calls
 }
 
+// admitted is TST058's known-good points, read directly against the
+// constraint below; hoisted to package level so FuzzValidate's seed corpus
+// and the table test share one source rather than carrying the bounds twice.
+var admitted = []struct {
+	name     string
+	lat, lon float64
+}{
+	{"the captured location", capturedLat, capturedLon},
+	{"the null island", 0, 0},
+	{"the poles and the antimeridian", -90, -180},
+	{"the other end of both ranges", 90, 180},
+	{"a whole number of degrees", 51, -1},
+	{"a near-zero longitude", capturedLat, 1e-7},
+	{"a negative near-zero latitude", -1.5e-7, capturedLon},
+}
+
+// rejected is TST058's rejected request bodies, read through the module's own
+// handler; hoisted to package level so FuzzDecodeRequest's seed corpus and the
+// table test share one source rather than carrying the bounds twice.
+var rejected = []struct {
+	name string
+	body string
+}{
+	{"a latitude past the pole", `{"lat":90.1,"lon":55.2708}`},
+	{"a longitude past the antimeridian", `{"lat":25.2048,"lon":-180.1}`},
+	{"a latitude past the pole by the smallest step there is", `{"lat":90.00000000000001,"lon":0}`},
+	{"a magnitude too large to hold", `{"lat":1e400,"lon":0}`},
+	{"a latitude that is not a number", `{"lat":"here","lon":55.2708}`},
+	{"a longitude written as not-a-number", `{"lat":25.2048,"lon":NaN}`},
+	{"a point and a parameter this source does not take", `{"lat":25.2048,"lon":55.2708,"units":"metric"}`},
+	{"a point and an empty parameter this source does not take", `{"lat":25.2048,"lon":55.2708,"x":""}`},
+	{"a point and a field the schema does not declare", `{"lat":25.2048,"lon":55.2708,"altitude":10}`},
+	{"a latitude and no longitude", `{"lat":25.2048}`},
+	{"a longitude and no latitude", `{"lon":55.2708}`},
+	{"a longitude the body wrote as null", `{"lat":25.2048,"lon":null}`},
+	{"a body naming neither", `{}`},
+	{"a place name instead of a point", `{"place":"the observatory"}`},
+	{"no body at all", ``},
+	{"a body that is not an object", `[25.2048,55.2708]`},
+}
+
 // TestTST058_ThePatternAdmitsAPointAndRejectsEveryOtherValue reads
 // SRS043<!-- The weather module declares the known-good constraint the location it is asked about must satisfy -->
 // against the constraint itself. No case reaches a network: the admitted ones
@@ -102,19 +143,6 @@ func stagedSource(t *testing.T) *atomic.Int64 {
 // decoding, so the two rows below that are not numbers at all stand for that
 // half arriving as a rejection rather than for anything this module judges.
 func TestTST058_ThePatternAdmitsAPointAndRejectsEveryOtherValue(t *testing.T) {
-	admitted := []struct {
-		name     string
-		lat, lon float64
-	}{
-		{"the captured location", capturedLat, capturedLon},
-		{"the null island", 0, 0},
-		{"the poles and the antimeridian", -90, -180},
-		{"the other end of both ranges", 90, 180},
-		{"a whole number of degrees", 51, -1},
-		{"a near-zero longitude", capturedLat, 1e-7},
-		{"a negative near-zero latitude", -1.5e-7, capturedLon},
-	}
-
 	for _, c := range admitted {
 		t.Run("admits "+c.name, func(t *testing.T) {
 			request := point(c.lat, c.lon)
@@ -183,28 +211,6 @@ func TestTST058_ThePatternAdmitsAPointAndRejectsEveryOtherValue(t *testing.T) {
 			t.Fatalf("status = %d, want the staged source's failure %d (%s)", recorder.Code, http.StatusBadGateway, recorder.Body)
 		}
 	})
-
-	rejected := []struct {
-		name string
-		body string
-	}{
-		{"a latitude past the pole", `{"lat":90.1,"lon":55.2708}`},
-		{"a longitude past the antimeridian", `{"lat":25.2048,"lon":-180.1}`},
-		{"a latitude past the pole by the smallest step there is", `{"lat":90.00000000000001,"lon":0}`},
-		{"a magnitude too large to hold", `{"lat":1e400,"lon":0}`},
-		{"a latitude that is not a number", `{"lat":"here","lon":55.2708}`},
-		{"a longitude written as not-a-number", `{"lat":25.2048,"lon":NaN}`},
-		{"a point and a parameter this source does not take", `{"lat":25.2048,"lon":55.2708,"units":"metric"}`},
-		{"a point and an empty parameter this source does not take", `{"lat":25.2048,"lon":55.2708,"x":""}`},
-		{"a point and a field the schema does not declare", `{"lat":25.2048,"lon":55.2708,"altitude":10}`},
-		{"a latitude and no longitude", `{"lat":25.2048}`},
-		{"a longitude and no latitude", `{"lon":55.2708}`},
-		{"a longitude the body wrote as null", `{"lat":25.2048,"lon":null}`},
-		{"a body naming neither", `{}`},
-		{"a place name instead of a point", `{"place":"the observatory"}`},
-		{"no body at all", ``},
-		{"a body that is not an object", `[25.2048,55.2708]`},
-	}
 
 	for _, c := range rejected {
 		t.Run("rejects "+c.name, func(t *testing.T) {
@@ -679,4 +685,69 @@ func readTime(t *testing.T, written string) time.Time {
 		t.Fatalf("the payload's timestamp %q is not one a reader can parse: %v", written, err)
 	}
 	return at
+}
+
+// FuzzShape complements the Unit tier, which only exercises Shape against
+// known responses (`check-fuzz`, docs/CI.md § Backend fuzz). Seeded with the
+// captured response every other case here shapes: a run finding no crasher in
+// it says nothing new, so the value is in what the fuzzer builds from it. Two
+// calls on the same bytes are asserted equal by their marshalled form, which
+// is what gives this target a failure mode beyond a panic or a hang.
+func FuzzShape(f *testing.F) {
+	seed, err := os.ReadFile(filepath.FromSlash(captured))
+	if err != nil {
+		f.Fatalf("reading the captured response: %v", err)
+	}
+	f.Add(seed)
+
+	f.Fuzz(func(t *testing.T, body []byte) {
+		first, firstErr := Shape(body)
+		second, secondErr := Shape(body)
+		if (firstErr == nil) != (secondErr == nil) {
+			t.Fatalf("Shape is not deterministic: first = %v, second = %v", firstErr, secondErr)
+		}
+		if firstErr != nil {
+			return
+		}
+
+		firstJSON, err := json.Marshal(first)
+		if err != nil {
+			t.Fatalf("a non-error result did not marshal: %v", err)
+		}
+		secondJSON, err := json.Marshal(second)
+		if err != nil {
+			t.Fatalf("a non-error result did not marshal: %v", err)
+		}
+		if string(firstJSON) != string(secondJSON) {
+			t.Fatalf("Shape is not deterministic: %s vs %s", firstJSON, secondJSON)
+		}
+	})
+}
+
+// FuzzDecodeRequest drives decodeRequest with the bytes a request body
+// carries (`check-fuzz`, docs/CI.md § Backend fuzz). Seeded from the rejected
+// table above, which TestTST058 also reads, so the two share one source
+// rather than carrying the bounds twice.
+func FuzzDecodeRequest(f *testing.F) {
+	for _, c := range rejected {
+		f.Add([]byte(c.body))
+	}
+
+	f.Fuzz(func(t *testing.T, body []byte) {
+		_, _ = decodeRequest(body)
+	})
+}
+
+// FuzzValidate drives validate with the coordinate pairs a decoded request
+// carries (`check-fuzz`, docs/CI.md § Backend fuzz). Seeded from the admitted
+// table above, which TestTST058 also reads, so the two share one source
+// rather than carrying the bounds twice.
+func FuzzValidate(f *testing.F) {
+	for _, c := range admitted {
+		f.Add(c.lat, c.lon)
+	}
+
+	f.Fuzz(func(t *testing.T, lat, lon float64) {
+		_ = validate(point(lat, lon))
+	})
 }
