@@ -210,7 +210,7 @@ The four stored attributes — `verification-method`, `status`, `verification-ju
   noticing when its evidence moves.
 - **No gate in the table is authored here.** Gate 1 is the tool's, configured — the drift hook is
   the extension point Doorstop documents, not a sibling script — and gate 3 is the coverage tool's.
-  That is the answer [ADR 0016 rev 7](0016-maintained-tools-for-standard-artifacts.md) asks for
+  That is the answer [ADR 0016 rev 8](0016-maintained-tools-for-standard-artifacts.md) asks for
   before a check is written, and dropping gate 2 is what leaves the table with no exception. The
   configuration that arms the hook is fragile in a way no gate here covers: keeping the `extensions:`
   block present is an obligation on whoever edits a `.doorstop.yml`, and it leaves no artifact, so a
