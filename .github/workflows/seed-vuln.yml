@@ -1,0 +1,12 @@
+name: seed-vuln
+
+# Exists only on the throwaway seed/codeql-2026-09-05 branch, to prove CodeQL's
+# actions/code-injection/critical query fires against the production analysis. Never merged.
+on:
+  issues:
+    types: [opened]
+jobs:
+  seed:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "${{ github.event.issue.title }}"
