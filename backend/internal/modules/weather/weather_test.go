@@ -687,6 +687,29 @@ func readTime(t *testing.T, written string) time.Time {
 	return at
 }
 
+// fuzzHangBudget is the per-input wall-clock deadline runWithin enforces.
+const fuzzHangBudget = time.Second
+
+// runWithin fails the test if fn has not returned within budget, naming the
+// target that hung. Go's own fuzzing engine drops a hanging input silently
+// rather than reporting it (docs/CI.md § Backend fuzz); this is what a fuzz
+// target's per-input deadline catches instead.
+func runWithin(t *testing.T, budget time.Duration, name string, fn func()) {
+	t.Helper()
+
+	done := make(chan struct{})
+	go func() {
+		fn()
+		close(done)
+	}()
+
+	select {
+	case <-done:
+	case <-time.After(budget):
+		t.Fatalf("%s did not return within %s", name, budget)
+	}
+}
+
 // FuzzShape complements the Unit tier, which only exercises Shape against
 // known responses (`check-fuzz`, docs/CI.md § Backend fuzz). Seeded with the
 // captured response every other case here shapes: a run finding no crasher in
@@ -701,26 +724,28 @@ func FuzzShape(f *testing.F) {
 	f.Add(seed)
 
 	f.Fuzz(func(t *testing.T, body []byte) {
-		first, firstErr := Shape(body)
-		second, secondErr := Shape(body)
-		if (firstErr == nil) != (secondErr == nil) {
-			t.Fatalf("Shape is not deterministic: first = %v, second = %v", firstErr, secondErr)
-		}
-		if firstErr != nil {
-			return
-		}
+		runWithin(t, fuzzHangBudget, "FuzzShape", func() {
+			first, firstErr := Shape(body)
+			second, secondErr := Shape(body)
+			if (firstErr == nil) != (secondErr == nil) {
+				t.Fatalf("Shape is not deterministic: first = %v, second = %v", firstErr, secondErr)
+			}
+			if firstErr != nil {
+				return
+			}
 
-		firstJSON, err := json.Marshal(first)
-		if err != nil {
-			t.Fatalf("a non-error result did not marshal: %v", err)
-		}
-		secondJSON, err := json.Marshal(second)
-		if err != nil {
-			t.Fatalf("a non-error result did not marshal: %v", err)
-		}
-		if string(firstJSON) != string(secondJSON) {
-			t.Fatalf("Shape is not deterministic: %s vs %s", firstJSON, secondJSON)
-		}
+			firstJSON, err := json.Marshal(first)
+			if err != nil {
+				t.Fatalf("a non-error result did not marshal: %v", err)
+			}
+			secondJSON, err := json.Marshal(second)
+			if err != nil {
+				t.Fatalf("a non-error result did not marshal: %v", err)
+			}
+			if string(firstJSON) != string(secondJSON) {
+				t.Fatalf("Shape is not deterministic: %s vs %s", firstJSON, secondJSON)
+			}
+		})
 	})
 }
 
@@ -734,7 +759,9 @@ func FuzzDecodeRequest(f *testing.F) {
 	}
 
 	f.Fuzz(func(t *testing.T, body []byte) {
-		_, _ = decodeRequest(body)
+		runWithin(t, fuzzHangBudget, "FuzzDecodeRequest", func() {
+			_, _ = decodeRequest(body)
+		})
 	})
 }
 
@@ -748,6 +775,8 @@ func FuzzValidate(f *testing.F) {
 	}
 
 	f.Fuzz(func(t *testing.T, lat, lon float64) {
-		_ = validate(point(lat, lon))
+		runWithin(t, fuzzHangBudget, "FuzzValidate", func() {
+			_ = validate(point(lat, lon))
+		})
 	})
 }
