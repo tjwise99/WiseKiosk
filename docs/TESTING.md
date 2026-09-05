@@ -22,12 +22,15 @@ Each tier states what it **guarantees** and when it runs.
 | **Image** | The published image is what a deployment may assume: it runs as a non-root user, serves the configuration bind-mounted into it byte for byte and 404s where none is mounted, carries no configuration file and no deployment-specific environment value, declares no shared writable volume and keeps two instances of itself independent, and holds no value matching the committed secret-pattern set in any layer — with a planted canary required to be reported. It comes up serving on each architecture it is built for, which is every architecture a published image carries — an architecture with no published image is the Native tier's — and the health signal it declares reports healthy while the backend serves and unhealthy while it does not | SRS020<!-- Non-root container user --> / SRS018<!-- One generic published image --> / SRS029<!-- One instance, one configuration, nothing shared with another --> / SRS025<!-- No secret material in the published image --> / SRS019<!-- The backend runs on every supported architecture --> / [`DEPLOYMENT.md`](DEPLOYMENT.md) | Every commit, in CI, from `../scripts/image/`: the property and health-signal harnesses over one image in one job, and the smoke test once per architecture, a matrix leg each |
 | **Native** | The application built from source comes up serving on an architecture no published image carries: the binary is the architecture and ARM revision it was to be built for, and the cross-compiled backend answers liveness beside the bundle it was pointed at, serves the page from that bundle, and passes the liveness check its own binary carries | SRS019<!-- The backend runs on every supported architecture --> | Every commit, in CI, from `../scripts/native/`: one job builds the bundle, cross-compiles the backend for armv6l, and runs the smoke harness over the pair under the runner's user-mode emulation |
 | **Contract** | Upstream APIs still return what the shaping libraries expect | this document | Fixtures every commit, in CI; a live run on a schedule, off the merge path |
+| **Fuzz** | No panic and no hang, the latter by a per-input deadline in the target, on crafted bytes fed to the parsers the module contract names for fuzzing: a shaping library's response parser, and a route's request decode and validation, within a fixed ten-second search budget | this document / [ADR 0029 rev 1](decisions/0029-fuzz-merge-path-time-boxed.md) | Every commit, in CI |
 
 The canary tier's guarantee rests on planting: a sweep that never proves the value *reached* the
 backend passes on a backend that never held one, so each canary case asserts the upstream saw the
 planted value before it asserts nothing else did. The footprint tier's rests on the reverse — a
 threshold loose enough to absorb the growth it is watching for reports a bound it did not measure, so
-what it can and cannot resolve belongs in the item, not in a comfortable margin.
+what it can and cannot resolve belongs in the item, not in a comfortable margin. The fuzz tier's is
+bounded by its own budget: ten seconds finds what ten seconds of mutation can find, and a clean run is
+not a claim of coverage beyond it.
 
 ### Where a backend test goes
 
@@ -113,7 +116,9 @@ what the product does when an upstream returns what the shaping library did not 
 class, so a tree item here would restate it. What is left is machinery — recording a fixture is a
 procedure an author follows, a scheduled credentialed job is a repository-facing check — so both sit
 in [`CI.md § Upstream contract checks`](CI.md#upstream-contract-checks)
-([ADR 0011 rev 2](decisions/0011-requirement-or-convention.md)).
+([ADR 0011 rev 2](decisions/0011-requirement-or-convention.md)), and the fuzz tier's own budget and
+corpus convention are the same kind of machinery, routed the same way to
+[`CI.md § Backend fuzz`](CI.md#backend-fuzz) ([ADR 0029 rev 1](decisions/0029-fuzz-merge-path-time-boxed.md)).
 
 ---
 

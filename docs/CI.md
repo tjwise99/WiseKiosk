@@ -159,6 +159,42 @@ tree's; what is decided here is only that the tree builds, that `vet` is clean o
 is executed on the merge path rather than declared, and that the tier's concurrent packages executed
 without a detected race.
 
+## Backend fuzz
+
+Three targets — `FuzzShape`, `FuzzDecodeRequest`, `FuzzValidate` — each run under `go test -fuzz` for
+a fixed ten seconds, one invocation per target, in `check-fuzz`. Every target asserts no panic and no
+hang within the budget; `FuzzShape` additionally asserts its result is deterministic across two calls
+on the same bytes. What the three targets are and why fuzzing rather than a scheduled job is
+[ADR 0029 rev 1](decisions/0029-fuzz-merge-path-time-boxed.md)'s; what they must guarantee is
+[`TESTING.md`](TESTING.md)'s Fuzz row.
+
+**No panic is the engine's to catch; no hang is the target's own.** Go's fuzzing engine reports a
+panic the moment it happens, which a ten-second search catches reliably. Its own documentation
+[describes a per-execution timeout for a hang](https://go.dev/security/fuzz/)
+("the fuzz target took too long to complete... this may fail due to a deadlock or infinite loop"),
+but that detection did not resolve inside this tier's ten-second search in testing — the search's own
+graceful end-of-run reliably arrived first, silently dropping the hung input rather than reporting it
+(`scripts/cases/check-fuzz.md` records the runs this was measured against). So each target wraps its
+own call in a one-second per-input wall-clock deadline (`runWithin`,
+`backend/internal/modules/weather/weather_test.go`) that fails the test and names the target that
+hung, rather than leaning on a mechanism that arrives too late to help at this budget.
+
+- **The seed corpus is `f.Add` calls in the test file**, shared with the table tests that carry the
+  same bounds rather than duplicated. Go's own default location, `testdata/fuzz/<FuzzFuncName>/`,
+  holds nothing until a run finds a crasher — no empty directory is committed ahead of one.
+- **`check-go`'s plain `go test ./...` already runs every `Fuzz*` function's seed corpus as an
+  ordinary test**, from the commit each target lands in. `check-fuzz` is what mutates past the seeds;
+  `check-go` is what keeps a committed crasher from regressing silently between fuzz runs.
+- **A crasher found on the merge path fails the run**, and the corpus entry Go's minimizer writes
+  under `testdata/fuzz/` is what the fixing change commits — the regression is closed by that entry
+  passing under `check-go` from then on, the same way a fixed bug elsewhere gains a test.
+- **A crasher found the first time a target's fuzzing actually runs is reported, not blocked on.**
+  Per the reporting-first rule, that target's `check-fuzz` line lands non-blocking (a `-` prefix, a
+  comment naming the follow-on ticket) until the finding is fixed, rather than failing every
+  subsequent change for a defect this tier is only now able to see.
+
+Recorded in [`../scripts/cases/check-fuzz.md`](../scripts/cases/check-fuzz.md).
+
 ## Image tests
 
 The container image is built from the tracked tree and the Image tier is run over it, in two jobs of
