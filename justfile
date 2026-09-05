@@ -169,6 +169,11 @@ check-lint-go:
     go -C backend tool golangci-lint run ./...
 
 [group('checks')]
+[doc('No resolved Go module dependency carries a known vulnerability reachable from the build, unless the exception register covers it; needs the network (vuln.go.dev)')]
+check-vulns-go:
+    python3 scripts/vulns/check_vulns.py --scope go
+
+[group('checks')]
 [doc('Exactly one non-test reference in the backend unwraps the confined secret type to its raw value; test files are exempt')]
 check-secret-unwrap:
     python3 scripts/check-secret-unwrap.py
@@ -222,6 +227,11 @@ check-static-bundle: check-build
 check-lint-frontend:
     cd frontend && node_modules/.bin/eslint .
     -cd frontend && node_modules/.bin/svelte-check --tsconfig ./tsconfig.json --tsgo
+
+[group('checks')]
+[doc('No npm dependency carries a known vulnerability, at any severity, unless the exception register covers it; needs the network (the npm registry)')]
+check-vulns-npm:
+    python3 scripts/vulns/check_vulns.py --scope npm
 
 [group('checks')]
 [doc('The whole frontend typecheck (tsc --noEmit, TS 7) is clean; needs `just boundary-install`')]
@@ -312,5 +322,5 @@ check-restart-policy:
     python3 scripts/check-restart-policy.py
 
 [group('checks')]
-[doc('Run every check the PR gate runs that has a local form and needs neither Docker nor emulation; secret scanning, the PR-title check (commitlint, via the hook layer), the link check (lychee, from a digest-pinned image) and the workflow audit (zizmor, actionlint) are CI-only, the image tier is `just check-image`, and the native armv6l run is `just smoke-native`')]
+[doc('Run every check the PR gate runs that has a local form and needs neither Docker nor emulation nor the network; secret scanning, the PR-title check (commitlint, via the hook layer), the link check (lychee, from a digest-pinned image) and the workflow audit (zizmor, actionlint) are CI-only, the image tier is `just check-image`, the native armv6l run is `just smoke-native`, and the two online dependency-vulnerability checks are `just check-vulns-go` and `just check-vulns-npm`')]
 verify: check-untracked check-hooks check-branch check-reqs check-citations check-arch check-arch-trace check-boundary check-go check-lint-go check-secret-unwrap check-config-types check-build check-static-bundle check-lint-frontend check-typecheck-frontend check-unit check-render check-site check-adr-index check-adr-revs check-docs-index check-repo-silo check-languages check-dead-test check-restart-policy

@@ -40,6 +40,8 @@ when a link breaks. Nothing enforces this — a wrong success line fails no buil
 | `check-boundary` | [cases](cases/check-boundary.md) |
 | `check-go` | [cases](cases/check-go.md) |
 | `check-lint-go` | [cases](cases/check-lint-go.md) |
+| `check-vulns-go` (`scripts/vulns/check_vulns.py --scope go`) | [cases](cases/check-vulns-go.md) |
+| `check-vulns-npm` (`scripts/vulns/check_vulns.py --scope npm`) | [cases](cases/check-vulns-npm.md) |
 | `check-lint-frontend` | [cases](cases/check-lint-frontend.md) |
 | `check-typecheck-frontend` | [cases](cases/check-typecheck-frontend.md) |
 | `check-secret-unwrap.py` | [cases](cases/check-secret-unwrap.md) |

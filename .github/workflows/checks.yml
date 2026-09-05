@@ -50,7 +50,7 @@ jobs:
         run: just check-untracked
 
       # lychee runs offline from the digest-pinned official image over the tracked Markdown set
-      # (ADR 0016 rev 8); docker is not assumed on a contributor machine, so the step is a named
+      # (ADR 0016 rev 9); docker is not assumed on a contributor machine, so the step is a named
       # CI-only exception (docs/CI.md § Gate wiring) rather than a `just verify` check.
       # The file list is materialised and tested non-empty before lychee runs: a failed or empty
       # listing has judged nothing and must not read as a clean scan.
@@ -244,9 +244,10 @@ jobs:
     # package in the emitted module graph in the committed allowlist. Then the configuration types
     # are regenerated from the configuration schema and diffed, the same staleness gate the boundary
     # job runs one layer over. Then eslint, svelte-check and the whole-project TS 7 typecheck run
-    # (docs/CI.md § Lint and type checks). Every generator and runner is pinned in the silo it
-    # belongs to, through frontend/package-lock.json. No secrets: build, comparison and static
-    # assertion.
+    # (docs/CI.md § Lint and type checks), then `npm audit` over the whole dependency tree
+    # (docs/CI.md § Dependency vulnerabilities) — the one step here needing the network. Every
+    # generator and runner is pinned in the silo it belongs to, through frontend/package-lock.json.
+    # No secrets: build, comparison, static assertion and an unauthenticated registry query.
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -275,6 +276,9 @@ jobs:
 
       - name: The whole frontend typecheck (tsc --noEmit, TS 7) is clean
         run: just check-typecheck-frontend
+
+      - name: No npm dependency carries a known vulnerability, unless the exception register covers it
+        run: just check-vulns-npm
 
   frontend-tests:
     name: frontend-tests
@@ -323,13 +327,15 @@ jobs:
   backend-tests:
     name: backend-tests
     # Runs `just check-go` (docs/CI.md § Backend build, vet and tests), `just check-lint-go`
-    # (docs/CI.md § Lint and type checks) and `just check-secret-unwrap`
-    # (docs/CI.md § Module and framework structure). A job of its own rather than
-    # a step on `boundary`, which already carries the drift gate: one job answers with one check-run,
-    # so a shared one gives the two gates a single name to be required on and a single verdict. The
-    # `cmd` package's bounded-footprint soak runs inside `go test ./...` and is ~2min of this job, and
-    # is the one package the recipe's race-detector pass leaves out. No secrets: the tests serve over
-    # loopback (`net/http/httptest`) and reach no network origin.
+    # (docs/CI.md § Lint and type checks), `just check-secret-unwrap`
+    # (docs/CI.md § Module and framework structure) and `just check-vulns-go`
+    # (docs/CI.md § Dependency vulnerabilities, the one step here needing the network). A job of its
+    # own rather than a step on `boundary`, which already carries the drift gate: one job answers with
+    # one check-run, so a shared one gives the two gates a single name to be required on and a single
+    # verdict. The `cmd` package's bounded-footprint soak runs inside `go test ./...` and is ~2min of
+    # this job, and is the one package the recipe's race-detector pass leaves out. No secrets: the
+    # tests serve over loopback (`net/http/httptest`) and reach no network origin but govulncheck's own
+    # query to vuln.go.dev, which is unauthenticated.
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -355,6 +361,9 @@ jobs:
 
       - name: Exactly one non-test reference unwraps the confined secret type
         run: just check-secret-unwrap
+
+      - name: No resolved Go module dependency carries a known vulnerability reachable from the build, unless the exception register covers it
+        run: just check-vulns-go
 
   image-tests:
     name: image-tests
@@ -457,7 +466,7 @@ jobs:
     # reaches main under squash-merge — is a Conventional Commit. The branch check
     # is `just check-branch`, handed the PR's head ref, reading its pattern from
     # scripts/branch-shape.regex; the title runs through the hook layer's pinned
-    # commitlint (ADR 0016 rev 8) against the pull-request-title configuration,
+    # commitlint (ADR 0016 rev 9) against the pull-request-title configuration,
     # which drops the fixup!/squash!/merge allowances that never reach main.
     # The branch check also gates the recorded PR↔ticket
     # linkage: the PR's Development field (closingIssuesReferences) must link

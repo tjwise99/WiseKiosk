@@ -3,10 +3,13 @@
 **Status:** accepted
 **Decided:** 2026-08-03 (#103 authored-vs-adopted check trade, measured against the cases recorded in
 [`../../scripts/README.md`](../../scripts/README.md))
-**Rev:** 8
+**Rev:** 9
 
 ## Revisions
 
+- **rev 9** — 2026-09-05 — extends the decision to two more net-new adoptions, `govulncheck` and
+  `npm audit`, retiring [`../CI.md`](../CI.md) § *Dependency vulnerabilities*'s "Unbuilt; owned by
+  #67" line (#264 dependency vulnerability gates).
 - **rev 8** — 2026-09-05 — extends the decision to a second first-adoption case: `CodeQL`'s default
   code-scanning suite lands as a net-new gate over the project's own Go, Svelte/TypeScript, Python
   and Actions source, retiring [`../CI.md`](../CI.md) § *First-party source scanning*'s "Unbuilt;
@@ -97,6 +100,8 @@ is a net-new gate, adopted where no authored check ever existed for it to replac
 | `golangci-lint` at the default linter set | — | [`../CI.md`](../CI.md) § *Lint and type checks*'s "Unbuilt; owned by #67" line (Go half) |
 | `eslint` (flat config, recommended sets), with `svelte-check` (`--tsgo`) alongside | — | the same line's frontend half |
 | `CodeQL`'s default code-scanning suite, over Go, Svelte/TypeScript, Python and Actions | — | [`../CI.md`](../CI.md) § *First-party source scanning*'s "Unbuilt; owned by #67" line |
+| `govulncheck`, pinned by a `tool` directive in `backend/go.mod` | — | [`../CI.md`](../CI.md) § *Dependency vulnerabilities*'s "Unbuilt; owned by #67" line (Go half) |
+| `npm audit` | — | the same line's npm half |
 
 **`commitlint` must preserve the two-stage distinction the authored check carries.** `fixup!` and
 `squash!` are permitted at the commit-message stage because the squash discards them, and refused on
