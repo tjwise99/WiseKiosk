@@ -16,19 +16,19 @@ rationale: |
   nothing. The list is empty until a module asks.
 ref: ''
 references:
-- keyword: func TestServesTheHeaderSetOnEveryRoute
+- keyword: func TestPermissionsPolicyGrantsExactlyTheAllowlist
   path: backend/internal/headers/headers_test.go
-  sha: 309ecc7ed4a695dee74228010e794b9fad5df11365301f82b2ccefdc444cc516
+  sha: 171256e9af6f83cf6b1b0500b2bc132a70a0e4b2a1e835364c6b0aa3b255a140
   type: file
 - keyword: func TestPermissionsPolicyFileMatchesTheGeneration
   path: backend/internal/headers/headers_test.go
-  sha: 309ecc7ed4a695dee74228010e794b9fad5df11365301f82b2ccefdc444cc516
+  sha: 171256e9af6f83cf6b1b0500b2bc132a70a0e4b2a1e835364c6b0aa3b255a140
   type: file
 - keyword: test('renders the shipped example configuration with no validation report'
   path: frontend/tests/render/example-configuration.spec.ts
   sha: 040e4affad7b2439fc46acc39075cf105fb0b736dbedd9d3638fdafbb37e457e
   type: file
-reviewed: Hk_bxbN0_wsPchWODX9ZsrTGcOERIzgFowU9kN9PfBY=
+reviewed: q-DGaLmaaTSM3ZKuz1r0VQjmIQ85JPsUgN_W_KXOq_k=
 status: proposed
 text: |
   Integration test asserting the frontend-serving response carries a Permissions-Policy, and that the

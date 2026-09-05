@@ -118,3 +118,83 @@ func TestPermissionsPolicyFileMatchesTheGeneration(t *testing.T) {
 		t.Errorf("permissions-policy.txt has drifted from the universe/allowlist generation:\ngenerated: %s\ntracked:   %s", generated, want)
 	}
 }
+
+// cspDirectives splits a served Content-Security-Policy value into each
+// directive's exact token list, so a caller can assert a directive's value
+// rather than the whole header string — independent of csp.txt, which is
+// TestServesTheHeaderSetOnEveryRoute's proof, not this one's.
+func cspDirectives(value string) map[string][]string {
+	directives := make(map[string][]string)
+	for _, part := range strings.Split(value, ";") {
+		fields := strings.Fields(part)
+		if len(fields) == 0 {
+			continue
+		}
+		directives[fields[0]] = fields[1:]
+	}
+	return directives
+}
+
+func TestCSPConnectDefaultAndBaseAreExactlySelf(t *testing.T) {
+	handler := assembled(t)
+	recorder := httptest.NewRecorder()
+	handler.ServeHTTP(recorder, httptest.NewRequest(http.MethodGet, "/", nil))
+
+	directives := cspDirectives(recorder.Header().Get("Content-Security-Policy"))
+	for _, name := range []string{"default-src", "connect-src", "base-uri"} {
+		if got := directives[name]; len(got) != 1 || got[0] != "'self'" {
+			t.Errorf("%s = %v, want exactly [\"'self'\"] — no host, wildcard, scheme-source or 'unsafe-' form admitted", name, got)
+		}
+	}
+}
+
+// permissionsPolicyGrants splits a served Permissions-Policy value into the
+// features it grants (a non-empty allowlist) and the features it denies (an
+// empty one), independent of permissions-policy.txt and the universe/allowlist
+// slices — TestPermissionsPolicyFileMatchesTheGeneration is that proof, not
+// this one's.
+func permissionsPolicyGrants(value string) (granted, denied map[string]bool) {
+	granted = make(map[string]bool)
+	denied = make(map[string]bool)
+	for _, entry := range strings.Split(value, ",") {
+		name, list, ok := strings.Cut(strings.TrimSpace(entry), "=")
+		if !ok {
+			continue
+		}
+		if strings.Trim(list, "()") == "" {
+			denied[name] = true
+		} else {
+			granted[name] = true
+		}
+	}
+	return granted, denied
+}
+
+func TestPermissionsPolicyGrantsExactlyTheAllowlist(t *testing.T) {
+	handler := assembled(t)
+	recorder := httptest.NewRecorder()
+	handler.ServeHTTP(recorder, httptest.NewRequest(http.MethodGet, "/", nil))
+
+	granted, denied := permissionsPolicyGrants(recorder.Header().Get("Permissions-Policy"))
+
+	wantGranted := make(map[string]bool, len(allowlist))
+	for _, feature := range allowlist {
+		wantGranted[feature] = true
+	}
+
+	for feature := range wantGranted {
+		if !granted[feature] {
+			t.Errorf("allowlisted feature %q is not granted in the served Permissions-Policy", feature)
+		}
+	}
+	for feature := range granted {
+		if !wantGranted[feature] {
+			t.Errorf("served Permissions-Policy grants %q, which is not on the allowlist", feature)
+		}
+	}
+	for _, feature := range universe {
+		if !wantGranted[feature] && !denied[feature] {
+			t.Errorf("universe feature %q is served neither granted nor denied", feature)
+		}
+	}
+}

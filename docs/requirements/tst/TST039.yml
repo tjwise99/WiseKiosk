@@ -11,9 +11,9 @@ ref: ''
 references:
 - keyword: func TestServesTheHeaderSetOnEveryRoute
   path: backend/internal/headers/headers_test.go
-  sha: 309ecc7ed4a695dee74228010e794b9fad5df11365301f82b2ccefdc444cc516
+  sha: 171256e9af6f83cf6b1b0500b2bc132a70a0e4b2a1e835364c6b0aa3b255a140
   type: file
-reviewed: wcHfNEfUTnu1262sdarZEB9ZMQQS7VR8LI2_tU2O_IQ=
+reviewed: JnCGg2ocoIMbNpq09skpZmg69XluH0J8siGRLjYV5b8=
 status: proposed
 text: |
   Integration test asserting the frontend-serving response and every proxy response carry a
