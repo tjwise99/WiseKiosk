@@ -35,9 +35,9 @@ Not everything CI does is a gate. These produce material a person acts on.
   would loop through `publish.yml` — a merged pin publishes a new digest, which opens the next pin.
 - **Code-scanning results.** Every static-analysis finding is reported to the repository's
   code-scanning dashboard and annotated on the pull request, whether or not it fails the build.
-- **Complete scan output.** The vulnerability gates report every advisory they resolve — at any
-  severity, regardless of reachability or exception status. The gate decides the merge; the output
-  stays complete, so a suppressed finding is still visible.
+- **Complete scan output.** The vulnerability gates, `check-vulns-go` and `check-vulns-npm`, report
+  every advisory they resolve — at any severity, regardless of reachability or exception status. The
+  gate decides the merge; the output stays complete, so a suppressed finding is still visible.
 - **Release provenance material.** A published release carries a signature, an SBOM and a
   build-provenance attestation alongside the image. CI produces them; whoever pulls the image uses
   them to establish what it is and what went into it. What is asserted about them is below.
@@ -281,19 +281,33 @@ comment-discipline findings. Reopens if a narrative block or comment bloat reach
 ## Dependency vulnerabilities
 
 Any resolved Go-module or npm dependency with a known vulnerability fails the pull request, **at any
-severity**, unless the finding has a current register entry.
-
-- Go: a fixture pinning a known-vulnerable module **and calling the vulnerable symbol**, asserted to
-  exit non-zero; the same fixture bumped past the advisory asserted to exit zero.
-- npm: a fixture pinning a dependency with a known advisory, asserted to exit non-zero; bumped,
-  asserted to pass; and an advisory carrying a current register entry asserted not to fail.
+severity**, unless the finding has a current register entry. One stdlib-only script,
+`scripts/vulns/check_vulns.py`, asserts both ecosystems and applies the one register; `--scope go` or
+`--scope npm` selects which. `just check-vulns-go` runs `go -C backend tool govulncheck -json ./...`;
+`just check-vulns-npm` runs `npm --prefix frontend audit --json` over the whole dependency tree, no
+`--audit-level`. Pass/fail is decided from each scanner's parsed JSON alone — `govulncheck`'s `-json`
+mode exits 0 whatever it finds, and this gate holds npm's scanner to the same rule rather than trusting
+an exit code the other tool cannot promise. The complete finding list is always printed, per § *What CI
+provides*, whether or not a finding is suppressed.
 
 **One allowance, Go only:** the gate may consider reachability — a vulnerability in code that is
 present but never called need not fail. Without it the gate produces findings nobody can act on, and
-a gate people learn to ignore is worse than none. The fixture calls the vulnerable symbol precisely
-because the gate is reachability-aware.
+a gate people learn to ignore is worse than none. A finding whose trace reaches a called symbol fails;
+one govulncheck reports only at package or module level, with no call reaching it, prints as
+informational.
 
-Unbuilt; owned by #67 security and supply-chain CI gates.
+Both recipes need the network on every run (`vuln.go.dev`, the npm registry), so neither is a `just
+verify` dependency (§ *Gate wiring*) — each runs instead as a blocking step in its own CI job,
+`backend-tests` for Go and `frontend` for npm.
+
+**No fixture is committed** — [ADR 0010 rev 1](decisions/0010-runtime-materialised-gate-fixtures.md)
+forbids a resolvable vulnerable artifact in the tracked tree. Each case is built in a throwaway
+directory at record time (a Go `main` importing a named vulnerable module version and calling its
+symbol; a `package.json` pinning a dependency with a named advisory) and run through the production
+script with `--go-dir`/`--npm-dir`/`--register` pointed at it; the seed text and the advisory ids and
+versions it names are recorded verbatim so a reviewer can rebuild it. Recorded in
+[`../scripts/cases/check-vulns-go.md`](../scripts/cases/check-vulns-go.md) and
+[`../scripts/cases/check-vulns-npm.md`](../scripts/cases/check-vulns-npm.md).
 
 ## Image vulnerabilities
 
@@ -468,25 +482,36 @@ asserts was decided by #71 release artifact set, which shipped no code.
 
 ## The exception register
 
-A committed register, one entry per finding. **There is no severity threshold.**
+A committed register, `.vulnerability-exceptions.json` at the repository root, one entry per finding.
+Plain JSON rather than YAML: every plain-`python3` check in this tree is stdlib-only by decision, and
+no venv wired into either target job carries a YAML parser. **There is no severity threshold.**
 
 A threshold decides in advance that a whole class of finding is acceptable, sight unseen. That is the
 wrong shape here: a low-severity advisory with a published patch is a dependency shipping something
 broken, and the answer is to take the patch or take a different dependency. The register replaces a
 standing threshold with a decision per finding.
 
-Each entry names the specific advisory, states why no fix is available, states **why no alternative
-dependency or base image is viable**, and carries a review date no more than 90 days out. The third
-is what makes an entry a decision rather than a suppression: an entry that cannot state it should
-have been a version bump or a replacement. The fourth is what stops *accepted for now* becoming
-*accepted permanently* with no moment at which anyone looks again — an entry past its review date
-fails, which puts every live exception in front of a person quarterly.
+The register is a JSON list; each entry is an object carrying exactly five fields — `advisory` (the
+finding's id, matched against a scan's primary id or any alias — a Go finding's OSV id or its GHSA/CVE
+aliases, an npm finding's GHSA id), `scope` (`go` or `npm` — which recipe's findings the entry can
+cover), `no_fix_because`, `no_alternative_because` — **why no alternative dependency or base image is
+viable**, what makes an entry a decision rather than a suppression: an entry that cannot state it
+should have been a version bump or a replacement — and `review_by`, an ISO 8601 date evaluated at
+check time (today ≤ `review_by` ≤ today + 90 days, UTC). The last is what stops *accepted for now*
+becoming *accepted permanently* with no moment at which anyone looks again — an entry outside that
+window fails, which puts every live exception in front of a person quarterly. Committed `[]`.
 
 The gate asserts: every entry is complete and current; every finding suppressed in scan output has a
-matching entry; no entry matches a first-party finding; and no entry exists for an advisory no scan
-reports — so the register cannot accumulate rows for problems that no longer exist.
+matching entry; no entry matches a first-party finding — a Go package path under this repository's own
+module, or the npm project's own package name, neither of which has an exception path regardless of
+currency; and no entry exists for an advisory no scan reports — so the register cannot accumulate rows
+for problems that no longer exist. Each of the four is decided **within the scope being checked**:
+`check-vulns-go` examines only `scope: "go"` entries against what govulncheck reports, and
+`check-vulns-npm` only `scope: "npm"` entries against what npm audit reports — so validating the whole
+register needs both to run, which they do, as two separate CI steps.
 
-Unbuilt; owned by #67 security and supply-chain CI gates.
+Recorded in [`../scripts/cases/check-vulns-go.md`](../scripts/cases/check-vulns-go.md) and
+[`../scripts/cases/check-vulns-npm.md`](../scripts/cases/check-vulns-npm.md).
 
 ## Documentation integrity
 
@@ -948,6 +973,12 @@ already decided, which is what makes it a check and not a want.
   workflow audits (each run from a digest-pinned image; docker is not assumed on a contributor
   machine, and no local install channel is decided), and CodeQL (§ *First-party source scanning*
   — the action provisions its own CodeQL CLI bundle, and no local invocation is decided).
+  **A different shape holds `check-vulns-go`, `check-vulns-npm`, `check-image` and `smoke-native`:**
+  each has an ordinary `just` recipe, so this bullet's own claim still holds for them, but none is a
+  `just verify` dependency. The vulnerability pair needs the network on every run and `verify` stays
+  offline (§ *Documentation integrity*, § *Upstream contract checks*); the image pair needs Docker and,
+  for one architecture, emulation, which a contributor machine is not assumed to carry. Each instead
+  runs as a blocking step in its own CI job.
   **What watches the justfile is CI itself and nothing else** — an accepted, recorded loss of the
   retirement. A recipe edit changes what CI runs with no independent reader to disagree, and a CI
   step added outside both categories — recipe invocation and the exceptions above — fails nothing
