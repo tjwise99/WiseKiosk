@@ -1,8 +1,6 @@
 name: CodeQL
 
-# First-party source scanning (docs/CI.md § First-party source scanning): CodeQL's default
-# code-scanning suite over the product's own Go, Svelte/TypeScript, Python and Actions source, on
-# every pull request, every push to main, and weekly so a dormant branch is still covered.
+# docs/CI.md § First-party source scanning.
 on:
   pull_request:
     branches: [main]
@@ -45,8 +43,7 @@ jobs:
         with:
           persist-credentials: false
 
-      # No `queries:` input: the action's default is the code-scanning suite (docs/CI.md), so a
-      # later widening to a named suite is a visible diff rather than a silent one.
+      # No `queries:` input (docs/CI.md § First-party source scanning).
       - name: Initialize CodeQL
         uses: github/codeql-action/init@cdf488f595d80d6e07e03d4674febd5ab45fa938 # v4.37.9
         with:
