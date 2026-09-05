@@ -240,6 +240,20 @@ check-static-bundle: check-build
     python3 scripts/check-static-bundle.py
 
 [group('checks')]
+[doc('The frontend is clean under eslint (flat config, recommended sets) and svelte-check (--tsgo); needs `just boundary-install`')]
+check-lint-frontend:
+    cd frontend && node_modules/.bin/eslint .
+    cd frontend && node_modules/.bin/svelte-check --tsconfig ./tsconfig.json --tsgo
+
+# The TS 7 binary by explicit path: `typescript`'s own devDependency is TS 6, consumed by eslint
+# and svelte-check through the `typescript` package, and a bare `tsc` resolves to whichever of the
+# two claims the `.bin/tsc` slot rather than to a decided version.
+[group('checks')]
+[doc('The whole frontend typecheck (tsc --noEmit, TS 7) is clean; needs `just boundary-install`')]
+check-typecheck-frontend:
+    frontend/node_modules/@typescript/native/bin/tsc --noEmit -p frontend/tsconfig.json
+
+[group('checks')]
 [doc('The frontend unit tier passes (Vitest); needs `just boundary-install`')]
 check-unit:
     frontend/node_modules/.bin/vitest run --root frontend
@@ -324,4 +338,4 @@ check-restart-policy:
 
 [group('checks')]
 [doc('Run every check the PR gate runs that has a local form and needs neither Docker nor emulation; secret scanning, the PR-title check (commitlint, via the hook layer), the link check (lychee, from a digest-pinned image) and the workflow audit (zizmor, actionlint) are CI-only, the image tier is `just check-image`, and the native armv6l run is `just smoke-native`')]
-verify: check-untracked check-hooks check-branch check-reqs check-citations check-arch check-arch-trace check-boundary check-go check-lint-go check-secret-unwrap check-config-types check-build check-static-bundle check-unit check-render check-site check-adr-index check-adr-revs check-docs-index check-repo-silo check-languages check-dead-test check-restart-policy
+verify: check-untracked check-hooks check-branch check-reqs check-citations check-arch check-arch-trace check-boundary check-go check-lint-go check-secret-unwrap check-config-types check-build check-static-bundle check-lint-frontend check-typecheck-frontend check-unit check-render check-site check-adr-index check-adr-revs check-docs-index check-repo-silo check-languages check-dead-test check-restart-policy
