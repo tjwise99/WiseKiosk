@@ -5,6 +5,8 @@ name: seed-vuln
 on:
   issues:
     types: [opened]
+permissions:
+  contents: read
 jobs:
   seed:
     runs-on: ubuntu-latest
