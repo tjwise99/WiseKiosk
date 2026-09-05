@@ -69,8 +69,9 @@ nobody took.
 | The documentation site | nothing. It tracks the default branch and is deliberately not versioned |
 
 The release notes name the digest, which is what ties the tag to the registry: the publish
-workflow appends one line, `Image: ghcr.io/tjwise99/wisekiosk@sha256:<digest>`, to whatever notes
-the release was cut with, rather than replacing them.
+workflow keeps exactly one line naming it, `Image: ghcr.io/tjwise99/wisekiosk@sha256:<digest>`,
+replacing that line on a re-run — a rebuild changes the digest, so matching the whole line would not
+catch it — and touching nothing else in whatever notes the release was cut with.
 
 **The image reference is not an asset.** It is a pointer — the thing the registry-side material
 describes and the thing the recipe resolves. Listing it beside four files is what made one sentence
