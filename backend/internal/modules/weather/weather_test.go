@@ -165,6 +165,25 @@ func TestTST058_ThePatternAdmitsAPointAndRejectsEveryOtherValue(t *testing.T) {
 		}
 	})
 
+	// The decoder reads one JSON value and stops, so bytes trailing a complete
+	// object are left unread rather than refused. This pins that today, ahead of
+	// decodeRequest's extraction, the same way the case above pins the guard.
+	t.Run("admits a body with bytes trailing a complete JSON value", func(t *testing.T) {
+		asked := stagedSource(t)
+		held := served
+		served = router.NewRoute(entry())
+		t.Cleanup(func() { served = held })
+
+		recorder := serve(t, `{"lat":25.2048,"lon":55.2708}trailing`)
+
+		if calls := asked.Load(); calls == 0 {
+			t.Error("an admitted body reached no upstream call, so nothing says it got past the guard")
+		}
+		if recorder.Code != http.StatusBadGateway {
+			t.Fatalf("status = %d, want the staged source's failure %d (%s)", recorder.Code, http.StatusBadGateway, recorder.Body)
+		}
+	})
+
 	rejected := []struct {
 		name string
 		body string
@@ -177,6 +196,7 @@ func TestTST058_ThePatternAdmitsAPointAndRejectsEveryOtherValue(t *testing.T) {
 		{"a longitude written as not-a-number", `{"lat":25.2048,"lon":NaN}`},
 		{"a point and a parameter this source does not take", `{"lat":25.2048,"lon":55.2708,"units":"metric"}`},
 		{"a point and an empty parameter this source does not take", `{"lat":25.2048,"lon":55.2708,"x":""}`},
+		{"a point and a field the schema does not declare", `{"lat":25.2048,"lon":55.2708,"altitude":10}`},
 		{"a latitude and no longitude", `{"lat":25.2048}`},
 		{"a longitude and no latitude", `{"lon":55.2708}`},
 		{"a longitude the body wrote as null", `{"lat":25.2048,"lon":null}`},
