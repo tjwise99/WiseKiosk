@@ -39,6 +39,9 @@ when a link breaks. Nothing enforces this — a wrong success line fails no buil
 | `check-arch-trace.py` | [cases](cases/check-arch-trace-py.md) |
 | `check-boundary` | [cases](cases/check-boundary.md) |
 | `check-go` | [cases](cases/check-go.md) |
+| `check-lint-go` | [cases](cases/check-lint-go.md) |
+| `check-lint-frontend` | [cases](cases/check-lint-frontend.md) |
+| `check-typecheck-frontend` | [cases](cases/check-typecheck-frontend.md) |
 | `check-secret-unwrap.py` | [cases](cases/check-secret-unwrap.md) |
 | `check-dead-test.py` | [cases](cases/check-dead-test-py.md) |
 | `check-render` (the framework's own specs under `frontend/tests/render/` and each module's own, beside its component) | [cases](cases/check-render.md) |

@@ -63,12 +63,33 @@ Unbuilt; owned by #67 security and supply-chain CI gates.
 ## Lint and type checks
 
 Every source package's linters run as blocking checks. **No linter is advisory-only** — a lint gate
-that reports without failing degrades to noise within a release.
+that reports without failing degrades to noise within a release. **One exception stands, named
+rather than silent:** `svelte-check` reports and does not fail the build until
+[#275](https://github.com/tjwise99/WiseKiosk/issues/275) lands — see below.
 
-- Go: a seeded `golangci-lint` violation, the production invocation, non-zero exit asserted.
-- Frontend: a seeded `eslint` or `svelte-check` violation, non-zero exit asserted from each.
+- Go: `golangci-lint`'s default linter set (errcheck, govet, ineffassign, staticcheck, unused), the
+  production invocation, non-zero exit asserted. Recorded in
+  [`../scripts/cases/check-lint-go.md`](../scripts/cases/check-lint-go.md).
+- Frontend: `eslint` (flat config, recommended sets), non-zero exit asserted, and the whole-project
+  TypeScript typecheck (`tsc --noEmit`, TS 7), non-zero exit asserted. `svelte-check` (`--tsgo`) runs
+  and its output prints, but its exit code is not asserted: it finds three real, pre-existing
+  `ModuleEntry.component` prop-type variance findings
+  (`frontend/src/lib/modules.ts:33`, `:35`, `tests/render/stubs/registry.ts:31`) that the owner ruled
+  should land reporting rather than be patched around with a type-only fix — the registry erases each
+  module's own prop type down to one field type, and resolving that for real needs a design decision
+  between a narrow lint carve-out and a typed-registry redesign, not a gate workaround.
+  [#275](https://github.com/tjwise99/WiseKiosk/issues/275) resolves the findings and makes this line
+  blocking again. Recorded in
+  [`../scripts/cases/check-lint-frontend.md`](../scripts/cases/check-lint-frontend.md) and
+  [`../scripts/cases/check-typecheck-frontend.md`](../scripts/cases/check-typecheck-frontend.md).
 
-Unbuilt; owned by #67 security and supply-chain CI gates.
+**TypeScript runs two versions side by side.** `typescript-eslint` refuses TS 7 and `svelte-check`'s
+own `--tsgo` mode requires TS 6 installed beside it — Microsoft's documented TS 7 side-by-side
+transition. So the `typescript` devDependency is the newest TS 6 release, exact-pinned, consumed by
+`eslint` and `svelte-check`; TS 7 stays reachable under the exact alias
+`@typescript/native@npm:typescript@7.0.2`, which `check-typecheck-frontend` invokes by explicit path.
+The alias claims `node_modules/.bin/tsc`, so a bare `tsc` now resolves to TS 7 rather than to a
+decided version — every recipe that means a specific one invokes it by path.
 
 ## Backend build, vet and tests
 
@@ -106,7 +127,7 @@ error is reported against it rather than buried under the test files' copy of th
   step already ~120s. `cmd` is covered once, by the plain `test ./...` before it.
 
 **What it leaves unproven.** `go vet` is a fixed analyser set rather than a linter; a configured Go
-linter is § *Lint and type checks*'s, unbuilt and owned by #67 security and supply-chain CI gates. And
+linter is § *Lint and type checks*'s. And
 **a package with no test in it passes** — `go test` reports one as a non-failure, so a test lost to a
 build tag, a wrong directory or a deletion is invisible here, and the whole test set deleted from a
 backend that still builds exits zero, measured rather than inferred. Refusing an empty package set
@@ -222,7 +243,7 @@ neither side, and a hand-edit of either, both fail.
   through the generated router, the error bodies through the generated models), which turns a missing
   one into an undefined symbol. The TypeScript half is narrowed to the generated directory and to the
   per-module `props.ts` sites declared to consume it, each compiled against output regenerated in the
-  same run — the general frontend typecheck is #67 typecheck gate's.
+  same run — the general frontend typecheck is § *Lint and type checks*'s.
 
 **What it leaves unproven** is whether the schema says what the boundary actually carries; the gate
 compares the schema against its own output and nothing against the running system.
