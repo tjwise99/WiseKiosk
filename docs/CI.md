@@ -515,7 +515,9 @@ advisory no scan reports — so the register cannot accumulate rows for problems
 Each of these is decided **within the scope being checked**:
 `check-vulns-go` examines only `scope: "go"` entries against what govulncheck reports, and
 `check-vulns-npm` only `scope: "npm"` entries against what npm audit reports — so validating the whole
-register needs both to run, which they do, as two separate CI steps.
+register needs both to run, which they do, as two separate CI steps. An entry whose own `scope` is
+missing or is neither `go` nor `npm` cannot be routed to either recipe this way, so it fails **both**
+rather than falling through unexamined by either.
 
 Recorded in [`../scripts/cases/check-vulns-go.md`](../scripts/cases/check-vulns-go.md) and
 [`../scripts/cases/check-vulns-npm.md`](../scripts/cases/check-vulns-npm.md).

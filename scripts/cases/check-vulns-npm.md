@@ -41,7 +41,8 @@ same fixture with one field of `package.json` changed, each independently re-ins
 | Must pass | The fixture bumped past the advisory | `package.json`'s `minimist` pinned at `1.2.8` — exits 0; `npm audit` reports 0 vulnerabilities, nothing to fail on |
 | Must pass | The fixture, registered | `{"advisory": "GHSA-xvch-5gv4-984h", "scope": "npm", "no_fix_because": "t", "no_alternative_because": "t", "review_by": "<today+30d>"}` — exits 0; `register=registered (GHSA-xvch-5gv4-984h)` |
 | Must pass | The tree as it stands | this repository's `frontend/`, empty register — exits 0; `npm audit --json` reports 0 vulnerabilities (1 production dependency, 355 dev, per the ticket's own premise) |
-| Must pass | A malformed entry belonging to the *other* scope | the pinned fixture, register `[{"advisory": "GHSA-xxxx-xxxx-xxxx", "scope": "go", "no_fix_because": "t", "no_alternative_because": "t", "review_by": "not-a-date"}]` — exits 1 on the fixture's own unregistered advisory as usual, but the malformed `review_by` is never reported: `check-vulns-npm` never examines an entry whose `scope` reads `"go"`. The same register run through `check-vulns-go` (any `--go-dir`) does report it |
+| Must pass | A malformed entry belonging to the *other* scope | the pinned fixture, register `[{"advisory": "GHSA-xxxx-xxxx-xxxx", "scope": "go", "no_fix_because": "t", "no_alternative_because": "t", "review_by": "not-a-date"}]` — exits 1 on the fixture's own unregistered advisory as usual, but the malformed `review_by` is never reported: `check-vulns-npm` never examines an entry whose `scope` reads `"go"`. The same register run through `check-vulns-go` (any `--go-dir`) does report it: `register entry #0 ('GHSA-xxxx-xxxx-xxxx'): 'review_by' ('not-a-date') is not an ISO 8601 date` |
+| Must fail | An entry with no valid `scope` of its own, run under **both** scopes | the fixture above, register `[{"advisory": "GHSA-xxxx-xxxx-xxxx", "scope": "docker", "no_fix_because": "t", "no_alternative_because": "t", "review_by": "<today+30d>"}]` — exits 1 under `check-vulns-npm`: `register entry #0 ('GHSA-xxxx-xxxx-xxxx'): 'scope' must be one of ('go', 'npm'), got 'docker'`, and the identical register run through `check-vulns-go` (any `--go-dir`) reports the same problem too |
 
 **Known gaps.**
 
@@ -50,6 +51,8 @@ same fixture with one field of `package.json` changed, each independently re-ins
   advisory url`), so a change to npm's advisory URL format would surface as a hard failure here
   rather than a silently shrunk population; not measured as a row because every advisory `npm audit`
   has reported in practice carries a `github.com/advisories/GHSA-…` url.
-- **A register entry with no readable `scope`** (missing, not a string, or a string neither `go` nor
-  `npm`) is examined by neither recipe at all — the same gap
-  [`check-vulns-go.md`](check-vulns-go.md) records and demonstrates the routing for.
+
+**Scope routing, not a gap** — the same two properties [`check-vulns-go.md`](check-vulns-go.md)
+records, proven above from the npm side: a well-scoped entry is examined only by the recipe that owns
+its scope, and an entry whose own `scope` cannot be read as `go` or `npm` is unroutable rather than
+the other scope's business, and fails every scope's run instead of hiding by naming neither.

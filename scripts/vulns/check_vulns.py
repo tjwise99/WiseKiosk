@@ -21,7 +21,9 @@ entry's `advisory` matches a finding by that finding's primary id or any alias (
 aliases; an npm advisory's GHSA id, read from its `via[]` entry's advisory URL). Only entries whose
 own `scope` equals the scope being checked are examined by a given run — the other scope's entries are
 that scope's own run to validate — so a full validation of the whole register needs both `--scope`
-values run. Within that scope: every entry must be well-formed and current (today <= review_by <=
+values run. An entry whose `scope` is missing or is neither `go` nor `npm` cannot be routed to either
+run, so it fails both rather than falling through unexamined. Within its scope: every entry must be
+well-formed and current (today <= review_by <=
 today+90 days, UTC); an entry matching nothing this run's scanner reported is an orphan; an entry
 matching a finding in the scanned project's own package (a Go package path under this module, or the
 npm project's own package name) is refused regardless of currency, because first-party code has no
@@ -55,9 +57,6 @@ GHSA_IN_URL = re.compile(r"(GHSA-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4})")
 def die(message):
     print(f"check-vulns: {message}", file=sys.stderr)
     sys.exit(1)
-
-
-# --- register -----------------------------------------------------------------------------------
 
 
 def load_register(path):
@@ -131,19 +130,14 @@ def matches(entry, primary_id, aliases):
     return entry["advisory"] == primary_id or entry["advisory"] in aliases
 
 
-def entry_scope(raw):
-    """The entry's own `scope` field, read defensively (a malformed entry may carry no readable
-    one). Used to route an entry to the run that owns its scope *before* validating it: each of the
-    register's four assertions is decided within the scope being checked (docs/CI.md § *The
-    exception register*), so a run must never fail on the other scope's own malformed entry. An
-    entry whose `scope` cannot be read this way is examined by neither run — the known gap both case
-    files record."""
+def readable_scope(raw):
+    """The entry's own `scope` field, or None if `raw` carries nothing of that shape to read (not an
+    object, no `scope` key, or a `scope` that is not a string) — read defensively, and read *before*
+    `validate_entry`, so an entry can be routed to the scope that owns it without first assuming it
+    is well-formed at all."""
     if isinstance(raw, dict) and isinstance(raw.get("scope"), str):
         return raw["scope"]
     return None
-
-
-# --- go scope -------------------------------------------------------------------------------------
 
 
 def read_go_module(go_dir):
@@ -182,11 +176,8 @@ def govulncheck_objects(go_dir):
         objects.append(obj)
         index = end
     if not any("config" in obj for obj in objects):
-        # A run that never gets far enough to emit its own leading `config` message failed to scan
-        # anything at all (a missing tool directive, a build failure) — this must not read as an
-        # empty, clean population. The scanner's exit code itself is not the pass/fail signal (its
-        # `-json` mode is documented to exit 0 whatever it finds), so this is decided from the
-        # output shape, not from `result.returncode`.
+        # No `config` message at all (a missing tool directive, a build failure) means the run never
+        # got far enough to scan anything, which must not read as an empty, clean population.
         die(f"govulncheck produced no scan output:\nstderr:\n{result.stderr}")
     return objects
 
@@ -236,9 +227,6 @@ def go_findings(go_dir):
     return records
 
 
-# --- npm scope ------------------------------------------------------------------------------------
-
-
 def read_npm_package_name(npm_dir):
     data = json.loads((npm_dir / "package.json").read_text(encoding="utf-8"))
     name = data.get("name")
@@ -285,9 +273,6 @@ def npm_findings(npm_dir):
     return records
 
 
-# --- shared gate ------------------------------------------------------------------------------------
-
-
 def no_exception_reason(finding):
     """Why no register entry may ever cover `finding`, or None if a current, matching entry
     legitimately could. First-party code has no exception path (docs/CI.md § *The exception
@@ -306,10 +291,16 @@ def run(scope, findings, register_entries, today):
 
     scoped_entries = []
     for index, raw in enumerate(register_entries):
-        # Scope is read before anything else is validated: each of the register's four assertions
-        # is decided within the scope being checked, so this run must never fail on a malformed
-        # entry that belongs to the other scope.
-        if entry_scope(raw) != scope:
+        # Scope is read before anything else is validated, so an entry can be routed to the run
+        # that owns it without first assuming it is well-formed. An entry with no valid `go`/`npm`
+        # scope of its own cannot be routed at all, so it is unroutable rather than the other
+        # scope's business, and is examined — and can fail — every scope's run instead of neither.
+        stored_scope = readable_scope(raw)
+        if stored_scope not in VALID_SCOPES:
+            _, entry_problems = validate_entry(raw, index)
+            problems.extend(entry_problems)
+            continue
+        if stored_scope != scope:
             continue
         well_formed, entry_problems = validate_entry(raw, index)
         if not well_formed:
@@ -322,6 +313,7 @@ def run(scope, findings, register_entries, today):
         scoped_entries.append(raw)
 
     accounted_for = set()  # entries that legitimately cover a finding, or were refused for trying to
+    # cover one with no exception path (first-party or stdlib) — either way, not an orphan below.
     for finding in findings:
         covering = [
             entry

@@ -54,6 +54,7 @@ the same fixture with one line of `main.go` or `go.mod` changed, each independen
 | Must pass | The same fixture, registered a second time by its GHSA alias instead | the same entry with `advisory` set to `GHSA-ppp9-7jff-5vj2` — exits 0; `register=registered (GHSA-ppp9-7jff-5vj2)` |
 | Must fail | A register entry naming a Go standard-library finding | this repository's own backend (empty register first, to confirm the finding is live), then `{"advisory": "GO-2026-6090", "scope": "go", "no_fix_because": "t", "no_alternative_because": "t", "review_by": "<today+30d>"}` against a reachable stdlib finding measured that run — exits 1 both times: unregistered, `GO-2026-6090 (stdlib) is unregistered — its trace reaches a called symbol`; registered, `register entry ('GO-2026-6090') matches a finding with no exception path (GO-2026-6090, package stdlib) — a Go standard-library finding — the exception register never covers those`, and the finding itself still fails unregistered too. The id is whichever reachable stdlib finding the toolchain reports that day (§ *Baseline measurement* below); the mechanism under test is that `stdlib` is never a coverable scope, not this particular id |
 | Must pass | A malformed entry belonging to the *other* scope | the fixture above, register `[{"advisory": "GHSA-xxxx-xxxx-xxxx", "scope": "npm", "no_fix_because": "t", "no_alternative_because": "t", "review_by": "not-a-date"}]` — exits 1 on the fixture's own unregistered finding as usual, but the malformed `review_by` is never reported: `check-vulns-go` never examines an entry whose `scope` reads `"npm"`. The same register run through `check-vulns-npm` (any `--npm-dir`) does report it: `register entry #0 ('GHSA-xxxx-xxxx-xxxx'): 'review_by' ('not-a-date') is not an ISO 8601 date` |
+| Must fail | An entry with no valid `scope` of its own, run under **both** scopes | the fixture above, register `[{"advisory": "GHSA-xxxx-xxxx-xxxx", "scope": "docker", "no_fix_because": "t", "no_alternative_because": "t", "review_by": "<today+30d>"}]` (an invalid value; a register missing the `scope` key entirely behaves identically) — exits 1 under `check-vulns-go`: `register entry #0 ('GHSA-xxxx-xxxx-xxxx'): 'scope' must be one of ('go', 'npm'), got 'docker'`, and the identical register run through `check-vulns-npm` (any `--npm-dir`) reports the same problem too — an entry that cannot be routed to either scope fails both, rather than falling through unexamined |
 
 **Baseline measurement, this repository's own backend, empty register:** govulncheck v1.7.0 against
 Go 1.26.5 reports 8 findings, all in the Go standard library, all fixed at `go1.26.6` — 5 reachable
@@ -77,12 +78,15 @@ lands blocking rather than reporting.
   `{"path": "stdlib", "version": "v1.26.5"}`) — an OSV finding matches by comparing a module's
   version against an affected range, so a module with no version can never match one. The logic is
   therefore verified by inspection rather than by a seed, unlike every other row here.
-- **A register entry with no readable `scope` (missing, not a string, or a string neither `go` nor
-  `npm`) is examined by neither recipe at all** — not as malformed, not as an orphan, not as an
-  expiry, not as a first-party or standard-library match. Each recipe reads an entry's `scope` field
-  *before* validating anything else about it (the row above demonstrates that routing for a
-  well-formed-but-wrong-scope entry), and an entry whose `scope` cannot be read that way matches
-  neither recipe's filter and so is never routed to either. This is deliberate given the alternative
-  (validating every entry's shape regardless of scope, which the malformed-entry-belongs-to-the-
-  other-scope row above shows is the wrong behaviour), but it is a real gap: nothing here reports
-  such an entry as dead weight in the register.
+
+**Scope routing, not a gap** — recorded because a green run and a wrongly-scoped or
+wrongly-refused check look identical otherwise, and because both bullets are what the two
+scope-isolation rows above prove:
+
+- **A well-scoped entry is examined only by the recipe that owns its scope.** `scope` is read before
+  anything else about an entry is validated, so a malformed entry belonging to the other scope never
+  reaches this recipe's field, currency, orphan, first-party or standard-library checks at all.
+- **An entry whose own `scope` cannot be read as `go` or `npm`** (missing, not a string, or some
+  other value) **is unroutable rather than the other scope's business, and fails every scope's run**
+  — the register-completeness check runs on it regardless of which `--scope` is passed, so it cannot
+  hide by naming neither.
