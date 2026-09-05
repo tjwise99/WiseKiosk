@@ -1,0 +1,1 @@
+default-src 'self'; connect-src 'self'; script-src 'self'; style-src 'self'; style-src-attr 'unsafe-inline'; img-src 'self'; font-src 'self'; base-uri 'self'; form-action 'none'; object-src 'none'

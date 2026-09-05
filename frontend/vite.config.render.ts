@@ -33,5 +33,11 @@ function augmentRegistry(): Plugin {
  * emission ceiling — so the stubs are added rather than the product's entries replaced: a module's
  * own render test then exercises the registration the display ships with, which a substituted
  * registry could not tell apart from a registration that was never made.
+ *
+ * `build.assetsInlineLimit: 0` keeps every imported asset a served file rather than an inlined
+ * `data:` URI (#266 security response headers).
  */
-export default mergeConfig(viteConfig, defineConfig({ plugins: [augmentRegistry()] }));
+export default mergeConfig(
+  viteConfig,
+  defineConfig({ plugins: [augmentRegistry()], build: { assetsInlineLimit: 0 } }),
+);

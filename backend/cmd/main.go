@@ -10,6 +10,7 @@ import (
 	"os"
 
 	"github.com/tjwise99/WiseKiosk/backend/internal/boundary"
+	"github.com/tjwise99/WiseKiosk/backend/internal/headers"
 	"github.com/tjwise99/WiseKiosk/backend/internal/health"
 	"github.com/tjwise99/WiseKiosk/backend/internal/registry"
 	"github.com/tjwise99/WiseKiosk/backend/internal/router"
@@ -53,6 +54,9 @@ func main() {
 // the request on the way: a module route's inputs are its JSON body, which the
 // module reads itself, so the wrapper binds nothing and has no rejection of its
 // own to write.
+//
+// headers.Wrap sits over the whole mux, so every response — the served tree,
+// the seam and every schema route alike — carries the same response headers.
 func newServer(static, seam http.Handler) http.Handler {
 	mux := http.NewServeMux()
 	boundary.HandlerFromMux(schemaRoutes{}, mux)
@@ -61,7 +65,7 @@ func newServer(static, seam http.Handler) http.Handler {
 	}
 	mux.Handle("/api/", seam)
 	mux.Handle("/", static)
-	return mux
+	return headers.Wrap(mux)
 }
 
 // schemaRoutes is the whole of the boundary schema's server interface. The
