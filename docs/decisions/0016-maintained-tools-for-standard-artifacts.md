@@ -3,10 +3,15 @@
 **Status:** accepted
 **Decided:** 2026-08-03 (#103 authored-vs-adopted check trade, measured against the cases recorded in
 [`../../scripts/README.md`](../../scripts/README.md))
-**Rev:** 6
+**Rev:** 7
 
 ## Revisions
 
+- **rev 7** — 2026-09-04 — extends the decision to a first-adoption case: `golangci-lint` (default
+  linter set) and `eslint` (recommended sets, with `svelte-check` alongside) land as net-new gates
+  rather than replacing an authored check, retiring [`../CI.md`](../CI.md) § *Lint and type checks*'s
+  "Unbuilt; owned by #67" line in place of an authored-check line count — the shape a first adoption
+  takes where there is no prior authored check to retire (#262 lint and type check gates).
 - **rev 6** — 2026-09-03 — Dependabot is replaced by self-hosted Renovate (run from
   tjwise99/wise-renovate) as the dependency updater; the version-comment ground names it; what was
   chosen is unchanged, so the Decided date does not move (#223 renovate cutover).
@@ -79,6 +84,8 @@ Four adoptions follow, each replacing its authored check outright:
 | `lychee` | `check-links.mjs`, `upstream-hosts.txt` | 123 |
 | `commitlint` at both the commit-message and pull-request-title stages | `check-commit-msg.sh`, `conventional-commit.regex` | 40 |
 | `pre-commit` as the local hook layer | `.githooks/`, `check-eol.sh` | 33 |
+| `golangci-lint` at the default linter set | — | [`../CI.md`](../CI.md) § *Lint and type checks*'s "Unbuilt; owned by #67" line (Go half) |
+| `eslint` (flat config, recommended sets), with `svelte-check` (`--tsgo`) alongside | — | the same line's frontend half |
 
 **`commitlint` must preserve the two-stage distinction the authored check carries.** `fixup!` and
 `squash!` are permitted at the commit-message stage because the squash discards them, and refused on
