@@ -339,8 +339,9 @@ runs only when the owner publishes a `vMAJOR.MINOR.PATCH` release, tags the imag
 moves `latest` to it for a non-pre-release; the committed recipe references `latest` so it runs
 unedited ([`DEPLOYMENT.md`](DEPLOYMENT.md) § *Bring-up*); the release notes carry exactly one line
 naming that digest, `Image: ghcr.io/tjwise99/wisekiosk@sha256:<digest>`, which the workflow replaces
-rather than duplicates on a re-run — a rebuild changes the digest, so a guard matching the whole
-line would not be one — and it is what an operator who chooses to verify checks against.
+rather than duplicates on a re-run
+([ADR 0020 rev 3](decisions/0020-release-artifact-set-and-operator-tooling.md)), and it is what an
+operator who chooses to verify checks against.
 
 **Nothing decides the no-credential property.** It is a proposal for a check, not an asserted
 guarantee: no gate compares the verification job's permissions against it, and SECURITY.md publishes

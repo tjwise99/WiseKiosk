@@ -73,7 +73,8 @@ release that publishes its own version tag without moving `latest`. The publish 
 step rejects a tag that is not `vMAJOR.MINOR.PATCH` before building or publishing anything
 ([ADR 0020 rev 3](decisions/0020-release-artifact-set-and-operator-tooling.md)). The release notes
 carry exactly one line naming the published digest, which the workflow replaces rather than
-duplicates if the same release is re-published — a rebuild changes the digest — leaving the rest of
+duplicates if the same release is re-published
+([ADR 0020 rev 3](decisions/0020-release-artifact-set-and-operator-tooling.md)), leaving the rest of
 whatever notes the owner wrote untouched.
 
 **Optional, and recommended: verify the image before trusting it.** An operator who pulls an image is
