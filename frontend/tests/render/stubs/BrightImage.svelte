@@ -1,3 +1,8 @@
+<script lang="ts">
+  // Same-origin, so the file loads under the served `img-src 'self'` (#266); a `data:` URI does not.
+  import brightImageSrc from './bright-image.gif';
+</script>
+
 <!--
   Imagery rendered as content, brighter than the ceiling: the exemption, exercised.
 
@@ -7,10 +12,7 @@
   fixture rests on.
 -->
 <div class="stub" data-stub="bright-image">
-  <img
-    alt="A white field"
-    src="data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw=="
-  />
+  <img alt="A white field" src={brightImageSrc} />
 </div>
 
 <style>

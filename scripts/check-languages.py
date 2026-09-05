@@ -91,6 +91,9 @@ EXTENSIONS = {
     "styling contract states, Inter for every readable character and the icon face the weather "
     "module's glyphs are drawn from, both self-hosted because the display page reaches no "
     "origin but the backend's (ADR 0017 rev 8)",
+    "gif": "an asset a build serves — not an authored program: the render tier's exempt-imagery "
+    "fixture, a same-origin file so the served img-src 'self' admits it the way a data: URI "
+    "cannot (ADR 0017 rev 8)",
 }
 
 # Exact repository-relative path -> which kind it is and what it serves, for a file with no

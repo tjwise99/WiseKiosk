@@ -473,7 +473,12 @@ What each of these obligations *is*, and why, is [`DEPLOYMENT.md`](DEPLOYMENT.md
   ever run. **In the page** is the load-bearing part: a schema validator run as a step here would be a
   second implementation of the schema's rules, which that ADR forbids. This exercises the one engine
   rather than authoring another. Recorded in
-  [`../scripts/cases/check-render.md`](../scripts/cases/check-render.md).
+  [`../scripts/cases/check-render.md`](../scripts/cases/check-render.md). A sibling project,
+  `frontend/playwright.policy.config.ts` (`just check-render-policy`), builds the same render tier
+  from `vite.config.render.ts` but previews it rather than serving it from the dev server, under the
+  security response headers the backend serves (#266): it runs the example-configuration and emission
+  specs and fails on a console warning of a rejected policy directive or an unrecognised
+  Permissions-Policy feature.
 - **An image swap preserves the deployment.** A test runs published digest A with a mounted
   configuration and secret directory and asserts it is healthy and serving that configuration; stops
   and removes it; runs digest B with byte-identical mount arguments and asserts it is healthy, serving

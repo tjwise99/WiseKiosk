@@ -1,4 +1,4 @@
-import { expect, type Page } from '@playwright/test';
+import { expect, test, type Page } from '@playwright/test';
 
 import { LIVENESS_TIMEOUT_MS, REQUEST_TIMEOUT_MS } from '../../src/lib/liveness';
 import type { ModuleAnswer } from '../../src/lib/payload';
@@ -61,10 +61,27 @@ export async function serveLiveness(page: Page, liveness: Liveness): Promise<voi
 }
 
 /**
+ * Console text a page serving a response header wrong would print: a rejected
+ * Content-Security-Policy directive, or a Permissions-Policy feature the browser does not
+ * recognise (#266).
+ */
+const POLICY_VIOLATION = /Content Security Policy|Permissions-Policy|Unrecognized feature/;
+
+/** Whether the running test is the render tier's policy project (`playwright.policy.config.ts`). */
+function underPolicyProject(): boolean {
+  return test.info().config.configFile?.endsWith('playwright.policy.config.ts') ?? false;
+}
+
+/**
  * Serves `fixture` as the configuration and waits for the frame to be laid out. The configuration is
  * fulfilled from the test rather than written to disk, so one server serves every fixture and each
  * test states the configuration it is asserting against. The backend answers the liveness ask unless
  * a test says otherwise, so a fixture not asserting the unreachable state never raises one.
+ *
+ * Under the policy project this also asserts the page raised no console warning of a rejected
+ * directive or an unrecognised feature — the render tier's own obligation is the page still
+ * rendering, so that project drives real fixtures through this same entry point rather than a
+ * dedicated one.
  */
 export async function render(
   page: Page,
@@ -72,6 +89,16 @@ export async function render(
   expected: Rendered = 'frame',
   { healthz = 'ok' }: { healthz?: Liveness } = {},
 ): Promise<void> {
+  const underPolicy = underPolicyProject();
+  const violations: string[] = [];
+  if (underPolicy) {
+    page.on('console', (message) => {
+      if (POLICY_VIOLATION.test(message.text())) {
+        violations.push(message.text());
+      }
+    });
+  }
+
   // Matched as a glob rather than by importing `CONFIGURATION_URL`: a spec file runs in Node, and
   // that constant's module reaches the validator's virtual module, which only Vite can resolve. The
   // two spellings are held together by construction — disagree and the frame never renders, failing
@@ -86,6 +113,10 @@ export async function render(
   await expect(settled).toBeVisible();
   // The bundled face is loaded blocking, so text is not laid out at its final size until it arrives.
   await page.evaluate(() => document.fonts.ready);
+
+  if (underPolicy) {
+    expect(violations, JSON.stringify(violations, null, 2)).toHaveLength(0);
+  }
 }
 
 /**

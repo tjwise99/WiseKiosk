@@ -5,19 +5,24 @@ import (
 	"strings"
 )
 
-// universe is every directive name Chromium's Permissions-Policy parser
-// recognises: the "permissions_policy_name" field of each entry in
-// https://github.com/chromium/chromium/blob/64f5988c49eb66b6a2a5037dd5d15ff4a757608e/services/network/public/cpp/permissions_policy/permissions_policy_features.json5,
-// in that file's own order. Snapshotted 2026-09-05; a Chromium release adding
-// or removing a directive is a resync of this slice.
+// universe is the Permissions-Policy directive names Chromium 151.0.7922.34
+// (the "Chrome for Testing" build Playwright 1.62.1 drives — chromium/chromium
+// tag 151.0.7922.34, commit 782af9cb30a53f54487e5d2e44738645a8ec457c) both
+// declares in
+// https://github.com/chromium/chromium/blob/782af9cb30a53f54487e5d2e44738645a8ec457c/services/network/public/cpp/permissions_policy/permissions_policy_features.json5
+// and actually parses under a stock launch. That file also declares directive
+// names gated behind an origin trial or an unshipped runtime flag, which this
+// browser logs as "Unrecognized feature" or "Origin trial controlled feature
+// not enabled" — headers_test.go and the render tier's policy project
+// (frontend/playwright.policy.config.ts) both fail on either, which is how the
+// excluded names were found; a name is added back only once that check passes
+// clean with it present. Snapshotted 2026-09-05; a Chromium bump is a resync
+// of this slice against the render tier's own bundled browser.
 var universe = []string{
 	"accelerometer",
-	"all-screens-capture",
-	"ambient-light-sensor",
 	"aria-notify",
-	"autofill",
+	"attribution-reporting",
 	"autoplay",
-	"bluetooth",
 	"browsing-topics",
 	"interest-cohort",
 	"camera",
@@ -49,28 +54,20 @@ var universe = []string{
 	"clipboard-read",
 	"clipboard-write",
 	"compute-pressure",
-	"controlled-frame",
 	"cross-origin-isolated",
 	"deferred-fetch",
 	"deferred-fetch-minimal",
-	"device-attributes",
-	"digital-credentials-create",
 	"digital-credentials-get",
-	"direct-sockets",
 	"display-capture",
 	"encrypted-media",
-	"execution-while-out-of-viewport",
-	"execution-while-not-rendered",
-	"focus-without-user-activation",
 	"fullscreen",
-	"frobulate",
 	"gamepad",
 	"geolocation",
 	"gyroscope",
-	"haptics",
 	"hid",
 	"identity-credentials-get",
 	"idle-detection",
+	"join-ad-interest-group",
 	"keyboard-map",
 	"language-detector",
 	"language-model",
@@ -79,43 +76,30 @@ var universe = []string{
 	"local-network-access",
 	"loopback-network",
 	"magnetometer",
-	"manual-text",
-	"media-playback-while-not-visible",
 	"microphone",
 	"midi",
-	"direct-sockets-multicast",
 	"on-device-speech-recognition",
 	"otp-credentials",
 	"payment",
 	"picture-in-picture",
+	"private-aggregation",
 	"private-state-token-issuance",
 	"publickey-credentials-create",
 	"publickey-credentials-get",
-	"rewriter",
+	"run-ad-auction",
 	"screen-wake-lock",
 	"serial",
 	"shared-storage",
 	"shared-storage-select-url",
-	"smart-card",
-	"speaker-selection",
 	"storage-access",
-	"sub-apps",
 	"summarizer",
 	"sync-xhr",
 	"translator",
 	"private-state-token-redemption",
 	"usb",
-	"usb-unrestricted",
 	"unload",
-	"vertical-scroll",
-	"web-app-installation",
-	"tools",
-	"webnn",
-	"web-printing",
-	"web-share",
 	"xr-spatial-tracking",
 	"window-management",
-	"writer",
 }
 
 // allowlist is the subset of universe this page is granted, empty until a

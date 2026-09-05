@@ -321,6 +321,9 @@ jobs:
       - name: The frontend render tier passes at each supported viewport
         run: just check-render
 
+      - name: The render tier renders clean under the served security response headers
+        run: just check-render-policy
+
       - name: Every committed test file falls under a configured runner's reach
         run: just check-dead-test
 

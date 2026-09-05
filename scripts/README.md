@@ -47,6 +47,7 @@ when a link breaks. Nothing enforces this — a wrong success line fails no buil
 | `check-secret-unwrap.py` | [cases](cases/check-secret-unwrap.md) |
 | `check-dead-test.py` | [cases](cases/check-dead-test-py.md) |
 | `check-render` (the framework's own specs under `frontend/tests/render/` and each module's own, beside its component) | [cases](cases/check-render.md) |
+| `check-render-policy` (the render tier previewed under the served security response headers) | [cases](cases/check-render-policy.md) |
 | `check-image` (the six harnesses it runs under `image/`) | [cases](cases/check-image.md) |
 | `smoke-native` (the harness under `native/`) | [cases](cases/smoke-native.md) |
 | `check-restart-policy.py` | [cases](cases/check-restart-policy-py.md) |
