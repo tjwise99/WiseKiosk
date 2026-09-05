@@ -29,7 +29,11 @@ type Route struct{}
 // GetHealthz reports that the process is serving and nothing else: it reads no
 // configuration and consults no dependency (ADR 0007 rev 2). The 200 carries no
 // body, because the schema declares none and every consumer reads the status.
+// A bodiless response still declares a type
+// (SRS028<!-- Served responses declare their type, and forbid the browser inferring one -->),
+// set before WriteHeader since a header written after is dropped.
 func (Route) GetHealthz(w http.ResponseWriter, _ *http.Request) {
+	w.Header().Set("Content-Type", "text/plain; charset=utf-8")
 	w.WriteHeader(http.StatusOK)
 }
 

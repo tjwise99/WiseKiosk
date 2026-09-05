@@ -321,6 +321,9 @@ jobs:
       - name: The frontend render tier passes at each supported viewport
         run: just check-render
 
+      - name: The render tier renders clean under the served security response headers
+        run: just check-render-policy
+
       - name: Every committed test file falls under a configured runner's reach
         run: just check-dead-test
 
@@ -411,7 +414,7 @@ jobs:
         with:
           persist-credentials: false
 
-      - uses: docker/setup-qemu-action@96fe6ef7f33517b61c61be40b68a1882f3264fb8 # v4.2.0
+      - uses: docker/setup-qemu-action@1f40c72289eff860ee54a304f1438e3cff362e0a # v4.3.0
 
       - uses: docker/setup-buildx-action@37fe631027851001ddb9b187196cc803df7f5f0e # v4.3.0
 
@@ -436,7 +439,7 @@ jobs:
         with:
           persist-credentials: false
 
-      - uses: docker/setup-qemu-action@96fe6ef7f33517b61c61be40b68a1882f3264fb8 # v4.2.0
+      - uses: docker/setup-qemu-action@1f40c72289eff860ee54a304f1438e3cff362e0a # v4.3.0
 
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:

@@ -18,11 +18,15 @@ rationale: |
   of their own, which nobody decided to give up. Revisit if the page is ever served beyond the LAN,
   or to a browser a person also browses with. Nothing stops the middleware setting either header; what
   is dropped is the obligation, not the option.
+
+  base-uri added under #266 security response headers: a <base> injection is a mechanism the earlier
+  ruling did not consider; the frame and referrer rulings stand.
 ref: ''
-reviewed: 4le5oWt-0wu6G6_ERW5LQK2leA7bvyngTYLolKg6ZIg=
+reviewed: 6ITZQACFvDDQ41iOvZrelz5XmJfLhtij_JB0kNcazRY=
 status: accepted
 text: |
-  The display page shall be unable to reach any network origin other than the backend's.
+  The display page shall be unable to reach any network origin other than the backend's. The display
+  page shall be unable to change its own document base URL away from that origin.
 verification-justification: |
   Asserted statically against the shipped bundle and dynamically with request interception, with the
   content-security policy enforcing the same clause at the browser. What no check settles is a

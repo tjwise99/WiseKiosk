@@ -249,6 +249,11 @@ check-render:
     frontend/node_modules/.bin/playwright test --config frontend/playwright.config.ts
 
 [group('checks')]
+[doc('The render tier renders under the security response headers the backend serves, and raises no console warning of a rejected directive or an unrecognised feature; needs `just boundary-install` and `just render-install`')]
+check-render-policy:
+    frontend/node_modules/.bin/playwright test --config frontend/playwright.policy.config.ts
+
+[group('checks')]
 [doc('Every committed test file is discovered by a configured runner, asked of each runner rather than restating its globs; needs `just boundary-install`')]
 check-dead-test:
     python3 scripts/check-dead-test.py
@@ -323,4 +328,4 @@ check-restart-policy:
 
 [group('checks')]
 [doc('Run every check the PR gate runs that has a local form and needs neither Docker nor emulation nor the network; secret scanning, the PR-title check (commitlint, via the hook layer), the link check (lychee, from a digest-pinned image) and the workflow audit (zizmor, actionlint) are CI-only, the image tier is `just check-image`, the native armv6l run is `just smoke-native`, and the two online dependency-vulnerability checks are `just check-vulns-go` and `just check-vulns-npm`')]
-verify: check-untracked check-hooks check-branch check-reqs check-citations check-arch check-arch-trace check-boundary check-go check-lint-go check-secret-unwrap check-config-types check-build check-static-bundle check-lint-frontend check-typecheck-frontend check-unit check-render check-site check-adr-index check-adr-revs check-docs-index check-repo-silo check-languages check-dead-test check-restart-policy
+verify: check-untracked check-hooks check-branch check-reqs check-citations check-arch check-arch-trace check-boundary check-go check-lint-go check-secret-unwrap check-config-types check-build check-static-bundle check-lint-frontend check-typecheck-frontend check-unit check-render check-render-policy check-site check-adr-index check-adr-revs check-docs-index check-repo-silo check-languages check-dead-test check-restart-policy

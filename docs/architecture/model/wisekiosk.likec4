@@ -62,6 +62,7 @@ specification {
   tag SRS022
   tag SRS025
   tag SRS026
+  tag SRS027
   tag SRS028
   tag SRS030
   tag SRS031
@@ -211,6 +212,7 @@ model {
       #SRS010
       #SRS017
       #SRS021
+      #SRS027
       #SRS030
       #SRS032
       #SRS033

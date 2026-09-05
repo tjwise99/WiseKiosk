@@ -23,7 +23,7 @@ rationale: |
   serial or Bluetooth cannot be made to, whatever that data turns out to contain.
 ref: ''
 reviewed: 2lFm_qjKuAbVT9WJ5sE_ptMJRd6IEZhduwFMSwAkvG8=
-status: proposed
+status: accepted
 text: |
   The display page shall be unable to use any device feature it does not need.
 verification-justification: |

@@ -24,6 +24,21 @@ The controls that are structural, not vigilance-based:
   browser features the display uses
   (SRS010<!-- The display page reaches no origin but the backend's -->,
   SRS027<!-- The display page holds no device capability it does not use -->).
+- **Every response carries that posture as a header.** A content-security policy restricts script,
+  style, image, font, connection and form-target sources to the page's own origin, forbids embedding
+  an object, and confines the document's base URL to that origin too; `X-Content-Type-Options:
+  nosniff` backs the concrete type every response declares
+  (SRS028<!-- Served responses declare their type, and forbid the browser inferring one -->); and a
+  Permissions-Policy denies every browser feature against a committed allowlist, empty until a module
+  needs one. `frame-ancestors` and `Referrer-Policy` are deliberately not served: both defend a
+  browsing user against another origin, and a display alone on a trusted LAN, embedded by nobody,
+  has neither —
+  SRS010<!-- The display page reaches no origin but the backend's -->'s rationale records the
+  reasoning and its reopening premise. The policy's one
+  admission, `style-src-attr 'unsafe-inline'`, is accepted risk: several elements position themselves
+  with a runtime-computed inline `style` attribute, which no per-value hash or nonce can cover, and
+  the alternative — admitting `'unsafe-inline'` on `style-src` itself — would additionally admit an
+  inline `<style>` block this project does not ship.
 
 ## Reporting a vulnerability
 
