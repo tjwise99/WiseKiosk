@@ -103,7 +103,7 @@ path, which trains an author to ignore red. Few upstream sources need a credenti
 ones is the [module roster](../README.md)'s and each module's registration entry — so this would have
 been a general solution to a narrow case. Confining the credentialed job to the schedule, off the merge
 path, is the narrower answer to the nested module
-[ADR 0010 rev 1](decisions/0010-runtime-materialised-gate-fixtures.md) found leaky.
+[ADR 0010 rev 2](decisions/0010-runtime-materialised-gate-fixtures.md) found leaky.
 
 **Decided 2026-07-28 by the owner: no requirement.** Nothing WiseKiosk does can violate "an upstream
 still returns what we expect" — that obligation is on somebody else's API. The half that *is* ours,

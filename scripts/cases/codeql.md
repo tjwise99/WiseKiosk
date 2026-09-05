@@ -14,7 +14,7 @@ added in.
 **Must fail (fail-direction in CI)**, per [`../README.md`](../README.md) § *Confirming a gate in CI
 rather than locally*: a throwaway branch, `seed/codeql-2026-09-05`, cut from this PR's branch so
 `codeql.yml` was present, carrying one canonical vulnerable pattern per language in ordinary source
-files (not `scripts/gate-fixtures/` — [ADR 0010 rev 1](../../docs/decisions/0010-runtime-materialised-gate-fixtures.md)'s
+files (not `scripts/gate-fixtures/` — [ADR 0010 rev 2](../../docs/decisions/0010-runtime-materialised-gate-fixtures.md)'s
 runtime-materialised-fixture convention is for a *standing* meta-gate, which this repository does not
 build for CodeQL; a throwaway branch, opened as a draft pull request and closed unmerged, is how
 every other gate's fallibility is proven here — [`docs/CI.md`](../../docs/CI.md) § *Generated

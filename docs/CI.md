@@ -65,8 +65,10 @@ writes.
 
 That the gate can fail — a canonical vulnerable pattern per language, run through the production
 analysis and observed to raise the expected alert — is proven once against a throwaway branch and
-recorded in [`../scripts/cases/codeql.md`](../scripts/cases/codeql.md), the way every check's
-fallibility is recorded here; it is not re-tested by a standing meta-gate.
+recorded in [`../scripts/cases/codeql.md`](../scripts/cases/codeql.md), per
+[ADR 0010 rev 2](decisions/0010-runtime-materialised-gate-fixtures.md): no vulnerable artifact is
+ever committed in resolvable form, and fallibility is recorded once rather than re-tested by a
+standing meta-gate.
 
 This mechanises the security review a solo project has no second reader to perform.
 
@@ -922,7 +924,7 @@ what runs where, and what each is allowed to let through, is here.
 
 **Why a credential is allowed here at all.** A withdrawn requirement once forbade any CI workflow
 from holding an upstream credential. It banned a normal practice, and forced the tier into a nested
-module that [ADR 0010 rev 1](decisions/0010-runtime-materialised-gate-fixtures.md) independently found
+module that [ADR 0010 rev 2](decisions/0010-runtime-materialised-gate-fixtures.md) independently found
 leaky. Holding it in a scheduled job, off the merge path, is the narrower answer.
 
 Unbuilt; owned by #99 upstream contract checks.
@@ -970,7 +972,7 @@ already decided, which is what makes it a check and not a want.
   applied in what they say, where a check restating their globs would decide none of them.
   A source-level `t.Skip` is outside this: the file still compiles and is still discovered, so it is
   reached, and a test that skips at run time is the tier's business rather than this gate's.
-  **There is no per-file allowlist**, by [ADR 0010 rev 1](decisions/0010-runtime-materialised-gate-fixtures.md)
+  **There is no per-file allowlist**, by [ADR 0010 rev 2](decisions/0010-runtime-materialised-gate-fixtures.md)
   — a file that stops being reached is closed by wiring it to a runner or by deleting it, never by
   an entry beside it.
   **Both ends fail closed.** A discovery command that cannot run leaves the reach unmeasured, and

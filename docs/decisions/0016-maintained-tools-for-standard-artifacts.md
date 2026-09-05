@@ -273,7 +273,7 @@ later.
 - How `commitlint` and `pre-commit` are pinned. Neither is an action, so neither is covered by
   [`../CI.md`](../CI.md) § *Action pins*; `zizmor`, `actionlint` and `lychee` have official container
   images and are pinned as their digests.
-- Whether any adopted tool's fixtures conflict with [ADR 0010 rev 1](0010-runtime-materialised-gate-fixtures.md),
+- Whether any adopted tool's fixtures conflict with [ADR 0010 rev 2](0010-runtime-materialised-gate-fixtures.md),
   which forbids committing a vulnerable artifact in resolvable form.
 - Sequencing against #101 CI-invoking-just-recipes, which touches the same gate-wiring surface.
 - Whether an under-scan needs a guard, distinct from the empty scan the ruling above settles.
