@@ -161,13 +161,13 @@ check-boundary:
     go -C backend tool oapi-codegen -version
     test -x frontend/node_modules/.bin/orval
     test -x frontend/node_modules/.bin/prettier
-    test -x frontend/node_modules/.bin/tsc
+    test -x frontend/node_modules/@typescript/native/bin/tsc
     rm -rf backend/internal/boundary frontend/src/lib/boundary
     just codegen
     test -s backend/internal/boundary/boundary.gen.go
     test -s frontend/src/lib/boundary/client.ts
     cd backend && go build ./...
-    frontend/node_modules/.bin/tsc --noEmit --project frontend/tsconfig.boundary.json
+    frontend/node_modules/@typescript/native/bin/tsc --noEmit --project frontend/tsconfig.boundary.json
     git add --intent-to-add -- backend/internal/boundary/ frontend/src/lib/boundary/
     git diff --exit-code HEAD -- backend/internal/boundary/ frontend/src/lib/boundary/
 
