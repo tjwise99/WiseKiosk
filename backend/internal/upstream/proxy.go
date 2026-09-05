@@ -225,7 +225,7 @@ func (p *Proxy) fetch(fetch Fetcher) Result {
 	if err != nil {
 		return Result{Kind: transportKind(ctx, err), Err: err}
 	}
-	defer response.Body.Close()
+	defer func() { _ = response.Body.Close() }()
 
 	if response.Status < 200 || response.Status > 299 {
 		return Result{Kind: UpstreamStatus, Status: response.Status}

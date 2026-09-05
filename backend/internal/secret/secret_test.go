@@ -171,7 +171,7 @@ func TestSecretDoesNotLeakThroughFormatting(t *testing.T) {
 	}
 
 	rendered := map[string]string{
-		"%s":     fmt.Sprintf("%s", s),
+		"%s":     s.String(),
 		"%v":     fmt.Sprintf("%v", s),
 		"%#v":    fmt.Sprintf("%#v", s),
 		"%q":     fmt.Sprintf("%q", s),
@@ -191,7 +191,7 @@ func TestSecretDoesNotLeakThroughJSON(t *testing.T) {
 	const value = "value-that-must-not-appear"
 	s := newSecret(value)
 
-	encoded, err := json.Marshal(s)
+	encoded, err := json.Marshal(s) //nolint:staticcheck // SA9005: the no-op is what this test asserts
 	if err != nil {
 		t.Fatalf("json.Marshal: unexpected error: %v", err)
 	}

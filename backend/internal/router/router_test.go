@@ -78,7 +78,7 @@ func newUpstreamFake(t *testing.T) *upstreamFake {
 		}
 
 		w.WriteHeader(status)
-		fmt.Fprint(w, body)
+		_, _ = fmt.Fprint(w, body)
 	}))
 	t.Cleanup(fake.server.Close)
 	return fake
