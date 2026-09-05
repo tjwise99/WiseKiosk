@@ -12,7 +12,7 @@ product's obligations live in [`requirements/`](requirements/README.md)
 decides it is described there, which is where every check on this repository is described.
 
 **What a release consists of is
-[ADR 0020 rev 2](decisions/0020-release-artifact-set-and-operator-tooling.md).** #54 container build
+[ADR 0020 rev 3](decisions/0020-release-artifact-set-and-operator-tooling.md).** #54 container build
 and publish ships the image, the deployment recipe, the example configuration and the health signal
 the image declares. #67 security and supply-chain gates ships the signature and the attestation the
 optional verification below reads, so that step is the one thing here with nothing yet to verify
@@ -63,9 +63,19 @@ reference, the port and the mount are all the recipe's. #138 bring-up check is w
 against a clean host and fails on a step that does not.
 
 **The image reference is a movable tag.** The recipe names `ghcr.io/tjwise99/wisekiosk:latest`, which
-tracks the default branch's build ([`CI.md`](CI.md) § *Publishing and provenance*), so `up` against a
+tracks the newest release ([`CI.md`](CI.md) § *Publishing and provenance*), so `up` against a
 re-pulled tag brings up the newest published image; an operator wanting a fixed one pins a digest in
 their own copy, as the verification note below describes.
+
+**Releases are cut by hand, on a semver tag.** An operator does nothing to produce one: the
+repository owner runs `gh release create vMAJOR.MINOR.PATCH`, or the same with `--prerelease` for a
+release that publishes its own version tag without moving `latest`. The publish workflow's own first
+step rejects a tag that is not `vMAJOR.MINOR.PATCH` before building or publishing anything
+([ADR 0020 rev 3](decisions/0020-release-artifact-set-and-operator-tooling.md)). The release notes
+carry exactly one line naming the published digest, which the workflow replaces rather than
+duplicates if the same release is re-published
+([ADR 0020 rev 3](decisions/0020-release-artifact-set-and-operator-tooling.md)), leaving the rest of
+whatever notes the owner wrote untouched.
 
 **Optional, and recommended: verify the image before trusting it.** An operator who pulls an image is
 trusting a stranger's build, so the check against its signature and provenance ships with the
@@ -76,20 +86,20 @@ have been built by.
 gh attestation verify oci://ghcr.io/tjwise99/wisekiosk@sha256:<digest> --repo tjwise99/WiseKiosk
 ```
 
-`<digest>` is the one the release notes name, and what the command reads is #67 security and
-supply-chain gates', so until that lands it verifies nothing. That CI verifies its own published
-output is a separate assertion and is in [`CI.md`](CI.md).
+`<digest>` is the value the release page's `Image:` line names, and what the command reads is #67
+security and supply-chain gates', so until that lands it verifies nothing. That CI verifies its own
+published output is a separate assertion and is in [`CI.md`](CI.md).
 
 **It is nobody's obligation.** An operator who skips it runs the three commands above and reaches the
 same working deployment; the recipe names a tag rather than a digest, so an operator who wants the
 digest they verified to be the one that runs pins it in their own copy — which is what the recipe
 being a sample rather than an obligation
-([ADR 0020 rev 2](decisions/0020-release-artifact-set-and-operator-tooling.md)) leaves them free to do.
+([ADR 0020 rev 3](decisions/0020-release-artifact-set-and-operator-tooling.md)) leaves them free to do.
 
 ## The deployment recipe
 
 The recipe is a **sample carrying opinionated defaults**, a starting point an operator edits
-([ADR 0020 rev 2](decisions/0020-release-artifact-set-and-operator-tooling.md)). The obligation is on
+([ADR 0020 rev 3](decisions/0020-release-artifact-set-and-operator-tooling.md)). The obligation is on
 what ships, never on what runs — an operator who edits the recipe, or deploys without it, has made
 their own choice, and WiseKiosk has no way to override it.
 
@@ -109,7 +119,7 @@ secrets out of client output, and the recipe is incomplete in that respect until
 ## The health signal
 
 The image declares a `HEALTHCHECK` against the service port and runs it through the `-health-check`
-self-check flag. [ADR 0020 rev 2](decisions/0020-release-artifact-set-and-operator-tooling.md) fixes
+self-check flag. [ADR 0020 rev 3](decisions/0020-release-artifact-set-and-operator-tooling.md) fixes
 both, and is where the port's number is written — a recipe reads it there rather than carrying a
 copy that a later rev would leave behind. The check is healthy while the backend is serving,
 unhealthy when it is not, including when the process is alive but wedged.

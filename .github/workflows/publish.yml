@@ -1,15 +1,15 @@
 name: publish
 
-# Builds the container image and publishes it to GHCR. Separate from checks.yml so the read-only
-# verification pipeline never needs elevated permissions: `packages: write` is held by this
-# workflow's one job, and it elevates the GitHub-provided GITHUB_TOKEN rather than adding a stored
-# credential. It never runs from a pull request — publishing is a write, and a head this repository
-# has not merged must not reach it.
+# Builds the container image and publishes it to GHCR, and uploads the deployment recipe and
+# example configuration to the release that triggered the run. Separate from checks.yml so the
+# read-only verification pipeline never needs elevated permissions: `contents: write` and
+# `packages: write` are held by this workflow's one job, and it elevates the GitHub-provided
+# GITHUB_TOKEN rather than adding a stored credential. Runs on `release: published`, keyed on the
+# tag whose shape the first step asserts.
 
 on:
-  push:
-    branches: [main]
-  workflow_dispatch:
+  release:
+    types: [published]
 
 concurrency:
   group: publish
@@ -24,9 +24,16 @@ jobs:
     name: publish
     runs-on: ubuntu-latest
     permissions:
-      contents: read
+      contents: write # upload release assets and edit release notes
       packages: write # push to ghcr.io under the GitHub-provided token
+    outputs:
+      digest: ${{ steps.build.outputs.digest }}
     steps:
+      - name: Release tag is vMAJOR.MINOR.PATCH
+        env:
+          TAG: ${{ github.event.release.tag_name }}
+        run: '[[ "$TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]'
+
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
@@ -46,8 +53,8 @@ jobs:
       # on; `.documentation` is not defaulted and is supplied as a literal, on both surfaces
       # (ADR 0015 rev 2). The annotation levels are declared here rather than restated elsewhere,
       # because the annotation check reads them from this workflow (docs/CI.md § Publishing and
-      # provenance). `latest` is the tag the committed deployment recipe references
-      # (docs/DEPLOYMENT.md § Bring-up).
+      # provenance). `latest` moves to this release's image only when the release is not a
+      # pre-release (docs/DEPLOYMENT.md § Bring-up).
       - id: meta
         uses: docker/metadata-action@dc802804100637a589fabce1cb79ff13a1411302 # v6.2.0
         env:
@@ -55,9 +62,8 @@ jobs:
         with:
           images: ghcr.io/tjwise99/wisekiosk
           tags: |
-            type=ref,event=branch
-            type=sha
-            type=raw,value=latest,enable={{is_default_branch}}
+            type=semver,pattern={{version}}
+            type=raw,value=latest,enable=${{ github.event.release.prerelease == false }}
           labels: |
             org.opencontainers.image.documentation=https://tjwise99.github.io/WiseKiosk/
           annotations: |
@@ -65,7 +71,8 @@ jobs:
 
       # provenance and sbom stay off: what this publishes is a plain annotated image, and the
       # attestation set is #67's.
-      - uses: docker/build-push-action@53b7df96c91f9c12dcc8a07bcb9ccacbed38856a # v7.3.0
+      - id: build
+        uses: docker/build-push-action@53b7df96c91f9c12dcc8a07bcb9ccacbed38856a # v7.3.0
         with:
           context: .
           platforms: linux/amd64,linux/arm64
@@ -75,3 +82,24 @@ jobs:
           annotations: ${{ steps.meta.outputs.annotations }}
           provenance: false
           sbom: false
+
+      # `--clobber` makes a re-run of this job replace rather than fail on an asset it already
+      # uploaded.
+      - name: Upload the deployment recipe and example configuration to the release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: ${{ github.event.release.tag_name }}
+        run: gh release upload "$TAG" deploy/compose.yaml deploy/config.example.json --clobber
+
+      # Drops any existing line naming this image's digest before appending the current one, so a
+      # re-run of this job leaves exactly one such line rather than two.
+      - name: Append the published digest to the release notes
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: ${{ github.event.release.tag_name }}
+          DIGEST_LINE: "Image: ghcr.io/tjwise99/wisekiosk@sha256:${{ steps.build.outputs.digest }}"
+        run: |
+          gh release view "$TAG" --json body -q .body > "$RUNNER_TEMP/notes.md"
+          sed -i '\#^Image: ghcr\.io/tjwise99/wisekiosk@sha256:#d' "$RUNNER_TEMP/notes.md"
+          printf '%s\n' "$DIGEST_LINE" >> "$RUNNER_TEMP/notes.md"
+          gh release edit "$TAG" --notes-file "$RUNNER_TEMP/notes.md"

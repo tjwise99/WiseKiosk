@@ -1,5 +1,5 @@
 // Package health answers process liveness over HTTP, and asks the same of a
-// running instance from inside the image (ADR 0020 rev 2). Both halves go
+// running instance from inside the image (ADR 0020 rev 3). Both halves go
 // through the generated boundary package, so the route they meet on is the
 // schema's rather than a path written here (ADR 0008 rev 5).
 package health

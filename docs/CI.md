@@ -331,12 +331,17 @@ enabled, and this paragraph rather than a check is what records it.
 What a release publishes and what CI asserts about it. Verification runs against the published digest
 in a separate job that pulls from the registry, reads only the registry and the public transparency
 log, and holds no credential. What builds and pushes the image is `.github/workflows/publish.yml`,
-which #54 container build and publish landed; every check below is unbuilt and owned by #67 security
-and supply-chain gates, against the set
-[ADR 0020 rev 2](decisions/0020-release-artifact-set-and-operator-tooling.md) decides. That workflow
-tags each build of the default branch `latest` beside the commit sha, and the committed recipe
-references `latest` so it runs unedited ([`DEPLOYMENT.md`](DEPLOYMENT.md) § *Bring-up*); the digest the
-release notes name is what an operator who chooses to verify checks against.
+which #54 container build and publish landed and #268 release from a manual tag keyed to
+`release: published`; every check below is unbuilt and owned by #67 security and supply-chain
+gates, against the set
+[ADR 0020 rev 3](decisions/0020-release-artifact-set-and-operator-tooling.md) decides. That workflow
+runs only when the owner publishes a `vMAJOR.MINOR.PATCH` release, tags the image by that semver, and
+moves `latest` to it for a non-pre-release; the committed recipe references `latest` so it runs
+unedited ([`DEPLOYMENT.md`](DEPLOYMENT.md) § *Bring-up*); the release notes carry exactly one line
+naming that digest, `Image: ghcr.io/tjwise99/wisekiosk@sha256:<digest>`, which the workflow replaces
+rather than duplicates on a re-run
+([ADR 0020 rev 3](decisions/0020-release-artifact-set-and-operator-tooling.md)), and it is what an
+operator who chooses to verify checks against.
 
 **Nothing decides the no-credential property.** It is a proposal for a check, not an asserted
 guarantee: no gate compares the verification job's permissions against it, and SECURITY.md publishes
@@ -344,8 +349,9 @@ a posture resting on this section. Until #77 fences this document, read it as in
 
 - **A release occupies two locations, and each is a separate assertion.** The registry carries the
   image at a digest, with the SBOM, the signature and the build-provenance attestation attached to it
-  as referring artifacts. The release tag carries exactly two files, the deployment recipe and an
-  example configuration. The release notes name the digest, which is what ties the tag to the
+  as referring artifacts. The release tag carries exactly two files, at their committed basenames:
+  the deployment recipe, `compose.yaml`, and an example configuration, `config.example.json`. The
+  release notes name the digest, which is what ties the tag to the
   registry. Resolving referring artifacts against a digest, listing files on a tag and reading the
   notes for a digest are three queries against two APIs, so **a run that reads one surface and skips
   another fails** rather than reporting success over the part it reached — an unreadable surface, and
@@ -357,7 +363,7 @@ a posture resting on this section. Until #77 fences this document, read it as in
   **What no check here decides:** the documentation site is deployed from the default branch rather
   than from a tag, so it is not a release asset and nothing asserts any correspondence between what it
   describes and the digest an operator is running. That drift is chosen rather than overlooked, and
-  ADR 0020 rev 2 records the choice.
+  ADR 0020 rev 3 records the choice.
 - **Signature.** Keyless `cosign` verification against the published digest, with the expected
   certificate identity and OIDC issuer, exits zero; against a deliberately wrong identity it exits
   non-zero.
@@ -415,7 +421,7 @@ What each of these obligations *is*, and why, is [`DEPLOYMENT.md`](DEPLOYMENT.md
   **It gates that one key deliberately and no others**: the key is the residue of a
   requirement deleted on #69 tree rebuild, not the beginning of a recipe linter. Every other value in
   the recipe is a sample default an operator is expected to weigh and change
-  ([ADR 0020 rev 2](decisions/0020-release-artifact-set-and-operator-tooling.md)), and gating one would
+  ([ADR 0020 rev 3](decisions/0020-release-artifact-set-and-operator-tooling.md)), and gating one would
   assert a recommendation as an obligation.
 - **The image reports its health in both directions.** `scripts/image/health_signal.py`, run by
   `just check-image` in the `image-tests` job, runs the argument vector the image's own
