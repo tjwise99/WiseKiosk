@@ -91,8 +91,7 @@ func stagedSource(t *testing.T) *atomic.Int64 {
 }
 
 // admitted is TST058's known-good points, read directly against the
-// constraint below; hoisted to package level so FuzzValidate's seed corpus
-// and the table test share one source rather than carrying the bounds twice.
+// constraint below, and FuzzValidate's seed corpus.
 var admitted = []struct {
 	name     string
 	lat, lon float64
@@ -107,8 +106,7 @@ var admitted = []struct {
 }
 
 // rejected is TST058's rejected request bodies, read through the module's own
-// handler; hoisted to package level so FuzzDecodeRequest's seed corpus and the
-// table test share one source rather than carrying the bounds twice.
+// handler, and FuzzDecodeRequest's seed corpus.
 var rejected = []struct {
 	name string
 	body string
@@ -194,8 +192,7 @@ func TestTST058_ThePatternAdmitsAPointAndRejectsEveryOtherValue(t *testing.T) {
 	})
 
 	// The decoder reads one JSON value and stops, so bytes trailing a complete
-	// object are left unread rather than refused. This pins that today, ahead of
-	// decodeRequest's extraction, the same way the case above pins the guard.
+	// object are left unread rather than refused.
 	t.Run("admits a body with bytes trailing a complete JSON value", func(t *testing.T) {
 		asked := stagedSource(t)
 		held := served
@@ -691,9 +688,7 @@ func readTime(t *testing.T, written string) time.Time {
 const fuzzHangBudget = time.Second
 
 // runWithin fails the test if fn has not returned within budget, naming the
-// target that hung. Go's own fuzzing engine drops a hanging input silently
-// rather than reporting it (docs/CI.md § Backend fuzz); this is what a fuzz
-// target's per-input deadline catches instead.
+// target that hung.
 func runWithin(t *testing.T, budget time.Duration, name string, fn func()) {
 	t.Helper()
 
@@ -710,12 +705,9 @@ func runWithin(t *testing.T, budget time.Duration, name string, fn func()) {
 	}
 }
 
-// FuzzShape complements the Unit tier, which only exercises Shape against
-// known responses (`check-fuzz`, docs/CI.md § Backend fuzz). Seeded with the
-// captured response every other case here shapes: a run finding no crasher in
-// it says nothing new, so the value is in what the fuzzer builds from it. Two
-// calls on the same bytes are asserted equal by their marshalled form, which
-// is what gives this target a failure mode beyond a panic or a hang.
+// FuzzShape drives Shape with bytes, seeded from the captured response
+// (`check-fuzz`, docs/CI.md § Backend fuzz), and asserts two calls on the
+// same bytes are equal by their marshalled form.
 func FuzzShape(f *testing.F) {
 	seed, err := os.ReadFile(filepath.FromSlash(captured))
 	if err != nil {
@@ -750,9 +742,8 @@ func FuzzShape(f *testing.F) {
 }
 
 // FuzzDecodeRequest drives decodeRequest with the bytes a request body
-// carries (`check-fuzz`, docs/CI.md § Backend fuzz). Seeded from the rejected
-// table above, which TestTST058 also reads, so the two share one source
-// rather than carrying the bounds twice.
+// carries (`check-fuzz`, docs/CI.md § Backend fuzz), seeded from the rejected
+// table above.
 func FuzzDecodeRequest(f *testing.F) {
 	for _, c := range rejected {
 		f.Add([]byte(c.body))
@@ -766,9 +757,8 @@ func FuzzDecodeRequest(f *testing.F) {
 }
 
 // FuzzValidate drives validate with the coordinate pairs a decoded request
-// carries (`check-fuzz`, docs/CI.md § Backend fuzz). Seeded from the admitted
-// table above, which TestTST058 also reads, so the two share one source
-// rather than carrying the bounds twice.
+// carries (`check-fuzz`, docs/CI.md § Backend fuzz), seeded from the admitted
+// table above.
 func FuzzValidate(f *testing.F) {
 	for _, c := range admitted {
 		f.Add(c.lat, c.lon)

@@ -98,15 +98,15 @@ inside each target answers the actual question, at the actual granularity a hang
 
 - **A module's shaping library and route decode carry a fuzz obligation the module contract states
   once**, rather than a per-module decision each time one is added. Writing the three targets for a
-  conforming module is now part of "building the module," the same way its render test and unit
-  tests are.
-- **The merge path grows by roughly three times the per-target budget.** At 10 seconds and three
-  targets, `check-fuzz` costs about 30 seconds plus per-invocation Go toolchain startup — small
-  against the rest of `just verify`, and it stays that shape as the number of targets grows one
-  module at a time rather than jumping if a later decision changes the per-target figure.
+  conforming module is part of "building the module," the same way its render test and unit tests
+  are.
+- **The merge path grows by roughly three times the per-target budget**, plus per-invocation Go
+  toolchain startup — small against the rest of `just verify`, and it stays that shape as the number
+  of targets grows one module at a time rather than jumping if a later decision changes the
+  per-target figure.
 - **A crasher found after this lands is a regression, not a discovery.** The corpus entry Go writes
   on a failing run is committed, and the fixing change is what makes `check-fuzz` green again; the
-  tier is now what stands between a parse-time hang and a merge.
+  tier stands between a parse-time hang and a merge.
 - **A target that legitimately needs longer than one second on some input reads as a hang.** The
   per-input deadline cannot distinguish a stuck loop from a slow-but-finite computation; a false
   positive here is evidence the budget is wrong for that target, not that the mechanism is.

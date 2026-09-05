@@ -62,16 +62,15 @@ func (WeatherRoute) PostApiWeather(w http.ResponseWriter, r *http.Request) {
 }
 
 // errRequestNotDecodable and errRequestMissingCoordinate are decodeRequest's
-// two sentinel failures, carrying the same two 400 message texts the inline
-// decode carried before decodeRequest was pulled out of the handler so a
-// fuzz target could drive it directly.
+// two sentinel failures, carrying the two 400 message texts the handler
+// rejects with.
 var (
 	errRequestNotDecodable      = errors.New("the request body could not be read as this source's parameters")
 	errRequestMissingCoordinate = errors.New("the request must name both a latitude and a longitude")
 )
 
 // decodeRequest reads the point a request names. It is pure — bytes in, the
-// request or a sentinel error out — so a fuzz target can drive it directly.
+// request or a sentinel error out.
 func decodeRequest(body []byte) (boundary.WeatherRequest, error) {
 	// Pre-set to NaN: a coordinate still NaN after a decode is one the body did
 	// not carry, JSON having no NaN literal to write, which is distinct from a

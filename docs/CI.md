@@ -191,7 +191,7 @@ hung, rather than leaning on a mechanism that arrives too late to help at this b
 - **A crasher found the first time a target's fuzzing actually runs is reported, not blocked on.**
   Per the reporting-first rule, that target's `check-fuzz` line lands non-blocking (a `-` prefix, a
   comment naming the follow-on ticket) until the finding is fixed, rather than failing every
-  subsequent change for a defect this tier is only now able to see.
+  subsequent change for a defect this tier alone is able to see.
 
 Recorded in [`../scripts/cases/check-fuzz.md`](../scripts/cases/check-fuzz.md).
 
