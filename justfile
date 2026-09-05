@@ -243,7 +243,7 @@ check-static-bundle: check-build
 # to patch around with a type-only fix; #275 resolve ModuleEntry.component prop-type variance so
 # svelte-check blocks makes this line blocking once it lands.
 [group('checks')]
-[doc('The frontend is clean under eslint (flat config, recommended sets); svelte-check (--tsgo) reports and does not fail — #275 flips it to blocking; needs `just boundary-install`')]
+[doc('The frontend is clean under eslint (flat config, recommended sets); svelte-check (--tsgo) reports and does not fail — #275 resolve ModuleEntry.component prop-type variance so svelte-check blocks flips it to blocking; needs `just boundary-install`')]
 check-lint-frontend:
     cd frontend && node_modules/.bin/eslint .
     -cd frontend && node_modules/.bin/svelte-check --tsconfig ./tsconfig.json --tsgo

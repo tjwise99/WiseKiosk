@@ -15,8 +15,10 @@ Each case is a `git archive` copy of the tracked tree at `0a34e62`, the commit c
 | Must pass | The same declaration, bound to a real value | `undefinedIdentifier` replaced by `1` — `tsc` exits 0 |
 | Must pass | The tree as it stands | — |
 
-**What this does not cover.** The three svelte-check component-prop variance errors that motivated
-widening `ModuleEntry.component` to `Component<any>` (`check-lint-frontend`'s territory) do not
-reproduce here: plain `tsc` type-checks a `.svelte` import through Svelte's own ambient module
-declaration, which is looser than svelte-check's own preprocessing, so this gate's population and
-`check-lint-frontend`'s overlap on `.ts` files but diverge on `.svelte` ones.
+**What this does not cover.** `check-lint-frontend`'s three standing svelte-check component-prop
+variance errors on `ModuleEntry.component` do not reproduce here: plain `tsc` type-checks a `.svelte`
+import through Svelte's own ambient module declaration, which is looser than svelte-check's own
+preprocessing, so this gate's population and `check-lint-frontend`'s overlap on `.ts` files but
+diverge on `.svelte` ones. (`Component<any>` was measured as a candidate fix for those three errors
+and rejected — it trips eslint's `no-explicit-any` — so `ModuleEntry.component` is unchanged; see
+[#275 resolve ModuleEntry.component prop-type variance so svelte-check blocks](https://github.com/tjwise99/WiseKiosk/issues/275).)
