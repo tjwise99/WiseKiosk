@@ -34,10 +34,10 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	file, info, found := h.open(name)
 	if found && info.IsDir() {
-		file.Close()
+		_ = file.Close()
 		file, info, found = h.open(path.Join(name, indexName))
 		if found && info.IsDir() {
-			file.Close()
+			_ = file.Close()
 			found = false
 		}
 	}
@@ -45,7 +45,7 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		http.NotFound(w, r)
 		return
 	}
-	defer file.Close()
+	defer func() { _ = file.Close() }()
 
 	http.ServeContent(w, r, info.Name(), info.ModTime(), file)
 }
@@ -59,7 +59,7 @@ func (h *Handler) open(name string) (http.File, fs.FileInfo, bool) {
 	}
 	info, err := file.Stat()
 	if err != nil {
-		file.Close()
+		_ = file.Close()
 		return nil, nil, false
 	}
 	return file, info, true

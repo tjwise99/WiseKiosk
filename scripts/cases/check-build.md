@@ -24,5 +24,5 @@ that will not compile is found. Without it the failure moves to page load, in fr
 nobody is standing at.
 
 **What it does not catch.** Nothing here type-checks: Vite's transform strips TypeScript without
-checking it, so a type error builds cleanly. `svelte-check` and `eslint` are #67 security and
-supply-chain CI gates'.
+checking it, so a type error builds cleanly. `svelte-check`, `eslint` and the whole-project typecheck
+are `check-lint-frontend`'s and `check-typecheck-frontend`'s (docs/CI.md § *Lint and type checks*).

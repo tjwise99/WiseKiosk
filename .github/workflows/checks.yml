@@ -50,7 +50,7 @@ jobs:
         run: just check-untracked
 
       # lychee runs offline from the digest-pinned official image over the tracked Markdown set
-      # (ADR 0016 rev 6); docker is not assumed on a contributor machine, so the step is a named
+      # (ADR 0016 rev 7); docker is not assumed on a contributor machine, so the step is a named
       # CI-only exception (docs/CI.md § Gate wiring) rather than a `just verify` check.
       # The file list is materialised and tested non-empty before lychee runs: a failed or empty
       # listing has judged nothing and must not read as a clean scan.
@@ -243,8 +243,10 @@ jobs:
     # entry with an empty mount, no server half, no SSR target or adapter declared, and every npm
     # package in the emitted module graph in the committed allowlist. Then the configuration types
     # are regenerated from the configuration schema and diffed, the same staleness gate the boundary
-    # job runs one layer over. Every generator and runner is pinned in the silo it belongs to,
-    # through frontend/package-lock.json. No secrets: build, comparison and static assertion.
+    # job runs one layer over. Then eslint, svelte-check and the whole-project TS 7 typecheck run
+    # (docs/CI.md § Lint and type checks). Every generator and runner is pinned in the silo it
+    # belongs to, through frontend/package-lock.json. No secrets: build, comparison and static
+    # assertion.
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -267,6 +269,12 @@ jobs:
 
       - name: The committed configuration types are what the configuration schema generates
         run: just check-config-types
+
+      - name: The frontend is clean under eslint; svelte-check reports (not yet blocking, #275 resolve ModuleEntry.component prop-type variance so svelte-check blocks)
+        run: just check-lint-frontend
+
+      - name: The whole frontend typecheck (tsc --noEmit, TS 7) is clean
+        run: just check-typecheck-frontend
 
   frontend-tests:
     name: frontend-tests
@@ -314,7 +322,8 @@ jobs:
 
   backend-tests:
     name: backend-tests
-    # Runs `just check-go` (docs/CI.md § Backend build, vet and tests) and `just check-secret-unwrap`
+    # Runs `just check-go` (docs/CI.md § Backend build, vet and tests), `just check-lint-go`
+    # (docs/CI.md § Lint and type checks) and `just check-secret-unwrap`
     # (docs/CI.md § Module and framework structure). A job of its own rather than
     # a step on `boundary`, which already carries the drift gate: one job answers with one check-run,
     # so a shared one gives the two gates a single name to be required on and a single verdict. The
@@ -340,6 +349,9 @@ jobs:
 
       - name: The backend Go tree builds, passes vet, its tests pass, and internal/ is race-free
         run: just check-go
+
+      - name: The backend Go tree is clean under golangci-lint's default linter set
+        run: just check-lint-go
 
       - name: Exactly one non-test reference unwraps the confined secret type
         run: just check-secret-unwrap
@@ -445,7 +457,7 @@ jobs:
     # reaches main under squash-merge — is a Conventional Commit. The branch check
     # is `just check-branch`, handed the PR's head ref, reading its pattern from
     # scripts/branch-shape.regex; the title runs through the hook layer's pinned
-    # commitlint (ADR 0016 rev 6) against the pull-request-title configuration,
+    # commitlint (ADR 0016 rev 7) against the pull-request-title configuration,
     # which drops the fixup!/squash!/merge allowances that never reach main.
     # The branch check also gates the recorded PR↔ticket
     # linkage: the PR's Development field (closingIssuesReferences) must link

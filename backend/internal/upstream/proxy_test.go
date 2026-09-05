@@ -365,7 +365,7 @@ func TestOneHangingSourceDoesNotStallAnother(t *testing.T) {
 	stalled := make(chan struct{})
 	go func() {
 		defer close(stalled)
-		p.Do(context.Background(), "hanging", "q", hangingFetch)
+		_, _ = p.Do(context.Background(), "hanging", "q", hangingFetch)
 	}()
 	<-entered
 

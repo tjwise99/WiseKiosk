@@ -133,41 +133,19 @@ codegen:
     cd backend && go tool oapi-codegen -config oapi-codegen.yaml ../boundary/openapi.yaml
     cd frontend && node_modules/.bin/orval
 
-# Every tool is resolved before anything is deleted: the clear below removes committed source, so a
-# toolchain that cannot run must fail with the tree intact rather than after emptying it. The Go
-# check runs the tool the generate step runs, which is what makes it a resolution rather than a
-# guess; `just boundary-install` is what a failure of any of them wants. `prettier` is resolved
-# beside orval because orval only *warns* when it cannot format — the run would otherwise succeed
-# and land unformatted output the diff below reports as schema drift.
-#
-# The generated directories are then cleared before `codegen`, which overwrites but never creates
-# what a generator did not emit: absent output reads as a deletion in the diff below, where a stale
-# file left in place would be byte-identical to what is committed. The non-empty assertions are the
-# other half — an emitted-but-empty file is a deletion the diff does see, and neither catches the
-# case the other does. `add --intent-to-add` reaches regenerated output that is untracked, and the
-# diff is against HEAD because that same `git add` stages the deletion a missing generator makes.
-#
-# The two compile steps are what a `test -s` cannot say. oapi-codegen exits *zero* on any
-# configuration it accepts, including one naming fewer targets than this repo needs — and its v2
-# parser falls back to the v1 schema, so a mis-shaped `generate:` can be accepted rather than
-# refused. Either way the output is non-empty and missing a whole target, and `go build` is what says
-# so: the process registers its routes through `boundary.HandlerFromMux` and the router renders its
-# error bodies from the generated models, so an absent target is an undefined symbol. `tsc` is the
-# same assertion one language over, narrowed to the generated directory; the general frontend
-# typecheck is #67 typecheck gate's.
 [group('checks')]
 [doc('The committed boundary contract is what the schema generates, and the generated Go and TypeScript both compile; needs `just boundary-install`')]
 check-boundary:
     go -C backend tool oapi-codegen -version
     test -x frontend/node_modules/.bin/orval
     test -x frontend/node_modules/.bin/prettier
-    test -x frontend/node_modules/.bin/tsc
+    test -x frontend/node_modules/@typescript/native/bin/tsc
     rm -rf backend/internal/boundary frontend/src/lib/boundary
     just codegen
     test -s backend/internal/boundary/boundary.gen.go
     test -s frontend/src/lib/boundary/client.ts
     cd backend && go build ./...
-    frontend/node_modules/.bin/tsc --noEmit --project frontend/tsconfig.boundary.json
+    frontend/node_modules/@typescript/native/bin/tsc --noEmit --project frontend/tsconfig.boundary.json
     git add --intent-to-add -- backend/internal/boundary/ frontend/src/lib/boundary/
     git diff --exit-code HEAD -- backend/internal/boundary/ frontend/src/lib/boundary/
 
@@ -184,6 +162,11 @@ check-go:
     go -C backend vet ./...
     go -C backend test ./...
     go -C backend test -race ./internal/...
+
+[group('checks')]
+[doc('The backend Go tree is clean under golangci-lint default linter set (errcheck, govet, ineffassign, staticcheck, unused), non-zero exit on any finding')]
+check-lint-go:
+    go -C backend tool golangci-lint run ./...
 
 [group('checks')]
 [doc('Exactly one non-test reference in the backend unwraps the confined secret type to its raw value; test files are exempt')]
@@ -233,6 +216,17 @@ check-build:
 [doc('The frontend build emits a static single-page bundle: one HTML entry with an empty mount, no server half, no SSR target or adapter declared, and every npm package in the emitted module graph allowlisted')]
 check-static-bundle: check-build
     python3 scripts/check-static-bundle.py
+
+[group('checks')]
+[doc('The frontend is clean under eslint (flat config, recommended sets); svelte-check (--tsgo) reports and does not fail — #275 resolve ModuleEntry.component prop-type variance so svelte-check blocks flips it to blocking; needs `just boundary-install`')]
+check-lint-frontend:
+    cd frontend && node_modules/.bin/eslint .
+    -cd frontend && node_modules/.bin/svelte-check --tsconfig ./tsconfig.json --tsgo
+
+[group('checks')]
+[doc('The whole frontend typecheck (tsc --noEmit, TS 7) is clean; needs `just boundary-install`')]
+check-typecheck-frontend:
+    frontend/node_modules/@typescript/native/bin/tsc --noEmit -p frontend/tsconfig.json
 
 [group('checks')]
 [doc('The frontend unit tier passes (Vitest); needs `just boundary-install`')]
@@ -319,4 +313,4 @@ check-restart-policy:
 
 [group('checks')]
 [doc('Run every check the PR gate runs that has a local form and needs neither Docker nor emulation; secret scanning, the PR-title check (commitlint, via the hook layer), the link check (lychee, from a digest-pinned image) and the workflow audit (zizmor, actionlint) are CI-only, the image tier is `just check-image`, and the native armv6l run is `just smoke-native`')]
-verify: check-untracked check-hooks check-branch check-reqs check-citations check-arch check-arch-trace check-boundary check-go check-secret-unwrap check-config-types check-build check-static-bundle check-unit check-render check-site check-adr-index check-adr-revs check-docs-index check-repo-silo check-languages check-dead-test check-restart-policy
+verify: check-untracked check-hooks check-branch check-reqs check-citations check-arch check-arch-trace check-boundary check-go check-lint-go check-secret-unwrap check-config-types check-build check-static-bundle check-lint-frontend check-typecheck-frontend check-unit check-render check-site check-adr-index check-adr-revs check-docs-index check-repo-silo check-languages check-dead-test check-restart-policy

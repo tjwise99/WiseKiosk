@@ -345,5 +345,5 @@ func writeJSON(w http.ResponseWriter, status int, value any) {
 func writeEncoded(w http.ResponseWriter, status int, encoded []byte) {
 	w.Header().Set("Content-Type", contentTypeJSON)
 	w.WriteHeader(status)
-	w.Write(encoded)
+	_, _ = w.Write(encoded)
 }

@@ -8,6 +8,7 @@
 node_modules/
 dist/
 .vite/
+frontend/.svelte-check/
 
 # Node dev tooling (LikeC4) — siloed beside the architecture model it serves;
 # installed on demand from the committed lockfile, never committed. (Covered by

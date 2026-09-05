@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { SvelteMap } from 'svelte/reactivity';
+
   import type { ModulePlacement, Region, WiseKioskDisplayConfiguration } from '../config/types';
   import ModuleHost from './ModuleHost.svelte';
   import { modules } from './modules';
@@ -23,7 +25,7 @@
    * placements of one module are configured apart, so nothing above the placement can hold it.
    */
   const occupied = $derived.by(() => {
-    const byRegion = new Map<Region, ModulePlacement[]>();
+    const byRegion = new SvelteMap<Region, ModulePlacement[]>();
     for (const placement of configuration.modules) {
       const here = byRegion.get(placement.region) ?? [];
       here.push(placement);

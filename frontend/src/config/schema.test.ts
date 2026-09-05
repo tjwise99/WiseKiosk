@@ -1,3 +1,4 @@
+import type { AnySchema } from 'ajv';
 import Ajv2020 from 'ajv/dist/2020.js';
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
@@ -17,7 +18,7 @@ import { describe, expect, it } from 'vitest';
  */
 describe('the configuration schema', () => {
   it('carries no keyword ajv strict mode does not recognise', () => {
-    const schema: unknown = JSON.parse(readFileSync(new URL('./schema.json', import.meta.url), 'utf8'));
+    const schema: AnySchema = JSON.parse(readFileSync(new URL('./schema.json', import.meta.url), 'utf8'));
 
     expect(() => new Ajv2020({ strict: true }).compile(schema)).not.toThrow();
   });

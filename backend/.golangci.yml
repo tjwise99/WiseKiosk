@@ -1,0 +1,5 @@
+version: "2"
+
+# `standard` expands to errcheck, govet, ineffassign, staticcheck, unused.
+linters:
+  default: standard

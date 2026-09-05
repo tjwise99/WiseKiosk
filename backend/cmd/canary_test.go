@@ -107,7 +107,7 @@ func newKeyedSource(t *testing.T) *keyedSource {
 		source.mu.Unlock()
 
 		w.WriteHeader(status)
-		fmt.Fprint(w, answer)
+		_, _ = fmt.Fprint(w, answer)
 	}))
 	t.Cleanup(source.server.Close)
 	return source
