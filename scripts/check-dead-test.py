@@ -15,7 +15,7 @@ never discovered a file has nothing to say about it.
 - **Reach**, from each runner's own discovery: `go list -json`'s `TestGoFiles` and `XTestGoFiles`,
   which respect build tags and the host's filename suffixes; `vitest list --filesOnly`; and
   `playwright test --list`. There is no per-file allowlist to append to
-  ([ADR 0010 rev 1](../docs/decisions/0010-runtime-materialised-gate-fixtures.md) rules out a
+  ([ADR 0010 rev 2](../docs/decisions/0010-runtime-materialised-gate-fixtures.md) rules out a
   hand-maintained per-file list), so a file that stops being reached is closed by wiring it to a
   runner or by deleting it.
 

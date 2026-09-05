@@ -51,7 +51,7 @@ jobs:
 
       # Eight of the nine OCI keys are this action's defaults and `.revision` is the commit it runs
       # on; `.documentation` is not defaulted and is supplied as a literal, on both surfaces
-      # (ADR 0015 rev 2). The annotation levels are declared here rather than restated elsewhere,
+      # (ADR 0015 rev 3). The annotation levels are declared here rather than restated elsewhere,
       # because the annotation check reads them from this workflow (docs/CI.md § Publishing and
       # provenance). `latest` moves to this release's image only when the release is not a
       # pre-release (docs/DEPLOYMENT.md § Bring-up). `flavor: latest=false` disables the action's

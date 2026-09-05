@@ -3,10 +3,15 @@
 **Status:** accepted
 **Decided:** 2026-08-03 (#103 authored-vs-adopted check trade, measured against the cases recorded in
 [`../../scripts/README.md`](../../scripts/README.md))
-**Rev:** 7
+**Rev:** 8
 
 ## Revisions
 
+- **rev 8** — 2026-09-05 — extends the decision to a second first-adoption case: `CodeQL`'s default
+  code-scanning suite lands as a net-new gate over the project's own Go, Svelte/TypeScript, Python
+  and Actions source, retiring [`../CI.md`](../CI.md) § *First-party source scanning*'s "Unbuilt;
+  owned by #67" line — the same shape rev 7's net-new rows take, decided by the table's `Replaces`
+  column rather than a fresh count. The adoptions are otherwise unchanged (#263 CodeQL gate).
 - **rev 7** — 2026-09-04 — extends the decision to a first-adoption case: `golangci-lint` (default
   linter set) and `eslint` (recommended sets, with `svelte-check` alongside) land as net-new gates
   rather than replacing an authored check, retiring [`../CI.md`](../CI.md) § *Lint and type checks*'s
@@ -91,6 +96,7 @@ is a net-new gate, adopted where no authored check ever existed for it to replac
 | `pre-commit` as the local hook layer | `.githooks/`, `check-eol.sh` | 33 |
 | `golangci-lint` at the default linter set | — | [`../CI.md`](../CI.md) § *Lint and type checks*'s "Unbuilt; owned by #67" line (Go half) |
 | `eslint` (flat config, recommended sets), with `svelte-check` (`--tsgo`) alongside | — | the same line's frontend half |
+| `CodeQL`'s default code-scanning suite, over Go, Svelte/TypeScript, Python and Actions | — | [`../CI.md`](../CI.md) § *First-party source scanning*'s "Unbuilt; owned by #67" line |
 
 **`commitlint` must preserve the two-stage distinction the authored check carries.** `fixup!` and
 `squash!` are permitted at the commit-message stage because the squash discards them, and refused on
@@ -267,7 +273,7 @@ later.
 - How `commitlint` and `pre-commit` are pinned. Neither is an action, so neither is covered by
   [`../CI.md`](../CI.md) § *Action pins*; `zizmor`, `actionlint` and `lychee` have official container
   images and are pinned as their digests.
-- Whether any adopted tool's fixtures conflict with [ADR 0010 rev 1](0010-runtime-materialised-gate-fixtures.md),
+- Whether any adopted tool's fixtures conflict with [ADR 0010 rev 2](0010-runtime-materialised-gate-fixtures.md),
   which forbids committing a vulnerable artifact in resolvable form.
 - Sequencing against #101 CI-invoking-just-recipes, which touches the same gate-wiring surface.
 - Whether an under-scan needs a guard, distinct from the empty scan the ruling above settles.

@@ -181,7 +181,7 @@ against separate APIs, and #67 security and supply-chain gates inherits them as 
 **The container build inherits a constraint from the healthcheck.** A declared `HEALTHCHECK` needs
 something inside the image able to reach the service over HTTP. A distribution base carries one; a
 minimal base does not, and the check then needs a self-check path in the backend binary.
-[ADR 0015 rev 2](0015-container-toolchain-and-image-annotations.md) leaves the base image undecided, so
+[ADR 0015 rev 3](0015-container-toolchain-and-image-annotations.md) leaves the base image undecided, so
 #54 container build and publish takes this cost with that choice rather than meeting it as a surprise.
 
 **An operator on an older digest reads a procedure describing the default branch.** The site is

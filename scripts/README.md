@@ -53,6 +53,7 @@ when a link breaks. Nothing enforces this — a wrong success line fails no buil
 | `report-proposed.py` | [cases](cases/report-proposed-py.md) |
 | the Conventional-Commit gate (`commitlint`, both stages) | [cases](cases/commitlint.md) |
 | `adr-rev-reach.py` | [cases](cases/adr-rev-reach-py.md) |
+| CodeQL (first-party source scanning) | [cases](cases/codeql.md) |
 
 ## Running a case
 

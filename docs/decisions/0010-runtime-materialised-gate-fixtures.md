@@ -1,11 +1,20 @@
 # 0010 — Materialise negative gate fixtures at run time; never commit a resolvable vulnerable artifact
 
 **Status:** accepted
-**Decided:** 2026-07-24 (closing review pass of the requirements rewrite #18)
-**Rev:** 1
+**Decided:** 2026-09-05 (the never-commit-a-vulnerable-artifact rule taken 2026-07-24 in the closing
+review pass of the requirements rewrite #18 stands; the record-once mechanism replacing the standing
+meta-gate decided in #263 CodeQL gate)
+**Rev:** 2
 
 ## Revisions
 
+- **rev 2** — 2026-09-05 — the Decision no longer prescribes a per-run meta-gate or a committed
+  `scripts/gate-fixtures/*.tmpl` tree: a negative fixture is built in a throwaway copy at the time
+  the gate is recorded instead, and the observation is recorded verbatim in the check's own
+  `scripts/cases` file — the convention [`../CI.md`](../CI.md) § *Generated boundary contract*
+  already states for every other gate. The never-commit-a-vulnerable-artifact rule and the reasoning
+  for it are unchanged; the Consequences bullet naming a second copy of each scanner invocation is
+  dropped, since there is no longer a second job to drift from the first (#263 CodeQL gate).
 - **rev 1** — 2026-08-05 — revision tracking begins; text as merged (#118 ADR revisions).
 
 ## Context
@@ -32,30 +41,25 @@ keeping a fixture out of the production CodeQL scan means `paths-ignore`, the pr
 
 ## Decision
 
-**No vulnerable artifact is committed in resolvable form.** A negative fixture is committed as
-**data, not source** — `scripts/gate-fixtures/*.tmpl` — a file type no test runner, module graph,
-dependency scanner, or image build discovers.
+**No vulnerable artifact is committed in resolvable form — not as ordinary source, not as data left
+in the tree.** A negative fixture proving a gate can fail is built in a throwaway copy at the time
+the gate is recorded — a scratch directory, or, where the gate only runs in CI, a branch opened as a
+draft pull request and never merged — run through the same production job or recipe the gate itself
+runs, its finding observed once, and the observation recorded verbatim in the check's own file under
+[`scripts/cases/`](../../scripts/README.md). This is the general convention
+[`../CI.md`](../CI.md) § *Generated boundary contract* states for every other gate: a check's
+fallibility is proven once against a throwaway copy and recorded, not re-tested by a standing
+meta-gate.
 
-A **meta-gate** materialises each fixture at run time: copy it into a temporary directory, write a
-throwaway manifest (`go.mod`, `package.json`, `Dockerfile`) beside it, invoke **the same scanner
-binary the production job invokes**, assert the expected finding and a non-zero exit, then discard
-the directory.
+Two properties follow, and they are the point:
 
-Three properties follow, and they are the point:
-
-- **The whole-tree discovery gate is satisfied without an exception.** Nothing is skipped, tagged,
-  ignored, or listed — the fixture is not a test file, so whole-tree discovery has nothing to
-  exclude.
-- **Nothing vulnerable ever exists** during the production scan, in the dependency graph, or in a
-  published image. No gate is ever permanently red and no alert is ever standing.
-- **The assertion is about the production scanner**, not a copy of it. A fixture that passed a
-  differently-configured scanner would prove nothing.
-
-The meta-gate and `scripts/gate-fixtures/` are both outside dot-directories — the limit
-[ADR 0002 rev 4](0002-requirements-management-doorstop.md) records.
-
-A fixture materialised at run time is not an exclusion under the whole-tree discovery gate, so the
-pattern cannot be mistaken for what that gate bans and "corrected" into real source.
+- **The whole-tree discovery gate is satisfied without an exception.** The fixture is never part of
+  the tracked tree at all — not committed, not left as data — so there is nothing for whole-tree
+  discovery, the dependency graph, or an image build to find, on `main` or on any branch that
+  survives it.
+- **The assertion is about the production job or recipe itself**, not a parallel invocation kept
+  beside it. The throwaway copy runs the identical entry point the gate runs in production, so there
+  is no second spelling of the scanner's invocation that could drift from the first.
 
 ## Alternatives considered
 
@@ -79,12 +83,6 @@ pattern cannot be mistaken for what that gate bans and "corrected" into real sou
 
 - **A gate proves it can fail, not merely that it ran.** This is the only property that
   distinguishes a working security gate from an absent one, and six items now have a way to state it.
-- **Fixture content is unreviewable by the normal tooling** — it is data, so linters, type checkers,
-  and the compiler never see it. That is the cost of the isolation. It is bounded by the fixtures
-  being small, few, and asserted-against: a fixture that stops producing its expected finding fails
-  the meta-gate, which is a stronger check than review would give.
-- **The pattern generalises past security.** Any gate whose failure mode is silent success — a drift
-  check, a link checker, a schema validator — can be proven live the same way, and should be.
-- **A second copy of each scanner invocation exists**, in the meta-gate. If it drifts from the
-  production invocation the meta-gate proves the wrong thing; the meta-gate must invoke the same
-  entry point rather than restate its flags.
+- **The pattern is not particular to security.** Any gate whose failure mode is silent success — a
+  drift check, a link checker, a schema validator — is proven the same way: once, against a
+  throwaway copy, recorded rather than re-tested by a standing meta-gate.
