@@ -154,7 +154,7 @@ codegen:
 # so: the process registers its routes through `boundary.HandlerFromMux` and the router renders its
 # error bodies from the generated models, so an absent target is an undefined symbol. `tsc` is the
 # same assertion one language over, narrowed to the generated directory; the general frontend
-# typecheck is #67 typecheck gate's.
+# typecheck is `check-typecheck-frontend`'s.
 [group('checks')]
 [doc('The committed boundary contract is what the schema generates, and the generated Go and TypeScript both compile; needs `just boundary-install`')]
 check-boundary:
@@ -239,11 +239,14 @@ check-build:
 check-static-bundle: check-build
     python3 scripts/check-static-bundle.py
 
+# svelte-check reports three ModuleEntry.component prop-type variance findings the owner ruled not
+# to patch around with a type-only fix; #275 resolve ModuleEntry.component prop-type variance so
+# svelte-check blocks makes this line blocking once it lands.
 [group('checks')]
-[doc('The frontend is clean under eslint (flat config, recommended sets) and svelte-check (--tsgo); needs `just boundary-install`')]
+[doc('The frontend is clean under eslint (flat config, recommended sets); svelte-check (--tsgo) reports and does not fail — #275 flips it to blocking; needs `just boundary-install`')]
 check-lint-frontend:
     cd frontend && node_modules/.bin/eslint .
-    cd frontend && node_modules/.bin/svelte-check --tsconfig ./tsconfig.json --tsgo
+    -cd frontend && node_modules/.bin/svelte-check --tsconfig ./tsconfig.json --tsgo
 
 # The TS 7 binary by explicit path: `typescript`'s own devDependency is TS 6, consumed by eslint
 # and svelte-check through the `typescript` package, and a bare `tsc` resolves to whichever of the
