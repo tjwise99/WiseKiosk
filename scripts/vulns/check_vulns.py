@@ -208,9 +208,8 @@ def go_findings(go_dir):
             for affected in osv.get("affected", [])
         ]
         first_party = any(name == module or name.startswith(module + "/") for name in packages)
-        # Owner ruling (2026-09-04, ticket #264): a Go standard-library finding fails like any
-        # other, and the register never covers it — the remedy is the Go toolchain bump, not an
-        # exception. govulncheck's own JSON names the standard library's package exactly "stdlib".
+        # docs/CI.md § *Dependency vulnerabilities*: govulncheck's own JSON names the standard
+        # library's package exactly "stdlib".
         stdlib = "stdlib" in packages
         reachable = any(len(finding.get("trace", [])) > 1 for finding in findings)
         records.append(
@@ -275,10 +274,8 @@ def npm_findings(npm_dir):
 
 def no_exception_reason(finding):
     """Why no register entry may ever cover `finding`, or None if a current, matching entry
-    legitimately could. First-party code has no exception path (docs/CI.md § *The exception
-    register*); neither does a Go standard-library finding (owner ruling, ticket #264) — the
-    register exists for a third-party dependency with no fix and no alternative, and stdlib has
-    neither of those failure shapes: the remedy is always the Go toolchain bump."""
+    legitimately could: first-party or Go standard-library, per docs/CI.md § *The exception
+    register*."""
     if finding["first_party"]:
         return "first-party — no entry may cover it"
     if finding.get("stdlib"):

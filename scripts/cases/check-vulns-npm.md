@@ -53,7 +53,5 @@ same fixture with one field of `package.json` changed, each independently re-ins
   rather than a silently shrunk population; not measured as a row because every advisory `npm audit`
   has reported in practice carries a `github.com/advisories/GHSA-…` url.
 
-**Scope routing, not a gap** — the same two properties [`check-vulns-go.md`](check-vulns-go.md)
-records, proven above from the npm side: a well-scoped entry is examined only by the recipe that owns
-its scope, and an entry whose own `scope` cannot be read as `go` or `npm` is unroutable rather than
-the other scope's business, and fails every scope's run instead of hiding by naming neither.
+The two scope-isolation rows above prove [`../../docs/CI.md`](../../docs/CI.md) § *The exception
+register*'s scope-routing rule, from the npm side; not a gap.

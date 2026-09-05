@@ -80,14 +80,5 @@ lands blocking rather than reporting.
   version against an affected range, so a module with no version can never match one. The logic is
   therefore verified by inspection rather than by a seed, unlike every other row here.
 
-**Scope routing, not a gap** — recorded because a green run and a wrongly-scoped or
-wrongly-refused check look identical otherwise, and because both bullets are what the two
-scope-isolation rows above prove:
-
-- **A well-scoped entry is examined only by the recipe that owns its scope.** `scope` is read before
-  anything else about an entry is validated, so a malformed entry belonging to the other scope never
-  reaches this recipe's field, currency, orphan, first-party or standard-library checks at all.
-- **An entry whose own `scope` cannot be read as `go` or `npm`** (missing, not a string, or some
-  other value) **is unroutable rather than the other scope's business, and fails every scope's run**
-  — the register-completeness check runs on it regardless of which `--scope` is passed, so it cannot
-  hide by naming neither.
+The two scope-isolation rows above prove [`../../docs/CI.md`](../../docs/CI.md) § *The exception
+register*'s scope-routing rule; not a gap.
