@@ -22,9 +22,9 @@ references:
   type: file
 - keyword: func TestTST061_TheCacheIntervalHoldsAnAnswerNoLongerThanTheFreshnessBound
   path: backend/internal/modules/weather/weather_test.go
-  sha: ee835ceecf8fc37b5a6c8e9c85934537b237f470765777f668d3106d92a9ae84
+  sha: f90783341d4ce875b5a30ce572dcb61125111b91261a5346cd0928ee65492899
   type: file
-reviewed: NWPMjf8bcpWLqJeJZ174mK-2TYOOrYekwtuNayl8Has=
+reviewed: FJgKG4ecIhSVW3WIhpGhJrkC0vvIQmVvKBFf7o4RKKw=
 status: proposed
 text: |
   Two checks, one per half of what the bound is met between. A unit test over the module's registered
