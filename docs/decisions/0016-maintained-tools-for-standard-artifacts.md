@@ -11,7 +11,11 @@
   linter set) and `eslint` (recommended sets, with `svelte-check` alongside) land as net-new gates
   rather than replacing an authored check, retiring [`../CI.md`](../CI.md) § *Lint and type checks*'s
   "Unbuilt; owned by #67" line in place of an authored-check line count — the shape a first adoption
-  takes where there is no prior authored check to retire (#262 lint and type check gates).
+  takes where there is no prior authored check to retire (#262 lint and type check gates). The
+  Decision prose's "Four adoptions follow, each replacing its authored check outright" and the
+  Consequences section's "Four maintained tools enter CI" both counted only the original four; both
+  are reworded to distinguish a replacing row from a net-new one by the table's own `Replaces` column
+  rather than a count the next adoption rots.
 - **rev 6** — 2026-09-03 — Dependabot is replaced by self-hosted Renovate (run from
   tjwise99/wise-renovate) as the dependency updater; the version-comment ground names it; what was
   chosen is unchanged, so the Decided date does not move (#223 renovate cutover).
@@ -76,7 +80,8 @@ unreviewed third-party code running against repository credentials, which *adds*
 — the opposite of the reasoning that justifies adoption. Where only such a wrapper exists, the check
 stays authored.
 
-Four adoptions follow, each replacing its authored check outright:
+The adoptions below follow. Most replace an authored check outright; a row with no `Replaces` entry
+is a net-new gate, adopted where no authored check ever existed for it to replace:
 
 | Adopted | Replaces | Lines it retires |
 |---|---|---|
@@ -224,7 +229,9 @@ later.
 ## Consequences
 
 - **373 lines of authored check are retired**, along with `upstream-hosts.txt` and
-  `conventional-commit.regex`, when the implementation tickets land. Four maintained tools enter CI.
+  `conventional-commit.regex`, when the implementation tickets land — the four replacing adoptions'
+  own consequence, not the net-new rows', which retire no authored check. Every adopted tool in the
+  table above enters CI as its own ticket lands.
 - **The corollary is the finding worth carrying:** when a maintained tool covers most of a check, the
   residue usually should not survive either. An authored check accretes obligations nobody would
   choose deliberately, and adopting a tool is what forces each one to be named and defended.
