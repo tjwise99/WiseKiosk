@@ -164,6 +164,13 @@ check-go:
     go -C backend test -race ./internal/...
 
 [group('checks')]
+[doc('FuzzShape, FuzzDecodeRequest and FuzzValidate each run fuzzed for 10s, asserting no panic or hang on crafted bytes; needs `just boundary-install`')]
+check-fuzz:
+    go -C backend test ./internal/modules/weather/ -run '^$' -fuzz '^FuzzShape$' -fuzztime 10s
+    go -C backend test ./internal/modules/weather/ -run '^$' -fuzz '^FuzzDecodeRequest$' -fuzztime 10s
+    go -C backend test ./internal/modules/weather/ -run '^$' -fuzz '^FuzzValidate$' -fuzztime 10s
+
+[group('checks')]
 [doc('The backend Go tree is clean under golangci-lint default linter set (errcheck, govet, ineffassign, staticcheck, unused), non-zero exit on any finding')]
 check-lint-go:
     go -C backend tool golangci-lint run ./...
@@ -328,4 +335,4 @@ check-restart-policy:
 
 [group('checks')]
 [doc('Run every check the PR gate runs that has a local form and needs neither Docker nor emulation nor the network; secret scanning, the PR-title check (commitlint, via the hook layer), the link check (lychee, from a digest-pinned image) and the workflow audit (zizmor, actionlint) are CI-only, the image tier is `just check-image`, the native armv6l run is `just smoke-native`, and the two online dependency-vulnerability checks are `just check-vulns-go` and `just check-vulns-npm`')]
-verify: check-untracked check-hooks check-branch check-reqs check-citations check-arch check-arch-trace check-boundary check-go check-lint-go check-secret-unwrap check-config-types check-build check-static-bundle check-lint-frontend check-typecheck-frontend check-unit check-render check-render-policy check-site check-adr-index check-adr-revs check-docs-index check-repo-silo check-languages check-dead-test check-restart-policy
+verify: check-untracked check-hooks check-branch check-reqs check-citations check-arch check-arch-trace check-boundary check-go check-fuzz check-lint-go check-secret-unwrap check-config-types check-build check-static-bundle check-lint-frontend check-typecheck-frontend check-unit check-render check-render-policy check-site check-adr-index check-adr-revs check-docs-index check-repo-silo check-languages check-dead-test check-restart-policy
