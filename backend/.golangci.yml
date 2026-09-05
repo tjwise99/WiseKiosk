@@ -1,0 +1,6 @@
+version: "2"
+
+# The default linter set (errcheck, govet, ineffassign, staticcheck, unused). Widen only with a
+# reason recorded here (docs/CI.md § Lint and type checks).
+linters:
+  default: standard
