@@ -7,17 +7,14 @@ import { defineConfig, type Plugin } from 'vite';
 import { configValidator } from './vite-plugin-config-validator.ts';
 import { moduleGraph } from './vite-plugin-module-graph.ts';
 
-/** One of the backend's tracked, served header values, trimmed the way it serves them (#266). */
+/** One of the backend's tracked, served header values, trimmed the way it serves them (#266 security response headers). */
 function servedHeader(file: string): string {
   return readFileSync(fileURLToPath(new URL(`../backend/internal/headers/${file}`, import.meta.url)), 'utf8').trim();
 }
 
 /**
- * Sets `preview.headers` from the same tracked files the backend embeds, so `just preview` and the
- * render tier's policy project serve the identical values under test (headers_test.go asserts the
- * backend side). Read inside the `config` hook, gated on `isPreview`, rather than inline in the
- * config object: `vite build` resolves this same file (the image build's frontend stage has no
- * `backend/` in its context) and must never read these paths.
+ * Sets `preview.headers` from the backend's tracked csp.txt and permissions-policy.txt, inside a
+ * `config` hook gated on `isPreview`.
  */
 function previewSecurityHeaders(): Plugin {
   return {

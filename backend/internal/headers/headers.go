@@ -19,17 +19,13 @@ var cspFile string
 //go:embed permissions-policy.txt
 var permissionsPolicyFile string
 
-// csp is the Content-Security-Policy value served on every response. Trimmed
-// once here: net/http rewrites an embedded trailing newline to a space on the
-// wire, which httptest.ResponseRecorder does not, so an untrimmed value would
-// pass a test asserting equality with the embedded string while shipping
-// differently.
+// csp is the Content-Security-Policy value served on every response, trimmed
+// of the trailing newline net/http would otherwise rewrite to a space on the
+// wire.
 var csp = strings.TrimSpace(cspFile)
 
-// permissionsPolicy is the Permissions-Policy value served on every response.
-// Committed to permissions-policy.txt rather than rendered at request time, so
-// headers_test.go can assert the tracked file has not drifted from what
-// universe and allowlist generate.
+// permissionsPolicy is the Permissions-Policy value served on every response,
+// read from the tracked permissions-policy.txt file.
 var permissionsPolicy = strings.TrimSpace(permissionsPolicyFile)
 
 // Wrap sets the content-security policy, the no-inference declaration and the

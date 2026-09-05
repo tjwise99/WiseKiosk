@@ -13,14 +13,12 @@ const VIEWPORTS = {
 };
 
 /**
- * The render tier driven against the served response headers rather than the dev server (#266): a
- * production build previewed through the render tier's own `vite.config.render.ts`, so the stub
- * registry `example-configuration.spec.ts`, `content-emission.spec.ts` and
- * `emitting-surfaces.spec.ts` place fixtures against is still present, with `preview.headers` — read
- * from the backend's tracked `csp.txt` and `permissions-policy.txt` — carried over by that config's
- * own `mergeConfig` of `vite.config.ts`. `harness.ts`'s `render` asserts no console warning of a
- * rejected directive or an unrecognised feature while these run; `check-render`'s own config and
- * project are untouched.
+ * Previews the render tier's production build, through `vite.config.render.ts`
+ * (#266 security response headers), running `example-configuration.spec.ts`,
+ * `content-emission.spec.ts` and `emitting-surfaces.spec.ts` against it. `preview.headers` is set
+ * from the backend's tracked `csp.txt` and `permissions-policy.txt`, carried over by
+ * `vite.config.render.ts`'s own `mergeConfig` of `vite.config.ts`. `harness.ts`'s `render` asserts no
+ * console warning of a rejected directive or an unrecognised feature while these run.
  */
 export default defineConfig({
   testDir: '.',

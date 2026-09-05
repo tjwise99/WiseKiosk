@@ -16,9 +16,8 @@ import (
 	"github.com/tjwise99/WiseKiosk/backend/internal/staticserve"
 )
 
-// wantCSP and wantPermissionsPolicy are read independently of headers.go's own
-// embed, so a served value that drifted from the tracked file — rather than
-// from this test's expectation of it — is what fails.
+// wantCSPFile and wantPermissionsPolicyFile hold csp.txt and
+// permissions-policy.txt, read independently of headers.go's own embed.
 //
 //go:embed csp.txt
 var wantCSPFile string
@@ -27,8 +26,7 @@ var wantCSPFile string
 var wantPermissionsPolicyFile string
 
 // schemaRoutes assembles the same schema surface backend/cmd wires into
-// newServer, so this package's own test exercises the routes Wrap actually
-// serves in the running process rather than a smaller stand-in.
+// newServer.
 type schemaRoutes struct {
 	health.Route
 	registry.Modules
@@ -119,10 +117,8 @@ func TestPermissionsPolicyFileMatchesTheGeneration(t *testing.T) {
 	}
 }
 
-// cspDirectives splits a served Content-Security-Policy value into each
-// directive's exact token list, so a caller can assert a directive's value
-// rather than the whole header string — independent of csp.txt, which is
-// TestServesTheHeaderSetOnEveryRoute's proof, not this one's.
+// cspDirectives splits a Content-Security-Policy header value into each
+// directive's name and token list.
 func cspDirectives(value string) map[string][]string {
 	directives := make(map[string][]string)
 	for _, part := range strings.Split(value, ";") {
@@ -148,11 +144,8 @@ func TestCSPConnectDefaultAndBaseAreExactlySelf(t *testing.T) {
 	}
 }
 
-// permissionsPolicyGrants splits a served Permissions-Policy value into the
-// features it grants (a non-empty allowlist) and the features it denies (an
-// empty one), independent of permissions-policy.txt and the universe/allowlist
-// slices — TestPermissionsPolicyFileMatchesTheGeneration is that proof, not
-// this one's.
+// permissionsPolicyGrants splits a Permissions-Policy header value into the
+// features it grants and the features it denies.
 func permissionsPolicyGrants(value string) (granted, denied map[string]bool) {
 	granted = make(map[string]bool)
 	denied = make(map[string]bool)

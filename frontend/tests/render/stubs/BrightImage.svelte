@@ -1,5 +1,5 @@
 <script lang="ts">
-  // Same-origin, so the file loads under the served `img-src 'self'` (#266); a `data:` URI does not.
+  // Same-origin, so the file loads under the served `img-src 'self'` (#266 security response headers); a `data:` URI does not.
   import brightImageSrc from './bright-image.gif';
 </script>
 

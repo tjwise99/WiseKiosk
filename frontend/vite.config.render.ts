@@ -35,9 +35,7 @@ function augmentRegistry(): Plugin {
  * registry could not tell apart from a registration that was never made.
  *
  * `build.assetsInlineLimit: 0` keeps every imported asset a served file rather than an inlined
- * `data:` URI, which the render tier's policy project (`playwright.policy.config.ts`) previews
- * under a Content-Security-Policy whose `img-src` is `'self'` (#266) — `BrightImage.svelte`'s
- * imagery must stay a same-origin `img` under that policy.
+ * `data:` URI (#266 security response headers).
  */
 export default mergeConfig(
   viteConfig,

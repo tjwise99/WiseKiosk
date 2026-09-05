@@ -13,7 +13,7 @@ and asserts none matches `Content Security Policy`, `Permissions-Policy` or `Unr
 Each row below was seeded into the working tree at the kiosk viewport
 (`--project=kiosk`) and reverted; `git diff --quiet` confirmed both the seed landing and the
 revert leaving no residue. Counts are this check's own population at the tree as it stands (WI3,
-#266): 15 tests.
+#266 security response headers): 15 tests.
 
 | Direction | Case | Input | Result |
 |---|---|---|---|
@@ -23,13 +23,14 @@ revert leaving no residue. Counts are this check's own population at the tree as
 | Must fail | An unrecognised Permissions-Policy feature | `permissions-policy.txt`'s `screen-wake-lock=()` changed to `screen-wake-lock=(), frobulate=()` | 15 failed — console: `Error with Permissions-Policy header: Origin trial controlled feature not enabled: 'frobulate'.` |
 
 **The CSP row is the defect WI3 fixed, seeded back.** `BrightImage.svelte`'s exempt-imagery fixture
-shipped as a `data:` URI until #266's `img-src 'self'` made it unloadable; reverting that one line is
-this check's own proof that it would have caught the regression, not just that it passes today.
+shipped as a `data:` URI until #266 security response headers added `img-src 'self'`, which made it
+unloadable; reverting that one line is this check's own proof that it would have caught the
+regression, not just that it passes today.
 
 **The unrecognised-feature row uses a name this repository already knows is invalid.**
-`frobulate` was in `permissions_policy.go`'s universe before the #266 Chromium-151 resync dropped it
-for logging exactly this message under a stock launch — the same name, reused here rather than
-invented, so the two records agree on what "unrecognised" means.
+`frobulate` was in `permissions_policy.go`'s universe before the #266 security response headers
+Chromium-151 resync dropped it for logging exactly this message under a stock launch — the same
+name, reused here rather than invented, so the two records agree on what "unrecognised" means.
 
 **What it does not catch.** A console message that does not contain any of the three matched
 substrings — a warning from an unrelated header, or a Permissions-Policy failure Chromium phrases

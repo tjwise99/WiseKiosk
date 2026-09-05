@@ -63,7 +63,7 @@ export async function serveLiveness(page: Page, liveness: Liveness): Promise<voi
 /**
  * Console text a page serving a response header wrong would print: a rejected
  * Content-Security-Policy directive, or a Permissions-Policy feature the browser does not
- * recognise (#266).
+ * recognise (#266 security response headers).
  */
 const POLICY_VIOLATION = /Content Security Policy|Permissions-Policy|Unrecognized feature/;
 
@@ -79,9 +79,7 @@ function underPolicyProject(): boolean {
  * a test says otherwise, so a fixture not asserting the unreachable state never raises one.
  *
  * Under the policy project this also asserts the page raised no console warning of a rejected
- * directive or an unrecognised feature — the render tier's own obligation is the page still
- * rendering, so that project drives real fixtures through this same entry point rather than a
- * dedicated one.
+ * directive or an unrecognised feature.
  */
 export async function render(
   page: Page,
