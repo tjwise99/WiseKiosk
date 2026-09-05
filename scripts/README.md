@@ -39,6 +39,7 @@ when a link breaks. Nothing enforces this — a wrong success line fails no buil
 | `check-arch-trace.py` | [cases](cases/check-arch-trace-py.md) |
 | `check-boundary` | [cases](cases/check-boundary.md) |
 | `check-go` | [cases](cases/check-go.md) |
+| `check-fuzz` | [cases](cases/check-fuzz.md) |
 | `check-lint-go` | [cases](cases/check-lint-go.md) |
 | `check-vulns-go` (`scripts/vulns/check_vulns.py --scope go`) | [cases](cases/check-vulns-go.md) |
 | `check-vulns-npm` (`scripts/vulns/check_vulns.py --scope npm`) | [cases](cases/check-vulns-npm.md) |

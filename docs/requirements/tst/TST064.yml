@@ -21,9 +21,9 @@ ref: ''
 references:
 - keyword: func TestTST064_TheOutlooksAreAsLongAsTheRequirementStates
   path: backend/internal/modules/weather/weather_test.go
-  sha: ee835ceecf8fc37b5a6c8e9c85934537b237f470765777f668d3106d92a9ae84
+  sha: 67be6f42f8d0f24e3392d3e7cdc6e8e2107fca5fc1cb239419c8f7ac8953c33d
   type: file
-reviewed: PbETNhDAZToVQFJghlyuqGUnIt6IOMLP1J9Uy5S8Dik=
+reviewed: W7ypqxqcdfemXACB-2bFghStP7n5IQ3QtWlsJD6DYEo=
 status: proposed
 text: |
   Unit test running the module's shaping over a captured response carrying more hours and more days

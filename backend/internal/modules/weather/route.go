@@ -1,7 +1,10 @@
 package weather
 
 import (
+	"bytes"
 	"encoding/json"
+	"errors"
+	"io"
 	"math"
 	"net/http"
 
@@ -41,26 +44,14 @@ type WeatherRoute struct{}
 func (WeatherRoute) PostApiWeather(w http.ResponseWriter, r *http.Request) {
 	router.BoundBody(w, r)
 
-	// Pre-set to NaN: a coordinate still NaN after a decode is one the body did
-	// not carry, JSON having no NaN literal to write, which is distinct from a
-	// coordinate of nought.
-	request := boundary.WeatherRequest{Lat: math.NaN(), Lon: math.NaN()}
-	decoder := json.NewDecoder(r.Body)
-	// A body carrying anything beyond the two the schema names is refused rather
-	// than read past: the answer is held under the point alone, so a request
-	// carrying more would buy a second rate budget for the same place
-	// (SRS012<!-- Request parameters validated against known-good per-source constraints -->).
-	decoder.DisallowUnknownFields()
-	if err := decoder.Decode(&request); err != nil {
-		router.Reject(w, router.InvalidParameters, "the request body could not be read as this source's parameters")
+	body, err := io.ReadAll(r.Body)
+	if err != nil {
+		router.Reject(w, router.InvalidParameters, errRequestNotDecodable.Error())
 		return
 	}
-	// The pre-fill above is the load-bearing half: the constraint is written as
-	// the range a coordinate must be inside, which NaN is not, so validate below
-	// refuses an omitted one on its own. This block buys the message naming what
-	// the body left out rather than a range it never fell outside.
-	if math.IsNaN(request.Lat) || math.IsNaN(request.Lon) {
-		router.Reject(w, router.InvalidParameters, "the request must name both a latitude and a longitude")
+	request, err := decodeRequest(body)
+	if err != nil {
+		router.Reject(w, router.InvalidParameters, err.Error())
 		return
 	}
 	if err := validate(request); err != nil {
@@ -68,6 +59,41 @@ func (WeatherRoute) PostApiWeather(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	served.Serve(w, r, key(request), buildURL(request))
+}
+
+// errRequestNotDecodable and errRequestMissingCoordinate are decodeRequest's
+// two sentinel failures, carrying the same two 400 message texts the inline
+// decode carried before decodeRequest was pulled out of the handler so a
+// fuzz target could drive it directly.
+var (
+	errRequestNotDecodable      = errors.New("the request body could not be read as this source's parameters")
+	errRequestMissingCoordinate = errors.New("the request must name both a latitude and a longitude")
+)
+
+// decodeRequest reads the point a request names. It is pure — bytes in, the
+// request or a sentinel error out — so a fuzz target can drive it directly.
+func decodeRequest(body []byte) (boundary.WeatherRequest, error) {
+	// Pre-set to NaN: a coordinate still NaN after a decode is one the body did
+	// not carry, JSON having no NaN literal to write, which is distinct from a
+	// coordinate of nought.
+	request := boundary.WeatherRequest{Lat: math.NaN(), Lon: math.NaN()}
+	decoder := json.NewDecoder(bytes.NewReader(body))
+	// A body carrying anything beyond the two the schema names is refused rather
+	// than read past: the answer is held under the point alone, so a request
+	// carrying more would buy a second rate budget for the same place
+	// (SRS012<!-- Request parameters validated against known-good per-source constraints -->).
+	decoder.DisallowUnknownFields()
+	if err := decoder.Decode(&request); err != nil {
+		return boundary.WeatherRequest{}, errRequestNotDecodable
+	}
+	// The pre-fill above is the load-bearing half: the constraint is written as
+	// the range a coordinate must be inside, which NaN is not, so validate
+	// refuses an omitted one on its own. This buys the message naming what the
+	// body left out rather than a range it never fell outside.
+	if math.IsNaN(request.Lat) || math.IsNaN(request.Lon) {
+		return boundary.WeatherRequest{}, errRequestMissingCoordinate
+	}
+	return request, nil
 }
 
 // key names what an answer is about. It is the decoded point written this
