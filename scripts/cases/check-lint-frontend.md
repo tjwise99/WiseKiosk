@@ -11,8 +11,9 @@ run inside the copy. eslint 10.10.0, typescript-eslint 8.69.0, eslint-plugin-sve
 
 **svelte-check is reporting, not blocking, until
 [#275 resolve ModuleEntry.component prop-type variance so svelte-check blocks](https://github.com/tjwise99/WiseKiosk/issues/275)
-lands** (owner ruling, 2026-09-05): its line carries `just`'s `-` prefix, so its output prints but its
-exit code never reaches the recipe's own. eslint's line is unaffected and still fails the recipe.
+lands** (docs/CI.md § *Lint and type checks*): its line carries `just`'s `-` prefix, so its output
+prints but its exit code never reaches the recipe's own. eslint's line is unaffected and still fails
+the recipe.
 
 | Direction | Case | Input |
 |---|---|---|

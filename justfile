@@ -133,28 +133,6 @@ codegen:
     cd backend && go tool oapi-codegen -config oapi-codegen.yaml ../boundary/openapi.yaml
     cd frontend && node_modules/.bin/orval
 
-# Every tool is resolved before anything is deleted: the clear below removes committed source, so a
-# toolchain that cannot run must fail with the tree intact rather than after emptying it. The Go
-# check runs the tool the generate step runs, which is what makes it a resolution rather than a
-# guess; `just boundary-install` is what a failure of any of them wants. `prettier` is resolved
-# beside orval because orval only *warns* when it cannot format — the run would otherwise succeed
-# and land unformatted output the diff below reports as schema drift.
-#
-# The generated directories are then cleared before `codegen`, which overwrites but never creates
-# what a generator did not emit: absent output reads as a deletion in the diff below, where a stale
-# file left in place would be byte-identical to what is committed. The non-empty assertions are the
-# other half — an emitted-but-empty file is a deletion the diff does see, and neither catches the
-# case the other does. `add --intent-to-add` reaches regenerated output that is untracked, and the
-# diff is against HEAD because that same `git add` stages the deletion a missing generator makes.
-#
-# The two compile steps are what a `test -s` cannot say. oapi-codegen exits *zero* on any
-# configuration it accepts, including one naming fewer targets than this repo needs — and its v2
-# parser falls back to the v1 schema, so a mis-shaped `generate:` can be accepted rather than
-# refused. Either way the output is non-empty and missing a whole target, and `go build` is what says
-# so: the process registers its routes through `boundary.HandlerFromMux` and the router renders its
-# error bodies from the generated models, so an absent target is an undefined symbol. `tsc` is the
-# same assertion one language over, narrowed to the generated directory; the general frontend
-# typecheck is `check-typecheck-frontend`'s.
 [group('checks')]
 [doc('The committed boundary contract is what the schema generates, and the generated Go and TypeScript both compile; needs `just boundary-install`')]
 check-boundary:
@@ -239,18 +217,12 @@ check-build:
 check-static-bundle: check-build
     python3 scripts/check-static-bundle.py
 
-# svelte-check reports three ModuleEntry.component prop-type variance findings the owner ruled not
-# to patch around with a type-only fix; #275 resolve ModuleEntry.component prop-type variance so
-# svelte-check blocks makes this line blocking once it lands.
 [group('checks')]
 [doc('The frontend is clean under eslint (flat config, recommended sets); svelte-check (--tsgo) reports and does not fail — #275 resolve ModuleEntry.component prop-type variance so svelte-check blocks flips it to blocking; needs `just boundary-install`')]
 check-lint-frontend:
     cd frontend && node_modules/.bin/eslint .
     -cd frontend && node_modules/.bin/svelte-check --tsconfig ./tsconfig.json --tsgo
 
-# The TS 7 binary by explicit path: `typescript`'s own devDependency is TS 6, consumed by eslint
-# and svelte-check through the `typescript` package, and a bare `tsc` resolves to whichever of the
-# two claims the `.bin/tsc` slot rather than to a decided version.
 [group('checks')]
 [doc('The whole frontend typecheck (tsc --noEmit, TS 7) is clean; needs `just boundary-install`')]
 check-typecheck-frontend:
