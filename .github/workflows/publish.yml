@@ -54,13 +54,17 @@ jobs:
       # (ADR 0015 rev 2). The annotation levels are declared here rather than restated elsewhere,
       # because the annotation check reads them from this workflow (docs/CI.md § Publishing and
       # provenance). `latest` moves to this release's image only when the release is not a
-      # pre-release (docs/DEPLOYMENT.md § Bring-up).
+      # pre-release (docs/DEPLOYMENT.md § Bring-up). `flavor: latest=false` disables the action's
+      # own automatic `latest` tag, which `type=semver` triggers regardless of the `enable=`
+      # condition on the explicit `type=raw` rule below.
       - id: meta
         uses: docker/metadata-action@dc802804100637a589fabce1cb79ff13a1411302 # v6.2.0
         env:
           DOCKER_METADATA_ANNOTATIONS_LEVELS: index,manifest
         with:
           images: ghcr.io/tjwise99/wisekiosk
+          flavor: |
+            latest=false
           tags: |
             type=semver,pattern={{version}}
             type=raw,value=latest,enable=${{ github.event.release.prerelease == false }}
@@ -97,9 +101,9 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TAG: ${{ github.event.release.tag_name }}
-          DIGEST_LINE: "Image: ghcr.io/tjwise99/wisekiosk@sha256:${{ steps.build.outputs.digest }}"
+          DIGEST_LINE: "Image: ghcr.io/tjwise99/wisekiosk@${{ steps.build.outputs.digest }}"
         run: |
           gh release view "$TAG" --json body -q .body > "$RUNNER_TEMP/notes.md"
-          sed -i '\#^Image: ghcr\.io/tjwise99/wisekiosk@sha256:#d' "$RUNNER_TEMP/notes.md"
+          sed -i '\#^Image: ghcr\.io/tjwise99/wisekiosk@#d' "$RUNNER_TEMP/notes.md"
           printf '%s\n' "$DIGEST_LINE" >> "$RUNNER_TEMP/notes.md"
           gh release edit "$TAG" --notes-file "$RUNNER_TEMP/notes.md"
