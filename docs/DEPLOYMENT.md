@@ -12,7 +12,7 @@ product's obligations live in [`requirements/`](requirements/README.md)
 decides it is described there, which is where every check on this repository is described.
 
 **What a release consists of is
-[ADR 0020 rev 2](decisions/0020-release-artifact-set-and-operator-tooling.md).** #54 container build
+[ADR 0020 rev 3](decisions/0020-release-artifact-set-and-operator-tooling.md).** #54 container build
 and publish ships the image, the deployment recipe, the example configuration and the health signal
 the image declares. #67 security and supply-chain gates ships the signature and the attestation the
 optional verification below reads, so that step is the one thing here with nothing yet to verify
@@ -84,12 +84,12 @@ output is a separate assertion and is in [`CI.md`](CI.md).
 same working deployment; the recipe names a tag rather than a digest, so an operator who wants the
 digest they verified to be the one that runs pins it in their own copy — which is what the recipe
 being a sample rather than an obligation
-([ADR 0020 rev 2](decisions/0020-release-artifact-set-and-operator-tooling.md)) leaves them free to do.
+([ADR 0020 rev 3](decisions/0020-release-artifact-set-and-operator-tooling.md)) leaves them free to do.
 
 ## The deployment recipe
 
 The recipe is a **sample carrying opinionated defaults**, a starting point an operator edits
-([ADR 0020 rev 2](decisions/0020-release-artifact-set-and-operator-tooling.md)). The obligation is on
+([ADR 0020 rev 3](decisions/0020-release-artifact-set-and-operator-tooling.md)). The obligation is on
 what ships, never on what runs — an operator who edits the recipe, or deploys without it, has made
 their own choice, and WiseKiosk has no way to override it.
 
@@ -109,7 +109,7 @@ secrets out of client output, and the recipe is incomplete in that respect until
 ## The health signal
 
 The image declares a `HEALTHCHECK` against the service port and runs it through the `-health-check`
-self-check flag. [ADR 0020 rev 2](decisions/0020-release-artifact-set-and-operator-tooling.md) fixes
+self-check flag. [ADR 0020 rev 3](decisions/0020-release-artifact-set-and-operator-tooling.md) fixes
 both, and is where the port's number is written — a recipe reads it there rather than carrying a
 copy that a later rev would leave behind. The check is healthy while the backend is serving,
 unhealthy when it is not, including when the process is alive but wedged.

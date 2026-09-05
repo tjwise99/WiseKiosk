@@ -1,11 +1,16 @@
 # 0020 — A release is an image in the registry and two files on a tag; it carries no operator tooling program, and the operator's interface to the binary is a fixed port and two flags
 
 **Status:** accepted
-**Decided:** 2026-08-19 (#9 backend skeleton, extending the 2026-08-09 design discussion on #71 release artifact set)
-**Rev:** 2
+**Decided:** 2026-09-05 (#268 release from a manual tag, extending the 2026-08-19 operator-interface
+rev on #9 backend skeleton and the 2026-08-09 design discussion on #71 release artifact set)
+**Rev:** 3
 
 ## Revisions
 
+- **rev 3** — 2026-09-05 — adopts the tag-triggered publish workflow: a release is cut by hand on a
+  semver tag rather than published from every commit on the default branch, `latest` moves only for
+  a non-pre-release, the release assets are named by basename, and the release notes gain the
+  digest line (#268 release from a manual tag).
 - **rev 2** — 2026-08-19 — extends the decision to the operator interface the skeleton built: a
   fixed `:8080` and the two flags on the one binary, housed here so the code and
   [`../DEPLOYMENT.md`](../DEPLOYMENT.md) cite them rather than each asserting them (#9 backend
@@ -60,10 +65,12 @@ nobody took.
 | Where | What |
 |---|---|
 | The registry, at the image digest | the image, with its SBOM, signature and build-provenance attestation attached to that digest as referring artifacts |
-| The release tag | the deployment recipe, and an example configuration file |
+| The release tag | the deployment recipe, `compose.yaml`, and an example configuration file, `config.example.json`, each at its committed basename |
 | The documentation site | nothing. It tracks the default branch and is deliberately not versioned |
 
-The release notes name the digest, which is what ties the tag to the registry.
+The release notes name the digest, which is what ties the tag to the registry: the publish
+workflow appends one line, `Image: ghcr.io/tjwise99/wisekiosk@sha256:<digest>`, to whatever notes
+the release was cut with, rather than replacing them.
 
 **The image reference is not an asset.** It is a pointer — the thing the registry-side material
 describes and the thing the recipe resolves. Listing it beside four files is what made one sentence
@@ -73,6 +80,15 @@ stand for three assertions.
 documented procedure a stable retrieval URL, and they are what makes the asset-set claim in
 [`../CI.md`](../CI.md) something a check can decide rather than a description of a release form the
 project does not produce.
+
+**A release is cut by hand, on a semver tag.** The owner runs `gh release create vMAJOR.MINOR.PATCH`;
+`publish.yml`'s first step asserts the tag against that shape and fails the run rather than
+publishing from anything else. The image is tagged by that same version, and `latest` moves to it
+only when the release is not cut `--prerelease` — a pre-release publishes its own version tag and
+never moves the tag the committed recipe references
+([`../DEPLOYMENT.md`](../DEPLOYMENT.md) § *Bring-up*). The push that published `latest` from every
+commit on the default branch is retired with it: nothing publishes from `main`, and a bad release is
+re-cut rather than re-run.
 
 **No operator tooling program ships as part of a release**, and the release carries an example
 configuration file instead.

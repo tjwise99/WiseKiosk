@@ -333,7 +333,7 @@ in a separate job that pulls from the registry, reads only the registry and the 
 log, and holds no credential. What builds and pushes the image is `.github/workflows/publish.yml`,
 which #54 container build and publish landed; every check below is unbuilt and owned by #67 security
 and supply-chain gates, against the set
-[ADR 0020 rev 2](decisions/0020-release-artifact-set-and-operator-tooling.md) decides. That workflow
+[ADR 0020 rev 3](decisions/0020-release-artifact-set-and-operator-tooling.md) decides. That workflow
 tags each build of the default branch `latest` beside the commit sha, and the committed recipe
 references `latest` so it runs unedited ([`DEPLOYMENT.md`](DEPLOYMENT.md) § *Bring-up*); the digest the
 release notes name is what an operator who chooses to verify checks against.
@@ -357,7 +357,7 @@ a posture resting on this section. Until #77 fences this document, read it as in
   **What no check here decides:** the documentation site is deployed from the default branch rather
   than from a tag, so it is not a release asset and nothing asserts any correspondence between what it
   describes and the digest an operator is running. That drift is chosen rather than overlooked, and
-  ADR 0020 rev 2 records the choice.
+  ADR 0020 rev 3 records the choice.
 - **Signature.** Keyless `cosign` verification against the published digest, with the expected
   certificate identity and OIDC issuer, exits zero; against a deliberately wrong identity it exits
   non-zero.
@@ -415,7 +415,7 @@ What each of these obligations *is*, and why, is [`DEPLOYMENT.md`](DEPLOYMENT.md
   **It gates that one key deliberately and no others**: the key is the residue of a
   requirement deleted on #69 tree rebuild, not the beginning of a recipe linter. Every other value in
   the recipe is a sample default an operator is expected to weigh and change
-  ([ADR 0020 rev 2](decisions/0020-release-artifact-set-and-operator-tooling.md)), and gating one would
+  ([ADR 0020 rev 3](decisions/0020-release-artifact-set-and-operator-tooling.md)), and gating one would
   assert a recommendation as an obligation.
 - **The image reports its health in both directions.** `scripts/image/health_signal.py`, run by
   `just check-image` in the `image-tests` job, runs the argument vector the image's own
