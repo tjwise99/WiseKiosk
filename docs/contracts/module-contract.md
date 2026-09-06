@@ -67,8 +67,7 @@ themeparks.wiki — and a new module joins it the same way.
    unit tests for the shaping library, and fuzz targets for the shaping library's parser and for the
    route's request decode and validation, each run by `check-fuzz` and each wrapping its own call in
    a per-input wall-clock deadline that fails the test and names the target if a hang reaches it
-   ([`CI.md § Backend fuzz`](../CI.md#backend-fuzz);
-   [ADR 0029 rev 1](../decisions/0029-fuzz-merge-path-time-boxed.md)). What they must cover is
+   ([`CI.md § Backend fuzz`](../CI.md#backend-fuzz)). What they must cover is
    [`TESTING.md`](../TESTING.md)'s, not this document's; that the tests exist and sit where the
    runner reaches them is gated
    ([`CI.md § Module and framework structure`](../CI.md#module-and-framework-structure)), and the

@@ -46,8 +46,7 @@ that measured cost rather than tuned to the fuzzer's own observed throughput.
   every run identically without one, which is sufficient (the fix removes the hang, not a corpus
   entry) but means the two must-fail hang rows above are asymmetric in what they leave behind.
 - **The per-input deadline cannot tell a hang from a slow-but-finite computation.** A target that
-  legitimately needs more than a second on some input fails exactly like a real hang; see
-  [ADR 0029 rev 1](../../docs/decisions/0029-fuzz-merge-path-time-boxed.md)'s Consequences.
+  legitimately needs more than a second on some input fails exactly like a real hang.
 - **`runWithin`'s goroutine outlives a failing test.** A genuine hang leaves its goroutine running for
   the life of the process — Go provides no way to kill one from outside — which is bounded by the
   process itself exiting at the end of the `go test` invocation, not by anything this check does.

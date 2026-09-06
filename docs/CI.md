@@ -164,9 +164,10 @@ without a detected race.
 Three targets — `FuzzShape`, `FuzzDecodeRequest`, `FuzzValidate` — each run under `go test -fuzz` for
 a fixed ten seconds, one invocation per target, in `check-fuzz`. Every target asserts no panic and no
 hang within the budget; `FuzzShape` additionally asserts its result is deterministic across two calls
-on the same bytes. What the three targets are and why fuzzing rather than a scheduled job is
-[ADR 0029 rev 1](decisions/0029-fuzz-merge-path-time-boxed.md)'s; what they must guarantee is
-[`TESTING.md`](TESTING.md)'s Fuzz row.
+on the same bytes. What they must guarantee is [`TESTING.md`](TESTING.md)'s Fuzz row; the targets
+named, the rejected alternatives and the reopen premise are recorded on
+[#267 backend fuzz tier](https://github.com/tjwise99/WiseKiosk/issues/267)
+(owner, 2026-09-06: no ADR).
 
 **No panic is the engine's to catch; no hang is the target's own.** Go's fuzzing engine reports a
 panic the moment it happens, which a ten-second search catches reliably. Its own documentation
