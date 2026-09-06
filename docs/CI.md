@@ -311,7 +311,7 @@ Whether a comment is narrative rather than mechanism, and whether added comment 
 place, is a review habit rather than a gate: #59 comment-discipline gate closed not-planned (owner,
 2026-08-16). The defect class it targeted is carried by the `review-diff.py` pre-commit hook, which
 surfaces [`CONTRIBUTING.md`](../CONTRIBUTING.md)'s *Comments* checklist questions before a commit, and by
-independent review — across the five-PR ADR 0016 rev 10 adoption wave this produced zero
+independent review — across the five-PR ADR 0016 rev 11 adoption wave this produced zero
 comment-discipline findings. Reopens if a narrative block or comment bloat reaches `main` past both.
 
 ## Dependency vulnerabilities
@@ -319,12 +319,13 @@ comment-discipline findings. Reopens if a narrative block or comment bloat reach
 Any resolved Go-module or npm dependency with a known vulnerability fails the pull request, **at any
 severity**, unless the finding has a current register entry. One stdlib-only script,
 `scripts/vulns/check_vulns.py`, asserts both ecosystems and applies the one register; `--scope go` or
-`--scope npm` selects which. `just check-vulns-go` runs `go -C backend tool govulncheck -json ./...`;
-`just check-vulns-npm` runs `npm --prefix frontend audit --json` over the whole dependency tree, no
-`--audit-level`. Pass/fail is decided from each scanner's parsed JSON alone — `govulncheck`'s `-json`
-mode exits 0 whatever it finds, and this gate holds npm's scanner to the same rule rather than trusting
-an exit code the other tool cannot promise. The complete finding list is always printed, per § *What CI
-provides*, whether or not a finding is suppressed.
+`--scope npm` selects which (a third, `--scope image`, is § *Image vulnerabilities*'s). `just
+check-vulns-go` runs `go -C backend tool govulncheck -json ./...`; `just check-vulns-npm` runs `npm
+--prefix frontend audit --json` over the whole dependency tree, no `--audit-level`. Pass/fail is
+decided from each scanner's parsed JSON alone — `govulncheck`'s `-json` mode exits 0 whatever it
+finds, and this gate holds npm's scanner to the same rule rather than trusting an exit code the other
+tool cannot promise. The complete finding list is always printed, per § *What CI provides*, whether or
+not a finding is suppressed.
 
 **One allowance, Go only:** the gate may consider reachability — a vulnerability in code that is
 present but never called need not fail. Without it the gate produces findings nobody can act on, and
@@ -354,15 +355,28 @@ versions it names are recorded verbatim so a reviewer can rebuild it. Recorded i
 ## Image vulnerabilities
 
 The built container image is scanned, failing the build on any finding at any severity unless the
-finding has a current register entry.
-
-- An image built from a fixture manifest carrying a seeded vulnerability, asserted to exit non-zero;
-  the clean image asserted to exit zero; a finding with a current register entry asserted not to fail.
+finding has a current register entry. `--scope image` of the same script, `scripts/vulns/check_vulns.py`,
+runs Trivy — from a digest-pinned image, `TRIVY_IMAGE` in the script — against the local Docker
+daemon's copy of the tag the `image-tests` job already built (`wisekiosk:citest`), and holds the parsed
+`--format json` output to the one register `--scope go` and `--scope npm` already apply. An empty or
+missing fixed version changes nothing: an unfixed finding fails like any other, and a register entry is
+always eligible relief, because nothing in a built image is first-party.
 
 This is what covers operating-system and base-layer packages. The source-level dependency gate never
 inspects them.
 
-Unbuilt; owned by #67 security and supply-chain CI gates.
+**The step reports and does not yet fail the build.** Its first real run found genuine, unregistered
+findings against this project's own pinned base image (10 CVEs in `libcrypto3` and `libssl3`, recorded
+in the case file below) rather than nothing to prove the gate against, so it carries
+`continue-on-error: true` until
+[#293 clear the first-run image vulnerability findings and make the Trivy step blocking](https://github.com/tjwise99/WiseKiosk/issues/293)
+either registers or fixes them and removes it.
+
+**No fixture is committed** — [ADR 0010 rev 2](decisions/0010-runtime-materialised-gate-fixtures.md)
+forbids a resolvable vulnerable artifact in the tracked tree. The case is built as a throwaway image at
+record time and run through the production script with `--image` pointed at it; the seed Dockerfile and
+the vulnerability ids it names are recorded verbatim so a reviewer can rebuild it. Recorded in
+[`../scripts/cases/check-vulns-image.md`](../scripts/cases/check-vulns-image.md).
 
 ## Secret scanning
 
@@ -607,28 +621,33 @@ standing threshold with a decision per finding.
 
 The register is a JSON list; each entry is an object carrying exactly five fields — `advisory` (the
 finding's id, matched against a scan's primary id or any alias — a Go finding's OSV id or its GHSA/CVE
-aliases, an npm finding's GHSA id), `scope` (`go` or `npm` — which recipe's findings the entry can
-cover), `no_fix_because`, `no_alternative_because` — **why no alternative dependency or base image is
-viable**, what makes an entry a decision rather than a suppression: an entry that cannot state it
-should have been a version bump or a replacement — and `review_by`, an ISO 8601 date evaluated at
-check time (today ≤ `review_by` ≤ today + 90 days, UTC). The last is what stops *accepted for now*
-becoming *accepted permanently* with no moment at which anyone looks again — an entry outside that
-window fails, which puts every live exception in front of a person quarterly. Committed `[]`.
+aliases, an npm finding's GHSA id, a Trivy finding's own `VulnerabilityID`), `scope` (`go`, `npm` or
+`image` — which recipe's findings the entry can cover), `no_fix_because`, `no_alternative_because` —
+**why no alternative dependency or base image is viable**, what makes an entry a decision rather than a
+suppression: an entry that cannot state it should have been a version bump or a replacement — and
+`review_by`, an ISO 8601 date evaluated at check time (today ≤ `review_by` ≤ today + 90 days, UTC). The
+last is what stops *accepted for now* becoming *accepted permanently* with no moment at which anyone
+looks again — an entry outside that window fails, which puts every live exception in front of a person
+quarterly. Committed `[]`.
 
 The gate asserts: every entry is complete and current; every finding suppressed in scan output has a
 matching entry; no entry matches a first-party finding — a Go package path under this repository's own
 module, or the npm project's own package name — or a Go standard-library finding, none of which has an
 exception path regardless of currency (§ *Dependency vulnerabilities*); and no entry exists for an
 advisory no scan reports — so the register cannot accumulate rows for problems that no longer exist.
-Each of these is decided **within the scope being checked**:
-`check-vulns-go` examines only `scope: "go"` entries against what govulncheck reports, and
-`check-vulns-npm` only `scope: "npm"` entries against what npm audit reports — so validating the whole
-register needs both to run, which they do, as two separate CI steps. An entry whose own `scope` is
-missing or is neither `go` nor `npm` cannot be routed to either recipe this way, so it fails **both**
-rather than falling through unexamined by either.
+**An image finding is always eligible for a register entry** — nothing in a built image is this
+project's own source, so scope `image` has no first-party exclusion to apply. Each of these is decided
+**within the scope being checked**:
+`check-vulns-go` examines only `scope: "go"` entries against what govulncheck reports,
+`check-vulns-npm` only `scope: "npm"` entries against what npm audit reports, and the image scan only
+`scope: "image"` entries against what Trivy reports — so validating the whole register needs all three
+run, which they do, as three separate CI steps. An entry whose own `scope` is missing or is none of
+`go`, `npm` or `image` cannot be routed to any of them this way, so it fails **all three** rather than
+falling through unexamined by any.
 
-Recorded in [`../scripts/cases/check-vulns-go.md`](../scripts/cases/check-vulns-go.md) and
-[`../scripts/cases/check-vulns-npm.md`](../scripts/cases/check-vulns-npm.md).
+Recorded in [`../scripts/cases/check-vulns-go.md`](../scripts/cases/check-vulns-go.md),
+[`../scripts/cases/check-vulns-npm.md`](../scripts/cases/check-vulns-npm.md) and
+[`../scripts/cases/check-vulns-image.md`](../scripts/cases/check-vulns-image.md).
 
 ## Documentation integrity
 
@@ -637,14 +656,14 @@ resolve, a citation to something that does not exist, an index that has drifted 
 
 - Every relative Markdown link in every tracked file resolves inside the repository, decided by
   `lychee` run from its digest-pinned official image over the `git ls-files` Markdown set
-  ([ADR 0016 rev 10](decisions/0016-maintained-tools-for-standard-artifacts.md)). All three syntaxes
+  ([ADR 0016 rev 11](decisions/0016-maintained-tools-for-standard-artifacts.md)). All three syntaxes
   carrying a relative path are read — the inline form, a link-reference definition, and a raw HTML
   anchor's `href` — each held against the retired authored check's recorded cases, in both
   directions. A destination may be angle-bracketed or carry a title; neither is part of the path.
   **The gate runs `--offline`, and that is a decision rather than an inherited default.** Online
   checking makes third-party availability a merge condition, which § *Upstream contract checks*
   refuses for its own gates for the same reason; offline buys that stability by checking absolute
-  `http`/`https` links not at all. With the host allowlist retired (ADR 0016 rev 10), an absolute
+  `http`/`https` links not at all. With the host allowlist retired (ADR 0016 rev 11), an absolute
   link is entirely unconstrained: documentation may link outward, and nothing here reviews where to.
   **The gate is a CI-only exception rather than a `verify` check**: the image digest is the pin,
   and a contributor machine is not assumed to run docker. A local run is the same invocation — piping `git ls-files
@@ -655,13 +674,13 @@ resolve, a citation to something that does not exist, an index that has drifted 
   fence is a sample rather than a reference. A fragment naming no heading in a target whose path
   resolves: fragment checking is off, so only the path half of the destination is proven. A
   destination that leaves the repository and lands on a file that exists, by `../` or through a
-  tracked symlink: the escape and symlink obligations are retired knowingly (ADR 0016 rev 10), and
+  tracked symlink: the escape and symlink obligations are retired knowingly (ADR 0016 rev 11), and
   the CI container failing such a link because only the checkout is mounted is incidental, not
   asserted. A fence that never closes runs to the end of its document under CommonMark, so nothing
   past it is scanned and the run reports clean — seeded and confirmed, and the Sphinx build passes
-  the same seed; no residue guard is kept, on ADR 0016 rev 10's own bar that one residual obligation
+  the same seed; no residue guard is kept, on ADR 0016 rev 11's own bar that one residual obligation
   does not earn a second gate beside an adopted tool. lychee itself reports success over an
-  empty input set — the ruling ADR 0016 rev 10 records for adopted tools — but the CI step
+  empty input set — the ruling ADR 0016 rev 11 records for adopted tools — but the CI step
   materialises the tracked-file list and fails on a failed or empty listing before lychee runs: a
   failed measurement is not an empty population, and a scan of nothing must not read as clean. A
   root-relative destination fails, with a message naming the missing root rather than a wrong
@@ -845,7 +864,7 @@ changed, which the citation resolver above decides without anyone declaring anyt
   zero by design (§ *What is not gated here*), so there is no verdict for an untracked file to
   escape.
 - **Every hook in the local hook layer passes.** `.pre-commit-config.yaml` is that layer
-  ([ADR 0016 rev 10](decisions/0016-maintained-tools-for-standard-artifacts.md)): no private key, no
+  ([ADR 0016 rev 11](decisions/0016-maintained-tools-for-standard-artifacts.md)): no private key, no
   file over `check-added-large-files`' threshold, every YAML and JSON file parses, no merge-conflict
   marker committed while a merge is in progress (outside one, `check-merge-conflict` judges nothing —
   a bare `=======` is also a Markdown setext underline), no file mixing line-ending kinds — plus the
@@ -859,7 +878,7 @@ changed, which the citation resolver above decides without anyone declaring anyt
   advisory fast feedback at commit, on the commit message, and at push (`pre-commit install`, once
   per clone); the binding run for the file-scanning hooks is CI's, over every tracked file — the
   commitlint hooks of the bullet below run at their own stages, not in that run. **A hook whose file set is empty is skipped and reports
-  success** — pre-commit's own behaviour, which ADR 0016 rev 10's empty-population ruling permits;
+  success** — pre-commit's own behaviour, which ADR 0016 rev 11's empty-population ruling permits;
   the authored hook runs regardless of the file set (`always_run`) and reports success over an empty
   tracked tree, under the same ruling. pre-commit itself is pinned in `scripts/requirements-dev.txt`
   — installed into `scripts/.venv` by `just hooks-install` and by CI's install step, and covered by
@@ -868,7 +887,7 @@ changed, which the citation resolver above decides without anyone declaring anyt
   hand, is its updater.
 - **The pull-request title is a Conventional Commit, and so is each local commit message** — one
   obligation at two stages, delegated to `commitlint`
-  ([ADR 0016 rev 10](decisions/0016-maintained-tools-for-standard-artifacts.md); the gate itself is
+  ([ADR 0016 rev 11](decisions/0016-maintained-tools-for-standard-artifacts.md); the gate itself is
   [ADR 0006 rev 5](decisions/0006-process-gates.md)'s). Both stages run through the hook layer's
   `repo: local` hooks and one base configuration, `.commitlintrc.json` —
   `@commitlint/config-conventional`, plus a `scope-case` rule restoring the retired check's
@@ -921,7 +940,7 @@ changed, which the citation resolver above decides without anyone declaring anyt
 ## Action pins and workflow privilege
 
 The workflows are themselves a supply chain and themselves privileged. Both are audited from the
-files by two maintained tools ([ADR 0016 rev 10](decisions/0016-maintained-tools-for-standard-artifacts.md)),
+files by two maintained tools ([ADR 0016 rev 11](decisions/0016-maintained-tools-for-standard-artifacts.md)),
 each run in CI from a digest-pinned official image over the `.github/workflows` input set: `zizmor`
 at the `pedantic` persona for what a workflow may do — action pinning, permission grants, credential
 persistence and template injection among its audit set — and `actionlint` for whether a workflow is
@@ -947,10 +966,10 @@ channel is decided.
 - **An unreadable workflow fails rather than being skipped.** Both tools parse real YAML, so a layout
   that cannot be read is a syntax error, not a skip — GitHub itself would refuse the same file. A run
   discovering no workflow at all fails too, as `zizmor`'s own behaviour (`no inputs collected`)
-  rather than an obligation on it (ADR 0016 rev 10's empty-population ruling).
+  rather than an obligation on it (ADR 0016 rev 11's empty-population ruling).
 
 **What the gate deliberately lets through.** The `# vN` version comment beside a pin is retired as an
-obligation (ADR 0016 rev 10): a stale or absent comment passes, and the adopted
+obligation (ADR 0016 rev 11): a stale or absent comment passes, and the adopted
 `helpers:pinGitHubActionDigests` preset maintains the comments only on the bumps it performs.
 The audits needing the GitHub API (`known-vulnerable-actions` and `ref-version-mismatch` among them)
 do not run: the gate runs the offline audit set, deterministically, so a verdict moves only when a
@@ -1084,12 +1103,14 @@ already decided, which is what makes it a check and not a want.
   second spelling to drift (#101 CI-invokes-just, which retired the authored comparison check with
   that defect class). What enforces the wiring is execution itself: a step invoking a recipe the
   justfile does not define fails its job loudly, and a recipe edit is an edit to what CI runs.
-  **Six CI steps are exceptions with no local form**, named here and machine-checked nowhere:
+  **The CI steps below are exceptions with no local form**, named here and machine-checked nowhere:
   secret scanning (gitleaks — walks history a checkout's tree does not carry), the PR-title
   commitlint run (no PR title exists locally), the lychee link check, the zizmor and actionlint
   workflow audits (each run from a digest-pinned image; docker is not assumed on a contributor
-  machine, and no local install channel is decided), and CodeQL (§ *First-party source scanning*
-  — the action provisions its own CodeQL CLI bundle, and no local invocation is decided).
+  machine, and no local install channel is decided), CodeQL (§ *First-party source scanning*
+  — the action provisions its own CodeQL CLI bundle, and no local invocation is decided), and the
+  image vulnerability scan (`check_vulns.py --scope image` — needs the daemon-built image and the
+  network, so it carries no `just` recipe of its own, unlike its sibling scopes below).
   **A different shape holds `check-vulns-go`, `check-vulns-npm`, `check-image` and `smoke-native`:**
   each has an ordinary `just` recipe, so this bullet's own claim still holds for them, but none is a
   `just verify` dependency. The vulnerability pair needs the network on every run and `verify` stays
