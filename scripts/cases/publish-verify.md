@@ -18,9 +18,9 @@ No release has been published from this workflow yet — the `verify` job's firs
 `v0.0.1 --prerelease` exercise scheduled for after this PR merges (§ *Sequencing*, WI4). Everything
 below was exercised against real tool output measured for this ticket (a throwaway image built from
 this repository's own `Dockerfile`, pushed to a local `registry:2` container, scanned with the pinned
-syft and inspected with `docker buildx imagetools inspect`; findings recorded in full in
-`scratchpad/269-sbom-shape.md` during implementation) and against realistic synthetic fixtures built
-from that measured shape. The **reviewer-runnable seeds** section below is what a reviewer (or WI4's
+syft and inspected with `docker buildx imagetools inspect`, measured during implementation and not
+separately retained) and against realistic synthetic fixtures built from that measured shape. The
+**reviewer-runnable seeds** section below is what a reviewer (or WI4's
 exercise) runs against a real published digest once one exists.
 
 **`sbom_attest.py` (publish job, per-child SBOM generation and attestation).** `read_children`
@@ -70,7 +70,7 @@ digest this PR cannot produce:
 | `check_provenance_fields` | Wrong `sourceRepositoryDigest` | fails only the `sourceRepositoryDigest` assertion |
 | `check_provenance_fields` | Wrong `subject[0].digest.sha256` | fails only the subject-digest assertion |
 | `check_provenance_fields` | Two entries instead of one | `expected exactly one attestation entry, got 2` |
-| `go_module_name`, `dockerfile_final_from`, `purl_qualifier` | Run against this repository's own `backend/go.mod` and `Dockerfile`, and against the measured apk/image-descriptor purls in `scratchpad/269-sbom-shape.md` | `github.com/tjwise99/WiseKiosk/backend`; `('alpine', '3.24')`; `alpine-3.24.1` / `x86_64` / `amd64` respectively — all match the measured values exactly |
+| `go_module_name`, `dockerfile_final_from`, `purl_qualifier` | Run against this repository's own `backend/go.mod` and `Dockerfile`, and against `pkg:apk/alpine/alpine-baselayout@3.7.2-r1?arch=x86_64&distro=alpine-3.24.1` (a real apk purl measured with syft v1.51.1 against this repository's own image) | `github.com/tjwise99/WiseKiosk/backend`; `('alpine', '3.24')`; `alpine-3.24.1` / `x86_64` respectively — all match the measured values exactly |
 
 **The vendored SPDX 2.3 schema** (`scripts/publish/spdx-schema-2.3.json`, from
 https://github.com/spdx/spdx-spec/blob/v2.3/schemas/spdx-schema.json at tag `v2.3`) validated a real

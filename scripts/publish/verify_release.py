@@ -66,7 +66,7 @@ def run(cmd, **kwargs):
     return subprocess.run(cmd, capture_output=True, text=True, **kwargs)
 
 
-# --- signature (2a) ---------------------------------------------------------------------------
+# --- signature ----------------------------------------------------------------------------------
 
 def cosign_verify(target, identity_regexp):
     result = run(["cosign", "verify", "--certificate-identity-regexp", identity_regexp,
@@ -94,7 +94,7 @@ def step_signature(ref, digest, problems):
         fail(problems, f"signature: refused for an unexpected reason: {output.strip()}")
 
 
-# --- provenance (2b) ---------------------------------------------------------------------------
+# --- provenance ---------------------------------------------------------------------------------
 
 def gh_attestation_verify(target, signer_workflow, bundle_from_oci=False, as_json=False):
     cmd = ["gh", "attestation", "verify", target, "--repo", GH_REPO,
@@ -177,7 +177,7 @@ def step_provenance(ref, digest, commit, problems):
                        f"did not verify: {(stderr or stdout).strip()}")
 
 
-# --- sbom (2c) -----------------------------------------------------------------------------
+# --- sbom ----------------------------------------------------------------------------------
 
 def purl_qualifier(purl, name):
     match = re.search(rf"[?&]{re.escape(name)}=([^&]+)", purl or "")
@@ -327,7 +327,7 @@ def step_sbom(ref, digest, syft, problems):
                            f"only in the regeneration: {sorted(regenerated_pairs - attested_pairs)}")
 
 
-# --- attached set (2e) ---------------------------------------------------------------------------
+# --- attached set -------------------------------------------------------------------------------
 
 def step_attached(ref, digest, tag, problems):
     try:
