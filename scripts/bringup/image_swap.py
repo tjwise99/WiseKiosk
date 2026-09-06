@@ -17,27 +17,12 @@ import shutil
 import subprocess
 import sys
 import tempfile
-import time
-import urllib.error
-import urllib.request
 from pathlib import Path
 
-IMAGE = "ghcr.io/tjwise99/wisekiosk"
+import common
+
 MOUNT_TARGET = "/srv/kiosk/config.json"
-CONFIG_URL = "/config.json"
 VERSION_ANNOTATION = "org.opencontainers.image.version"
-
-# Docker's own substitution for a HEALTHCHECK declaration naming no interval, retries or start
-# period, in the units `docker image inspect` itself reports (nanoseconds).
-DEFAULT_INTERVAL_NS = 30_000_000_000
-DEFAULT_RETRIES = 3
-DEFAULT_START_PERIOD_NS = 0
-
-HEALTH_POLL_INTERVAL = 1.0
-
-
-class ImageSwapError(Exception):
-    """A run's mount, health, configuration or version assertion did not hold."""
 
 
 def fail(problem):
@@ -61,7 +46,7 @@ def download_config(tag, directory):
         text=True,
     )
     if completed.returncode != 0:
-        raise ImageSwapError(
+        raise common.HarnessError(
             f"`gh release download {tag}` exited {completed.returncode} "
             f"({completed.stderr.strip()})"
         )
@@ -85,7 +70,7 @@ def start_container(image_ref, config_path):
         text=True,
     )
     if completed.returncode != 0:
-        raise ImageSwapError(
+        raise common.HarnessError(
             f"`docker run {image_ref}` exited {completed.returncode} ({completed.stderr.strip()})"
         )
     return completed.stdout.strip()
@@ -96,7 +81,7 @@ def container_address(container):
         ["docker", "port", container, "8080"], capture_output=True, text=True
     )
     if completed.returncode != 0 or not completed.stdout.strip():
-        raise ImageSwapError(
+        raise common.HarnessError(
             f"`docker port {container} 8080` exited {completed.returncode} "
             f"({completed.stderr.strip()})"
         )
@@ -111,7 +96,7 @@ def assert_pulled_digest(container, image_ref):
         text=True,
     )
     if completed.returncode != 0:
-        raise ImageSwapError(
+        raise common.HarnessError(
             f"`docker inspect {container}` exited {completed.returncode} "
             f"({completed.stderr.strip()})"
         )
@@ -122,111 +107,36 @@ def assert_pulled_digest(container, image_ref):
         text=True,
     )
     if completed.returncode != 0:
-        raise ImageSwapError(
+        raise common.HarnessError(
             f"`docker image inspect {image_id}` exited {completed.returncode} "
             f"({completed.stderr.strip()})"
         )
     repo_digests = json.loads(completed.stdout.strip()) or []
     if image_ref not in repo_digests:
-        raise ImageSwapError(
+        raise common.HarnessError(
             f"{container}'s image resolves to {repo_digests}, not {image_ref} — the running "
             f"image did not come from the registry pull alone"
         )
 
 
-def healthcheck_deadline(image_ref):
-    """The deadline a container from image_ref is given to reach Docker health status healthy."""
-    completed = subprocess.run(
-        ["docker", "image", "inspect", "--format", "{{json .Config.Healthcheck}}", image_ref],
-        capture_output=True,
-        text=True,
-    )
-    if completed.returncode != 0:
-        raise ImageSwapError(
-            f"`docker image inspect {image_ref}` exited {completed.returncode} "
-            f"({completed.stderr.strip()})"
-        )
-    healthcheck = json.loads(completed.stdout.strip()) or {}
-    interval = healthcheck.get("Interval") or DEFAULT_INTERVAL_NS
-    retries = healthcheck.get("Retries") or DEFAULT_RETRIES
-    start_period = healthcheck.get("StartPeriod") or DEFAULT_START_PERIOD_NS
-    return (start_period + interval * (retries + 1)) / 1_000_000_000
-
-
-def wait_healthy(container, deadline_seconds):
-    deadline = time.monotonic() + deadline_seconds
-    status = None
-    while time.monotonic() < deadline:
-        completed = subprocess.run(
-            ["docker", "inspect", "--format", "{{.State.Health.Status}}", container],
-            capture_output=True,
-            text=True,
-        )
-        if completed.returncode != 0:
-            raise ImageSwapError(
-                f"`docker inspect {container}` exited {completed.returncode} "
-                f"({completed.stderr.strip()})"
-            )
-        status = completed.stdout.strip()
-        if status == "healthy":
-            return
-        if status == "unhealthy":
-            raise ImageSwapError(f"{container} reported unhealthy before reaching healthy")
-        time.sleep(HEALTH_POLL_INTERVAL)
-    raise ImageSwapError(
-        f"{container} did not reach healthy within {deadline_seconds:.0f}s, derived from its "
-        f"declared healthcheck (last status {status!r})"
-    )
-
-
-def assert_config_served(container, config_path):
-    """`GET /config.json` returns the mounted configuration, byte for byte."""
-    address = container_address(container)
-    expected = config_path.read_bytes()
-    try:
-        with urllib.request.urlopen(f"http://{address}{CONFIG_URL}", timeout=5) as response:
-            status, body = response.status, response.read()
-    except urllib.error.HTTPError as error:
-        status, body = error.code, error.read()
-    if status != 200:
-        raise ImageSwapError(f"{CONFIG_URL} answered {status}, expected 200")
-    if body != expected:
-        raise ImageSwapError(
-            f"{CONFIG_URL} served {len(body)} byte(s) that are not the mounted configuration's "
-            f"{len(expected)} — the mount did not reach the page"
-        )
-
-
 def resolve_version(image_ref):
     """The `org.opencontainers.image.version` annotation on the manifest image_ref names."""
-    completed = subprocess.run(
-        [
-            "docker",
-            "buildx",
-            "imagetools",
-            "inspect",
-            "--format",
-            "{{json .Manifest.Annotations}}",
-            image_ref,
-        ],
-        capture_output=True,
-        text=True,
-    )
-    if completed.returncode != 0:
-        raise ImageSwapError(
-            f"`docker buildx imagetools inspect {image_ref}` exited {completed.returncode} "
-            f"({completed.stderr.strip()})"
+    annotations, detail = common.imagetools_inspect(image_ref, ".Manifest.Annotations")
+    if annotations is None:
+        raise common.HarnessError(
+            f"`docker buildx imagetools inspect {image_ref}` failed ({detail})"
         )
-    annotations = json.loads(completed.stdout.strip()) or {}
-    version = annotations.get(VERSION_ANNOTATION)
+    version = (annotations or {}).get(VERSION_ANNOTATION)
     if not version:
-        raise ImageSwapError(f"{image_ref}'s manifest carries no {VERSION_ANNOTATION} annotation")
+        raise common.HarnessError(
+            f"{image_ref}'s manifest carries no {VERSION_ANNOTATION} annotation"
+        )
     return version
 
 
 def run_and_assert(tag, digest):
-    """Runs `image@digest` under the shared mount, asserts it, tears it down, returns its version."""
-    image_ref = f"{IMAGE}@{digest}"
+    """Runs image@digest under the shared mount, asserts it, tears it down, returns its version."""
+    image_ref = f"{common.IMAGE}@{digest}"
     with tempfile.TemporaryDirectory() as directory:
         directory = Path(directory)
         download_config(tag, directory)
@@ -236,12 +146,13 @@ def run_and_assert(tag, digest):
         try:
             container = start_container(image_ref, config_path)
             assert_pulled_digest(container, image_ref)
-            wait_healthy(container, healthcheck_deadline(image_ref))
-            assert_config_served(container, config_path)
+            common.wait_healthy(container, common.healthcheck_deadline(image_ref))
+            address = container_address(container)
+            common.assert_config_served(address, config_path.read_bytes())
             version = resolve_version(image_ref)
             expected_version = tag[1:] if tag.startswith("v") else tag
             if version != expected_version:
-                raise ImageSwapError(
+                raise common.HarnessError(
                     f"{image_ref} reports version {version!r}, expected {expected_version!r} "
                     f"from tag {tag}"
                 )
@@ -264,11 +175,11 @@ def main():
         version_a = run_and_assert(args.tag_a, args.digest_a)
         version_b = run_and_assert(args.tag_b, args.digest_b)
         if version_a == version_b:
-            raise ImageSwapError(
+            raise common.HarnessError(
                 f"{args.tag_a} and {args.tag_b} both report version {version_a!r} — the swap "
                 f"changed nothing"
             )
-    except ImageSwapError as error:
+    except common.HarnessError as error:
         return fail(str(error))
 
     print(
