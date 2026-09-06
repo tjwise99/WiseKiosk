@@ -8,7 +8,7 @@
     {
       "customType": "regex",
       "managerFilePatterns": ["/^\\.github/workflows/publish\\.yml$/"],
-      "matchStrings": ["COSIGN_VERSION: (?<currentValue>v[0-9.]+)"],
+      "matchStrings": ["cosign-release: (?<currentValue>v[0-9.]+)"],
       "depNameTemplate": "sigstore/cosign",
       "datasourceTemplate": "github-releases",
       "versioningTemplate": "semver"
@@ -16,7 +16,7 @@
     {
       "customType": "regex",
       "managerFilePatterns": ["/^\\.github/workflows/publish\\.yml$/"],
-      "matchStrings": ["SYFT_VERSION: (?<currentValue>v[0-9.]+)"],
+      "matchStrings": ["syft-version: (?<currentValue>v[0-9.]+)"],
       "depNameTemplate": "anchore/syft",
       "datasourceTemplate": "github-releases",
       "versioningTemplate": "semver"

@@ -5,10 +5,12 @@ The inputs these checks have been run against, in both directions. What they *as
 [`../README.md`](../README.md)'s. `scripts/publish/verify_permissions.py` (the no-write-scope gate)
 has its own file, [`check-publish-permissions.md`](check-publish-permissions.md).
 
-**Tools, pinned as run:** cosign v3.1.3 and syft v1.51.1, each a single literal —
-`COSIGN_VERSION`/`SYFT_VERSION` at the workflow's own top-level `env:` in `publish.yml`, read by
-both jobs' installer `with:` inputs through the env context, so production (`publish`) and
-verification (`verify`) install the same tool rather than two independent pins; `check-jsonschema==0.38.0`
+**Tools, pinned as run:** cosign v3.1.3 and syft v1.51.1, each named as a `with:` literal in both
+the `publish` and `verify` jobs — Renovate's regex manager bumps every match of `cosign-release:`
+and `syft-version:` in `publish.yml` in one PR, which is what keeps the two per-tool pins equal; a
+hand edit drifting them apart surfaces as a package-set mismatch in `verify`'s SBOM regeneration
+comparison rather than failing silently. That the dependency dashboard actually lists both matches
+per tool is a WI4 read-back, not yet confirmed. `check-jsonschema==0.38.0`
 (`pipx run`, pinned in `scripts/publish/verify_release.py` rather than in the workflow, since that is
 where the invocation lives); `gh` and `docker buildx imagetools inspect` at whatever version the
 runner or this host provides — neither is pinned, matching this repository's existing convention for

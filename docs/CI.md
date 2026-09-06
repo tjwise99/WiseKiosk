@@ -478,6 +478,10 @@ release run, the first run included; the release is re-cut, and there is no roll
   `versionInfo` to the child digest under verification and its purl `arch=` to that child's platform
   architecture, so a cross-wired attestation (the other child's SBOM, which otherwise passes every
   assertion above) fails there rather than by accident. A child without its SBOM attestation fails.
+  **The `publish` and `verify` jobs each pin syft and cosign as their own `with:` literal.**
+  Renovate's regex manager bumps every match of `cosign-release:` and `syft-version:` in
+  `publish.yml` in one pull request, which is what keeps the two per-tool pins equal; a hand edit
+  drifting them apart surfaces as a package-set mismatch in the regeneration comparison above.
 - **The image says where it came from.** Nine keys — `org.opencontainers.image.title`,
   `.description`, `.url`, `.source`, `.version`, `.created`, `.revision`, `.licenses` and
   `.documentation` — are present and non-empty **as labels on the image config and as annotations on
