@@ -166,8 +166,7 @@ a fixed ten seconds, one invocation per target, in `check-fuzz`. Every target as
 hang within the budget; `FuzzShape` additionally asserts its result is deterministic across two calls
 on the same bytes. What they must guarantee is [`TESTING.md`](TESTING.md)'s Fuzz row; the targets
 named, the rejected alternatives and the reopen premise are recorded on
-[#267 backend fuzz tier](https://github.com/tjwise99/WiseKiosk/issues/267)
-(owner, 2026-09-06: no ADR).
+[#267 backend fuzz tier](https://github.com/tjwise99/WiseKiosk/issues/267).
 
 **No panic is the engine's to catch; no hang is the target's own.** Go's fuzzing engine reports a
 panic the moment it happens, which a ten-second search catches reliably. Its own documentation
