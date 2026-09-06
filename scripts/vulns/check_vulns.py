@@ -1,29 +1,34 @@
 #!/usr/bin/env python3
-"""Gate one dependency ecosystem's known vulnerabilities against the exception register.
+"""Gate one dependency ecosystem's, or the built image's, known vulnerabilities against the
+exception register.
 
-What this asserts is docs/CI.md § *Dependency vulnerabilities* and § *The exception register*.
-Standard library only, like every other plain-python check in the tree.
+What this asserts is docs/CI.md § *Dependency vulnerabilities*, § *Image vulnerabilities* and
+§ *The exception register*. Standard library only, like every other plain-python check in the tree.
 
 `--scope go` runs `go -C <go-dir> tool govulncheck -json ./...`: a finding whose trace reaches a
 symbol fails, and a finding reported only at package or module level (the vulnerable code is present
 but never called) prints as informational — the one reachability allowance CI.md's Go paragraph
 states. `--scope npm` runs `npm --prefix <npm-dir> audit --json` over the whole tree, no
-`--audit-level`: every advisory fails, at any severity.
+`--audit-level`: every advisory fails, at any severity. `--scope image` runs Trivy, from the pinned
+image below, against the tag named by `--image`, scanning the local Docker daemon's copy at every
+severity: every reported vulnerability fails, an empty or missing `FixedVersion` changes nothing, and
+nothing in the image is first-party, so a register entry is always eligible relief.
 
-Pass/fail is decided from the parsed JSON alone; neither scanner's own exit status is read; `-json`
-mode is documented to exit 0 whatever govulncheck finds, and this script holds both scopes to the one
-rule rather than trusting npm's exit code to mean something the other scope's tool cannot promise.
+Pass/fail is decided from the parsed JSON alone; no scanner's own exit status is read; `-json` mode is
+documented to exit 0 whatever govulncheck finds, and this script holds every scope to the one rule
+rather than trusting an exit code no scanner here can promise.
 
 The register (`--register`, default `.vulnerability-exceptions.json` at the repository root) is a
 JSON list; each entry names exactly five fields — `advisory`, `scope`, `no_fix_because`,
 `no_alternative_because`, `review_by` — documented in docs/CI.md § *The exception register*. An
 entry's `advisory` matches a finding by that finding's primary id or any alias (a GO- id's GHSA/CVE
-aliases; an npm advisory's GHSA id, read from its `via[]` entry's advisory URL). Only entries whose
-own `scope` equals the scope being checked are examined by a given run — the other scope's entries are
-that scope's own run to validate — so a full validation of the whole register needs both `--scope`
-values run. An entry whose `scope` is missing or is neither `go` nor `npm` cannot be routed to either
-run, so it fails both rather than falling through unexamined. Within its scope: every entry must be
-well-formed and current (today <= review_by <=
+aliases; an npm advisory's GHSA id, read from its `via[]` entry's advisory URL; a Trivy finding's own
+`VulnerabilityID`, which carries no alias). Only entries whose own `scope` equals the scope being
+checked are examined by a given run — the other scopes' entries are that scope's own run to validate —
+so a full validation of the whole register needs every `--scope` value run. An entry whose `scope` is
+missing or is not one of `go`, `npm` or `image` cannot be routed to any run, so it fails all of them
+rather than falling through unexamined. Within its scope: every entry must be well-formed and current
+(today <= review_by <=
 today+90 days, UTC); an entry matching nothing this run's scanner reported is an orphan; an entry
 matching a finding in the scanned project's own package (a Go package path under this module, or the
 npm project's own package name) is refused regardless of currency, because first-party code has no
@@ -31,10 +36,11 @@ exception path; likewise a Go standard-library finding, which the register never
 (owner ruling, ticket #264) — the remedy is always the Go toolchain bump. The complete finding list
 is always printed, suppressed findings included.
 
-Usage: check_vulns.py --scope go|npm [--go-dir DIR] [--npm-dir DIR] [--register FILE]
+Usage: check_vulns.py --scope go|npm|image [--go-dir DIR] [--npm-dir DIR] [--image TAG]
+[--register FILE]
 
-What this has been run against, in both directions: ../cases/check-vulns-go.md and
-../cases/check-vulns-npm.md
+What this has been run against, in both directions: ../cases/check-vulns-go.md,
+../cases/check-vulns-npm.md and ../cases/check-vulns-image.md
 """
 
 import argparse
@@ -48,8 +54,10 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent.parent
 
 REGISTER_FIELDS = ("advisory", "scope", "no_fix_because", "no_alternative_because", "review_by")
-VALID_SCOPES = ("go", "npm")
+VALID_SCOPES = ("go", "npm", "image")
 REVIEW_WINDOW_DAYS = 90
+
+TRIVY_IMAGE = "aquasec/trivy:0.74.0@sha256:62b1e65e8869bc4b4c6aa4fa2b21595256c7c2f6018a9d9ad61caf87187c1969"
 
 GHSA_IN_URL = re.compile(r"(GHSA-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4})")
 
@@ -272,6 +280,53 @@ def npm_findings(npm_dir):
     return records
 
 
+def image_findings(tag):
+    """One record per `Results[].Vulnerabilities[]` entry Trivy reports against `tag`: {primary_id,
+    aliases, package, severity, first_party, reachable}. `first_party` is always False and
+    `reachable` always True — nothing in a built image is this project's own source, and Trivy carries
+    no reachability concept, so every finding is held to the same rule as npm's. An empty or missing
+    `FixedVersion` is not read: an unfixed finding fails like any other, and only a register entry is
+    relief."""
+    result = subprocess.run(
+        [
+            "docker",
+            "run",
+            "--rm",
+            "-v",
+            "/var/run/docker.sock:/var/run/docker.sock",
+            TRIVY_IMAGE,
+            "image",
+            "--format",
+            "json",
+            "--exit-code",
+            "0",
+            "--quiet",
+            tag,
+        ],
+        capture_output=True,
+        text=True,
+    )
+    try:
+        report = json.loads(result.stdout)
+    except json.JSONDecodeError as error:
+        die(f"trivy image --format json output does not parse: {error}\nstderr:\n{result.stderr}")
+
+    records = []
+    for entry in report.get("Results") or []:
+        for vuln in entry.get("Vulnerabilities") or []:
+            records.append(
+                {
+                    "primary_id": vuln["VulnerabilityID"],
+                    "aliases": [],
+                    "package": f"{vuln['PkgName']} ({vuln.get('InstalledVersion', '(unknown)')})",
+                    "severity": vuln.get("Severity", "(unknown)"),
+                    "first_party": False,
+                    "reachable": True,
+                }
+            )
+    return records
+
+
 def no_exception_reason(finding):
     """Why no register entry may ever cover `finding`, or None if a current, matching entry
     legitimately could: first-party or Go standard-library, per docs/CI.md § *The exception
@@ -331,7 +386,12 @@ def run(scope, findings, register_entries, today):
 
         must_fail = finding["reachable"] if scope == "go" else True
         if must_fail and not covering:
-            reason = "its trace reaches a called symbol" if scope == "go" else "npm audit reports it"
+            if scope == "go":
+                reason = "its trace reaches a called symbol"
+            elif scope == "npm":
+                reason = "npm audit reports it"
+            else:
+                reason = "trivy reports it"
             if blocked:
                 reason += f", and it is {blocked}"
             problems.append(f"{finding['primary_id']} ({finding['package']}) is unregistered — {reason}")
@@ -376,15 +436,21 @@ def main():
     parser.add_argument("--scope", required=True, choices=VALID_SCOPES)
     parser.add_argument("--go-dir", default=str(ROOT / "backend"))
     parser.add_argument("--npm-dir", default=str(ROOT / "frontend"))
+    parser.add_argument("--image")
     parser.add_argument("--register", default=str(ROOT / ".vulnerability-exceptions.json"))
     args = parser.parse_args()
+
+    if args.scope == "image" and not args.image:
+        die("--scope image requires --image <tag>")
 
     register_entries = load_register(Path(args.register))
 
     if args.scope == "go":
         findings = go_findings(Path(args.go_dir))
-    else:
+    elif args.scope == "npm":
         findings = npm_findings(Path(args.npm_dir))
+    else:
+        findings = image_findings(args.image)
 
     problems = run(args.scope, findings, register_entries, date.today())
 

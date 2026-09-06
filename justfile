@@ -164,6 +164,13 @@ check-go:
     go -C backend test -race ./internal/...
 
 [group('checks')]
+[doc('FuzzShape, FuzzDecodeRequest and FuzzValidate each run fuzzed for 10s, asserting no panic or hang on crafted bytes; needs `just boundary-install`')]
+check-fuzz:
+    go -C backend test ./internal/modules/weather/ -run '^$' -fuzz '^FuzzShape$' -fuzztime 10s
+    go -C backend test ./internal/modules/weather/ -run '^$' -fuzz '^FuzzDecodeRequest$' -fuzztime 10s
+    go -C backend test ./internal/modules/weather/ -run '^$' -fuzz '^FuzzValidate$' -fuzztime 10s
+
+[group('checks')]
 [doc('The backend Go tree is clean under golangci-lint default linter set (errcheck, govet, ineffassign, staticcheck, unused), non-zero exit on any finding')]
 check-lint-go:
     go -C backend tool golangci-lint run ./...
@@ -292,6 +299,16 @@ smoke-native: check-build
     GOOS=linux GOARCH={{native_goarch}} GOARM={{native_goarm}} CGO_ENABLED=0 go -C backend build -o ../bin/wisekiosk-armv6 ./cmd
     python3 scripts/native/smoke.py bin/wisekiosk-armv6 frontend/dist {{native_goarch}}/{{native_goarm}}
 
+[group('checks')]
+[doc('The documented bring-up procedure reaches a serving deployment from a published release; needs Docker and the network (gh, ghcr.io)')]
+check-bringup tag digest:
+    python3 scripts/bringup/bring_up.py {{tag}} {{digest}}
+
+[group('checks')]
+[doc('Published digest A and published digest B each serve their mounted configuration and report their own version, under byte-identical mount arguments, with no builder invoked; needs Docker and the network (gh, ghcr.io)')]
+check-image-swap tag_a digest_a tag_b digest_b:
+    python3 scripts/bringup/image_swap.py {{tag_a}} {{digest_a}} {{tag_b}} {{digest_b}}
+
 [group('config')]
 [doc('Regenerate the configuration-object TypeScript types from the configuration schema')]
 config-codegen:
@@ -327,5 +344,10 @@ check-restart-policy:
     python3 scripts/check-restart-policy.py
 
 [group('checks')]
-[doc('Run every check the PR gate runs that has a local form and needs neither Docker nor emulation nor the network; secret scanning, the PR-title check (commitlint, via the hook layer), the link check (lychee, from a digest-pinned image) and the workflow audit (zizmor, actionlint) are CI-only, the image tier is `just check-image`, the native armv6l run is `just smoke-native`, and the two online dependency-vulnerability checks are `just check-vulns-go` and `just check-vulns-npm`')]
-verify: check-untracked check-hooks check-branch check-reqs check-citations check-arch check-arch-trace check-boundary check-go check-lint-go check-secret-unwrap check-config-types check-build check-static-bundle check-lint-frontend check-typecheck-frontend check-unit check-render check-render-policy check-site check-adr-index check-adr-revs check-docs-index check-repo-silo check-languages check-dead-test check-restart-policy
+[doc('The `verify` job in publish.yml holds no write scope: its permissions are exactly `{contents: read}` and no step under it references `secrets.`')]
+check-publish-permissions:
+    python3 scripts/publish/verify_permissions.py
+
+[group('checks')]
+[doc('Run every check the PR gate runs that has a local form and needs neither Docker nor emulation nor the network; secret scanning, the PR-title check (commitlint, via the hook layer), the link check (lychee, from a digest-pinned image) and the workflow audit (zizmor, actionlint) are CI-only, the image tier is `just check-image`, the native armv6l run is `just smoke-native`, the bring-up check against a published release is `just check-bringup`, the image-swap check against two published releases is `just check-image-swap`, and the two online dependency-vulnerability checks are `just check-vulns-go` and `just check-vulns-npm`')]
+verify: check-untracked check-hooks check-branch check-reqs check-citations check-arch check-arch-trace check-boundary check-go check-fuzz check-lint-go check-secret-unwrap check-config-types check-build check-static-bundle check-lint-frontend check-typecheck-frontend check-unit check-render check-render-policy check-site check-adr-index check-adr-revs check-docs-index check-repo-silo check-languages check-dead-test check-restart-policy check-publish-permissions

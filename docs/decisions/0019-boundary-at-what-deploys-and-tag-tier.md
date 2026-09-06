@@ -50,7 +50,7 @@ answered differently each time an element is added.
 
 **Which side of the boundary something falls on.** The project builds things that never enter the
 published image: the provisioning material shipped with the release artifact set
-([ADR 0020 rev 3](0020-release-artifact-set-and-operator-tooling.md)) is authored here and runs
+([ADR 0020 rev 4](0020-release-artifact-set-and-operator-tooling.md)) is authored here and runs
 nowhere the system runs. Without a criterion each such case is a fresh argument, and each reaches a
 different answer depending on whether "the system" is taken to mean what runs or what the project
 owns.
@@ -67,7 +67,7 @@ by the Go backend" in its decision but weighs only frameworks against each other
 [ADR 0007 rev 2](0007-config-validation-allocation.md) reasons *from* it — "the page runs in a browser
 on the display host, so config bytes reach it only over HTTP, from the origin that already serves the
 SPA bundle." Three records lean on the arrangement and none argues it, which is the shape
-[ADR 0015 rev 3](0015-container-toolchain-and-image-annotations.md) caught with the container
+[ADR 0015 rev 4](0015-container-toolchain-and-image-annotations.md) caught with the container
 toolchain. A Container level draws that arrangement, so it either argues it or presumes it a fourth
 time.
 
@@ -233,7 +233,7 @@ here.
 
 **The provisioning tooling gains no element.** The test is the one the boundary states: a tool that
 acted on the running deployment would gain an element. The test returns no, and the release artifact
-set ([ADR 0020 rev 3](0020-release-artifact-set-and-operator-tooling.md)) is why it does not even need
+set ([ADR 0020 rev 4](0020-release-artifact-set-and-operator-tooling.md)) is why it does not even need
 arguing — that decision ships **no operator tooling program at all**, only a deployment recipe and an
 example configuration file. A recipe an operator runs to bring a deployment into existence is not a
 tool acting on one that is running, and there is no second candidate to weigh.
@@ -480,7 +480,7 @@ specification change with its own verification, not by where a tag sits.
 ships. Rejected: what a release carries is material a registry and a release tag hold rather than
 anything that runs on a host, the level draws what runs where, and the one real coupling — whether
 provisioning tooling appears — is decided by the boundary test rather than by the artifact set. The set
-[ADR 0020 rev 3](0020-release-artifact-set-and-operator-tooling.md) defined ships no operator tooling
+[ADR 0020 rev 4](0020-release-artifact-set-and-operator-tooling.md) defined ships no operator tooling
 program, so waiting would have changed nothing drawn.
 
 ### The tag rules
