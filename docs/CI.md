@@ -530,8 +530,8 @@ What each of these obligations *is*, and why, is [`DEPLOYMENT.md`](DEPLOYMENT.md
 - **An image swap preserves the deployment.** `just check-image-swap`, run by the `image-swap` job in
   [`../.github/workflows/publish.yml`](../.github/workflows/publish.yml): the release that fired the
   run swaps for the newest older non-pre-release, both under the same mounted configuration and
-  ephemeral published port — a compose service and a secret directory are #261 secret mount's, this
-  check is config-only. Each digest runs, is asserted healthy and serving that configuration, and is
+  ephemeral published port — a secret directory is #261 secret mount's, this check is config-only.
+  Each digest runs, is asserted healthy and serving that configuration, and is
   stopped and removed before the other runs, with no builder invoked at either step — made observable
   by asserting each running container's image resolves to the digest requested. Reporting a changed
   version is the OCI `org.opencontainers.image.version` annotation on the manifest each digest names:
@@ -541,10 +541,11 @@ What each of these obligations *is*, and why, is [`DEPLOYMENT.md`](DEPLOYMENT.md
 
 **All five are built.** The recipe and health-signal checks landed with #54 container build and
 publish, against the image and the recipe that ticket ships; the example-configuration check
-landed with #139, against the page it renders; the documented-procedure check landed with #138
-bring-up check, against a published release rather than the tracked tree; the image-swap check
-landed with #140 image-swap check, against two published releases — which is how this project
-records scoped work ([ADR 0005 rev 2](decisions/0005-traceability-gating.md)); what each asserts
+landed with #139 example-configuration check, against the page it renders; the
+documented-procedure check landed with #138 bring-up check, against a published release rather
+than the tracked tree; the image-swap check landed with #140 image-swap check, against two
+published releases — which is how this project records scoped work
+([ADR 0005 rev 2](decisions/0005-traceability-gating.md)); what each asserts
 was decided by #71 release artifact set, which shipped no code.
 
 ## The exception register
