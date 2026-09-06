@@ -12,34 +12,39 @@ procedure`. A seed edits a scratch copy of `docs/DEPLOYMENT.md`'s fenced block a
 image; the tracked `docs/DEPLOYMENT.md` and `deploy/compose.yaml` are never edited. The
 registry-propagation poll bound, 60s, is the harness's own constant; no document specifies one.
 
-**Three rows below could not be run against the real recipe locally**, which binds host port 8080:
-a container from an unrelated, longer-running task held that port on this worktree's runner for the
-whole of this branch's work, and is not this branch's to stop. They are recorded as **predicted,
-not yet observed** — grounded in `backend/internal/staticserve/staticserve.go`'s own handling (a
-path that resolves to a directory, or that `os.Open` refuses, both fall through to the same
-`http.NotFound`) and in the flag's own documented equivalence, rather than in a run of the harness.
-The must-pass row for the recipe as committed **was** run, in CI rather than locally, for the same
-reason (Docker 29.6.2, Compose v2 (5.1.4) on the runner) — a real run, not a prediction, of the case
-that matters most: [run 34000590390, job `bring-up-ci-confirm`](https://github.com/tjwise99/WiseKiosk/actions/runs/34000590390/job/101398633749),
-container start to reported success in 31s, well inside the 120s deadline the image's declared
-healthcheck derives.
+**Host port 8080 was held for the whole of this branch's work** by an unrelated, longer-running
+task's container, which was not this branch's to stop; the recipe hardcodes that port. The
+recipe-as-committed row was run in CI instead
+([run 34000590390, job `bring-up-ci-confirm`](https://github.com/tjwise99/WiseKiosk/actions/runs/34000590390/job/101398633749),
+Docker 29.6.2, Compose v2 (5.1.4)), container start to reported success in 31s, well inside the
+120s deadline the image's declared healthcheck derives — kept below as corroboration of the local
+run that replaced it. The owner authorized stopping that container to record the remaining three
+rows (2026-09-06); it was stopped, the four port-dependent rows below were run against the real
+recipe locally, this harness's own compose project was torn down completely
+(`docker compose down --volumes`, confirmed against `docker ps`/`docker network ls`), and the other
+container was restarted afterward. One row's observation differs from what was predicted before
+that ruling, noted where it does — the reasoning from source was directionally right (a defect
+downstream of the removed line) but wrong about which line fails first.
 
 | Direction | Case | Input |
 |---|---|---|
-| Must pass | The block as committed | run in CI against `v0.1.0` (above) — `the documented bring-up procedure at v0.1.0 reaches a serving deployment` |
+| Must pass | The block as committed | run locally — `the documented bring-up procedure at v0.1.0 reaches a serving deployment` in 32.4s; corroborated by the CI run above (31s) |
 | Must fail | `latest` resolving to a digest other than the one this run was handed | passed 64 zeros as the expected digest — ``ghcr.io/tjwise99/wisekiosk:latest resolved to 'sha256:27ff2637…589a' after 60s, expected sha256:000…0 — latest has not propagated to the digest this release published`` |
 | Must fail | The `docker compose up -d` line removed | seeded via `--doc`; no container ever starts — `` `docker compose ps -q kiosk` found no container () `` |
-| Must pass — **predicted, not yet observed** | `docker compose up -d` spelled `docker compose up --detach` | the same flag, long form (discovery brief §6); expected to reach a serving deployment identically to the committed block |
-| Must fail — **predicted, not yet observed** | The `cp config.example.json config.json` line removed | Docker creates an empty directory at the missing bind-mount source, so `/srv/kiosk/config.json` is a directory inside the container; `staticserve.go`'s handler resolves a directory to its `index.html`, finds none, and answers 404 like any other missing path — expected `` `/config.json answered 404, expected 200` `` |
-| Must fail — **predicted, not yet observed** | `chmod 644` spelled `chmod 600` | the image's user is uid 10001, which does not own the file `cp` creates; a 600 file denies it read access, and `staticserve.go` does not distinguish a permission error from a missing file — expected the same `` `/config.json answered 404, expected 200` `` |
+| Must pass | `docker compose up -d` spelled `docker compose up --detach` | run locally via `--doc` on the same flag, long form (discovery brief §6) — reaches a serving deployment identically, in 33.0s |
+| Must fail | The `cp config.example.json config.json` line removed | run locally via `--doc` — **differs from the prediction this row carried before the port freed**: rather than a directory bind-mount surfacing at `/config.json`, the *next* line fails first, since there is nothing for it to act on — `` `chmod 644 config.json` exited 1 `` (`chmod: cannot access 'config.json': No such file or directory`); no container ever starts |
+| Must fail | `chmod 644` spelled `chmod 600` | run locally via `--doc` — matches the prediction: the image's user (uid 10001) does not own the file `cp` creates, a 600 file denies it read access, and `staticserve.go`'s `open()` (`backend/internal/staticserve/staticserve.go:55-66`) folds that permission error into the same `found=false` path a missing file takes — `` `/config.json answered 404, expected 200` `` |
 
 **Known gap.** Removing the `chmod 644` line is not seeded: `cp` preserves the tracked 644 mode of
 `config.example.json` on the runner, so the line is redundant there and its absence is not a defect
 this check can see (owner, 2026-09-04).
 
-**The `bring-up` job's teardown step is unverified.** `docker compose down --volumes` under
+**The `bring-up` job's teardown step itself is unverified.** `docker compose down --volumes` under
 `if: always()` in `.github/workflows/publish.yml` is outside `bring_up.py` and outside every row
-above: it did not run locally (the same port-8080 conflict) and the CI run cited for the
-committed-block row had no teardown step of its own to exercise it. It is unobserved rather than
-predicted from source, unlike the three rows above, and stays that way until the first real
+above. The identical command was run by hand, from `bring-up/`, after each of the four local rows
+above and tore the deployment down cleanly every time (`docker ps`/`docker network ls` confirmed
+nothing left) — but that is this record running it, not the workflow's own step running as a job
+step with its own `if: always()` and `working-directory:`. That step has not fired in any CI job
+(the `bring-up-ci-confirm` scaffold that produced the committed-block row's CI evidence carried no
+teardown step of its own), and stays unobserved in that specific form until the first real
 release's job runs it.
