@@ -401,6 +401,9 @@ jobs:
       - name: The image runs non-root, serves only a mounted configuration, carries no deployment content or secret material, keeps two instances independent, and reports its health in both directions
         run: just check-image
 
+      - name: No package in the built image carries a known vulnerability at any severity, unless the exception register covers it
+        run: python3 scripts/vulns/check_vulns.py --scope image --image wisekiosk:citest
+
   image-arch:
     name: image-arch
     # Both architectures a published image carries, one leg each: the image is built for the

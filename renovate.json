@@ -28,6 +28,13 @@
       "depNameTemplate": "check-jsonschema",
       "datasourceTemplate": "pypi",
       "versioningTemplate": "pep440"
+    },
+    {
+      "customType": "regex",
+      "managerFilePatterns": ["/^scripts/vulns/check_vulns\\.py$/"],
+      "matchStrings": ["aquasec/trivy:(?<currentValue>[0-9.]+)@(?<currentDigest>sha256:[a-f0-9]{64})"],
+      "depNameTemplate": "aquasec/trivy",
+      "datasourceTemplate": "docker"
     }
   ]
 }
