@@ -398,8 +398,10 @@ enabled, and this paragraph rather than a check is what records it.
 
 What a release publishes and what CI asserts about it. Verification runs against the published digest
 in a separate job, `verify`, that reads three surfaces only — the registry, the public transparency
-log via cosign, and GitHub's release and attestation APIs — and holds no write scope. What builds and
-pushes the image is `.github/workflows/publish.yml`, which #54 container build and publish landed and
+log via cosign, and GitHub's release and attestation APIs — and holds no write scope. Installing the
+job's own tools — the cosign and syft installers, and the `pipx` fetch of `check-jsonschema` from
+PyPI — is the job's only other network activity, distinct from the three evidence surfaces above.
+What builds and pushes the image is `.github/workflows/publish.yml`, which #54 container build and publish landed and
 #268 release from a manual tag keyed to `release: published`, against the set
 [ADR 0020 rev 4](decisions/0020-release-artifact-set-and-operator-tooling.md) decides. That workflow
 runs only when the owner publishes a `vMAJOR.MINOR.PATCH` release, tags the image by that semver, and
@@ -448,13 +450,25 @@ release run, the first run included; the release is re-cut, and there is no roll
   the build-provenance attestation for the published digest against GitHub's attestation store. The
   binding is asserted positively, from the command's own `--format json` fields — the subject digest,
   the SLSA predicate type, and the certificate's signer URI, source repository and source repository
-  digest — not from a negative's message: a wrong signer workflow and a flipped digest both exit
-  non-zero and print the same literal `Error: verifying with issuer "sigstore.dev"`, which does not
-  discriminate between them. A second invocation, with `--bundle-from-oci`, verifies the copy of the
-  same bundle `push-to-registry: true` also lands in the registry, since neither the API-backed
-  invocation above nor `cosign tree` reads that copy.
-- **SBOM.** One SPDX 2.3 attestation per platform child is extractable from its attestation,
-  validates against a vendored copy of the SPDX 2.3 schema, and enumerates the Go main module
+  digest — never from a negative's message, because the three refusal cases print three distinct
+  texts rather than one shared, discriminating one: against a flipped digest the registry itself
+  refuses to resolve the reference before any attestation lookup runs, printing the substring
+  `MANIFEST_UNKNOWN: manifest unknown` (measured against a real published digest); against a real
+  digest carrying no attestation — true of every release published before this job existed — `gh`
+  prints `Error: HTTP 404: Not Found (…/attestations/…)` (also measured); what a wrong signer
+  workflow prints against a digest that *does* carry an attestation is unobserved, since no such
+  digest exists yet to produce it, and is recorded rather than guessed at, on the case file, once
+  WI4's pre-release exercise can observe it. The wrong-signer-workflow check therefore asserts only a
+  non-zero exit and an empty stdout — the shape every refusal above shares, with or without
+  `--format json` — a deliberately weak assertion, since the six positive field assertions carry the
+  verdict. A second invocation, with `--bundle-from-oci`, verifies the copy of the same bundle
+  `push-to-registry: true` also lands in the registry, since neither the API-backed invocation above
+  nor `cosign tree` reads that copy.
+- **SBOM.** Exactly one SPDX 2.3 attestation per platform child is asserted by count — `cosign
+  attest` appends rather than replaces, so a re-run of `publish` attaching a second attestation to
+  the same child fails here rather than silently validating whichever one `cosign
+  verify-attestation` prints first — and is extractable from its attestation, validates against a
+  vendored copy of the SPDX 2.3 schema, and enumerates the Go main module
   (`backend/go.mod`'s `module` line, restated nowhere) and the base distribution — read from every
   package's purl `distro=` qualifier rather than a package named for it, since Alpine ships no such
   package; a package set carrying no `distro=` qualifier at all fails. Regenerating with the same

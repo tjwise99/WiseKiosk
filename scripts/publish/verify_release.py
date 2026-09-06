@@ -8,9 +8,9 @@ command whose failure text comes from here and stays unique to its cause
   signature   cosign verify on the index and each platform child, plus a negative identity
   provenance  gh attestation verify against GitHub's attestation store and against the registry
               copy of the same bundle, plus two negatives
-  sbom        cosign verify-attestation per child, schema-validated, content-asserted against
-              backend/go.mod and the Dockerfile, regenerated and compared, and bound to the child
-              under verification
+  sbom        cosign verify-attestation per child, asserting exactly one SPDX attestation exists,
+              schema-validated, content-asserted against backend/go.mod and the Dockerfile,
+              regenerated and compared, and bound to the child under verification
   attached    cosign tree on the index and each child, and the release's asset list and notes
 
 This is authored Python rather than `run:` blocks with loops and multi-field jq assertions, per
@@ -79,7 +79,9 @@ def step_signature(ref, digest, problems):
         children = read_children(ref, digest)
     except CheckError as error:
         fail(problems, str(error))
-        children = []
+        return
+    if not children:
+        fail(problems, "signature: no platform child to check")
 
     targets = [f"{ref}@{digest}"] + [f"{ref}@{child['digest']}" for child in children]
     for target in targets:
@@ -116,7 +118,8 @@ def check_provenance_fields(entries, digest, commit, problems):
     certificate = verification.get("signature", {}).get("certificate", {})
 
     digest_hex = digest.split(":", 1)[1]
-    subject_digest = statement.get("subject", [{}])[0].get("digest", {}).get("sha256")
+    subject = statement.get("subject") or [{}]
+    subject_digest = subject[0].get("digest", {}).get("sha256")
     if subject_digest != digest_hex:
         fail(problems, f"provenance: subject digest {subject_digest!r} does not match the index digest {digest_hex!r}")
 
@@ -139,13 +142,26 @@ def check_provenance_fields(entries, digest, commit, problems):
                        f"match the release commit {commit!r}")
 
 
-def verify_negative(problems, label, target, signer_workflow):
+# The digest is interpolated into the message this substring is drawn from.
+MANIFEST_UNKNOWN_TEXT = "MANIFEST_UNKNOWN: manifest unknown"
+
+
+def verify_negative_manifest_unknown(problems, label, target, signer_workflow):
     returncode, stdout, stderr = gh_attestation_verify(target, signer_workflow)
     combined = stdout + stderr
     if returncode == 0:
         fail(problems, f"provenance: {label}: gh attestation verify accepted, expected refusal")
-    elif 'Error: verifying with issuer "sigstore.dev"' not in combined:
+    elif MANIFEST_UNKNOWN_TEXT not in combined:
         fail(problems, f"provenance: {label}: refused for an unexpected reason: {combined.strip()}")
+
+
+# Asserts only a non-zero exit and an empty stdout — no message literal.
+def verify_negative_no_json_success(problems, label, target, signer_workflow):
+    returncode, stdout, stderr = gh_attestation_verify(target, signer_workflow)
+    if returncode == 0:
+        fail(problems, f"provenance: {label}: gh attestation verify accepted, expected refusal")
+    elif stdout.strip():
+        fail(problems, f"provenance: {label}: refused but printed to stdout: {stdout.strip()}")
 
 
 def step_provenance(ref, digest, commit, problems):
@@ -162,12 +178,12 @@ def step_provenance(ref, digest, commit, problems):
         else:
             check_provenance_fields(entries, digest, commit, problems)
 
-    verify_negative(
+    verify_negative_no_json_success(
         problems, "wrong signer workflow", target,
         "tjwise99/WiseKiosk/.github/workflows/checks.yml",
     )
     flipped_hex = digest.split(":", 1)[1][::-1]
-    verify_negative(
+    verify_negative_manifest_unknown(
         problems, "flipped digest", f"oci://{ref}@sha256:{flipped_hex}", SIGNER_WORKFLOW,
     )
 
@@ -191,9 +207,8 @@ def package_purl(package):
     return None
 
 
-def extract_predicate(verify_attestation_stdout):
-    line = verify_attestation_stdout.strip().splitlines()[0]
-    envelope = json.loads(line)
+def extract_predicate(envelope_line):
+    envelope = json.loads(envelope_line)
     payload = envelope["payload"]
     padded = payload + "=" * (-len(payload) % 4)
     statement = json.loads(base64.b64decode(padded))
@@ -283,9 +298,15 @@ def step_sbom(ref, digest, syft, problems):
         if result.returncode != 0:
             fail(problems, f"sbom {platform}: cosign verify-attestation did not verify: {result.stderr.strip()}")
             continue
+        # cosign attest appends rather than replaces.
+        envelope_lines = [line for line in result.stdout.strip().splitlines() if line.strip()]
+        if len(envelope_lines) != 1:
+            fail(problems, f"sbom {platform}: expected exactly one spdxjson attestation, "
+                           f"cosign verify-attestation printed {len(envelope_lines)}")
+            continue
         try:
-            predicate = extract_predicate(result.stdout)
-        except (IndexError, KeyError, ValueError, json.JSONDecodeError) as error:
+            predicate = extract_predicate(envelope_lines[0])
+        except (KeyError, ValueError, json.JSONDecodeError) as error:
             fail(problems, f"sbom {platform}: could not extract the predicate: {error}")
             continue
 
@@ -335,12 +356,15 @@ def step_attached(ref, digest, tag, problems):
     except CheckError as error:
         fail(problems, str(error))
         children = []
+    if not children:
+        fail(problems, "attached: no platform child to check")
 
-    result = run(["cosign", "tree", f"{ref}@{digest}"])
-    combined = result.stdout + result.stderr
-    if "Signatures for an image tag" not in combined:
-        fail(problems, f"attached: cosign tree {ref}@{digest} did not show 'Signatures for an image tag': "
-                       f"{combined.strip()}")
+    if children:
+        result = run(["cosign", "tree", f"{ref}@{digest}"])
+        combined = result.stdout + result.stderr
+        if "Signatures for an image tag" not in combined:
+            fail(problems, f"attached: cosign tree {ref}@{digest} did not show 'Signatures for an image tag': "
+                           f"{combined.strip()}")
 
     for child in children:
         result = run(["cosign", "tree", f"{ref}@{child['digest']}"])

@@ -81,9 +81,10 @@ named subject of the signature and the build-provenance attestation, and the pla
 signed too, so an operator who pins a child digest can verify it on its own.
 
 **Per-child signing, attestation and verification logic is authored Python, not workflow shell.**
-`scripts/publish/sbom_attest.py` and `scripts/publish/verify_release.py` iterate the platform
-children and assert their content; a workflow `run:` block carrying that same loop would be
-authored sh, which nothing here authors ([ADR 0017 rev 8](0017-authored-language-set.md)).
+`scripts/publish/sbom_attest.py`, `scripts/publish/verify_metadata.py` and
+`scripts/publish/verify_release.py` iterate the platform children and assert their content; a
+workflow `run:` block carrying that same loop would be authored sh, which nothing here authors
+([ADR 0017 rev 8](0017-authored-language-set.md)).
 
 **Bring-up and the image swap run only once verification passes.** Both depend on the `verify` job
 as well as `publish`, so a release whose signature or attestation fails to verify never reaches

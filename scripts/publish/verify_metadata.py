@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Every declared OCI annotation level carries the nine keys, bound to the release commit.
 
-Reads `DOCKER_METADATA_ANNOTATIONS_LEVELS` from `.github/workflows/publish.yml`'s `id: meta` step
+Reads `DOCKER_METADATA_ANNOTATIONS_LEVELS`'s value from `.github/workflows/publish.yml`'s text
 rather than restating the literal here, and maps each declared level through a closed table
 (docs/CI.md § Publishing and provenance):
 

@@ -179,7 +179,7 @@ compares this one against the tree. Including:
 | A recipe body parsed to no commands | `scripts/check-verify-ci-parity.mjs` |
 | No `arch-export` marker found in `ARCHITECTURE.md` | `scripts/splice-arch-diagrams.mjs` |
 | No `verify` job found under `jobs:` | `scripts/publish/verify_permissions.py` |
-| The pushed index names no platform child | `scripts/publish/verify_metadata.py` |
+| The pushed index names no platform child | `scripts/publish/verify_metadata.py`, `sbom_attest.py`, `verify_release.py` (every `--step`) |
 
 The first is the guard that closed #68's defect class — a guard keyed on the same literal as the thing it
 guards goes to zero alongside it and then reports agreement, and the form that works asserts the parse
