@@ -87,7 +87,7 @@ calls other than provenance's (below) need a real signed digest this PR cannot y
 | `step_signature`, `step_attached` | `read_children` returns `[]` without raising (a single-platform export, which `docker buildx build` refuses to annotate at the index level at all — measured, § below) | both fail closed with `no platform child to check`, rather than reporting `0 problem(s)` on zero children verified; `step_signature` still checks the index's own signature and `step_attached` still runs its two `gh release view` reads, since neither depends on children |
 | `go_module_name`, `dockerfile_final_from`, `purl_qualifier` | Run against this repository's own `backend/go.mod` and `Dockerfile`, and against two real purls measured with syft v1.51.1 against this repository's own two-platform image: the apk purl `pkg:apk/alpine/alpine-baselayout@3.7.2-r1?arch=x86_64&distro=alpine-3.24.1` (amd64 child) and the image-descriptor purl's `arch=` qualifier, `arch=amd64` (amd64 child) / `arch=arm64` (arm64 child) | `github.com/tjwise99/WiseKiosk/backend`; `('alpine', '3.24')`; `alpine-3.24.1` / `x86_64` from the apk purl — **a different vocabulary from the image-descriptor purl's own `amd64`/`arm64`**, which is what `check_sbom_content`'s binding assertion actually compares against (`child["platform"].split("/", 1)[1]`), never apk's `x86_64`/`aarch64` |
 
-**Two provenance refusal texts are now measured against the real `v0.1.0` index**, replacing an
+**Two provenance refusal texts are measured against the real `v0.1.0` index**, replacing an
 earlier version of this file that asserted an unmeasured, incorrect shared literal (see *Reviewer-
 runnable seeds* below for the fix this drove in `verify_release.py`) — `gh` 2.97.0:
 

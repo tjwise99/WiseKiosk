@@ -359,12 +359,11 @@ def step_attached(ref, digest, tag, problems):
     if not children:
         fail(problems, "attached: no platform child to check")
 
-    if children:
-        result = run(["cosign", "tree", f"{ref}@{digest}"])
-        combined = result.stdout + result.stderr
-        if "Signatures for an image tag" not in combined:
-            fail(problems, f"attached: cosign tree {ref}@{digest} did not show 'Signatures for an image tag': "
-                           f"{combined.strip()}")
+    result = run(["cosign", "tree", f"{ref}@{digest}"])
+    combined = result.stdout + result.stderr
+    if "Signatures for an image tag" not in combined:
+        fail(problems, f"attached: cosign tree {ref}@{digest} did not show 'Signatures for an image tag': "
+                       f"{combined.strip()}")
 
     for child in children:
         result = run(["cosign", "tree", f"{ref}@{child['digest']}"])
