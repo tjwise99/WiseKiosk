@@ -311,7 +311,7 @@ Whether a comment is narrative rather than mechanism, and whether added comment 
 place, is a review habit rather than a gate: #59 comment-discipline gate closed not-planned (owner,
 2026-08-16). The defect class it targeted is carried by the `review-diff.py` pre-commit hook, which
 surfaces [`CONTRIBUTING.md`](../CONTRIBUTING.md)'s *Comments* checklist questions before a commit, and by
-independent review — across the five-PR ADR 0016 rev 9 adoption wave this produced zero
+independent review — across the five-PR ADR 0016 rev 10 adoption wave this produced zero
 comment-discipline findings. Reopens if a narrative block or comment bloat reaches `main` past both.
 
 ## Dependency vulnerabilities
@@ -397,61 +397,86 @@ enabled, and this paragraph rather than a check is what records it.
 ## Publishing and provenance
 
 What a release publishes and what CI asserts about it. Verification runs against the published digest
-in a separate job that pulls from the registry, reads only the registry and the public transparency
-log, and holds no credential. What builds and pushes the image is `.github/workflows/publish.yml`,
-which #54 container build and publish landed and #268 release from a manual tag keyed to
-`release: published`; every check below is unbuilt and owned by #67 security and supply-chain
-gates, against the set
-[ADR 0020 rev 3](decisions/0020-release-artifact-set-and-operator-tooling.md) decides. That workflow
+in a separate job, `verify`, that reads three surfaces only — the registry, the public transparency
+log via cosign, and GitHub's release and attestation APIs — and holds no write scope. What builds and
+pushes the image is `.github/workflows/publish.yml`, which #54 container build and publish landed and
+#268 release from a manual tag keyed to `release: published`, against the set
+[ADR 0020 rev 4](decisions/0020-release-artifact-set-and-operator-tooling.md) decides. That workflow
 runs only when the owner publishes a `vMAJOR.MINOR.PATCH` release, tags the image by that semver, and
 moves `latest` to it for a non-pre-release; the committed recipe references `latest` so it runs
 unedited ([`DEPLOYMENT.md`](DEPLOYMENT.md) § *Bring-up*); the release notes carry exactly one line
 naming that digest, `Image: ghcr.io/tjwise99/wisekiosk@sha256:<digest>`, which the workflow replaces
 rather than duplicates on a re-run
-([ADR 0020 rev 3](decisions/0020-release-artifact-set-and-operator-tooling.md)), and it is what an
+([ADR 0020 rev 4](decisions/0020-release-artifact-set-and-operator-tooling.md)), and it is what an
 operator who chooses to verify checks against.
 
-**Nothing decides the no-credential property.** It is a proposal for a check, not an asserted
-guarantee: no gate compares the verification job's permissions against it, and SECURITY.md publishes
-a posture resting on this section. Until #77 fences this document, read it as intent.
+**The `verify` job's write-scope property is decided, not proposed.**
+`scripts/publish/verify_permissions.py` reads `publish.yml` at the release commit, locates the
+`verify` job, and fails unless its `permissions` mapping is exactly `{contents: read}` and no step
+under it references `secrets.` — the `github.token` expression is the one credential allowed, by
+name. It runs locally as `check-publish-permissions`, a `just verify` dependency and a step in the
+`docs-and-hygiene` job. #77 Gate CI.md against the workflow it describes fences this document as a
+whole; until then, read anything this gate does not itself assert as intent.
+
+**This job runs on the release event rather than on a pull request**, so it is neither a required
+status check nor one of § *Gate wiring*'s no-local-form exceptions. A failed verification fails the
+release run, the first run included; the release is re-cut, and there is no rollback.
 
 - **A release occupies two locations, and each is a separate assertion.** The registry carries the
   image at a digest, with the SBOM, the signature and the build-provenance attestation attached to it
-  as referring artifacts. The release tag carries exactly two files, at their committed basenames:
-  the deployment recipe, `compose.yaml`, and an example configuration, `config.example.json`. The
-  release notes name the digest, which is what ties the tag to the
-  registry. Resolving referring artifacts against a digest, listing files on a tag and reading the
-  notes for a digest are three queries against two APIs, so **a run that reads one surface and skips
-  another fails** rather than reporting success over the part it reached — an unreadable surface, and
-  resolving no surface at all, are failures and not skips. An undeclared file on the tag fails, and so
-  does a declared one that is absent.
+  under the signing tools' conventions (cosign tags and GitHub's attestation store). The release tag
+  carries exactly two files, at their committed basenames: the deployment recipe, `compose.yaml`, and
+  an example configuration, `config.example.json`. The release notes name the digest, which is what
+  ties the tag to the registry. Resolving the artifacts attached to a digest, listing files on a tag
+  and reading the notes for a digest are three queries against two APIs, so **a run that reads one
+  surface and skips another fails** rather than reporting success over the part it reached — an
+  unreadable surface, and resolving no surface at all, are failures and not skips. An undeclared file
+  on the tag fails, and so does a declared one that is absent.
   **The image reference is not an asset**, and counting it as one is what let a single sentence stand
   for all three claims: it is a pointer rather than a file, and asserting the notes name it is a
   different act from enumerating a tag.
   **What no check here decides:** the documentation site is deployed from the default branch rather
   than from a tag, so it is not a release asset and nothing asserts any correspondence between what it
   describes and the digest an operator is running. That drift is chosen rather than overlooked, and
-  ADR 0020 rev 3 records the choice.
-- **Signature.** Keyless `cosign` verification against the published digest, with the expected
-  certificate identity and OIDC issuer, exits zero; against a deliberately wrong identity it exits
-  non-zero.
-- **Provenance.** The build-provenance attestation validates for the published digest and binds it to
-  the workflow that built it; a mismatched digest exits non-zero.
-- **SBOM.** The SBOM for the published digest is retrievable and non-empty, validates against its SPDX
-  or CycloneDX schema, and enumerates the Go main module and the base distribution. Regenerating from
-  the same digest yields a matching package set. A release missing the asset fails.
+  ADR 0020 rev 4 records the choice.
+- **Signature.** Keyless `cosign verify` against the published index digest and each platform child,
+  with the certificate identity bound to this workflow's own tag-triggered runs
+  (`--certificate-identity-regexp`) and the GitHub Actions OIDC issuer, exits zero; against a
+  deliberately wrong identity it exits non-zero and prints `none of the expected identities matched`,
+  measured at cosign v3.1.3.
+- **Provenance.** `gh attestation verify`, bound to this workflow by `--signer-workflow`, validates
+  the build-provenance attestation for the published digest against GitHub's attestation store. The
+  binding is asserted positively, from the command's own `--format json` fields — the subject digest,
+  the SLSA predicate type, and the certificate's signer URI, source repository and source repository
+  digest — not from a negative's message: a wrong signer workflow and a flipped digest both exit
+  non-zero and print the same literal `Error: verifying with issuer "sigstore.dev"`, which does not
+  discriminate between them. A second invocation, with `--bundle-from-oci`, verifies the copy of the
+  same bundle `push-to-registry: true` also lands in the registry, since neither the API-backed
+  invocation above nor `cosign tree` reads that copy.
+- **SBOM.** One SPDX 2.3 attestation per platform child is extractable from its attestation,
+  validates against a vendored copy of the SPDX 2.3 schema, and enumerates the Go main module
+  (`backend/go.mod`'s `module` line, restated nowhere) and the base distribution — read from every
+  package's purl `distro=` qualifier rather than a package named for it, since Alpine ships no such
+  package; a package set carrying no `distro=` qualifier at all fails. Regenerating with the same
+  pinned syft on the same child digest and platform yields a matching set of packages and versions —
+  the comparison keys on `(name, versionInfo)` pairs, which a name set alone cannot tell apart on the
+  published index. A separate, named assertion binds the describing image package's own
+  `versionInfo` to the child digest under verification and its purl `arch=` to that child's platform
+  architecture, so a cross-wired attestation (the other child's SBOM, which otherwise passes every
+  assertion above) fails there rather than by accident. A child without its SBOM attestation fails.
 - **The image says where it came from.** Nine keys — `org.opencontainers.image.title`,
   `.description`, `.url`, `.source`, `.version`, `.created`, `.revision`, `.licenses` and
   `.documentation` — are present and non-empty **as labels on the image config and as annotations on
   the manifest**, which are separate metadata with separate readers
-  ([ADR 0015 rev 3](decisions/0015-container-toolchain-and-image-annotations.md)). Both are read: a check
+  ([ADR 0015 rev 4](decisions/0015-container-toolchain-and-image-annotations.md)). Both are read: a check
   reading one reports nothing about the other. No value is a `LABEL` line in the Dockerfile, and one
   is bound rather than merely present — **`.revision` is the commit the job published**, so presence
   alone passes on a stale hardcoded value while the binding is what fails it. The check reads the
   annotation levels from the publish workflow's own declaration rather than a restatement here, so
-  adding a level extends the gate instead of escaping it. A missing key, an empty value, a surface it
-  cannot read, a declared level it never inspected, and resolving no surface at all each fail rather
-  than being skipped.
+  adding a level extends the gate instead of escaping it, and a level the workflow declares that this
+  check does not recognise fails rather than being skipped. A missing key, an empty value, a surface
+  it cannot read, a declared level it never inspected, and resolving no surface at all each fail
+  rather than being skipped.
   **What no check here decides:** `.description` and `.licenses` resolve from repository metadata
   rather than from the commit, so either can change with no commit and nothing reports it; and
   `.created` is the time the build ran, this project making no bit-identical-rebuild claim.
@@ -469,7 +494,9 @@ a posture resting on this section. Until #77 fences this document, read it as in
 ## Deployment and bring-up
 
 What the published material must let an operator do, checked by running it rather than by reading it.
-What each of these obligations *is*, and why, is [`DEPLOYMENT.md`](DEPLOYMENT.md)'s.
+What each of these obligations *is*, and why, is [`DEPLOYMENT.md`](DEPLOYMENT.md)'s. Both jobs below
+run only once the `verify` job (§ *Publishing and provenance*) passes, so neither exercises a release
+whose signature or attestation failed to verify.
 
 - **The documented procedure executes.** `just check-bringup`, run by the `bring-up` job in
   [`../.github/workflows/publish.yml`](../.github/workflows/publish.yml) against the release that
@@ -501,7 +528,7 @@ What each of these obligations *is*, and why, is [`DEPLOYMENT.md`](DEPLOYMENT.md
   **It gates that one key deliberately and no others**: the key is the residue of a
   requirement deleted on #69 tree rebuild, not the beginning of a recipe linter. Every other value in
   the recipe is a sample default an operator is expected to weigh and change
-  ([ADR 0020 rev 3](decisions/0020-release-artifact-set-and-operator-tooling.md)), and gating one would
+  ([ADR 0020 rev 4](decisions/0020-release-artifact-set-and-operator-tooling.md)), and gating one would
   assert a recommendation as an obligation.
 - **The image reports its health in both directions.** `scripts/image/health_signal.py`, run by
   `just check-image` in the `image-tests` job, runs the argument vector the image's own
@@ -591,14 +618,14 @@ resolve, a citation to something that does not exist, an index that has drifted 
 
 - Every relative Markdown link in every tracked file resolves inside the repository, decided by
   `lychee` run from its digest-pinned official image over the `git ls-files` Markdown set
-  ([ADR 0016 rev 9](decisions/0016-maintained-tools-for-standard-artifacts.md)). All three syntaxes
+  ([ADR 0016 rev 10](decisions/0016-maintained-tools-for-standard-artifacts.md)). All three syntaxes
   carrying a relative path are read — the inline form, a link-reference definition, and a raw HTML
   anchor's `href` — each held against the retired authored check's recorded cases, in both
   directions. A destination may be angle-bracketed or carry a title; neither is part of the path.
   **The gate runs `--offline`, and that is a decision rather than an inherited default.** Online
   checking makes third-party availability a merge condition, which § *Upstream contract checks*
   refuses for its own gates for the same reason; offline buys that stability by checking absolute
-  `http`/`https` links not at all. With the host allowlist retired (ADR 0016 rev 9), an absolute
+  `http`/`https` links not at all. With the host allowlist retired (ADR 0016 rev 10), an absolute
   link is entirely unconstrained: documentation may link outward, and nothing here reviews where to.
   **The gate is a CI-only exception rather than a `verify` check**: the image digest is the pin,
   and a contributor machine is not assumed to run docker. A local run is the same invocation — piping `git ls-files
@@ -609,13 +636,13 @@ resolve, a citation to something that does not exist, an index that has drifted 
   fence is a sample rather than a reference. A fragment naming no heading in a target whose path
   resolves: fragment checking is off, so only the path half of the destination is proven. A
   destination that leaves the repository and lands on a file that exists, by `../` or through a
-  tracked symlink: the escape and symlink obligations are retired knowingly (ADR 0016 rev 9), and
+  tracked symlink: the escape and symlink obligations are retired knowingly (ADR 0016 rev 10), and
   the CI container failing such a link because only the checkout is mounted is incidental, not
   asserted. A fence that never closes runs to the end of its document under CommonMark, so nothing
   past it is scanned and the run reports clean — seeded and confirmed, and the Sphinx build passes
-  the same seed; no residue guard is kept, on ADR 0016 rev 9's own bar that one residual obligation
+  the same seed; no residue guard is kept, on ADR 0016 rev 10's own bar that one residual obligation
   does not earn a second gate beside an adopted tool. lychee itself reports success over an
-  empty input set — the ruling ADR 0016 rev 9 records for adopted tools — but the CI step
+  empty input set — the ruling ADR 0016 rev 10 records for adopted tools — but the CI step
   materialises the tracked-file list and fails on a failed or empty listing before lychee runs: a
   failed measurement is not an empty population, and a scan of nothing must not read as clean. A
   root-relative destination fails, with a message naming the missing root rather than a wrong
@@ -799,7 +826,7 @@ changed, which the citation resolver above decides without anyone declaring anyt
   zero by design (§ *What is not gated here*), so there is no verdict for an untracked file to
   escape.
 - **Every hook in the local hook layer passes.** `.pre-commit-config.yaml` is that layer
-  ([ADR 0016 rev 9](decisions/0016-maintained-tools-for-standard-artifacts.md)): no private key, no
+  ([ADR 0016 rev 10](decisions/0016-maintained-tools-for-standard-artifacts.md)): no private key, no
   file over `check-added-large-files`' threshold, every YAML and JSON file parses, no merge-conflict
   marker committed while a merge is in progress (outside one, `check-merge-conflict` judges nothing —
   a bare `=======` is also a Markdown setext underline), no file mixing line-ending kinds — plus the
@@ -813,7 +840,7 @@ changed, which the citation resolver above decides without anyone declaring anyt
   advisory fast feedback at commit, on the commit message, and at push (`pre-commit install`, once
   per clone); the binding run for the file-scanning hooks is CI's, over every tracked file — the
   commitlint hooks of the bullet below run at their own stages, not in that run. **A hook whose file set is empty is skipped and reports
-  success** — pre-commit's own behaviour, which ADR 0016 rev 9's empty-population ruling permits;
+  success** — pre-commit's own behaviour, which ADR 0016 rev 10's empty-population ruling permits;
   the authored hook runs regardless of the file set (`always_run`) and reports success over an empty
   tracked tree, under the same ruling. pre-commit itself is pinned in `scripts/requirements-dev.txt`
   — installed into `scripts/.venv` by `just hooks-install` and by CI's install step, and covered by
@@ -822,7 +849,7 @@ changed, which the citation resolver above decides without anyone declaring anyt
   hand, is its updater.
 - **The pull-request title is a Conventional Commit, and so is each local commit message** — one
   obligation at two stages, delegated to `commitlint`
-  ([ADR 0016 rev 9](decisions/0016-maintained-tools-for-standard-artifacts.md); the gate itself is
+  ([ADR 0016 rev 10](decisions/0016-maintained-tools-for-standard-artifacts.md); the gate itself is
   [ADR 0006 rev 5](decisions/0006-process-gates.md)'s). Both stages run through the hook layer's
   `repo: local` hooks and one base configuration, `.commitlintrc.json` —
   `@commitlint/config-conventional`, plus a `scope-case` rule restoring the retired check's
@@ -875,7 +902,7 @@ changed, which the citation resolver above decides without anyone declaring anyt
 ## Action pins and workflow privilege
 
 The workflows are themselves a supply chain and themselves privileged. Both are audited from the
-files by two maintained tools ([ADR 0016 rev 9](decisions/0016-maintained-tools-for-standard-artifacts.md)),
+files by two maintained tools ([ADR 0016 rev 10](decisions/0016-maintained-tools-for-standard-artifacts.md)),
 each run in CI from a digest-pinned official image over the `.github/workflows` input set: `zizmor`
 at the `pedantic` persona for what a workflow may do — action pinning, permission grants, credential
 persistence and template injection among its audit set — and `actionlint` for whether a workflow is
@@ -901,10 +928,10 @@ channel is decided.
 - **An unreadable workflow fails rather than being skipped.** Both tools parse real YAML, so a layout
   that cannot be read is a syntax error, not a skip — GitHub itself would refuse the same file. A run
   discovering no workflow at all fails too, as `zizmor`'s own behaviour (`no inputs collected`)
-  rather than an obligation on it (ADR 0016 rev 9's empty-population ruling).
+  rather than an obligation on it (ADR 0016 rev 10's empty-population ruling).
 
 **What the gate deliberately lets through.** The `# vN` version comment beside a pin is retired as an
-obligation (ADR 0016 rev 9): a stale or absent comment passes, and the adopted
+obligation (ADR 0016 rev 10): a stale or absent comment passes, and the adopted
 `helpers:pinGitHubActionDigests` preset maintains the comments only on the bumps it performs.
 The audits needing the GitHub API (`known-vulnerable-actions` and `ref-version-mismatch` among them)
 do not run: the gate runs the offline audit set, deterministically, so a verdict moves only when a

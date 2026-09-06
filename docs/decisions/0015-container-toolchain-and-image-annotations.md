@@ -2,10 +2,15 @@
 
 **Status:** accepted
 **Decided:** 2026-08-02 (#61 OCI image annotations)
-**Rev:** 3
+**Rev:** 4
 
 ## Revisions
 
+- **rev 4** — 2026-09-06 — corrects "in one job holding no credential" to "in one job holding no
+  write scope": the owner ruled a verification job cannot hold no credential at all and be reached
+  by `gh`, so the achievable property is no *write* scope, enforced by
+  `scripts/publish/verify_permissions.py`. What was chosen is unchanged, so the Decided date does
+  not move (#269 publish verification).
 - **rev 3** — 2026-09-05 — drops one entry from the evidence list, since ADR 0010 rev 2
   (#263 CodeQL gate) removed the fixture manifests it pointed at; the container-toolchain decision is
   unchanged.
@@ -75,7 +80,7 @@ stops populating the other. Beyond presence and non-emptiness, one value is boun
 the commit the job published. That binding is what the check is for — presence alone passes on a
 hardcoded `.revision` naming a commit from last year, which is the failure the annotations exist to
 prevent. It is decidable from the registry and the workflow's own context, so the whole check sits
-with the rest of the published-artifact verification, in one job holding no credential.
+with the rest of the published-artifact verification, in one job holding no write scope.
 
 ## Alternatives considered
 
