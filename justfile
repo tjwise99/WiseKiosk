@@ -299,6 +299,14 @@ smoke-native: check-build
     GOOS=linux GOARCH={{native_goarch}} GOARM={{native_goarm}} CGO_ENABLED=0 go -C backend build -o ../bin/wisekiosk-armv6 ./cmd
     python3 scripts/native/smoke.py bin/wisekiosk-armv6 frontend/dist {{native_goarch}}/{{native_goarm}}
 
+# Outside `verify`, and against a published release rather than the tracked tree: the tag and
+# digest are the caller's, from the release event that triggers the job
+# (docs/CI.md § Deployment and bring-up, docs/DEPLOYMENT.md § Bring-up).
+[group('checks')]
+[doc('The documented bring-up procedure reaches a serving deployment from a published release; needs Docker and the network (gh, ghcr.io)')]
+check-bringup tag digest:
+    python3 scripts/bringup/bring_up.py {{tag}} {{digest}}
+
 [group('config')]
 [doc('Regenerate the configuration-object TypeScript types from the configuration schema')]
 config-codegen:
@@ -334,5 +342,5 @@ check-restart-policy:
     python3 scripts/check-restart-policy.py
 
 [group('checks')]
-[doc('Run every check the PR gate runs that has a local form and needs neither Docker nor emulation nor the network; secret scanning, the PR-title check (commitlint, via the hook layer), the link check (lychee, from a digest-pinned image) and the workflow audit (zizmor, actionlint) are CI-only, the image tier is `just check-image`, the native armv6l run is `just smoke-native`, and the two online dependency-vulnerability checks are `just check-vulns-go` and `just check-vulns-npm`')]
+[doc('Run every check the PR gate runs that has a local form and needs neither Docker nor emulation nor the network; secret scanning, the PR-title check (commitlint, via the hook layer), the link check (lychee, from a digest-pinned image) and the workflow audit (zizmor, actionlint) are CI-only, the image tier is `just check-image`, the native armv6l run is `just smoke-native`, the bring-up check against a published release is `just check-bringup`, and the two online dependency-vulnerability checks are `just check-vulns-go` and `just check-vulns-npm`')]
 verify: check-untracked check-hooks check-branch check-reqs check-citations check-arch check-arch-trace check-boundary check-go check-fuzz check-lint-go check-secret-unwrap check-config-types check-build check-static-bundle check-lint-frontend check-typecheck-frontend check-unit check-render check-render-policy check-site check-adr-index check-adr-revs check-docs-index check-repo-silo check-languages check-dead-test check-restart-policy

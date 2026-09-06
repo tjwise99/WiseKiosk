@@ -4,6 +4,10 @@
 *.out
 *.test
 
+# The bring-up check's own working directory — the release assets it downloads and the
+# configuration it copies from them (docs/CI.md § Deployment and bring-up).
+/bring-up/
+
 # Node / frontend build
 node_modules/
 dist/
