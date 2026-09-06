@@ -7,20 +7,26 @@ The inputs `image_swap.py` has been run against, in both directions. What it *as
 Run against the two releases published on this repository, `v0.0.1` (prerelease), digest
 `sha256:a233121b003e8125d978d97a89c2e02dffc1e1568a1a724b8319ee07da0e1fa7`, and `v0.1.0` (latest,
 non-pre-release), digest `sha256:27ff2637c52fe1e389a23693bb0c5fd8dcce175e9219c49006884ad46d3e589a`.
-Script md5 `a4ba80b7d77150f1a4485acab97f600d` at `b7c2cf3 ci(publish): swap two published digests
+Script md5 `a4ba80b7d77150f1a4485acab97f600d` at `9fb833a ci(publish): swap two published digests
 under the same mounts`. The script does not read pre-release status itself — that filter is the
 `image-swap` job's, applied before the script ever runs — so `v0.0.1` stands in as an ordinary
 digest for these rows. Each row invokes `image_swap.py` directly with the tags and digests shown,
 reaching the real releases and the real images; nothing tracked is edited except where a row states
 a seed.
 
+**Re-observed after the health poll, configuration fetch and manifest-field resolution moved into
+`scripts/bringup/common.py`, shared with `bring_up.py`.** Script md5 `39ddd99155742a32b350a55e206b6a77`
+at `7617e79 refactor(bringup): factor the health-poll, config-fetch and manifest-read helpers into
+common.py`. Every row but the nonexistent-digest one calls the moved code and was re-run; each
+reported byte-identical text and near-identical timing, noted per row.
+
 | Direction | Case | Input |
 |---|---|---|
-| Must pass | The two releases, oldest first | `v0.0.1 sha256:a233…e1fa7 v0.1.0 sha256:27ff…d589a` — `v0.0.1 (0.0.1) and v0.1.0 (0.1.0) each serve their mounted configuration under the same mount arguments, with no builder invoked` in 69.2s |
-| Must pass | The same two releases, order swapped (versions still differ) | `v0.1.0 sha256:27ff…d589a v0.0.1 sha256:a233…e1fa7` — passes identically, in 66.1s |
-| Must fail | The same release given as both A and B | `v0.1.0 sha256:27ff…d589a v0.1.0 sha256:27ff…d589a` — `` v0.1.0 and v0.1.0 both report version '0.1.0' — the swap changed nothing `` |
-| Must fail | B's digest does not exist | `v0.1.0 sha256:27ff…d589a v0.1.0 sha256:00…00` — `` `docker run ghcr.io/tjwise99/wisekiosk@sha256:00…00` exited 125 (…failed to resolve reference…: not found) `` — nothing pulled, nothing built |
-| Must fail | B's mount omitted for the second run | seeded: `start_container`'s `--volume` argument dropped for the B call only — `` /config.json answered 404, expected 200 `` in 69.1s |
+| Must pass | The two releases, oldest first | `v0.0.1 sha256:a233…e1fa7 v0.1.0 sha256:27ff…d589a` — `v0.0.1 (0.0.1) and v0.1.0 (0.1.0) each serve their mounted configuration under the same mount arguments, with no builder invoked` in 69.2s; re-observed post-factoring, 69.8s |
+| Must pass | The same two releases, order swapped (versions still differ) | `v0.1.0 sha256:27ff…d589a v0.0.1 sha256:a233…e1fa7` — passes identically, in 66.1s; re-observed post-factoring, 69.1s |
+| Must fail | The same release given as both A and B | `v0.1.0 sha256:27ff…d589a v0.1.0 sha256:27ff…d589a` — `` v0.1.0 and v0.1.0 both report version '0.1.0' — the swap changed nothing `` — re-observed post-factoring, byte-identical |
+| Must fail | B's digest does not exist | `v0.1.0 sha256:27ff…d589a v0.1.0 sha256:00…00` — `` `docker run ghcr.io/tjwise99/wisekiosk@sha256:00…00` exited 125 (…failed to resolve reference…: not found) `` — nothing pulled, nothing built. Fails in `start_container`, before any moved code runs; not re-run |
+| Must fail | B's mount omitted for the second run | seeded: `start_container`'s `--volume` argument dropped for the B call only — `` /config.json answered 404, expected 200 `` in 69.1s; re-observed post-factoring against a freshly reapplied seed, byte-identical, 66.9s |
 
 **Real-world confirmation of the no-previous-release path.** At the time these rows were run, this
 repository carries exactly one non-pre-release (`v0.1.0`); `gh release list --exclude-pre-releases
