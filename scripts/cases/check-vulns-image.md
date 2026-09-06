@@ -29,6 +29,6 @@ image with the register argument changed; nothing about the image itself varies.
 | Must pass | `wisekiosk:citest`, built from this branch's own head, empty register | `docker buildx build --load --tag wisekiosk:citest .` (`just check-image`'s own build step), then the production script against it — exits 0: `check-vulns (image): 0 finding(s) reported` and `check-vulns (image): no unregistered or first-party finding, register clean`; the `RUN apk upgrade --no-cache` line ahead of the trust-anchor install picks up Alpine's own fix for all ten CVEs above (`openssl` `3.5.8-r0` in the `alpine:3.24` main repository, against the `3.5.7-r0` the pinned base digest shipped) |
 
 **The population above moves with Trivy's own vulnerability database**, downloaded fresh on every
-run (no cache, per the owner's ruling on #265) — like `check-vulns-go`'s standard-library baseline,
+run (no cache, per the owner's ruling on #265 image vulnerability scan) — like `check-vulns-go`'s standard-library baseline,
 this is the live tree rather than a fixed count, and a later run against the same digests can report
 more or fewer findings as the database is updated.
