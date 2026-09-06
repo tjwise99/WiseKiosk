@@ -20,6 +20,14 @@
       "depNameTemplate": "anchore/syft",
       "datasourceTemplate": "github-releases",
       "versioningTemplate": "semver"
+    },
+    {
+      "customType": "regex",
+      "managerFilePatterns": ["/^scripts/publish/verify_release\\.py$/"],
+      "matchStrings": ["check-jsonschema==(?<currentValue>[0-9.]+)"],
+      "depNameTemplate": "check-jsonschema",
+      "datasourceTemplate": "pypi",
+      "versioningTemplate": "pep440"
     }
   ]
 }

@@ -89,6 +89,9 @@ jobs:
       - name: Every service in the committed deployment recipe declares a restart policy
         run: just check-restart-policy
 
+      - name: The verify job in publish.yml holds no write scope
+        run: just check-publish-permissions
+
   requirements:
     name: requirements
     # Validates the Doorstop requirements tree: every TST reference resolves, no
