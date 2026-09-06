@@ -3,10 +3,18 @@
 **Status:** accepted
 **Decided:** 2026-09-05 (#268 release from a manual tag, extending the 2026-08-19 operator-interface
 rev on #9 backend skeleton and the 2026-08-09 design discussion on #71 release artifact set)
-**Rev:** 3
+**Rev:** 4
 
 ## Revisions
 
+- **rev 4** — 2026-09-06 — corrects "referring artifacts" to "attached under the signing tools'
+  conventions" everywhere it appears: GHCR implements no OCI referrers API, so cosign's own tag
+  convention and GitHub's attestation store are what the registry-side material actually attaches
+  through. Records that the SBOM is one attestation per platform child rather than one for the
+  index, and that the index and each child are both signed. Records that the per-child logic is
+  authored Python rather than workflow shell. States that `bring-up` and `image-swap` run only once
+  the `verify` job passes. What was chosen is unchanged, so the Decided date does not move
+  (#269 publish verification).
 - **rev 3** — 2026-09-05 — adopts the tag-triggered publish workflow: a release is cut by hand on a
   semver tag rather than published from every commit on the default branch, `latest` moves only for
   a non-pre-release, the release assets are named by basename, and the release notes gain the
@@ -33,9 +41,9 @@ not decide what the set should be, and that section named this decision as the t
 **Two premises the question had been asked under turned out to be false.**
 
 The first is that a release is a set of downloadable files. Three of the five things the check
-enumerated — the SBOM, the signature, the build-provenance attestation — are referring artifacts
-attached to an image digest in the registry, which is where `../CI.md`'s verification job already
-looks. A fourth, the image reference, is not a file at all. One sentence therefore described three
+enumerated — the SBOM, the signature, the build-provenance attestation — are attached to the image
+digest in the registry under the signing tools' conventions (cosign tags and GitHub's attestation
+store), which is where `../CI.md`'s verification job already looks. A fourth, the image reference, is not a file at all. One sentence therefore described three
 different queries against two APIs while reading as one assertion.
 
 The second is that a tooling bundle had somewhere to go. The project publishes to a container
@@ -64,9 +72,23 @@ nobody took.
 
 | Where | What |
 |---|---|
-| The registry, at the image digest | the image, with its SBOM, signature and build-provenance attestation attached to that digest as referring artifacts |
+| The registry, at the image digest | the image, with its SBOM, signature and build-provenance attestation attached to that digest under the signing tools' conventions (cosign tags and GitHub's attestation store) |
 | The release tag | the deployment recipe, `compose.yaml`, and an example configuration file, `config.example.json`, each at its committed basename |
 | The documentation site | nothing. It tracks the default branch and is deliberately not versioned |
+
+**The SBOM is one attestation per platform child, not one for the index.** The index digest is the
+named subject of the signature and the build-provenance attestation, and the platform children are
+signed too, so an operator who pins a child digest can verify it on its own.
+
+**Per-child signing, attestation and verification logic is authored Python, not workflow shell.**
+`scripts/publish/sbom_attest.py`, `scripts/publish/verify_metadata.py` and
+`scripts/publish/verify_release.py` iterate the platform children and assert their content; a
+workflow `run:` block carrying that same loop would be authored sh, which nothing here authors
+([ADR 0017 rev 8](0017-authored-language-set.md)).
+
+**Bring-up and the image swap run only once verification passes.** Both depend on the `verify` job
+as well as `publish`, so a release whose signature or attestation fails to verify never reaches
+either exercise.
 
 The release notes name the digest, which is what ties the tag to the registry: the publish
 workflow keeps exactly one line naming it, `Image: ghcr.io/tjwise99/wisekiosk@sha256:<digest>`,
@@ -174,14 +196,15 @@ out.
 
 ## Consequences
 
-**One asset-set sentence becomes three assertions.** Verifying referring artifacts against a digest,
-enumerating files on a tag, and asserting the release notes name the digest are separate queries
-against separate APIs, and #67 security and supply-chain gates inherits them as such.
+**One asset-set sentence becomes three assertions.** Verifying the artifacts attached to a digest
+under the signing tools' conventions, enumerating files on a tag, and asserting the release notes
+name the digest are separate queries against separate APIs, and #67 security and supply-chain gates
+inherits them as such.
 
 **The container build inherits a constraint from the healthcheck.** A declared `HEALTHCHECK` needs
 something inside the image able to reach the service over HTTP. A distribution base carries one; a
 minimal base does not, and the check then needs a self-check path in the backend binary.
-[ADR 0015 rev 3](0015-container-toolchain-and-image-annotations.md) leaves the base image undecided, so
+[ADR 0015 rev 4](0015-container-toolchain-and-image-annotations.md) leaves the base image undecided, so
 #54 container build and publish takes this cost with that choice rather than meeting it as a surprise.
 
 **An operator on an older digest reads a procedure describing the default branch.** The site is
