@@ -527,18 +527,25 @@ What each of these obligations *is*, and why, is [`DEPLOYMENT.md`](DEPLOYMENT.md
   backend's served headers (#266 security response headers): it runs the example-configuration and
   emission specs and fails on a console warning of a rejected policy directive or an unrecognised
   Permissions-Policy feature.
-- **An image swap preserves the deployment.** A test runs published digest A with a mounted
-  configuration and secret directory and asserts it is healthy and serving that configuration; stops
-  and removes it; runs digest B with byte-identical mount arguments and asserts it is healthy, serving
-  the same configuration, and reporting a changed version — with no builder invoked at any point.
+- **An image swap preserves the deployment.** `just check-image-swap`, run by the `image-swap` job in
+  [`../.github/workflows/publish.yml`](../.github/workflows/publish.yml): the release that fired the
+  run swaps for the newest older non-pre-release, both under the same mounted configuration and
+  ephemeral published port — a compose service and a secret directory are #261 secret mount's, this
+  check is config-only. Each digest runs, is asserted healthy and serving that configuration, and is
+  stopped and removed before the other runs, with no builder invoked at either step — made observable
+  by asserting each running container's image resolves to the digest requested. Reporting a changed
+  version is the OCI `org.opencontainers.image.version` annotation on the manifest each digest names:
+  the two must differ, and each must equal its own release tag with the leading `v` stripped. With no
+  older non-pre-release to compare against, the job records that and passes. Recorded in
+  [`../scripts/cases/check-image-swap.md`](../scripts/cases/check-image-swap.md).
 
-**Four are built and one is not.** The recipe and health-signal checks landed with #54 container
-build and publish, against the image and the recipe that ticket ships; the example-configuration
-check landed with #139, against the page it renders; the documented-procedure check landed with
-#138 bring-up check, against a published release rather than the tracked tree. The one that remains
-is owned by #140 image-swap check — which is how this project records scoped work
-([ADR 0005 rev 2](decisions/0005-traceability-gating.md)); what each asserts was decided by #71
-release artifact set, which shipped no code.
+**All five are built.** The recipe and health-signal checks landed with #54 container build and
+publish, against the image and the recipe that ticket ships; the example-configuration check
+landed with #139, against the page it renders; the documented-procedure check landed with #138
+bring-up check, against a published release rather than the tracked tree; the image-swap check
+landed with #140 image-swap check, against two published releases — which is how this project
+records scoped work ([ADR 0005 rev 2](decisions/0005-traceability-gating.md)); what each asserts
+was decided by #71 release artifact set, which shipped no code.
 
 ## The exception register
 
