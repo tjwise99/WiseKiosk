@@ -299,9 +299,6 @@ smoke-native: check-build
     GOOS=linux GOARCH={{native_goarch}} GOARM={{native_goarm}} CGO_ENABLED=0 go -C backend build -o ../bin/wisekiosk-armv6 ./cmd
     python3 scripts/native/smoke.py bin/wisekiosk-armv6 frontend/dist {{native_goarch}}/{{native_goarm}}
 
-# Outside `verify`, and against a published release rather than the tracked tree: the tag and
-# digest are the caller's, from the release event that triggers the job
-# (docs/CI.md § Deployment and bring-up, docs/DEPLOYMENT.md § Bring-up).
 [group('checks')]
 [doc('The documented bring-up procedure reaches a serving deployment from a published release; needs Docker and the network (gh, ghcr.io)')]
 check-bringup tag digest:

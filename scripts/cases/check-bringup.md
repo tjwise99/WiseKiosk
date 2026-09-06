@@ -9,7 +9,8 @@ Run against release `v0.1.0` (latest, non-pre-release), digest
 `d637a9fe8679bd38dbde24fc9821f97e` at `ca7d796 feat(ci): parse and run the documented bring-up
 procedure`. A seed edits a scratch copy of `docs/DEPLOYMENT.md`'s fenced block and is run with
 `bring_up.py --doc <copy> v0.1.0 <digest>`, which reaches the real release's assets and the real
-image; the tracked `docs/DEPLOYMENT.md` and `deploy/compose.yaml` are never edited.
+image; the tracked `docs/DEPLOYMENT.md` and `deploy/compose.yaml` are never edited. The
+registry-propagation poll bound, 60s, is the harness's own constant; no document specifies one.
 
 **Three rows below could not be run against the real recipe locally**, which binds host port 8080:
 a container from an unrelated, longer-running task held that port on this worktree's runner for the

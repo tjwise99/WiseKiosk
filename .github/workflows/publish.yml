@@ -109,11 +109,8 @@ jobs:
           printf '%s\n' "$DIGEST_LINE" >> "$RUNNER_TEMP/notes.md"
           gh release edit "$TAG" --notes-file "$RUNNER_TEMP/notes.md"
 
-  # The documented bring-up procedure, run against what publish just published rather than the
-  # tracked tree (docs/CI.md § Deployment and bring-up). `latest` only moves for a non-pre-release
-  # (docs/DEPLOYMENT.md § Bring-up), so the recipe's unedited `:latest` would exercise the
-  # previous release's digest on a pre-release publish; skipped there rather than run against the
-  # wrong artifact.
+  # The documented bring-up procedure, against the release that fired this workflow, on a
+  # non-pre-release only (docs/CI.md § Deployment and bring-up).
   bring-up:
     name: bring-up
     needs: publish
