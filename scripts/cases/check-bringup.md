@@ -35,3 +35,10 @@ healthcheck derives.
 **Known gap.** Removing the `chmod 644` line is not seeded: `cp` preserves the tracked 644 mode of
 `config.example.json` on the runner, so the line is redundant there and its absence is not a defect
 this check can see (owner, 2026-09-04).
+
+**The `bring-up` job's teardown step is unverified.** `docker compose down --volumes` under
+`if: always()` in `.github/workflows/publish.yml` is outside `bring_up.py` and outside every row
+above: it did not run locally (the same port-8080 conflict) and the CI run cited for the
+committed-block row had no teardown step of its own to exercise it. It is unobserved rather than
+predicted from source, unlike the three rows above, and stays that way until the first real
+release's job runs it.
