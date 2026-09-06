@@ -107,8 +107,8 @@ jobs:
           cosign-release: v3.1.3
 
       # Reads the pushed index's platform children and, per child, runs the pinned syft into an
-      # SPDX SBOM and `cosign attest`s it — a Python loop rather than a `run:` block one (ADR 0017
-      # rev 8; docs/CI.md § Publishing and provenance).
+      # SPDX SBOM and `cosign attest`s it — a Python loop rather than a `run:` block one
+      # (ADR 0017 rev 8; docs/CI.md § Publishing and provenance).
       - name: Generate and attest one SPDX SBOM per platform child
         env:
           REF: ghcr.io/tjwise99/wisekiosk
