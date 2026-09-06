@@ -11,9 +11,10 @@ rev on #9 backend skeleton and the 2026-08-09 design discussion on #71 release a
   conventions" everywhere it appears: GHCR implements no OCI referrers API, so cosign's own tag
   convention and GitHub's attestation store are what the registry-side material actually attaches
   through. Records that the SBOM is one attestation per platform child rather than one for the
-  index, and that the index and each child are both signed. States that `bring-up` and
-  `image-swap` run only once the `verify` job passes. What was chosen is unchanged, so the Decided
-  date does not move (#269 publish verification).
+  index, and that the index and each child are both signed. Records that the per-child logic is
+  authored Python rather than workflow shell. States that `bring-up` and `image-swap` run only once
+  the `verify` job passes. What was chosen is unchanged, so the Decided date does not move
+  (#269 publish verification).
 - **rev 3** — 2026-09-05 — adopts the tag-triggered publish workflow: a release is cut by hand on a
   semver tag rather than published from every commit on the default branch, `latest` moves only for
   a non-pre-release, the release assets are named by basename, and the release notes gain the
@@ -78,6 +79,11 @@ nobody took.
 **The SBOM is one attestation per platform child, not one for the index.** The index digest is the
 named subject of the signature and the build-provenance attestation, and the platform children are
 signed too, so an operator who pins a child digest can verify it on its own.
+
+**Per-child signing, attestation and verification logic is authored Python, not workflow shell.**
+`scripts/publish/sbom_attest.py` and `scripts/publish/verify_release.py` iterate the platform
+children and assert their content; a workflow `run:` block carrying that same loop would be
+authored sh, which nothing here authors ([ADR 0017 rev 8](0017-authored-language-set.md)).
 
 **Bring-up and the image swap run only once verification passes.** Both depend on the `verify` job
 as well as `publish`, so a release whose signature or attestation fails to verify never reaches
