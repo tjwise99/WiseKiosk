@@ -304,6 +304,11 @@ smoke-native: check-build
 check-bringup tag digest:
     python3 scripts/bringup/bring_up.py {{tag}} {{digest}}
 
+[group('checks')]
+[doc('Published digest A and published digest B each serve their mounted configuration and report their own version, under byte-identical mount arguments, with no builder invoked; needs Docker and the network (gh, ghcr.io)')]
+check-image-swap tag_a digest_a tag_b digest_b:
+    python3 scripts/bringup/image_swap.py {{tag_a}} {{digest_a}} {{tag_b}} {{digest_b}}
+
 [group('config')]
 [doc('Regenerate the configuration-object TypeScript types from the configuration schema')]
 config-codegen:
