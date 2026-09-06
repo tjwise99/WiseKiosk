@@ -12,6 +12,16 @@ procedure`. A seed edits a scratch copy of `docs/DEPLOYMENT.md`'s fenced block a
 image; the tracked `docs/DEPLOYMENT.md` and `deploy/compose.yaml` are never edited. The
 registry-propagation poll bound, 60s, is the harness's own constant; no document specifies one.
 
+**#140 image-swap check factored the health poll, the configuration fetch and the manifest-field
+resolution this script calls into `scripts/bringup/common.py`, shared with `image_swap.py`; no
+step or assertion below changed.** Script md5 of `bring_up.py` after that factoring:
+`bb845037be5d9775cbdfaa3b8e892402`, `common.py`: `7c3513a0a267c04ef064608002a173a9`, both at
+`7617e79 refactor(bringup): factor the health-poll, config-fetch and manifest-read helpers into
+common.py`. The must-pass row and the `latest`-mismatch row were re-run against the factored
+script — both reported byte-identical text, in 32.4s and 63s respectively — because both pass
+through the moved `imagetools_inspect`/health-poll/config-fetch code; the other four rows fail on
+`compose_container` or `run_block`, neither of which moved, and were not re-run.
+
 **Host port 8080 was held for the whole of this branch's work** by an unrelated, longer-running
 task's container, which was not this branch's to stop; the recipe hardcodes that port. The
 recipe-as-committed row was run in CI instead

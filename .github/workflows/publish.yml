@@ -5,8 +5,8 @@ name: publish
 # read-only verification pipeline never needs elevated permissions: `contents: write` and
 # `packages: write` are held by the publish job alone, and it elevates the GitHub-provided
 # GITHUB_TOKEN rather than adding a stored credential. Runs on `release: published`, keyed on the
-# tag whose shape the first step asserts. The bring-up job that follows only reads what publish
-# wrote (docs/CI.md § Deployment and bring-up).
+# tag whose shape the first step asserts. The bring-up and image-swap jobs that follow only read
+# what publish wrote (docs/CI.md § Deployment and bring-up).
 
 on:
   release:
@@ -148,3 +148,45 @@ jobs:
         if: always()
         working-directory: bring-up
         run: docker compose down --volumes
+
+  # The release just published swaps for the newest older non-pre-release under the same mounts,
+  # on a non-pre-release only (docs/CI.md § Deployment and bring-up). With no such release, this
+  # records that and passes.
+  image-swap:
+    name: image-swap
+    needs: publish
+    if: github.event.release.prerelease == false
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read # gh release list/download, the release assets image_swap.py fetches
+      packages: read # pull the published images from ghcr.io
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: docker/login-action@dbcb813823bdd20940b903addbd779551569679f # v4.6.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: extractions/setup-just@53165ef7e734c5c07cb06b3c8e7b647c5aa16db3 # v4
+        with:
+          just-version: "1.58.0"
+
+      - name: The newest older non-pre-release swaps for this one under the same mounts
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: ${{ github.event.release.tag_name }}
+          DIGEST: ${{ needs.publish.outputs.digest }}
+        run: |
+          PREVIOUS_TAG=$(gh release list --exclude-pre-releases --json tagName --jq \
+            "[.[].tagName] | map(select(. != \"$TAG\"))[0] // empty")
+          if [ -z "$PREVIOUS_TAG" ]; then
+            echo "no previous release"
+            exit 0
+          fi
+          PREVIOUS_DIGEST=$(docker buildx imagetools inspect "ghcr.io/tjwise99/wisekiosk:${PREVIOUS_TAG#v}" \
+            --format '{{json .Manifest.Digest}}' | tr -d '"')
+          just check-image-swap "$PREVIOUS_TAG" "$PREVIOUS_DIGEST" "$TAG" "$DIGEST"
