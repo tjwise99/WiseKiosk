@@ -6,7 +6,7 @@ The inputs this check has been run against, in both directions. What it *asserts
 [`../README.md`](../README.md)'s.
 
 `check-fuzz` is a new recipe rather than a step added to `check-go`, so each case here is a
-`git archive` of the **PR's own head** — `f8d1d86`, the commit landing this file (`weather_test.go`,
+`git archive` of the **PR's own head** — `58e62ea`, the commit landing this file (`weather_test.go`,
 md5 `43e88f6e3636396f624eee07120815eb`; `justfile`, md5 `f11ef36b216ec5972a72f59a0209076c`) — rather
 than a commit before the step existed, which fits `check-go.md`'s device for a step added to an
 existing recipe and not a wholly new one. The seed is confirmed to have landed (`git diff --quiet`
