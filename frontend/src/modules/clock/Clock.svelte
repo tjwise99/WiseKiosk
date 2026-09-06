@@ -1,16 +1,23 @@
 <script lang="ts">
   import type { ClockOptions } from '../../config/types';
+  import type { CommonProps } from '../../lib/modules';
 
   // No `reachable` prop is declared: the module fetches nothing, so an outage takes nothing from it
   // (docs/contracts/module-contract.md § An unavailable module and an unreachable backend are
   // different states). Svelte drops the prop the frame forwards to every module alike.
-  const { config }: { config: ClockOptions } = $props();
+  const { config }: CommonProps = $props();
+
+  // Narrowed to the concrete options type — safe because config validation already ran by the
+  // time this does (ADR 0007 rev 2), same basis as modules.ts's `read` cast. `$derived` rather
+  // than a plain `const` so the narrowing stays live if `config` ever changes, rather than
+  // snapshotting it once.
+  const clockConfig = $derived(config as ClockOptions);
 
   // Read as given: the validator writes each key's schema default into the configuration, so an
   // absent key arrives already at its default rather than being defaulted a second time here.
-  const twentyFourHour = $derived(config.twenty_four_hour);
-  const showSeconds = $derived(config.show_seconds);
-  const showDate = $derived(config.show_date);
+  const twentyFourHour = $derived(clockConfig.twenty_four_hour);
+  const showSeconds = $derived(clockConfig.show_seconds);
+  const showDate = $derived(clockConfig.show_date);
 
   // The host clock is re-read every second, so the shown time stays current to the second whether or
   // not seconds are drawn. A cadence, not a phase: the reading trails the host by wherever in the
