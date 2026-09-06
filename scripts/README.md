@@ -51,6 +51,7 @@ when a link breaks. Nothing enforces this — a wrong success line fails no buil
 | `check-render-policy` (the render tier previewed under the served security response headers) | [cases](cases/check-render-policy.md) |
 | `check-image` (the six harnesses it runs under `image/`) | [cases](cases/check-image.md) |
 | `smoke-native` (the harness under `native/`) | [cases](cases/smoke-native.md) |
+| `check-bringup` (`bringup/bring_up.py`) | [cases](cases/check-bringup.md) |
 | `check-restart-policy.py` | [cases](cases/check-restart-policy-py.md) |
 | `check-site` | [cases](cases/check-site.md) |
 | `the seven requirements-tree checks` | [cases](cases/the-requirements-tree-checks.md) |

@@ -471,14 +471,26 @@ a posture resting on this section. Until #77 fences this document, read it as in
 What the published material must let an operator do, checked by running it rather than by reading it.
 What each of these obligations *is*, and why, is [`DEPLOYMENT.md`](DEPLOYMENT.md)'s.
 
-- **The documented procedure executes.** The bring-up commands the documentation states are run in a
-  clean container and the service is asserted to serve. It fails if a documented step does not run, or
-  if the sequence completes without a serving deployment — so documentation that omits a step fails
-  here rather than at somebody's first deployment. What is run is the documented default path, which
-  edits nothing and verifies nothing: attestation verification is the operator's option rather than a
-  step of the sequence ([`DEPLOYMENT.md`](DEPLOYMENT.md) § *Bring-up*), so a run that skips it is a
-  faithful bring-up and not a gap. Whether #138 bring-up check also exercises the optional step is
-  that ticket's to decide. No human is in the loop at any point.
+- **The documented procedure executes.** `just check-bringup`, run by the `bring-up` job in
+  [`../.github/workflows/publish.yml`](../.github/workflows/publish.yml) against the release that
+  triggered the run: it downloads the release's two assets into an empty directory and runs the
+  first `sh` fence after [`DEPLOYMENT.md`](DEPLOYMENT.md) § *Bring-up*'s heading, line by line,
+  unedited. It fails if a documented step does not run, or if the sequence completes without a
+  serving deployment — so documentation that omits a step fails here rather than at somebody's first
+  deployment. Serving is two assertions: the compose service's container reaches Docker health
+  status `healthy` within a deadline derived from the image's own declared healthcheck, and
+  `GET /config.json` returns the downloaded `config.example.json` byte for byte — health status
+  alone cannot see a missing configuration mount, `/healthz` being configuration-blind by design.
+  Before the block runs, `ghcr.io/tjwise99/wisekiosk:latest` is asserted to resolve to the digest
+  the publish job just produced, which is the one assertion in the tree that `latest` moved to the
+  release that fired the check. The job runs only on a non-pre-release: `latest` does not move for
+  one ([`DEPLOYMENT.md`](DEPLOYMENT.md) § *Bring-up*), so the recipe's unedited `:latest` would
+  otherwise exercise the previous release's digest against the new assets. What is run is the
+  documented default path, which edits nothing and verifies nothing: attestation verification is
+  the operator's option rather than a step of the sequence
+  ([`DEPLOYMENT.md`](DEPLOYMENT.md) § *Bring-up*), so a run that skips it is a faithful bring-up and
+  not a gap. No human is in the loop at any point. Recorded in
+  [`../scripts/cases/check-bringup.md`](../scripts/cases/check-bringup.md).
 - **The committed recipe carries a restart policy.** `scripts/check-restart-policy.py`, run by
   `just check-restart-policy` in the `docs-and-hygiene` job, failing where a service in
   `deploy/compose.yaml` declares no policy or declares one other than `unless-stopped` — the value
@@ -520,12 +532,13 @@ What each of these obligations *is*, and why, is [`DEPLOYMENT.md`](DEPLOYMENT.md
   and removes it; runs digest B with byte-identical mount arguments and asserts it is healthy, serving
   the same configuration, and reporting a changed version — with no builder invoked at any point.
 
-**Three are built and two are not.** The recipe and health-signal checks landed with #54 container
+**Four are built and one is not.** The recipe and health-signal checks landed with #54 container
 build and publish, against the image and the recipe that ticket ships; the example-configuration
-check landed with #139, against the page it renders. The two that run against a published release
-are owned one ticket each — #138 bring-up check and #140 image-swap check — which is how this
-project records scoped work ([ADR 0005 rev 2](decisions/0005-traceability-gating.md)); what each
-asserts was decided by #71 release artifact set, which shipped no code.
+check landed with #139, against the page it renders; the documented-procedure check landed with
+#138 bring-up check, against a published release rather than the tracked tree. The one that remains
+is owned by #140 image-swap check — which is how this project records scoped work
+([ADR 0005 rev 2](decisions/0005-traceability-gating.md)); what each asserts was decided by #71
+release artifact set, which shipped no code.
 
 ## The exception register
 
