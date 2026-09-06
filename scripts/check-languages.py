@@ -57,14 +57,16 @@ EXTENSIONS = {
     "yml": "derived — a toolchain's own required input format: GitHub Actions workflow YAML, "
     "Doorstop item and silo config YAML (ADR 0017 rev 8)",
     "yaml": "derived — a toolchain's own required input format: pre-commit's "
-    ".pre-commit-config.yaml (ADR 0016 rev 9), the boundary schema both code generators "
+    ".pre-commit-config.yaml (ADR 0016 rev 11), the boundary schema both code generators "
     "read and oapi-codegen's own configuration (ADR 0008 rev 5, ADR 0017 rev 8)",
     "mod": "derived — the Go toolchain's own manifest format: backend/go.mod "
     "(ADR 0017 rev 8)",
     "sum": "derived — the Go toolchain's own lockfile format: backend/go.sum "
     "(ADR 0017 rev 8)",
     "json": "derived — a toolchain's own required input format: npm's package.json and "
-    "package-lock.json, Claude Code's settings.json, commitlint's .commitlintrc*.json",
+    "package-lock.json, Claude Code's settings.json, commitlint's .commitlintrc*.json; also "
+    "derived — data an authored check reads and does not itself author: the vendored SPDX 2.3 "
+    "schema scripts/publish/spdx-schema-2.3.json the SBOM check validates against",
     "likec4": "derived — LikeC4's own model format, named in ADR 0017 rev 8 "
     "(ADR 0003 rev 3)",
     "mmd": "derived — generated Mermaid output of the LikeC4 export/splice toolchain "

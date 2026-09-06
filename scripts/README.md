@@ -43,6 +43,7 @@ when a link breaks. Nothing enforces this — a wrong success line fails no buil
 | `check-lint-go` | [cases](cases/check-lint-go.md) |
 | `check-vulns-go` (`scripts/vulns/check_vulns.py --scope go`) | [cases](cases/check-vulns-go.md) |
 | `check-vulns-npm` (`scripts/vulns/check_vulns.py --scope npm`) | [cases](cases/check-vulns-npm.md) |
+| `check-vulns-image` (`scripts/vulns/check_vulns.py --scope image`) | [cases](cases/check-vulns-image.md) |
 | `check-lint-frontend` | [cases](cases/check-lint-frontend.md) |
 | `check-typecheck-frontend` | [cases](cases/check-typecheck-frontend.md) |
 | `check-secret-unwrap.py` | [cases](cases/check-secret-unwrap.md) |
@@ -53,6 +54,8 @@ when a link breaks. Nothing enforces this — a wrong success line fails no buil
 | `smoke-native` (the harness under `native/`) | [cases](cases/smoke-native.md) |
 | `check-bringup` (`bringup/bring_up.py`) | [cases](cases/check-bringup.md) |
 | `check-image-swap` (`bringup/image_swap.py`) | [cases](cases/check-image-swap.md) |
+| the `verify` job's release checks (`publish/sbom_attest.py`, `publish/verify_metadata.py`, `publish/verify_release.py`) | [cases](cases/publish-verify.md) |
+| `check-publish-permissions` (`publish/verify_permissions.py`) | [cases](cases/check-publish-permissions.md) |
 | `check-restart-policy.py` | [cases](cases/check-restart-policy-py.md) |
 | `check-site` | [cases](cases/check-site.md) |
 | `the seven requirements-tree checks` | [cases](cases/the-requirements-tree-checks.md) |

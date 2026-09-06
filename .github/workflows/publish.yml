@@ -1,12 +1,11 @@
 name: publish
 
-# Builds the container image and publishes it to GHCR, and uploads the deployment recipe and
-# example configuration to the release that triggered the run. Separate from checks.yml so the
-# read-only verification pipeline never needs elevated permissions: `contents: write` and
-# `packages: write` are held by the publish job alone, and it elevates the GitHub-provided
-# GITHUB_TOKEN rather than adding a stored credential. Runs on `release: published`, keyed on the
-# tag whose shape the first step asserts. The bring-up and image-swap jobs that follow only read
-# what publish wrote (docs/CI.md § Deployment and bring-up).
+# Builds the container image and publishes it to GHCR, signs and attests it, and uploads the
+# deployment recipe and example configuration to the release that triggered the run. `contents:
+# write`, `packages: write`, `id-token: write` and `attestations: write` are held by the publish
+# job alone; the verify job holds none. Runs on `release: published`, keyed on the tag whose shape
+# the first step asserts. The bring-up and image-swap jobs run only once verify passes
+# (docs/CI.md § Deployment and bring-up, § Publishing and provenance).
 
 on:
   release:
@@ -27,6 +26,8 @@ jobs:
     permissions:
       contents: write # upload release assets and edit release notes
       packages: write # push to ghcr.io under the GitHub-provided token
+      id-token: write # keyless cosign signing and the attest-build-provenance OIDC exchange
+      attestations: write # publish the build-provenance attestation to GitHub's attestation store
     outputs:
       digest: ${{ steps.build.outputs.digest }}
     steps:
@@ -52,7 +53,7 @@ jobs:
 
       # Eight of the nine OCI keys are this action's defaults and `.revision` is the commit it runs
       # on; `.documentation` is not defaulted and is supplied as a literal, on both surfaces
-      # (ADR 0015 rev 3). The annotation levels are declared here rather than restated elsewhere,
+      # (ADR 0015 rev 4). The annotation levels are declared here rather than restated elsewhere,
       # because the annotation check reads them from this workflow (docs/CI.md § Publishing and
       # provenance). `latest` moves to this release's image only when the release is not a
       # pre-release (docs/DEPLOYMENT.md § Bring-up). `flavor: latest=false` disables the action's
@@ -74,8 +75,8 @@ jobs:
           annotations: |
             org.opencontainers.image.documentation=https://tjwise99.github.io/WiseKiosk/
 
-      # provenance and sbom stay off: what this publishes is a plain annotated image, and the
-      # attestation set is #67's.
+      # provenance and sbom stay off here: the attestation, signature and per-platform SBOM steps
+      # below produce them against the pushed digest instead.
       - id: build
         uses: docker/build-push-action@53b7df96c91f9c12dcc8a07bcb9ccacbed38856a # v7.3.0
         with:
@@ -87,6 +88,41 @@ jobs:
           annotations: ${{ steps.meta.outputs.annotations }}
           provenance: false
           sbom: false
+
+      - name: Attest build provenance and push it to the registry
+        uses: actions/attest-build-provenance@4d101475d8b20a2381f78447822ac1eab6504dd8 # v4.2.2
+        with:
+          subject-name: ghcr.io/tjwise99/wisekiosk
+          subject-digest: ${{ steps.build.outputs.digest }}
+          push-to-registry: true
+          create-storage-record: false
+
+      - id: syft
+        uses: anchore/sbom-action/download-syft@3ad7283483fc7af8ff2b4ea19663c2d5ca935e26 # v0.24.2
+        with:
+          syft-version: v1.51.1
+
+      - uses: sigstore/cosign-installer@6f9f17788090df1f26f669e9d70d6ae9567deba6 # v4.1.2
+        with:
+          cosign-release: v3.1.3
+
+      # Reads the pushed index's platform children and, per child, runs the pinned syft into an
+      # SPDX SBOM and `cosign attest`s it — a Python loop rather than a `run:` block one
+      # (ADR 0017 rev 8; docs/CI.md § Publishing and provenance).
+      - name: Generate and attest one SPDX SBOM per platform child
+        env:
+          REF: ghcr.io/tjwise99/wisekiosk
+          DIGEST: ${{ steps.build.outputs.digest }}
+          SYFT: ${{ steps.syft.outputs.cmd }}
+        run: python3 scripts/publish/sbom_attest.py
+
+      # `--recursive` signs the index and each discrete child in one call, so it stays a single
+      # workflow command rather than a per-child loop.
+      - name: Sign the index and each platform child
+        env:
+          REF: ghcr.io/tjwise99/wisekiosk
+          DIGEST: ${{ steps.build.outputs.digest }}
+        run: cosign sign --yes --recursive "$REF@$DIGEST"
 
       # `--clobber` makes a re-run of this job replace rather than fail on an asset it already
       # uploaded.
@@ -109,11 +145,75 @@ jobs:
           printf '%s\n' "$DIGEST_LINE" >> "$RUNNER_TEMP/notes.md"
           gh release edit "$TAG" --notes-file "$RUNNER_TEMP/notes.md"
 
+  # Verifies the published digest against the registry, the public transparency log, and GitHub's
+  # release and attestation APIs, read only. Runs on every release, pre-release included — there is
+  # no pre-release skip — and a failed verification fails this run rather than being reported and
+  # fixed later. Not a required status check: this job runs on the release event rather than on a
+  # pull request (docs/CI.md § Publishing and provenance).
+  verify:
+    name: verify
+    needs: publish
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read # actions/checkout, and the release/registry/transparency-log reads below
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: sigstore/cosign-installer@6f9f17788090df1f26f669e9d70d6ae9567deba6 # v4.1.2
+        with:
+          cosign-release: v3.1.3
+
+      - id: syft
+        uses: anchore/sbom-action/download-syft@3ad7283483fc7af8ff2b4ea19663c2d5ca935e26 # v0.24.2
+        with:
+          syft-version: v1.51.1
+
+      - name: This job's own permissions carry no write scope
+        run: python3 scripts/publish/verify_permissions.py
+
+      - name: Signature verifies for the index and each platform child
+        env:
+          REF: ghcr.io/tjwise99/wisekiosk
+          DIGEST: ${{ needs.publish.outputs.digest }}
+        run: python3 scripts/publish/verify_release.py --step signature
+
+      - name: Provenance attestation verifies and binds to this workflow and commit
+        env:
+          REF: ghcr.io/tjwise99/wisekiosk
+          DIGEST: ${{ needs.publish.outputs.digest }}
+          COMMIT: ${{ github.sha }}
+        run: python3 scripts/publish/verify_release.py --step provenance
+
+      - name: SBOM verifies, validates against schema, and matches a regeneration
+        env:
+          REF: ghcr.io/tjwise99/wisekiosk
+          DIGEST: ${{ needs.publish.outputs.digest }}
+          SYFT: ${{ steps.syft.outputs.cmd }}
+        run: python3 scripts/publish/verify_release.py --step sbom
+
+      - name: Annotations and labels carry the nine keys, bound to the release commit
+        env:
+          REF: ghcr.io/tjwise99/wisekiosk
+          DIGEST: ${{ needs.publish.outputs.digest }}
+          COMMIT: ${{ github.sha }}
+        run: python3 scripts/publish/verify_metadata.py
+
+      - name: The attached set is complete — signatures, attestations, release assets and notes
+        env:
+          REF: ghcr.io/tjwise99/wisekiosk
+          DIGEST: ${{ needs.publish.outputs.digest }}
+          TAG: ${{ github.event.release.tag_name }}
+        run: python3 scripts/publish/verify_release.py --step attached
+
   # The documented bring-up procedure, against the release that fired this workflow, on a
-  # non-pre-release only (docs/CI.md § Deployment and bring-up).
+  # non-pre-release only, once verify passes (docs/CI.md § Deployment and bring-up).
   bring-up:
     name: bring-up
-    needs: publish
+    needs: [publish, verify] # publish for its digest output, verify as the gate
     if: github.event.release.prerelease == false
     runs-on: ubuntu-latest
     permissions:
@@ -150,11 +250,11 @@ jobs:
         run: docker compose down --volumes
 
   # The release just published swaps for the newest older non-pre-release under the same mounts,
-  # on a non-pre-release only (docs/CI.md § Deployment and bring-up). With no such release, this
-  # records that and passes.
+  # on a non-pre-release only, once verify passes (docs/CI.md § Deployment and bring-up). With no
+  # such release, the swap step's own `if:` condition skips it and the job passes.
   image-swap:
     name: image-swap
-    needs: publish
+    needs: [publish, verify] # publish for its digest output, verify as the gate
     if: github.event.release.prerelease == false
     runs-on: ubuntu-latest
     permissions:
@@ -175,18 +275,23 @@ jobs:
         with:
           just-version: "1.58.0"
 
+      - id: previous
+        name: The newest older non-pre-release, if any
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: ${{ github.event.release.tag_name }}
+        run: |
+          echo "tag=$(gh release list --exclude-pre-releases --json tagName --jq \
+            "[.[].tagName] | map(select(. != \"$TAG\"))[0] // empty")" >> "$GITHUB_OUTPUT"
+
       - name: The newest older non-pre-release swaps for this one under the same mounts
+        if: steps.previous.outputs.tag != ''
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TAG: ${{ github.event.release.tag_name }}
           DIGEST: ${{ needs.publish.outputs.digest }}
+          PREVIOUS_TAG: ${{ steps.previous.outputs.tag }}
         run: |
-          PREVIOUS_TAG=$(gh release list --exclude-pre-releases --json tagName --jq \
-            "[.[].tagName] | map(select(. != \"$TAG\"))[0] // empty")
-          if [ -z "$PREVIOUS_TAG" ]; then
-            echo "no previous release"
-            exit 0
-          fi
           PREVIOUS_DIGEST=$(docker buildx imagetools inspect "ghcr.io/tjwise99/wisekiosk:${PREVIOUS_TAG#v}" \
             --format '{{json .Manifest.Digest}}' | tr -d '"')
           just check-image-swap "$PREVIOUS_TAG" "$PREVIOUS_DIGEST" "$TAG" "$DIGEST"

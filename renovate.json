@@ -3,5 +3,38 @@
   "extends": ["github>tjwise99/wise-renovate#v1.0.0"],
   "packageRules": [
     { "matchDatasources": ["docker"], "matchPackageNames": ["ghcr.io/tjwise99/wisekiosk"], "enabled": false }
+  ],
+  "customManagers": [
+    {
+      "customType": "regex",
+      "managerFilePatterns": ["/^\\.github/workflows/publish\\.yml$/"],
+      "matchStrings": ["cosign-release: (?<currentValue>v[0-9.]+)"],
+      "depNameTemplate": "sigstore/cosign",
+      "datasourceTemplate": "github-releases",
+      "versioningTemplate": "semver"
+    },
+    {
+      "customType": "regex",
+      "managerFilePatterns": ["/^\\.github/workflows/publish\\.yml$/"],
+      "matchStrings": ["syft-version: (?<currentValue>v[0-9.]+)"],
+      "depNameTemplate": "anchore/syft",
+      "datasourceTemplate": "github-releases",
+      "versioningTemplate": "semver"
+    },
+    {
+      "customType": "regex",
+      "managerFilePatterns": ["/^scripts/publish/verify_release\\.py$/"],
+      "matchStrings": ["check-jsonschema==(?<currentValue>[0-9.]+)"],
+      "depNameTemplate": "check-jsonschema",
+      "datasourceTemplate": "pypi",
+      "versioningTemplate": "pep440"
+    },
+    {
+      "customType": "regex",
+      "managerFilePatterns": ["/^scripts/vulns/check_vulns\\.py$/"],
+      "matchStrings": ["aquasec/trivy:(?<currentValue>[0-9.]+)@(?<currentDigest>sha256:[a-f0-9]{64})"],
+      "depNameTemplate": "aquasec/trivy",
+      "datasourceTemplate": "docker"
+    }
   ]
 }

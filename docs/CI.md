@@ -311,7 +311,7 @@ Whether a comment is narrative rather than mechanism, and whether added comment 
 place, is a review habit rather than a gate: #59 comment-discipline gate closed not-planned (owner,
 2026-08-16). The defect class it targeted is carried by the `review-diff.py` pre-commit hook, which
 surfaces [`CONTRIBUTING.md`](../CONTRIBUTING.md)'s *Comments* checklist questions before a commit, and by
-independent review — across the five-PR ADR 0016 rev 9 adoption wave this produced zero
+independent review — across the five-PR ADR 0016 rev 11 adoption wave this produced zero
 comment-discipline findings. Reopens if a narrative block or comment bloat reaches `main` past both.
 
 ## Dependency vulnerabilities
@@ -319,12 +319,13 @@ comment-discipline findings. Reopens if a narrative block or comment bloat reach
 Any resolved Go-module or npm dependency with a known vulnerability fails the pull request, **at any
 severity**, unless the finding has a current register entry. One stdlib-only script,
 `scripts/vulns/check_vulns.py`, asserts both ecosystems and applies the one register; `--scope go` or
-`--scope npm` selects which. `just check-vulns-go` runs `go -C backend tool govulncheck -json ./...`;
-`just check-vulns-npm` runs `npm --prefix frontend audit --json` over the whole dependency tree, no
-`--audit-level`. Pass/fail is decided from each scanner's parsed JSON alone — `govulncheck`'s `-json`
-mode exits 0 whatever it finds, and this gate holds npm's scanner to the same rule rather than trusting
-an exit code the other tool cannot promise. The complete finding list is always printed, per § *What CI
-provides*, whether or not a finding is suppressed.
+`--scope npm` selects which (a third, `--scope image`, is § *Image vulnerabilities*'s). `just
+check-vulns-go` runs `go -C backend tool govulncheck -json ./...`; `just check-vulns-npm` runs `npm
+--prefix frontend audit --json` over the whole dependency tree, no `--audit-level`. Pass/fail is
+decided from each scanner's parsed JSON alone — `govulncheck`'s `-json` mode exits 0 whatever it
+finds, and this gate holds npm's scanner to the same rule rather than trusting an exit code the other
+tool cannot promise. The complete finding list is always printed, per § *What CI provides*, whether or
+not a finding is suppressed.
 
 **One allowance, Go only:** the gate may consider reachability — a vulnerability in code that is
 present but never called need not fail. Without it the gate produces findings nobody can act on, and
@@ -354,15 +355,21 @@ versions it names are recorded verbatim so a reviewer can rebuild it. Recorded i
 ## Image vulnerabilities
 
 The built container image is scanned, failing the build on any finding at any severity unless the
-finding has a current register entry.
-
-- An image built from a fixture manifest carrying a seeded vulnerability, asserted to exit non-zero;
-  the clean image asserted to exit zero; a finding with a current register entry asserted not to fail.
+finding has a current register entry. `--scope image` of the same script, `scripts/vulns/check_vulns.py`,
+runs Trivy — from a digest-pinned image, `TRIVY_IMAGE` in the script — against the local Docker
+daemon's copy of the tag the `image-tests` job already built (`wisekiosk:citest`), and holds the parsed
+`--format json` output to the one register `--scope go` and `--scope npm` already apply. An empty or
+missing fixed version changes nothing: an unfixed finding fails like any other, and a register entry is
+always eligible relief, because nothing in a built image is first-party.
 
 This is what covers operating-system and base-layer packages. The source-level dependency gate never
 inspects them.
 
-Unbuilt; owned by #67 security and supply-chain CI gates.
+**No fixture is committed** — [ADR 0010 rev 2](decisions/0010-runtime-materialised-gate-fixtures.md)
+forbids a resolvable vulnerable artifact in the tracked tree. The case is built as a throwaway image at
+record time and run through the production script with `--image` pointed at it; the seed Dockerfile and
+the vulnerability ids it names are recorded verbatim so a reviewer can rebuild it. Recorded in
+[`../scripts/cases/check-vulns-image.md`](../scripts/cases/check-vulns-image.md).
 
 ## Secret scanning
 
@@ -397,61 +404,104 @@ enabled, and this paragraph rather than a check is what records it.
 ## Publishing and provenance
 
 What a release publishes and what CI asserts about it. Verification runs against the published digest
-in a separate job that pulls from the registry, reads only the registry and the public transparency
-log, and holds no credential. What builds and pushes the image is `.github/workflows/publish.yml`,
-which #54 container build and publish landed and #268 release from a manual tag keyed to
-`release: published`; every check below is unbuilt and owned by #67 security and supply-chain
-gates, against the set
-[ADR 0020 rev 3](decisions/0020-release-artifact-set-and-operator-tooling.md) decides. That workflow
+in a separate job, `verify`, that reads three surfaces only — the registry, the public transparency
+log via cosign, and GitHub's release and attestation APIs — and holds no write scope. Installing the
+job's own tools — the cosign and syft installers, and the `pipx` fetch of `check-jsonschema` from
+PyPI — is the job's only other network activity, distinct from the three evidence surfaces above.
+What builds and pushes the image is `.github/workflows/publish.yml`, which #54 container build and publish landed and
+#268 release from a manual tag keyed to `release: published`, against the set
+[ADR 0020 rev 4](decisions/0020-release-artifact-set-and-operator-tooling.md) decides. That workflow
 runs only when the owner publishes a `vMAJOR.MINOR.PATCH` release, tags the image by that semver, and
 moves `latest` to it for a non-pre-release; the committed recipe references `latest` so it runs
 unedited ([`DEPLOYMENT.md`](DEPLOYMENT.md) § *Bring-up*); the release notes carry exactly one line
 naming that digest, `Image: ghcr.io/tjwise99/wisekiosk@sha256:<digest>`, which the workflow replaces
 rather than duplicates on a re-run
-([ADR 0020 rev 3](decisions/0020-release-artifact-set-and-operator-tooling.md)), and it is what an
+([ADR 0020 rev 4](decisions/0020-release-artifact-set-and-operator-tooling.md)), and it is what an
 operator who chooses to verify checks against.
 
-**Nothing decides the no-credential property.** It is a proposal for a check, not an asserted
-guarantee: no gate compares the verification job's permissions against it, and SECURITY.md publishes
-a posture resting on this section. Until #77 fences this document, read it as intent.
+**The `verify` job's write-scope property is decided, not proposed.**
+`scripts/publish/verify_permissions.py` reads `publish.yml` at the release commit, locates the
+`verify` job, and fails unless its `permissions` mapping is exactly `{contents: read}` and no step
+under it references `secrets.` — the `github.token` expression is the one credential allowed, by
+name. It runs locally as `check-publish-permissions`, a `just verify` dependency and a step in the
+`docs-and-hygiene` job. #77 Gate CI.md against the workflow it describes fences this document as a
+whole; until then, read anything this gate does not itself assert as intent.
+
+**This job runs on the release event rather than on a pull request**, so it is neither a required
+status check nor one of § *Gate wiring*'s no-local-form exceptions. A failed verification fails the
+release run, the first run included; the release is re-cut, and there is no rollback.
 
 - **A release occupies two locations, and each is a separate assertion.** The registry carries the
   image at a digest, with the SBOM, the signature and the build-provenance attestation attached to it
-  as referring artifacts. The release tag carries exactly two files, at their committed basenames:
-  the deployment recipe, `compose.yaml`, and an example configuration, `config.example.json`. The
-  release notes name the digest, which is what ties the tag to the
-  registry. Resolving referring artifacts against a digest, listing files on a tag and reading the
-  notes for a digest are three queries against two APIs, so **a run that reads one surface and skips
-  another fails** rather than reporting success over the part it reached — an unreadable surface, and
-  resolving no surface at all, are failures and not skips. An undeclared file on the tag fails, and so
-  does a declared one that is absent.
+  under the signing tools' conventions (cosign tags and GitHub's attestation store). The release tag
+  carries exactly two files, at their committed basenames: the deployment recipe, `compose.yaml`, and
+  an example configuration, `config.example.json`. The release notes name the digest, which is what
+  ties the tag to the registry. Resolving the artifacts attached to a digest, listing files on a tag
+  and reading the notes for a digest are three queries against two APIs, so **a run that reads one
+  surface and skips another fails** rather than reporting success over the part it reached — an
+  unreadable surface, and resolving no surface at all, are failures and not skips. An undeclared file
+  on the tag fails, and so does a declared one that is absent.
   **The image reference is not an asset**, and counting it as one is what let a single sentence stand
   for all three claims: it is a pointer rather than a file, and asserting the notes name it is a
   different act from enumerating a tag.
   **What no check here decides:** the documentation site is deployed from the default branch rather
   than from a tag, so it is not a release asset and nothing asserts any correspondence between what it
   describes and the digest an operator is running. That drift is chosen rather than overlooked, and
-  ADR 0020 rev 3 records the choice.
-- **Signature.** Keyless `cosign` verification against the published digest, with the expected
-  certificate identity and OIDC issuer, exits zero; against a deliberately wrong identity it exits
-  non-zero.
-- **Provenance.** The build-provenance attestation validates for the published digest and binds it to
-  the workflow that built it; a mismatched digest exits non-zero.
-- **SBOM.** The SBOM for the published digest is retrievable and non-empty, validates against its SPDX
-  or CycloneDX schema, and enumerates the Go main module and the base distribution. Regenerating from
-  the same digest yields a matching package set. A release missing the asset fails.
+  ADR 0020 rev 4 records the choice.
+- **Signature.** Keyless `cosign verify` against the published index digest and each platform child,
+  with the certificate identity bound to this workflow's own tag-triggered runs
+  (`--certificate-identity-regexp`) and the GitHub Actions OIDC issuer, exits zero; against a
+  deliberately wrong identity it exits non-zero and prints `none of the expected identities matched`,
+  measured at cosign v3.1.3.
+- **Provenance.** `gh attestation verify`, bound to this workflow by `--signer-workflow`, validates
+  the build-provenance attestation for the published digest against GitHub's attestation store. The
+  binding is asserted positively, from the command's own `--format json` fields — the subject digest,
+  the SLSA predicate type, and the certificate's signer URI, source repository and source repository
+  digest — never from a negative's message, because the three refusal cases print three distinct
+  texts rather than one shared, discriminating one: against a flipped digest the registry itself
+  refuses to resolve the reference before any attestation lookup runs, printing the substring
+  `MANIFEST_UNKNOWN: manifest unknown` (measured against a real published digest); against a real
+  digest carrying no attestation — true of every release published before this job existed — `gh`
+  prints `Error: HTTP 404: Not Found (…/attestations/…)` (also measured); what a wrong signer
+  workflow prints against a digest that *does* carry an attestation is unobserved, since no such
+  digest exists yet to produce it, and is recorded rather than guessed at, on the case file, once
+  WI4's pre-release exercise can observe it. The wrong-signer-workflow check therefore asserts only a
+  non-zero exit and an empty stdout — the shape every refusal above shares, with or without
+  `--format json` — a deliberately weak assertion, since the six positive field assertions carry the
+  verdict. A second invocation, with `--bundle-from-oci`, verifies the copy of the same bundle
+  `push-to-registry: true` also lands in the registry, since neither the API-backed invocation above
+  nor `cosign tree` reads that copy.
+- **SBOM.** Exactly one SPDX 2.3 attestation per platform child is asserted by count — `cosign
+  attest` appends rather than replaces, so a re-run of `publish` attaching a second attestation to
+  the same child fails here rather than silently validating whichever one `cosign
+  verify-attestation` prints first — and is extractable from its attestation, validates against a
+  vendored copy of the SPDX 2.3 schema, and enumerates the Go main module
+  (`backend/go.mod`'s `module` line, restated nowhere) and the base distribution — read from every
+  package's purl `distro=` qualifier rather than a package named for it, since Alpine ships no such
+  package; a package set carrying no `distro=` qualifier at all fails. Regenerating with the same
+  pinned syft on the same child digest and platform yields a matching set of packages and versions —
+  the comparison keys on `(name, versionInfo)` pairs, which a name set alone cannot tell apart on the
+  published index. A separate, named assertion binds the describing image package's own
+  `versionInfo` to the child digest under verification and its purl `arch=` to that child's platform
+  architecture, so a cross-wired attestation (the other child's SBOM, which otherwise passes every
+  assertion above) fails there rather than by accident. A child without its SBOM attestation fails.
+  **The `publish` and `verify` jobs each pin syft and cosign as their own `with:` literal.**
+  Renovate's regex manager bumps every match of `cosign-release:` and `syft-version:` in
+  `publish.yml` in one pull request, which is what keeps the two per-tool pins equal; a hand edit
+  drifting them apart surfaces as a package-set mismatch in the regeneration comparison above.
 - **The image says where it came from.** Nine keys — `org.opencontainers.image.title`,
   `.description`, `.url`, `.source`, `.version`, `.created`, `.revision`, `.licenses` and
   `.documentation` — are present and non-empty **as labels on the image config and as annotations on
   the manifest**, which are separate metadata with separate readers
-  ([ADR 0015 rev 3](decisions/0015-container-toolchain-and-image-annotations.md)). Both are read: a check
+  ([ADR 0015 rev 4](decisions/0015-container-toolchain-and-image-annotations.md)). Both are read: a check
   reading one reports nothing about the other. No value is a `LABEL` line in the Dockerfile, and one
   is bound rather than merely present — **`.revision` is the commit the job published**, so presence
   alone passes on a stale hardcoded value while the binding is what fails it. The check reads the
   annotation levels from the publish workflow's own declaration rather than a restatement here, so
-  adding a level extends the gate instead of escaping it. A missing key, an empty value, a surface it
-  cannot read, a declared level it never inspected, and resolving no surface at all each fail rather
-  than being skipped.
+  adding a level extends the gate instead of escaping it, and a level the workflow declares that this
+  check does not recognise fails rather than being skipped. A missing key, an empty value, a surface
+  it cannot read, a declared level it never inspected, and resolving no surface at all each fail
+  rather than being skipped.
   **What no check here decides:** `.description` and `.licenses` resolve from repository metadata
   rather than from the commit, so either can change with no commit and nothing reports it; and
   `.created` is the time the build ran, this project making no bit-identical-rebuild claim.
@@ -469,7 +519,9 @@ a posture resting on this section. Until #77 fences this document, read it as in
 ## Deployment and bring-up
 
 What the published material must let an operator do, checked by running it rather than by reading it.
-What each of these obligations *is*, and why, is [`DEPLOYMENT.md`](DEPLOYMENT.md)'s.
+What each of these obligations *is*, and why, is [`DEPLOYMENT.md`](DEPLOYMENT.md)'s. Both jobs below
+run only once the `verify` job (§ *Publishing and provenance*) passes, so neither exercises a release
+whose signature or attestation failed to verify.
 
 - **The documented procedure executes.** `just check-bringup`, run by the `bring-up` job in
   [`../.github/workflows/publish.yml`](../.github/workflows/publish.yml) against the release that
@@ -501,7 +553,7 @@ What each of these obligations *is*, and why, is [`DEPLOYMENT.md`](DEPLOYMENT.md
   **It gates that one key deliberately and no others**: the key is the residue of a
   requirement deleted on #69 tree rebuild, not the beginning of a recipe linter. Every other value in
   the recipe is a sample default an operator is expected to weigh and change
-  ([ADR 0020 rev 3](decisions/0020-release-artifact-set-and-operator-tooling.md)), and gating one would
+  ([ADR 0020 rev 4](decisions/0020-release-artifact-set-and-operator-tooling.md)), and gating one would
   assert a recommendation as an obligation.
 - **The image reports its health in both directions.** `scripts/image/health_signal.py`, run by
   `just check-image` in the `image-tests` job, runs the argument vector the image's own
@@ -536,8 +588,9 @@ What each of these obligations *is*, and why, is [`DEPLOYMENT.md`](DEPLOYMENT.md
   by asserting each running container's image resolves to the digest requested. Reporting a changed
   version is the OCI `org.opencontainers.image.version` annotation on the manifest each digest names:
   the two must differ, and each must equal its own release tag with the leading `v` stripped. With no
-  older non-pre-release to compare against, the job records that and passes. Recorded in
-  [`../scripts/cases/check-image-swap.md`](../scripts/cases/check-image-swap.md).
+  older non-pre-release to compare against, the job's `previous` step writes an empty tag and the
+  swap step's own `if:` condition skips it, so the job passes without invoking the check. Recorded
+  in [`../scripts/cases/check-image-swap.md`](../scripts/cases/check-image-swap.md).
 
 **All five are built.** The recipe and health-signal checks landed with #54 container build and
 publish, against the image and the recipe that ticket ships; the example-configuration check
@@ -561,28 +614,33 @@ standing threshold with a decision per finding.
 
 The register is a JSON list; each entry is an object carrying exactly five fields — `advisory` (the
 finding's id, matched against a scan's primary id or any alias — a Go finding's OSV id or its GHSA/CVE
-aliases, an npm finding's GHSA id), `scope` (`go` or `npm` — which recipe's findings the entry can
-cover), `no_fix_because`, `no_alternative_because` — **why no alternative dependency or base image is
-viable**, what makes an entry a decision rather than a suppression: an entry that cannot state it
-should have been a version bump or a replacement — and `review_by`, an ISO 8601 date evaluated at
-check time (today ≤ `review_by` ≤ today + 90 days, UTC). The last is what stops *accepted for now*
-becoming *accepted permanently* with no moment at which anyone looks again — an entry outside that
-window fails, which puts every live exception in front of a person quarterly. Committed `[]`.
+aliases, an npm finding's GHSA id, a Trivy finding's own `VulnerabilityID`), `scope` (`go`, `npm` or
+`image` — which recipe's findings the entry can cover), `no_fix_because`, `no_alternative_because` —
+**why no alternative dependency or base image is viable**, what makes an entry a decision rather than a
+suppression: an entry that cannot state it should have been a version bump or a replacement — and
+`review_by`, an ISO 8601 date evaluated at check time (today ≤ `review_by` ≤ today + 90 days, UTC). The
+last is what stops *accepted for now* becoming *accepted permanently* with no moment at which anyone
+looks again — an entry outside that window fails, which puts every live exception in front of a person
+quarterly. Committed `[]`.
 
 The gate asserts: every entry is complete and current; every finding suppressed in scan output has a
 matching entry; no entry matches a first-party finding — a Go package path under this repository's own
 module, or the npm project's own package name — or a Go standard-library finding, none of which has an
 exception path regardless of currency (§ *Dependency vulnerabilities*); and no entry exists for an
 advisory no scan reports — so the register cannot accumulate rows for problems that no longer exist.
-Each of these is decided **within the scope being checked**:
-`check-vulns-go` examines only `scope: "go"` entries against what govulncheck reports, and
-`check-vulns-npm` only `scope: "npm"` entries against what npm audit reports — so validating the whole
-register needs both to run, which they do, as two separate CI steps. An entry whose own `scope` is
-missing or is neither `go` nor `npm` cannot be routed to either recipe this way, so it fails **both**
-rather than falling through unexamined by either.
+**An image finding is always eligible for a register entry** — nothing in a built image is this
+project's own source, so scope `image` has no first-party exclusion to apply. Each of these is decided
+**within the scope being checked**:
+`check-vulns-go` examines only `scope: "go"` entries against what govulncheck reports,
+`check-vulns-npm` only `scope: "npm"` entries against what npm audit reports, and the image scan only
+`scope: "image"` entries against what Trivy reports — so validating the whole register needs all three
+run, which they do, as three separate CI steps. An entry whose own `scope` is missing or is none of
+`go`, `npm` or `image` cannot be routed to any of them this way, so it fails **all three** rather than
+falling through unexamined by any.
 
-Recorded in [`../scripts/cases/check-vulns-go.md`](../scripts/cases/check-vulns-go.md) and
-[`../scripts/cases/check-vulns-npm.md`](../scripts/cases/check-vulns-npm.md).
+Recorded in [`../scripts/cases/check-vulns-go.md`](../scripts/cases/check-vulns-go.md),
+[`../scripts/cases/check-vulns-npm.md`](../scripts/cases/check-vulns-npm.md) and
+[`../scripts/cases/check-vulns-image.md`](../scripts/cases/check-vulns-image.md).
 
 ## Documentation integrity
 
@@ -591,14 +649,14 @@ resolve, a citation to something that does not exist, an index that has drifted 
 
 - Every relative Markdown link in every tracked file resolves inside the repository, decided by
   `lychee` run from its digest-pinned official image over the `git ls-files` Markdown set
-  ([ADR 0016 rev 9](decisions/0016-maintained-tools-for-standard-artifacts.md)). All three syntaxes
+  ([ADR 0016 rev 11](decisions/0016-maintained-tools-for-standard-artifacts.md)). All three syntaxes
   carrying a relative path are read — the inline form, a link-reference definition, and a raw HTML
   anchor's `href` — each held against the retired authored check's recorded cases, in both
   directions. A destination may be angle-bracketed or carry a title; neither is part of the path.
   **The gate runs `--offline`, and that is a decision rather than an inherited default.** Online
   checking makes third-party availability a merge condition, which § *Upstream contract checks*
   refuses for its own gates for the same reason; offline buys that stability by checking absolute
-  `http`/`https` links not at all. With the host allowlist retired (ADR 0016 rev 9), an absolute
+  `http`/`https` links not at all. With the host allowlist retired (ADR 0016 rev 11), an absolute
   link is entirely unconstrained: documentation may link outward, and nothing here reviews where to.
   **The gate is a CI-only exception rather than a `verify` check**: the image digest is the pin,
   and a contributor machine is not assumed to run docker. A local run is the same invocation — piping `git ls-files
@@ -609,13 +667,13 @@ resolve, a citation to something that does not exist, an index that has drifted 
   fence is a sample rather than a reference. A fragment naming no heading in a target whose path
   resolves: fragment checking is off, so only the path half of the destination is proven. A
   destination that leaves the repository and lands on a file that exists, by `../` or through a
-  tracked symlink: the escape and symlink obligations are retired knowingly (ADR 0016 rev 9), and
+  tracked symlink: the escape and symlink obligations are retired knowingly (ADR 0016 rev 11), and
   the CI container failing such a link because only the checkout is mounted is incidental, not
   asserted. A fence that never closes runs to the end of its document under CommonMark, so nothing
   past it is scanned and the run reports clean — seeded and confirmed, and the Sphinx build passes
-  the same seed; no residue guard is kept, on ADR 0016 rev 9's own bar that one residual obligation
+  the same seed; no residue guard is kept, on ADR 0016 rev 11's own bar that one residual obligation
   does not earn a second gate beside an adopted tool. lychee itself reports success over an
-  empty input set — the ruling ADR 0016 rev 9 records for adopted tools — but the CI step
+  empty input set — the ruling ADR 0016 rev 11 records for adopted tools — but the CI step
   materialises the tracked-file list and fails on a failed or empty listing before lychee runs: a
   failed measurement is not an empty population, and a scan of nothing must not read as clean. A
   root-relative destination fails, with a message naming the missing root rather than a wrong
@@ -799,7 +857,7 @@ changed, which the citation resolver above decides without anyone declaring anyt
   zero by design (§ *What is not gated here*), so there is no verdict for an untracked file to
   escape.
 - **Every hook in the local hook layer passes.** `.pre-commit-config.yaml` is that layer
-  ([ADR 0016 rev 9](decisions/0016-maintained-tools-for-standard-artifacts.md)): no private key, no
+  ([ADR 0016 rev 11](decisions/0016-maintained-tools-for-standard-artifacts.md)): no private key, no
   file over `check-added-large-files`' threshold, every YAML and JSON file parses, no merge-conflict
   marker committed while a merge is in progress (outside one, `check-merge-conflict` judges nothing —
   a bare `=======` is also a Markdown setext underline), no file mixing line-ending kinds — plus the
@@ -813,7 +871,7 @@ changed, which the citation resolver above decides without anyone declaring anyt
   advisory fast feedback at commit, on the commit message, and at push (`pre-commit install`, once
   per clone); the binding run for the file-scanning hooks is CI's, over every tracked file — the
   commitlint hooks of the bullet below run at their own stages, not in that run. **A hook whose file set is empty is skipped and reports
-  success** — pre-commit's own behaviour, which ADR 0016 rev 9's empty-population ruling permits;
+  success** — pre-commit's own behaviour, which ADR 0016 rev 11's empty-population ruling permits;
   the authored hook runs regardless of the file set (`always_run`) and reports success over an empty
   tracked tree, under the same ruling. pre-commit itself is pinned in `scripts/requirements-dev.txt`
   — installed into `scripts/.venv` by `just hooks-install` and by CI's install step, and covered by
@@ -822,7 +880,7 @@ changed, which the citation resolver above decides without anyone declaring anyt
   hand, is its updater.
 - **The pull-request title is a Conventional Commit, and so is each local commit message** — one
   obligation at two stages, delegated to `commitlint`
-  ([ADR 0016 rev 9](decisions/0016-maintained-tools-for-standard-artifacts.md); the gate itself is
+  ([ADR 0016 rev 11](decisions/0016-maintained-tools-for-standard-artifacts.md); the gate itself is
   [ADR 0006 rev 5](decisions/0006-process-gates.md)'s). Both stages run through the hook layer's
   `repo: local` hooks and one base configuration, `.commitlintrc.json` —
   `@commitlint/config-conventional`, plus a `scope-case` rule restoring the retired check's
@@ -875,7 +933,7 @@ changed, which the citation resolver above decides without anyone declaring anyt
 ## Action pins and workflow privilege
 
 The workflows are themselves a supply chain and themselves privileged. Both are audited from the
-files by two maintained tools ([ADR 0016 rev 9](decisions/0016-maintained-tools-for-standard-artifacts.md)),
+files by two maintained tools ([ADR 0016 rev 11](decisions/0016-maintained-tools-for-standard-artifacts.md)),
 each run in CI from a digest-pinned official image over the `.github/workflows` input set: `zizmor`
 at the `pedantic` persona for what a workflow may do — action pinning, permission grants, credential
 persistence and template injection among its audit set — and `actionlint` for whether a workflow is
@@ -901,10 +959,10 @@ channel is decided.
 - **An unreadable workflow fails rather than being skipped.** Both tools parse real YAML, so a layout
   that cannot be read is a syntax error, not a skip — GitHub itself would refuse the same file. A run
   discovering no workflow at all fails too, as `zizmor`'s own behaviour (`no inputs collected`)
-  rather than an obligation on it (ADR 0016 rev 9's empty-population ruling).
+  rather than an obligation on it (ADR 0016 rev 11's empty-population ruling).
 
 **What the gate deliberately lets through.** The `# vN` version comment beside a pin is retired as an
-obligation (ADR 0016 rev 9): a stale or absent comment passes, and the adopted
+obligation (ADR 0016 rev 11): a stale or absent comment passes, and the adopted
 `helpers:pinGitHubActionDigests` preset maintains the comments only on the bumps it performs.
 The audits needing the GitHub API (`known-vulnerable-actions` and `ref-version-mismatch` among them)
 do not run: the gate runs the offline audit set, deterministically, so a verdict moves only when a
@@ -1038,12 +1096,14 @@ already decided, which is what makes it a check and not a want.
   second spelling to drift (#101 CI-invokes-just, which retired the authored comparison check with
   that defect class). What enforces the wiring is execution itself: a step invoking a recipe the
   justfile does not define fails its job loudly, and a recipe edit is an edit to what CI runs.
-  **Six CI steps are exceptions with no local form**, named here and machine-checked nowhere:
+  **The CI steps below are exceptions with no local form**, named here and machine-checked nowhere:
   secret scanning (gitleaks — walks history a checkout's tree does not carry), the PR-title
   commitlint run (no PR title exists locally), the lychee link check, the zizmor and actionlint
   workflow audits (each run from a digest-pinned image; docker is not assumed on a contributor
-  machine, and no local install channel is decided), and CodeQL (§ *First-party source scanning*
-  — the action provisions its own CodeQL CLI bundle, and no local invocation is decided).
+  machine, and no local install channel is decided), CodeQL (§ *First-party source scanning*
+  — the action provisions its own CodeQL CLI bundle, and no local invocation is decided), and the
+  image vulnerability scan (`check_vulns.py --scope image` — needs the daemon-built image and the
+  network, so it carries no `just` recipe of its own, unlike its sibling scopes below).
   **A different shape holds `check-vulns-go`, `check-vulns-npm`, `check-image` and `smoke-native`:**
   each has an ordinary `just` recipe, so this bullet's own claim still holds for them, but none is a
   `just verify` dependency. The vulnerability pair needs the network on every run and `verify` stays

@@ -10,9 +10,9 @@ rationale: ''
 ref: ''
 references:
 - path: scripts/native/smoke.py
-  sha: abdd8fbafc89d3d75004ecdb8022466b8a3509d45310a8505eca55cc9c1059d6
+  sha: 8bb9f9882d62098daa060fb1764072e6dc622d31999c16446668ab16350604b5
   type: file
-reviewed: mo9r60JmTubI4JqfWaKvN4n3fJHyPpM9IpkUjh0rNIc=
+reviewed: hpuTgdon4Fkm9AS_Jw-Cg9TDjpsKjCeXrBKK5K2X85w=
 status: accepted
 text: |
   A CI job builds the application from source for armv6l — the frontend bundle, and the backend

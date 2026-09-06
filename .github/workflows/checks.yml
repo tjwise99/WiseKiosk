@@ -50,7 +50,7 @@ jobs:
         run: just check-untracked
 
       # lychee runs offline from the digest-pinned official image over the tracked Markdown set
-      # (ADR 0016 rev 9); docker is not assumed on a contributor machine, so the step is a named
+      # (ADR 0016 rev 11); docker is not assumed on a contributor machine, so the step is a named
       # CI-only exception (docs/CI.md § Gate wiring) rather than a `just verify` check.
       # The file list is materialised and tested non-empty before lychee runs: a failed or empty
       # listing has judged nothing and must not read as a clean scan.
@@ -88,6 +88,9 @@ jobs:
 
       - name: Every service in the committed deployment recipe declares a restart policy
         run: just check-restart-policy
+
+      - name: The verify job in publish.yml holds no write scope
+        run: just check-publish-permissions
 
   requirements:
     name: requirements
@@ -398,6 +401,9 @@ jobs:
       - name: The image runs non-root, serves only a mounted configuration, carries no deployment content or secret material, keeps two instances independent, and reports its health in both directions
         run: just check-image
 
+      - name: No package in the built image carries a known vulnerability at any severity, unless the exception register covers it
+        run: python3 scripts/vulns/check_vulns.py --scope image --image wisekiosk:citest
+
   image-arch:
     name: image-arch
     # Both architectures a published image carries, one leg each: the image is built for the
@@ -472,7 +478,7 @@ jobs:
     # reaches main under squash-merge — is a Conventional Commit. The branch check
     # is `just check-branch`, handed the PR's head ref, reading its pattern from
     # scripts/branch-shape.regex; the title runs through the hook layer's pinned
-    # commitlint (ADR 0016 rev 9) against the pull-request-title configuration,
+    # commitlint (ADR 0016 rev 11) against the pull-request-title configuration,
     # which drops the fixup!/squash!/merge allowances that never reach main.
     # The branch check also gates the recorded PR↔ticket
     # linkage: the PR's Development field (closingIssuesReferences) must link

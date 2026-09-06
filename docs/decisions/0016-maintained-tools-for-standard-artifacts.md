@@ -3,10 +3,18 @@
 **Status:** accepted
 **Decided:** 2026-08-03 (#103 authored-vs-adopted check trade, measured against the cases recorded in
 [`../../scripts/README.md`](../../scripts/README.md))
-**Rev:** 9
+**Rev:** 11
 
 ## Revisions
 
+- **rev 11** — 2026-09-06 — extends the decision to a further net-new adoption, `Trivy`, scanning the
+  built container image and retiring [`../CI.md`](../CI.md) § *Image vulnerabilities*'s "Unbuilt;
+  owned by #67" line (#265 image vulnerability scan).
+- **rev 10** — 2026-09-06 — extends the decision to three more net-new adoptions, `cosign`, `syft`
+  and `check-jsonschema`, retiring [`../CI.md`](../CI.md) § *Publishing and provenance*'s "every
+  check below is unbuilt" line; adds two guard-table rows for the two authored scripts landing
+  beside them, `scripts/publish/verify_permissions.py` and `scripts/publish/verify_metadata.py`
+  (#269 publish verification).
 - **rev 9** — 2026-09-05 — extends the decision to two more net-new adoptions, `govulncheck` and
   `npm audit`, retiring [`../CI.md`](../CI.md) § *Dependency vulnerabilities*'s "Unbuilt; owned by
   #67" line (#264 dependency vulnerability gates).
@@ -102,6 +110,10 @@ is a net-new gate, adopted where no authored check ever existed for it to replac
 | `CodeQL`'s default code-scanning suite, over Go, Svelte/TypeScript, Python and Actions | — | [`../CI.md`](../CI.md) § *First-party source scanning*'s "Unbuilt; owned by #67" line |
 | `govulncheck`, pinned by a `tool` directive in `backend/go.mod` | — | [`../CI.md`](../CI.md) § *Dependency vulnerabilities*'s "Unbuilt; owned by #67" line (Go half) |
 | `npm audit` | — | the same line's npm half |
+| `cosign`, keyless signing, SBOM attestation and verification | — | [`../CI.md`](../CI.md) § *Publishing and provenance*'s "every check below is unbuilt" line |
+| `syft`, SPDX SBOM generation, `download-syft` pinned by version | — | the same line |
+| `check-jsonschema`, SPDX schema validation, `pipx run` pinned by version | — | the same line |
+| `Trivy`, image vulnerability scanning, digest-pinned in `scripts/vulns/check_vulns.py` and refreshed by a Renovate `customManagers` entry | — | [`../CI.md`](../CI.md) § *Image vulnerabilities*'s "Unbuilt; owned by #67" line |
 
 **`commitlint` must preserve the two-stage distinction the authored check carries.** `fixup!` and
 `squash!` are permitted at the commit-message stage because the squash discards them, and refused on
@@ -170,6 +182,8 @@ compares this one against the tree. Including:
 | `verify` depends on no check | `scripts/check-verify-ci-parity.mjs` |
 | A recipe body parsed to no commands | `scripts/check-verify-ci-parity.mjs` |
 | No `arch-export` marker found in `ARCHITECTURE.md` | `scripts/splice-arch-diagrams.mjs` |
+| No `verify` job found under `jobs:` | `scripts/publish/verify_permissions.py` |
+| The pushed index names no platform child | `scripts/publish/verify_metadata.py`, `sbom_attest.py`, `verify_release.py` (every `--step`) |
 
 The first is the guard that closed #68's defect class — a guard keyed on the same literal as the thing it
 guards goes to zero alongside it and then reports agreement, and the form that works asserts the parse
