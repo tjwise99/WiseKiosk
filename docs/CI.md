@@ -365,13 +365,6 @@ always eligible relief, because nothing in a built image is first-party.
 This is what covers operating-system and base-layer packages. The source-level dependency gate never
 inspects them.
 
-**The step reports and does not yet fail the build.** Its first real run found genuine, unregistered
-findings against this project's own pinned base image (10 CVEs in `libcrypto3` and `libssl3`, recorded
-in the case file below) rather than nothing to prove the gate against, so it carries
-`continue-on-error: true` until
-[#293 clear the first-run image vulnerability findings and make the Trivy step blocking](https://github.com/tjwise99/WiseKiosk/issues/293)
-either registers or fixes them and removes it.
-
 **No fixture is committed** — [ADR 0010 rev 2](decisions/0010-runtime-materialised-gate-fixtures.md)
 forbids a resolvable vulnerable artifact in the tracked tree. The case is built as a throwaway image at
 record time and run through the production script with `--image` pointed at it; the seed Dockerfile and
