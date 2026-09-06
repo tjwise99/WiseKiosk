@@ -46,8 +46,9 @@ SRS004<!-- Page renders a legible error state for every configuration failure cl
 the configured kiosk. The failure is legible and it is still a failure the procedure can prevent, so
 the permissions the file needs are stated where an operator sets them.
 
-**The procedure is three commands**, run in the directory holding the two files the release tag
-carries — `deploy/` in a checkout.
+**The procedure is three commands**, run in a directory holding the release's two assets —
+`compose.yaml` and `config.example.json` — which a checkout carries at `deploy/`. CI runs it
+verbatim against every published release (#138 bring-up check).
 
 ```sh
 cp config.example.json config.json

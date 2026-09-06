@@ -86,7 +86,8 @@ handling the other would add a path no row here exercises.
 - **The status docker maintains is not read.** `health_signal.py` runs the declared vector itself, in
   each direction. The aggregated `.State.Health.Status` is docker's own scheduling of that same
   command — its interval, retries and start period are unexercised, and no row here says what a
-  container listing would show.
+  container listing would show. [`check-bringup.md`](check-bringup.md) is where that status is read
+  and where interval, retries and start period are exercised.
 - **One architecture.** Every row above runs the native amd64 image, `smoke.py`'s included: what they
   establish is that the harness fails on an image that does not come up, not that the arm64 image
   comes up. The arm64 verdict is the `image-arch` matrix's own leg, built and run under emulation in
