@@ -581,8 +581,9 @@ whose signature or attestation failed to verify.
   by asserting each running container's image resolves to the digest requested. Reporting a changed
   version is the OCI `org.opencontainers.image.version` annotation on the manifest each digest names:
   the two must differ, and each must equal its own release tag with the leading `v` stripped. With no
-  older non-pre-release to compare against, the job records that and passes. Recorded in
-  [`../scripts/cases/check-image-swap.md`](../scripts/cases/check-image-swap.md).
+  older non-pre-release to compare against, the job's `previous` step writes an empty tag and the
+  swap step's own `if:` condition skips it, so the job passes without invoking the check. Recorded
+  in [`../scripts/cases/check-image-swap.md`](../scripts/cases/check-image-swap.md).
 
 **All five are built.** The recipe and health-signal checks landed with #54 container build and
 publish, against the image and the recipe that ticket ships; the example-configuration check

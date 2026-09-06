@@ -251,7 +251,7 @@ jobs:
 
   # The release just published swaps for the newest older non-pre-release under the same mounts,
   # on a non-pre-release only, once verify passes (docs/CI.md § Deployment and bring-up). With no
-  # such release, this records that and passes.
+  # such release, the swap step's own `if:` condition skips it and the job passes.
   image-swap:
     name: image-swap
     needs: [publish, verify] # publish for its digest output, verify as the gate
@@ -275,18 +275,23 @@ jobs:
         with:
           just-version: "1.58.0"
 
+      - id: previous
+        name: The newest older non-pre-release, if any
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: ${{ github.event.release.tag_name }}
+        run: |
+          echo "tag=$(gh release list --exclude-pre-releases --json tagName --jq \
+            "[.[].tagName] | map(select(. != \"$TAG\"))[0] // empty")" >> "$GITHUB_OUTPUT"
+
       - name: The newest older non-pre-release swaps for this one under the same mounts
+        if: steps.previous.outputs.tag != ''
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TAG: ${{ github.event.release.tag_name }}
           DIGEST: ${{ needs.publish.outputs.digest }}
+          PREVIOUS_TAG: ${{ steps.previous.outputs.tag }}
         run: |
-          PREVIOUS_TAG=$(gh release list --exclude-pre-releases --json tagName --jq \
-            "[.[].tagName] | map(select(. != \"$TAG\"))[0] // empty")
-          if [ -z "$PREVIOUS_TAG" ]; then
-            echo "no previous release"
-            exit 0
-          fi
           PREVIOUS_DIGEST=$(docker buildx imagetools inspect "ghcr.io/tjwise99/wisekiosk:${PREVIOUS_TAG#v}" \
             --format '{{json .Manifest.Digest}}' | tr -d '"')
           just check-image-swap "$PREVIOUS_TAG" "$PREVIOUS_DIGEST" "$TAG" "$DIGEST"
