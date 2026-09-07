@@ -414,3 +414,49 @@ func TestBodyOverTheSizeBoundFails(t *testing.T) {
 		t.Errorf("repeat request: got %v after %d upstream calls, want oversize after 1", again.Kind, over.count())
 	}
 }
+
+func TestKindStringNamesEveryOutcome(t *testing.T) {
+	cases := map[Kind]string{
+		Success:        "success",
+		Unreachable:    "unreachable",
+		Timeout:        "timeout",
+		UpstreamStatus: "upstream-status",
+		Oversize:       "oversize",
+		RateLimited:    "rate-limited",
+	}
+	for kind, want := range cases {
+		if got := kind.String(); got != want {
+			t.Errorf("Kind(%d).String() = %q, want %q", int(kind), got, want)
+		}
+	}
+}
+
+// errReadCloser is an io.ReadCloser whose Read always fails, the shape fetch's
+// body-read error path needs and a real response body cannot otherwise be
+// made to produce.
+type errReadCloser struct{}
+
+func (errReadCloser) Read([]byte) (int, error) {
+	return 0, errors.New("errReadCloser: synthetic read failure")
+}
+
+func (errReadCloser) Close() error { return nil }
+
+// A response whose body cannot be read is classified the same as one that
+// never arrived: both are failed exchanges, told apart only by Err.
+func TestABodyThatCannotBeReadIsClassifiedUnreachable(t *testing.T) {
+	clock := newFakeClock()
+	fake := &upstreamFake{}
+	fetch := fake.fetcher(func(context.Context) (*Response, error) {
+		return &Response{Status: 200, Body: errReadCloser{}}, nil
+	})
+	p := New(testConfig(), clock.now)
+
+	result := do(t, p, "openmeteo", "q", fetch)
+	if result.Kind != Unreachable {
+		t.Errorf("Kind = %v, want %v", result.Kind, Unreachable)
+	}
+	if result.Err == nil {
+		t.Error("Err is nil, want the read failure")
+	}
+}

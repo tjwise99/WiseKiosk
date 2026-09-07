@@ -1,9 +1,11 @@
 package weather
 
 import (
+	"bytes"
 	"encoding/json"
 	"errors"
 	"fmt"
+	"io"
 	"net/http"
 	"net/http/httptest"
 	"net/url"
@@ -541,6 +543,52 @@ func TestTST059_AResponseMissingAValueThePayloadNeedsIsNotShaped(t *testing.T) {
 		"an hourly time the source wrote another way": func(read map[string]any) {
 			read["hourly"].(map[string]any)["time"].([]any)[1] = "31/08/2026 15:00"
 		},
+		"no present humidity": func(read map[string]any) {
+			delete(read["current"].(map[string]any), "relative_humidity_2m")
+		},
+		"no present day-or-night flag": func(read map[string]any) {
+			delete(read["current"].(map[string]any), "is_day")
+		},
+		"an hourly temperature in a unit the request did not ask for": func(read map[string]any) {
+			read["hourly_units"].(map[string]any)["temperature_2m"] = "°C"
+		},
+		"an hourly precipitation probability in a unit the request did not ask for": func(read map[string]any) {
+			read["hourly_units"].(map[string]any)["precipitation_probability"] = "mm"
+		},
+		"an hourly weather code the source did not report": func(read map[string]any) {
+			read["hourly"].(map[string]any)["weather_code"].([]any)[1] = nil
+		},
+		"an hourly precipitation probability the source did not report": func(read map[string]any) {
+			read["hourly"].(map[string]any)["precipitation_probability"].([]any)[1] = nil
+		},
+		"a daily maximum temperature in a unit the request did not ask for": func(read map[string]any) {
+			read["daily_units"].(map[string]any)["temperature_2m_max"] = "°C"
+		},
+		"a daily minimum temperature in a unit the request did not ask for": func(read map[string]any) {
+			read["daily_units"].(map[string]any)["temperature_2m_min"] = "°C"
+		},
+		"a daily precipitation probability in a unit the request did not ask for": func(read map[string]any) {
+			read["daily_units"].(map[string]any)["precipitation_probability_max"] = "mm"
+		},
+		"a daily range one measurement short": func(read map[string]any) {
+			daily := read["daily"].(map[string]any)
+			daily["weather_code"] = daily["weather_code"].([]any)[1:]
+		},
+		"a daily time the source wrote another way": func(read map[string]any) {
+			read["daily"].(map[string]any)["time"].([]any)[1] = "31/08/2026"
+		},
+		"a daily weather code the source did not report": func(read map[string]any) {
+			read["daily"].(map[string]any)["weather_code"].([]any)[1] = nil
+		},
+		"a daily minimum the source did not report": func(read map[string]any) {
+			read["daily"].(map[string]any)["temperature_2m_min"].([]any)[1] = nil
+		},
+		"a daily precipitation probability the source did not report": func(read map[string]any) {
+			read["daily"].(map[string]any)["precipitation_probability_max"].([]any)[1] = nil
+		},
+		"no unit reported at all for a present measurement": func(read map[string]any) {
+			delete(read["current_units"].(map[string]any), "temperature_2m")
+		},
 	}
 
 	for name, break_ := range cases {
@@ -777,4 +825,80 @@ func FuzzValidate(f *testing.F) {
 			return nil
 		})
 	})
+}
+
+// TestShapeRefusesABodyThatIsNotJSON is Shape's own decode failure, distinct
+// from TestTST059_AResponseMissingAValueThePayloadNeedsIsNotShaped's table,
+// which always decodes cleanly before breaking one value.
+func TestShapeRefusesABodyThatIsNotJSON(t *testing.T) {
+	if _, err := Shape([]byte("not json")); err == nil {
+		t.Error("Shape: no error for a body that is not JSON")
+	}
+}
+
+// TestASuccessfulSourceCallIsShapedThroughTheRoute covers route.go's Shape
+// closure, reached only when the pipeline serves an actual success — every
+// other case in this file either stops at validation or stages a failure.
+func TestASuccessfulSourceCallIsShapedThroughTheRoute(t *testing.T) {
+	want, err := Shape(response(t))
+	if err != nil {
+		t.Fatalf("Shape: unexpected error: %v", err)
+	}
+
+	held := http.DefaultTransport
+	http.DefaultTransport = roundTrip(func(*http.Request) (*http.Response, error) {
+		return &http.Response{
+			StatusCode: http.StatusOK,
+			Body:       io.NopCloser(bytes.NewReader(response(t))),
+			Header:     make(http.Header),
+		}, nil
+	})
+	t.Cleanup(func() { http.DefaultTransport = held })
+
+	heldRoute := served
+	served = router.NewRoute(entry())
+	t.Cleanup(func() { served = heldRoute })
+
+	recorder := serve(t, fmt.Sprintf(`{"lat":%v,"lon":%v}`, capturedLat, capturedLon))
+	if recorder.Code != http.StatusOK {
+		t.Fatalf("status = %d, want %d (%s)", recorder.Code, http.StatusOK, recorder.Body)
+	}
+
+	wantEncoded, err := json.Marshal(want)
+	if err != nil {
+		t.Fatalf("encoding the expected payload: %v", err)
+	}
+	var got boundary.WeatherPayload
+	if err := json.Unmarshal(recorder.Body.Bytes(), &got); err != nil {
+		t.Fatalf("reading the served payload: %v", err)
+	}
+	gotEncoded, err := json.Marshal(got)
+	if err != nil {
+		t.Fatalf("encoding the served payload: %v", err)
+	}
+	if string(gotEncoded) != string(wantEncoded) {
+		t.Errorf("the served payload does not match Shape(response(t)) directly:\ngot:  %s\nwant: %s", gotEncoded, wantEncoded)
+	}
+}
+
+// errReadCloser is an io.ReadCloser whose Read always fails, the shape
+// PostApiWeather's io.ReadAll error path needs and a real request body cannot
+// otherwise be made to produce.
+type errReadCloser struct{}
+
+func (errReadCloser) Read([]byte) (int, error) {
+	return 0, errors.New("errReadCloser: synthetic read failure")
+}
+
+func (errReadCloser) Close() error { return nil }
+
+func TestARequestBodyThatCannotBeReadIsRejected(t *testing.T) {
+	recorder := httptest.NewRecorder()
+	request := httptest.NewRequest(http.MethodPost, "/api/weather", errReadCloser{})
+
+	WeatherRoute{}.PostApiWeather(recorder, request)
+
+	if recorder.Code != http.StatusBadRequest {
+		t.Errorf("status = %d, want %d (%s)", recorder.Code, http.StatusBadRequest, recorder.Body)
+	}
 }
