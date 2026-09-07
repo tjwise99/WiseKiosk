@@ -14,13 +14,13 @@ ref: ''
 references:
 - keyword: func TestRunningFootprintStaysBounded
   path: backend/cmd/footprint_linux_test.go
-  sha: c3f1f7f2717892451d52d067acf97cba148ce18a83a56a98d5ed263f66b5a507
+  sha: 15aeb841bcfe7a5a767dafb1870c8ced58b4f5c9a4efee90997b90a059260d8f
   type: file
 - keyword: func TestFootprintPredicatesJudgeSyntheticSeries
   path: backend/cmd/footprint_test.go
   sha: e9a283c086971cf679678d070e1c9421d1b234fed5460f0259f4df6b71ed0001
   type: file
-reviewed: Vfk9eDda2CS1FCKt26R_vemp-HUFsT7MbKfiTmh4SzQ=
+reviewed: dSY8YuWpToEI6_vqVOIkDqn2Ez59SKPoRnN44UByt0U=
 status: proposed
 text: |
   Over the shared instrumented run, failing when the highest descriptor count among the judged

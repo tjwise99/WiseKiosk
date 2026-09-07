@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"os"
 	"runtime"
+	"runtime/debug"
 	"strconv"
 	"strings"
 	"sync"
@@ -185,6 +186,11 @@ func collect(t *testing.T, duration, interval time.Duration) []sample {
 	for {
 		select {
 		case <-ticker.C:
+			// Reclaim before each reading so a sample carries retained memory
+			// rather than uncollected garbage or GC-pacing slack; a real leak
+			// retains memory GC cannot free and still reads as growth.
+			runtime.GC()
+			debug.FreeOSMemory()
 			series = append(series, takeSample(t, time.Since(started).Round(time.Millisecond)))
 		case <-deadline:
 			return series

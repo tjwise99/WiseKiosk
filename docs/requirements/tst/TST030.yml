@@ -11,17 +11,17 @@ ref: ''
 references:
 - keyword: func TestHangingFetchEndsAtTheDeadline
   path: backend/internal/upstream/proxy_test.go
-  sha: 5258358ef57ee4b658ad0f9ab39da7a7afb33aa0dfcc851fbac3581f9a286404
+  sha: 9645de147c93504b1356a95d23107c7ae2dd22fe3df7a1a517767bafd5977c86
   type: file
 - keyword: func TestOneHangingSourceDoesNotStallAnother
   path: backend/internal/upstream/proxy_test.go
-  sha: 5258358ef57ee4b658ad0f9ab39da7a7afb33aa0dfcc851fbac3581f9a286404
+  sha: 9645de147c93504b1356a95d23107c7ae2dd22fe3df7a1a517767bafd5977c86
   type: file
 - keyword: func TestBodyOverTheSizeBoundFails
   path: backend/internal/upstream/proxy_test.go
-  sha: 5258358ef57ee4b658ad0f9ab39da7a7afb33aa0dfcc851fbac3581f9a286404
+  sha: 9645de147c93504b1356a95d23107c7ae2dd22fe3df7a1a517767bafd5977c86
   type: file
-reviewed: AMTy-M79ZBOVtRoUcYqwFqg7jYCgUt3PVX3sLH2eHfY=
+reviewed: KVlQmFsP7YqFVPH75oeY-CnSNU2hYOYjpERx2IRgOf0=
 status: proposed
 text: |
   Test asserting an upstream that hangs past the outbound timeout, or returns a response over the
