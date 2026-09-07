@@ -1,0 +1,13 @@
+# go-test-coverage's own configuration (ADR 0005 rev 3, gate 3: the unit-test coverage bar).
+# Profile is produced by `just check-coverage`'s backend command, run from backend/ (this file's
+# own directory), so the path is relative to that.
+profile: cover.out
+
+threshold:
+  file: 90
+  total: 90
+
+# boundary.gen.go is oapi-codegen output; no other generated Go exists under backend/.
+exclude:
+  paths:
+    - \.gen\.go$
