@@ -8,6 +8,7 @@ import (
 	"strings"
 	"sync"
 	"testing"
+	"testing/synctest"
 	"time"
 )
 
@@ -194,46 +195,51 @@ func TestNonSuccessStatusIsItsOwnOutcomeAndCarriesTheCode(t *testing.T) {
 // Callers that miss together are one upstream call, not one each, and every one
 // of them gets that call's answer.
 func TestConcurrentIdenticalMissesShareOneUpstreamCall(t *testing.T) {
-	clock := newFakeClock()
-	fake := &upstreamFake{}
-	release := make(chan struct{})
-	fetch := fake.fetcher(func(ctx context.Context) (*Response, error) {
-		<-release
-		return &Response{Status: 200, Body: io.NopCloser(strings.NewReader("payload"))}, nil
+	synctest.Test(t, func(t *testing.T) {
+		clock := newFakeClock()
+		fake := &upstreamFake{}
+		release := make(chan struct{})
+		fetch := fake.fetcher(func(ctx context.Context) (*Response, error) {
+			<-release
+			return &Response{Status: 200, Body: io.NopCloser(strings.NewReader("payload"))}, nil
+		})
+		p := New(testConfig(), clock.now)
+
+		// Deliberately more callers than the bucket holds: the one flight spends
+		// one token, so no caller here is refused for want of budget.
+		const callers = 20
+		results := make([]Result, callers)
+		errs := make([]error, callers)
+		var finished sync.WaitGroup
+		finished.Add(callers)
+		for i := range callers {
+			go func() {
+				defer finished.Done()
+				results[i], errs[i] = p.Do(context.Background(), "openmeteo", "q", fetch)
+			}()
+		}
+
+		// Wait returns once every caller is durably blocked on the flight's done
+		// channel (past the flight-map dedup in join()) and the fetcher is blocked
+		// on release, so release fires with no caller still mid-join to start a
+		// second flight after the first deletes itself.
+		synctest.Wait()
+		close(release)
+		finished.Wait()
+
+		if fake.count() != 1 {
+			t.Errorf("%d concurrent identical misses made %d upstream calls, want 1", callers, fake.count())
+		}
+		for i := range callers {
+			if errs[i] != nil {
+				t.Errorf("caller %d returned error %v, want a result", i, errs[i])
+				continue
+			}
+			if results[i].Kind != Success || string(results[i].Body) != "payload" {
+				t.Errorf("caller %d: got %v %q, want success \"payload\"", i, results[i].Kind, results[i].Body)
+			}
+		}
 	})
-	p := New(testConfig(), clock.now)
-
-	// Deliberately more callers than the bucket holds: the one flight spends
-	// one token, so no caller here is refused for want of budget.
-	const callers = 20
-	results := make([]Result, callers)
-	errs := make([]error, callers)
-	var calling, finished sync.WaitGroup
-	calling.Add(callers)
-	finished.Add(callers)
-	for i := range callers {
-		go func() {
-			defer finished.Done()
-			calling.Done()
-			results[i], errs[i] = p.Do(context.Background(), "openmeteo", "q", fetch)
-		}()
-	}
-	calling.Wait()
-	close(release)
-	finished.Wait()
-
-	if fake.count() != 1 {
-		t.Errorf("%d concurrent identical misses made %d upstream calls, want 1", callers, fake.count())
-	}
-	for i := range callers {
-		if errs[i] != nil {
-			t.Errorf("caller %d returned error %v, want a result", i, errs[i])
-			continue
-		}
-		if results[i].Kind != Success || string(results[i].Body) != "payload" {
-			t.Errorf("caller %d: got %v %q, want success \"payload\"", i, results[i].Kind, results[i].Body)
-		}
-	}
 }
 
 // The bound is per source and is spent only by what reaches upstream.
