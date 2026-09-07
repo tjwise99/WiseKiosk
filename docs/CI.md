@@ -206,8 +206,10 @@ claims it. Two maintained tools, one per language, each configured rather than a
 Neither recipe needs the network or Docker, but `check-coverage` is non-blocking by decision rather
 than by constraint: it is neither a `just verify` dependency nor a required-checks ruleset member
 (§ *Gate wiring*), running instead as its own CI job, `coverage`, where a red run does not block a
-merge. #300 coverage gate blocking is what promotes it and designs the exemption register this gate
-does not have.
+merge. The recipe runs the backend command then the frontend command in sequence and stops at the
+first one under its bar, so a run where the backend fails does not reach the frontend command. #300
+coverage gate blocking is what promotes the gate, runs both languages' commands regardless of either
+result, and designs the exemption register this gate does not have.
 
 ## Image tests
 

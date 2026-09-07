@@ -244,12 +244,14 @@ language:
   function and statement, per file. `coverage.include` reports every matching file, so an
   untested file counts as 0% rather than being silently absent — verified empirically against this
   tree's render `.svelte` components, which carry no Vitest test (they are Playwright-tested
-  instead): each is instrumented and reported at 0%, which is why the frontend half of
-  `check-coverage` reads red on the render tier — the intended visible debt, not a broken check.
+  instead): each is instrumented and reported at 0%.
 
 It is a separate CI job, outside `verify` and the required-checks ruleset: a red `check-coverage` run
-does not block a merge. #300 coverage gate blocking is the deferred ticket that promotes it and
-designs the exemption register — none exists while it is non-blocking.
+does not block a merge. `just check-coverage` runs each tool's command in sequence and stops at the
+first one under its bar, so both languages' reports appearing together in one run — and with it, the
+render tier's 0% being visible in a run where the backend is also under bar — is #300 coverage gate
+blocking's, along with promoting the gate and designing the exemption register, neither of which
+exists while it is non-blocking.
 
 ---
 
