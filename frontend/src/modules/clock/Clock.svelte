@@ -8,9 +8,8 @@
   const { config }: CommonProps = $props();
 
   // Narrowed to the concrete options type — safe because config validation already ran by the
-  // time this does (ADR 0007 rev 2), same basis as modules.ts's `read` cast. `$derived` rather
-  // than a plain `const` so the narrowing stays live if `config` ever changes, rather than
-  // snapshotting it once.
+  // time this does (ADR 0007 rev 2), same basis as modules.ts's `read` cast. `$derived` keeps the
+  // cast reactive to `config`.
   const clockConfig = $derived(config as ClockOptions);
 
   // Read as given: the validator writes each key's schema default into the configuration, so an

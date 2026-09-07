@@ -28,9 +28,8 @@
 
   // Narrowed to the concrete config/payload types: `config` safe because config validation
   // already ran (ADR 0007 rev 2); `payload` safe because this entry's own `read` supplies it
-  // from the boundary schema's generated response (ADR 0008 rev 5). `$derived` rather than a
-  // plain `const` so the narrowing stays live as `payload` is reassigned every poll (~5 min,
-  // SRS046/047), rather than freezing on the first.
+  // from the boundary schema's generated response (ADR 0008 rev 5). `$derived` keeps both casts
+  // reactive to their props, `payload` being reassigned every poll (~5 min, SRS046/047).
   const weatherConfig = $derived(config as WeatherOptions);
   const weatherPayload = $derived(payload as Payload<WeatherPayload>);
 

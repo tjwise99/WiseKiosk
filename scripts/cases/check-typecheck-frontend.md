@@ -21,6 +21,4 @@ Each case is a `git archive` copy of the tracked tree at `0a34e62`, the commit c
 own preprocessing, so this gate's population and `check-lint-frontend`'s overlap on `.ts` files but
 diverge on `.svelte` ones. [#275 resolve ModuleEntry.component prop-type variance so svelte-check
 blocks](https://github.com/tjwise99/WiseKiosk/issues/275) resolved three such findings on
-`ModuleEntry.component`, via `Component<CommonProps>` rather than `Component<any>` — measured and
-rejected there, since it trips eslint's `no-explicit-any` — which this gate would not have caught
-either way, for the reason above.
+`ModuleEntry.component`, which this gate would not have caught either way, for the reason above.
