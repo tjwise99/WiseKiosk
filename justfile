@@ -265,6 +265,15 @@ check-render-policy:
 check-dead-test:
     python3 scripts/check-dead-test.py
 
+# Outside `verify`, and invoked by a CI job of its own: the coverage bar is non-blocking until
+# #300 coverage gate blocking makes it one (ADR 0005 rev 3, gate 3).
+[group('checks')]
+[doc('The unit-test coverage bar: go-test-coverage over the backend and Vitest coverage.thresholds over the frontend, each 90% per-file and total; needs `just boundary-install`')]
+check-coverage:
+    go -C backend test -covermode=atomic -coverpkg=./... -coverprofile=cover.out ./...
+    go -C backend tool go-test-coverage --config=.testcoverage.yml
+    frontend/node_modules/.bin/vitest run --root frontend --coverage
+
 # Outside `verify`, and invoked by a CI job of its own: this tier builds and runs the image, and
 # docs/CI.md § Gate wiring is what decides where a check needing Docker sits.
 [group('checks')]
