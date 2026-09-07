@@ -48,14 +48,14 @@ func run(args []string, stderr io.Writer) int {
 
 	if *selfCheck {
 		if err := health.Check(healthCheckOrigin()); err != nil {
-			fmt.Fprintln(stderr, err)
+			_, _ = fmt.Fprintln(stderr, err)
 			return 1
 		}
 		return 0
 	}
 
 	err := serve(addr, newServer(staticserve.New(http.Dir(*root)), nil))
-	fmt.Fprintln(stderr, err)
+	_, _ = fmt.Fprintln(stderr, err)
 	return 1
 }
 
