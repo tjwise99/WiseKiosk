@@ -205,7 +205,7 @@ or [`DEPLOYMENT.md`](DEPLOYMENT.md) where it is not
   an absent item is visible to the gate and this is not.
 - **A test's declaration is its trace, and the item owns that trace.** The `TST` item that a test
   discharges names *it* — one `references` entry per verifying site, keyed on the line that declares
-  the test ([ADR 0005 rev 2](decisions/0005-traceability-gating.md)). **The citation is the trace and
+  the test ([ADR 0005 rev 3](decisions/0005-traceability-gating.md)). **The citation is the trace and
   nothing reads a test's name**, so reading a test's obligation means reading the item that cites it.
 
   **A module's cited tests carry the citing item's id in the name they declare as well** —
@@ -226,13 +226,30 @@ or [`DEPLOYMENT.md`](DEPLOYMENT.md) where it is not
 
 Coverage is **diagnostic, never evidence.** A line can be fully covered while the invariant that
 matters — that two things agree, that a control functions where deployed — is untested by
-construction, so a high number buys confidence it has not earned.
+construction, so a high number buys confidence it has not earned. Gate on the standing obligations
+above; read coverage to find what they missed.
 
-Report it, read it to find untested areas, and gate on the standing obligations above. No gate fails
-a merge on a coverage percentage treated as a quality threshold; the coverage gate, where one
-exists, fails only on uncovered source that is neither exempted nor justified — coverage as
-traceability closure, gate 3 of [ADR 0005 rev 2](decisions/0005-traceability-gating.md), never as a
-chosen quality bar.
+**`just check-coverage` is a chosen 90% bar over first-party product source, non-blocking**
+(gate 3, [ADR 0005 rev 3](decisions/0005-traceability-gating.md)): per-file and total, tree-blind —
+it proves source is exercised, not that a `TST` item claims it. Two maintained tools, one per
+language:
+
+- **Backend** — `go-test-coverage` against a `-coverpkg=./...` profile, 90% **statement** coverage,
+  per-file and total. Go's own toolchain implements no other coverage measure — branch coverage is
+  unimplemented ([golang/go#28888](https://github.com/golang/go/issues/28888)), and "function"
+  coverage is a per-function statement percentage rather than a distinct measure — so the backend is
+  gated on statement coverage, stated rather than approximated with a number the toolchain cannot
+  produce.
+- **Frontend** — Vitest's own `coverage.thresholds` (`@vitest/coverage-v8`), 90% line, branch,
+  function and statement, per file. `coverage.all: true` reports every file `include` matches, so an
+  untested file counts as 0% rather than being silently absent — verified empirically against this
+  tree's render `.svelte` components, which carry no Vitest test (they are Playwright-tested
+  instead): each is instrumented and reported at 0%, which is why the frontend half of
+  `check-coverage` reads red on the render tier — the intended visible debt, not a broken check.
+
+It is a separate CI job, outside `verify` and the required-checks ruleset: a red `check-coverage` run
+does not block a merge. #300 coverage gate blocking is the deferred ticket that promotes it and
+designs the exemption register — none exists while it is non-blocking.
 
 ---
 

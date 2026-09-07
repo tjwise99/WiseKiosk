@@ -3,13 +3,26 @@
 **Status:** accepted; stored-attribute set superseded by
 [ADR 0009 rev 2](0009-verification-justification-attribute.md); traceability scope narrowed and gate 4 retired
 by [ADR 0011 rev 2](0011-requirement-or-convention.md)
-**Decided:** 2026-08-23 (rev 2's evidence-channel pivot, in the #25 traceability gates planning
+**Decided:** 2026-09-07 (rev 3's coverage-bar reframe, in the #190 coverage closure gate planning
+session; rev 2's evidence-channel pivot taken 2026-08-23 in the #25 traceability gates planning
 session; the surrounding model was taken 2026-07-22 at the traceability-gating design discussion,
 under the requirements rewrite #18)
-**Rev:** 2
+**Rev:** 3
 
 ## Revisions
 
+- **rev 3** — 2026-09-07 — reframes gate 3 from traceability closure to a **unit-test coverage bar**
+  over first-party product source, tree-blind: 90% statement coverage per-file and total for the
+  backend (go-test-coverage) and 90% line/branch/function/statement per-file for the frontend
+  (Vitest's `coverage.thresholds`, `@vitest/coverage-v8`). The source→test leg is coverage's; the
+  test→`TST`→`SRS`→`SYS` legs stay gate 1's, plus the #192 and #191 reports — the reframe does not
+  reopen the gap gate 2 was dropped over. Non-blocking first — its own `check-coverage` recipe and CI
+  job, outside `verify` and the required-checks ruleset, with no exemption register while non-blocking
+  (owner: nothing to exempt while non-blocking; if we do, that's a problem at that time) — and
+  #300 coverage gate blocking is what promotes it
+  and designs the exemption mechanism (owner, 2026-09-07). Built from two maintained tools
+  ([ADR 0016 rev 11](0016-maintained-tools-for-standard-artifacts.md)), no custom check script (#190
+  coverage closure gate).
 - **rev 2** — 2026-08-23 — walks back the bespoke per-test attribution channel. Forward evidence for
   Test-method items is native Doorstop `references` carrying a `keyword`, which reaffirms
   [ADR 0002 rev 3](0002-requirements-management-doorstop.md)'s mechanism rather than superseding it;
@@ -118,23 +131,27 @@ referencing it, and that churn is accepted rather than designed around; hashing 
 region is a possible refinement if it bites. The extension is per-document, so `sys/` and `srs/` are
 untouched.
 
-Two gates, both in-repo, each run by `just verify` and mirrored byte-identically in CI. The numbering
-is historical, so a retired gate's number is not reused:
+Two gates, both in-repo, both mirrored byte-identically in CI. Gate 1 runs inside `just verify`; gate
+3 runs its own non-blocking CI job, outside `verify`, until #300 coverage gate blocking folds it in.
+The numbering is historical, so a retired gate's number is not reused:
 
 | # | Gate | Proves |
 |---|---|---|
 | 1 | `check-reqs` (exists) | Tree integrity: parent links, no suspect/unreviewed/orphan items; every `TST` reference resolves to a file, and to the declaration its `keyword` names where it carries one; no referenced test drifted since review |
-| 3 | Coverage closure (when source exists) | Uncovered source is unjustified source (visible exemptions) |
+| 3 | `check-coverage` (exists; non-blocking) | First-party product source meets its language's coverage bar: 90% statement per-file and total (backend), 90% line/branch/function/statement per-file (frontend) |
 
 Gate 2, a reverse-direction claim over every discovered test, is dropped for the reason given against
 the third objection above. Gate 4, an inspection file-claim over non-code silos, is retired by
 [ADR 0011 rev 2](0011-requirement-or-convention.md) for having no possible subject.
 
-- **Both surviving gates run forward, from the tree outward.** Gate 1 proves each item's evidence
-  exists, at the line that declares it, and has not drifted. Coverage then makes the closure
-  transitive: source → test → `TST` → `SRS` → `SYS`, so coverage is traceability closure here, not a
-  quality threshold — and it reaches source a structural test covers without any item naming that
-  test, which is the closure gate 2 was reached for.
+- **Gate 1 runs forward, from the tree outward**, proving each item's evidence exists, at the line
+  that declares it, and has not drifted. **Gate 3 is tree-blind**: a coverage bar over first-party
+  product source, source → test only. It proves nothing about test → `TST` → `SRS` → `SYS` — that leg
+  stays gate 1's, plus #192 verification-debt report and #191 verification matrix, the forward and
+  reverse views over accepted items' evidence. So the reframe does not reopen the gap gate 2 was
+  dropped over: a structural test with no `TST` naming it still counts toward coverage, exactly as it
+  counted before gate 2 was dropped — arguably more visibly, since an uncovered line reads as coverage
+  debt whether or not any item ever claimed the test that would have covered it.
 - **Analysis and demonstration items close through referenced artifacts** — the item references the
   analysis document or demonstration procedure, and derived verification is that reference resolving
   plus the item's `reviewed` fingerprint. Human judgment stays in the sign-off; only the linkage is
@@ -182,11 +199,11 @@ The four stored attributes — `verification-method`, `status`, `verification-ju
 - **A stored `implemented`/`verified` state.** Rejected: it is derivable from evidence the gates
   already have, and a hand-set flag survives the deletion of the test that justified it — the same
   hand-declared-in-two-places defect class the boundary-contract rule exists to kill.
-- **Requirement→source design-allocation refs.** Rejected: coverage closure supersedes them for the
-  orphan-work invariant, and refs into a volatile source tree churn on every rename. Design
-  allocation, where wanted, belongs to the architecture model, not the gate system. This is about
-  references into the *source* tree and is untouched by rev 2, which concerns the test evidence
-  channel alone.
+- **Requirement→source design-allocation refs.** Rejected: refs into a volatile source tree churn on
+  every rename, and design allocation, where wanted, belongs to the architecture model, not the gate
+  system. This is about references into the *source* tree and is untouched by rev 2, which concerns
+  the test evidence channel alone, and by rev 3's coverage bar, which is tree-blind rather than a
+  substitute for such a ref.
 - **`item_sha_required` without the validator hook.** Rejected: Doorstop writes the hash at review
   time and no core command ever re-derives it, so the recorded shas would sit in every item's YAML,
   ride its fingerprint, and be compared by nothing. The extension supplies the data for a drift
@@ -209,8 +226,9 @@ The four stored attributes — `verification-method`, `status`, `verification-ju
   and must not become a reflex — and it is the cost this rev accepts in exchange for the tree
   noticing when its evidence moves.
 - **No gate in the table is authored here.** Gate 1 is the tool's, configured — the drift hook is
-  the extension point Doorstop documents, not a sibling script — and gate 3 is the coverage tool's.
-  That is the answer [ADR 0016 rev 11](0016-maintained-tools-for-standard-artifacts.md) asks for
+  the extension point Doorstop documents, not a sibling script — and gate 3 is the two coverage
+  tools', go-test-coverage and Vitest's own `coverage.thresholds`, likewise configured rather than
+  authored. That is the answer [ADR 0016 rev 11](0016-maintained-tools-for-standard-artifacts.md) asks for
   before a check is written, and dropping gate 2 is what leaves the table with no exception. The
   configuration that arms the hook is fragile in a way no gate here covers: keeping the `extensions:`
   block present is an obligation on whoever edits a `.doorstop.yml`, and it leaves no artifact, so a
@@ -221,13 +239,15 @@ The four stored attributes — `verification-method`, `status`, `verification-ju
   visibility into that population, and nothing here buys it back — the gap is accepted rather than
   mitigated, and saying so is the honest state. #192 verification-debt report is a *separate*
   forward-direction report over items with no evidence, not a substitute for it.
-- **Coverage implies a near-100% bar** with a visible exemption mechanism — deliberate, because it
-  gates an invariant (no unjustified source), not a chosen number. Coverage proves execution, not
-  specification: a line covered incidentally counts. That residue is held by review and test
-  quality, and no gate pretends otherwise.
+- **Coverage is a chosen 90% bar**, per-file and total — statement for the backend, where the
+  toolchain implements no other measure (golang/go#28888), line/branch/function/statement per-file
+  for the frontend. Coverage proves execution, not specification: a line covered incidentally counts.
+  That residue is held by review and test quality, and no gate pretends otherwise.
 - **The ungated surfaces are named rather than counted.** The axiom tier, held by human review and
-  mechanized by fingerprints. The reverse direction, accepted above. And source no test reaches,
-  until gate 3 lands under #190 coverage closure gate. What the gates do reach, they reach
-  mechanically; nothing else is claimed.
-- The exemption mechanism's shape is deferred to #190 coverage closure gate **explicitly marked
-  open**, not resolved silently here.
+  mechanized by fingerprints. The reverse direction, accepted above. And source below the coverage
+  bar, visible as a red `check-coverage` report line rather than a merge block, until #300 coverage
+  gate blocking makes the bar binding. What the gates do reach, they reach mechanically; nothing else
+  is claimed.
+- **No exemption register exists while gate 3 is non-blocking** (owner: nothing to exempt while
+  non-blocking; if we do, that's a problem at that time) — its shape is deferred to #300 coverage gate
+  blocking, explicitly marked open, not resolved silently here.

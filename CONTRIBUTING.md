@@ -166,7 +166,7 @@ appended for the same reason; inserting one is permitted
 25. **Doorstop extensions.** Where the change edits a requirements `.doorstop.yml`, is its
     `extensions:` block still present? That block is what makes an edit to a verifying test
     invalidate the item's review until a human re-checks it
-    ([ADR 0005 rev 2](docs/decisions/0005-traceability-gating.md)). Both `Document.save()` and an
+    ([ADR 0005 rev 3](docs/decisions/0005-traceability-gating.md)). Both `Document.save()` and an
     unrecognised key drop it in silence, so a specification that has lost it still reports clean.
 
 **Checks**

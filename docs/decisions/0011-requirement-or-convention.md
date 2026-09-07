@@ -67,7 +67,7 @@ duration, a sampling interval, a tolerance, or a build mode has swallowed its ow
 threshold then cannot be tuned without a specification change. Where an item's text begins
 *"Verification shall…"*, it is announcing this.
 
-**This narrows [ADR 0005 rev 2](0005-traceability-gating.md).** Its traceability claim is over **the
+**This narrows [ADR 0005 rev 3](0005-traceability-gating.md).** Its traceability claim is over **the
 product**. *No work exists without a requirement authorizing it* is true of work on WiseKiosk; it is
 not true of the repository's own housekeeping, and arguably never was. Three consequences for 0005's
 gate table:
@@ -79,9 +79,10 @@ gate table:
   empties `analysis` and `demonstration` — every item in the tree is `test` — so 0005's
   closure-through-referenced-artifacts rule stands with no current subject.
 - **Gate 3 is scoped to product source.** First-party scripts implementing repository checks have no
-  `TST` to attribute to, and holding them to coverage closure would give them one, reintroducing the
+  `TST` to attribute to, and holding them to a coverage bar would give them one, reintroducing the
   items this decision removes. They are exercised by their own fixtures and described in `CI.md`. The
-  closure chain — source → test → `TST` → `SRS` → `SYS` — is unchanged inside the scope.
+  bar reaches Go under `backend/` and TypeScript/Svelte under `frontend/src/` and nothing outside that
+  scope ([ADR 0005 rev 3](0005-traceability-gating.md)).
 - **What this gives up, stated rather than implied.** Doorstop validates `references`, so an active
   `TST` naming a deleted script used to fail the tree gate independently of the workflow. Repository
   checks no longer have that: deleting a check's script and its workflow step in one change is
