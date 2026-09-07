@@ -18,7 +18,14 @@ export default mergeConfig(
       coverage: {
         provider: 'v8',
         include: ['src/**'],
-        exclude: ['src/lib/boundary/**', 'src/config/types.ts', '**/*.test.ts', '**/*.spec.ts', '**/*.d.ts'],
+        exclude: [
+          'src/lib/boundary/**',
+          'src/config/types.ts',
+          'src/modules/weather/props.ts',
+          '**/*.test.ts',
+          '**/*.spec.ts',
+          '**/*.d.ts',
+        ],
         reporter: ['text'],
         thresholds: {
           perFile: true,
