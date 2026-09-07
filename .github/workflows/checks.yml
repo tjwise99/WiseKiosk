@@ -374,6 +374,40 @@ jobs:
       - name: No resolved Go module dependency carries a known vulnerability reachable from the build, unless the exception register covers it
         run: just check-vulns-go
 
+  coverage:
+    name: coverage
+    # The non-blocking unit-test coverage bar (ADR 0005 rev 3, gate 3): go-test-coverage over the
+    # backend and Vitest's coverage.thresholds over the frontend, each 90% per-file and total. Not
+    # in the required-checks ruleset, so a red run does not block a merge — #300 coverage gate
+    # blocking is what promotes it. The recipe body is the one spelling of what runs, here and
+    # locally. No secrets: the tests serve over loopback and reach no network origin.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with:
+          go-version: "1.27"
+
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 26
+
+      - uses: extractions/setup-just@53165ef7e734c5c07cb06b3c8e7b647c5aa16db3 # v4
+        with:
+          just-version: "1.58.0"
+
+      - name: Install the Go module's dependencies into the silo (backend/), locked
+        run: go -C backend mod download
+
+      - name: Install the frontend toolchain into the silo (frontend/), locked
+        run: npm --prefix frontend ci
+
+      - name: The unit-test coverage bar over the backend and the frontend
+        run: just check-coverage
+
   image-tests:
     name: image-tests
     # The image tier (docs/TESTING.md): builds the container image and holds the artifact to what
