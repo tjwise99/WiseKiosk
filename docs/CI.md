@@ -200,8 +200,8 @@ claims it. Two maintained tools, one per language, each configured rather than a
 - **Frontend** — `frontend/node_modules/.bin/vitest run --root frontend --coverage`, against the
   `coverage` block in `frontend/vitest.config.ts` (`@vitest/coverage-v8`, pinned to the same version
   as `vitest`): 90% line, branch, function and statement coverage, per file, over `src/**`, excluding
-  the generated boundary client and config types plus test/spec/`d.ts` files. `coverage.all: true`
-  reports every included file, so one the unit tier never imports is counted at 0% rather than absent.
+  the generated boundary client and config types plus test/spec/`d.ts` files. `coverage.include`
+  reports every matching file, so one the unit tier never imports is counted at 0% rather than absent.
 
 Neither recipe needs the network or Docker, but `check-coverage` is non-blocking by decision rather
 than by constraint: it is neither a `just verify` dependency nor a required-checks ruleset member

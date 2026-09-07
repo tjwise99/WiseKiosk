@@ -241,7 +241,7 @@ language:
   gated on statement coverage, stated rather than approximated with a number the toolchain cannot
   produce.
 - **Frontend** — Vitest's own `coverage.thresholds` (`@vitest/coverage-v8`), 90% line, branch,
-  function and statement, per file. `coverage.all: true` reports every file `include` matches, so an
+  function and statement, per file. `coverage.include` reports every matching file, so an
   untested file counts as 0% rather than being silently absent — verified empirically against this
   tree's render `.svelte` components, which carry no Vitest test (they are Playwright-tested
   instead): each is instrumented and reported at 0%, which is why the frontend half of
