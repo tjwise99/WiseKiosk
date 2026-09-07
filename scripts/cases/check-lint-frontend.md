@@ -4,7 +4,7 @@ The inputs this check has been run against, in both directions. What it *asserts
 [`docs/CI.md`](../../docs/CI.md) § *Lint and type checks*'s; how to run a case is
 [`../README.md`](../README.md)'s.
 
-Each case is a `git archive` copy of the tracked tree at `5cdb188`, with `frontend/node_modules`
+Each case is a `git archive` copy of the tracked tree at `28c5ca2`, with `frontend/node_modules`
 symlinked in from the working tree and `just check-lint-frontend` (eslint, then svelte-check `--tsgo`,
 both blocking) run inside the copy. eslint 10.10.0, typescript-eslint 8.69.0, eslint-plugin-svelte
 3.23.0, svelte-check 4.7.6.
