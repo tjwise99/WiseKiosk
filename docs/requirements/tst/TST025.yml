@@ -15,9 +15,9 @@ references:
   type: file
 - keyword: func TestCachedResultIsServedWithoutAnUpstreamCallAndRefetchesAfterTheTTL
   path: backend/internal/upstream/proxy_test.go
-  sha: 5258358ef57ee4b658ad0f9ab39da7a7afb33aa0dfcc851fbac3581f9a286404
+  sha: 9645de147c93504b1356a95d23107c7ae2dd22fe3df7a1a517767bafd5977c86
   type: file
-reviewed: Ya69fiC75C0nj6BCQ_Hd5OtFWHJnM_45on6sZjVMOqk=
+reviewed: Sc_lqy_bLJFS0gg865MugltxllD6_dJ8vTPfXZfTglU=
 status: proposed
 text: |
   Integration test asserting the (source, query) TTL cache serves an identical request from cache
