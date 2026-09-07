@@ -105,7 +105,10 @@ func TestRunReturnsTwoOnABadFlag(t *testing.T) {
 }
 
 func TestHealthCheckOriginDefaultsToTheFixedAddr(t *testing.T) {
-	if got, want := healthCheckOrigin(), "http://localhost"+addr; got != want {
+	// The literal, not "http://localhost"+addr — the same expression the
+	// production body uses would pass at a wrong addr too.
+	const want = "http://localhost:8080"
+	if got := healthCheckOrigin(); got != want {
 		t.Errorf("healthCheckOrigin() = %q, want %q", got, want)
 	}
 }
