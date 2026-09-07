@@ -12,6 +12,22 @@ export default mergeConfig(
     test: {
       environment: 'node',
       include: ['src/**/*.test.ts'],
+      // Gate 3 coverage bar (ADR 0005 rev 3): `all: true` reports every file `include` matches, so
+      // a file this tier never imports appears at 0% rather than being silently absent.
+      coverage: {
+        provider: 'v8',
+        all: true,
+        include: ['src/**'],
+        exclude: ['src/lib/boundary/**', 'src/config/types.ts', '**/*.test.ts', '**/*.spec.ts', '**/*.d.ts'],
+        reporter: ['text'],
+        thresholds: {
+          perFile: true,
+          lines: 90,
+          branches: 90,
+          functions: 90,
+          statements: 90,
+        },
+      },
     },
   }),
 );
