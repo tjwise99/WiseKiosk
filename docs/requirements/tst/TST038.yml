@@ -11,13 +11,13 @@ ref: ''
 references:
 - keyword: func TestCSPConnectDefaultAndBaseAreExactlySelf
   path: backend/internal/headers/headers_test.go
-  sha: bdf578654a4a71a36178ec25531d256cad833c50fb844ec4e9fee00a136ed97a
+  sha: 8bed2a514708c7eafbd622d1f066ab756655971519d9223b045408e28a7aeebf
   type: file
 - keyword: test('renders the shipped example configuration with no validation report'
   path: frontend/tests/render/example-configuration.spec.ts
   sha: 040e4affad7b2439fc46acc39075cf105fb0b736dbedd9d3638fdafbb37e457e
   type: file
-reviewed: Ya1ZKsfMFZpNM8q7cZV9wiDlmlORvdq5OxkGikTZm9w=
+reviewed: hTUOIR3p3f1qWSfztCgBkqn3EKhO3iJc5aP4n-RGBds=
 status: proposed
 text: |
   Integration test requesting the backend's frontend-serving route and asserting the response

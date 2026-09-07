@@ -15,9 +15,9 @@ references:
   type: file
 - keyword: func TestEachSourceHasItsOwnBudget
   path: backend/internal/upstream/proxy_test.go
-  sha: 9645de147c93504b1356a95d23107c7ae2dd22fe3df7a1a517767bafd5977c86
+  sha: 6100f4804e0d137245120b3f2eb7497aaf55b563b0dce86aecf2035759233c06
   type: file
-reviewed: ktcYVJzpa1HzEN3eYjSrFK1OhZlv9dJBio8wWKhbvNs=
+reviewed: ZEaB8mN_KN7JBQ5wXTpFKPJC0q74gMD-BBefGerYhPQ=
 status: proposed
 text: |
   Test asserting a route's global rate limit rejects requests over the threshold without an upstream
