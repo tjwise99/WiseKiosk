@@ -5,7 +5,7 @@ package main
 import (
 	"flag"
 	"fmt"
-	"log"
+	"io"
 	"net/http"
 	"os"
 
@@ -27,19 +27,47 @@ const (
 )
 
 func main() {
-	root := flag.String("static-root", defaultStaticRoot, "directory served as the frontend bundle")
-	selfCheck := flag.Bool("health-check", false, "ask the local instance for liveness and exit")
-	flag.Parse()
+	os.Exit(run(os.Args[1:], os.Stderr))
+}
 
-	if *selfCheck {
-		if err := health.Check("http://localhost" + addr); err != nil {
-			fmt.Fprintln(os.Stderr, err)
-			os.Exit(1)
-		}
-		return
+// run parses flags out of args and either performs the self-check or serves,
+// returning the process exit code. It is kept apart from main so it can run
+// under test with its own flag set and injected stderr — main() itself
+// cannot: it either blocks serving or exits the test binary.
+//
+// serve and healthCheckOrigin below are the seams a test overrides to reach
+// both branches without binding the fixed port.
+func run(args []string, stderr io.Writer) int {
+	fs := flag.NewFlagSet("wisekiosk", flag.ContinueOnError)
+	fs.SetOutput(stderr)
+	root := fs.String("static-root", defaultStaticRoot, "directory served as the frontend bundle")
+	selfCheck := fs.Bool("health-check", false, "ask the local instance for liveness and exit")
+	if err := fs.Parse(args); err != nil {
+		return 2
 	}
 
-	log.Fatal(http.ListenAndServe(addr, newServer(staticserve.New(http.Dir(*root)), nil)))
+	if *selfCheck {
+		if err := health.Check(healthCheckOrigin()); err != nil {
+			fmt.Fprintln(stderr, err)
+			return 1
+		}
+		return 0
+	}
+
+	err := serve(addr, newServer(staticserve.New(http.Dir(*root)), nil))
+	fmt.Fprintln(stderr, err)
+	return 1
+}
+
+// serve is the seam a test overrides to avoid binding the fixed port.
+var serve = func(addr string, h http.Handler) error {
+	return http.ListenAndServe(addr, h)
+}
+
+// healthCheckOrigin is the seam a test overrides to point the -health-check
+// probe at an httptest origin instead of the fixed addr.
+var healthCheckOrigin = func() string {
+	return "http://localhost" + addr
 }
 
 // newServer assembles the routes: the boundary schema's own, the seam over the
