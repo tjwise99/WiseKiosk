@@ -4,7 +4,20 @@ import type { ModuleOptions, WeatherOptions } from '../config/types';
 import Clock from '../modules/clock/Clock.svelte';
 import Weather from '../modules/weather/Weather.svelte';
 import { postApiWeather } from './boundary/client';
-import type { ModuleAnswer } from './payload';
+import type { ModuleAnswer, Payload } from './payload';
+
+/**
+ * What every module's component is handed
+ * (docs/contracts/module-contract.md § The six parts, part 1), held to one type across the whole
+ * registry (`Record<string, ModuleEntry>`) rather than each module's own prop type. A module
+ * narrows `config` (and `payload`, where it has one) to its own type via a cast — safe because
+ * config validation already ran by the time this does (ADR 0007 rev 2).
+ */
+export interface CommonProps {
+  reachable: boolean;
+  config: ModuleOptions;
+  payload?: Payload<unknown>;
+}
 
 /**
  * One registered module: what draws it, and — where it is fed by the backend — how its payload is
@@ -12,7 +25,7 @@ import type { ModuleAnswer } from './payload';
  * present, needs no cadence, and the shell fetches nothing for it.
  */
 export interface ModuleEntry {
-  readonly component: Component;
+  readonly component: Component<CommonProps>;
   readonly read?: (config: ModuleOptions, options?: RequestInit) => Promise<ModuleAnswer>;
   readonly readIntervalMs?: number;
 }

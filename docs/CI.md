@@ -75,23 +75,14 @@ This mechanises the security review a solo project has no second reader to perfo
 ## Lint and type checks
 
 Every source package's linters run as blocking checks. **No linter is advisory-only** — a lint gate
-that reports without failing degrades to noise within a release. **One exception stands, named
-rather than silent:** `svelte-check` reports and does not fail the build until
-[#275 resolve ModuleEntry.component prop-type variance so svelte-check blocks](https://github.com/tjwise99/WiseKiosk/issues/275)
-lands — see below.
+that reports without failing degrades to noise within a release.
 
 - Go: `golangci-lint`'s default linter set (errcheck, govet, ineffassign, staticcheck, unused), the
   production invocation, non-zero exit asserted. Recorded in
   [`../scripts/cases/check-lint-go.md`](../scripts/cases/check-lint-go.md).
-- Frontend: `eslint` (flat config, recommended sets), non-zero exit asserted, and the whole-project
-  TypeScript typecheck (`tsc --noEmit`, TS 7), non-zero exit asserted. `svelte-check` (`--tsgo`) runs
-  and its output prints, but its exit code is not asserted: it finds three real, pre-existing
-  `ModuleEntry.component` prop-type variance findings that the owner ruled should land reporting
-  rather than be patched around with a type-only fix — the registry erases each module's own prop
-  type down to one field type, and resolving that for real needs a design decision between a narrow
-  lint carve-out and a typed-registry redesign, not a gate workaround.
-  [#275 resolve ModuleEntry.component prop-type variance so svelte-check blocks](https://github.com/tjwise99/WiseKiosk/issues/275)
-  resolves the findings and makes this line blocking again. Recorded in
+- Frontend: `eslint` (flat config, recommended sets), non-zero exit asserted; `svelte-check`
+  (`--tsgo`), non-zero exit asserted; and the whole-project TypeScript typecheck (`tsc --noEmit`,
+  TS 7), non-zero exit asserted. Recorded in
   [`../scripts/cases/check-lint-frontend.md`](../scripts/cases/check-lint-frontend.md) and
   [`../scripts/cases/check-typecheck-frontend.md`](../scripts/cases/check-typecheck-frontend.md).
 

@@ -1,7 +1,8 @@
 /**
  * The weather component's props, and the pinning of what they carry to the boundary the route
- * answers over. A `.svelte` file's props are opaque to `tsc`, so the type is declared here and the
- * component takes it; this file is compiled by `just check-boundary` against a freshly regenerated
+ * answers over. A `.svelte` file's props are opaque to `tsc`, so the pairing is declared here rather
+ * than in the component, which narrows `CommonProps` to `WeatherOptions`/`Payload<WeatherPayload>`
+ * via its own cast; this file is compiled by `just check-boundary` against a freshly regenerated
  * client, which is what makes the pinning a check rather than a claim.
  */
 

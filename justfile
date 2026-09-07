@@ -230,10 +230,10 @@ check-static-bundle: check-build
     python3 scripts/check-static-bundle.py
 
 [group('checks')]
-[doc('The frontend is clean under eslint (flat config, recommended sets); svelte-check (--tsgo) reports and does not fail — #275 resolve ModuleEntry.component prop-type variance so svelte-check blocks flips it to blocking; needs `just boundary-install`')]
+[doc('The frontend is clean under eslint (flat config, recommended sets) and svelte-check (--tsgo); needs `just boundary-install`')]
 check-lint-frontend:
     cd frontend && node_modules/.bin/eslint .
-    -cd frontend && node_modules/.bin/svelte-check --tsconfig ./tsconfig.json --tsgo
+    cd frontend && node_modules/.bin/svelte-check --tsconfig ./tsconfig.json --tsgo
 
 [group('checks')]
 [doc('No npm dependency carries a known vulnerability, at any severity, unless the exception register covers it; needs the network (the npm registry)')]

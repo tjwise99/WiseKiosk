@@ -1,8 +1,3 @@
-<script lang="ts">
-  // Same-origin, so the file loads under the served `img-src 'self'` (#266 security response headers); a `data:` URI does not.
-  import brightImageSrc from './bright-image.gif';
-</script>
-
 <!--
   Imagery rendered as content, brighter than the ceiling: the exemption, exercised.
 
@@ -12,7 +7,8 @@
   fixture rests on.
 -->
 <div class="stub" data-stub="bright-image">
-  <img alt="A white field" src={brightImageSrc} />
+  <!-- Same-origin, so the file loads under the served `img-src 'self'` (#266 security response headers); a `data:` URI does not. -->
+  <img alt="A white field" src={new URL('./bright-image.gif', import.meta.url).href} />
 </div>
 
 <style>

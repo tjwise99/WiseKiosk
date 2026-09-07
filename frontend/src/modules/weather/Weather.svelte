@@ -1,5 +1,8 @@
 <script lang="ts">
-  import type { WeatherProps } from './props';
+  import type { WeatherOptions } from '../../config/types';
+  import type { WeatherPayload } from '../../lib/boundary/client';
+  import type { CommonProps } from '../../lib/modules';
+  import type { Payload } from '../../lib/payload';
 
   /**
    * The module draws from its props and fetches nothing
@@ -21,7 +24,14 @@
    * (SRS045<!-- The weather module shows the present weather and the outlook apart from each other -->),
    * per the module's own UI design spec (./README.md).
    */
-  const { reachable, config, payload }: WeatherProps = $props();
+  const { reachable, config, payload }: CommonProps = $props();
+
+  // Narrowed to the concrete config/payload types: `config` safe because config validation
+  // already ran (ADR 0007 rev 2); `payload` safe because this entry's own `read` supplies it
+  // from the boundary schema's generated response (ADR 0008 rev 5). `$derived` keeps both casts
+  // reactive to their props, `payload` being reassigned every poll (~5 min, SRS046/047).
+  const weatherConfig = $derived(config as WeatherOptions);
+  const weatherPayload = $derived(payload as Payload<WeatherPayload>);
 
   /**
    * The glyph each WMO 4677 present-weather code draws, on the side of the day the reading falls —
@@ -101,7 +111,7 @@
 
   let active = $state<SeriesKind>('temperature');
   $effect(() => {
-    const seconds = config.series_switch_seconds ?? DEFAULT_SWITCH_SECONDS;
+    const seconds = weatherConfig.series_switch_seconds ?? DEFAULT_SWITCH_SECONDS;
     const toggle = setInterval(() => {
       active = active === 'temperature' ? 'precipitation' : 'temperature';
     }, seconds * 1000);
@@ -259,16 +269,16 @@
 
 {#if reachable}
   <div class="weather" data-weather>
-    {#if payload.state === 'loading'}
+    {#if weatherPayload.state === 'loading'}
       <!-- Drawn rather than left blank: a module that has been asked for but not yet answered is
            neither a reading nor a failure. -->
       <p class="waiting" data-module-loading>Reading the weather…</p>
-    {:else if payload.state === 'unavailable'}
+    {:else if weatherPayload.state === 'unavailable'}
       <!-- The hook names the state rather than this module, the state being one every
            upstream-backed module has. -->
-      <p class="waiting" data-module-unavailable>{payload.failure.message}</p>
+      <p class="waiting" data-module-unavailable>{weatherPayload.failure.message}</p>
     {:else}
-      {@const reading = payload.data}
+      {@const reading = weatherPayload.data}
       {@const unit = SERIES_UNIT[active]}
       {@const values = seriesValues(reading.hourly, active)}
       {@const scale = yAxisScale(values, unit)}
