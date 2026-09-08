@@ -377,10 +377,11 @@ jobs:
   coverage:
     name: coverage
     # The non-blocking unit-test coverage bar (ADR 0005 rev 3, gate 3): go-test-coverage over the
-    # backend and Vitest's coverage.thresholds over the frontend, each 90% per-file and total. Not
-    # in the required-checks ruleset, so a red run does not block a merge — #300 coverage gate
-    # blocking is what promotes it. The recipe body is the one spelling of what runs, here and
-    # locally. No secrets: the tests serve over loopback and reach no network origin.
+    # backend, Vitest's coverage.thresholds over the frontend's `.ts` files, and monocart over the
+    # frontend's `.svelte` components from the render tier, each 90% per-file and total. Not in the
+    # required-checks ruleset, so a red run does not block a merge — #300 coverage gate blocking is
+    # what promotes it. The recipe body is the one spelling of what runs, here and locally. No
+    # secrets: the tests serve over loopback and reach no network origin.
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -404,6 +405,9 @@ jobs:
 
       - name: Install the frontend toolchain into the silo (frontend/), locked
         run: npm --prefix frontend ci
+
+      - name: Install the browser the render tier drives
+        run: just render-install
 
       - name: The unit-test coverage bar over the backend and the frontend
         run: just check-coverage
