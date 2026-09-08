@@ -1,43 +1,41 @@
-import { readdir, readFile } from 'node:fs/promises';
+import { mkdir, readdir, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import istanbulLibCoverage from 'istanbul-lib-coverage';
-import istanbulLibReport from 'istanbul-lib-report';
 import istanbulLibSourceMaps from 'istanbul-lib-source-maps';
-import istanbulReports from 'istanbul-reports';
 
 import { RENDER_RAW_DIR } from './harness';
 
 // Default imports rather than named ones: these are CommonJS packages, and Playwright's own loader
 // does not always detect their named exports as ESM ones.
 const { createCoverageMap } = istanbulLibCoverage;
-const { createContext } = istanbulLibReport;
 const { createSourceMapStore } = istanbulLibSourceMaps;
-const { create: createReport } = istanbulReports;
 
-const REPORT_DIR = fileURLToPath(new URL('../../coverage/render-report', import.meta.url));
-
-const BAR = 90;
-const METRICS = ['statements', 'branches', 'functions', 'lines'] as const;
+/** Where this tier's own, already-remapped coverage lands for `scripts/merge-coverage.ts` to read. */
+export const RENDER_COVERAGE_FINAL = fileURLToPath(
+  new URL('../../coverage/render/coverage-final.json', import.meta.url),
+);
 
 /**
  * Runs once after every worker of `playwright.coverage.config.ts`'s run has exited, folding the
- * coverage each of them wrote (`harness.ts`'s `coverageMap` fixture) into one map, remapping it from
- * the instrumented code Istanbul saw back to the `.svelte`/`.ts` sources it came from, and writing
- * the render tier's own lcov + text report.
- *
- * Gate 3 coverage bar (ADR 0005 rev 3): the same per-file 90% bar `vitest.config.ts`'s
- * `coverage.thresholds` states for the unit tier, applied here to the render tier's own
- * `vite-plugin-istanbul`-instrumented population.
+ * coverage each of them wrote (`harness.ts`'s `coverageMap` fixture) into one map and remapping it
+ * from the instrumented code Istanbul saw back to the `.ts`/`.svelte` sources it came from —
+ * `frontend/scripts/merge-coverage.ts` unions the result with the unit tier's own coverage into one
+ * frontend-wide gate and lcov, so this tier reports neither a bar nor a report of its own.
  */
 export default async function globalTeardown(): Promise<void> {
   const map = createCoverageMap({});
   let workerFiles: string[];
   try {
     workerFiles = await readdir(RENDER_RAW_DIR);
-  } catch {
-    // No coverage project worker ran a test that reached `render` — nothing to fold in.
+  } catch (cause) {
+    // No coverage project worker ran a test that reached `render` — nothing to fold in. Any other
+    // failure (a permissions error, the path colliding with a plain file) is not this: it is not
+    // silently treated as an empty run.
+    if ((cause as NodeJS.ErrnoException).code !== 'ENOENT') {
+      throw cause;
+    }
     workerFiles = [];
   }
   for (const file of workerFiles) {
@@ -47,22 +45,6 @@ export default async function globalTeardown(): Promise<void> {
 
   const remapped = await createSourceMapStore().transformCoverage(map);
 
-  const context = createContext({ dir: REPORT_DIR, coverageMap: remapped });
-  createReport('lcovonly').execute(context);
-  createReport('text').execute(context);
-
-  const failures: string[] = [];
-  for (const filePath of remapped.files()) {
-    const summary = remapped.fileCoverageFor(filePath).toSummary();
-    for (const metric of METRICS) {
-      const pct = summary[metric].pct;
-      if (pct < BAR) {
-        failures.push(`${filePath}: ${metric} coverage (${pct}%) is below the ${BAR}% bar`);
-      }
-    }
-  }
-  if (failures.length > 0) {
-    console.error(failures.join('\n'));
-    process.exitCode = 1;
-  }
+  await mkdir(path.dirname(RENDER_COVERAGE_FINAL), { recursive: true });
+  await writeFile(RENDER_COVERAGE_FINAL, JSON.stringify(remapped.toJSON()));
 }

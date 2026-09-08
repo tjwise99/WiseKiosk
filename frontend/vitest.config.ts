@@ -17,12 +17,13 @@ export default mergeConfig(
       // removed in Vitest 4; `include` alone carries that behaviour now).
       coverage: {
         // Istanbul rather than V8: the render tier's own coverage (`tests/render/coverage-teardown.ts`)
-        // is Istanbul too, so both tiers' lcov share one shape (#304's future cross-tier merge).
+        // is Istanbul too, so `frontend/scripts/merge-coverage.ts` can union both tiers' output into
+        // one frontend-wide gate and lcov, source-position-keyed rather than clobbering either.
         provider: 'istanbul',
-        // `.ts` only, not `src/**`: the render tier gates every `.svelte` component on its own,
-        // separate 90% bar, so each file is scored by exactly one tier. `src/**` also matches
-        // non-code assets (`app.css`, licence and font files, `schema.json`) that carry no
-        // statements of their own.
+        // `.ts` only, not `src/**`: `src/**` also matches non-code assets (`app.css`, licence and
+        // font files, `schema.json`) that carry no statements of their own. A `.svelte` file is the
+        // render tier's own `include` to instrument (`vite.config.render.ts`); this tier never
+        // imports one, so it would report at a permanent, meaningless 0% here regardless.
         include: ['src/**/*.ts'],
         exclude: [
           'src/lib/boundary/**',
@@ -32,15 +33,12 @@ export default mergeConfig(
           '**/*.spec.ts',
           '**/*.d.ts',
         ],
-        reporter: ['text', 'lcov'],
+        // No `thresholds` here: this run's own view is unit-only, and a file the render tier also
+        // executes can read below 90% from this view alone while the merged view — the one gate
+        // `merge-coverage.ts` enforces — reads at or above it. `json` is this tier's raw output for
+        // that merge to read; `text` is this run's own console summary.
+        reporter: ['text', 'json'],
         reportsDirectory: 'coverage/unit',
-        thresholds: {
-          perFile: true,
-          lines: 90,
-          branches: 90,
-          functions: 90,
-          statements: 90,
-        },
       },
     },
   }),

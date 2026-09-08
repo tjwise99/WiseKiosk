@@ -268,12 +268,13 @@ check-dead-test:
 # Outside `verify`, and invoked by a CI job of its own: the coverage bar is non-blocking until
 # #300 coverage gate blocking makes it one (ADR 0005 rev 3, gate 3).
 [group('checks')]
-[doc('The unit-test coverage bar: go-test-coverage over the backend, Vitest coverage.thresholds over the frontend `.ts` files, and Istanbul (vite-plugin-istanbul + coverage-teardown.ts) over the frontend `.svelte` components from the render tier, each 90% per-file and total; needs `just boundary-install` and `just render-install`')]
+[doc('The unit-test coverage bar: go-test-coverage over the backend, and one merged Istanbul gate (vitest coverage-istanbul + vite-plugin-istanbul, unioned by scripts/merge-coverage.ts) over every frontend `.ts` and `.svelte` file, each 90% per-file and total; needs `just boundary-install` and `just render-install`')]
 check-coverage:
     go -C backend test -covermode=atomic -coverpkg=./... -coverprofile=cover.out ./...
     go -C backend tool go-test-coverage --config=.testcoverage.yml
     frontend/node_modules/.bin/vitest run --root frontend --coverage
     frontend/node_modules/.bin/playwright test --config frontend/playwright.coverage.config.ts
+    node frontend/scripts/merge-coverage.ts
 
 # Outside `verify`, and invoked by a CI job of its own: this tier builds and runs the image, and
 # docs/CI.md § Gate wiring is what decides where a check needing Docker sits.
