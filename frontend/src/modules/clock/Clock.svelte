@@ -54,8 +54,15 @@
       .map((part) => part.value)
       .join(''),
   );
-  const secondsText = $derived(timeParts.find((part) => part.type === 'second')?.value ?? '');
-  const meridiemText = $derived(timeParts.find((part) => part.type === 'dayPeriod')?.value ?? '');
+  // Neither fallback is reachable from a real `formatToParts()` result: 'second' is always present
+  // once requested, and 'dayPeriod' is always present in twelve-hour form — the one form that reads
+  // this value at all. Kept for a locale or engine whose Intl implementation omits either.
+  const secondsText = $derived(
+    timeParts.find((part) => part.type === 'second')?.value /* v8 ignore next */ ?? '',
+  );
+  const meridiemText = $derived(
+    timeParts.find((part) => part.type === 'dayPeriod')?.value /* v8 ignore next */ ?? '',
+  );
 
   // The date's two lines each read from their own formatter — weekday, then day/month/year — each
   // in its own locale ordering.

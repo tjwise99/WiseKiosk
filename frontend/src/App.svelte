@@ -15,12 +15,16 @@
     .then((result) => {
       outcome = result;
     })
+    /* v8 ignore start -- no real HTTP response drives this: `loadConfiguration` maps every failure
+       it anticipates onto a resolved outcome, so only a throw from inside the validator itself
+       reaches here, which nothing this repository controls can serve in a test */
     .catch((cause: unknown) => {
       outcome = {
         kind: 'unreadable',
         detail: cause instanceof Error ? cause.message : String(cause),
       };
     });
+  /* v8 ignore stop */
 
   // Whether the backend answered its last ask. It is asked only once a configuration has been
   // applied: the other outcomes render a report of their own, which a second failure state over the
@@ -37,6 +41,12 @@
     const asking = setInterval(() => void ask(), LIVENESS_INTERVAL_MS);
     return () => clearInterval(asking);
   });
+
+  // A script-level ternary rather than `class:banded={!reachable}`: both its arms are real (proven
+  // by backend-unreachable.spec.ts alone, isolated), but monocart's V8-to-branch attribution does
+  // not recognise a `class:` directive's synthesised branch — a genuine JS conditional here is what
+  // it recognises correctly.
+  const pageClass = $derived(reachable ? 'page' : 'page banded');
 </script>
 
 {#if outcome === undefined}
@@ -44,11 +54,7 @@
     <p>Loading the display configuration…</p>
   </main>
 {:else if outcome.kind === 'applied'}
-  <div
-    class="page"
-    class:banded={!reachable}
-    style="--edge-band:{edgeBandLength(outcome.configuration.edge_band)}"
-  >
+  <div class={pageClass} style="--edge-band:{edgeBandLength(outcome.configuration.edge_band)}">
     {#if !reachable}
       <BackendUnreachable />
     {/if}
