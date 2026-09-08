@@ -17,8 +17,8 @@ export type ConfigurationOutcome =
   | { readonly kind: 'unfetchable'; readonly detail: string }
   | { readonly kind: 'unparsable'; readonly detail: string }
   | { readonly kind: 'rejected'; readonly faults: readonly ConfigurationFault[] }
-  // Not produced here: the arm the page falls back to when applying a configuration throws
-  // something this does not anticipate, so no path ends without a state to render.
+  // Not produced by anything in this tree: `loadConfiguration`'s four returns below are its only
+  // paths, and nothing else constructs this outcome.
   | { readonly kind: 'unreadable'; readonly detail: string };
 
 /**
