@@ -32,7 +32,8 @@ named for the phase, and what distinguishes them is the sub-issue they are, not 
 integration branch keeps the module's churn off `main` and lets a decision taken in one phase be
 revised in another before the whole lands — it merges to `main` when the module is done.
 
-The three phases, in order, are the three content sections below:
+The three phases, in order, map to three sections of this contract (which appear below in a different
+order — content, not sequence, decides where each sits):
 
 1. **UI design spec** — [§ The module's UI design spec](#the-modules-ui-design-spec).
 2. **Requirements & architecture** — [§ Writing the module's requirements](#writing-the-modules-requirements)
@@ -224,10 +225,13 @@ in code, and none is an operator-tunable configuration key.
 
 ## Writing the module's requirements
 
-A module reaches the requirements tree before it reaches the repository: one `SYS` for the
-user-facing want, decomposed by `SRS` items carrying what is specific to this module
-([ADR 0012 rev 2](../decisions/0012-module-requirements-in-tree.md)). Writing those comes first, and
-the build steps work against what they produce.
+A module's requirements are written before it is built: one `SYS` for the user-facing want,
+decomposed by `SRS` items carrying what is specific to this module
+([ADR 0012 rev 2](../decisions/0012-module-requirements-in-tree.md)). The build steps work against
+what they produce. Earlier still is the UI design spec ([§ How a module is
+tracked](#how-a-module-is-tracked)): a requirement can only formalize a want already made concrete on
+the display, so what a module shows is decided in the design spec before it is obliged in the tree.
+The order is design, then requirements, then build.
 
 The need states what a viewer gets from this module, in one sentence carrying one `shall`, and it
 enumerates nothing: a need listing its own decomposition is a hat over its children rather than a

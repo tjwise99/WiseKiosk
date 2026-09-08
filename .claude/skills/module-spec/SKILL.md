@@ -15,8 +15,9 @@ epic, merging into its `module_<n>-<name>` integration branch
 ([module contract, § How a module is tracked](../../../docs/contracts/module-contract.md)). This
 skill sequences this phase; it does not file the epic or the sibling phases.
 
-**A module reaches the requirements tree before it reaches the repository.** This skill is the
-sequence; what each item must *say* is
+**A module's requirements are written before it is built** — after phase 1's UI design spec has
+decided what the module shows, and before any of the build steps. This skill is the sequence; what
+each item must *say* is
 [`docs/contracts/module-contract.md` § Writing the module's requirements](../../../docs/contracts/module-contract.md),
 and it is authoritative. Do not re-derive its rules from here — read it. Read
 [§ A module is its capability, not its supplier](../../../docs/contracts/module-contract.md) with it:
