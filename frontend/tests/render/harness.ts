@@ -18,10 +18,36 @@ function underCoverageProject(): boolean {
 }
 
 /**
- * `test`, instrumented with V8 JS coverage under the coverage project only: every other project
- * leaves `page.coverage` untouched, so `check-render`/`check-render-policy` collect nothing extra.
- * One `CoverageReport` per worker, since `.add()` accumulates into a directory shared across workers
- * and processes; `coverage-teardown.ts` merges it into the `raw` report once every worker has exited.
+ * The coverage-project `page`s currently under test, each to the worker's one `CoverageReport`. A
+ * page's entry is what tells `render` to collect for this test at all — `check-render`/
+ * `check-render-policy` never populate it, so `page.coverage` stays untouched there.
+ */
+const collectingPages = new WeakMap<Page, CoverageReport>();
+
+/**
+ * The coverage-project `page`s with a JS coverage session currently open. `render` flushes and
+ * restarts it on every navigation rather than the fixture holding one session for the whole test:
+ * Chromium's coverage session covers only the page live when it is stopped, so one session spanning
+ * several navigations — a test comparing two configurations navigates more than once — would report
+ * only the last of them. Left open between navigations (through whatever the test does with the page
+ * after `render` returns) and flushed at the test's end, so that activity is not lost either.
+ */
+const openSessions = new WeakSet<Page>();
+
+/** Stops and adds the page's open coverage session, if it has one; a no-op otherwise. */
+async function flushCoverage(page: Page, coverageReport: CoverageReport): Promise<void> {
+  if (!openSessions.has(page)) {
+    return;
+  }
+  openSessions.delete(page);
+  await coverageReport.add(await page.coverage.stopJSCoverage());
+}
+
+/**
+ * `test`, registering the page for per-navigation coverage collection under the coverage project
+ * only. One `CoverageReport` per worker, since `.add()` accumulates into a directory shared across
+ * workers and processes; `coverage-teardown.ts` merges it into the `raw` report once every worker
+ * has exited.
  */
 export const test = base.extend<{ collectPageCoverage: void }, { coverageReport: CoverageReport | undefined }>({
   coverageReport: [
@@ -42,9 +68,10 @@ export const test = base.extend<{ collectPageCoverage: void }, { coverageReport:
         await use();
         return;
       }
-      await page.coverage.startJSCoverage();
+      collectingPages.set(page, coverageReport);
       await use();
-      await coverageReport.add(await page.coverage.stopJSCoverage());
+      await flushCoverage(page, coverageReport);
+      collectingPages.delete(page);
     },
     { auto: true },
   ],
@@ -132,7 +159,10 @@ export async function render(
   page: Page,
   fixture: unknown,
   expected: Rendered = 'frame',
-  { healthz = 'ok' }: { healthz?: Liveness } = {},
+  {
+    healthz = 'ok',
+    configResponse,
+  }: { healthz?: Liveness; configResponse?: { status: number; body: string } } = {},
 ): Promise<void> {
   const underPolicy = underPolicyProject();
   const violations: string[] = [];
@@ -144,12 +174,27 @@ export async function render(
     });
   }
 
+  const coverageReport = collectingPages.get(page);
+  if (coverageReport) {
+    // Flushes whatever the page already did under a previous `render` call in this same test — the
+    // navigation below would otherwise end that session having covered nothing since it started.
+    await flushCoverage(page, coverageReport);
+    await page.coverage.startJSCoverage();
+    openSessions.add(page);
+  }
+
   // Matched as a glob rather than by importing `CONFIGURATION_URL`: a spec file runs in Node, and
   // that constant's module reaches the validator's virtual module, which only Vite can resolve. The
   // two spellings are held together by construction — disagree and the frame never renders, failing
   // every test in the tier rather than one.
+  //
+  // `configResponse` serves a raw status and body in place of `fixture` — a fixture is always a
+  // valid JSON document served at 200, so it cannot stand for the ask itself failing (a status the
+  // backend never serves for this path, or a body that is not JSON at all).
   await page.route('**/config.json', (route) =>
-    route.fulfill({ contentType: 'application/json', body: JSON.stringify(fixture) }),
+    configResponse
+      ? route.fulfill({ status: configResponse.status, body: configResponse.body })
+      : route.fulfill({ contentType: 'application/json', body: JSON.stringify(fixture) }),
   );
   await serveLiveness(page, healthz);
   await page.goto('/');

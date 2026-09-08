@@ -176,3 +176,15 @@ test.describe('the assembled page', () => {
     }
   });
 });
+
+test('names the module it does not recognise, in the region that named it, rather than rendering nothing', async ({
+  page,
+}) => {
+  // A module name the schema admits (it is an open string) but no entry registers — the same
+  // standing validate.test.ts's own "does not judge a module with no section of its own" case reads
+  // it under.
+  await render(page, { modules: [{ region: 'top_bar', module: 'compliments' }] });
+
+  const region = page.locator('[data-region="top_bar"]');
+  await expect(region).toContainText('compliments');
+});
