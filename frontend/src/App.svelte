@@ -15,13 +15,13 @@
     .then((result) => {
       outcome = result;
     })
-    .catch((cause: unknown) => {
+    // No real HTTP response drives this: `loadConfiguration` maps every failure it anticipates
+    // onto a resolved outcome, so only a throw from inside the validator itself reaches here,
+    // which nothing this repository controls can serve in a test.
+    .catch(/* istanbul ignore next */ (cause: unknown) => {
       outcome = {
         kind: 'unreadable',
-        // No real HTTP response drives this: `loadConfiguration` maps every failure it
-        // anticipates onto a resolved outcome, so only a throw from inside the validator itself
-        // reaches here, which nothing this repository controls can serve in a test.
-        detail: /* istanbul ignore next */ cause instanceof Error ? cause.message : String(cause),
+        detail: cause instanceof Error ? cause.message : String(cause),
       };
     });
 
@@ -40,12 +40,6 @@
     const asking = setInterval(() => void ask(), LIVENESS_INTERVAL_MS);
     return () => clearInterval(asking);
   });
-
-  // A script-level ternary rather than `class:banded={!reachable}`: both its arms are real (proven
-  // by backend-unreachable.spec.ts alone, isolated), but neither a `class:` directive's
-  // Svelte-synthesised toggle nor Istanbul's AST-level instrumentation reads as the source
-  // conditional it is — a plain JS ternary here is what it measures correctly.
-  const pageClass = $derived(reachable ? 'page' : 'page banded');
 </script>
 
 {#if outcome === undefined}
@@ -53,7 +47,13 @@
     <p>Loading the display configuration…</p>
   </main>
 {:else if outcome.kind === 'applied'}
-  <div class={pageClass} style="--edge-band:{edgeBandLength(outcome.configuration.edge_band)}">
+  <!-- A plain `style={edgeBandStyle}` binding rather than the mixed literal-and-expression
+       `style="--edge-band:{...}"` form: a text node or attribute mixing static and dynamic content
+       compiles to a template Svelte itself gives a nullish fallback, which the real value can never
+       take and which no source-level comment survives Svelte's own compilation of to reach — kept
+       as a plain identifier binding avoids that branch rather than leaving it uncovered. -->
+  {@const edgeBandStyle = `--edge-band:${edgeBandLength(outcome.configuration.edge_band)}`}
+  <div class="page" class:banded={!reachable} style={edgeBandStyle}>
     {#if !reachable}
       <BackendUnreachable />
     {/if}
