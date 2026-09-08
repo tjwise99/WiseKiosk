@@ -11,18 +11,16 @@ here. Adding a module must never require changing the framework (module contract
 direction).
 
 **This ticket is the epic, not the work.** A module is authored in three phases, each one session's
-worth and each its own `task` sub-issue, filed against this ticket and merging into a shared
-integration branch `module_<this number>-<name>` rather than `main`
-([module contract, § How a module is tracked](../../docs/contracts/module-contract.md); the
-integration-branch mechanism is [ADR 0013 rev 4](../../docs/decisions/0013-work-tracking-invariants.md)).
-This ticket carries only what the module *is*; the phase tickets carry the work. The integration
-branch merges to `main` when the module is done.
+worth and each its own `task` sub-issue filed against this ticket, on a shared integration branch —
+the branch shape and the merge rules are the module contract's
+([§ How a module is tracked](../../docs/contracts/module-contract.md)), not restated here. This
+ticket carries only what the module *is*; the phase tickets carry the work.
 
 **What it displays, and from which upstream API — or none**
 
 <!-- The data source, its refresh cadence, and whether it needs a key. A module that fetches nothing
      is a local module and has three of the six parts. Do not settle the source, cadence, config keys
-     or freshness/rate bounds here — those are the requirements phase's, per the halt-and-ask rule. -->
+     or freshness/rate bounds here — those are the requirements phase's. -->
 
 **Shape**
 

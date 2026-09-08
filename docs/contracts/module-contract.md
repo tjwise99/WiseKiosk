@@ -442,8 +442,10 @@ lands with the status flip rather than before or after it.
 Before the module's component is built, its on-screen composition is written down: a UI design spec,
 colocated as `frontend/src/modules/<module>/README.md`. It states how the module's content is
 composed — which type step each element takes, the alignment, the grouping devices, and the look of
-each state — carries a reference render of that composition, and cites the requirements it realises
-and the [styling contract](display-styling-contract.md)'s tokens it uses. Composition is not a
+each state — carries a reference render of that composition, and cites the [styling
+contract](display-styling-contract.md)'s tokens it uses. It cites the requirements it realises too;
+but the design spec is authored first ([§ How a module is tracked](#how-a-module-is-tracked)), so
+those citations are added when phase 2's decomposition lands rather than at phase 1. Composition is not a
 requirement and does not enter the tree
 ([the display design study](../design/display-design-study.md), *What belongs in the specification*);
 this spec is where it is written down instead. The `clock` and `weather` modules' `README.md` are the
