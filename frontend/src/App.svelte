@@ -15,16 +15,15 @@
     .then((result) => {
       outcome = result;
     })
-    /* v8 ignore start -- no real HTTP response drives this: `loadConfiguration` maps every failure
-       it anticipates onto a resolved outcome, so only a throw from inside the validator itself
-       reaches here, which nothing this repository controls can serve in a test */
     .catch((cause: unknown) => {
       outcome = {
         kind: 'unreadable',
-        detail: cause instanceof Error ? cause.message : String(cause),
+        // No real HTTP response drives this: `loadConfiguration` maps every failure it
+        // anticipates onto a resolved outcome, so only a throw from inside the validator itself
+        // reaches here, which nothing this repository controls can serve in a test.
+        detail: /* istanbul ignore next */ cause instanceof Error ? cause.message : String(cause),
       };
     });
-  /* v8 ignore stop */
 
   // Whether the backend answered its last ask. It is asked only once a configuration has been
   // applied: the other outcomes render a report of their own, which a second failure state over the
@@ -43,9 +42,10 @@
   });
 
   // A script-level ternary rather than `class:banded={!reachable}`: both its arms are real (proven
-  // by backend-unreachable.spec.ts alone, isolated), but monocart's V8-to-branch attribution does
-  // not recognise a `class:` directive's synthesised branch — a genuine JS conditional here is what
-  // it recognises correctly.
+  // by backend-unreachable.spec.ts alone, isolated), but a `class:` directive compiles to a
+  // Svelte-synthesised toggle neither monocart's V8-to-branch attribution nor Istanbul's
+  // AST-level instrumentation reads as the source conditional it is — a plain JS ternary here is
+  // what both tools measure correctly.
   const pageClass = $derived(reachable ? 'page' : 'page banded');
 </script>
 
@@ -53,22 +53,14 @@
   <main class="waiting" data-state="loading">
     <p>Loading the display configuration…</p>
   </main>
-{/if}
-
-{#if outcome !== undefined && outcome.kind === 'applied'}
-  <!-- A plain `style={edgeBandStyle}` binding rather than the mixed literal-and-expression
-       `style="--edge-band:{...}"` form: RegionFrame's own `style={frameStyle}` attributes
-       correctly, the interpolated form does not. -->
-  {@const edgeBandStyle = `--edge-band:${edgeBandLength(outcome.configuration.edge_band)}`}
-  <div class={pageClass} style={edgeBandStyle}>
+{:else if outcome.kind === 'applied'}
+  <div class={pageClass} style="--edge-band:{edgeBandLength(outcome.configuration.edge_band)}">
     {#if !reachable}
       <BackendUnreachable />
     {/if}
     <RegionFrame {reachable} configuration={outcome.configuration} />
   </div>
-{/if}
-
-{#if outcome !== undefined && outcome.kind !== 'applied'}
+{:else}
   <ConfigurationError {outcome} />
 {/if}
 

@@ -16,11 +16,13 @@ export default mergeConfig(
       // tier never imports appears at 0% rather than being silently absent (`coverage.all` was
       // removed in Vitest 4; `include` alone carries that behaviour now).
       coverage: {
-        provider: 'v8',
+        // Istanbul rather than V8: the render tier's own coverage (`tests/render/coverage-teardown.ts`)
+        // is Istanbul too, so both tiers' lcov share one shape (#304's future cross-tier merge).
+        provider: 'istanbul',
         // `.ts` only, not `src/**`: the render tier gates every `.svelte` component on its own,
-        // separate 90% bar (`mcr.config.js`), so each file is scored by exactly one tier. `src/**`
-        // also matches non-code assets (`app.css`, licence and font files, `schema.json`) that carry
-        // no statements of their own.
+        // separate 90% bar, so each file is scored by exactly one tier. `src/**` also matches
+        // non-code assets (`app.css`, licence and font files, `schema.json`) that carry no
+        // statements of their own.
         include: ['src/**/*.ts'],
         exclude: [
           'src/lib/boundary/**',

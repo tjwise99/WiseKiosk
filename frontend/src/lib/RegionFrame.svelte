@@ -2,7 +2,8 @@
   import { SvelteMap } from 'svelte/reactivity';
 
   import type { ModulePlacement, Region, WiseKioskDisplayConfiguration } from '../config/types';
-  import PlacementHost from './PlacementHost.svelte';
+  import ModuleHost from './ModuleHost.svelte';
+  import { modules } from './modules';
   import { FRAME_COLUMNS, FRAME_ROWS, placementStyle } from './regions';
 
   /**
@@ -48,7 +49,14 @@
       style={placementStyle(region)}
     >
       {#each placements as placement, index (index)}
-        <PlacementHost moduleName={placement.module} config={placement.options ?? {}} {reachable} />
+        {@const entry = modules[placement.module]}
+        {@const config = placement.options ?? {}}
+        {@const unknownMessage = `No module named “${placement.module}” — nothing renders here until one is added.`}
+        {#if entry}
+          <ModuleHost {entry} {reachable} {config} />
+        {:else}
+          <p class="unknown">{unknownMessage}</p>
+        {/if}
       {/each}
     </section>
   {/each}
@@ -83,5 +91,11 @@
        was given and leave the content inside it. The region holds its track; the content leaves. */
     min-width: 0;
     min-height: 0;
+  }
+
+  .unknown {
+    margin: 0;
+    font-size: var(--type-caption);
+    font-weight: var(--type-caption-weight);
   }
 </style>

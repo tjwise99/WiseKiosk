@@ -1,16 +1,25 @@
+import { mkdir, writeFile } from 'node:fs/promises';
+import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import { expect, test as base, type Page } from '@playwright/test';
-import { CoverageReport } from 'monocart-coverage-reports';
+import istanbulLibCoverage, { type CoverageMap } from 'istanbul-lib-coverage';
 
-import { entryFilter } from '../../mcr.filter.js';
 import { LIVENESS_TIMEOUT_MS, REQUEST_TIMEOUT_MS } from '../../src/lib/liveness';
 import type { ModuleAnswer } from '../../src/lib/payload';
 
+// A default import rather than the named one: this is a CommonJS package, and Playwright's own
+// loader does not always detect `istanbul-lib-coverage`'s named exports as ESM ones.
+const { createCoverageMap } = istanbulLibCoverage;
+
 export { expect };
 
-/** Where the coverage project's tests accumulate raw render coverage, for `coverage-teardown.ts` to fold into the `raw` report. */
-export const RENDER_COVERAGE_DIR = fileURLToPath(new URL('../../coverage/render', import.meta.url));
+/**
+ * Where each coverage-project worker writes its accumulated coverage, one file per worker
+ * (`coverageMap`'s teardown below); `coverage-teardown.ts` merges every file here once all workers
+ * have exited.
+ */
+export const RENDER_RAW_DIR = fileURLToPath(new URL('../../coverage/render/raw', import.meta.url));
 
 /** Whether the running test is the render tier's coverage project (`playwright.coverage.config.ts`). */
 function underCoverageProject(): boolean {
@@ -18,60 +27,67 @@ function underCoverageProject(): boolean {
 }
 
 /**
- * The coverage-project `page`s currently under test, each to the worker's one `CoverageReport`. A
- * page's entry is what tells `render` to collect for this test at all — `check-render`/
- * `check-render-policy` never populate it, so `page.coverage` stays untouched there.
+ * The coverage-project `page`s currently under test, each to the worker's one accumulating
+ * `CoverageMap`. A page's entry is what tells `render` to collect for this test at all —
+ * `check-render`/`check-render-policy` never populate it, so `window.__coverage__` is never even
+ * read there.
  */
-const collectingPages = new WeakMap<Page, CoverageReport>();
+const collectingPages = new WeakMap<Page, CoverageMap>();
 
 /**
- * The coverage-project `page`s with a JS coverage session currently open. `render` flushes and
- * restarts it on every navigation rather than the fixture holding one session for the whole test:
- * Chromium's coverage session covers only the page live when it is stopped, so one session spanning
- * several navigations — a test comparing two configurations navigates more than once — would report
- * only the last of them. Left open between navigations (through whatever the test does with the page
- * after `render` returns) and flushed at the test's end, so that activity is not lost either.
+ * The coverage-project `page`s that have already navigated once. `render` reads and merges
+ * `window.__coverage__` before every navigation but the first, rather than the fixture reading it
+ * only once at the test's end: `vite-plugin-istanbul`'s counters live on the page's own `window`,
+ * which a fresh `page.goto()` replaces with a fresh, zeroed one — a test comparing two
+ * configurations navigates more than once, and only the merge before each further navigation keeps
+ * the earlier one's coverage from being overwritten rather than added to.
  */
-const openSessions = new WeakSet<Page>();
+const navigatedPages = new WeakSet<Page>();
 
-/** Stops and adds the page's open coverage session, if it has one; a no-op otherwise. */
-async function flushCoverage(page: Page, coverageReport: CoverageReport): Promise<void> {
-  if (!openSessions.has(page)) {
-    return;
+/** Reads the page's current `window.__coverage__`, if any, and folds it into `coverageMap`. */
+async function collectFromPage(page: Page, coverageMap: CoverageMap): Promise<void> {
+  const raw = await page.evaluate(() => (window as unknown as { __coverage__?: object }).__coverage__);
+  if (raw) {
+    coverageMap.merge(raw as Parameters<CoverageMap['merge']>[0]);
   }
-  openSessions.delete(page);
-  await coverageReport.add(await page.coverage.stopJSCoverage());
 }
 
 /**
  * `test`, registering the page for per-navigation coverage collection under the coverage project
- * only. One `CoverageReport` per worker, since `.add()` accumulates into a directory shared across
- * workers and processes; `coverage-teardown.ts` merges it into the `raw` report once every worker
- * has exited.
+ * only. One `CoverageMap` per worker, written to its own file in `RENDER_RAW_DIR` at worker
+ * teardown; `coverage-teardown.ts` merges every worker's file into one report once all of them have
+ * exited.
  */
-export const test = base.extend<{ collectPageCoverage: void }, { coverageReport: CoverageReport | undefined }>({
-  coverageReport: [
+export const test = base.extend<{ collectPageCoverage: void }, { coverageMap: CoverageMap | undefined }>({
+  coverageMap: [
     // eslint-disable-next-line no-empty-pattern -- Playwright requires the destructuring form even when a fixture depends on none of the others
-    async ({}, use) => {
+    async ({}, use, workerInfo) => {
       if (!underCoverageProject()) {
         await use(undefined);
         return;
       }
-      await use(new CoverageReport({ name: 'render', outputDir: RENDER_COVERAGE_DIR, entryFilter }));
+      const map = createCoverageMap({});
+      await use(map);
+      await mkdir(RENDER_RAW_DIR, { recursive: true });
+      await writeFile(
+        path.join(RENDER_RAW_DIR, `worker-${workerInfo.workerIndex}.json`),
+        JSON.stringify(map.data),
+      );
     },
     { scope: 'worker' },
   ],
 
   collectPageCoverage: [
-    async ({ page, coverageReport }, use) => {
-      if (!coverageReport) {
+    async ({ page, coverageMap }, use) => {
+      if (!coverageMap) {
         await use();
         return;
       }
-      collectingPages.set(page, coverageReport);
+      collectingPages.set(page, coverageMap);
       await use();
-      await flushCoverage(page, coverageReport);
+      await collectFromPage(page, coverageMap);
       collectingPages.delete(page);
+      navigatedPages.delete(page);
     },
     { auto: true },
   ],
@@ -174,13 +190,15 @@ export async function render(
     });
   }
 
-  const coverageReport = collectingPages.get(page);
-  if (coverageReport) {
-    // Flushes whatever the page already did under a previous `render` call in this same test — the
-    // navigation below would otherwise end that session having covered nothing since it started.
-    await flushCoverage(page, coverageReport);
-    await page.coverage.startJSCoverage();
-    openSessions.add(page);
+  const coverageMap = collectingPages.get(page);
+  if (coverageMap) {
+    if (navigatedPages.has(page)) {
+      // Folds in whatever the page already did under a previous `render` call in this same test —
+      // the navigation below replaces `window.__coverage__` with a fresh, zeroed one, which would
+      // otherwise lose it rather than add to it.
+      await collectFromPage(page, coverageMap);
+    }
+    navigatedPages.add(page);
   }
 
   // Matched as a glob rather than by importing `CONFIGURATION_URL`: a spec file runs in Node, and

@@ -1,6 +1,7 @@
 import { fileURLToPath } from 'node:url';
 
 import { defineConfig, mergeConfig, type Plugin } from 'vite';
+import istanbul from 'vite-plugin-istanbul';
 
 import viteConfig from './vite.config.ts';
 
@@ -36,8 +37,24 @@ function augmentRegistry(): Plugin {
  *
  * `build.assetsInlineLimit: 0` keeps every imported asset a served file rather than an inlined
  * `data:` URI (#266 security response headers).
+ *
+ * The Istanbul plugin only instruments when `VITE_COVERAGE=true` is set on the dev-server process
+ * (`requireEnv: true`), which `playwright.coverage.config.ts` alone sets — `check-render` and
+ * `check-render-policy` boot this same config without it, and a production `vite build` never loads
+ * this file at all, so instrumented code cannot reach the shipped kiosk build.
+ *
+ * `.svelte` only: the render tier gates every `.svelte` component on its own 90% bar
+ * (`tests/render/coverage-teardown.ts`), while the unit tier gates `.ts` files on its own
+ * (`vitest.config.ts`) — each file is scored by exactly one tier, so this leaves `.ts` files
+ * uninstrumented here rather than double-counting them.
  */
 export default mergeConfig(
   viteConfig,
-  defineConfig({ plugins: [augmentRegistry()], build: { assetsInlineLimit: 0 } }),
+  defineConfig({
+    plugins: [
+      augmentRegistry(),
+      istanbul({ include: 'src/**/*.svelte', extension: ['.svelte'], requireEnv: true }),
+    ],
+    build: { assetsInlineLimit: 0, sourcemap: true },
+  }),
 );
