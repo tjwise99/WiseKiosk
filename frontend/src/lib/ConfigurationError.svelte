@@ -39,7 +39,7 @@
   {#if outcome.kind === 'rejected'}
     <ul class="faults">
       {#each outcome.faults as fault, index (index)}
-        <li><span class="where">{fault.where || CONFIGURATION_URL}</span> {fault.what}</li>
+        <li><span class="where">{fault.where || CONFIGURATION_URL}</span><span>{fault.what}</span></li>
       {/each}
     </ul>
   {:else}
@@ -79,6 +79,16 @@
     list-style: none;
     font-size: var(--type-body);
     font-weight: var(--type-body-weight);
+  }
+
+  /* The gap between the pointer and the fault's own text as layout rather than a literal space in
+     the text node it would otherwise share with `fault.what`: a text node mixing static and dynamic
+     content compiles to a template Svelte itself gives a nullish fallback, which the real value can
+     never take and no test can reach — kept as a plain identifier interpolation avoids that branch
+     rather than leaving it unreachable. */
+  .faults li {
+    display: flex;
+    gap: var(--space-xs);
   }
 
   .where {

@@ -54,15 +54,22 @@
       .map((part) => part.value)
       .join(''),
   );
+  // An ordinary function rather than the fallback inline in the `$derived` call: Svelte's compiler
+  // relocates a leading comment on a `$derived` expression to its generated wrapper rather than
+  // leaving it beside the fallback it is meant to mark, so an `istanbul ignore` comment there is
+  // silently misplaced. A plain function body is not rewritten, so the comment stays where it is
+  // written.
+  //
   // Neither fallback is reachable from a real `formatToParts()` result: 'second' is always present
   // once requested, and 'dayPeriod' is always present in twelve-hour form — the one form that reads
   // this value at all. Kept for a locale or engine whose Intl implementation omits either.
-  const secondsText = $derived(
-    timeParts.find((part) => part.type === 'second')?.value /* v8 ignore next */ ?? '',
-  );
-  const meridiemText = $derived(
-    timeParts.find((part) => part.type === 'dayPeriod')?.value /* v8 ignore next */ ?? '',
-  );
+  function partValue(parts: Intl.DateTimeFormatPart[], type: Intl.DateTimeFormatPartTypes): string {
+    /* istanbul ignore next */
+    return parts.find((part) => part.type === type)?.value ?? '';
+  }
+
+  const secondsText = $derived(partValue(timeParts, 'second'));
+  const meridiemText = $derived(partValue(timeParts, 'dayPeriod'));
 
   // The date's two lines each read from their own formatter — weekday, then day/month/year — each
   // in its own locale ordering.
@@ -80,7 +87,7 @@
     {#if showSeconds || !twentyFourHour}
       <div class="annotations">
         {#if showSeconds}
-          <span class="seconds tabular-figures">:{secondsText}</span>
+          <span class="seconds tabular-figures">{secondsText}</span>
         {/if}
         {#if !twentyFourHour}
           <span class="meridiem">{meridiemText}</span>
@@ -133,6 +140,15 @@
     font-size: var(--type-annotation);
     font-weight: var(--type-annotation-weight);
     line-height: 1;
+  }
+
+  /* The separator as decoration rather than in the text node it would otherwise share with
+     `secondsText`: a text node mixing static and dynamic content compiles to a template Svelte
+     itself gives a nullish fallback, which the real value can never take (`partValue` already
+     applies its own) and no test can reach — kept as a plain identifier interpolation avoids that
+     branch rather than leaving it unreachable. */
+  .seconds::before {
+    content: ':';
   }
 
   /* Pinned to the bottom by its own margin rather than by `justify-content: space-between` on the

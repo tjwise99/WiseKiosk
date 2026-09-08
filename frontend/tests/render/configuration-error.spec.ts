@@ -33,3 +33,15 @@ test('reports the configuration unparsable where the body is not JSON', async ({
   await expect(page.locator('[data-configuration-error="unparsable"]')).toBeVisible();
   await expect(page.locator('.detail')).toContainText('JSON');
 });
+
+test('names the document itself, rather than a location inside it, when nothing in it is a configuration at all', async ({
+  page,
+}) => {
+  // Valid JSON that is not an object at all: the schema's root `type` fault has no property or
+  // array index to point a JSON Pointer at, which is what exercises the fault list's fallback to
+  // naming the document as a whole (`ConfigurationError.svelte`'s `fault.where || CONFIGURATION_URL`).
+  await render(page, undefined, 'configuration-error', { configResponse: { status: 200, body: '[]' } });
+
+  await expect(page.locator('[data-configuration-error="rejected"]')).toBeVisible();
+  await expect(page.locator('.where')).toHaveText(CONFIGURATION_URL);
+});

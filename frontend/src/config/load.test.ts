@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { CONFIGURATION_URL, loadConfiguration } from './load';
 
@@ -8,6 +8,19 @@ function answering(response: Response): typeof fetch {
 }
 
 describe('loadConfiguration', () => {
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
+  it('asks the global fetch when the caller names no fetcher of its own', async () => {
+    const stub = vi.fn(answering(new Response('{}', { status: 200 })));
+    vi.stubGlobal('fetch', stub);
+
+    await loadConfiguration();
+
+    expect(stub).toHaveBeenCalledOnce();
+  });
+
   it('applies a configuration the schema accepts', async () => {
     const body = JSON.stringify({ modules: [{ region: 'top_bar', module: 'clock' }] });
     const result = await loadConfiguration(answering(new Response(body, { status: 200 })));
