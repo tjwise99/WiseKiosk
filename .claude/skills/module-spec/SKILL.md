@@ -9,6 +9,12 @@ description: >-
 
 # Specify a module
 
+**This is the requirements & architecture phase — the middle of a module's three** (UI design spec →
+requirements & architecture → implementation), each a `task` sub-issue of the module's `module`-type
+epic, merging into its `module_<n>-<name>` integration branch
+([module contract, § How a module is tracked](../../../docs/contracts/module-contract.md)). This
+skill sequences this phase; it does not file the epic or the sibling phases.
+
 **A module reaches the requirements tree before it reaches the repository.** This skill is the
 sequence; what each item must *say* is
 [`docs/contracts/module-contract.md` § Writing the module's requirements](../../../docs/contracts/module-contract.md),

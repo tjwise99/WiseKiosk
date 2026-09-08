@@ -21,6 +21,29 @@ browser's own state, or its configuration — fetches nothing, and has no shapin
 registration and no boundary-schema fragment, there being no upstream to shape and nothing crossing
 the boundary. Each part and each build step below carries the shape it applies to.
 
+## How a module is tracked
+
+A module is authored in **three phases, and filed as an epic** — a `module`-type parent ticket
+anchoring an integration branch `module_<n>-<name>`, decomposed into three `task` sub-issues whose
+pull requests target that branch rather than `main` ([ADR 0013 rev
+4](../decisions/0013-work-tracking-invariants.md) defines a sub-issue as exactly that shared merge
+target). The phases are not new kinds of work, so they take no new branch type: they are `task`s
+named for the phase, and what distinguishes them is the sub-issue they are, not their prefix. The
+integration branch keeps the module's churn off `main` and lets a decision taken in one phase be
+revised in another before the whole lands — it merges to `main` when the module is done.
+
+The three phases, in order, are the three content sections below:
+
+1. **UI design spec** — [§ The module's UI design spec](#the-modules-ui-design-spec).
+2. **Requirements & architecture** — [§ Writing the module's requirements](#writing-the-modules-requirements)
+   and [§ Drawing the module in the architecture model](#drawing-the-module-in-the-architecture-model);
+   this phase settles the source, cadence, config keys and freshness/rate bounds.
+3. **Implementation** — [§ Building the module](#building-the-module).
+
+Because the phases share the integration branch, a spec citation the UI design spec cannot yet make —
+the requirement it realises does not exist until phase 2 — is firmed up as that phase lands, not
+blocked on before phase 1 begins.
+
 ## A module is its capability, not its supplier
 
 A module is identified by **what a viewer gets from it** — weather, the time, aviation conditions —
