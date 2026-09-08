@@ -1,6 +1,7 @@
 <script lang="ts">
   import type { ClockOptions } from '../../config/types';
   import type { CommonProps } from '../../lib/modules';
+  import { partValue } from './parts';
 
   // No `reachable` prop is declared: the module fetches nothing, so an outage takes nothing from it
   // (docs/contracts/module-contract.md § An unavailable module and an unreachable backend are
@@ -54,20 +55,6 @@
       .map((part) => part.value)
       .join(''),
   );
-  // An ordinary function rather than the fallback inline in the `$derived` call: Svelte's compiler
-  // relocates a leading comment on a `$derived` expression to its generated wrapper rather than
-  // leaving it beside the fallback it is meant to mark, so an `istanbul ignore` comment there is
-  // silently misplaced. A plain function body is not rewritten, so the comment stays where it is
-  // written.
-  //
-  // Neither fallback is reachable from a real `formatToParts()` result: 'second' is always present
-  // once requested, and 'dayPeriod' is always present in twelve-hour form — the one form that reads
-  // this value at all. Kept for a locale or engine whose Intl implementation omits either.
-  function partValue(parts: Intl.DateTimeFormatPart[], type: Intl.DateTimeFormatPartTypes): string {
-    /* istanbul ignore next */
-    return parts.find((part) => part.type === type)?.value ?? '';
-  }
-
   const secondsText = $derived(partValue(timeParts, 'second'));
   const meridiemText = $derived(partValue(timeParts, 'dayPeriod'));
 
