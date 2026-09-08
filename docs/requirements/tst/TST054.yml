@@ -19,9 +19,9 @@ references:
 - keyword: 'test(''TST054: shows the date when its configuration asks and omits it
     when it does not'', async ({'
   path: frontend/src/modules/clock/clock.spec.ts
-  sha: 0a97bc09da19412bb366af492088d48225c6dab1a553263c85efecec6c51fd82
+  sha: 7f7e29da37b31ca3bf7fdfda45f22ea2742a2295aafe14d8f22a8f62bc72a858
   type: file
-reviewed: 5KQ4oQ2jJPTL7yrU0ZiZJsa0iHyjAVNh3pvAC7q1L6E=
+reviewed: gUiH42LxH5SvUGQEWO_yt0zO3RZsiFCTIbJ1up7tR7U=
 status: proposed
 text: |
   Render test loading the page under each of the two date selections against a held host clock,
