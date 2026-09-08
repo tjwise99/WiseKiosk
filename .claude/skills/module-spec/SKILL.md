@@ -9,8 +9,14 @@ description: >-
 
 # Specify a module
 
-**A module reaches the requirements tree before it reaches the repository.** This skill is the
-sequence; what each item must *say* is
+**This is the requirements & architecture phase — the middle of a module's three** (UI design spec →
+requirements & architecture → implementation); the epic and integration-branch shape they sit in is
+the module contract's ([§ How a module is tracked](../../../docs/contracts/module-contract.md)). This
+skill sequences this phase; it does not file the epic or the sibling phases.
+
+**A module's requirements are written before it is built** — after phase 1's UI design spec has
+decided what the module shows, and before any of the build steps. This skill is the sequence; what
+each item must *say* is
 [`docs/contracts/module-contract.md` § Writing the module's requirements](../../../docs/contracts/module-contract.md),
 and it is authoritative. Do not re-derive its rules from here — read it. Read
 [§ A module is its capability, not its supplier](../../../docs/contracts/module-contract.md) with it:
@@ -80,6 +86,11 @@ figure visible to a reviewer, who otherwise sees only the figures that were writ
    frontend; an upstream-backed one also gains a backend component, an external system and the edge to
    it. This lands in the **same change** as the items, because they land accepted and active and every
    accepted active item must bind to something drawn.
+5. **Cite these items into the phase-1 UI design spec.** That spec was authored first and could not
+   yet name the requirements it realises ([module contract, § The module's UI design
+   spec](../../../docs/contracts/module-contract.md)); now that the items exist, add those citations
+   to `frontend/src/modules/<module>/README.md`. No gate enforces it, so it is a step here or it is
+   left undone.
 
 Item mechanics throughout — creating, linking, the two stamps, the per-item checklist — are
 [tree-item](../tree-item/SKILL.md)'s.
