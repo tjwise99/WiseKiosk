@@ -16,10 +16,7 @@ export type ConfigurationOutcome =
   | { readonly kind: 'absent'; readonly detail: string }
   | { readonly kind: 'unfetchable'; readonly detail: string }
   | { readonly kind: 'unparsable'; readonly detail: string }
-  | { readonly kind: 'rejected'; readonly faults: readonly ConfigurationFault[] }
-  // Not produced by anything in this tree: `loadConfiguration`'s four returns below are its only
-  // paths, and nothing else constructs this outcome.
-  | { readonly kind: 'unreadable'; readonly detail: string };
+  | { readonly kind: 'rejected'; readonly faults: readonly ConfigurationFault[] };
 
 /**
  * Fetches the configuration and runs it past the one validator. `no-store` bypasses every HTTP
