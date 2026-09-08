@@ -11,30 +11,30 @@ ref: ''
 references:
 - keyword: test('lays out every region the configuration names, and no other'
   path: frontend/tests/render/region-layout.spec.ts
-  sha: d15a95547f7c0c1f9138dc6d291694f9c3b8f0b2a7b53e82eb433a5d5a2a9872
+  sha: 987af74929d6653fa4dba4c76aa0de0907fe97b9461cf3711be294d4ab9c10bf
   type: file
 - keyword: test('renders each module in the region named for it, and nothing a region
     was not given'
   path: frontend/tests/render/region-layout.spec.ts
-  sha: d15a95547f7c0c1f9138dc6d291694f9c3b8f0b2a7b53e82eb433a5d5a2a9872
+  sha: 987af74929d6653fa4dba4c76aa0de0907fe97b9461cf3711be294d4ab9c10bf
   type: file
 - keyword: test('draws each module inside the box of the region it was given'
   path: frontend/tests/render/region-layout.spec.ts
-  sha: d15a95547f7c0c1f9138dc6d291694f9c3b8f0b2a7b53e82eb433a5d5a2a9872
+  sha: 987af74929d6653fa4dba4c76aa0de0907fe97b9461cf3711be294d4ab9c10bf
   type: file
 - keyword: test('anchors each module to the edge or corner its region is named for'
   path: frontend/tests/render/region-layout.spec.ts
-  sha: d15a95547f7c0c1f9138dc6d291694f9c3b8f0b2a7b53e82eb433a5d5a2a9872
+  sha: 987af74929d6653fa4dba4c76aa0de0907fe97b9461cf3711be294d4ab9c10bf
   type: file
 - keyword: test('lays out no two regions over one another'
   path: frontend/tests/render/region-layout.spec.ts
-  sha: d15a95547f7c0c1f9138dc6d291694f9c3b8f0b2a7b53e82eb433a5d5a2a9872
+  sha: 987af74929d6653fa4dba4c76aa0de0907fe97b9461cf3711be294d4ab9c10bf
   type: file
 - keyword: test('does not scroll sideways'
   path: frontend/tests/render/region-layout.spec.ts
-  sha: d15a95547f7c0c1f9138dc6d291694f9c3b8f0b2a7b53e82eb433a5d5a2a9872
+  sha: 987af74929d6653fa4dba4c76aa0de0907fe97b9461cf3711be294d4ab9c10bf
   type: file
-reviewed: Le0OfRhGY_zL-1eQAgo8duh_JmZenBCHJKvLlnOFmoE=
+reviewed: Xsa442Q4j5xm9hKbRr3b9GO46g51WZcOYKVfLSXH3tI=
 status: accepted
 text: |
   Viewport-driven render test asserting that every module the fixture configuration names renders
