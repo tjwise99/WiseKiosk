@@ -42,10 +42,9 @@
   });
 
   // A script-level ternary rather than `class:banded={!reachable}`: both its arms are real (proven
-  // by backend-unreachable.spec.ts alone, isolated), but a `class:` directive compiles to a
-  // Svelte-synthesised toggle neither monocart's V8-to-branch attribution nor Istanbul's
-  // AST-level instrumentation reads as the source conditional it is — a plain JS ternary here is
-  // what both tools measure correctly.
+  // by backend-unreachable.spec.ts alone, isolated), but neither a `class:` directive's
+  // Svelte-synthesised toggle nor Istanbul's AST-level instrumentation reads as the source
+  // conditional it is — a plain JS ternary here is what it measures correctly.
   const pageClass = $derived(reachable ? 'page' : 'page banded');
 </script>
 
