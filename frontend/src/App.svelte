@@ -53,14 +53,22 @@
   <main class="waiting" data-state="loading">
     <p>Loading the display configuration…</p>
   </main>
-{:else if outcome.kind === 'applied'}
-  <div class={pageClass} style="--edge-band:{edgeBandLength(outcome.configuration.edge_band)}">
+{/if}
+
+{#if outcome !== undefined && outcome.kind === 'applied'}
+  <!-- A plain `style={edgeBandStyle}` binding rather than the mixed literal-and-expression
+       `style="--edge-band:{...}"` form: RegionFrame's own `style={frameStyle}` attributes
+       correctly, the interpolated form does not. -->
+  {@const edgeBandStyle = `--edge-band:${edgeBandLength(outcome.configuration.edge_band)}`}
+  <div class={pageClass} style={edgeBandStyle}>
     {#if !reachable}
       <BackendUnreachable />
     {/if}
     <RegionFrame {reachable} configuration={outcome.configuration} />
   </div>
-{:else}
+{/if}
+
+{#if outcome !== undefined && outcome.kind !== 'applied'}
   <ConfigurationError {outcome} />
 {/if}
 
