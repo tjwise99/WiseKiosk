@@ -19,6 +19,7 @@
     "eslint-plugin-svelte": "3.23.0",
     "globals": "17.12.0",
     "json-schema-to-typescript": "16.0.0",
+    "monocart-coverage-reports": "^2.13.0",
     "orval": "8.28.1",
     "prettier": "3.9.6",
     "svelte": "5.57.0",

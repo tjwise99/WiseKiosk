@@ -1,6 +1,4 @@
-import { expect, test } from '@playwright/test';
-
-import { overlaps, regionBoxes, render, type Fixture } from './harness';
+import { expect, overlaps, regionBoxes, render, test, type Fixture } from './harness';
 
 /**
  * TST035. Over a fixture whose content fits the regions it is given: every module renders in the

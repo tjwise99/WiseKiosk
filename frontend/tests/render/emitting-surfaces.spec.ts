@@ -1,7 +1,5 @@
-import { expect, test } from '@playwright/test';
-
 import { EMISSION_CEILING, readEmission } from './emission';
-import { render, type Fixture } from './harness';
+import { expect, render, test, type Fixture } from './harness';
 
 /**
  * TST045. Everything the page draws sits below the emission ceiling except text and imagery rendered

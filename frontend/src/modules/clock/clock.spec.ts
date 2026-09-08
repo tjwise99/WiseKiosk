@@ -1,10 +1,12 @@
-import { expect, test, type Page } from '@playwright/test';
+import type { Page } from '@playwright/test';
 
 import {
   asksBeyondTheShell,
   channelsBeyondTheTier,
+  expect,
   holdHostClock,
   render,
+  test,
   watchTraffic,
   type Fixture,
 } from '../../../tests/render/harness';

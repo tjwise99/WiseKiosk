@@ -1,7 +1,54 @@
-import { expect, test, type Page } from '@playwright/test';
+import { fileURLToPath } from 'node:url';
 
+import { expect, test as base, type Page } from '@playwright/test';
+import { CoverageReport } from 'monocart-coverage-reports';
+
+import { entryFilter } from '../../mcr.filter.js';
 import { LIVENESS_TIMEOUT_MS, REQUEST_TIMEOUT_MS } from '../../src/lib/liveness';
 import type { ModuleAnswer } from '../../src/lib/payload';
+
+export { expect };
+
+/** Where the coverage project's tests accumulate raw render coverage, for `coverage-teardown.ts` to fold into the `raw` report. */
+export const RENDER_COVERAGE_DIR = fileURLToPath(new URL('../../coverage/render', import.meta.url));
+
+/** Whether the running test is the render tier's coverage project (`playwright.coverage.config.ts`). */
+function underCoverageProject(): boolean {
+  return base.info().config.configFile?.endsWith('playwright.coverage.config.ts') ?? false;
+}
+
+/**
+ * `test`, instrumented with V8 JS coverage under the coverage project only: every other project
+ * leaves `page.coverage` untouched, so `check-render`/`check-render-policy` collect nothing extra.
+ * One `CoverageReport` per worker, since `.add()` accumulates into a directory shared across workers
+ * and processes; `coverage-teardown.ts` merges it into the `raw` report once every worker has exited.
+ */
+export const test = base.extend<{ collectPageCoverage: void }, { coverageReport: CoverageReport | undefined }>({
+  coverageReport: [
+    // eslint-disable-next-line no-empty-pattern -- Playwright requires the destructuring form even when a fixture depends on none of the others
+    async ({}, use) => {
+      if (!underCoverageProject()) {
+        await use(undefined);
+        return;
+      }
+      await use(new CoverageReport({ name: 'render', outputDir: RENDER_COVERAGE_DIR, entryFilter }));
+    },
+    { scope: 'worker' },
+  ],
+
+  collectPageCoverage: [
+    async ({ page, coverageReport }, use) => {
+      if (!coverageReport) {
+        await use();
+        return;
+      }
+      await page.coverage.startJSCoverage();
+      await use();
+      await coverageReport.add(await page.coverage.stopJSCoverage());
+    },
+    { auto: true },
+  ],
+});
 
 /** A configuration the page is driven with, in the shape `config.json` carries. */
 export interface Fixture {

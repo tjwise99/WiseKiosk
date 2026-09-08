@@ -17,7 +17,11 @@ export default mergeConfig(
       // removed in Vitest 4; `include` alone carries that behaviour now).
       coverage: {
         provider: 'v8',
-        include: ['src/**'],
+        // `.ts` only, not `src/**`: the render tier gates every `.svelte` component on its own,
+        // separate 90% bar (`mcr.config.js`), so each file is scored by exactly one tier. `src/**`
+        // also matches non-code assets (`app.css`, licence and font files, `schema.json`) that carry
+        // no statements of their own.
+        include: ['src/**/*.ts'],
         exclude: [
           'src/lib/boundary/**',
           'src/config/types.ts',
@@ -26,7 +30,8 @@ export default mergeConfig(
           '**/*.spec.ts',
           '**/*.d.ts',
         ],
-        reporter: ['text'],
+        reporter: ['text', 'lcov'],
+        reportsDirectory: 'coverage/unit',
         thresholds: {
           perFile: true,
           lines: 90,
