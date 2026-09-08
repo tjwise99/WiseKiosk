@@ -17,9 +17,9 @@ references:
 - keyword: 'test(''TST051: takes the time off the host clock, asking nothing for it'',
     async ({'
   path: frontend/src/modules/clock/clock.spec.ts
-  sha: 7f7e29da37b31ca3bf7fdfda45f22ea2742a2295aafe14d8f22a8f62bc72a858
+  sha: e3014597b1bfc6b23b1a9ba9048c156ae678a44d98b87082c36dec62e618f5bf
   type: file
-reviewed: nBwS2MChi2-Iu57d1Ge17b9xVokAcssoa7kvE2nlw70=
+reviewed: 8ygjE2GVZxDmdHavnRhCb337l7ugqSR-O_RS7z_0hJ4=
 status: proposed
 text: |
   Render test driving the page against a host clock the test holds, asserting the time shown is that
