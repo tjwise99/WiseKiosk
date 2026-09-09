@@ -381,10 +381,12 @@ jobs:
     # tier (`@vitest/coverage-istanbul`) and the render tier (`vite-plugin-istanbul` +
     # `coverage-teardown.ts`) each write their own coverage-final.json, and
     # `scripts/merge-coverage.ts` unions the two and enforces the bar — each 90% per-file and
-    # total. Not in the required-checks ruleset, so a red run does not block a merge — #300
-    # coverage gate blocking is what promotes it. The recipe body is the one spelling of what
-    # runs, here and locally. No secrets: the tests serve over loopback and reach no network
-    # origin.
+    # total. `scripts/render-coverage.ts` then renders one diagnostic, never-gating HTML report
+    # over both languages (a small converter turns the backend's Go coverprofile into Istanbul
+    # FileCoverage objects, unioned with the frontend's own), uploaded as an artifact. Not in the
+    # required-checks ruleset, so a red run does not block a merge — #300 coverage gate blocking
+    # is what promotes it. The recipe body is the one spelling of what runs, here and locally. No
+    # secrets: the tests serve over loopback and reach no network origin.
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -412,8 +414,14 @@ jobs:
       - name: Install the browser the render tier drives
         run: just render-install
 
-      - name: The unit-test coverage bar over the backend and the frontend
+      - name: The unit-test coverage bar over the backend and the frontend, and the unified report
         run: just check-coverage
+
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        if: always()
+        with:
+          name: coverage-report
+          path: coverage/unified-report/
 
   image-tests:
     name: image-tests

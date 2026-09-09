@@ -265,16 +265,15 @@ check-render-policy:
 check-dead-test:
     python3 scripts/check-dead-test.py
 
-# Outside `verify`, and invoked by a CI job of its own: the coverage bar is non-blocking until
-# #300 coverage gate blocking makes it one (ADR 0005 rev 3, gate 3).
 [group('checks')]
-[doc('The unit-test coverage bar: go-test-coverage over the backend, and one merged Istanbul gate (vitest coverage-istanbul + vite-plugin-istanbul, unioned by scripts/merge-coverage.ts) over every frontend `.ts` and `.svelte` file, each 90% per-file and total; needs `just boundary-install` and `just render-install`')]
+[doc('The unit-test coverage bar: go-test-coverage over the backend, and one merged Istanbul gate (vitest coverage-istanbul + vite-plugin-istanbul, unioned by scripts/merge-coverage.ts) over every frontend `.ts` and `.svelte` file, each 90% per-file and total; then one diagnostic HTML report over both languages (scripts/render-coverage.ts), never gating; needs `just boundary-install` and `just render-install`')]
 check-coverage:
     go -C backend test -covermode=atomic -coverpkg=./... -coverprofile=cover.out ./...
     go -C backend tool go-test-coverage --config=.testcoverage.yml
     frontend/node_modules/.bin/vitest run --root frontend --coverage
     frontend/node_modules/.bin/playwright test --config frontend/playwright.coverage.config.ts
     node frontend/scripts/merge-coverage.ts
+    node frontend/scripts/render-coverage.ts
 
 # Outside `verify`, and invoked by a CI job of its own: this tier builds and runs the image, and
 # docs/CI.md § Gate wiring is what decides where a check needing Docker sits.
@@ -361,4 +360,4 @@ check-publish-permissions:
 
 [group('checks')]
 [doc('Run every check the PR gate runs that has a local form and needs neither Docker nor emulation nor the network; secret scanning, the PR-title check (commitlint, via the hook layer), the link check (lychee, from a digest-pinned image) and the workflow audit (zizmor, actionlint) are CI-only, the image tier is `just check-image`, the native armv6l run is `just smoke-native`, the bring-up check against a published release is `just check-bringup`, the image-swap check against two published releases is `just check-image-swap`, and the two online dependency-vulnerability checks are `just check-vulns-go` and `just check-vulns-npm`')]
-verify: check-untracked check-hooks check-branch check-reqs check-citations check-arch check-arch-trace check-boundary check-go check-fuzz check-lint-go check-secret-unwrap check-config-types check-build check-static-bundle check-lint-frontend check-typecheck-frontend check-unit check-render check-render-policy check-site check-adr-index check-adr-revs check-docs-index check-repo-silo check-languages check-dead-test check-restart-policy check-publish-permissions
+verify: check-untracked check-hooks check-branch check-reqs check-citations check-arch check-arch-trace check-boundary check-go check-fuzz check-lint-go check-secret-unwrap check-config-types check-build check-static-bundle check-lint-frontend check-typecheck-frontend check-unit check-render check-render-policy check-site check-adr-index check-adr-revs check-docs-index check-repo-silo check-languages check-dead-test check-restart-policy check-publish-permissions check-coverage
