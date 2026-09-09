@@ -34,12 +34,14 @@ JS/CSS surface.
 dev server already reaches the backend same-origin, without any CORS header, through its existing
 `server.proxy` for `/api` and `/healthz` — the identical path the frontend bundle itself uses. A
 dev-only Vite plugin (`frontend/vite-plugin-docs-explorer.ts`, a `configureServer` hook — a hook `vite
-build`/`vite preview` never call, so it cannot reach the production bundle) mounts the built docs site
-at `/docs-explorer`, riding that same proxy: `curl`, the generated boundary client and now the explorer
-page all reach the backend the same, unmodified way. `just api-explorer` is the one command that builds
-the docs site and launches this server, so there is no separate build-then-serve step to remember; with
-`just serve` running, it prints the explorer's URL. No backend code changed, no new dependency, no
-requirement or gate touched. On the published static Pages site — no backend behind it at all — the
+build`/`vite preview` never call, so it cannot reach the production bundle) mounts the *whole* built
+docs site at `/docs` — every page, `_static` asset and the search index, not the explorer alone —
+riding that same proxy: `curl`, the generated boundary client and now the explorer page (one page of
+the site, at `/docs/api-explorer.html`) all reach the backend the same, unmodified way. `just
+docs-serve` is the one command that builds the docs site and launches this server, so there is no
+separate build-then-serve step to remember; with `just serve` running, it prints both URLs. No backend
+code changed, no new dependency, no requirement or gate touched. On the published static Pages site —
+no backend behind it at all — the
 explorer stays browsable-only, which is not a limitation of this change but of what a static site can
 ever do.
 
@@ -92,10 +94,11 @@ Makes the boundary contract browsable from the docs site, and interactive agains
 local development, at the cost of one more npm silo (`docs/site/`) for Renovate to keep current —
 already covered by the default npm manager the same way `docs/architecture/`'s silo already is, no
 `renovate.json` change needed — and one small dev-only Vite plugin plus one new `justfile` recipe
-(`api-explorer`, depending on the existing `site-build`). `just dev` itself stays untouched: the docs
-build is not one of its prerequisites, so the ordinary frontend dev loop pays nothing for this. The
-plugin still 404s gracefully if the docs build is ever missing, but that is a safety net, not the
-documented path — `just api-explorer` always builds first. Forecloses committing any
+(`docs-serve`, depending on the existing `site-build`) that previews the whole docs site locally, the
+explorer being one page of it. `just dev` itself stays untouched: the docs build is not one of its
+prerequisites, so the ordinary frontend dev loop pays nothing for this. The plugin still 404s
+gracefully if the docs build is ever missing, but that is a safety net, not the
+documented path — `just docs-serve` always builds first. Forecloses committing any
 interactive-explorer JS to the tree outright, by construction (the same gates that already forbid it
 for anything else). The published site's "Try it out" stays reference-only, which is inherent to a
 static site having no backend behind it, not a gap this ADR leaves open.
