@@ -147,7 +147,7 @@ The numbering is historical, so a retired gate's number is not reused:
 | # | Gate | Proves |
 |---|---|---|
 | 1 | `check-reqs` (exists) | Tree integrity: parent links, no suspect/unreviewed/orphan items; every `TST` reference resolves to a file, and to the declaration its `keyword` names where it carries one; no referenced test drifted since review |
-| 3 | `check-coverage` (exists) | First-party product source meets its language's coverage bar: 90% statement per-file and total (backend), 90% line/branch/function/statement per-file (frontend) |
+| 3 | `check-coverage` (exists) | First-party product source meets its language's coverage bar, per-file and total for the backend, per-file for the frontend — each threshold read from that language's own config (`backend/.testcoverage.yml`, `frontend/coverage-thresholds.json`), never this record |
 
 Gate 2, a reverse-direction claim over every discovered test, is dropped for the reason given against
 the third objection above. Gate 4, an inspection file-claim over non-code silos, is retired by
@@ -252,15 +252,17 @@ The four stored attributes — `verification-method`, `status`, `verification-ju
   visibility into that population, and nothing here buys it back — the gap is accepted rather than
   mitigated, and saying so is the honest state. #192 verification-debt report is a *separate*
   forward-direction report over items with no evidence, not a substitute for it.
-- **Coverage is a chosen 90% bar**, per-file and total — statement for the backend, where the
-  toolchain implements no other measure (golang/go#28888), line/branch/function/statement per-file
-  for the frontend. Coverage proves execution, not specification: a line covered incidentally counts.
-  That residue is held by review and test quality, and no gate pretends otherwise. **100%, each
-  language's toolchain ceiling, is the ratcheted destination** (owner, 2026-09-08) — reached by
-  raising `backend/.testcoverage.yml` and `frontend/coverage-thresholds.json` one bump per PR, never
-  by this rev, which records the target without moving either number. **Meeting a raised bar
-  restructures the code or forces the error path under test — it never deletes a defensive branch to
-  win the number** (owner, 2026-09-08): a bar met by deleting the thing it measures gates nothing.
+- **Coverage is a chosen bar, per-file and, for the backend, total** — statement for the backend,
+  where the toolchain implements no other measure (golang/go#28888), line/branch/function/statement
+  per-file for the frontend. The number itself is never this record's: it lives in
+  `backend/.testcoverage.yml` and `frontend/coverage-thresholds.json`, so a change to it is a config
+  diff, not an ADR rev. Coverage proves execution, not specification: a line covered incidentally
+  counts. That residue is held by review and test quality, and no gate pretends otherwise. **100%,
+  each language's toolchain ceiling, is the ratcheted destination** (owner, 2026-09-08) — reached by
+  raising those two config files one bump per PR; this rev records the direction and states no
+  number of its own, so it stays true through every later bump. **Meeting a raised bar restructures
+  the code or forces the error path under test — it never deletes a defensive branch to win the
+  number** (owner, 2026-09-08): a bar met by deleting the thing it measures gates nothing.
 - **The ungated surfaces are named rather than counted.** The axiom tier, held by human review and
   mechanized by fingerprints. The reverse direction, accepted above. And source below the coverage
   bar, which fails `just verify` and the CI `coverage` job exactly as every other check does —

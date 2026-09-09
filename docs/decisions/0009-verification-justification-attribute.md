@@ -79,9 +79,9 @@ Two distinctions the attribute depends on:
 
 The gate asserting that every item carries a non-empty justification is
 `scripts/check-method-consistency.py`. Of the gates it was to be built alongside,
-[ADR 0005 rev 3](0005-traceability-gating.md) drops the reverse-direction one, and gate 3 is a
-non-blocking coverage bar (#190 coverage closure gate), blocking only once #300 coverage gate
-blocking lands.
+[ADR 0005 rev 4](0005-traceability-gating.md) drops the reverse-direction one, and gate 3 is a
+tree-blind coverage bar (#190 coverage closure gate), folded into `just verify` like every other
+gate here.
 
 ## Alternatives considered
 
