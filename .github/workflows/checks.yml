@@ -381,9 +381,9 @@ jobs:
     # tier (`@vitest/coverage-istanbul`) and the render tier (`vite-plugin-istanbul` +
     # `coverage-teardown.ts`) each write their own coverage-final.json, and
     # `scripts/merge-coverage.ts` unions the two and enforces the bar — each 90% per-file and total.
-    # Not in the
-    # required-checks ruleset, so a red run does not block a merge — #300 coverage gate blocking is
-    # what promotes it. The recipe body is the one spelling of what runs, here and locally. No
+    # Not in the required-checks ruleset, so a red run does not block a merge — #300 coverage gate
+    # blocking is what promotes it. The recipe body is the one spelling of what runs, here and
+    # locally. No
     # secrets: the tests serve over loopback and reach no network origin.
     runs-on: ubuntu-latest
     steps:

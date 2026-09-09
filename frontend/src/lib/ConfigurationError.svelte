@@ -77,11 +77,8 @@
     font-weight: var(--type-body-weight);
   }
 
-  /* The gap between the pointer and the fault's own text as layout rather than a literal space in
-     the text node it would otherwise share with `fault.what`: a text node mixing static and dynamic
-     content compiles to a template Svelte itself gives a nullish fallback, which the real value can
-     never take and no test can reach — kept as a plain identifier interpolation avoids that branch
-     rather than leaving it unreachable. */
+  /* Layout via flex gap, not a literal space in the text node shared with `fault.what`: avoids the
+     same nullish-fallback branch App.svelte's edgeBandStyle comment describes. */
   .faults li {
     display: flex;
     gap: var(--space-xs);

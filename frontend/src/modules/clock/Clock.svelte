@@ -129,11 +129,8 @@
     line-height: 1;
   }
 
-  /* The separator as decoration rather than in the text node it would otherwise share with
-     `secondsText`: a text node mixing static and dynamic content compiles to a template Svelte
-     itself gives a nullish fallback, which the real value can never take (`partValue` already
-     applies its own) and no test can reach — kept as a plain identifier interpolation avoids that
-     branch rather than leaving it unreachable. */
+  /* The separator as CSS, not in the text node shared with `secondsText`: avoids the same
+     nullish-fallback branch App.svelte's edgeBandStyle comment describes. */
   .seconds::before {
     content: ':';
   }

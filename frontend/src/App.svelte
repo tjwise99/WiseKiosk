@@ -37,11 +37,8 @@
     <p>Loading the display configuration…</p>
   </main>
 {:else if outcome.kind === 'applied'}
-  <!-- A plain `style={edgeBandStyle}` binding rather than the mixed literal-and-expression
-       `style="--edge-band:{...}"` form: a text node or attribute mixing static and dynamic content
-       compiles to a template Svelte itself gives a nullish fallback, which the real value can never
-       take and which no source-level comment survives Svelte's own compilation of to reach — kept
-       as a plain identifier binding avoids that branch rather than leaving it uncovered. -->
+  <!-- A plain `style={edgeBandStyle}` binding: the mixed literal+expression `style="--edge-band:{...}"`
+       form gives Svelte a nullish-fallback branch the real value never takes. -->
   {@const edgeBandStyle = `--edge-band:${edgeBandLength(outcome.configuration.edge_band)}`}
   <div class="page" class:banded={!reachable} style={edgeBandStyle}>
     {#if !reachable}
