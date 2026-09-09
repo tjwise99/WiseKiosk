@@ -54,7 +54,7 @@ ever do.
   `git ls-files` carrying zero `swagger-ui-dist` files after implementation.
 - **sphinxcontrib-openapi.** Renders the schema browsably from within Sphinx with no extra JS, but has
   no "Try it out" affordance of any kind — fails the interactive half of the ask outright.
-- **Scalar.** Also interactive, but its dist is roughly 3.7 MB against Swagger UI's ~1.9 MB, with
+- **Scalar.** Also interactive, but at decision time its dist was roughly double Swagger UI's size, with
   materially more frequent releases (near-daily vs. weekly) and no established advisory track record in
   this project's dependency-scanning experience — more vendored surface to re-vet for no rendering
   capability Swagger UI lacks here.
