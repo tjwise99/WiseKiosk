@@ -5,6 +5,7 @@ import { svelte } from '@sveltejs/vite-plugin-svelte';
 import { defineConfig, type Plugin } from 'vite';
 
 import { configValidator } from './vite-plugin-config-validator.ts';
+import { docsExplorer } from './vite-plugin-docs-explorer.ts';
 import { moduleGraph } from './vite-plugin-module-graph.ts';
 
 /** One of the backend's tracked, served header values, trimmed the way it serves them (#266 security response headers). */
@@ -34,7 +35,7 @@ function previewSecurityHeaders(): Plugin {
 }
 
 export default defineConfig({
-  plugins: [svelte(), configValidator(), moduleGraph(), previewSecurityHeaders()],
+  plugins: [svelte(), configValidator(), moduleGraph(), previewSecurityHeaders(), docsExplorer()],
   // Dev only: forward the backend's paths to `just serve`; the built bundle reaches them same-origin.
   server: {
     proxy: {
