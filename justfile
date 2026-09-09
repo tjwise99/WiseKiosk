@@ -62,15 +62,17 @@ check-repo-silo:
     python3 scripts/check-repo-silo.py
 
 [group('docs')]
-[doc('First-time setup: install the pinned Sphinx toolchain into docs/site/')]
+[doc('First-time setup: install the pinned Sphinx toolchain into docs/site/, and swagger-ui-dist (locked) for the API explorer page')]
 site-install:
     python3 -m venv docs/site/.venv
     docs/site/.venv/bin/pip install -r docs/site/requirements-dev.txt
+    npm --prefix docs/site ci
 
 [group('docs')]
-[doc('Regenerate the needs pages from Doorstop and build the docs site (warnings-as-errors)')]
+[doc('Regenerate the needs pages from Doorstop, copy the API explorer assets, and build the docs site (warnings-as-errors)')]
 site-build:
     docs/site/.venv/bin/python docs/site/doorstop_to_needs.py
+    docs/site/.venv/bin/python docs/site/copy_explorer_assets.py
     docs/site/.venv/bin/sphinx-build -W -b html -c docs/site docs docs/site/_build/html
 
 [group('checks')]

@@ -36,6 +36,14 @@ docs/site/.venv/
 docs/site/generated/
 docs/site/_build/
 
+# Node dev tooling (Swagger UI for the API explorer page) — siloed beside the
+# docs site it serves; installed on demand from the committed lockfile, never
+# committed. (Covered by the blanket node_modules/ above; spelled out for
+# parity.) vendor/ is the copy of swagger-ui-dist + boundary/openapi.yaml
+# copy_explorer_assets.py places for the Sphinx build, regenerated every run.
+docs/site/node_modules/
+docs/site/vendor/
+
 # Python dev tooling — pre-commit runs from a local venv siloed beside the
 # hook scripts it invokes (scripts/).
 scripts/.venv/
