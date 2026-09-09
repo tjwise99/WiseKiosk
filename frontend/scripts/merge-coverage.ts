@@ -51,6 +51,14 @@ async function main(): Promise<void> {
   map.merge((await read(UNIT_FINAL)) as Parameters<typeof map.merge>[0]);
   map.merge((await read(RENDER_FINAL)) as Parameters<typeof map.merge>[0]);
 
+  // A merged map with no files at all would otherwise pass the loop below vacuously — indistinguishable
+  // from every file clearing the bar, when nothing was measured at all.
+  if (map.files().length === 0) {
+    console.error('merge-coverage: no coverage collected — refusing to pass');
+    process.exitCode = 1;
+    return;
+  }
+
   const context = createContext({ dir: REPORT_DIR, coverageMap: map });
   createReport('lcovonly').execute(context);
   createReport('text').execute(context);
