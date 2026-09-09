@@ -221,9 +221,9 @@ preview: check-build
 
 # Depends on `site-build` so the docs site the plugin mounts is current, never a stale prior build.
 [group('run')]
-[doc('Build the docs site and open the interactive API explorer at :5173, proxied to `just serve`; needs `just serve` running for "Try it out" to reach a live backend')]
-api-explorer: site-build
-    @echo 'Explorer: http://localhost:5173/docs-explorer/'
+[doc('Build and serve the whole docs site at :5173, proxied to `just serve` — the API explorer page is interactive there; needs `just serve` running for "Try it out" to reach a live backend')]
+docs-serve: site-build
+    @echo 'Docs: http://localhost:5173/docs/ (API explorer: http://localhost:5173/docs/api-explorer.html)'
     frontend/node_modules/.bin/vite frontend
 
 [group('checks')]
