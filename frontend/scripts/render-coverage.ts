@@ -22,9 +22,14 @@ const MODULE_PREFIX = 'github.com/tjwise99/WiseKiosk/';
 
 const COVERPROFILE_LINE = /^(.+):(\d+)\.(\d+),(\d+)\.(\d+) (\d+) (\d+)$/;
 
+interface Position {
+  line: number;
+  column: number;
+}
+
 interface FileCoverageData {
   path: string;
-  statementMap: Record<string, { start: { line: number; column: number }; end: { line: number; column: number } }>;
+  statementMap: Record<string, { start: Position; end: Position }>;
   fnMap: Record<string, never>;
   branchMap: Record<string, never>;
   s: Record<string, number>;
@@ -32,22 +37,35 @@ interface FileCoverageData {
   b: Record<string, never>;
 }
 
+interface GoBlock {
+  start: Position;
+  end: Position;
+  numStmts: number;
+  count: number;
+}
+
 /**
- * Parses backend/cover.out into istanbul FileCoverage objects, one per source file. Each
- * coverprofile block (`path:startLine.startCol,endLine.endCol numStmts count`) becomes one
- * istanbul statement — Go's coverage tooling records no function or branch data, so `fnMap`,
- * `branchMap`, `f` and `b` stay empty. Go's columns are 1-based; istanbul's are 0-based.
+ * Parses backend/cover.out into istanbul FileCoverage objects, one per source file. Go's coverage
+ * tooling records no function or branch data, so `fnMap`, `branchMap`, `f` and `b` stay empty.
+ * Go's columns are 1-based; istanbul's are 0-based.
  *
- * `-coverpkg=./...` makes every tested package's binary emit a block for every file in the
- * coverpkg set, so the same block position recurs once per test binary, at 0 from every binary
- * that never executed it. Go's own tooling (`covermode=atomic`, used here) sums those recurrences
- * rather than treating them as distinct statements, so a block already seen for a file is matched
- * by position and its count added, not appended as a new entry.
+ * Each coverprofile line is `path:startLine.startCol,endLine.endCol numStmts count`. `-coverpkg=./...`
+ * makes every tested package's binary emit a block for every file in the coverpkg set, so the same
+ * block position recurs once per test binary, at 0 from every binary that never executed it. Go's
+ * own tooling (`covermode=atomic`, used here) sums those recurrences rather than treating them as
+ * distinct statements, so a block already seen for a file is matched by position and its count
+ * added, not appended as a new entry — `numStmts` is a property of the source at that position and
+ * must not disagree between recurrences.
+ *
+ * `cmd/cover` weights its own percentage by `numStmts` per block
+ * (`total += b.NumStmt; if count > 0 { covered += b.NumStmt }`), not by block count, so one block
+ * becomes `numStmts` istanbul statement entries here, each at the block's span — reproducing that
+ * weighting in istanbul's own summary rather than reporting one block as one statement regardless
+ * of how many statements it actually covers.
  */
 async function readGoCoverage(): Promise<Record<string, FileCoverageData>> {
   const text = await readFile(COVER_OUT, 'utf8');
-  const files: Record<string, FileCoverageData> = {};
-  const indexByBlock: Record<string, Record<string, number>> = {};
+  const blocksByFile: Record<string, Record<string, GoBlock>> = {};
   for (const line of text.split('\n')) {
     if (!line) continue;
     if (line.startsWith('mode:')) continue;
@@ -55,30 +73,41 @@ async function readGoCoverage(): Promise<Record<string, FileCoverageData>> {
     if (!match) {
       throw new Error(`${COVER_OUT}: line does not match the coverprofile block format: ${line}`);
     }
-    const [, modPath, startLine, startCol, endLine, endCol, , count] = match;
+    const [, modPath, startLine, startCol, endLine, endCol, numStmts, count] = match;
     const relPath = modPath.startsWith(MODULE_PREFIX) ? modPath.slice(MODULE_PREFIX.length) : modPath;
     const absPath = path.join(REPO_ROOT, relPath);
-    const file = (files[absPath] ??= {
-      path: absPath,
-      statementMap: {},
-      fnMap: {},
-      branchMap: {},
-      s: {},
-      f: {},
-      b: {},
-    });
-    const blockIndex = (indexByBlock[absPath] ??= {});
+    const blocks = (blocksByFile[absPath] ??= {});
     const blockKey = `${startLine}.${startCol},${endLine}.${endCol}`;
-    const index = blockIndex[blockKey] ?? Object.keys(file.statementMap).length;
-    if (!(blockKey in blockIndex)) {
-      blockIndex[blockKey] = index;
-      file.statementMap[index] = {
+    const existing = blocks[blockKey];
+    if (existing) {
+      if (existing.numStmts !== Number(numStmts)) {
+        throw new Error(
+          `${COVER_OUT}: block ${absPath}:${blockKey} reports ${numStmts} statements here and ` +
+            `${existing.numStmts} elsewhere`,
+        );
+      }
+      existing.count += Number(count);
+    } else {
+      blocks[blockKey] = {
         start: { line: Number(startLine), column: Number(startCol) - 1 },
         end: { line: Number(endLine), column: Number(endCol) - 1 },
+        numStmts: Number(numStmts),
+        count: Number(count),
       };
-      file.s[index] = 0;
     }
-    file.s[index] += Number(count);
+  }
+
+  const files: Record<string, FileCoverageData> = {};
+  for (const [absPath, blocks] of Object.entries(blocksByFile)) {
+    const file: FileCoverageData = { path: absPath, statementMap: {}, fnMap: {}, branchMap: {}, s: {}, f: {}, b: {} };
+    let index = 0;
+    for (const block of Object.values(blocks)) {
+      for (let i = 0; i < block.numStmts; i++, index++) {
+        file.statementMap[index] = { start: block.start, end: block.end };
+        file.s[index] = block.count;
+      }
+    }
+    files[absPath] = file;
   }
   return files;
 }
