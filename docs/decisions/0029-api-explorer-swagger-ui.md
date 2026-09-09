@@ -67,9 +67,12 @@ ever do.
   has no business adding: there is no existing dev/prod switch in the backend at all, and
   [ADR 0020 rev 4](0020-release-artifact-set-and-operator-tooling.md) already closes "the operator
   interface to the binary is its flags, and there are two" — a new gate would need a rev to that
-  decision, not just code; `headers.Wrap` is itself requirement-cited (SRS010, SRS027, SRS028), so a
-  new observable header
-  behavior there reads as a new obligation under [ADR 0011 rev 2](0011-requirement-or-convention.md);
+  decision, not just code; `headers.Wrap` is itself requirement-cited
+  (SRS010<!-- The display page reaches no origin but the backend's -->,
+  SRS027<!-- The display page holds no device capability it does not use -->,
+  SRS028<!-- Served responses declare their type, and forbid the browser inferring one -->), so a new
+  observable header behavior there reads as a new obligation under
+  [ADR 0011 rev 2](0011-requirement-or-convention.md);
   and the OPTIONS preflight `/api/weather` needs cannot be added to the generated router
   (`backend/internal/boundary/boundary.gen.go`, drift-gated `oapi-codegen` output) without either
   forking `boundary/openapi.yaml` or a second, separate bypass-middleware mechanism ahead of it.
@@ -82,8 +85,12 @@ ever do.
   Confirmed empirically (real backend, real headless-browser render): Swagger UI never renders at all
   under it — its own inline init script, the inline styles it injects at runtime, its `data:` SVG icons
   and an internal `eval`/`new Function()` call are all blocked. Loosening that CSP is a backend change
-  to the exact function SRS010/SRS027/SRS028 cite, on the identical binary that runs the physically
-  deployed kiosk — out of scope here for the same reason the CORS route is.
+  to the same requirement-cited function as above
+  (SRS010<!-- The display page reaches no origin but the backend's -->,
+  SRS027<!-- The display page holds no device capability it does not use -->,
+  SRS028<!-- Served responses declare their type, and forbid the browser inferring one -->), on the
+  identical binary that runs the physically deployed kiosk — out of scope here for the same reason the
+  CORS route is.
 
 The Vite dev-plugin route was chosen because it is the only one of the three interactive-delivery
 options that needs no backend change of any kind.
