@@ -1,10 +1,12 @@
-import { expect, test, type Page } from '@playwright/test';
+import type { Page } from '@playwright/test';
 
 import {
   asksBeyondTheShell,
   channelsBeyondTheTier,
+  expect,
   holdHostClock,
   render,
+  test,
   watchTraffic,
   type Fixture,
 } from '../../../tests/render/harness';
@@ -183,6 +185,19 @@ test('TST063: shows seconds when its configuration asks and omits them when it d
   // a clock that stopped rendering satisfies any assertion made only about what is missing.
   expect(without).not.toContain('05');
   expect(without).toContain('04');
+});
+
+test('renders no annotations sibling at all when neither seconds nor a meridiem is shown', async ({
+  page,
+}) => {
+  await holdHostClock(page, HOST_TIME);
+
+  // Twenty-four-hour form carries no meridiem, and seconds are off — the only combination where the
+  // annotations column has nothing to hold, which is what should keep it off the page entirely
+  // rather than mounted empty.
+  await render(page, placed({ show_seconds: false, twenty_four_hour: true }));
+
+  await expect(page.locator(`[data-region="${REGION}"] .annotations`)).toHaveCount(0);
 });
 
 test('TST055: goes on showing an advancing time while the backend is unreachable', async ({

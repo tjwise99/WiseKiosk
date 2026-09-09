@@ -1,7 +1,5 @@
-import { expect, test } from '@playwright/test';
-
 import { TYPE_SIZE_FLOOR, readEmission } from './emission';
-import { render, type Fixture } from './harness';
+import { expect, render, test, type Fixture } from './harness';
 
 /**
  * TST048. Every text element clears the type-size floor as a fraction of viewport height, at each

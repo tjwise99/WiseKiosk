@@ -1,7 +1,97 @@
-import { expect, test, type Page } from '@playwright/test';
+import { mkdir, writeFile } from 'node:fs/promises';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+import { expect, test as base, type Page } from '@playwright/test';
+import istanbulLibCoverage, { type CoverageMap } from 'istanbul-lib-coverage';
 
 import { LIVENESS_TIMEOUT_MS, REQUEST_TIMEOUT_MS } from '../../src/lib/liveness';
 import type { ModuleAnswer } from '../../src/lib/payload';
+
+// A default import rather than the named one: this is a CommonJS package, and Playwright's own
+// loader does not always detect `istanbul-lib-coverage`'s named exports as ESM ones.
+const { createCoverageMap } = istanbulLibCoverage;
+
+export { expect };
+
+/**
+ * Where each coverage-project worker writes its accumulated coverage, one file per worker
+ * (`coverageMap`'s teardown below); `coverage-teardown.ts` merges every file here once all workers
+ * have exited.
+ */
+export const RENDER_RAW_DIR = fileURLToPath(new URL('../../coverage/render/raw', import.meta.url));
+
+/** Whether the running test is the render tier's coverage project (`playwright.coverage.config.ts`). */
+function underCoverageProject(): boolean {
+  return base.info().config.configFile?.endsWith('playwright.coverage.config.ts') ?? false;
+}
+
+/**
+ * The coverage-project `page`s currently under test, each to the worker's one accumulating
+ * `CoverageMap`. A page's entry is what tells `render` to collect for this test at all —
+ * `check-render`/`check-render-policy` never populate it, so `window.__coverage__` is never even
+ * read there.
+ */
+const collectingPages = new WeakMap<Page, CoverageMap>();
+
+/**
+ * The coverage-project `page`s that have already navigated once. `render` reads and merges
+ * `window.__coverage__` before every navigation but the first, rather than the fixture reading it
+ * only once at the test's end: `vite-plugin-istanbul`'s counters live on the page's own `window`,
+ * which a fresh `page.goto()` replaces with a fresh, zeroed one — a test comparing two
+ * configurations navigates more than once, and only the merge before each further navigation keeps
+ * the earlier one's coverage from being overwritten rather than added to.
+ */
+const navigatedPages = new WeakSet<Page>();
+
+/** Reads the page's current `window.__coverage__`, if any, and folds it into `coverageMap`. */
+async function collectFromPage(page: Page, coverageMap: CoverageMap): Promise<void> {
+  const raw = await page.evaluate(() => (window as unknown as { __coverage__?: object }).__coverage__);
+  if (raw) {
+    coverageMap.merge(raw as Parameters<CoverageMap['merge']>[0]);
+  }
+}
+
+/**
+ * `test`, registering the page for per-navigation coverage collection under the coverage project
+ * only. One `CoverageMap` per worker, written to its own file in `RENDER_RAW_DIR` at worker
+ * teardown; `coverage-teardown.ts` merges every worker's file into one report once all of them have
+ * exited.
+ */
+export const test = base.extend<{ collectPageCoverage: void }, { coverageMap: CoverageMap | undefined }>({
+  coverageMap: [
+    // eslint-disable-next-line no-empty-pattern -- Playwright requires the destructuring form even when a fixture depends on none of the others
+    async ({}, use, workerInfo) => {
+      if (!underCoverageProject()) {
+        await use(undefined);
+        return;
+      }
+      const map = createCoverageMap({});
+      await use(map);
+      await mkdir(RENDER_RAW_DIR, { recursive: true });
+      await writeFile(
+        path.join(RENDER_RAW_DIR, `worker-${workerInfo.workerIndex}.json`),
+        JSON.stringify(map.data),
+      );
+    },
+    { scope: 'worker' },
+  ],
+
+  collectPageCoverage: [
+    async ({ page, coverageMap }, use) => {
+      if (!coverageMap) {
+        await use();
+        return;
+      }
+      collectingPages.set(page, coverageMap);
+      await use();
+      await collectFromPage(page, coverageMap);
+      collectingPages.delete(page);
+      navigatedPages.delete(page);
+    },
+    { auto: true },
+  ],
+});
 
 /** A configuration the page is driven with, in the shape `config.json` carries. */
 export interface Fixture {
@@ -85,7 +175,10 @@ export async function render(
   page: Page,
   fixture: unknown,
   expected: Rendered = 'frame',
-  { healthz = 'ok' }: { healthz?: Liveness } = {},
+  {
+    healthz = 'ok',
+    configResponse,
+  }: { healthz?: Liveness; configResponse?: { status: number; body: string } } = {},
 ): Promise<void> {
   const underPolicy = underPolicyProject();
   const violations: string[] = [];
@@ -97,12 +190,29 @@ export async function render(
     });
   }
 
+  const coverageMap = collectingPages.get(page);
+  if (coverageMap) {
+    if (navigatedPages.has(page)) {
+      // Folds in whatever the page already did under a previous `render` call in this same test —
+      // the navigation below replaces `window.__coverage__` with a fresh, zeroed one, which would
+      // otherwise lose it rather than add to it.
+      await collectFromPage(page, coverageMap);
+    }
+    navigatedPages.add(page);
+  }
+
   // Matched as a glob rather than by importing `CONFIGURATION_URL`: a spec file runs in Node, and
   // that constant's module reaches the validator's virtual module, which only Vite can resolve. The
   // two spellings are held together by construction — disagree and the frame never renders, failing
   // every test in the tier rather than one.
+  //
+  // `configResponse` serves a raw status and body in place of `fixture` — a fixture is always a
+  // valid JSON document served at 200, so it cannot stand for the ask itself failing (a status the
+  // backend never serves for this path, or a body that is not JSON at all).
   await page.route('**/config.json', (route) =>
-    route.fulfill({ contentType: 'application/json', body: JSON.stringify(fixture) }),
+    configResponse
+      ? route.fulfill({ status: configResponse.status, body: configResponse.body })
+      : route.fulfill({ contentType: 'application/json', body: JSON.stringify(fixture) }),
   );
   await serveLiveness(page, healthz);
   await page.goto('/');

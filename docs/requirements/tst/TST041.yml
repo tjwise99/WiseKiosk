@@ -26,9 +26,9 @@ references:
   type: file
 - keyword: test('renders the shipped example configuration with no validation report'
   path: frontend/tests/render/example-configuration.spec.ts
-  sha: 040e4affad7b2439fc46acc39075cf105fb0b736dbedd9d3638fdafbb37e457e
+  sha: 52b50e74a42c5cae56e62545522f70d5b182b713fbfb6a139a85cf37b3c6e451
   type: file
-reviewed: EGNIHWxZ9W7bh-t0oaQpJwmX1qNlS557azFRve5QJtw=
+reviewed: SScLSwI3dlFa4eP_u-YgSSOBrRXgfbfZB676OA7S4jc=
 status: proposed
 text: |
   Integration test asserting the frontend-serving response carries a Permissions-Policy, and that the

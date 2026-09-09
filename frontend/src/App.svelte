@@ -7,20 +7,13 @@
   import { edgeBandLength } from './lib/regions';
 
   // Read once, at mount: the display never navigates, so the configuration is asked for a single
-  // time. The rejection arm is not unreachable: `loadConfiguration` maps every failure it
-  // anticipates onto an outcome, and anything it does not — a throw from inside the validator —
-  // would otherwise leave the page on its loading state for as long as the display runs.
+  // time. No `.catch`: `loadConfiguration` resolves every failure it can reach to an outcome
+  // (fetch failure, a non-2xx response, unparsable JSON, or a schema rejection) rather than
+  // rejecting, so the promise it returns never does either.
   let outcome: ConfigurationOutcome | undefined = $state();
-  loadConfiguration()
-    .then((result) => {
-      outcome = result;
-    })
-    .catch((cause: unknown) => {
-      outcome = {
-        kind: 'unreadable',
-        detail: cause instanceof Error ? cause.message : String(cause),
-      };
-    });
+  loadConfiguration().then((result) => {
+    outcome = result;
+  });
 
   // Whether the backend answered its last ask. It is asked only once a configuration has been
   // applied: the other outcomes render a report of their own, which a second failure state over the
@@ -44,11 +37,10 @@
     <p>Loading the display configuration…</p>
   </main>
 {:else if outcome.kind === 'applied'}
-  <div
-    class="page"
-    class:banded={!reachable}
-    style="--edge-band:{edgeBandLength(outcome.configuration.edge_band)}"
-  >
+  <!-- A plain `style={edgeBandStyle}` binding: the mixed literal+expression `style="--edge-band:{...}"`
+       form gives Svelte a nullish-fallback branch the real value never takes. -->
+  {@const edgeBandStyle = `--edge-band:${edgeBandLength(outcome.configuration.edge_band)}`}
+  <div class="page" class:banded={!reachable} style={edgeBandStyle}>
     {#if !reachable}
       <BackendUnreachable />
     {/if}

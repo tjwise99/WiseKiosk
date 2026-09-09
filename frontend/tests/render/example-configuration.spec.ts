@@ -1,7 +1,6 @@
-import { expect, test } from '@playwright/test';
 import { readFileSync } from 'node:fs';
 
-import { render, serveModuleData } from './harness';
+import { expect, render, serveModuleData, test } from './harness';
 
 /**
  * #139 example-configuration check. The configuration shipped at `deploy/config.example.json` is
