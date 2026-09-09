@@ -3,6 +3,7 @@ import { fileURLToPath } from 'node:url';
 import { defineConfig, mergeConfig, type Plugin } from 'vite';
 import istanbul from 'vite-plugin-istanbul';
 
+import { COVERAGE_EXCLUDE } from './coverage-exclude.ts';
 import viteConfig from './vite.config.ts';
 
 const PRODUCT_REGISTRY = fileURLToPath(new URL('./src/lib/modules.ts', import.meta.url));
@@ -46,8 +47,9 @@ function augmentRegistry(): Plugin {
  * `.ts` and `.svelte` both: `frontend/scripts/merge-coverage.ts` unions this tier's coverage with
  * the unit tier's into one frontend-wide gate, so a `.ts` file the render tier also executes (a
  * module the page mounts, `config/load.ts`) is instrumented here too rather than only where the unit
- * tier reaches it — the same excludes `vitest.config.ts` states for the unit tier apply here so
- * neither a boundary-generated file nor a test file itself is instrumented as product code.
+ * tier reaches it — `COVERAGE_EXCLUDE` (shared with `vitest.config.ts` and the merge gate's own
+ * expected-file glob) keeps a boundary-generated file, a type-only declaration or a test file itself
+ * out of every population alike.
  */
 export default mergeConfig(
   viteConfig,
@@ -57,14 +59,7 @@ export default mergeConfig(
       istanbul({
         include: 'src/**/*.{ts,svelte}',
         extension: ['.ts', '.svelte'],
-        exclude: [
-          'src/lib/boundary/**',
-          'src/config/types.ts',
-          'src/modules/weather/props.ts',
-          '**/*.test.ts',
-          '**/*.spec.ts',
-          '**/*.d.ts',
-        ],
+        exclude: COVERAGE_EXCLUDE,
         requireEnv: true,
       }),
     ],

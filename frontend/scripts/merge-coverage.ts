@@ -1,9 +1,13 @@
+import { globSync } from 'node:fs';
 import { readFile } from 'node:fs/promises';
+import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import istanbulLibCoverage from 'istanbul-lib-coverage';
 import istanbulLibReport from 'istanbul-lib-report';
 import istanbulReports from 'istanbul-reports';
+
+import { COVERAGE_EXCLUDE } from '../coverage-exclude.ts';
 
 // Default imports rather than named ones: these are CommonJS packages, and Node's own ESM loader
 // does not always detect their named exports as ESM ones.
@@ -11,6 +15,7 @@ const { createCoverageMap } = istanbulLibCoverage;
 const { createContext } = istanbulLibReport;
 const { create: createReport } = istanbulReports;
 
+const FRONTEND_ROOT = fileURLToPath(new URL('..', import.meta.url));
 const UNIT_FINAL = fileURLToPath(new URL('../coverage/unit/coverage-final.json', import.meta.url));
 const RENDER_FINAL = fileURLToPath(new URL('../coverage/render/coverage-final.json', import.meta.url));
 const REPORT_DIR = fileURLToPath(new URL('../coverage/frontend-report', import.meta.url));
@@ -19,15 +24,27 @@ const BAR = 90;
 const METRICS = ['statements', 'branches', 'functions', 'lines'] as const;
 
 /**
+ * Every source file either tier's own config means to instrument, by the same glob and the same
+ * `COVERAGE_EXCLUDE` both configs pass to `vite-plugin-istanbul`/vitest's `coverage.exclude` — so
+ * this population can't drift from what actually gets instrumented.
+ */
+function expectedFiles(): string[] {
+  return globSync(['src/**/*.ts', 'src/**/*.svelte'], {
+    cwd: FRONTEND_ROOT,
+    exclude: COVERAGE_EXCLUDE,
+  }).map((relative) => path.join(FRONTEND_ROOT, relative));
+}
+
+/**
  * Reads a coverage-final.json, or an empty map if that tier's run left none there at all (a tier
  * that collected nothing, rather than one that collected something unreadable). A file present but
  * not valid JSON is not swallowed the same way: it fails loud, since silently treating it as empty
  * would gate a real bar against less than the run actually produced.
  */
-async function read(path: string): Promise<unknown> {
+async function read(filePath: string): Promise<unknown> {
   let text: string;
   try {
-    text = await readFile(path, 'utf8');
+    text = await readFile(filePath, 'utf8');
   } catch (cause) {
     if ((cause as NodeJS.ErrnoException).code === 'ENOENT') {
       return {};
@@ -51,10 +68,16 @@ async function main(): Promise<void> {
   map.merge((await read(UNIT_FINAL)) as Parameters<typeof map.merge>[0]);
   map.merge((await read(RENDER_FINAL)) as Parameters<typeof map.merge>[0]);
 
-  // A merged map with no files at all would otherwise pass the loop below vacuously — indistinguishable
-  // from every file clearing the bar, when nothing was measured at all.
-  if (map.files().length === 0) {
-    console.error('merge-coverage: no coverage collected — refusing to pass');
+  // A file the gate is meant to cover but that carries no coverage at all — its only render spec
+  // deleted, say — would otherwise just be absent from `map.files()` rather than reported at 0%,
+  // passing the loop below vacuously over the population that actually matters most. Checked before
+  // that loop runs, and also covers the wholly-empty-map case: an expected set is always non-empty,
+  // so nothing collected fails here regardless of which expected file is named.
+  const missing = expectedFiles().filter((expected) => !map.files().includes(expected));
+  if (missing.length > 0) {
+    for (const file of missing) {
+      console.error(`expected gated file ${file} absent from coverage — its test may have been deleted`);
+    }
     process.exitCode = 1;
     return;
   }

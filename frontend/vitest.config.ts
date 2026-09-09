@@ -1,5 +1,6 @@
 import { defineConfig, mergeConfig } from 'vitest/config';
 
+import { COVERAGE_EXCLUDE } from './coverage-exclude.ts';
 import viteConfig from './vite.config.ts';
 
 // The unit tier runs through the build's own pipeline, so a helper is exercised through the same
@@ -25,14 +26,7 @@ export default mergeConfig(
         // render tier's own `include` to instrument (`vite.config.render.ts`); this tier never
         // imports one, so it would report at a permanent, meaningless 0% here regardless.
         include: ['src/**/*.ts'],
-        exclude: [
-          'src/lib/boundary/**',
-          'src/config/types.ts',
-          'src/modules/weather/props.ts',
-          '**/*.test.ts',
-          '**/*.spec.ts',
-          '**/*.d.ts',
-        ],
+        exclude: COVERAGE_EXCLUDE,
         // No `thresholds` here: this run's own view is unit-only, and a file the render tier also
         // executes can read below 90% from this view alone while the merged view — the one gate
         // `merge-coverage.ts` enforces — reads at or above it. `json` is this tier's raw output for
