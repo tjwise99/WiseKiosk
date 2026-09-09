@@ -13,7 +13,7 @@ export default mergeConfig(
     test: {
       environment: 'node',
       include: ['src/**/*.test.ts'],
-      // Gate 3 coverage bar (ADR 0005 rev 3): `include` reports every matching file, so a file this
+      // Gate 3 coverage bar (ADR 0005 rev 4): `include` reports every matching file, so a file this
       // tier never imports appears at 0% rather than being silently absent (`coverage.all` was
       // removed in Vitest 4; `include` alone carries that behaviour now).
       coverage: {

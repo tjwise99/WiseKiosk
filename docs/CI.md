@@ -10,7 +10,7 @@ an edit here and a change to the check, not a specification change.
 
 **Most of what follows is not built yet.** The gates are described in the tense they will run in;
 where a gate is unbuilt its ticket is named. That is how this project records scoped work
-([ADR 0005 rev 3](decisions/0005-traceability-gating.md)).
+([ADR 0005 rev 4](decisions/0005-traceability-gating.md)).
 
 ## What CI provides
 
@@ -188,28 +188,36 @@ Recorded in [`../scripts/cases/check-fuzz.md`](../scripts/cases/check-fuzz.md).
 
 ## Unit-test coverage
 
-`check-coverage` is gate 3 ([ADR 0005 rev 3](decisions/0005-traceability-gating.md)): a coverage bar
+`check-coverage` is gate 3 ([ADR 0005 rev 4](decisions/0005-traceability-gating.md)): a coverage bar
 over first-party product source, tree-blind — it proves source is exercised, not that a `TST` item
-claims it. Two maintained tools, one per language, each configured rather than authored
-([ADR 0016 rev 11](decisions/0016-maintained-tools-for-standard-artifacts.md)):
+claims it. `go-test-coverage` for the backend, configured
+([ADR 0016 rev 11](decisions/0016-maintained-tools-for-standard-artifacts.md)); an authored script
+over two Istanbul providers for the frontend:
 
 - **Backend** — `go -C backend test -covermode=atomic -coverpkg=./... -coverprofile=cover.out ./...`
   then `go -C backend tool go-test-coverage --config=.testcoverage.yml` (the tool pinned in
   `backend/go.mod`'s `tool` block), against `backend/.testcoverage.yml`: 90% statement coverage,
   per-file and total, excluding generated Go (`\.gen\.go$`).
-- **Frontend** — `frontend/node_modules/.bin/vitest run --root frontend --coverage`, against the
-  `coverage` block in `frontend/vitest.config.ts` (`@vitest/coverage-v8`, pinned to the same version
-  as `vitest`): 90% line, branch, function and statement coverage, per file, over `src/**`, excluding
-  the generated boundary client and config types plus test/spec/`d.ts` files. `coverage.include`
-  reports every matching file, so one the unit tier never imports is counted at 0% rather than absent.
+- **Frontend** — `frontend/node_modules/.bin/vitest run --root frontend --coverage`
+  (`@vitest/coverage-istanbul`) then `playwright test --config frontend/playwright.coverage.config.ts`
+  (`vite-plugin-istanbul`, torn down by `tests/render/coverage-teardown.ts`) each write their own
+  `coverage-final.json` over the same `.ts`/`.svelte` sources; neither carries a threshold of its
+  own. `frontend/scripts/merge-coverage.ts` then unions the two via `istanbul-lib-coverage` and
+  enforces 90% line, branch, function and statement per file, against the one bar value in
+  `frontend/coverage-thresholds.json` — an authored gate, not a configured tool's own setting. Its
+  completeness guard fails the run when a file either tier means to instrument carries no coverage
+  at all, so a file neither tier still imports is caught rather than silently absent.
 
-Neither recipe needs the network or Docker, but `check-coverage` is non-blocking by decision rather
-than by constraint: it is neither a `just verify` dependency nor a required-checks ruleset member
-(§ *Gate wiring*), running instead as its own CI job, `coverage`, where a red run does not block a
-merge. The recipe runs the backend command then the frontend command in sequence and stops at the
-first one under its bar, so a run where the backend fails does not reach the frontend command. #300
-coverage gate blocking is what promotes the gate, runs both languages' commands regardless of either
-result, and designs the exemption register this gate does not have.
+Neither recipe needs the network or Docker. `check-coverage` is folded into `just verify`, and the
+recipe runs the backend command then the frontend commands in sequence, stopping at the first one
+under its bar — a run where the backend fails does not reach the frontend commands. After both
+gates, `frontend/scripts/render-coverage.ts` renders one further, diagnostic-only HTML report
+unioning both languages (a small converter turns the backend's Go coverprofile into Istanbul
+FileCoverage objects), uploaded as CI's `coverage-report` artifact; neither gate's threshold or
+exit status is affected by it. What remains open is the required-checks ruleset: `coverage`'s CI job
+runs the same recipe as `verify`, but is not yet a ruleset member, so a merge bypassing `verify`
+locally is not yet blocked by a red run at the platform level — that promotion is a separate,
+later, owner-driven action, not designed here.
 
 ## Image tests
 
@@ -614,7 +622,7 @@ landed with #139 example-configuration check, against the page it renders; the
 documented-procedure check landed with #138 bring-up check, against a published release rather
 than the tracked tree; the image-swap check landed with #140 image-swap check, against two
 published releases — which is how this project records scoped work
-([ADR 0005 rev 3](decisions/0005-traceability-gating.md)); what each asserts
+([ADR 0005 rev 4](decisions/0005-traceability-gating.md)); what each asserts
 was decided by #71 release artifact set, which shipped no code.
 
 ## The exception register
@@ -1178,7 +1186,7 @@ specification rather than of the repository, so they are stated where the specif
 
 **A passing `check-reqs` run also prints the proposed-item backlog** — the count of `proposed` items
 and their identifiers, per tier, against the population each tier holds.
-[ADR 0005 rev 3](decisions/0005-traceability-gating.md) makes the tree the backlog and the backlog a
+[ADR 0005 rev 4](decisions/0005-traceability-gating.md) makes the tree the backlog and the backlog a
 report, never a blocking failure, so this line reports and exits zero whatever the tree holds — like
 `just rev-reach` below, it is not a gate, and what the tree holds never moves the run's exit status.
 Two shapes it asserts against its own output: a tier with nothing proposed prints its zero rather

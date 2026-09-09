@@ -6,11 +6,21 @@ by [ADR 0011 rev 2](0011-requirement-or-convention.md)
 **Decided:** 2026-09-07 (rev 3's coverage-bar reframe, in the #190 coverage closure gate planning
 session; rev 2's evidence-channel pivot taken 2026-08-23 in the #25 traceability gates planning
 session; the surrounding model was taken 2026-07-22 at the traceability-gating design discussion,
-under the requirements rewrite #18)
-**Rev:** 3
+under the requirements rewrite #18); rev 4's binding reframe and 100% ratchet target taken
+2026-09-08 in the #304 coverage gate glue planning session
+**Rev:** 4
 
 ## Revisions
 
+- **rev 4** — 2026-09-09 — #304 coverage gate glue folds `check-coverage` into `just verify`: gate 3
+  runs under the same mandatory sequence as every other check, though the CI job's promotion to a
+  required status check in the branch-protection ruleset stays a separate, later action. Removes the
+  deferred exemption register: the anti-gaming mechanism is the completeness guard and the rule
+  against deleting a defensive branch to win the bar, not a catalogue of exceptions. Records the
+  ratcheted destination — 100% coverage, backend statement and frontend four-metric, each language's
+  toolchain ceiling — reached later, one bump per PR, not by this rev. Corrects the gate table: gate
+  3's frontend half is `scripts/merge-coverage.ts`, authored, not Vitest's own `coverage.thresholds`
+  — that line was never true of the shipped tree (owner, 2026-09-08).
 - **rev 3** — 2026-09-07 — reframes gate 3 from traceability closure to a **unit-test coverage bar**
   over first-party product source, tree-blind: 90% statement coverage per-file and total for the
   backend (go-test-coverage) and 90% line/branch/function/statement per-file for the frontend
@@ -131,14 +141,13 @@ referencing it, and that churn is accepted rather than designed around; hashing 
 region is a possible refinement if it bites. The extension is per-document, so `sys/` and `srs/` are
 untouched.
 
-Two gates, both in-repo, both mirrored byte-identically in CI. Gate 1 runs inside `just verify`; gate
-3 runs its own non-blocking CI job, outside `verify`, until #300 coverage gate blocking folds it in.
+Two gates, both in-repo, both mirrored byte-identically in CI, and both run inside `just verify`.
 The numbering is historical, so a retired gate's number is not reused:
 
 | # | Gate | Proves |
 |---|---|---|
 | 1 | `check-reqs` (exists) | Tree integrity: parent links, no suspect/unreviewed/orphan items; every `TST` reference resolves to a file, and to the declaration its `keyword` names where it carries one; no referenced test drifted since review |
-| 3 | `check-coverage` (exists; non-blocking) | First-party product source meets its language's coverage bar: 90% statement per-file and total (backend), 90% line/branch/function/statement per-file (frontend) |
+| 3 | `check-coverage` (exists) | First-party product source meets its language's coverage bar: 90% statement per-file and total (backend), 90% line/branch/function/statement per-file (frontend) |
 
 Gate 2, a reverse-direction claim over every discovered test, is dropped for the reason given against
 the third objection above. Gate 4, an inspection file-claim over non-code silos, is retired by
@@ -225,14 +234,18 @@ The four stored attributes — `verification-method`, `status`, `verification-ju
   [ADR 0002 rev 4](0002-requirements-management-doorstop.md) warns about — re-blessing is a human act
   and must not become a reflex — and it is the cost this rev accepts in exchange for the tree
   noticing when its evidence moves.
-- **No gate in the table is authored here.** Gate 1 is the tool's, configured — the drift hook is
-  the extension point Doorstop documents, not a sibling script — and gate 3 is the two coverage
-  tools', go-test-coverage and Vitest's own `coverage.thresholds`, likewise configured rather than
-  authored. That is the answer [ADR 0016 rev 11](0016-maintained-tools-for-standard-artifacts.md) asks for
-  before a check is written, and dropping gate 2 is what leaves the table with no exception. The
-  configuration that arms the hook is fragile in a way no gate here covers: keeping the `extensions:`
-  block present is an obligation on whoever edits a `.doorstop.yml`, and it leaves no artifact, so a
-  reader answers it in [`../../CONTRIBUTING.md`](../../CONTRIBUTING.md)'s checklist
+- **Gate 1 is the tool's, configured; gate 3 is mixed.** The drift hook is the extension point
+  Doorstop documents, not a sibling script, so gate 1 stays configured rather than authored. Gate 3's
+  backend half is `go-test-coverage`, likewise configured; its frontend half is
+  `scripts/merge-coverage.ts` — the per-file four-metric union and the completeness guard below are
+  this repository's own rule, so [ADR 0016 rev 11](0016-maintained-tools-for-standard-artifacts.md)'s
+  authored/configured line runs through gate 3 rather than around it. Vitest itself carries no
+  coverage thresholds (`vitest.config.ts` states none); the one number gate 3 enforces is
+  externalised to `frontend/coverage-thresholds.json`, a config an authored script reads, not a
+  configured tool's own setting. Dropping gate 2 leaves gate 3 as the table's one partly authored
+  entry. The configuration that arms the drift hook is fragile in a way no gate here covers: keeping
+  the `extensions:` block present is an obligation on whoever edits a `.doorstop.yml`, and it leaves
+  no artifact, so a reader answers it in [`../../CONTRIBUTING.md`](../../CONTRIBUTING.md)'s checklist
   ([ADR 0011 rev 2](0011-requirement-or-convention.md)).
 - **An unclaimed test is not a build failure.** Nothing fails when a test the runner discovers is
   named by no item, so a structural test lands without inventing a `TST` for it. What that costs is
@@ -242,12 +255,24 @@ The four stored attributes — `verification-method`, `status`, `verification-ju
 - **Coverage is a chosen 90% bar**, per-file and total — statement for the backend, where the
   toolchain implements no other measure (golang/go#28888), line/branch/function/statement per-file
   for the frontend. Coverage proves execution, not specification: a line covered incidentally counts.
-  That residue is held by review and test quality, and no gate pretends otherwise.
+  That residue is held by review and test quality, and no gate pretends otherwise. **100%, each
+  language's toolchain ceiling, is the ratcheted destination** (owner, 2026-09-08) — reached by
+  raising `backend/.testcoverage.yml` and `frontend/coverage-thresholds.json` one bump per PR, never
+  by this rev, which records the target without moving either number. **Meeting a raised bar
+  restructures the code or forces the error path under test — it never deletes a defensive branch to
+  win the number** (owner, 2026-09-08): a bar met by deleting the thing it measures gates nothing.
 - **The ungated surfaces are named rather than counted.** The axiom tier, held by human review and
   mechanized by fingerprints. The reverse direction, accepted above. And source below the coverage
-  bar, visible as a red `check-coverage` report line rather than a merge block, until #300 coverage
-  gate blocking makes the bar binding. What the gates do reach, they reach mechanically; nothing else
-  is claimed.
-- **No exemption register exists while gate 3 is non-blocking** (owner: nothing to exempt while
-  non-blocking; if we do, that's a problem at that time) — its shape is deferred to #300 coverage gate
-  blocking, explicitly marked open, not resolved silently here.
+  bar, which fails `just verify` and the CI `coverage` job exactly as every other check does —
+  what is not yet true is that the branch-protection ruleset names that job a required status check,
+  so a merge bypassing `verify` locally is not yet blocked by it at the platform level; that
+  promotion is a separate, later, owner-driven action. What the gates do reach, they reach
+  mechanically; nothing else is claimed.
+- **No exemption register exists, and none is planned.** The anti-gaming mechanism is three things:
+  the completeness guard (`merge-coverage.ts` fails when a file either coverage tier is meant to
+  instrument carries no coverage at all, so a deleted test's absence is visible rather than read as
+  100% of nothing), the restructure-or-force-the-error rule above, and **no coverage-ignore
+  annotation of any kind on first-party source** (owner, 2026-09-08) — an instrumented line the
+  tooling cannot reach is restructured or removed, never marked past the gate. A register of
+  exceptions is a list of gates the tree has agreed to fail; this rev's answer is to hold the bar
+  rather than catalogue exceptions to it.

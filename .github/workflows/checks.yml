@@ -376,17 +376,18 @@ jobs:
 
   coverage:
     name: coverage
-    # The non-blocking unit-test coverage bar (ADR 0005 rev 3, gate 3): go-test-coverage over the
-    # backend, and one merged Istanbul gate over every frontend `.ts` and `.svelte` file — the unit
-    # tier (`@vitest/coverage-istanbul`) and the render tier (`vite-plugin-istanbul` +
+    # The unit-test coverage bar (ADR 0005 rev 4, gate 3): go-test-coverage over the backend, and
+    # one merged Istanbul gate over every frontend `.ts` and `.svelte` file — the unit tier
+    # (`@vitest/coverage-istanbul`) and the render tier (`vite-plugin-istanbul` +
     # `coverage-teardown.ts`) each write their own coverage-final.json, and
     # `scripts/merge-coverage.ts` unions the two and enforces the bar — each 90% per-file and
     # total. `scripts/render-coverage.ts` then renders one diagnostic, never-gating HTML report
     # over both languages (a small converter turns the backend's Go coverprofile into Istanbul
-    # FileCoverage objects, unioned with the frontend's own), uploaded as an artifact. Not in the
-    # required-checks ruleset, so a red run does not block a merge — #300 coverage gate blocking
-    # is what promotes it. The recipe body is the one spelling of what runs, here and locally. No
-    # secrets: the tests serve over loopback and reach no network origin.
+    # FileCoverage objects, unioned with the frontend's own), uploaded as an artifact. This job
+    # runs the same recipe `just verify` now depends on; it is not yet a required-checks ruleset
+    # member, so a red run here does not yet block a merge at the platform level — that promotion
+    # is a separate, later action. The recipe body is the one spelling of what runs, here and
+    # locally. No secrets: the tests serve over loopback and reach no network origin.
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1

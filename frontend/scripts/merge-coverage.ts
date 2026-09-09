@@ -72,7 +72,7 @@ async function read(filePath: string): Promise<unknown> {
 /**
  * Unions the unit tier's coverage (`vitest.config.ts`'s `json` reporter) with the render tier's
  * (`tests/render/coverage-teardown.ts`) into one frontend-wide map and enforces the per-file 90% bar
- * over it (Gate 3, ADR 0005 rev 3) — the one gate both tiers are scored by, since both now
+ * over it (Gate 3, ADR 0005 rev 4) — the one gate both tiers are scored by, since both now
  * instrument the same original `.ts`/`.svelte` sources through `istanbul-lib-instrument`, so a file
  * either tier executes contributes to the same statement/branch map rather than replacing the
  * other's. `istanbul-lib-coverage`'s own `.merge()` is what does the union; nothing here re-derives
