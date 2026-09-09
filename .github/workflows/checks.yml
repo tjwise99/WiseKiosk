@@ -384,9 +384,9 @@ jobs:
     # total. `scripts/render-coverage.ts` then renders one diagnostic, never-gating HTML report
     # over both languages (a small converter turns the backend's Go coverprofile into Istanbul
     # FileCoverage objects, unioned with the frontend's own), uploaded as an artifact. This job
-    # runs the same recipe `just verify` now depends on; it is not yet a required-checks ruleset
-    # member, so a red run here does not yet block a merge at the platform level — that promotion
-    # is a separate, later action. The recipe body is the one spelling of what runs, here and
+    # runs the same recipe `just verify` depends on; the required-checks ruleset naming it a
+    # required status check, so a red run here blocks a merge at the platform level too, stays a
+    # separate, later action. The recipe body is the one spelling of what runs, here and
     # locally. No secrets: the tests serve over loopback and reach no network origin.
     runs-on: ubuntu-latest
     steps:

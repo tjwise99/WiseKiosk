@@ -265,11 +265,10 @@ The four stored attributes — `verification-method`, `status`, `verification-ju
   number** (owner, 2026-09-08): a bar met by deleting the thing it measures gates nothing.
 - **The ungated surfaces are named rather than counted.** The axiom tier, held by human review and
   mechanized by fingerprints. The reverse direction, accepted above. And source below the coverage
-  bar, which fails `just verify` and the CI `coverage` job exactly as every other check does —
-  what is not yet true is that the branch-protection ruleset names that job a required status check,
-  so a merge bypassing `verify` locally is not yet blocked by it at the platform level; that
-  promotion is a separate, later, owner-driven action. What the gates do reach, they reach
-  mechanically; nothing else is claimed.
+  bar, which fails `just verify` and the CI `coverage` job exactly as every other check does; the
+  branch-protection ruleset naming that job a required status check, so a merge bypassing `verify`
+  locally is blocked by it at the platform level too, stays a separate, later, owner-driven action.
+  What the gates do reach, they reach mechanically; nothing else is claimed.
 - **No exemption register exists, and none is planned.** The anti-gaming mechanism is three things:
   the completeness guard (`merge-coverage.ts` fails when a file either coverage tier is meant to
   instrument carries no coverage at all, so a deleted test's absence is visible rather than read as

@@ -244,9 +244,9 @@ authored script over two tools for the frontend:
   (`vite-plugin-istanbul`, torn down into a `coverage-final.json` by
   `tests/render/coverage-teardown.ts`) each instrument the same `.ts`/`.svelte` sources and write
   their own Istanbul coverage; neither Vitest nor Playwright carries a threshold of its own.
-  `frontend/scripts/merge-coverage.ts` unions the two via `istanbul-lib-coverage` and enforces 90%
-  line, branch, function and statement, per file, against the one bar value in
-  `frontend/coverage-thresholds.json`. Its **completeness guard** fails the run if a file either
+  `frontend/scripts/merge-coverage.ts` unions the two via `istanbul-lib-coverage` and enforces the
+  one bar value in `frontend/coverage-thresholds.json`, per file, across all four metrics —
+  line, branch, function and statement. Its **completeness guard** fails the run if a file either
   tier is meant to instrument carries no coverage at all — the population is read from each tier's
   own instrumentation glob, so a file either tier stops importing is caught rather than
   silently absent from the report; a `.svelte` file, render-tested rather than Vitest-tested, is

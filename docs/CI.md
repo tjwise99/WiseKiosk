@@ -203,10 +203,10 @@ over two Istanbul providers for the frontend:
   (`vite-plugin-istanbul`, torn down by `tests/render/coverage-teardown.ts`) each write their own
   `coverage-final.json` over the same `.ts`/`.svelte` sources; neither carries a threshold of its
   own. `frontend/scripts/merge-coverage.ts` then unions the two via `istanbul-lib-coverage` and
-  enforces 90% line, branch, function and statement per file, against the one bar value in
-  `frontend/coverage-thresholds.json` — an authored gate, not a configured tool's own setting. Its
-  completeness guard fails the run when a file either tier means to instrument carries no coverage
-  at all, so a file neither tier still imports is caught rather than silently absent.
+  enforces the one bar value in `frontend/coverage-thresholds.json`, per file, across all four
+  metrics — line, branch, function and statement — an authored gate, not a configured tool's own
+  setting. Its completeness guard fails the run when a file either tier means to instrument carries
+  no coverage at all, so a file neither tier still imports is caught rather than silently absent.
 
 Neither recipe needs the network or Docker. `check-coverage` is folded into `just verify`, and the
 recipe runs the backend command then the frontend commands in sequence, stopping at the first one
@@ -214,10 +214,10 @@ under its bar — a run where the backend fails does not reach the frontend comm
 gates, `frontend/scripts/render-coverage.ts` renders one further, diagnostic-only HTML report
 unioning both languages (a small converter turns the backend's Go coverprofile into Istanbul
 FileCoverage objects), uploaded as CI's `coverage-report` artifact; neither gate's threshold or
-exit status is affected by it. What remains open is the required-checks ruleset: `coverage`'s CI job
-runs the same recipe as `verify`, but is not yet a ruleset member, so a merge bypassing `verify`
-locally is not yet blocked by a red run at the platform level — that promotion is a separate,
-later, owner-driven action, not designed here.
+exit status is affected by it. `coverage`'s CI job runs the same recipe as `verify`; the
+required-checks ruleset naming that job a required status check, so a merge bypassing `verify`
+locally is blocked by a red run at the platform level too, stays a separate, later, owner-driven
+action, not designed here.
 
 ## Image tests
 
