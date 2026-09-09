@@ -2,10 +2,10 @@
 """Build-time asset copy for the API explorer page (#195).
 
 Copies the Swagger UI files the page needs out of the npm-installed
-`swagger-ui-dist` (never committed — build-fetched via `npm ci`, ADR 0029) and
-a copy of `boundary/openapi.yaml` (the single schema source, never
-hand-edited) into `docs/site/vendor/`, which `conf.py` lists in
-`html_static_path` so Sphinx copies it into the built site's `_static/`.
+`swagger-ui-dist` (never committed — build-fetched via `npm ci`) and a copy of
+`boundary/openapi.yaml` (the single schema source, never hand-edited) into
+`docs/site/vendor/`, which `conf.py` lists in `html_static_path` so Sphinx
+copies it into the built site's `_static/`.
 
 Usage: docs/site/.venv/bin/python docs/site/copy_explorer_assets.py
 Output is generated and gitignored.
