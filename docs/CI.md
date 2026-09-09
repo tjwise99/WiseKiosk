@@ -214,10 +214,10 @@ under its bar — a run where the backend fails does not reach the frontend comm
 gates, `frontend/scripts/render-coverage.ts` renders one further, diagnostic-only HTML report
 unioning both languages (a small converter turns the backend's Go coverprofile into Istanbul
 FileCoverage objects), uploaded as CI's `coverage-report` artifact; neither gate's threshold or
-exit status is affected by it. `coverage`'s CI job runs the same recipe as `verify`; the
+exit status is affected by it. `coverage`'s CI job runs the same recipe as `verify` — though the
 required-checks ruleset naming that job a required status check, so a merge bypassing `verify`
-locally is blocked by a red run at the platform level too, stays a separate, later, owner-driven
-action, not designed here.
+locally would also be blocked by a red run at the platform level, stays a separate, later,
+owner-driven action, not designed here.
 
 ## Image tests
 
