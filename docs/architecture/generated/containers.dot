@@ -1,0 +1,110 @@
+digraph {
+    graph [TBbalance=min,
+        bgcolor=transparent,
+        compound=true,
+        fontname=Arial,
+        fontsize=20,
+        labeljust=l,
+        labelloc=t,
+        layout=dot,
+        likec4_viewId=containers,
+        nodesep=1.528,
+        outputorder=nodesfirst,
+        pad=0.209,
+        rankdir=TB,
+        ranksep=1.667,
+        splines=spline
+    ];
+    node [color="#2563eb",
+        fillcolor="#3b82f6",
+        fontcolor="#eff6ff",
+        fontname=Arial,
+        penwidth=0,
+        shape=rect,
+        style=filled
+    ];
+    edge [arrowsize=0.75,
+        color="#8D8D8D",
+        fontcolor="#C9C9C9",
+        fontname=Arial,
+        fontsize=14,
+        penwidth=2,
+        style=""
+    ];
+    subgraph cluster_wisekiosk {
+        graph [color="#1b3d88",
+            fillcolor="#194b9e",
+            label=<<FONT POINT-SIZE="11" COLOR="#bfdbfeb3"><B>WISEKIOSK</B></FONT>>,
+            likec4_depth=1,
+            likec4_id=wisekiosk,
+            likec4_level=0,
+            margin=40,
+            style=filled
+        ];
+        backend [group=wisekiosk,
+            height=2.5,
+            label=<<TABLE BORDER="0" CELLPADDING="0" CELLSPACING="4"><TR><TD ROWSPAN="3" WIDTH="76"> </TD><TD ALIGN="TEXT" BALIGN="LEFT"><FONT POINT-SIZE="20">Backend</FONT></TD><TD ROWSPAN="3" WIDTH="16"> </TD></TR><TR><TD ALIGN="TEXT" BALIGN="LEFT"><FONT POINT-SIZE="13" COLOR="#bfdbfe">Go</FONT></TD></TR><TR><TD ALIGN="TEXT" BALIGN="LEFT"><FONT POINT-SIZE="15" COLOR="#bfdbfe">Stateless HTTP proxy and static<BR/>file server. Answers one route per<BR/>upstream source, shaping each<BR/>response into the payload the<BR/>boundary</FONT></TD></TR></TABLE>>,
+            likec4_id="wisekiosk.backend",
+            likec4_level=1,
+            margin="0.112,0.223",
+            width=4.445];
+        frontend [group=wisekiosk,
+            height=2.5,
+            label=<<TABLE BORDER="0" CELLPADDING="0" CELLSPACING="4"><TR><TD ROWSPAN="3" WIDTH="76"> </TD><TD ALIGN="TEXT" BALIGN="LEFT"><FONT POINT-SIZE="20">Frontend</FONT></TD><TD ROWSPAN="3" WIDTH="16"> </TD></TR><TR><TD ALIGN="TEXT" BALIGN="LEFT"><FONT POINT-SIZE="13" COLOR="#bfdbfe">Svelte 5, static single-page bundle</FONT></TD></TR><TR><TD ALIGN="TEXT" BALIGN="LEFT"><FONT POINT-SIZE="15" COLOR="#bfdbfe">Runs in the browser on the display<BR/>host. Validates the configuration<BR/>before applying it, assembles the<BR/>configured modules into one<BR/>full-screen layout, and renders</FONT></TD></TR></TABLE>>,
+            likec4_id="wisekiosk.frontend",
+            likec4_level=1,
+            margin="0.112,0.223",
+            width=4.445];
+    }
+    operator [height=2.5,
+        label=<<TABLE BORDER="0" CELLPADDING="0" CELLSPACING="4"><TR><TD><FONT POINT-SIZE="20">Operator</FONT></TD></TR><TR><TD><FONT POINT-SIZE="15" COLOR="#bfdbfe">Deploys WiseKiosk, authors its configuration<BR/>and supplies its secrets.</FONT></TD></TR></TABLE>>,
+        likec4_id=operator,
+        likec4_level=0,
+        margin="0.223,0.223",
+        width=4.445];
+    operator -> backend [arrowhead=normal,
+        label=<<TABLE BORDER="0" CELLPADDING="3" CELLSPACING="0" BGCOLOR="#18191BA0"><TR><TD ALIGN="TEXT" BALIGN="LEFT"><FONT POINT-SIZE="14">Supplies the secret for each source</FONT></TD></TR></TABLE>>,
+        likec4_id=kiylsp,
+        style=dashed];
+    operator -> backend [arrowhead=normal,
+        label=<<TABLE BORDER="0" CELLPADDING="3" CELLSPACING="0" BGCOLOR="#18191BA0"><TR><TD ALIGN="TEXT" BALIGN="LEFT"><FONT POINT-SIZE="14">Places the configuration into the served<BR/>tree</FONT></TD></TR></TABLE>>,
+        likec4_id="1d1eswc",
+        style=dashed];
+    backend -> frontend [arrowhead=normal,
+        label=<<TABLE BORDER="0" CELLPADDING="3" CELLSPACING="0" BGCOLOR="#18191BA0"><TR><TD ALIGN="TEXT" BALIGN="LEFT"><FONT POINT-SIZE="14">Serves the single-page bundle</FONT></TD></TR><TR><TD ALIGN="TEXT" BALIGN="LEFT"><FONT POINT-SIZE="12">[ HTTP ]</FONT></TD></TR></TABLE>>,
+        likec4_id=tyhbwg,
+        minlen=0,
+        style=dashed];
+    openmeteo [height=2.5,
+        label=<<TABLE BORDER="0" CELLPADDING="0" CELLSPACING="4"><TR><TD><FONT POINT-SIZE="20">Open-Meteo</FONT></TD></TR><TR><TD><FONT POINT-SIZE="15" COLOR="#bfdbfe">The weather service the weather module reads.<BR/>Run by somebody else and<BR/>outside the boundary. Which service this is,<BR/>is an edit to this<BR/>repository: no requirement names it, and the</FONT></TD></TR></TABLE>>,
+        likec4_id=openMeteo,
+        likec4_level=0,
+        margin="0.223,0.223",
+        width=4.445];
+    backend -> openmeteo [arrowhead=normal,
+        label=<<TABLE BORDER="0" CELLPADDING="3" CELLSPACING="0" BGCOLOR="#18191BA0"><TR><TD ALIGN="TEXT" BALIGN="LEFT"><FONT POINT-SIZE="14">Fetches the weather for the location a<BR/>request names</FONT></TD></TR><TR><TD ALIGN="TEXT" BALIGN="LEFT"><FONT POINT-SIZE="12">[ HTTPS ]</FONT></TD></TR></TABLE>>,
+        likec4_id="12rx1bz",
+        minlen=1,
+        style=dashed];
+    frontend -> backend [arrowhead=normal,
+        label=<<TABLE BORDER="0" CELLPADDING="3" CELLSPACING="0" BGCOLOR="#18191BA0"><TR><TD ALIGN="TEXT" BALIGN="LEFT"><FONT POINT-SIZE="14">Fetches the configuration, served back<BR/>unparsed</FONT></TD></TR><TR><TD ALIGN="TEXT" BALIGN="LEFT"><FONT POINT-SIZE="12">[ HTTP ]</FONT></TD></TR></TABLE>>,
+        likec4_id=orlvgf,
+        minlen=0,
+        style=dashed];
+    frontend -> backend [arrowhead=normal,
+        label=<<TABLE BORDER="0" CELLPADDING="3" CELLSPACING="0" BGCOLOR="#18191BA0"><TR><TD ALIGN="TEXT" BALIGN="LEFT"><FONT POINT-SIZE="14">Fetches the payload for each module</FONT></TD></TR><TR><TD ALIGN="TEXT" BALIGN="LEFT"><FONT POINT-SIZE="12">[ HTTP / JSON ]</FONT></TD></TR></TABLE>>,
+        likec4_id=w5xwj7,
+        minlen=0,
+        style=dashed];
+    viewer [height=2.5,
+        label=<<TABLE BORDER="0" CELLPADDING="0" CELLSPACING="4"><TR><TD><FONT POINT-SIZE="20">Viewer</FONT></TD></TR><TR><TD><FONT POINT-SIZE="15" COLOR="#bfdbfe">Reads the display. Provides no input to the<BR/>system.</FONT></TD></TR></TABLE>>,
+        likec4_id=viewer,
+        likec4_level=0,
+        margin="0.223,0.223",
+        width=4.445];
+    frontend -> viewer [arrowhead=normal,
+        label=<<TABLE BORDER="0" CELLPADDING="3" CELLSPACING="0" BGCOLOR="#18191BA0"><TR><TD ALIGN="TEXT" BALIGN="LEFT"><FONT POINT-SIZE="14">Renders the configured modules, legibly<BR/>says when one failed, and mirrors the<BR/>rest</FONT></TD></TR></TABLE>>,
+        likec4_id="1421hpp",
+        minlen=1,
+        style=dashed];
+}

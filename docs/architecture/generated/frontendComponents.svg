@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
+ "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<!-- Title: %3 Pages: 1 -->
+<svg width="3242pt" height="877pt"
+ viewBox="0.00 0.00 3242.10 877.10" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(15.05 862.05)">
+<title>%3</title>
+<g id="clust1" class="cluster">
+<title>cluster_frontend</title>
+<polygon fill="#194b9e" stroke="#1b3d88" points="8,-8 8,-663 2344,-663 2344,-8 8,-8"/>
+<text text-anchor="start" x="16" y="-651.2" font-family="Arial" font-weight="bold" font-size="11.00" fill="#bfdbfe" fill-opacity="0.701961">FRONTEND</text>
+</g>
+<!-- pageshell -->
+<g id="node1" class="node">
+<title>pageshell</title>
+<polygon fill="#3b82f6" stroke="#2563eb" stroke-width="0" points="394.5,-583 47.5,-583 47.5,-403 394.5,-403 394.5,-583"/>
+<text text-anchor="start" x="174.5" y="-532" font-family="Arial" font-size="20.00" fill="#eff6ff">Page shell</text>
+<text text-anchor="start" x="68" y="-510" font-family="Arial" font-size="15.00" fill="#bfdbfe">Loads and renders before any configuration is</text>
+<text text-anchor="start" x="179" y="-493" font-family="Arial" font-size="15.00" fill="#bfdbfe">applied, so a</text>
+<text text-anchor="start" x="84.5" y="-476" font-family="Arial" font-size="15.00" fill="#bfdbfe">configuration that cannot be applied at all</text>
+<text text-anchor="start" x="150" y="-459" font-family="Arial" font-size="15.00" fill="#bfdbfe">is reported on a page</text>
+<text text-anchor="start" x="77" y="-442" font-family="Arial" font-size="15.00" fill="#bfdbfe">that exists rather than on a blank one. Asks</text>
+</g>
+<!-- clock -->
+<g id="node2" class="node">
+<title>clock</title>
+<polygon fill="#3b82f6" stroke="#2563eb" stroke-width="0" points="837,-583 505,-583 505,-403 837,-403 837,-583"/>
+<text text-anchor="start" x="646" y="-532" font-family="Arial" font-size="20.00" fill="#eff6ff">Clock</text>
+<text text-anchor="start" x="528" y="-510" font-family="Arial" font-size="15.00" fill="#bfdbfe">Renders the time of day into the region the</text>
+<text text-anchor="start" x="600" y="-493" font-family="Arial" font-size="15.00" fill="#bfdbfe">configuration gives it,</text>
+<text text-anchor="start" x="525" y="-476" font-family="Arial" font-size="15.00" fill="#bfdbfe">taken from the clock of the host running the</text>
+<text text-anchor="start" x="613" y="-459" font-family="Arial" font-size="15.00" fill="#bfdbfe">browser and kept</text>
+<text text-anchor="start" x="534" y="-442" font-family="Arial" font-size="15.00" fill="#bfdbfe">tracking real time for as long as the page</text>
+</g>
+<!-- weather -->
+<g id="node3" class="node">
+<title>weather</title>
+<polygon fill="#3b82f6" stroke="#2563eb" stroke-width="0" points="1401.5,-583 1056.5,-583 1056.5,-403 1401.5,-403 1401.5,-583"/>
+<text text-anchor="start" x="1191.5" y="-532" font-family="Arial" font-size="20.00" fill="#eff6ff">Weather</text>
+<text text-anchor="start" x="1097" y="-510" font-family="Arial" font-size="15.00" fill="#bfdbfe">Renders the weather into the region the</text>
+<text text-anchor="start" x="1140.5" y="-493" font-family="Arial" font-size="15.00" fill="#bfdbfe">configuration gives it: what</text>
+<text text-anchor="start" x="1090.5" y="-476" font-family="Arial" font-size="15.00" fill="#bfdbfe">it is doing now, and what is expected over</text>
+<text text-anchor="start" x="1144" y="-459" font-family="Arial" font-size="15.00" fill="#bfdbfe">the coming hours and the</text>
+<text text-anchor="start" x="1077" y="-442" font-family="Arial" font-size="15.00" fill="#bfdbfe">coming days, each told apart from the others,</text>
+</g>
+<!-- configuration -->
+<g id="node4" class="node">
+<title>configuration</title>
+<polygon fill="#3b82f6" stroke="#2563eb" stroke-width="0" points="2303.5,-583 1966.5,-583 1966.5,-403 2303.5,-403 2303.5,-583"/>
+<text text-anchor="start" x="1989.5" y="-532" font-family="Arial" font-size="20.00" fill="#eff6ff">Configuration load and validation</text>
+<text text-anchor="start" x="1987" y="-510" font-family="Arial" font-size="15.00" fill="#bfdbfe">Fetches the configuration on each page load</text>
+<text text-anchor="start" x="2059" y="-493" font-family="Arial" font-size="15.00" fill="#bfdbfe">and validates it against</text>
+<text text-anchor="start" x="1989.5" y="-476" font-family="Arial" font-size="15.00" fill="#bfdbfe">the schema, reporting an error it can isolate</text>
+<text text-anchor="start" x="2070" y="-459" font-family="Arial" font-size="15.00" fill="#bfdbfe">as belonging to one</text>
+<text text-anchor="start" x="1989" y="-442" font-family="Arial" font-size="15.00" fill="#bfdbfe">module rather than to the configuration as a</text>
+</g>
+<!-- layout -->
+<g id="node5" class="node">
+<title>layout</title>
+<polygon fill="#3b82f6" stroke="#2563eb" stroke-width="0" points="1856,-228 1512,-228 1512,-48 1856,-48 1856,-228"/>
+<text text-anchor="start" x="1609" y="-177" font-family="Arial" font-size="20.00" fill="#eff6ff">Layout assembly</text>
+<text text-anchor="start" x="1532.5" y="-155" font-family="Arial" font-size="15.00" fill="#bfdbfe">Places each configured module into its region</text>
+<text text-anchor="start" x="1626" y="-138" font-family="Arial" font-size="15.00" fill="#bfdbfe">of one full&#45;screen</text>
+<text text-anchor="start" x="1541.5" y="-121" font-family="Arial" font-size="15.00" fill="#bfdbfe">layout, and reflows rather than overlapping</text>
+<text text-anchor="start" x="1606.5" y="-104" font-family="Arial" font-size="15.00" fill="#bfdbfe">or scrolling sideways at</text>
+<text text-anchor="start" x="1532" y="-87" font-family="Arial" font-size="15.00" fill="#bfdbfe">narrower viewports. Holds every region out of</text>
+</g>
+<!-- modulehost -->
+<g id="node6" class="node">
+<title>modulehost</title>
+<polygon fill="#3b82f6" stroke="#2563eb" stroke-width="0" points="1856,-583 1512,-583 1512,-403 1856,-403 1856,-583"/>
+<text text-anchor="start" x="1629.5" y="-532" font-family="Arial" font-size="20.00" fill="#eff6ff">Module host</text>
+<text text-anchor="start" x="1534" y="-510" font-family="Arial" font-size="15.00" fill="#bfdbfe">Stands between the layout and one module&#39;s</text>
+<text text-anchor="start" x="1600" y="-493" font-family="Arial" font-size="15.00" fill="#bfdbfe">component, one host per</text>
+<text text-anchor="start" x="1532.5" y="-476" font-family="Arial" font-size="15.00" fill="#bfdbfe">placement. Fetches that module&#39;s payload on</text>
+<text text-anchor="start" x="1625.5" y="-459" font-family="Arial" font-size="15.00" fill="#bfdbfe">the module&#39;s own</text>
+<text text-anchor="start" x="1532" y="-442" font-family="Arial" font-size="15.00" fill="#bfdbfe">cadence, abandons a read that has not come</text>
+</g>
+<!-- viewer -->
+<g id="node7" class="node">
+<title>viewer</title>
+<polygon fill="#3b82f6" stroke="#2563eb" stroke-width="0" points="2710,-228 2384,-228 2384,-48 2710,-48 2710,-228"/>
+<text text-anchor="start" x="2516.5" y="-152" font-family="Arial" font-size="20.00" fill="#eff6ff">Viewer</text>
+<text text-anchor="start" x="2404" y="-130" font-family="Arial" font-size="15.00" fill="#bfdbfe">Reads the display. Provides no input to the</text>
+<text text-anchor="start" x="2520.5" y="-113" font-family="Arial" font-size="15.00" fill="#bfdbfe">system.</text>
+</g>
+<!-- backend -->
+<g id="node8" class="node">
+<title>backend</title>
+<polygon fill="#3b82f6" stroke="#2563eb" stroke-width="0" points="3202,-228 2854,-228 2854,-48 3202,-48 3202,-228"/>
+<text text-anchor="start" x="2902" y="-133.8" font-family="Arial" font-size="14.00" fill="#eff6ff"> </text>
+<text text-anchor="start" x="2946" y="-186" font-family="Arial" font-size="20.00" fill="#eff6ff">Backend</text>
+<text text-anchor="start" x="3180" y="-133.8" font-family="Arial" font-size="14.00" fill="#eff6ff"> </text>
+<text text-anchor="start" x="2946" y="-165.6" font-family="Arial" font-size="13.00" fill="#bfdbfe">Go</text>
+<text text-anchor="start" x="2946" y="-146" font-family="Arial" font-size="15.00" fill="#bfdbfe">Stateless HTTP proxy and static</text>
+<text text-anchor="start" x="2946" y="-129" font-family="Arial" font-size="15.00" fill="#bfdbfe">file server. Answers one route per</text>
+<text text-anchor="start" x="2946" y="-112" font-family="Arial" font-size="15.00" fill="#bfdbfe">upstream source, shaping each</text>
+<text text-anchor="start" x="2946" y="-95" font-family="Arial" font-size="15.00" fill="#bfdbfe">response into the payload the</text>
+<text text-anchor="start" x="2946" y="-78" font-family="Arial" font-size="15.00" fill="#bfdbfe">boundary</text>
+</g>
+<!-- pageshell&#45;&gt;configuration -->
+<g id="edge1" class="edge">
+<title>pageshell&#45;&gt;configuration</title>
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M315.23,-583.02C353.88,-614.03 401.03,-644.96 450,-661 604.27,-711.52 1757,-712.33 1911,-661 1956.45,-645.85 2000.1,-617.47 2036.6,-588.29"/>
+<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="2038.69,-589.98 2042.87,-583.22 2035.38,-585.9 2038.69,-589.98"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="1062.5,-671 1062.5,-707 1297.5,-707 1297.5,-671 1062.5,-671"/>
+<text text-anchor="start" x="1066" y="-692.8" font-family="Arial" font-size="14.00" fill="#c9c9c9">Asks for the configuration, and applies</text>
+<text text-anchor="start" x="1066" y="-677.8" font-family="Arial" font-size="14.00" fill="#c9c9c9">it once it validates</text>
+</g>
+<!-- pageshell&#45;&gt;layout -->
+<g id="edge2" class="edge">
+<title>pageshell&#45;&gt;layout</title>
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M394.72,-421.16C413.24,-414.61 431.92,-408.41 450,-403 818.61,-292.71 1262.21,-209.5 1504.44,-168.12"/>
+<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="1504.95,-170.69 1511.9,-166.85 1504.07,-165.52 1504.95,-170.69"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="886,-297.5 886,-333.5 1133,-333.5 1133,-297.5 886,-297.5"/>
+<text text-anchor="start" x="889.5" y="-319.3" font-family="Arial" font-size="14.00" fill="#c9c9c9">Hands over the configured modules and</text>
+<text text-anchor="start" x="889.5" y="-304.3" font-family="Arial" font-size="14.00" fill="#c9c9c9">whether the backend is serving</text>
+</g>
+<!-- clock&#45;&gt;weather -->
+<!-- configuration&#45;&gt;backend -->
+<g id="edge4" class="edge">
+<title>configuration&#45;&gt;backend</title>
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M2303.58,-478.35C2507.37,-458.84 2834.98,-416.91 2931,-343 2965.6,-316.37 2988.44,-274.33 3003.22,-235.31"/>
+<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="3005.76,-236.01 3005.89,-228.06 3000.84,-234.19 3005.76,-236.01"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="2974,-288 2974,-343 3212,-343 3212,-288 2974,-288"/>
+<text text-anchor="start" x="2977" y="-328.3" font-family="Arial" font-size="14.00" fill="#c9c9c9">Fetches the configuration, served back</text>
+<text text-anchor="start" x="2977" y="-313.3" font-family="Arial" font-size="14.00" fill="#c9c9c9">unparsed</text>
+<text text-anchor="start" x="2977" y="-293.9" font-family="Arial" font-size="12.00" fill="#c9c9c9">[ HTTP ]</text>
+</g>
+<!-- layout&#45;&gt;modulehost -->
+<g id="edge5" class="edge">
+<title>layout&#45;&gt;modulehost</title>
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M1684,-228.05C1684,-279.05 1684,-343.08 1684,-395.31"/>
+<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="1681.38,-395.42 1684,-402.92 1686.63,-395.42 1681.38,-395.42"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="1684,-305 1684,-326 1948,-326 1948,-305 1684,-305"/>
+<text text-anchor="start" x="1687" y="-311.3" font-family="Arial" font-size="14.00" fill="#c9c9c9">Mounts one host per configured placement</text>
+</g>
+<!-- modulehost&#45;&gt;viewer -->
+<g id="edge6" class="edge">
+<title>modulehost&#45;&gt;viewer</title>
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M2344,-239.83C2352.71,-236.05 2361.7,-232.11 2371,-228 2372.85,-227.18 2374.71,-226.36 2376.57,-225.52"/>
+<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="2378.04,-227.73 2383.8,-222.25 2375.88,-222.95 2378.04,-227.73"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="2115.65,-231.24 2115.65,-282.24 2363.65,-282.24 2363.65,-231.24 2115.65,-231.24"/>
+<text text-anchor="start" x="2118.65" y="-267.54" font-family="Arial" font-size="14.00" fill="#c9c9c9">Renders the configured modules, legibly</text>
+<text text-anchor="start" x="2118.65" y="-252.54" font-family="Arial" font-size="14.00" fill="#c9c9c9">says when one failed, and mirrors the</text>
+<text text-anchor="start" x="2118.65" y="-237.54" font-family="Arial" font-size="14.00" fill="#c9c9c9">rest</text>
+</g>
+<!-- modulehost&#45;&gt;backend -->
+<g id="edge7" class="edge">
+<title>modulehost&#45;&gt;backend</title>
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M1856.18,-420.88C1874.86,-414.34 1893.72,-408.22 1912,-403 2051.98,-363.02 2091.29,-371.74 2234,-343 2470.72,-295.32 2532.26,-292.36 2765,-228 2791.55,-220.66 2819.35,-212.16 2846.52,-203.39"/>
+<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="2847.46,-205.84 2853.79,-201.03 2845.84,-200.85 2847.46,-205.84"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="2518,-295.5 2518,-335.5 2747,-335.5 2747,-295.5 2518,-295.5"/>
+<text text-anchor="start" x="2521.5" y="-321.3" font-family="Arial" font-size="14.00" fill="#c9c9c9">Fetches the payload for each module</text>
+<text text-anchor="start" x="2521.5" y="-301.9" font-family="Arial" font-size="12.00" fill="#c9c9c9">[ HTTP / JSON ]</text>
+</g>
+</g>
+</svg>

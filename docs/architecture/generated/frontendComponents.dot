@@ -1,0 +1,127 @@
+digraph {
+    graph [TBbalance=min,
+        bgcolor=transparent,
+        compound=true,
+        fontname=Arial,
+        fontsize=20,
+        labeljust=l,
+        labelloc=t,
+        layout=dot,
+        likec4_viewId=frontendComponents,
+        nodesep=1.528,
+        outputorder=nodesfirst,
+        pad=0.209,
+        rankdir=TB,
+        ranksep=1.667,
+        splines=spline
+    ];
+    node [color="#2563eb",
+        fillcolor="#3b82f6",
+        fontcolor="#eff6ff",
+        fontname=Arial,
+        penwidth=0,
+        shape=rect,
+        style=filled
+    ];
+    edge [arrowsize=0.75,
+        color="#8D8D8D",
+        fontcolor="#C9C9C9",
+        fontname=Arial,
+        fontsize=14,
+        penwidth=2,
+        style=""
+    ];
+    subgraph cluster_frontend {
+        graph [color="#1b3d88",
+            fillcolor="#194b9e",
+            label=<<FONT POINT-SIZE="11" COLOR="#bfdbfeb3"><B>FRONTEND</B></FONT>>,
+            likec4_depth=1,
+            likec4_id="wisekiosk.frontend",
+            likec4_level=0,
+            margin=40,
+            style=filled
+        ];
+        pageshell [group="wisekiosk.frontend",
+            height=2.5,
+            label=<<TABLE BORDER="0" CELLPADDING="0" CELLSPACING="4"><TR><TD><FONT POINT-SIZE="20">Page shell</FONT></TD></TR><TR><TD><FONT POINT-SIZE="15" COLOR="#bfdbfe">Loads and renders before any configuration is<BR/>applied, so a<BR/>configuration that cannot be applied at all<BR/>is reported on a page<BR/>that exists rather than on a blank one. Asks</FONT></TD></TR></TABLE>>,
+            likec4_id="wisekiosk.frontend.pageShell",
+            likec4_level=1,
+            margin="0.223,0.223",
+            width=4.445];
+        clock [height=2.5,
+            label=<<TABLE BORDER="0" CELLPADDING="0" CELLSPACING="4"><TR><TD><FONT POINT-SIZE="20">Clock</FONT></TD></TR><TR><TD><FONT POINT-SIZE="15" COLOR="#bfdbfe">Renders the time of day into the region the<BR/>configuration gives it,<BR/>taken from the clock of the host running the<BR/>browser and kept<BR/>tracking real time for as long as the page</FONT></TD></TR></TABLE>>,
+            likec4_id="wisekiosk.frontend.clock",
+            likec4_level=1,
+            margin="0.223,0.223",
+            width=4.445];
+        weather [height=2.5,
+            label=<<TABLE BORDER="0" CELLPADDING="0" CELLSPACING="4"><TR><TD><FONT POINT-SIZE="20">Weather</FONT></TD></TR><TR><TD><FONT POINT-SIZE="15" COLOR="#bfdbfe">Renders the weather into the region the<BR/>configuration gives it: what<BR/>it is doing now, and what is expected over<BR/>the coming hours and the<BR/>coming days, each told apart from the others,</FONT></TD></TR></TABLE>>,
+            likec4_id="wisekiosk.frontend.weather",
+            likec4_level=1,
+            margin="0.223,0.223",
+            width=4.445];
+        configuration [group="wisekiosk.frontend",
+            height=2.5,
+            label=<<TABLE BORDER="0" CELLPADDING="0" CELLSPACING="4"><TR><TD><FONT POINT-SIZE="20">Configuration load and validation</FONT></TD></TR><TR><TD><FONT POINT-SIZE="15" COLOR="#bfdbfe">Fetches the configuration on each page load<BR/>and validates it against<BR/>the schema, reporting an error it can isolate<BR/>as belonging to one<BR/>module rather than to the configuration as a</FONT></TD></TR></TABLE>>,
+            likec4_id="wisekiosk.frontend.configuration",
+            likec4_level=1,
+            margin="0.223,0.223",
+            width=4.445];
+        layout [group="wisekiosk.frontend",
+            height=2.5,
+            label=<<TABLE BORDER="0" CELLPADDING="0" CELLSPACING="4"><TR><TD><FONT POINT-SIZE="20">Layout assembly</FONT></TD></TR><TR><TD><FONT POINT-SIZE="15" COLOR="#bfdbfe">Places each configured module into its region<BR/>of one full-screen<BR/>layout, and reflows rather than overlapping<BR/>or scrolling sideways at<BR/>narrower viewports. Holds every region out of</FONT></TD></TR></TABLE>>,
+            likec4_id="wisekiosk.frontend.layout",
+            likec4_level=1,
+            margin="0.223,0.223",
+            width=4.445];
+        modulehost [group="wisekiosk.frontend",
+            height=2.5,
+            label=<<TABLE BORDER="0" CELLPADDING="0" CELLSPACING="4"><TR><TD><FONT POINT-SIZE="20">Module host</FONT></TD></TR><TR><TD><FONT POINT-SIZE="15" COLOR="#bfdbfe">Stands between the layout and one module's<BR/>component, one host per<BR/>placement. Fetches that module's payload on<BR/>the module's own<BR/>cadence, abandons a read that has not come</FONT></TD></TR></TABLE>>,
+            likec4_id="wisekiosk.frontend.moduleHost",
+            likec4_level=1,
+            margin="0.223,0.223",
+            width=4.445];
+    }
+    pageshell -> configuration [arrowhead=normal,
+        label=<<TABLE BORDER="0" CELLPADDING="3" CELLSPACING="0" BGCOLOR="#18191BA0"><TR><TD ALIGN="TEXT" BALIGN="LEFT"><FONT POINT-SIZE="14">Asks for the configuration, and applies<BR/>it once it validates</FONT></TD></TR></TABLE>>,
+        likec4_id="1kr3p7b",
+        style=dashed,
+        weight=2];
+    pageshell -> layout [arrowhead=normal,
+        label=<<TABLE BORDER="0" CELLPADDING="3" CELLSPACING="0" BGCOLOR="#18191BA0"><TR><TD ALIGN="TEXT" BALIGN="LEFT"><FONT POINT-SIZE="14">Hands over the configured modules and<BR/>whether the backend is serving</FONT></TD></TR></TABLE>>,
+        likec4_id=b7hb7h,
+        style=dashed];
+    clock -> weather [style=invis];
+    viewer [height=2.5,
+        label=<<TABLE BORDER="0" CELLPADDING="0" CELLSPACING="4"><TR><TD><FONT POINT-SIZE="20">Viewer</FONT></TD></TR><TR><TD><FONT POINT-SIZE="15" COLOR="#bfdbfe">Reads the display. Provides no input to the<BR/>system.</FONT></TD></TR></TABLE>>,
+        likec4_id=viewer,
+        likec4_level=0,
+        margin="0.223,0.223",
+        width=4.445];
+    backend [height=2.5,
+        label=<<TABLE BORDER="0" CELLPADDING="0" CELLSPACING="4"><TR><TD ROWSPAN="3" WIDTH="76"> </TD><TD ALIGN="TEXT" BALIGN="LEFT"><FONT POINT-SIZE="20">Backend</FONT></TD><TD ROWSPAN="3" WIDTH="16"> </TD></TR><TR><TD ALIGN="TEXT" BALIGN="LEFT"><FONT POINT-SIZE="13" COLOR="#bfdbfe">Go</FONT></TD></TR><TR><TD ALIGN="TEXT" BALIGN="LEFT"><FONT POINT-SIZE="15" COLOR="#bfdbfe">Stateless HTTP proxy and static<BR/>file server. Answers one route per<BR/>upstream source, shaping each<BR/>response into the payload the<BR/>boundary</FONT></TD></TR></TABLE>>,
+        likec4_id="wisekiosk.backend",
+        likec4_level=0,
+        margin="0.112,0.223",
+        width=4.445];
+    configuration -> backend [arrowhead=normal,
+        label=<<TABLE BORDER="0" CELLPADDING="3" CELLSPACING="0" BGCOLOR="#18191BA0"><TR><TD ALIGN="TEXT" BALIGN="LEFT"><FONT POINT-SIZE="14">Fetches the configuration, served back<BR/>unparsed</FONT></TD></TR><TR><TD ALIGN="TEXT" BALIGN="LEFT"><FONT POINT-SIZE="12">[ HTTP ]</FONT></TD></TR></TABLE>>,
+        likec4_id="12rdbq6",
+        style=dashed];
+    layout -> modulehost [arrowhead=normal,
+        label=<<TABLE BORDER="0" CELLPADDING="3" CELLSPACING="0" BGCOLOR="#18191BA0"><TR><TD ALIGN="TEXT" BALIGN="LEFT"><FONT POINT-SIZE="14">Mounts one host per configured placement</FONT></TD></TR></TABLE>>,
+        likec4_id=ajam3u,
+        style=dashed,
+        weight=2];
+    modulehost -> viewer [arrowhead=normal,
+        likec4_id="1421hpp",
+        ltail=cluster_frontend,
+        minlen=1,
+        style=dashed,
+        weight=2,
+        xlabel=<<TABLE BORDER="0" CELLPADDING="3" CELLSPACING="0" BGCOLOR="#18191BA0"><TR><TD ALIGN="TEXT" BALIGN="LEFT"><FONT POINT-SIZE="14">Renders the configured modules, legibly<BR/>says when one failed, and mirrors the<BR/>rest</FONT></TD></TR></TABLE>>];
+    modulehost -> backend [arrowhead=normal,
+        label=<<TABLE BORDER="0" CELLPADDING="3" CELLSPACING="0" BGCOLOR="#18191BA0"><TR><TD ALIGN="TEXT" BALIGN="LEFT"><FONT POINT-SIZE="14">Fetches the payload for each module</FONT></TD></TR><TR><TD ALIGN="TEXT" BALIGN="LEFT"><FONT POINT-SIZE="12">[ HTTP / JSON ]</FONT></TD></TR></TABLE>>,
+        likec4_id=jshg2c,
+        style=dashed];
+}

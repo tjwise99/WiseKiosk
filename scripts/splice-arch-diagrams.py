@@ -1,14 +1,16 @@
 #!/usr/bin/env python3
-"""The Mermaid diagrams embedded in docs/ARCHITECTURE.md are generated, never
+"""The diagrams embedded in docs/ARCHITECTURE.md are generated, never
 hand-maintained: each `<!-- arch-export:begin <file> -->` …
 `<!-- arch-export:end <file> -->` marker pair is rewritten from the named
-artifact under docs/architecture/, wrapped in a ```mermaid fence. Enforces the
-"one definition, many generated views" rule for the embedded diagrams — a hand
-edit inside a marker region is overwritten here and caught by the staleness
-gate. Exits non-zero on unpaired or malformed markers, a marker naming a
-missing (or escaping) artifact, or a document with no markers at all.
+artifact under docs/architecture/, referenced as a Markdown image. Enforces
+the "one definition, many generated views" rule for the embedded diagrams — a
+hand edit inside a marker region is overwritten here and caught by the
+staleness gate. Exits non-zero on unpaired or malformed markers, a marker
+naming a missing (or escaping) artifact, or a document with no markers at
+all.
 
-Run as the final step of `just arch-export`. No dependencies: Python stdlib only.
+Run as the step of `just arch-export` after `scripts/render-arch-svg.py`. No
+dependencies: Python stdlib only.
 
 What this has been run against, in both directions: cases/check-arch.md
 """
@@ -60,15 +62,10 @@ for i in range(0, len(markers), 2):
         fail(f"{begin['name']}: resolves outside docs/architecture/ through a symlink")
     if not os.path.isfile(artifact):
         fail(f"{begin['name']}: is not a regular file")
-    body = Path(artifact).read_text(encoding="utf-8")
-    if not body.endswith("\n"):
-        body += "\n"
-    # The body is about to be wrapped in a ```mermaid fence: a fence marker inside it would close
-    # that fence early and splice the remainder into the document as running Markdown.
-    if re.search(r"^\s*```", body, flags=re.M):
-        fail(f"{begin['name']}: contains a ``` fence marker, which would break the generated fence")
+    relative = os.path.relpath(artifact, TARGET_PATH.parent)
+    alt = Path(artifact).stem
     out += text[cursor : begin["end"]]
-    out += "\n\n```mermaid\n" + body + "```\n\n"
+    out += f"\n\n![{alt}]({relative})\n\n"
     cursor = end["start"]
 out += text[cursor:]
 

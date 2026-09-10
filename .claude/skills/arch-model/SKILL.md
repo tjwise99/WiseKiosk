@@ -12,7 +12,7 @@ description: >-
 
 Sources: [`docs/architecture/model/`](../../../docs/architecture/model/) — `wisekiosk.likec4` (logical),
 `deployment.likec4`, `views.likec4`. The boundary, what earns an element a place, and where a tag sits
-are [ADR 0019 rev 7](../../../docs/decisions/0019-boundary-at-what-deploys-and-tag-tier.md)'s;
+are [ADR 0019 rev 8](../../../docs/decisions/0019-boundary-at-what-deploys-and-tag-tier.md)'s;
 [`docs/architecture/README.md`](../../../docs/architecture/README.md) holds the declaring and editing
 rules.
 
@@ -67,12 +67,12 @@ Where an item can bind nowhere, the model grows to draw what it obliges. There i
 ## Regenerate, and commit together
 
 ```sh
-just arch-export     # regenerates docs/architecture/generated/*.mmd and splices ARCHITECTURE.md
+just arch-export     # regenerates docs/architecture/generated/*.dot / .svg and splices ARCHITECTURE.md
 ```
 
 **`check-arch` diffs the regenerated artifacts against `HEAD`, not the working tree.** So the model,
-the generated `.mmd` files and `docs/ARCHITECTURE.md` are committed **together**; a model edit sitting
-uncommitted reads as stale however many times it is regenerated.
+the generated `.dot`/`.svg` files and `docs/ARCHITECTURE.md` are committed **together**; a model edit
+sitting uncommitted reads as stale however many times it is regenerated.
 
 **Adding an element moves a diagram; adding or moving a tag moves nothing** — no tag renders. If a tag
 change produced a diff, something else changed too.

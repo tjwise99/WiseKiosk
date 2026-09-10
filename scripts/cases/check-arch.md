@@ -1,10 +1,13 @@
-# `check-arch` — `splice-arch-diagrams.py`
+# `check-arch` — `render-arch-svg.py` / `splice-arch-diagrams.py`
 
 The inputs this check has been run against, in both directions. What it *asserts*, and why, is
 [`docs/CI.md`](../../docs/CI.md)'s; how to run a case is [`../README.md`](../README.md)'s.
 
-The recipe runs `likec4 validate`, `likec4 codegen`, this script, and `git diff --exit-code`. The
-script fails on marker problems; staleness is caught by the diff.
+The recipe runs `likec4 validate`, `likec4 gen dot`, `render-arch-svg.py` (renders each `.dot` to
+`.svg` with the system Graphviz `dot` binary, stripping its version comment), `splice-arch-diagrams.py`
+(splices an `![alt](path)` image reference, not a fence, so a fence marker inside the artifact no
+longer applies), and `git diff --exit-code`. The splice script fails on marker problems; staleness is
+caught by the diff.
 
 | Direction | Input |
 |---|---|
@@ -15,10 +18,9 @@ script fails on marker problems; staleness is caught by the diff.
 | Must fail | a marker naming an artifact that does not exist |
 | Must fail | a marker path escaping `docs/architecture/` textually |
 | Must fail | a **symlink** artifact resolving outside `docs/architecture/` |
-| Must fail | an artifact containing a fence marker |
 | Must pass | a well-formed pair; two distinct pairs; an artifact in a subdirectory |
-| Must pass | a second run — idempotent, md5 stable, reporting *already current* |
-| Must pass | an artifact containing backticks mid-line, which closes no fence |
+| Must pass | a second run — idempotent, byte-stable, reporting *already current* |
+| Must pass (`render-arch-svg.py`) | a second `dot -Tsvg` render of an unchanged `.dot` — byte-identical (#115, empirical) |
 
 The symlink case was observed splicing a file from outside the repository into the document with
 exit 0. Confirmed separately, because only a real run shows it: a hand edit inside a marker region is
