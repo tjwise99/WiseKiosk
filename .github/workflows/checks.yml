@@ -383,15 +383,18 @@ jobs:
 
   coverage:
     name: coverage
-    # The non-blocking unit-test coverage bar (ADR 0005 rev 3, gate 3): go-test-coverage over the
-    # backend, and one merged Istanbul gate over every frontend `.ts` and `.svelte` file — the unit
-    # tier (`@vitest/coverage-istanbul`) and the render tier (`vite-plugin-istanbul` +
+    # The unit-test coverage bar (ADR 0005 rev 4, gate 3): go-test-coverage over the backend, and
+    # one merged Istanbul gate over every frontend `.ts` and `.svelte` file — the unit tier
+    # (`@vitest/coverage-istanbul`) and the render tier (`vite-plugin-istanbul` +
     # `coverage-teardown.ts`) each write their own coverage-final.json, and
-    # `scripts/merge-coverage.ts` unions the two and enforces the bar — each 90% per-file and
-    # total. Not in the required-checks ruleset, so a red run does not block a merge — #300
-    # coverage gate blocking is what promotes it. The recipe body is the one spelling of what
-    # runs, here and locally. No secrets: the tests serve over loopback and reach no network
-    # origin.
+    # `scripts/merge-coverage.ts` unions the two and enforces the bar its own config sets — each
+    # per-file and total. `gcov2lcov` then converts the backend's Go coverprofile to lcov (via the
+    # `backend/go.mod` tool directive) and `grcov` merges it with the frontend's own lcov into one
+    # diagnostic, never-gating HTML report over both languages, uploaded as an artifact. This job
+    # runs the same recipe `just verify` depends on — though the required-checks ruleset naming
+    # it a required status check, so a red run here would also block a merge at the platform
+    # level, stays a separate, later action. The recipe body is the one spelling of what runs,
+    # here and locally. No secrets: the tests serve over loopback and reach no network origin.
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -419,8 +422,19 @@ jobs:
       - name: Install the browser the render tier drives
         run: just render-install
 
-      - name: The unit-test coverage bar over the backend and the frontend
+      - name: Install grcov, pinned
+        uses: taiki-e/install-action@c3ec0de9ae7f1019cea21aa96aa0a895b9552063 # v2.87.9
+        with:
+          tool: grcov
+
+      - name: The unit-test coverage bar over the backend and the frontend, and the unified report
         run: just check-coverage
+
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        if: always()
+        with:
+          name: coverage-report
+          path: coverage/unified-report/
 
   image-tests:
     name: image-tests

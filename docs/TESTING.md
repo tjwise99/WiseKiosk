@@ -205,7 +205,7 @@ or [`DEPLOYMENT.md`](DEPLOYMENT.md) where it is not
   an absent item is visible to the gate and this is not.
 - **A test's declaration is its trace, and the item owns that trace.** The `TST` item that a test
   discharges names *it* — one `references` entry per verifying site, keyed on the line that declares
-  the test ([ADR 0005 rev 3](decisions/0005-traceability-gating.md)). **The citation is the trace and
+  the test ([ADR 0005 rev 4](decisions/0005-traceability-gating.md)). **The citation is the trace and
   nothing reads a test's name**, so reading a test's obligation means reading the item that cites it.
 
   **A module's cited tests carry the citing item's id in the name they declare as well** —
@@ -229,29 +229,35 @@ matters — that two things agree, that a control functions where deployed — i
 construction, so a high number buys confidence it has not earned. Gate on the standing obligations
 above; read coverage to find what they missed.
 
-**`just check-coverage` is a chosen 90% bar over first-party product source, non-blocking**
-(gate 3, [ADR 0005 rev 3](decisions/0005-traceability-gating.md)): per-file and total, tree-blind —
-it proves source is exercised, not that a `TST` item claims it. Two maintained tools, one per
-language:
+**`just check-coverage` gates a chosen coverage bar over first-party product source**
+(gate 3, [ADR 0005 rev 4](decisions/0005-traceability-gating.md)): per-file and total, tree-blind —
+it proves source is exercised, not that a `TST` item claims it. Each language's own config holds the
+number — `backend/.testcoverage.yml`, `frontend/coverage-thresholds.json` — never this record. One
+tool for the backend, an authored script over two tools for the frontend:
 
-- **Backend** — `go-test-coverage` against a `-coverpkg=./...` profile, 90% **statement** coverage,
-  per-file and total. Go's own toolchain implements no other coverage measure — branch coverage is
-  unimplemented ([golang/go#28888](https://github.com/golang/go/issues/28888)), and "function"
-  coverage is a per-function statement percentage rather than a distinct measure — so the backend is
-  gated on statement coverage, stated rather than approximated with a number the toolchain cannot
-  produce.
-- **Frontend** — Vitest's own `coverage.thresholds` (`@vitest/coverage-v8`), 90% line, branch,
-  function and statement, per file. `coverage.include` reports every matching file, so an
-  untested file counts as 0% rather than being silently absent — verified empirically against this
-  tree's render `.svelte` components, which carry no Vitest test (they are Playwright-tested
-  instead): each is instrumented and reported at 0%.
+- **Backend** — `go-test-coverage` against a `-coverpkg=./...` profile, the **statement**-coverage
+  bar `backend/.testcoverage.yml` configures, per-file and total. Go's own toolchain implements no
+  other coverage measure — branch coverage is unimplemented
+  ([golang/go#28888](https://github.com/golang/go/issues/28888)), and "function" coverage is a
+  per-function statement percentage rather than a distinct measure — so the backend is gated on
+  statement coverage, stated rather than approximated with a number the toolchain cannot produce.
+- **Frontend** — the unit tier (`@vitest/coverage-istanbul`) and the render tier
+  (`vite-plugin-istanbul`, torn down into a `coverage-final.json` by
+  `tests/render/coverage-teardown.ts`) each instrument the same `.ts`/`.svelte` sources and write
+  their own Istanbul coverage; neither Vitest nor Playwright carries a threshold of its own.
+  `frontend/scripts/merge-coverage.ts` unions the two via `istanbul-lib-coverage` and enforces the
+  one bar value in `frontend/coverage-thresholds.json`, per file, across all four metrics —
+  line, branch, function and statement. Its **completeness guard** fails the run if a file either
+  tier is meant to instrument carries no coverage at all — the population is read from each tier's
+  own instrumentation glob, so a file either tier stops importing is caught rather than
+  silently absent from the report; a `.svelte` file, render-tested rather than Vitest-tested, is
+  covered by the render tier's own union member instead of reading a permanent, false 0%.
 
-It is a separate CI job, outside `verify` and the required-checks ruleset: a red `check-coverage` run
-does not block a merge. `just check-coverage` runs each tool's command in sequence and stops at the
-first one under its bar, so both languages' reports appearing together in one run — and with it, the
-render tier's 0% being visible in a run where the backend is also under bar — is #300 coverage gate
-blocking's, along with promoting the gate and designing the exemption register, neither of which
-exists while it is non-blocking.
+`check-coverage` is folded into `just verify`, and runs each command in sequence, stopping at the
+first one under its bar — a run where the backend fails does not reach the frontend commands. After
+both gates, `gcov2lcov` converts the backend's Go coverprofile to lcov and `grcov` merges it with the
+frontend's own `merge-coverage.ts`-emitted lcov into one further, diagnostic-only HTML report over
+both languages together; neither gate's threshold or exit status is affected by it.
 
 ---
 

@@ -19,8 +19,23 @@ const FRONTEND_ROOT = fileURLToPath(new URL('..', import.meta.url));
 const UNIT_FINAL = fileURLToPath(new URL('../coverage/unit/coverage-final.json', import.meta.url));
 const RENDER_FINAL = fileURLToPath(new URL('../coverage/render/coverage-final.json', import.meta.url));
 const REPORT_DIR = fileURLToPath(new URL('../coverage/frontend-report', import.meta.url));
+const THRESHOLDS = fileURLToPath(new URL('../coverage-thresholds.json', import.meta.url));
 
-const BAR = 90;
+/**
+ * The one bar applied to all four metrics, read from the sibling config file. A missing or
+ * non-numeric `bar` throws rather than gating against `undefined`, which every comparison below
+ * would pass vacuously.
+ */
+async function readBar(): Promise<number> {
+  const parsed: unknown = JSON.parse(await readFile(THRESHOLDS, 'utf8'));
+  const bar = (parsed as { bar?: unknown }).bar;
+  if (typeof bar !== 'number' || !Number.isFinite(bar)) {
+    throw new Error(`${THRESHOLDS}: "bar" must be a number, got ${JSON.stringify(bar)}`);
+  }
+  return bar;
+}
+
+const BAR = await readBar();
 const METRICS = ['statements', 'branches', 'functions', 'lines'] as const;
 
 /**
@@ -57,7 +72,7 @@ async function read(filePath: string): Promise<unknown> {
 /**
  * Unions the unit tier's coverage (`vitest.config.ts`'s `json` reporter) with the render tier's
  * (`tests/render/coverage-teardown.ts`) into one frontend-wide map and enforces the per-file 90% bar
- * over it (Gate 3, ADR 0005 rev 3) — the one gate both tiers are scored by, since both now
+ * over it (Gate 3, ADR 0005 rev 4) — the one gate both tiers are scored by, since both now
  * instrument the same original `.ts`/`.svelte` sources through `istanbul-lib-instrument`, so a file
  * either tier executes contributes to the same statement/branch map rather than replacing the
  * other's. `istanbul-lib-coverage`'s own `.merge()` is what does the union; nothing here re-derives
