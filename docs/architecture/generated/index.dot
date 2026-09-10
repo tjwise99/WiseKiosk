@@ -33,44 +33,36 @@ digraph {
     ];
     operator [height=2.5,
         label=<<TABLE BORDER="0" CELLPADDING="0" CELLSPACING="4"><TR><TD><FONT POINT-SIZE="20">Operator</FONT></TD></TR><TR><TD><FONT POINT-SIZE="15" COLOR="#bfdbfe">Deploys WiseKiosk, authors its configuration<BR/>and supplies its secrets.</FONT></TD></TR></TABLE>>,
-        likec4_id=operator,
         likec4_level=0,
         margin="0.223,0.223",
         width=4.445];
     wisekiosk [height=2.5,
         label=<<TABLE BORDER="0" CELLPADDING="0" CELLSPACING="4"><TR><TD><FONT POINT-SIZE="20">WiseKiosk</FONT></TD></TR><TR><TD><FONT POINT-SIZE="15" COLOR="#bfdbfe">Full-screen, config-driven smart-mirror<BR/>display. The boundary is what<BR/>deploys: the published container image and<BR/>what it serves.</FONT></TD></TR></TABLE>>,
-        likec4_id=wisekiosk,
         likec4_level=0,
         margin="0.223,0.223",
         width=4.445];
     operator -> wisekiosk [arrowhead=normal,
         label=<<TABLE BORDER="0" CELLPADDING="3" CELLSPACING="0" BGCOLOR="#18191BA0"><TR><TD ALIGN="TEXT" BALIGN="LEFT"><FONT POINT-SIZE="14">Supplies the secret for each source</FONT></TD></TR></TABLE>>,
-        likec4_id="302qxf",
         style=dashed];
     operator -> wisekiosk [arrowhead=normal,
         label=<<TABLE BORDER="0" CELLPADDING="3" CELLSPACING="0" BGCOLOR="#18191BA0"><TR><TD ALIGN="TEXT" BALIGN="LEFT"><FONT POINT-SIZE="14">Places the configuration into the served<BR/>tree</FONT></TD></TR></TABLE>>,
-        likec4_id="1s5tcp2",
         style=dashed];
     viewer [height=2.5,
         label=<<TABLE BORDER="0" CELLPADDING="0" CELLSPACING="4"><TR><TD><FONT POINT-SIZE="20">Viewer</FONT></TD></TR><TR><TD><FONT POINT-SIZE="15" COLOR="#bfdbfe">Reads the display. Provides no input to the<BR/>system.</FONT></TD></TR></TABLE>>,
-        likec4_id=viewer,
         likec4_level=0,
         margin="0.223,0.223",
         width=4.445];
     wisekiosk -> viewer [arrowhead=normal,
         label=<<TABLE BORDER="0" CELLPADDING="3" CELLSPACING="0" BGCOLOR="#18191BA0"><TR><TD ALIGN="TEXT" BALIGN="LEFT"><FONT POINT-SIZE="14">Renders the configured modules, legibly<BR/>says when one failed, and mirrors the<BR/>rest</FONT></TD></TR></TABLE>>,
-        likec4_id=ah3j9p,
         minlen=1,
         style=dashed];
     openmeteo [height=2.5,
         label=<<TABLE BORDER="0" CELLPADDING="0" CELLSPACING="4"><TR><TD><FONT POINT-SIZE="20">Open-Meteo</FONT></TD></TR><TR><TD><FONT POINT-SIZE="15" COLOR="#bfdbfe">The weather service the weather module reads.<BR/>Run by somebody else and<BR/>outside the boundary. Which service this is,<BR/>is an edit to this<BR/>repository: no requirement names it, and the</FONT></TD></TR></TABLE>>,
-        likec4_id=openMeteo,
         likec4_level=0,
         margin="0.223,0.223",
         width=4.445];
     wisekiosk -> openmeteo [arrowhead=normal,
         label=<<TABLE BORDER="0" CELLPADDING="3" CELLSPACING="0" BGCOLOR="#18191BA0"><TR><TD ALIGN="TEXT" BALIGN="LEFT"><FONT POINT-SIZE="14">Fetches the weather for the location a<BR/>request names</FONT></TD></TR><TR><TD ALIGN="TEXT" BALIGN="LEFT"><FONT POINT-SIZE="12">[ HTTPS ]</FONT></TD></TR></TABLE>>,
-        likec4_id="1escsvp",
         minlen=1,
         style=dashed];
 }

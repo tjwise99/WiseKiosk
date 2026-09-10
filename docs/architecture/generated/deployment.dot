@@ -36,7 +36,6 @@ digraph {
     penwidth = 0;
   ];
   "publishedimage" [
-    likec4_id = "publishedImage";
     likec4_level = 0;
     label = <<TABLE BORDER="0" CELLPADDING="0" CELLSPACING="4"><TR><TD><FONT POINT-SIZE="20">Published image</FONT></TD></TR><TR><TD><FONT POINT-SIZE="15" COLOR="#bfdbfe">The one artifact the project publishes, built<BR/>for each architecture it<BR/>supports. Carries the backend binary and the<BR/>frontend bundle, and declares<BR/>the user the backend runs as. Holds no</FONT></TD></TR></TABLE>>;
     margin = "0.223,0.223";
@@ -44,7 +43,6 @@ digraph {
     height = 2.5;
   ];
   "configurationfile" [
-    likec4_id = "containerHost.configurationFile";
     likec4_level = 1;
     label = <<TABLE BORDER="0" CELLPADDING="0" CELLSPACING="4"><TR><TD><FONT POINT-SIZE="20">Configuration file</FONT></TD></TR><TR><TD><FONT POINT-SIZE="15" COLOR="#bfdbfe">The operator's configuration, placed on the<BR/>host and mounted into the<BR/>container. Carries every deployment-specific<BR/>value, including the depth of<BR/>the masked band the display page keeps its</FONT></TD></TR></TABLE>>;
     margin = "0.223,0.223";
@@ -52,7 +50,6 @@ digraph {
     height = 2.5;
   ];
   "secretfiles" [
-    likec4_id = "containerHost.secretFiles";
     likec4_level = 1;
     label = <<TABLE BORDER="0" CELLPADDING="0" CELLSPACING="4"><TR><TD><FONT POINT-SIZE="20">Secret files</FONT></TD></TR><TR><TD><FONT POINT-SIZE="15" COLOR="#bfdbfe">One file per secret, placed on the host and<BR/>mounted into the container. The<BR/>backend is given each secret's name; the<BR/>value never travels in the<BR/>configuration.</FONT></TD></TR></TABLE>>;
     margin = "0.223,0.223";
@@ -60,7 +57,6 @@ digraph {
     height = 2.5;
   ];
   "nativeconfigurationfile" [
-    likec4_id = "nativeHost.nativeConfigurationFile";
     likec4_level = 1;
     label = <<TABLE BORDER="0" CELLPADDING="0" CELLSPACING="4"><TR><TD><FONT POINT-SIZE="20">Configuration file</FONT></TD></TR><TR><TD><FONT POINT-SIZE="15" COLOR="#bfdbfe">The operator's configuration, placed on the<BR/>host in the tree the backend<BR/>serves. Carries every deployment-specific<BR/>value, as the container host's<BR/>copy does.</FONT></TD></TR></TABLE>>;
     margin = "0.223,0.223";
@@ -68,7 +64,6 @@ digraph {
     height = 2.5;
   ];
   "nativesecretfiles" [
-    likec4_id = "nativeHost.nativeSecretFiles";
     likec4_level = 1;
     label = <<TABLE BORDER="0" CELLPADDING="0" CELLSPACING="4"><TR><TD><FONT POINT-SIZE="20">Secret files</FONT></TD></TR><TR><TD><FONT POINT-SIZE="15" COLOR="#bfdbfe">One file per secret, placed on the host. The<BR/>backend is given each<BR/>secret's name; the value never travels in the<BR/>configuration.</FONT></TD></TR></TABLE>>;
     margin = "0.223,0.223";
@@ -76,7 +71,6 @@ digraph {
     height = 2.5;
   ];
   "frontend" [
-    likec4_id = "displayHost.displayBrowser.frontend";
     likec4_level = 2;
     label = <<TABLE BORDER="0" CELLPADDING="0" CELLSPACING="4"><TR><TD ROWSPAN="3" WIDTH="76"> </TD><TD ALIGN="TEXT" BALIGN="LEFT"><FONT POINT-SIZE="20">Frontend</FONT></TD><TD ROWSPAN="3" WIDTH="16"> </TD></TR><TR><TD ALIGN="TEXT" BALIGN="LEFT"><FONT POINT-SIZE="13" COLOR="#bfdbfe">Svelte 5, static single-page bundle</FONT></TD></TR><TR><TD ALIGN="TEXT" BALIGN="LEFT"><FONT POINT-SIZE="15" COLOR="#bfdbfe">Runs in the browser on the display<BR/>host. Validates the configuration<BR/>before applying it, assembles the<BR/>configured modules into one<BR/>full-screen layout, and renders</FONT></TD></TR></TABLE>>;
     margin = "0.112,0.223";
@@ -84,7 +78,6 @@ digraph {
     height = 2.5;
   ];
   "backend" [
-    likec4_id = "containerHost.runningContainer.backend";
     likec4_level = 2;
     label = <<TABLE BORDER="0" CELLPADDING="0" CELLSPACING="4"><TR><TD ROWSPAN="3" WIDTH="76"> </TD><TD ALIGN="TEXT" BALIGN="LEFT"><FONT POINT-SIZE="20">Backend</FONT></TD><TD ROWSPAN="3" WIDTH="16"> </TD></TR><TR><TD ALIGN="TEXT" BALIGN="LEFT"><FONT POINT-SIZE="13" COLOR="#bfdbfe">Go</FONT></TD></TR><TR><TD ALIGN="TEXT" BALIGN="LEFT"><FONT POINT-SIZE="15" COLOR="#bfdbfe">Stateless HTTP proxy and static<BR/>file server. Answers one route per<BR/>upstream source, shaping each<BR/>response into the payload the<BR/>boundary</FONT></TD></TR></TABLE>>;
     margin = "0.112,0.223";
@@ -92,7 +85,6 @@ digraph {
     height = 2.5;
   ];
   "backend_1" [
-    likec4_id = "nativeHost.nativeProcess.backend";
     likec4_level = 2;
     label = <<TABLE BORDER="0" CELLPADDING="0" CELLSPACING="4"><TR><TD ROWSPAN="3" WIDTH="76"> </TD><TD ALIGN="TEXT" BALIGN="LEFT"><FONT POINT-SIZE="20">Backend</FONT></TD><TD ROWSPAN="3" WIDTH="16"> </TD></TR><TR><TD ALIGN="TEXT" BALIGN="LEFT"><FONT POINT-SIZE="13" COLOR="#bfdbfe">Go</FONT></TD></TR><TR><TD ALIGN="TEXT" BALIGN="LEFT"><FONT POINT-SIZE="15" COLOR="#bfdbfe">Stateless HTTP proxy and static<BR/>file server. Answers one route per<BR/>upstream source, shaping each<BR/>response into the payload the<BR/>boundary</FONT></TD></TR></TABLE>>;
     margin = "0.112,0.223";
@@ -100,7 +92,6 @@ digraph {
     height = 2.5;
   ];
   subgraph "cluster_displayhost" {
-    likec4_id = "displayHost";
     likec4_level = 0;
     likec4_depth = 2;
     fillcolor = "#1a468d";
@@ -109,7 +100,6 @@ digraph {
     margin = 32;
     label = <<FONT POINT-SIZE="11" COLOR="#bfdbfeb3"><B>DISPLAY HOST</B></FONT>>;
     subgraph "cluster_displaybrowser" {
-      likec4_id = "displayHost.displayBrowser";
       likec4_level = 1;
       likec4_depth = 1;
       fillcolor = "#194b9e";
@@ -121,7 +111,6 @@ digraph {
     }
   }
   subgraph "cluster_containerhost" {
-    likec4_id = "containerHost";
     likec4_level = 0;
     likec4_depth = 2;
     fillcolor = "#1a468d";
@@ -132,7 +121,6 @@ digraph {
     "configurationfile";
     "secretfiles";
     subgraph "cluster_runningcontainer" {
-      likec4_id = "containerHost.runningContainer";
       likec4_level = 1;
       likec4_depth = 1;
       fillcolor = "#194b9e";
@@ -144,7 +132,6 @@ digraph {
     }
   }
   subgraph "cluster_nativehost" {
-    likec4_id = "nativeHost";
     likec4_level = 0;
     likec4_depth = 2;
     fillcolor = "#1a468d";
@@ -155,7 +142,6 @@ digraph {
     "nativeconfigurationfile";
     "nativesecretfiles";
     subgraph "cluster_nativeprocess" {
-      likec4_id = "nativeHost.nativeProcess";
       likec4_level = 1;
       likec4_depth = 1;
       fillcolor = "#194b9e";
@@ -172,50 +158,42 @@ digraph {
     "backend_1";
   }
   "frontend" -> "backend" [
-    likec4_id = "4nbxpw";
     style = "dashed";
     label = <<TABLE BORDER="0" CELLPADDING="3" CELLSPACING="0" BGCOLOR="#18191BA0"><TR><TD ALIGN="TEXT" BALIGN="LEFT"><FONT POINT-SIZE="14">Fetches the configuration, served back<BR/>unparsed</FONT></TD></TR><TR><TD ALIGN="TEXT" BALIGN="LEFT"><FONT POINT-SIZE="12">[ HTTP ]</FONT></TD></TR></TABLE>>;
     arrowhead = "normal";
   ];
   "frontend" -> "backend" [
-    likec4_id = "2yef3s";
     style = "dashed";
     label = <<TABLE BORDER="0" CELLPADDING="3" CELLSPACING="0" BGCOLOR="#18191BA0"><TR><TD ALIGN="TEXT" BALIGN="LEFT"><FONT POINT-SIZE="14">Fetches the payload for each module</FONT></TD></TR><TR><TD ALIGN="TEXT" BALIGN="LEFT"><FONT POINT-SIZE="12">[ HTTP / JSON ]</FONT></TD></TR></TABLE>>;
     arrowhead = "normal";
   ];
   "frontend" -> "backend_1" [
-    likec4_id = "r63et4";
     style = "dashed";
     label = <<TABLE BORDER="0" CELLPADDING="3" CELLSPACING="0" BGCOLOR="#18191BA0"><TR><TD ALIGN="TEXT" BALIGN="LEFT"><FONT POINT-SIZE="14">Fetches the configuration, served back<BR/>unparsed</FONT></TD></TR><TR><TD ALIGN="TEXT" BALIGN="LEFT"><FONT POINT-SIZE="12">[ HTTP ]</FONT></TD></TR></TABLE>>;
     arrowhead = "normal";
   ];
   "frontend" -> "backend_1" [
-    likec4_id = "s7kss4";
     style = "dashed";
     label = <<TABLE BORDER="0" CELLPADDING="3" CELLSPACING="0" BGCOLOR="#18191BA0"><TR><TD ALIGN="TEXT" BALIGN="LEFT"><FONT POINT-SIZE="14">Fetches the payload for each module</FONT></TD></TR><TR><TD ALIGN="TEXT" BALIGN="LEFT"><FONT POINT-SIZE="12">[ HTTP / JSON ]</FONT></TD></TR></TABLE>>;
     arrowhead = "normal";
   ];
   "backend" -> "frontend" [
-    likec4_id = "1kg58l9";
     style = "dashed";
     label = <<TABLE BORDER="0" CELLPADDING="3" CELLSPACING="0" BGCOLOR="#18191BA0"><TR><TD ALIGN="TEXT" BALIGN="LEFT"><FONT POINT-SIZE="14">Serves the single-page bundle</FONT></TD></TR><TR><TD ALIGN="TEXT" BALIGN="LEFT"><FONT POINT-SIZE="12">[ HTTP ]</FONT></TD></TR></TABLE>>;
     arrowhead = "normal";
   ];
   "backend_1" -> "frontend" [
-    likec4_id = "wdtib5";
     style = "dashed";
     label = <<TABLE BORDER="0" CELLPADDING="3" CELLSPACING="0" BGCOLOR="#18191BA0"><TR><TD ALIGN="TEXT" BALIGN="LEFT"><FONT POINT-SIZE="14">Serves the single-page bundle</FONT></TD></TR><TR><TD ALIGN="TEXT" BALIGN="LEFT"><FONT POINT-SIZE="12">[ HTTP ]</FONT></TD></TR></TABLE>>;
     arrowhead = "normal";
   ];
   "publishedimage" -> "backend" [
-    likec4_id = "2r7j6y";
     style = "dashed";
     lhead = "cluster_runningcontainer";
     xlabel = <<TABLE BORDER="0" CELLPADDING="3" CELLSPACING="0" BGCOLOR="#18191BA0"><TR><TD ALIGN="TEXT" BALIGN="LEFT"><FONT POINT-SIZE="14">Runs as this container</FONT></TD></TR></TABLE>>;
     arrowhead = "normal";
   ];
   "configurationfile" -> "backend" [
-    likec4_id = "111rsru";
     style = "dashed";
     lhead = "cluster_runningcontainer";
     weight = 2;
@@ -223,7 +201,6 @@ digraph {
     arrowhead = "normal";
   ];
   "secretfiles" -> "backend" [
-    likec4_id = "1ttueov";
     style = "dashed";
     lhead = "cluster_runningcontainer";
     weight = 2;
@@ -231,14 +208,12 @@ digraph {
     arrowhead = "normal";
   ];
   "nativeconfigurationfile" -> "backend_1" [
-    likec4_id = "f41zwh";
     style = "dashed";
     lhead = "cluster_nativeprocess";
     xlabel = <<TABLE BORDER="0" CELLPADDING="3" CELLSPACING="0" BGCOLOR="#18191BA0"><TR><TD ALIGN="TEXT" BALIGN="LEFT"><FONT POINT-SIZE="14">Read from the host</FONT></TD></TR></TABLE>>;
     arrowhead = "normal";
   ];
   "nativesecretfiles" -> "backend_1" [
-    likec4_id = "35lkxg";
     style = "dashed";
     lhead = "cluster_nativeprocess";
     xlabel = <<TABLE BORDER="0" CELLPADDING="3" CELLSPACING="0" BGCOLOR="#18191BA0"><TR><TD ALIGN="TEXT" BALIGN="LEFT"><FONT POINT-SIZE="14">Read from the host</FONT></TD></TR></TABLE>>;

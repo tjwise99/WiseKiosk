@@ -78,10 +78,13 @@ element's description, technology and icon — rendered to SVG by the system **G
 binary. No headless browser anywhere in the pipeline: LikeC4's own image export (`export png`/`jpg`)
 *does* need one (Playwright), and stays deliberately **not** part of any gate; rendering the DOT text
 with Graphviz is a different, browser-free path
-([ADR 0003 rev 4](../decisions/0003-architecture-as-code-likec4.md)). Graphviz embeds a version
-comment in its SVG output that would otherwise move the staleness gate on a Graphviz upgrade alone;
-[`../../scripts/render-arch-svg.py`](../../scripts/render-arch-svg.py) strips it before the artifact
-is committed or compared.
+([ADR 0003 rev 4](../decisions/0003-architecture-as-code-likec4.md)).
+[`../../scripts/render-arch-svg.py`](../../scripts/render-arch-svg.py) strips two non-deterministic
+byte sources before an artifact is committed or compared, confirmed empirically (#115): the version
+comment Graphviz embeds in its SVG output, and `likec4_id` — LikeC4's own internal relationship id,
+stripped from the `.dot` file itself since `check-arch` diffs it too, which is not stable across
+processes (the same instability `likec4 export json`'s ids already carry) even though the model has
+not changed.
 
 **CI's Graphviz is the reference version — a contributor's local one need not match it.**
 [`checks.yml`](../../.github/workflows/checks.yml) and

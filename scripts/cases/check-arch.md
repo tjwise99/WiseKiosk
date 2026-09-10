@@ -3,11 +3,12 @@
 The inputs this check has been run against, in both directions. What it *asserts*, and why, is
 [`docs/CI.md`](../../docs/CI.md)'s; how to run a case is [`../README.md`](../README.md)'s.
 
-The recipe runs `likec4 validate`, `likec4 gen dot`, `render-arch-svg.py` (renders each `.dot` to
-`.svg` with the system Graphviz `dot` binary, stripping its version comment), `splice-arch-diagrams.py`
-(splices an `![alt](path)` image reference, not a fence, so a fence marker inside the artifact no
-longer applies), and `git diff --exit-code`. The splice script fails on marker problems; staleness is
-caught by the diff.
+The recipe runs `likec4 validate`, `likec4 gen dot`, `render-arch-svg.py` (strips two
+non-deterministic byte sources — Graphviz's version comment from each `.svg`, and LikeC4's own
+`likec4_id` from each `.dot` — then renders `.dot` to `.svg` with the system Graphviz `dot` binary),
+`splice-arch-diagrams.py` (splices an `![alt](path)` image reference, not a fence, so a fence marker
+inside the artifact no longer applies), and `git diff --exit-code`. The splice script fails on marker
+problems; staleness is caught by the diff.
 
 | Direction | Input |
 |---|---|
@@ -20,11 +21,22 @@ caught by the diff.
 | Must fail | a **symlink** artifact resolving outside `docs/architecture/` |
 | Must pass | a well-formed pair; two distinct pairs; an artifact in a subdirectory |
 | Must pass | a second run — idempotent, byte-stable, reporting *already current* |
-| Must pass (`render-arch-svg.py`) | a second `dot -Tsvg` render of an unchanged `.dot` — byte-identical (#115, empirical) |
+| Must pass (`render-arch-svg.py`) | two independent `likec4 gen dot` processes against an unchanged model, `likec4_id` stripped — byte-identical `.dot` (#115, empirical) |
+| Must pass (`render-arch-svg.py`) | two `dot -Tsvg` renders of the same stripped `.dot`, same Graphviz build — byte-identical `.svg` (#115, empirical) |
 
 The symlink case was observed splicing a file from outside the repository into the document with
 exit 0. Confirmed separately, because only a real run shows it: a hand edit inside a marker region is
 overwritten and the tree goes clean again, and a change to a generated artifact reaches the document.
+
+**A defect this work surfaced, in this same PR (#115):** the first `render-arch-svg.py`, committed and
+pushed, stripped only Graphviz's version comment. It passed a byte-identical-across-two-local-runs
+check, because both local runs happened to land in the same short-lived Node process's memory-address-
+or timing-derived id sequence. It failed CI's very first real run, against a fresh checkout in a fresh
+process: `likec4 gen dot`'s `likec4_id` attribute — an internal relationship id, the same one `likec4
+export json` was already documented as unstable across machines (ADR 0003 rev 4) — differed from the
+committed `.dot` files on every relationship, with no model change at all. Two local re-runs in one
+process is not the case that matters; two *independent* processes is, and that is what the row above
+now records.
 
 ## The three-line gate
 

@@ -786,8 +786,11 @@ resolve, a citation to something that does not exist, an index that has drifted 
   marker's artifact resolves to a regular file inside `architecture/` — through any symlink, not
   merely by its path text. Each diagram is LikeC4's own DOT codegen (`likec4 gen dot`) rendered to
   SVG by the system **Graphviz** `dot` binary — the one dependency this rendering path adds, installed
-  by the pinned `ts-graphviz/setup-graphviz` action — with Graphviz's own non-deterministic version
-  comment stripped before comparison. **CI's pinned Graphviz version is this gate's reference; a
+  by the pinned `ts-graphviz/setup-graphviz` action — with two non-deterministic byte sources
+  stripped before comparison: Graphviz's own version comment, and `likec4_id`, LikeC4's internal
+  relationship id, which is not stable across processes even on an unchanged model (confirmed the
+  hard way: it failed CI on the first real run against a fresh checkout). **CI's pinned Graphviz
+  version is this gate's reference; a
   contributor's own `dot`, from whatever channel their OS provides, can render a different SVG from
   the identical `.dot` input** ([`architecture/README.md`](architecture/README.md) § Rendering) —
   confirmed empirically, not a theoretical caveat — so a local `check-arch` disagreement is resolved
