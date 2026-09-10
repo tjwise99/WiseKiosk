@@ -30,20 +30,30 @@ This needs no new rev of [ADR 0017 rev 8](0017-authored-language-set.md): it alr
 build-fetched, build-copied bundle a docs build serves is exactly that carve-out, not a new authored
 JS/CSS surface.
 
-**"Try it out" is interactive locally, and reference-only on the published site.** `frontend/`'s Vite
-dev server already reaches the backend same-origin, without any CORS header, through its existing
-`server.proxy` for `/api` and `/healthz` — the identical path the frontend bundle itself uses. A
-dev-only Vite plugin (`frontend/vite-plugin-docs-explorer.ts`, a `configureServer` hook — a hook `vite
-build`/`vite preview` never call, so it cannot reach the production bundle) mounts the *whole* built
-docs site at `/docs` — every page, `_static` asset and the search index, not the explorer alone —
-riding that same proxy: `curl`, the generated boundary client and now the explorer page (one page of
-the site, at `/docs/api-explorer.html`) all reach the backend the same, unmodified way. `just
-docs-serve` is the one command that builds the docs site and launches this server, so there is no
-separate build-then-serve step to remember; with `just serve` running, it prints both URLs. No backend
-code changed, no new dependency, no requirement or gate touched. On the published static Pages site —
-no backend behind it at all — the
+**"Try it out" is interactive locally, and reference-only on the published site — self-contained in
+the docs/site silo, with no frontend involvement.** `docs/site/vite.config.ts` is the docs silo's own
+dev server: `vite` is a devDependency in the same `docs/site` npm silo `swagger-ui-dist` already lives
+in (the obvious reuse — the silo has an npm silo already, and Vite trivially does both static serving
+and proxying, the two things this needs). It serves the *whole* built docs site at its root — every
+page, `_static` asset and the search index, not the explorer alone — and proxies `/api`,`/healthz` to
+the backend's fixed `:8080` ([ADR 0020 rev 4](0020-release-artifact-set-and-operator-tooling.md)): a
+plain reverse proxy, no CORS header needed because the browser only ever talks to the docs server's
+own origin. `just docs-serve` is the one command that builds the docs site and launches this server
+(fixed port `5174`, so it never collides with the frontend's own dev server), so there is no separate
+build-then-serve step to remember. **`frontend/` carries none of this** — no plugin, no config change,
+zero docs knowledge — because the explorer's self-containment in `docs/site` is the silo's whole point:
+a developer who never touches `frontend/` can still get the interactive explorer, and a change to
+either silo cannot break the other. `curl`, the generated boundary client and now the explorer page all
+reach the backend the same, unmodified way `just serve` already exposes it. No backend code changed, no
+requirement or gate touched. On the published static Pages site — no backend behind it at all — the
 explorer stays browsable-only, which is not a limitation of this change but of what a static site can
 ever do.
+
+One accepted duplication: the proxy target `http://localhost:8080` is now hardcoded in *two*
+independent places — this file and `frontend/vite.config.ts`'s own, unrelated dev proxy (which exists
+for the frontend's own reasons, reaching the same backend the same way). Both already just restate the
+port ADR 0020 rev 4 fixes in the Go binary; left as two literals rather than inventing shared machinery
+across two otherwise-unrelated dev-tooling silos for one number that is not expected to change.
 
 ## Alternatives considered
 
@@ -91,21 +101,29 @@ ever do.
   SRS028<!-- Served responses declare their type, and forbid the browser inferring one -->), on the
   identical binary that runs the physically deployed kiosk — out of scope here for the same reason the
   CORS route is.
+- **A frontend-coupled Vite dev-plugin** (the first cut of this ADR): reuse `frontend/`'s own Vite dev
+  server, adding a dev-only plugin there that mounts the built docs site and rides the frontend's
+  existing `/api` proxy. This worked technically — verified end to end, no CORS, no CSP issue, since
+  Vite's dev server sets neither — but it was rejected on self-containment grounds: the interactive
+  explorer is a docs/site concern, and self-containment in that silo is the silo's own purpose. Coupling
+  it to `frontend/`'s dev server gives `frontend/` docs knowledge it has no reason to carry, and ties
+  the explorer's availability to a package that isn't the one that builds or owns it.
 
-The Vite dev-plugin route was chosen because it is the only one of the three interactive-delivery
-options that needs no backend change of any kind.
+Four interactive-delivery options were considered; the docs-owned Vite server was chosen because it is
+the only one that needs no backend change **and** keeps the explorer entirely inside the silo whose
+purpose is to own it.
 
 ## Consequences
 
 Makes the boundary contract browsable from the docs site, and interactive against a real backend for
-local development, at the cost of one more npm silo (`docs/site/`) for Renovate to keep current —
-already covered by the default npm manager the same way `docs/architecture/`'s silo already is, no
-`renovate.json` change needed — and one small dev-only Vite plugin plus one new `justfile` recipe
-(`docs-serve`, depending on the existing `site-build`) that previews the whole docs site locally, the
-explorer being one page of it. `just dev` itself stays untouched: the docs build is not one of its
-prerequisites, so the ordinary frontend dev loop pays nothing for this. The plugin still 404s
-gracefully if the docs build is ever missing, but that is a safety net, not the
-documented path — `just docs-serve` always builds first. Forecloses committing any
-interactive-explorer JS to the tree outright, by construction (the same gates that already forbid it
+local development, entirely from within `docs/site/` — at the cost of `vite` joining `swagger-ui-dist`
+as a second devDependency in that silo (Renovate coverage unaffected, same default-manager reasoning as
+`docs/architecture/`'s silo) and one new `justfile` recipe (`docs-serve`, depending on the existing
+`site-build`) that builds and serves the whole docs site locally, the explorer being one page of it.
+`frontend/` carries zero docs knowledge, so `just dev` and everything else about the frontend's own dev
+loop is entirely unaffected. The server still 404s gracefully if the docs build is ever missing, but
+that is a safety net, not the documented path — `just docs-serve` always builds first. Forecloses
+committing any interactive-explorer JS to the tree outright, by construction (the same gates that
+already forbid it
 for anything else). The published site's "Try it out" stays reference-only, which is inherent to a
 static site having no backend behind it, not a gap this ADR leaves open.

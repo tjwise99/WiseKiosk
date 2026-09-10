@@ -55,7 +55,7 @@ function docsSite(): Plugin {
 }
 
 /**
- * The docs silo's own, self-contained dev server (#195 ADR 0029): serves the built docs site and
+ * The docs silo's own, self-contained dev server (#195, ADR 0029 rev 1): serves the built docs site and
  * proxies `/api`,`/healthz` to the backend on its fixed port (ADR 0020 rev 4), the same target
  * `frontend/vite.config.ts`'s own dev proxy uses for the same reason — a real duplication (see ADR
  * 0029), accepted rather than solved with new shared machinery for one port number.
