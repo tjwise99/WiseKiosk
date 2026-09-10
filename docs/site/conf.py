@@ -28,6 +28,8 @@ exclude_patterns = [
     "requirements/_published",
     "site/.venv",
     "site/_build",
+    "site/node_modules",
+    "site/vendor",
 ]
 
 # ```mermaid fences (ARCHITECTURE.md) are plain code blocks under MyST unless
@@ -68,8 +70,11 @@ suppress_warnings = ["myst.xref_missing"]
 html_theme = "furo"
 
 # Maps sphinx-needs' static light palette onto furo's mode-switching theme
-# variables (see _static/needs-furo.css).
-html_static_path = ["_static"]
+# variables (see _static/needs-furo.css). vendor/ is swagger-ui-dist's copied
+# assets and a copy of boundary/openapi.yaml (copy_explorer_assets.py,
+# gitignored, regenerated every build) — the API explorer page's own static
+# files, kept out of _static/ so nothing hand-authored sits beside them.
+html_static_path = ["_static", "vendor"]
 html_css_files = ["needs-furo.css"]
 
 # root_doc lives in the silo, so the built landing page is site/index.html and
