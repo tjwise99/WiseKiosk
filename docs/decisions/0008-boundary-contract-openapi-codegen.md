@@ -201,7 +201,7 @@ notch too narrow, so rev 3 widens it to the whole wire contract rather than addi
   its home.
 - **Docsite: withdrawn as a decision here.** Rev 2 named `sphinxcontrib-openapi` as the renderer, on
   the generated-not-authored, single-toolchain pattern of doorstop→needs and likec4→mermaid
-  ([ADR 0004 rev 2](0004-docs-site-sphinx-needs.md)). How the schema is *presented* is a separate
+  ([ADR 0004 rev 3](0004-docs-site-sphinx-needs.md)). How the schema is *presented* is a separate
   trade from how it is *generated*, and rev 3 leaves it to #195 API explorer (split from #188
   boundary codegen), which takes the renderer choice with the interactive option on the table rather
   than inheriting a static one settled in passing here. Nothing renders the schema until it lands.

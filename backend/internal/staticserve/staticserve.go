@@ -1,7 +1,7 @@
 // Package staticserve answers a request with the bytes of the file its path
 // names under one filesystem root. It holds no name it treats specially beyond
 // a directory's index, so the configuration file in the tree takes the same
-// path through it as any asset (ADR 0007 rev 2, ADR 0019 rev 7).
+// path through it as any asset (ADR 0007 rev 2, ADR 0019 rev 8).
 package staticserve
 
 import (

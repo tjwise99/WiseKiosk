@@ -8,7 +8,7 @@ document (sys.md/srs.md/tst.md) that pulls all items of that type together
 via `needextract` and toctrees the item pages in by glob.
 
 Presentation-free beyond a stable sort by id and the toctree/needextract
-structure needed to make every generated page reachable (ADR 0004 rev 2: the
+structure needed to make every generated page reachable (ADR 0004 rev 3: the
 transform copies fields and wires structure, it does not decide how needs
 look — that stays in docs/site/traceability.md).
 
