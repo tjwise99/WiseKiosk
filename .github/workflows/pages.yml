@@ -40,6 +40,21 @@ jobs:
         with:
           just-version: "1.58.0"
 
+      - name: Install LikeC4 into the silo (docs/architecture/), locked
+        run: npm --prefix docs/architecture ci
+
+      - name: Install Graphviz, pinned (renders the LikeC4 DOT codegen to SVG)
+        uses: ts-graphviz/setup-graphviz@b1de5da23ed0a6d14e0aeee8ed52fdd87af2363c # v2.0.2
+        with:
+          ubuntu-graphviz-version: "2.42.2-9build1"
+
+      # Regenerates the gated diagrams too (byte-identical to what is already
+      # committed on `main`), but what this step is here for is `docs/architecture/site/`,
+      # the interactive site — gitignored, ungated, and copied into the built docs
+      # site below (ADR 0003 rev 4).
+      - name: Validate the architecture model and build its browser-free artifacts and interactive site
+        run: just arch-export
+
       - name: Install the docs-site toolchain into a local venv (siloed under docs/site/)
         run: |
           python -m venv docs/site/.venv
@@ -50,6 +65,12 @@ jobs:
 
       - name: Regenerate needs pages from Doorstop and build the docs site
         run: just site-build
+
+      # docs/architecture/site/ is gitignored and ungated — `likec4 build`'s own output, not
+      # a Sphinx asset, so it is placed here rather than through copy_explorer_assets.py's
+      # enumerated-file shape (ADR 0003 rev 4).
+      - name: Copy the built interactive architecture site into the docs site, at /architecture/
+        run: cp -r docs/architecture/site/. docs/site/_build/html/architecture/
 
       - uses: actions/configure-pages@45bfe0192ca1faeb007ade9deae92b16b8254a0d # v6.0.0
 
