@@ -4,10 +4,17 @@
 **Decided:** 2026-08-16 (CSS's product-stylesheet disposition added; the audience rule itself taken
 2026-08-04 in #60 authored-language set, taken after
 [ADR 0016 rev 11](0016-maintained-tools-for-standard-artifacts.md) settled which authored checks survive at all)
-**Rev:** 8
+**Rev:** 9
 
 ## Revisions
 
+- **rev 9** — 2026-09-09 — `scripts/check-languages.py`'s declared extension set drops `mmd` and
+  gains `dot` and `svg`: [ADR 0003 rev 4](0003-architecture-as-code-likec4.md) replaces the committed
+  architecture diagrams' Mermaid codegen target with LikeC4's own DOT codegen, rendered to SVG by the
+  system Graphviz `dot` binary, so the generated-and-never-hand-authored artifact under the derivation
+  rule changes format without changing the rule itself. The audience rule, the derivation rule and the
+  authored language set are unchanged, so the `Decided` date does not move (#115 architecture model
+  reader).
 - **rev 8** — 2026-08-18 — the carve-out for what a build serves is stated over *a* build rather
   than a documentation build, and `scripts/check-languages.py` declares `woff2` under it: the
   frontend skeleton bundles the Inter variable font [the display styling
@@ -70,14 +77,14 @@ fails on a language that has neither. A set nobody bounded is an obligation nobo
 
 **One of the candidates is already owed and the other is not.** Python is unconditional here for
 reasons that have nothing to do with checks: Doorstop ([ADR 0002 rev 4](0002-requirements-management-doorstop.md))
-and Sphinx ([ADR 0004 rev 2](0004-docs-site-sphinx-needs.md)) both require it, and CI installs it for two jobs
+and Sphinx ([ADR 0004 rev 3](0004-docs-site-sphinx-needs.md)) both require it, and CI installs it for two jobs
 whatever the check scripts are written in. Nothing obliges Node in the repository-checks layer at
 all — all seven `.mjs` scripts import only `node:fs`, `node:child_process` and `node:path`, and five
 carry a header comment recording that they deliberately scan plain text rather than reach for a
 parser, three of them naming the YAML parser they avoid. Consolidating the checks on Python therefore
 adds no toolchain and takes Node out of that layer; consolidating them on Node would keep both there
 indefinitely. Node does not leave the repository either way — LikeC4
-([ADR 0003 rev 3](0003-architecture-as-code-likec4.md)) and Vite
+([ADR 0003 rev 4](0003-architecture-as-code-likec4.md)) and Vite
 ([ADR 0018 rev 1](0018-frontend-svelte-vite-static-spa.md)) make it unconditional as an invoked toolchain. The
 asymmetry is about which layer owes which interpreter, not about which language is present.
 
@@ -131,7 +138,7 @@ authors, and a carve-out naming only the documentation build would have refused 
 reason that never applied to it.
 
 **Node is an invoked toolchain and never an authoring language.** LikeC4
-([ADR 0003 rev 3](0003-architecture-as-code-likec4.md)) and Vite are invoked; so is whatever an adopted hook
+([ADR 0003 rev 4](0003-architecture-as-code-likec4.md)) and Vite are invoked; so is whatever an adopted hook
 provisions for itself. The distinction is who wrote the code being run.
 
 **POSIX sh authors nothing.** The rule that admitted it — sh only where no interpreter can be
@@ -269,7 +276,7 @@ unregistered language whatever this record said.
 - **The review checklist gains a question, *Languages***, appended to its *Code* section rather than
   placed beside the dependency question it most resembles. Inserting it there would have renumbered
   the questions below it, against [ADR 0002 rev 4](0002-requirements-management-doorstop.md),
-  [ADR 0003 rev 3](0003-architecture-as-code-likec4.md) and
+  [ADR 0003 rev 4](0003-architecture-as-code-likec4.md) and
   [ADR 0016 rev 11](0016-maintained-tools-for-standard-artifacts.md), which cite one by number with
   nothing gating the citation. That constraint does not bind a later change:
   [`../../CONTRIBUTING.md`](../../CONTRIBUTING.md) requires a citation to carry the question's name
@@ -283,6 +290,6 @@ unregistered language whatever this record said.
 **Premise that would reopen this:** an artifact appears that neither audience covers — something that
 must run where neither Python nor a shipped toolchain is reachable — or Python stops being
 unconditional here, which means both Doorstop ([ADR 0002 rev 4](0002-requirements-management-doorstop.md)) and
-Sphinx ([ADR 0004 rev 2](0004-docs-site-sphinx-needs.md)) leaving. A single script that would have been shorter
+Sphinx ([ADR 0004 rev 3](0004-docs-site-sphinx-needs.md)) leaving. A single script that would have been shorter
 in another language is not that premise; it is the argument this decision rejected. Absent either, do
 not relitigate.
