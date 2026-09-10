@@ -387,8 +387,8 @@ jobs:
     # one merged Istanbul gate over every frontend `.ts` and `.svelte` file — the unit tier
     # (`@vitest/coverage-istanbul`) and the render tier (`vite-plugin-istanbul` +
     # `coverage-teardown.ts`) each write their own coverage-final.json, and
-    # `scripts/merge-coverage.ts` unions the two and enforces the bar — each 90% per-file and
-    # total. `gcov2lcov` then converts the backend's Go coverprofile to lcov (via the
+    # `scripts/merge-coverage.ts` unions the two and enforces the bar its own config sets — each
+    # per-file and total. `gcov2lcov` then converts the backend's Go coverprofile to lcov (via the
     # `backend/go.mod` tool directive) and `grcov` merges it with the frontend's own lcov into one
     # diagnostic, never-gating HTML report over both languages, uploaded as an artifact. This job
     # runs the same recipe `just verify` depends on — though the required-checks ruleset naming

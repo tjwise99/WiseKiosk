@@ -229,17 +229,18 @@ matters — that two things agree, that a control functions where deployed — i
 construction, so a high number buys confidence it has not earned. Gate on the standing obligations
 above; read coverage to find what they missed.
 
-**`just check-coverage` is a chosen 90% bar over first-party product source**
+**`just check-coverage` gates a chosen coverage bar over first-party product source**
 (gate 3, [ADR 0005 rev 4](decisions/0005-traceability-gating.md)): per-file and total, tree-blind —
-it proves source is exercised, not that a `TST` item claims it. One tool for the backend, an
-authored script over two tools for the frontend:
+it proves source is exercised, not that a `TST` item claims it. Each language's own config holds the
+number — `backend/.testcoverage.yml`, `frontend/coverage-thresholds.json` — never this record. One
+tool for the backend, an authored script over two tools for the frontend:
 
-- **Backend** — `go-test-coverage` against a `-coverpkg=./...` profile, 90% **statement** coverage,
-  per-file and total. Go's own toolchain implements no other coverage measure — branch coverage is
-  unimplemented ([golang/go#28888](https://github.com/golang/go/issues/28888)), and "function"
-  coverage is a per-function statement percentage rather than a distinct measure — so the backend is
-  gated on statement coverage, stated rather than approximated with a number the toolchain cannot
-  produce.
+- **Backend** — `go-test-coverage` against a `-coverpkg=./...` profile, the **statement**-coverage
+  bar `backend/.testcoverage.yml` configures, per-file and total. Go's own toolchain implements no
+  other coverage measure — branch coverage is unimplemented
+  ([golang/go#28888](https://github.com/golang/go/issues/28888)), and "function" coverage is a
+  per-function statement percentage rather than a distinct measure — so the backend is gated on
+  statement coverage, stated rather than approximated with a number the toolchain cannot produce.
 - **Frontend** — the unit tier (`@vitest/coverage-istanbul`) and the render tier
   (`vite-plugin-istanbul`, torn down into a `coverage-final.json` by
   `tests/render/coverage-teardown.ts`) each instrument the same `.ts`/`.svelte` sources and write

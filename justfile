@@ -275,7 +275,7 @@ check-dead-test:
     python3 scripts/check-dead-test.py
 
 [group('checks')]
-[doc('The unit-test coverage bar: go-test-coverage over the backend, and one merged Istanbul gate (vitest coverage-istanbul + vite-plugin-istanbul, unioned by scripts/merge-coverage.ts) over every frontend `.ts` and `.svelte` file, each 90% per-file and total; then one diagnostic HTML report over both languages (gcov2lcov + grcov), never gating; needs `just boundary-install`, `just render-install` and `grcov` on PATH')]
+[doc('The unit-test coverage bar: go-test-coverage over the backend, and one merged Istanbul gate (vitest coverage-istanbul + vite-plugin-istanbul, unioned by scripts/merge-coverage.ts) over every frontend `.ts` and `.svelte` file, each against its own configured bar, per-file and total; then one diagnostic HTML report over both languages (gcov2lcov + grcov), never gating; needs `just boundary-install`, `just render-install` and `grcov` on PATH')]
 check-coverage:
     go -C backend test -covermode=atomic -coverpkg=./... -coverprofile=cover.out ./...
     go -C backend tool go-test-coverage --config=.testcoverage.yml

@@ -196,8 +196,8 @@ over two Istanbul providers for the frontend:
 
 - **Backend** — `go -C backend test -covermode=atomic -coverpkg=./... -coverprofile=cover.out ./...`
   then `go -C backend tool go-test-coverage --config=.testcoverage.yml` (the tool pinned in
-  `backend/go.mod`'s `tool` block), against `backend/.testcoverage.yml`: 90% statement coverage,
-  per-file and total, excluding generated Go (`\.gen\.go$`).
+  `backend/go.mod`'s `tool` block), against the statement-coverage bar `backend/.testcoverage.yml`
+  configures, per-file and total, excluding generated Go (`\.gen\.go$`).
 - **Frontend** — `frontend/node_modules/.bin/vitest run --root frontend --coverage`
   (`@vitest/coverage-istanbul`) then `playwright test --config frontend/playwright.coverage.config.ts`
   (`vite-plugin-istanbul`, torn down by `tests/render/coverage-teardown.ts`) each write their own
