@@ -266,14 +266,16 @@ check-dead-test:
     python3 scripts/check-dead-test.py
 
 [group('checks')]
-[doc('The unit-test coverage bar: go-test-coverage over the backend, and one merged Istanbul gate (vitest coverage-istanbul + vite-plugin-istanbul, unioned by scripts/merge-coverage.ts) over every frontend `.ts` and `.svelte` file, each 90% per-file and total; then one diagnostic HTML report over both languages (scripts/render-coverage.ts), never gating; needs `just boundary-install` and `just render-install`')]
+[doc('The unit-test coverage bar: go-test-coverage over the backend, and one merged Istanbul gate (vitest coverage-istanbul + vite-plugin-istanbul, unioned by scripts/merge-coverage.ts) over every frontend `.ts` and `.svelte` file, each 90% per-file and total; then one diagnostic HTML report over both languages (gcov2lcov + grcov), never gating; needs `just boundary-install` and `just render-install`')]
 check-coverage:
     go -C backend test -covermode=atomic -coverpkg=./... -coverprofile=cover.out ./...
     go -C backend tool go-test-coverage --config=.testcoverage.yml
     frontend/node_modules/.bin/vitest run --root frontend --coverage
     frontend/node_modules/.bin/playwright test --config frontend/playwright.coverage.config.ts
     node frontend/scripts/merge-coverage.ts
-    node frontend/scripts/render-coverage.ts
+    mkdir -p coverage
+    go -C backend tool gcov2lcov -infile=cover.out -outfile=../coverage/go.info
+    grcov coverage/go.info frontend/coverage/frontend-report/lcov.info -s . -t html -o coverage/unified-report/
 
 # Outside `verify`, and invoked by a CI job of its own: this tier builds and runs the image, and
 # docs/CI.md § Gate wiring is what decides where a check needing Docker sits.

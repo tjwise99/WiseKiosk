@@ -4,6 +4,7 @@ go 1.26.0
 
 tool (
 	github.com/golangci/golangci-lint/v2/cmd/golangci-lint
+	github.com/jandelgado/gcov2lcov
 	github.com/oapi-codegen/oapi-codegen/v2/cmd/oapi-codegen
 	github.com/vladopajic/go-test-coverage/v2
 	golang.org/x/vuln/cmd/govulncheck
@@ -134,6 +135,7 @@ require (
 	github.com/hashicorp/hcl v1.0.0 // indirect
 	github.com/hexops/gotextdiff v1.0.3 // indirect
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
+	github.com/jandelgado/gcov2lcov v1.1.1 // indirect
 	github.com/jgautheron/goconst v1.11.0 // indirect
 	github.com/jjti/go-spancheck v0.6.5 // indirect
 	github.com/julz/importas v0.2.0 // indirect

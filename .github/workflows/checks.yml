@@ -381,9 +381,9 @@ jobs:
     # (`@vitest/coverage-istanbul`) and the render tier (`vite-plugin-istanbul` +
     # `coverage-teardown.ts`) each write their own coverage-final.json, and
     # `scripts/merge-coverage.ts` unions the two and enforces the bar — each 90% per-file and
-    # total. `scripts/render-coverage.ts` then renders one diagnostic, never-gating HTML report
-    # over both languages (a small converter turns the backend's Go coverprofile into Istanbul
-    # FileCoverage objects, unioned with the frontend's own), uploaded as an artifact. This job
+    # total. `gcov2lcov` then converts the backend's Go coverprofile to lcov (via the
+    # `backend/go.mod` tool directive) and `grcov` merges it with the frontend's own lcov into one
+    # diagnostic, never-gating HTML report over both languages, uploaded as an artifact. This job
     # runs the same recipe `just verify` depends on — though the required-checks ruleset naming
     # it a required status check, so a red run here would also block a merge at the platform
     # level, stays a separate, later action. The recipe body is the one spelling of what runs,
@@ -414,6 +414,11 @@ jobs:
 
       - name: Install the browser the render tier drives
         run: just render-install
+
+      - name: Install grcov, pinned
+        uses: taiki-e/install-action@c3ec0de9ae7f1019cea21aa96aa0a895b9552063 # v2.87.9
+        with:
+          tool: grcov
 
       - name: The unit-test coverage bar over the backend and the frontend, and the unified report
         run: just check-coverage
