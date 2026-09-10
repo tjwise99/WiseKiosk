@@ -254,10 +254,9 @@ authored script over two tools for the frontend:
 
 `check-coverage` is folded into `just verify`, and runs each command in sequence, stopping at the
 first one under its bar — a run where the backend fails does not reach the frontend commands. After
-both gates, `frontend/scripts/render-coverage.ts` renders one further, diagnostic-only HTML report
-over both languages together (a small converter turns the backend's Go coverprofile into Istanbul
-FileCoverage objects, unioned with the frontend's own); neither gate's threshold or exit status is
-affected by it.
+both gates, `gcov2lcov` converts the backend's Go coverprofile to lcov and `grcov` merges it with the
+frontend's own `merge-coverage.ts`-emitted lcov into one further, diagnostic-only HTML report over
+both languages together; neither gate's threshold or exit status is affected by it.
 
 ---
 

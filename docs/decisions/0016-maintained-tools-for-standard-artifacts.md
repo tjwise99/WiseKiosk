@@ -3,17 +3,10 @@
 **Status:** accepted
 **Decided:** 2026-08-03 (#103 authored-vs-adopted check trade, measured against the cases recorded in
 [`../../scripts/README.md`](../../scripts/README.md))
-**Rev:** 12
+**Rev:** 11
 
 ## Revisions
 
-- **rev 12** — 2026-09-09 — extends the authored-vs-adopted reasoning to a diagnostic, non-gating
-  case: the unified coverage report's renderer authors `frontend/scripts/render-coverage.ts` (a Go
-  coverprofile → Istanbul FileCoverage converter) over the maintained `gcov2lcov`+`lcov -a`+`genhtml`
-  chain and over `monocart`, neither of which reaches one report annotating source in both languages
-  — `genhtml` (2.4-1) fatally errors on `.svelte`, `monocart` cannot ingest Go coverage at all.
-  Rendering itself stays adopted (`istanbul-reports`' HTML reporter, already installed). The report
-  gates nothing; `go-test-coverage` and `merge-coverage.ts` are unchanged (#304 coverage gate glue).
 - **rev 11** — 2026-09-06 — extends the decision to a further net-new adoption, `Trivy`, scanning the
   built container image and retiring [`../CI.md`](../CI.md) § *Image vulnerabilities*'s "Unbuilt;
   owned by #67" line (#265 image vulnerability scan).
@@ -152,20 +145,6 @@ are byte-identical to a regeneration; and `check-links` is split by this very de
 resolution delegated, its two other obligations retired. Sorting by recipe would misfile all three, and
 a census taken that way was wrong three times in the drafting of this record.
 
-**This decision's reach is obligations a check asserts; a diagnostic report asserts none, and the
-same reasoning is extended to it rather than assumed to reach it automatically** (rev 12). The
-unified coverage report (#304 coverage gate glue) renders annotated source and per-line coverage for
-both Go and Svelte in one page — a property no maintained tool combination reaches: `genhtml`
-(2.4-1) has no `.svelte` syntax-highlighter mapping and treats that as a fatal error, and neither of
-its own escapes is acceptable (`--ignore-errors category` degrades every file's highlighting to
-reach one language's gap; `--no-sourceview` drops annotated source for every file, backend Go
-included, to do the same); `monocart` has no Go coverage ingestion at all. `render-coverage.ts` is
-authored for the reason anything here is: the maintenance-base test above finds nothing that clears
-the bar. Rendering itself is `istanbul-reports`' HTML reporter — adopted, already installed to back
-the frontend's own gate, not reauthored. The report gates nothing: `go-test-coverage` and
-`merge-coverage.ts` remain the only coverage obligations this repository enforces, unchanged by
-this rev.
-
 The obligations that stay authored are everything in `check-branch`, `check-citations`,
 `check-adr-index`, `check-docs-index`, `check-repo-silo` and `check-verify-ci-parity`; the five
 repository-specific commands in `check-reqs`; and, in `check-arch`, both the marker checking in
@@ -271,20 +250,6 @@ later.
 - **`conventional-pre-commit` for commit messages instead of `commitlint`.** Rejected: CI gates the
   pull-request title rather than the commits, so an authored check would still be needed there and the
   pattern would live in two places — the defect the shared regex files exist to prevent.
-- **`gcov2lcov` + `lcov -a` + `genhtml`, the maintained chain, for the unified coverage report
-  (rev 12).** Tried first. Rejected: `genhtml` 2.4-1 fatally errors on every `.svelte` file
-  (`ERROR: (category) unexpected category UNK`, no language mapping for the extension), and neither
-  of its own escapes is acceptable — `--ignore-errors category` downgrades every file's syntax
-  highlighting to work around one language's gap, `--no-sourceview` drops annotated source for every
-  file, backend Go included, to do the same.
-- **`monocart` for the unified coverage report (rev 12).** A maintained, unified coverage-report
-  tool. Rejected: it ingests V8 or Istanbul coverage only, with no Go coverprofile converter of its
-  own, so it cannot produce one report spanning both languages at all — the property this record is
-  for.
-- **ReportGenerator (.NET) for the unified coverage report (rev 12).** Considered, not run: a spike
-  found the zero-dependency Istanbul-unified approach already cleared every criterion, so per
-  "smallest footprint wins" it answered the question before `dotnet` — not installed on this host,
-  and a heavier CI footprint on every architecture — needed evaluating.
 
 ## Consequences
 
@@ -295,11 +260,6 @@ later.
 - **The corollary is the finding worth carrying:** when a maintained tool covers most of a check, the
   residue usually should not survive either. An authored check accretes obligations nobody would
   choose deliberately, and adopting a tool is what forces each one to be named and defended.
-- **The unified coverage report costs zero new dependencies (rev 12).** `istanbul-lib-coverage`,
-  `istanbul-lib-report` and `istanbul-reports` already back the frontend's own gate
-  (`merge-coverage.ts`); `render-coverage.ts` is authored glue reusing them. It is diagnostic,
-  never gating — it renders after both coverage gates run, applies no threshold of its own, and its
-  failure or absence does not change either gate's exit status.
 - **Seven `artipacked` findings become actionable** — every `actions/checkout` needs
   `persist-credentials: false`. The authored check never reports them.
 - **Practice adapts to the tool, not the reverse.** Two commit titles on `main` exceed `commitlint`'s
