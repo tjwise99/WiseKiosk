@@ -21,6 +21,30 @@ browser's own state, or its configuration — fetches nothing, and has no shapin
 registration and no boundary-schema fragment, there being no upstream to shape and nothing crossing
 the boundary. Each part and each build step below carries the shape it applies to.
 
+## How a module is tracked
+
+A module is authored in **three phases, and filed as an epic** — a `module`-type parent ticket
+anchoring an integration branch `module_<n>-<name>`, decomposed into three `task` sub-issues whose
+pull requests target that branch rather than `main`
+([ADR 0013 rev 4](../decisions/0013-work-tracking-invariants.md) defines a sub-issue as exactly that
+shared merge target). The phases are not new kinds of work, so they take no new branch type: they are `task`s
+named for the phase, and what distinguishes them is the sub-issue they are, not their prefix. The
+integration branch keeps the module's churn off `main` and lets a decision taken in one phase be
+revised in another before the whole lands — it merges to `main` when the module is done.
+
+The three phases, in order, map to three sections of this contract (which appear below in a different
+order — content, not sequence, decides where each sits):
+
+1. **UI design spec** — [§ The module's UI design spec](#the-modules-ui-design-spec).
+2. **Requirements & architecture** — [§ Writing the module's requirements](#writing-the-modules-requirements)
+   and [§ Drawing the module in the architecture model](#drawing-the-module-in-the-architecture-model);
+   this phase settles the source, cadence, config keys and freshness/rate bounds.
+3. **Implementation** — [§ Building the module](#building-the-module).
+
+Because the phases share the integration branch, a spec citation the UI design spec cannot yet make —
+the requirement it realises does not exist until phase 2 — is firmed up as that phase lands, not
+blocked on before phase 1 begins.
+
 ## A module is its capability, not its supplier
 
 A module is identified by **what a viewer gets from it** — weather, the time, aviation conditions —
@@ -201,10 +225,13 @@ in code, and none is an operator-tunable configuration key.
 
 ## Writing the module's requirements
 
-A module reaches the requirements tree before it reaches the repository: one `SYS` for the
-user-facing want, decomposed by `SRS` items carrying what is specific to this module
-([ADR 0012 rev 2](../decisions/0012-module-requirements-in-tree.md)). Writing those comes first, and
-the build steps work against what they produce.
+A module's requirements are written before it is built: one `SYS` for the user-facing want,
+decomposed by `SRS` items carrying what is specific to this module
+([ADR 0012 rev 2](../decisions/0012-module-requirements-in-tree.md)). The build steps work against
+what they produce. Earlier still is the UI design spec ([§ How a module is
+tracked](#how-a-module-is-tracked)): a requirement can only formalize a want already made concrete on
+the display, so what a module shows is decided in the design spec before it is obliged in the tree.
+The order is design, then requirements, then build.
 
 The need states what a viewer gets from this module, in one sentence carrying one `shall`, and it
 enumerates nothing: a need listing its own decomposition is a hat over its children rather than a
@@ -415,8 +442,10 @@ lands with the status flip rather than before or after it.
 Before the module's component is built, its on-screen composition is written down: a UI design spec,
 colocated as `frontend/src/modules/<module>/README.md`. It states how the module's content is
 composed — which type step each element takes, the alignment, the grouping devices, and the look of
-each state — carries a reference render of that composition, and cites the requirements it realises
-and the [styling contract](display-styling-contract.md)'s tokens it uses. Composition is not a
+each state — carries a reference render of that composition, and cites the [styling
+contract](display-styling-contract.md)'s tokens it uses. It cites the requirements it realises too;
+but the design spec is authored first ([§ How a module is tracked](#how-a-module-is-tracked)), so
+those citations are added when phase 2's decomposition lands rather than at phase 1. Composition is not a
 requirement and does not enter the tree
 ([the display design study](../design/display-design-study.md), *What belongs in the specification*);
 this spec is where it is written down instead. The `clock` and `weather` modules' `README.md` are the

@@ -1,0 +1,14 @@
+{
+  "name": "wisekiosk-docs-site",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Dev-only: build-fetched Swagger UI assets for the docs site's API explorer page, and a self-contained dev server (vite) that serves the built docs site and proxies /api,/healthz to the backend for local Try-it-out. Siloed with the feature it serves (FOUNDATIONS §2); nothing depends on it at app build or runtime, and swagger-ui-dist's source is never committed.",
+  "engines": {
+    "node": "26"
+  },
+  "devDependencies": {
+    "swagger-ui-dist": "5.32.15",
+    "vite": "8.2.2"
+  }
+}
