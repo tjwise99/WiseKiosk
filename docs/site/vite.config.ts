@@ -27,9 +27,7 @@ const CONTENT_TYPES: Record<string, string> = {
  * (`backend/internal/staticserve`) — the built site's own `index.html` is a redirect stub to
  * `site/`, so `/` behaves the same way opening the file directly would.
  *
- * Read-only and additive: 404s (falls through to Vite's own 404) when the docs build hasn't been
- * run yet, rather than failing outright — `just docs-serve` always builds first, so this is a
- * safety net, not the documented path.
+ * Falls through to Vite's own 404 when the docs build hasn't been run yet (ADR 0029 rev 1).
  */
 function docsSite(): Plugin {
   return {
@@ -55,10 +53,9 @@ function docsSite(): Plugin {
 }
 
 /**
- * The docs silo's own, self-contained dev server (#195, ADR 0029 rev 1): serves the built docs site and
- * proxies `/api`,`/healthz` to the backend on its fixed port (ADR 0020 rev 4), the same target
- * `frontend/vite.config.ts`'s own dev proxy uses for the same reason — a real duplication (see ADR
- * 0029), accepted rather than solved with new shared machinery for one port number.
+ * The docs silo's own, self-contained dev server (#195, ADR 0029 rev 1): serves the built docs site
+ * and proxies `/api`,`/healthz` to the backend on its fixed port (ADR 0020 rev 4) — the same proxy
+ * target `frontend/vite.config.ts` also hardcodes (ADR 0029 rev 1).
  */
 export default defineConfig({
   plugins: [docsSite()],
