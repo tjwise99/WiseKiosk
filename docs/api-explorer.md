@@ -8,8 +8,8 @@ a devDependency and copied into this site; its source is never committed.
 
 On this published site, "Try it out" is reference only — there is no backend behind it. Locally, with
 `just serve` running, `just docs-serve` builds and serves this whole docs site at
-`http://localhost:5173/docs/`, same-origin via the existing `/api`, `/healthz` proxy — this page is
-interactive there.
+`http://localhost:5174/`, via a self-contained dev server in `docs/site/` that proxies `/api`,
+`/healthz` to the backend — this page is interactive there.
 
 ```{raw} html
 <link rel="stylesheet" href="_static/swagger-ui/swagger-ui.css">
