@@ -784,18 +784,8 @@ resolve, a citation to something that does not exist, an index that has drifted 
 - The LikeC4 architecture model validates: no undefined element, no unresolved relationship.
 - Spliced diagrams and generated architecture artifacts are byte-identical to a regeneration. A
   marker's artifact resolves to a regular file inside `architecture/` — through any symlink, not
-  merely by its path text. Each diagram is LikeC4's own DOT codegen (`likec4 gen dot`) rendered to
-  SVG by the system **Graphviz** `dot` binary — the one dependency this rendering path adds, installed
-  by the pinned `ts-graphviz/setup-graphviz` action — with two non-deterministic byte sources
-  stripped before comparison: Graphviz's own version comment, and `likec4_id`, LikeC4's internal
-  relationship id, which is not stable across processes even on an unchanged model (confirmed the
-  hard way: it failed CI on the first real run against a fresh checkout). **CI's pinned Graphviz
-  version is this gate's reference; a
-  contributor's own `dot`, from whatever channel their OS provides, can render a different SVG from
-  the identical `.dot` input** ([`architecture/README.md`](architecture/README.md) § Rendering) —
-  confirmed empirically, not a theoretical caveat — so a local `check-arch` disagreement is resolved
-  by reading CI's diff, not by trusting the local render
-  ([ADR 0003 rev 4](decisions/0003-architecture-as-code-likec4.md)).
+  merely by its path text — and carries no fence marker of its own, which would close the generated
+  fence early and spill the remainder into the document as prose.
 - `architecture/generated/` holds every artifact the model produces and no other. The export clears
   the directory before codegen, which never prunes, so an artifact left behind by a deleted view is
   byte-identical to what is committed and the staleness diff alone cannot see one; and the diff is
@@ -809,7 +799,7 @@ resolve, a citation to something that does not exist, an index that has drifted 
 - Every requirement identifier tagged in the architecture model names an item that exists, is active
   and accepted, and is spelled canonically; every declared tag is applied to something. A tag
   carrying anything other than an identifier fails rather than being passed over — the model's tags
-  carry requirement links ([ADR 0019 rev 8](decisions/0019-boundary-at-what-deploys-and-tag-tier.md)), so
+  carry requirement links ([ADR 0019 rev 7](decisions/0019-boundary-at-what-deploys-and-tag-tier.md)), so
   one carrying something else is a decision to take, not an exemption to add. A model naming no
   requirement at all fails too: it resolves every tag it carries, so an absent link and a sound one
   would read identically. A tag counts on four subject kinds — the logical model's elements and
@@ -821,7 +811,7 @@ resolve, a citation to something that does not exist, an index that has drifted 
   tagged element is the one that requirement obliges, and whether the tier suits the level; both are
   read at review.
 - **Every accepted, active `SYS` or `SRS` item is tagged somewhere in the architecture model**, on an
-  element or a relationship ([ADR 0019 rev 8](decisions/0019-boundary-at-what-deploys-and-tag-tier.md)).
+  element or a relationship ([ADR 0019 rev 7](decisions/0019-boundary-at-what-deploys-and-tag-tier.md)).
   There is no exemption record and nothing to add an item to: where one can bind nowhere, the model
   grows to draw what it obliges. The population is decided rather than filtered — a tier outside the
   obliging and verification sets fails, and so does a `status` outside `accepted` and `proposed`,
@@ -851,7 +841,7 @@ changed, which the citation resolver above decides without anyone declaring anyt
 ## Repository shape
 
 - **Every tracked file is a declared kind** — an authored program in the set
-  [ADR 0017 rev 9](decisions/0017-authored-language-set.md) states, a derived format a toolchain
+  [ADR 0017 rev 8](decisions/0017-authored-language-set.md) states, a derived format a toolchain
   requires, data an authored check reads, or documentation. **A file type nobody has decided about
   fails**, which is the point: closing that failure is a person deciding which side it falls on. A run
   resolving no tracked file fails rather than reporting a clean tree.

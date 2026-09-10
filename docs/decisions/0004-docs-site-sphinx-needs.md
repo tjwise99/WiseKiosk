@@ -2,16 +2,10 @@
 
 **Status:** accepted
 **Decided:** 2026-07-22 (issue #21)
-**Rev:** 3
+**Rev:** 2
 
 ## Revisions
 
-- **rev 3** — 2026-09-09 — corrects a stale bullet under *Diagrams are not load-bearing in this
-  choice*: it named "The Mermaid splice", which [ADR 0003 rev 4](0003-architecture-as-code-likec4.md)
-  replaced with a DOT/Graphviz-rendered SVG splice, and it posed how LikeC4 output enters this site as
-  still undecided — a question that record now answers. Wording only: which toolchain builds this
-  site, and everything else in this record, is unchanged, so the `Decided` date does not move (#115
-  architecture model reader).
 - **rev 2** — 2026-09-04 — replaces two stale references to a `pip` Dependabot ecosystem with
   timeless statements of the `pip` update-tracking entry; what was chosen is unchanged, so the
   Decided date does not move (#223 renovate cutover).
@@ -68,11 +62,10 @@ the single documentation toolchain.
   CI runs the same recipe. Pages deployment is a **separate workflow** from `checks.yml`, holding
   `pages: write` + `id-token: write` via OIDC — elevated *permissions*, still **no stored
   credentials**, so the secret-free-CI stance holds.
-- **Diagrams are not load-bearing in this choice.** How LikeC4 output enters this site is
-  [ADR 0003 rev 4](0003-architecture-as-code-likec4.md)'s to decide, not this record's: a
-  Graphviz-rendered SVG splice into `ARCHITECTURE.md`, one of the images this site's build already
-  copies into its output, plus a separately published interactive site linked from it. Whichever
-  form that took, this site renders it the same way it renders any other Markdown asset.
+- **Diagrams are not load-bearing in this choice.** The Mermaid splice
+  ([ADR 0003 rev 3](0003-architecture-as-code-likec4.md)) keeps serving GitHub; how LikeC4 output enters
+  the site (rendered Mermaid, SVG export, or LikeC4's interactive build) is decided at
+  implementation and forecloses nothing here.
 
 ## Alternatives considered
 

@@ -5,11 +5,11 @@ Tags → tree: every requirement identifier tagged in the model resolves to an a
 tags: every accepted, active item in an obliging tier is tagged somewhere in the model.
 
 The rules are `docs/CI.md` § Documentation integrity; the tag mechanism, the tier it carries and
-the obligation that every accepted item binds are all ADR 0019 rev 8.
+the obligation that every accepted item binds are all ADR 0019 rev 7.
 
 A tag counts on four subject kinds: the logical model's elements and relationships, and the
 deployment model's, which the export keeps separate. A tag on a **view** is not read — a view is a
-projection of the model rather than a subject in it, and ADR 0019 rev 8 binds an item to an element
+projection of the model rather than a subject in it, and ADR 0019 rev 7 binds an item to an element
 or a relationship. One applied there fails as applied to nothing, which is the right verdict reached
 by a message that does not say so.
 
@@ -57,7 +57,7 @@ def export():
     """The model as LikeC4 resolves it. Reading the `.likec4` source instead would judge a
     re-implementation of the parser rather than the parser's own answer.
 
-    `validate` runs first for the reason ADR 0003 rev 4 records against `codegen`: `export json` also
+    `validate` runs first for the reason ADR 0003 rev 3 records against `codegen`: `export json` also
     succeeds on a broken model, emitting a degraded document whose tags have silently gone missing —
     which reads here as a model that tags nothing."""
     if not LIKEC4.exists():
@@ -180,7 +180,7 @@ def main():
             continue
         if prefix not in OBLIGING_TIERS:
             unjudged.append(
-                f"{uid}: tier {prefix} is neither obliging nor verification, and ADR 0019 rev 8 "
+                f"{uid}: tier {prefix} is neither obliging nor verification, and ADR 0019 rev 7 "
                 "says nothing about whether it allocates — a tier to decide, not one to pass over"
             )
             continue

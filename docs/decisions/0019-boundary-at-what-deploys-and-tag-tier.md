@@ -6,16 +6,10 @@ level the same day, #97 C4 phase 2 Container; the Component level 2026-08-05, #9
 Component; the binding rule 2026-08-08, #121 allocation completeness; the Deployment level
 2026-08-09, #123 C4 phase 4 Deployment; the disclaimer and composed-observable rules 2026-08-10,
 #135 bind the mirror and legibility requirements)
-**Rev:** 8
+**Rev:** 7
 
 ## Revisions
 
-- **rev 8** — 2026-09-09 — corrects a paragraph left wrong by
-  [ADR 0003 rev 4](0003-architecture-as-code-likec4.md): the committed diagram no longer drops element
-  descriptions (it is now a Graphviz-rendered SVG carrying them, not a Mermaid one that dropped them),
-  and the generated artifacts it named by their `.mmd` extension are `.svg` now. Text-only — the
-  boundary, the earns-its-place rule and the tag-tier rule are unchanged, so the `Decided` date stands
-  (#115 architecture model reader).
 - **rev 7** — 2026-09-03 — corrects two sentences left wrong by #220: the registration entry's list
   no longer includes parameter validation, which is the schema handler's, in the same package
   ([the module contract](../contracts/module-contract.md) part 5); and a module data route answers
@@ -49,7 +43,7 @@ Component; the binding rule 2026-08-08, #121 allocation completeness; the Deploy
 
 ## Context
 
-[ADR 0003 rev 4](0003-architecture-as-code-likec4.md) makes the LikeC4 model
+[ADR 0003 rev 3](0003-architecture-as-code-likec4.md) makes the LikeC4 model
 ([`../architecture/README.md`](../architecture/README.md)) the single source of truth for the
 architecture. It settles the tooling and leaves the model's own rules unwritten, which means they are
 answered differently each time an element is added.
@@ -62,7 +56,7 @@ different answer depending on whether "the system" is taken to mean what runs or
 owns.
 
 **Which requirement tier an element's tag names.** The tag is the architecture → requirements link,
-and ADR 0003 rev 4 states its tier as `SRS` unconditionally. That does not survive contact with the
+and ADR 0003 rev 3 states its tier as `SRS` unconditionally. That does not survive contact with the
 Context level, where the only element inside the boundary is the system itself and every `SRS` item
 allocates below it.
 
@@ -435,7 +429,7 @@ would reopen it:** the first module need lands.
 **A generic module or shaping placeholder box**, one per container, replaced by the real ones later.
 Rejected on the argument against the aggregate external system: it belongs to no module, so it can
 carry no module's identifier, which forecloses the binding the tag mechanism exists for. Replacing it
-later is also restructuring, which is the one thing ADR 0003 rev 4 authored this model to avoid.
+later is also restructuring, which is the one thing ADR 0003 rev 3 authored this model to avoid.
 
 **The frontend as one unit, with no component view** — answered for the container where the
 terminology collides worst. Rejected because the tree partitions the page itself: an
@@ -491,7 +485,7 @@ program, so waiting would have changed nothing drawn.
 
 ### The tag rules
 
-**`SRS` at every level**, as ADR 0003 rev 4 assumes. Rejected: at the Context level it forces a choice
+**`SRS` at every level**, as ADR 0003 rev 3 assumes. Rejected: at the Context level it forces a choice
 between attaching every `SRS` id to the single system element and picking an arbitrary few, and neither
 is a link a reader can trust. Binding `SRS` to a *relationship* does not escape it either, which is the
 form this record's own mechanism would otherwise invite: an `SRS` item allocates to a container, so
@@ -615,20 +609,16 @@ or not a merge remains, and nothing compares it to what it merges, whereas a ren
 generated artifact and the staleness gate reads the difference.
 
 **The levels above a re-declared edge render byte-identically.** LikeC4 aggregates a component-depth
-edge to the nearest ancestor a view does not expand, so `index.svg` and `containers.svg` are unchanged
+edge to the nearest ancestor a view does not expand, so `index.mmd` and `containers.mmd` are unchanged
 by the boundary-crossing relationships terminating deeper. That is the declare-once rule producing the
 property it was adopted for, and it is checked by the staleness gate rather than asserted here.
 
-**The committed SVG carries what a Mermaid rendering would have dropped.** `likec4 gen dot`, rendered
-to SVG by Graphviz, keeps every element's description and icon — the committed target before
-[ADR 0003 rev 4](0003-architecture-as-code-likec4.md) dropped both — so a Component-level box carries
-its own responsibility statement in the artifact itself, not only in the model source. LikeC4's own
-image export (PNG/JPG) still needs a headless browser and stays outside every gate for that reason,
-unrelated to what it shows. What no static rendering carries — tags, and a relationship a merged edge
-collapses — is read in the model source, which is committed and is ADR 0003 rev 4's source of truth,
-or in the interactive site that same record publishes — not restated in
-[`../ARCHITECTURE.md`](../ARCHITECTURE.md), which would put a second copy beside the first with
-nothing comparing them.
+**The Mermaid artifact is the poorer of the two renderings.** `codegen mermaid` drops element
+descriptions and the icons, which the PNG export keeps, and at the Component level those descriptions
+are the whole responsibility statement. Images stay outside every gate (ADR 0003 rev 3). What the
+artifact cannot show is read in the model source, which is committed and is ADR 0003 rev 3's source of
+truth — not restated in [`../ARCHITECTURE.md`](../ARCHITECTURE.md), which would put a second copy of
+every responsibility statement beside the first with nothing comparing them.
 
 ### The requirements tree
 
@@ -696,7 +686,7 @@ direction still needs one, and
 
 ### The record this one corrects
 
-**ADR 0003 rev 4 is corrected in part and superseded in part.** Its reservation of tags as the
+**ADR 0003 rev 3 is corrected in part and superseded in part.** Its reservation of tags as the
 architecture → requirements mechanism stands; the assumption that the tier is always `SRS` falls. Its
 ruling that the Component level would not be built is reversed rather than re-grounded, and is therefore
 superseded by this record — recorded by revving that document, which is what
@@ -708,4 +698,4 @@ constrains the code that must satisfy it. A view constrains nothing: it is a des
 a picture, and deleting it changes no behaviour. Applying a generality rule to a drawing would bar every
 design document in this repository from preceding its implementation, which is the order
 `CONTRIBUTING.md` opens by requiring. **The Code level's deferral is untouched** — nothing built it —
-and the rest of ADR 0003 rev 4, the tooling and the staleness gate, stands.
+and the rest of ADR 0003 rev 3, the tooling and the staleness gate, stands.

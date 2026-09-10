@@ -171,13 +171,9 @@ jobs:
     # the Doorstop tree are resolved against each other in both directions.
     # Doorstop is read through the requirements silo's venv and LikeC4 through
     # the architecture silo's node_modules, each with the feature it serves.
-    # Browser-free: LikeC4 emits DOT text (its own layout is bundled WASM
-    # graphviz), rendered to SVG by Graphviz's `dot` binary — no chromium
-    # (ADR 0003 rev 4). The pinned setup-graphviz action installs it via apt,
-    # so this runner's Graphviz version is the one committed SVGs must match;
-    # it is CI's, not necessarily a contributor's local one
-    # (docs/architecture/README.md § Rendering). No secrets: pure model
-    # validation, codegen and rendering.
+    # Browser-free:
+    # bundled WASM graphviz, no chromium. No secrets: pure model validation +
+    # codegen.
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -198,11 +194,6 @@ jobs:
 
       - name: Install LikeC4 into the silo (docs/architecture/), locked
         run: npm --prefix docs/architecture ci
-
-      - name: Install Graphviz, pinned (renders the LikeC4 DOT codegen to SVG)
-        uses: ts-graphviz/setup-graphviz@b1de5da23ed0a6d14e0aeee8ed52fdd87af2363c # v2.0.2
-        with:
-          ubuntu-graphviz-version: "2.42.2-9build1"
 
       - name: Install Doorstop into a local venv (siloed under docs/requirements/)
         run: |

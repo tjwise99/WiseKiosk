@@ -5,18 +5,17 @@ The living structural description of WiseKiosk **as built**. It grows with the c
 > **Status: built as each part lands.** A narrative section carries _To be documented as it is built._
 > until the code it describes lands. The diagrams are the exception: they are generated from the
 > [architecture model](architecture/README.md), which is normative for structure
-> ([ADR 0003 rev 4](decisions/0003-architecture-as-code-likec4.md)). Each rendered diagram carries its
-> elements' descriptions and icons directly; what it still drops — tags, and the relationships a
-> merged edge collapses into one — is read in that model, or in the full [interactive
-> site](https://tjwise99.github.io/WiseKiosk/architecture/) generated from it. What a component must
-> *do* is the [requirements tree](requirements/README.md) and the [ADRs](decisions/README.md). This
-> document holds structural rationale too light for an ADR, and cites the rest.
+> ([ADR 0003 rev 3](decisions/0003-architecture-as-code-likec4.md)). What `codegen mermaid` drops —
+> element descriptions, icons — is read in that model, and an element's responsibility statement stays
+> there rather than being copied beside it. What a component must *do* is the
+> [requirements tree](requirements/README.md) and the [ADRs](decisions/README.md). This document holds
+> structural rationale too light for an ADR, and cites the rest.
 
 ## System shape
 
 One published container image serving a full-screen, config-driven smart-mirror display: a Go backend
 proxying public APIs and serving the built frontend, and a Svelte SPA rendering modules into regions of
-the page ([ADR 0019 rev 8](decisions/0019-boundary-at-what-deploys-and-tag-tier.md)). The product
+the page ([ADR 0019 rev 7](decisions/0019-boundary-at-what-deploys-and-tag-tier.md)). The product
 definition is the [README](../README.md); the intended architecture until this section describes the
 built one is SYS002<!-- The display's rendering keeps nothing from a viewer -->,
 SYS004<!-- Upstream data reaches the display only through the backend --> and
@@ -30,28 +29,44 @@ boundary schema at `boundary/openapi.yaml` because it belongs to neither, and th
 
 Every diagram below is **generated from the validated [LikeC4 model](architecture/README.md)**, not
 drawn by hand. Edit `docs/architecture/model/` and run `just arch-export`, which regenerates each
-diagram — DOT text rendered to SVG by Graphviz — and splices it between its marker comments; a hand
-edit inside a marker region is overwritten on the next export, and drift fails the staleness gate.
-The same run also publishes the full [interactive site](https://tjwise99.github.io/WiseKiosk/architecture/),
-ungated. The workflow is the [architecture README](architecture/README.md)'s.
+Mermaid artifact and splices it between its marker comments; a hand edit inside a marker region is
+overwritten on the next export, and drift fails the staleness gate. The workflow is the
+[architecture README](architecture/README.md)'s.
 
 **System context (C4 L1)** — the Operator who deploys and configures WiseKiosk, the Viewer it renders
 for, the boundary between them, which is what deploys — the published image and what it serves — and
 the one upstream outside it. An upstream data source is drawn individually and only once the module
 that reads it has a need in the tree
-([ADR 0019 rev 8](decisions/0019-boundary-at-what-deploys-and-tag-tier.md)), so the level carries one
+([ADR 0019 rev 7](decisions/0019-boundary-at-what-deploys-and-tag-tier.md)), so the level carries one
 box per such module and no aggregate standing in for the rest. The requirements name no supplier:
 which service a box is, is an edit to this repository rather than something the tree obliges.
 
-<!-- arch-export:begin generated/index.svg -->
+<!-- arch-export:begin generated/index.mmd -->
 
-![index](architecture/generated/index.svg)
+```mermaid
+---
+title: "WiseKiosk — System Context (C4 L1)"
+---
+graph TB
+  Operator@{ icon: "fa:user", shape: rounded, label: "Operator" }
+  Wisekiosk@{ shape: rectangle, label: "WiseKiosk" }
+  Viewer@{ icon: "fa:user", shape: rounded, label: "Viewer" }
+  OpenMeteo@{ shape: rectangle, label: "Open-Meteo" }
+  Operator -. "`Supplies the secret for each source`" .-> Wisekiosk
+  Operator -. "`Places the configuration into the served 
+tree`" .-> Wisekiosk
+  Wisekiosk -. "`Renders the configured modules, legibly 
+says when one failed, and mirrors the 
+rest`" .-> Viewer
+  Wisekiosk -. "`Fetches the weather for the location a 
+request names`" .-> OpenMeteo
+```
 
-<!-- arch-export:end generated/index.svg -->
+<!-- arch-export:end generated/index.mmd -->
 **Containers (C4 L2)** — what runs inside the boundary: the backend process, and the frontend bundle
 executing in the browser on the display host. They share one origin, because the backend serves that
 bundle and the configuration file as static content it never interprets
-([ADR 0019 rev 8](decisions/0019-boundary-at-what-deploys-and-tag-tier.md),
+([ADR 0019 rev 7](decisions/0019-boundary-at-what-deploys-and-tag-tier.md),
 [ADR 0007 rev 2](decisions/0007-config-validation-allocation.md)). What parameterises a deployment
 (SYS003<!-- A deployment is parameterised from outside the image -->) reaches that filesystem as two
 separate supplies: the secret for each source, resolved per request
@@ -61,11 +76,35 @@ consumer on a second hop, when the page fetches it. The upstream drawn above app
 backend, which is the container that reaches it — the frontend never does
 (SYS004<!-- Upstream data reaches the display only through the backend -->).
 
-<!-- arch-export:begin generated/containers.svg -->
+<!-- arch-export:begin generated/containers.mmd -->
 
-![containers](architecture/generated/containers.svg)
+```mermaid
+---
+title: "WiseKiosk — Containers (C4 L2)"
+---
+graph TB
+  Operator@{ icon: "fa:user", shape: rounded, label: "Operator" }
+  subgraph Wisekiosk["`WiseKiosk`"]
+    Wisekiosk.Backend@{ shape: rectangle, label: "Backend" }
+    Wisekiosk.Frontend@{ shape: rectangle, label: "Frontend" }
+  end
+  OpenMeteo@{ shape: rectangle, label: "Open-Meteo" }
+  Viewer@{ icon: "fa:user", shape: rounded, label: "Viewer" }
+  Operator -. "`Supplies the secret for each source`" .-> Wisekiosk.Backend
+  Operator -. "`Places the configuration into the served 
+tree`" .-> Wisekiosk.Backend
+  Wisekiosk.Backend -. "`Serves the single-page bundle`" .-> Wisekiosk.Frontend
+  Wisekiosk.Frontend -. "`Fetches the configuration, served back 
+unparsed`" .-> Wisekiosk.Backend
+  Wisekiosk.Frontend -. "`Fetches the payload for each module`" .-> Wisekiosk.Backend
+  Wisekiosk.Backend -. "`Fetches the weather for the location a 
+request names`" .-> OpenMeteo
+  Wisekiosk.Frontend -. "`Renders the configured modules, legibly 
+says when one failed, and mirrors the 
+rest`" .-> Viewer
+```
 
-<!-- arch-export:end generated/containers.svg -->
+<!-- arch-export:end generated/containers.mmd -->
 The Component level (C4 L3) is drawn per container, in the two sections below, and the Deployment level
 in [§ Deployment](#deployment). The Backend container and each of its components carry a `link` to the
 source implementing it; where that source sits is
@@ -74,7 +113,7 @@ source implementing it; where that source sits is
 **Every accepted, active `SYS` or `SRS` item binds somewhere in this model, and where one cannot, the
 model grows to draw what it obliges** — there is no exemption record, and which items are unbound is
 `check-arch-trace`'s answer rather than this document's
-([ADR 0019 rev 8](decisions/0019-boundary-at-what-deploys-and-tag-tier.md)). The **kind** of absence is
+([ADR 0019 rev 7](decisions/0019-boundary-at-what-deploys-and-tag-tier.md)). The **kind** of absence is
 what a reader needs, and there is one: an item whose subject the model does not draw at all. The worked
 example is the published image — neither container nor component, so the obligations on it sit at the
 Deployment level, which is the level drawn to carry them.
@@ -168,7 +207,7 @@ SRS008<!-- No secret value in any backend output -->).
 
 **Components (C4 L3)**, diagrammed below; each box's responsibility is the model's, not restated here.
 A module's own half of this container is its shaping library, drawn when that module's need lands
-([ADR 0019 rev 8](decisions/0019-boundary-at-what-deploys-and-tag-tier.md)); that box serves its own
+([ADR 0019 rev 7](decisions/0019-boundary-at-what-deploys-and-tag-tier.md)); that box serves its own
 route and hands the request to the framework pipeline, which calls back into it to parse the answer —
 so neither half serves a payload without the other. The framework/module seam is drawn rather than
 inferred: one shaping box appears per upstream-backed module and every other box on this level is
@@ -190,11 +229,42 @@ caller that means nothing good by it. The value itself lives in the `router` pac
 in code; what is recorded here is the reasoning for it, which is what the constant's own comment
 points at.
 
-<!-- arch-export:begin generated/backendComponents.svg -->
+<!-- arch-export:begin generated/backendComponents.mmd -->
 
-![backendComponents](architecture/generated/backendComponents.svg)
+```mermaid
+---
+title: "WiseKiosk Backend — Components (C4 L3)"
+---
+graph TB
+  Operator@{ icon: "fa:user", shape: rounded, label: "Operator" }
+  WisekioskFrontend@{ shape: rectangle, label: "Frontend" }
+  subgraph WisekioskBackend["`Backend`"]
+    WisekioskBackend.StaticServing@{ shape: rectangle, label: "Static serving" }
+    WisekioskBackend.RouteHandler@{ shape: rectangle, label: "Route handler" }
+    WisekioskBackend.WeatherShaping@{ shape: rectangle, label: "Weather shaping" }
+    WisekioskBackend.ResponseCache@{ shape: rectangle, label: "Response cache" }
+    WisekioskBackend.UpstreamClient@{ shape: rectangle, label: "Upstream client" }
+    WisekioskBackend.RequestRejection@{ shape: rectangle, label: "Request rejection" }
+  end
+  OpenMeteo@{ shape: rectangle, label: "Open-Meteo" }
+  Operator -. "`Places the configuration into the served 
+tree`" .-> WisekioskBackend.StaticServing
+  Operator -. "`Supplies the secret for each source`" .-> WisekioskBackend.UpstreamClient
+  WisekioskFrontend -. "`Fetches the configuration, served back 
+unparsed`" .-> WisekioskBackend.StaticServing
+  WisekioskFrontend -. "`Fetches the payload for each module`" .-> WisekioskBackend.RouteHandler
+  WisekioskBackend.RouteHandler -. "`Asks for a held answer, and stores what 
+it gets`" .-> WisekioskBackend.ResponseCache
+  WisekioskBackend.RouteHandler -. "`Asks for a fresh response when nothing 
+is held`" .-> WisekioskBackend.UpstreamClient
+  WisekioskBackend.WeatherShaping -. "`Answers a request it will not carry with 
+the shared rejection`" .-> WisekioskBackend.RequestRejection
+  WisekioskBackend.StaticServing -. "`Serves the single-page bundle`" .-> WisekioskFrontend
+  WisekioskBackend.UpstreamClient -. "`Fetches the weather for the location a 
+request names`" .-> OpenMeteo
+```
 
-<!-- arch-export:end generated/backendComponents.svg -->
+<!-- arch-export:end generated/backendComponents.mmd -->
 
 **Cache and rate-limit defaults.** Three of the policies named above start from a default, and the
 defaults are the `upstream` package's exported constants — `DefaultSuccessTTL`, `DefaultNegativeTTL`
@@ -251,7 +321,7 @@ restated here.
 
 **Components (C4 L3)**, diagrammed below; each box's responsibility is the model's, not restated here.
 A module's own half of this container is its Svelte component, drawn when that module's need lands
-([ADR 0019 rev 8](decisions/0019-boundary-at-what-deploys-and-tag-tier.md)). The framework/module seam
+([ADR 0019 rev 7](decisions/0019-boundary-at-what-deploys-and-tag-tier.md)). The framework/module seam
 is drawn rather than inferred: one component box appears per module whatever its shape — a local
 module has no other box anywhere in the model — and every other box on this level is shared
 framework. The edge to the Viewer still leaves this container rather than any one of those boxes,
@@ -263,11 +333,37 @@ server-to-client, terminating on the container rather than on a child because no
 fetch what has yet to run; `include *` does not reach it, so this view alone omits where the bundle
 comes from, and the Backend's view above is where it is drawn.
 
-<!-- arch-export:begin generated/frontendComponents.svg -->
+<!-- arch-export:begin generated/frontendComponents.mmd -->
 
-![frontendComponents](architecture/generated/frontendComponents.svg)
+```mermaid
+---
+title: "WiseKiosk Frontend — Components (C4 L3)"
+---
+graph TB
+  subgraph WisekioskFrontend["`Frontend`"]
+    WisekioskFrontend.PageShell@{ shape: rectangle, label: "Page shell" }
+    WisekioskFrontend.Clock@{ shape: rectangle, label: "Clock" }
+    WisekioskFrontend.Weather@{ shape: rectangle, label: "Weather" }
+    WisekioskFrontend.Configuration@{ shape: rectangle, label: "Configuration load and validation" }
+    WisekioskFrontend.Layout@{ shape: rectangle, label: "Layout assembly" }
+    WisekioskFrontend.ModuleHost@{ shape: rectangle, label: "Module host" }
+  end
+  Viewer@{ icon: "fa:user", shape: rounded, label: "Viewer" }
+  WisekioskBackend@{ shape: rectangle, label: "Backend" }
+  WisekioskFrontend.PageShell -. "`Asks for the configuration, and applies 
+it once it validates`" .-> WisekioskFrontend.Configuration
+  WisekioskFrontend.PageShell -. "`Hands over the configured modules and 
+whether the backend is serving`" .-> WisekioskFrontend.Layout
+  WisekioskFrontend.Layout -. "`Mounts one host per configured placement`" .-> WisekioskFrontend.ModuleHost
+  WisekioskFrontend.Configuration -. "`Fetches the configuration, served back 
+unparsed`" .-> WisekioskBackend
+  WisekioskFrontend.ModuleHost -. "`Fetches the payload for each module`" .-> WisekioskBackend
+  WisekioskFrontend -. "`Renders the configured modules, legibly 
+says when one failed, and mirrors the 
+rest`" .-> Viewer
+```
 
-<!-- arch-export:end generated/frontendComponents.svg -->
+<!-- arch-export:end generated/frontendComponents.mmd -->
 
 **One load, then nothing.** The page mounts, fetches the configuration once, and renders. There is no
 router, no navigation and no second load path: a configuration change applies at the next page load
@@ -386,15 +482,53 @@ offers no secret-bearing key (SRS007<!-- Configuration schema offers no secret-b
 ## Deployment
 
 **Deployment** — what the project publishes, the hosts that run it, and the files the operator places
-beside them ([ADR 0019 rev 8](decisions/0019-boundary-at-what-deploys-and-tag-tier.md)). It is not one
+beside them ([ADR 0019 rev 7](decisions/0019-boundary-at-what-deploys-and-tag-tier.md)). It is not one
 of C4's four core levels: C4's fourth is Code, and deployment is a supplementary diagram mapping
 containers onto the infrastructure they run on.
 
-<!-- arch-export:begin generated/deployment.svg -->
+<!-- arch-export:begin generated/deployment.mmd -->
 
-![deployment](architecture/generated/deployment.svg)
+```mermaid
+---
+title: "WiseKiosk — Deployment"
+---
+graph TB
+  subgraph DisplayHost["`Display host`"]
+    subgraph DisplayHost.DisplayBrowser["`Browser`"]
+      DisplayHost.DisplayBrowser.Frontend@{ shape: rectangle, label: "Frontend" }
+    end
+  end
+  PublishedImage@{ shape: rectangle, label: "Published image" }
+  subgraph ContainerHost["`Container host`"]
+    ContainerHost.ConfigurationFile@{ shape: rectangle, label: "Configuration file" }
+    ContainerHost.SecretFiles@{ shape: rectangle, label: "Secret files" }
+    subgraph ContainerHost.RunningContainer["`Running container`"]
+      ContainerHost.RunningContainer.Backend@{ shape: rectangle, label: "Backend" }
+    end
+  end
+  subgraph NativeHost["`Native host`"]
+    NativeHost.NativeConfigurationFile@{ shape: rectangle, label: "Configuration file" }
+    NativeHost.NativeSecretFiles@{ shape: rectangle, label: "Secret files" }
+    subgraph NativeHost.NativeProcess["`Backend process`"]
+      NativeHost.NativeProcess.Backend@{ shape: rectangle, label: "Backend" }
+    end
+  end
+  DisplayHost.DisplayBrowser.Frontend -. "`Fetches the configuration, served back 
+unparsed`" .-> ContainerHost.RunningContainer.Backend
+  DisplayHost.DisplayBrowser.Frontend -. "`Fetches the payload for each module`" .-> ContainerHost.RunningContainer.Backend
+  DisplayHost.DisplayBrowser.Frontend -. "`Fetches the configuration, served back 
+unparsed`" .-> NativeHost.NativeProcess.Backend
+  DisplayHost.DisplayBrowser.Frontend -. "`Fetches the payload for each module`" .-> NativeHost.NativeProcess.Backend
+  ContainerHost.RunningContainer.Backend -. "`Serves the single-page bundle`" .-> DisplayHost.DisplayBrowser.Frontend
+  NativeHost.NativeProcess.Backend -. "`Serves the single-page bundle`" .-> DisplayHost.DisplayBrowser.Frontend
+  PublishedImage -. "`Runs as this container`" .-> ContainerHost.RunningContainer
+  ContainerHost.ConfigurationFile -. "`Mounted in`" .-> ContainerHost.RunningContainer
+  ContainerHost.SecretFiles -. "`Mounted in`" .-> ContainerHost.RunningContainer
+  NativeHost.NativeConfigurationFile -. "`Read from the host`" .-> NativeHost.NativeProcess
+  NativeHost.NativeSecretFiles -. "`Read from the host`" .-> NativeHost.NativeProcess
+```
 
-<!-- arch-export:end generated/deployment.svg -->
+<!-- arch-export:end generated/deployment.mmd -->
 The published image is the one node here that exists before any deployment does, and it is drawn because
 the obligations on it are obligations on the artifact rather than on the process it becomes.
 
@@ -402,12 +536,12 @@ the obligations on it are obligations on the artifact rather than on the process
 published image on the container host, and as a process of the host's own operating system on the
 native host. Both are instances of the same Backend container, so what differs is the Deployment-level
 subject rather than the software
-([ADR 0019 rev 8](decisions/0019-boundary-at-what-deploys-and-tag-tier.md)).
+([ADR 0019 rev 7](decisions/0019-boundary-at-what-deploys-and-tag-tier.md)).
 
 The hosts here are **roles, not machines**. The container host and the display host have different
 floors, and in the configuration this is built for they are necessarily separate machines. Why each of
 those is so, and why a host carries a tag only where an item obliges the operator, is
-[ADR 0019 rev 8](decisions/0019-boundary-at-what-deploys-and-tag-tier.md)'s.
+[ADR 0019 rev 7](decisions/0019-boundary-at-what-deploys-and-tag-tier.md)'s.
 
 **The image carries a CA trust store.** Every module's upstream is fetched by the backend rather than
 by the browser (SYS004<!-- Upstream data reaches the display only through the backend -->), over

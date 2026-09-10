@@ -256,7 +256,7 @@ run is a property of the process rather than of the specification, so what that 
 stated in [`../CI.md`](../CI.md) § Gate wiring.
 
 The browsable, click-through traceability view of this tree (needtables, link graphs, matrices) is
-built by the documentation site silo, [`../site/README.md`](../site/README.md) (ADR 0004 rev 3); this
+built by the documentation site silo, [`../site/README.md`](../site/README.md) (ADR 0004 rev 2); this
 directory is the requirements' canonical source and gate, not its presentation.
 
 ## Adding or changing requirements

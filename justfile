@@ -89,15 +89,12 @@ arch-install:
 # before codegen, which never prunes: an artifact left by a deleted view is byte-identical to what
 # is committed, so the staleness diff below cannot otherwise see it.
 [group('docs')]
-[doc('Validate the architecture model, regenerate its browser-free gated artifacts, and rebuild the ungated interactive site')]
+[doc('Validate the architecture model and regenerate its browser-free artifacts')]
 arch-export:
     docs/architecture/node_modules/.bin/likec4 validate docs/architecture/model
     rm -rf docs/architecture/generated
-    docs/architecture/node_modules/.bin/likec4 gen dot docs/architecture/model -o docs/architecture/generated
-    python3 scripts/render-arch-svg.py
+    docs/architecture/node_modules/.bin/likec4 codegen mermaid docs/architecture/model -o docs/architecture/generated
     python3 scripts/splice-arch-diagrams.py
-    rm -rf docs/architecture/site
-    docs/architecture/node_modules/.bin/likec4 build docs/architecture/model -o docs/architecture/site --base /WiseKiosk/architecture/
 
 # `add --intent-to-add` reaches regenerated artifacts that are untracked; the diff is taken against
 # HEAD because that same `git add` stages the deletion `arch-export` makes of an orphan, which an

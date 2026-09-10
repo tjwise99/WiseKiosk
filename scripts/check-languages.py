@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Every tracked file's extension is in a declared set.
 
-[ADR 0017 rev 9](../docs/decisions/0017-authored-language-set.md) binds two authored languages to
+[ADR 0017 rev 8](../docs/decisions/0017-authored-language-set.md) binds two authored languages to
 their audience — Go, TypeScript, the Svelte component format and CSS for what ships, Python (standard
 library only) for what checks the repository — and rules that everything else in the tree is
 *derived*: a toolchain's own required input format, not a language anyone authors in. Documentation,
@@ -11,13 +11,13 @@ declared below.
 
 This asserts that every extension actually present is one of those three kinds, declared and
 attributed below — never inferred from what happens to already be in the tree. A file type nobody has
-decided about **fails**, which is the opposite of a denylist: the unbounded set ADR 0017 rev 9 rejected
+decided about **fails**, which is the opposite of a denylist: the unbounded set ADR 0017 rev 8 rejected
 would pass silently on a new extension, and only a bounded, declared set can fail on one.
 
-`sh` and `mjs` are **not** declared extensions: ADR 0017 rev 9 names POSIX sh and Node as authoring
+`sh` and `mjs` are **not** declared extensions: ADR 0017 rev 8 names POSIX sh and Node as authoring
 nothing at all, so an allowlisted `.sh`/`.mjs` extension would be the one hole that lets past exactly
 the violation this check exists to catch. The check scripts already written in them are real, but each
-carries **a disposition rather than an exemption** — ADR 0017 rev 9's own words for this, applied here
+carries **a disposition rather than an exemption** — ADR 0017 rev 8's own words for this, applied here
 the same way it applies there — so each is declared individually, by its exact repository-relative
 path, in `LEGACY`, citing the record that ends it. A *new* `.sh` or `.mjs` file, anywhere not in that
 list, fails — and an entry whose file is no longer tracked fails too, so the list cannot silently
@@ -43,72 +43,69 @@ ROOT = Path(__file__).resolve().parent.parent
 
 # Extension (without the leading dot, exact case) -> which kind it is and what it serves.
 EXTENSIONS = {
-    # Authored — what ships (ADR 0017 rev 9 Decision table).
-    "go": "authored — Go, what ships to a user or an operator (ADR 0001 rev 1, ADR 0017 rev 9)",
-    "ts": "authored — TypeScript, what ships (ADR 0017 rev 9)",
+    # Authored — what ships (ADR 0017 rev 8 Decision table).
+    "go": "authored — Go, what ships to a user or an operator (ADR 0001 rev 1, ADR 0017 rev 8)",
+    "ts": "authored — TypeScript, what ships (ADR 0017 rev 8)",
     "svelte": "authored — the Svelte component format, what ships "
-    "(ADR 0018 rev 1, ADR 0017 rev 9)",
-    "css": "authored — the shared product stylesheet, what ships (the display styling contract, ADR 0017 rev 9); "
+    "(ADR 0018 rev 1, ADR 0017 rev 8)",
+    "css": "authored — the shared product stylesheet, what ships (the display styling contract, ADR 0017 rev 8); "
     "also documentation — an asset the Sphinx docs-site build serves, a Furo theme override "
-    "(ADR 0017 rev 9)",
-    # Authored — what checks the repository (ADR 0017 rev 9 Decision table).
-    "py": "authored — Python, standard library only, what checks the repository (ADR 0017 rev 9)",
-    # Derived — a toolchain's own required input format (ADR 0017 rev 9 Decision).
+    "(ADR 0017 rev 8)",
+    # Authored — what checks the repository (ADR 0017 rev 8 Decision table).
+    "py": "authored — Python, standard library only, what checks the repository (ADR 0017 rev 8)",
+    # Derived — a toolchain's own required input format (ADR 0017 rev 8 Decision).
     "yml": "derived — a toolchain's own required input format: GitHub Actions workflow YAML, "
-    "Doorstop item and silo config YAML (ADR 0017 rev 9)",
+    "Doorstop item and silo config YAML (ADR 0017 rev 8)",
     "yaml": "derived — a toolchain's own required input format: pre-commit's "
     ".pre-commit-config.yaml (ADR 0016 rev 11), the boundary schema both code generators "
-    "read and oapi-codegen's own configuration (ADR 0008 rev 5, ADR 0017 rev 9)",
+    "read and oapi-codegen's own configuration (ADR 0008 rev 5, ADR 0017 rev 8)",
     "mod": "derived — the Go toolchain's own manifest format: backend/go.mod "
-    "(ADR 0017 rev 9)",
+    "(ADR 0017 rev 8)",
     "sum": "derived — the Go toolchain's own lockfile format: backend/go.sum "
-    "(ADR 0017 rev 9)",
+    "(ADR 0017 rev 8)",
     "json": "derived — a toolchain's own required input format: npm's package.json and "
     "package-lock.json, Claude Code's settings.json, commitlint's .commitlintrc*.json; also "
     "derived — data an authored check reads and does not itself author: the vendored SPDX 2.3 "
     "schema scripts/publish/spdx-schema-2.3.json the SBOM check validates against",
-    "likec4": "derived — LikeC4's own model format, named in ADR 0017 rev 9 "
-    "(ADR 0003 rev 4)",
-    "dot": "derived — generated DOT output of the LikeC4 codegen (`likec4 gen dot`), never "
-    "hand-authored (ADR 0017 rev 9, ADR 0003 rev 4)",
-    "svg": "derived — generated SVG output of the system Graphviz `dot` binary rendering "
-    "LikeC4's DOT codegen (scripts/render-arch-svg.py), never hand-authored "
-    "(ADR 0017 rev 9, ADR 0003 rev 4)",
+    "likec4": "derived — LikeC4's own model format, named in ADR 0017 rev 8 "
+    "(ADR 0003 rev 3)",
+    "mmd": "derived — generated Mermaid output of the LikeC4 export/splice toolchain "
+    "(scripts/splice-arch-diagrams.py), never hand-authored",
     "txt": "derived — a toolchain's own required input format (pip's requirements-dev.txt); also "
     "derived — data an authored check reads and does not itself author: the secret-pattern "
     "enumeration scripts/image/layer_secret_scan.py matches image layers against, rather "
     "than restating it (docs/TESTING.md); also documentation — legal text, not an authored "
     "program: the licence and attribution the bundled faces are redistributed under, beside "
-    "them in frontend/src/assets/ (ADR 0017 rev 9)",
+    "them in frontend/src/assets/ (ADR 0017 rev 8)",
     "regex": "derived — data an authored check reads and does not itself author: the "
     "single-source-of-truth branch pattern check-branch.py and branch-shape.py "
     "each read instead of restating it (docs/CI.md)",
-    # Documentation, and the assets a build serves — ADR 0017 rev 9 states this decision does not
+    # Documentation, and the assets a build serves — ADR 0017 rev 8 states this decision does not
     # reach them.
-    "md": "documentation — not an authored program; ADR 0017 rev 9 does not reach documentation",
+    "md": "documentation — not an authored program; ADR 0017 rev 8 does not reach documentation",
     "png": "documentation — a rendered figure a Markdown document embeds and an asset the Sphinx "
-    "docs-site build serves (ADR 0017 rev 9: 'the assets a documentation build serves')",
+    "docs-site build serves (ADR 0017 rev 8: 'the assets a documentation build serves')",
     # Two dispositions under one extension, the shape `.css` already takes.
     "html": "derived — Vite's own required input format: frontend/index.html is the single entry "
-    "the build reads and rewrites (ADR 0018 rev 1, ADR 0017 rev 9); also documentation — an asset "
-    "the Sphinx docs-site build serves (ADR 0017 rev 9)",
+    "the build reads and rewrites (ADR 0018 rev 1, ADR 0017 rev 8); also documentation — an asset "
+    "the Sphinx docs-site build serves (ADR 0017 rev 8)",
     "woff2": "an asset a build serves — not an authored program: the two bundled faces the display "
     "styling contract states, Inter for every readable character and the icon face the weather "
     "module's glyphs are drawn from, both self-hosted because the display page reaches no "
-    "origin but the backend's (ADR 0017 rev 9)",
+    "origin but the backend's (ADR 0017 rev 8)",
     "gif": "an asset a build serves — not an authored program: the render tier's exempt-imagery "
     "fixture, a same-origin file so the served img-src 'self' admits it the way a data: URI "
-    "cannot (ADR 0017 rev 9)",
+    "cannot (ADR 0017 rev 8)",
 }
 
 # Exact repository-relative path -> which kind it is and what it serves, for a file with no
 # extension. Matched by full path, not by basename: these files serve nothing in common, and a
 # basename match would let a same-named file anywhere else in the tree pass unjudged.
 NO_EXTENSION = {
-    "justfile": "derived — invoking `just`, named explicitly in ADR 0017 rev 9",
+    "justfile": "derived — invoking `just`, named explicitly in ADR 0017 rev 8",
     "LICENSE": "documentation — legal text, not an authored program",
     "Dockerfile": "derived — the container build's own required input format, named explicitly in "
-    "ADR 0017 rev 9 (ADR 0021 rev 3)",
+    "ADR 0017 rev 8 (ADR 0021 rev 3)",
     ".gitignore": "derived — git's own required input format",
     ".gitattributes": "derived — git's own required input format",
     ".editorconfig": "derived — EditorConfig's own required input format",
@@ -119,9 +116,9 @@ NO_EXTENSION = {
 
 
 # Exact repository-relative path -> the record giving that file its disposition. `sh` and `mjs` are
-# NOT declared extensions: ADR 0017 rev 9 says they author nothing, so a *new* file in either must
+# NOT declared extensions: ADR 0017 rev 8 says they author nothing, so a *new* file in either must
 # fail. The files below predate that decision and each carries "a disposition rather than an
-# exemption" in ADR 0017 rev 9's own words — so they are grandfathered one at a time, and `main()`
+# exemption" in ADR 0017 rev 8's own words — so they are grandfathered one at a time, and `main()`
 # fails an entry here whose file is no longer tracked, so the list empties itself as each conversion
 # lands rather than accumulating dead grants.
 LEGACY: dict[str, str] = {}
@@ -181,7 +178,7 @@ def main():
         if extension not in EXTENSIONS:
             problems.append(
                 f"{name}: extension .{extension} is not in the declared set — decide whether it is "
-                f"authored or derived (ADR 0017 rev 9), or grandfather this path with its disposition"
+                f"authored or derived (ADR 0017 rev 8), or grandfather this path with its disposition"
             )
         else:
             judged += 1
