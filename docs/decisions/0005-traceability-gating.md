@@ -258,7 +258,7 @@ The four stored attributes — `verification-method`, `status`, `verification-ju
   `backend/.testcoverage.yml` and `frontend/coverage-thresholds.json`, so a change to it is a config
   diff, not an ADR rev. Coverage proves execution, not specification: a line covered incidentally
   counts. That residue is held by review and test quality, and no gate pretends otherwise. **100%,
-  each language's toolchain ceiling, is the ratcheted destination** (owner, 2026-09-08) — reached by
+  each language's toolchain ceiling, is the ratcheted destination** — reached by
   raising those two config files one bump per PR; this rev records the direction and states no
   number of its own, so it stays true through every later bump. **Meeting a raised bar restructures
   the code or forces the error path under test — it never deletes a defensive branch to win the
