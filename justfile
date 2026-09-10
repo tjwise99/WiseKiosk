@@ -62,15 +62,17 @@ check-repo-silo:
     python3 scripts/check-repo-silo.py
 
 [group('docs')]
-[doc('First-time setup: install the pinned Sphinx toolchain into docs/site/')]
+[doc('First-time setup: install the pinned Sphinx toolchain into docs/site/, and swagger-ui-dist (locked) for the API explorer page')]
 site-install:
     python3 -m venv docs/site/.venv
     docs/site/.venv/bin/pip install -r docs/site/requirements-dev.txt
+    npm --prefix docs/site ci
 
 [group('docs')]
-[doc('Regenerate the needs pages from Doorstop and build the docs site (warnings-as-errors)')]
+[doc('Regenerate the needs pages from Doorstop, copy the API explorer assets, and build the docs site (warnings-as-errors)')]
 site-build:
     docs/site/.venv/bin/python docs/site/doorstop_to_needs.py
+    docs/site/.venv/bin/python docs/site/copy_explorer_assets.py
     docs/site/.venv/bin/sphinx-build -W -b html -c docs/site docs docs/site/_build/html
 
 [group('checks')]
@@ -216,6 +218,13 @@ run-container: config-seed
 [doc('Serve the built static bundle rather than the dev server — what a deployment ships, including the compiled configuration validator')]
 preview: check-build
     frontend/node_modules/.bin/vite preview frontend
+
+# Depends on `site-build` so the docs site the server mounts is current, never a stale prior build.
+[group('run')]
+[doc('Build and serve the whole docs site at :5174, proxied to `just serve` — the API explorer page is interactive there; needs `just serve` running for "Try it out" to reach a live backend')]
+docs-serve: site-build
+    @echo 'Docs: http://localhost:5174/ (API explorer: http://localhost:5174/api-explorer.html)'
+    docs/site/node_modules/.bin/vite --config docs/site/vite.config.ts
 
 [group('checks')]
 [doc('The frontend builds to a static single-page bundle; needs `just boundary-install`')]
