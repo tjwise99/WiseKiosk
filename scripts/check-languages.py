@@ -68,7 +68,7 @@ EXTENSIONS = {
     "derived — data an authored check reads and does not itself author: the vendored SPDX 2.3 "
     "schema scripts/publish/spdx-schema-2.3.json the SBOM check validates against",
     "likec4": "derived — LikeC4's own model format, named in ADR 0017 rev 8 "
-    "(ADR 0003 rev 3)",
+    "(ADR 0003 rev 4)",
     "mmd": "derived — generated Mermaid output of the LikeC4 export/splice toolchain "
     "(scripts/splice-arch-diagrams.py), never hand-authored",
     "txt": "derived — a toolchain's own required input format (pip's requirements-dev.txt); also "
