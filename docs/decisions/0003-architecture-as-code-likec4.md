@@ -6,7 +6,7 @@
 
 ## Revisions
 
-- **rev 4** — 2026-09-10 — #115 architecture model reader: adds a second, ungated output — the full
+- **rev 4** — 2026-09-10 — #115 architecture model reader: adds a second output — the full
   interactive model embedded in the docs site, via `likec4 codegen webcomponent` and a `<likec4-view>`
   element on [`architecture/explorer.md`](../architecture/explorer.md), the same embed shape
   [ADR 0029 rev 1](0029-api-explorer-swagger-ui.md) set for Swagger UI on `api-explorer.md`. Carries
@@ -108,8 +108,3 @@ renderable browser-free.
   the requirements pass in issue #18, so this decision bound none of them. Which tier an element's tag
   names, and the binding itself, are
   [ADR 0019 rev 7](0019-boundary-at-what-deploys-and-tag-tier.md)'s.
-- **The embedded webcomponent bundle is unverified by any gate** — not staleness-checked, by design;
-  a broken or stale rendering is a silent failure mode this revision accepts in exchange for not
-  putting a browser in `check-arch`.
-- **The bundle fetches its typeface from a CDN at runtime** — pulls IBM Plex Sans from jsdelivr, fonts
-  only, and degrades to the system sans-serif if that request is blocked or offline.

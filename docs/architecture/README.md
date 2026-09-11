@@ -27,8 +27,8 @@ docs/architecture/
     frontendComponents.mmd    Frontend Component view (Mermaid)
     deployment.mmd            Deployment view (Mermaid)
   embed/                the interactive webcomponent bundle `likec4 codegen webcomponent`
-                        produces — gitignored, ungated, rebuilt every `arch-export`; copied
-                        into the docs site, embedded there, never committed
+                        produces — gitignored, rebuilt every `arch-export`; copied into the
+                        docs site, embedded there, never committed
 ```
 
 `generated/` is cleared before codegen, which writes files and never prunes them: an artifact left
@@ -44,8 +44,7 @@ untracked rather than changed, so the diff is taken after `git add --intent-to-a
 3. From the repo root, run `just arch-export` — this **validates** the model, **regenerates** every
    gated output (the artifacts in `generated/` *and* the diagrams spliced into
    [`../ARCHITECTURE.md`](../ARCHITECTURE.md)), and rebuilds `embed/`, the interactive webcomponent
-   bundle — gitignored, ungated, embedded in the docs site
-   ([`explorer.md`](explorer.md)).
+   bundle — gitignored, embedded in the docs site ([`explorer.md`](explorer.md)).
 4. Commit `model/`, `generated/`, and `../ARCHITECTURE.md` together. Never `embed/` — it is
    regenerated, never committed.
 
