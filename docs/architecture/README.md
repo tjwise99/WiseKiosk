@@ -26,9 +26,9 @@ docs/architecture/
     backendComponents.mmd     Backend Component view (Mermaid)
     frontendComponents.mmd    Frontend Component view (Mermaid)
     deployment.mmd            Deployment view (Mermaid)
-  embed/                 the interactive webcomponent bundle `likec4 codegen webcomponent`
-    likec4-views.js      produces — gitignored, ungated, rebuilt every `arch-export`; copied into
-                          the docs site and embedded there, never committed
+  embed/                the interactive webcomponent bundle `likec4 codegen webcomponent`
+                        produces — gitignored, ungated, rebuilt every `arch-export`; copied
+                        into the docs site, embedded there, never committed
 ```
 
 `generated/` is cleared before codegen, which writes files and never prunes them: an artifact left
