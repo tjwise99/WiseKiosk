@@ -1,7 +1,16 @@
-import { expect, test, type Page } from '@playwright/test';
+import type { Page } from '@playwright/test';
 
 import { LIVENESS_INTERVAL_MS } from '../../src/lib/liveness';
-import { overlaps, regionBoxes, render, serveLiveness, type Box, type Fixture } from './harness';
+import {
+  expect,
+  overlaps,
+  regionBoxes,
+  render,
+  serveLiveness,
+  test,
+  type Box,
+  type Fixture,
+} from './harness';
 
 /**
  * TST040. A backend that stops answering under a page already serving its modules raises one

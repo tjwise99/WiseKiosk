@@ -23,10 +23,6 @@
       title: 'The configuration was rejected',
       advice: 'Every fault is listed below. Correct them and reload.',
     },
-    unreadable: {
-      title: 'The configuration could not be applied',
-      advice: `${CONFIGURATION_URL} was read but applying it failed unexpectedly. Check it against the schema and reload.`,
-    },
   };
 
   const headline = $derived(HEADLINES[outcome.kind]);
@@ -39,7 +35,7 @@
   {#if outcome.kind === 'rejected'}
     <ul class="faults">
       {#each outcome.faults as fault, index (index)}
-        <li><span class="where">{fault.where || CONFIGURATION_URL}</span> {fault.what}</li>
+        <li><span class="where">{fault.where || CONFIGURATION_URL}</span><span>{fault.what}</span></li>
       {/each}
     </ul>
   {:else}
@@ -79,6 +75,13 @@
     list-style: none;
     font-size: var(--type-body);
     font-weight: var(--type-body-weight);
+  }
+
+  /* Layout via flex gap, not a literal space in the text node shared with `fault.what`: avoids the
+     same nullish-fallback branch App.svelte's edgeBandStyle comment describes. */
+  .faults li {
+    display: flex;
+    gap: var(--space-xs);
   }
 
   .where {

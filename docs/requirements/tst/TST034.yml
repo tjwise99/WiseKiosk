@@ -11,12 +11,12 @@ ref: ''
 references:
 - keyword: var _ boundary.ServerInterface = schemaRoutes{}
   path: backend/cmd/main.go
-  sha: 75fc673062ec9f4d0adf05583b66dadda253264ea7d916f68a75eae7e58f0d62
+  sha: 58cabdb3cec750881a3364614addcb2c7f54cb0374cdf5d7eb066c3d3e9d13b1
   type: file
 - path: frontend/src/modules/weather/props.ts
   sha: 8120c019210f046eaca71fab4ba1da6afd88bbf9ed555b7e59570907e01fe0d3
   type: file
-reviewed: eE9UDfEJT8Z3DoKYHD_tQpxDTmGNV-Wpx-KKXTYiJ60=
+reviewed: U-dAfYa7myfwOh5u2pZyFsvUhAps4FvHkvkX1AoB_fw=
 status: proposed
 text: |
   Test asserting that for every route the backend serves through the generated server interface the

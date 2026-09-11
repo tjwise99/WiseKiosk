@@ -76,7 +76,7 @@ mirrored locally by `just check-branch` and the advisory hooks `pre-commit insta
   keyword is the only scriptable writer, and only against the default base; the manual link is
   UI-only and confirmed live to satisfy the gate.
 - **This is a process/scheduling control, explicitly not a traceability channel.** Requirements
-  trace stays diff-derived per [ADR 0005 rev 3](0005-traceability-gating.md); the branch↔issue link
+  trace stays diff-derived per [ADR 0005 rev 4](0005-traceability-gating.md); the branch↔issue link
   schedules work, it never evidences it.
 
 ## Alternatives considered

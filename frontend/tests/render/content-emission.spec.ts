@@ -1,7 +1,5 @@
-import { expect, test } from '@playwright/test';
-
 import { readEmission } from './emission';
-import { render, type Fixture } from './harness';
+import { expect, render, test, type Fixture } from './harness';
 
 /**
  * TST047. Every text element the page presents for reading renders at the display's maximum

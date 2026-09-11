@@ -50,12 +50,12 @@
     >
       {#each placements as placement, index (index)}
         {@const entry = modules[placement.module]}
+        {@const config = placement.options ?? {}}
+        {@const unknownMessage = `No module named “${placement.module}” — nothing renders here until one is added.`}
         {#if entry}
-          <ModuleHost {entry} {reachable} config={placement.options ?? {}} />
+          <ModuleHost {entry} {reachable} {config} />
         {:else}
-          <p class="unknown">
-            No module named “{placement.module}” — nothing renders here until one is added.
-          </p>
+          <p class="unknown">{unknownMessage}</p>
         {/if}
       {/each}
     </section>

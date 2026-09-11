@@ -191,3 +191,14 @@ func TestPermissionsPolicyGrantsExactlyTheAllowlist(t *testing.T) {
 		}
 	}
 }
+
+// TestGeneratePermissionsPolicyGrantsTheAllowlist drives generatePermissionsPolicy
+// directly with a synthetic universe/allowlist — the production allowlist is
+// empty, so this is the only case that reaches the grant branch.
+func TestGeneratePermissionsPolicyGrantsTheAllowlist(t *testing.T) {
+	got := generatePermissionsPolicy([]string{"b", "a"}, []string{"b"})
+	want := "a=(), b=(self)"
+	if got != want {
+		t.Errorf("generatePermissionsPolicy = %q, want %q", got, want)
+	}
+}

@@ -1,6 +1,6 @@
-import { expect, test, type Page } from '@playwright/test';
+import type { Page } from '@playwright/test';
 
-import { render, type Fixture } from './harness';
+import { expect, render, test, type Fixture } from './harness';
 
 /**
  * TST046. Content exceeding its region overflows rather than being clipped, scrolled or scaled.

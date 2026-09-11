@@ -32,7 +32,7 @@ references to it stay valid.
 ## Item attributes
 
 Beyond Doorstop's native fields, every item carries four stored attributes
-([ADR 0005 rev 3](../decisions/0005-traceability-gating.md),
+([ADR 0005 rev 4](../decisions/0005-traceability-gating.md),
 [ADR 0009 rev 2](../decisions/0009-verification-justification-attribute.md)):
 
 | Attribute | Values | Meaning |
@@ -74,7 +74,7 @@ list is right.
 fingerprint (editing them re-flags review), as are the item's **parent links** — `Item.review()`
 stamps the sorted parent UIDs along with the content, so re-parenting an item unreviews it. `status`
 is not fenced, because a state transition is not a content change. Verified/implemented is **derived
-by tooling from evidence, never stored** (ADR 0005 rev 3).
+by tooling from evidence, never stored** (ADR 0005 rev 4).
 
 **An item's `text` names no other item.** The obligation must be readable on its own —
 ISO/IEC/IEEE 29148's *complete* and *singular* characteristics — and an identifier inside it defeats
@@ -136,7 +136,7 @@ normative item has one.
   **The keyword is the test's declaration, not its name** — `func TestFoo` for Go, `test('a title'`
   or `` test(`a ${templated} title` `` for Playwright — so what resolves is the line that declares
   the test, and renaming it fails the gate as surely as a missing file does
-  ([ADR 0005 rev 3](../decisions/0005-traceability-gating.md)). A bare name would not: Doorstop
+  ([ADR 0005 rev 4](../decisions/0005-traceability-gating.md)). A bare name would not: Doorstop
   returns the *first* line matching the keyword anywhere in the file, and this repo's Go doc-comment
   convention repeats the function name in prose above it, so a bare name resolves to the comment and
   survives the test's deletion. **A parameterized test's cases are the limit of that**: where the
@@ -151,7 +151,7 @@ normative item has one.
   reviewed, and `tst/.req_sha_item_validator.py` compares it back on every validation run. Editing a
   referenced test — a comment counts — fails the gate for every item referencing it until
   `doorstop review <UID>` is run against each. That cost is deliberate and is
-  [ADR 0005 rev 3](../decisions/0005-traceability-gating.md)'s.
+  [ADR 0005 rev 4](../decisions/0005-traceability-gating.md)'s.
 - **Re-validation** — editing a parent item changes its fingerprint, flagging every child **suspect**
   until re-reviewed, and moving a child to a different parent unreviews the child. Among **active**
   items a silent divergence is impossible; an inactive item is evaluated for neither, and what is and
@@ -173,7 +173,7 @@ TST00x` line during validation — Doorstop noting a stubbed verification, not a
 The same idiom extends upward: a `SYS` or `SRS` item whose decomposition round has not yet arrived is
 committed **`active: false`** with its full content and attributes. The strict gate errors on any *active* parent with no child links, so an item is
 activated in the same change that writes its first child. Elsewhere `active: false` means retirement
-(ADR 0005 rev 3); an item carrying a pending note is awaiting decomposition or its verifying
+(ADR 0005 rev 4); an item carrying a pending note is awaiting decomposition or its verifying
 artifact, not retired.
 
 ### Retirement
@@ -268,7 +268,7 @@ Run all commands with the venv (`docs/requirements/.venv/bin/doorstop …`).
 | Add an item | `doorstop add SRS` | Creates the next `SRS0NN.yml`. Edit its `text` to a single "shall" statement; write a `header` summarising it |
 | Link it up | `doorstop link SRS0NN SYS0MM` (child first, parent second) | Every `SRS` needs a `SYS` parent and every `TST` a `SRS` parent, or the gate flags an orphan. The link is written **unstamped** — see the next row |
 | Stamp a new item | `doorstop review <UID>` **and** `doorstop clear <UID>` | Both, because they write different fields: `review` stamps the item body into `reviewed:`, `clear` writes the parent fingerprint into `links:`. `review` alone leaves the link reading `- SYS0MM: null` and `check-unreviewed.py` fails on that null, so an item added, linked and reviewed but never cleared reds the gate. Their order is immaterial — neither reads what the other writes, and the two sequences produce byte-identical files. The re-blessing row below is not a different order but a different obligation: a human re-reading a child after its parent moved |
-| Point a `TST` at its check | add one `references` entry per verifying site: `{path: <repo-relative-file>, type: file, keyword: <the test's declaration>}`, then `doorstop review <UID>` to stamp the file hash | The path must resolve to a real tracked file and the keyword to the line declaring the test — `func TestXxx`, `test('<title>'` — never the bare name, which also matches the doc comment above it. A whole-file check artifact no runner discovers omits `keyword`, per ADR 0005 rev 3. **Doorstop cannot reference a file under a dot-directory** (e.g. anything in `.github/`) — see ADR 0002 rev 4; cite such wiring in the item's `text` instead |
+| Point a `TST` at its check | add one `references` entry per verifying site: `{path: <repo-relative-file>, type: file, keyword: <the test's declaration>}`, then `doorstop review <UID>` to stamp the file hash | The path must resolve to a real tracked file and the keyword to the line declaring the test — `func TestXxx`, `test('<title>'` — never the bare name, which also matches the doc comment above it. A whole-file check artifact no runner discovers omits `keyword`, per ADR 0005 rev 4. **Doorstop cannot reference a file under a dot-directory** (e.g. anything in `.github/`) — see ADR 0002 rev 4; cite such wiring in the item's `text` instead |
 | Re-bless a child after editing its parent | `doorstop clear <UID>`, then `doorstop review <UID>` | `clear` updates the stored parent fingerprint in the child's `links:`; `review` alone re-stamps the item but leaves the link suspect. Re-blessing is the human act of re-reading a downstream item after its parent moved — do not script it blindly |
 | Re-bless an item after moving it to a different parent | `doorstop review <UID>` | `clear` is not enough: the item's parent UIDs are inside its own stamp, so the item itself is unreviewed. Read it against the parent it now has. `--error-all` reports it as `unreviewed changes` until you do |
 | Baseline a round | — | Its `SYS`/`SRS` items land `accepted` + `active: true`, reviewed in the same change; only items awaiting decomposition or a verifying artifact stay `active: false` (see *Pending* above). "Active" and "reviewed" arrive together — an active-but-unreviewed item fails `--error-all` — so a domain's requirements are never left `proposed`/inactive, which would leave them un-baselined and outside the gate |

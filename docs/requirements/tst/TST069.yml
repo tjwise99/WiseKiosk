@@ -12,14 +12,14 @@ references:
 - keyword: 'test(''TST069: draws one forecast measure at a time for the hours next
     to come, switching on its configured interval'', async ({'
   path: frontend/src/modules/weather/weather.spec.ts
-  sha: 87a560acdc9a0cc8c18f875116e65c34bdd93ac819b1a5a1ee13607a5f48adf4
+  sha: 4dad9710415ccdd9ea46d0b83e80ae8362a0bb13f9a3a3381534bc7bfa6237db
   type: file
 - keyword: 'test(''TST069: the series-switch interval is the configuration’s and not
     one fixed in the module'', async ({'
   path: frontend/src/modules/weather/weather.spec.ts
-  sha: 87a560acdc9a0cc8c18f875116e65c34bdd93ac819b1a5a1ee13607a5f48adf4
+  sha: 4dad9710415ccdd9ea46d0b83e80ae8362a0bb13f9a3a3381534bc7bfa6237db
   type: file
-reviewed: 01pAZE6hu6BkEr1QuN5JdOYW-IK1lQEayOtkO-wzkVM=
+reviewed: KdQH0ksKbYjgqZFOKUo7EC3lxR9E1U_wbJ1CFjbk27w=
 status: accepted
 text: |
   Two render tests. The first drives the page under a driven clock and asserts exactly one of the
