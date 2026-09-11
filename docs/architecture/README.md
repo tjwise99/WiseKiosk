@@ -4,7 +4,7 @@ The checkable, versioned model of WiseKiosk's architecture. It is the **single s
 the diagrams in [`../ARCHITECTURE.md`](../ARCHITECTURE.md) and for the full interactive rendering
 embedded in [`explorer.md`](explorer.md) — both are generated from this
 model, never drawn by hand. Why LikeC4 and not D2/Mermaid/Structurizr/PlantUML: see
-[ADR 0003 rev 5](../decisions/0003-architecture-as-code-likec4.md).
+[ADR 0003 rev 4](../decisions/0003-architecture-as-code-likec4.md).
 
 This tooling is **dev-only and siloed here** (per [`CI.md`](../CI.md)'s repository-shape gate): its
 `package.json`, lockfile, and `node_modules/` live in this directory; nothing depends on it at app

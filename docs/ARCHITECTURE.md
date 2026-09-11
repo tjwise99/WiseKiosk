@@ -5,7 +5,7 @@ The living structural description of WiseKiosk **as built**. It grows with the c
 > **Status: built as each part lands.** A narrative section carries _To be documented as it is built._
 > until the code it describes lands. The diagrams are the exception: they are generated from the
 > [architecture model](architecture/README.md), which is normative for structure
-> ([ADR 0003 rev 5](decisions/0003-architecture-as-code-likec4.md)). What `codegen mermaid` drops —
+> ([ADR 0003 rev 4](decisions/0003-architecture-as-code-likec4.md)). What `codegen mermaid` drops —
 > element descriptions, icons — is read in that model, and an element's responsibility statement stays
 > there rather than being copied beside it. What a component must *do* is the
 > [requirements tree](requirements/README.md) and the [ADRs](decisions/README.md). This document holds

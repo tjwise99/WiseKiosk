@@ -47,7 +47,7 @@ jobs:
       # committed on `main`), but what this step is here for is `docs/architecture/embed/`,
       # the interactive webcomponent bundle — gitignored, ungated. Must run before `site-build`
       # below: `copy_explorer_assets.py` copies it into the built docs site only if it already
-      # exists (ADR 0003 rev 5). No Graphviz needed: `likec4 codegen webcomponent` lays out the
+      # exists (ADR 0003 rev 4). No Graphviz needed: `likec4 codegen webcomponent` lays out the
       # bundle with its own bundled WASM, same as `codegen mermaid` does for the gated diagrams.
       - name: Validate the architecture model and build its browser-free artifacts and interactive webcomponent bundle
         run: just arch-export

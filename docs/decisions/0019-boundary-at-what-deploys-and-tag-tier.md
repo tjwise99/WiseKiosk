@@ -43,7 +43,7 @@ Component; the binding rule 2026-08-08, #121 allocation completeness; the Deploy
 
 ## Context
 
-[ADR 0003 rev 5](0003-architecture-as-code-likec4.md) makes the LikeC4 model
+[ADR 0003 rev 4](0003-architecture-as-code-likec4.md) makes the LikeC4 model
 ([`../architecture/README.md`](../architecture/README.md)) the single source of truth for the
 architecture. It settles the tooling and leaves the model's own rules unwritten, which means they are
 answered differently each time an element is added.
@@ -56,7 +56,7 @@ different answer depending on whether "the system" is taken to mean what runs or
 owns.
 
 **Which requirement tier an element's tag names.** The tag is the architecture → requirements link,
-and ADR 0003 rev 5 states its tier as `SRS` unconditionally. That does not survive contact with the
+and ADR 0003 rev 4 states its tier as `SRS` unconditionally. That does not survive contact with the
 Context level, where the only element inside the boundary is the system itself and every `SRS` item
 allocates below it.
 
@@ -429,7 +429,7 @@ would reopen it:** the first module need lands.
 **A generic module or shaping placeholder box**, one per container, replaced by the real ones later.
 Rejected on the argument against the aggregate external system: it belongs to no module, so it can
 carry no module's identifier, which forecloses the binding the tag mechanism exists for. Replacing it
-later is also restructuring, which is the one thing ADR 0003 rev 5 authored this model to avoid.
+later is also restructuring, which is the one thing ADR 0003 rev 4 authored this model to avoid.
 
 **The frontend as one unit, with no component view** — answered for the container where the
 terminology collides worst. Rejected because the tree partitions the page itself: an
@@ -485,7 +485,7 @@ program, so waiting would have changed nothing drawn.
 
 ### The tag rules
 
-**`SRS` at every level**, as ADR 0003 rev 5 assumes. Rejected: at the Context level it forces a choice
+**`SRS` at every level**, as ADR 0003 rev 4 assumes. Rejected: at the Context level it forces a choice
 between attaching every `SRS` id to the single system element and picking an arbitrary few, and neither
 is a link a reader can trust. Binding `SRS` to a *relationship* does not escape it either, which is the
 form this record's own mechanism would otherwise invite: an `SRS` item allocates to a container, so
@@ -615,8 +615,8 @@ property it was adopted for, and it is checked by the staleness gate rather than
 
 **The Mermaid artifact is the poorer of the two renderings.** `codegen mermaid` drops element
 descriptions and the icons, which the PNG export keeps, and at the Component level those descriptions
-are the whole responsibility statement. Images stay outside every gate (ADR 0003 rev 5). What the
-artifact cannot show is read in the model source, which is committed and is ADR 0003 rev 5's source of
+are the whole responsibility statement. Images stay outside every gate (ADR 0003 rev 4). What the
+artifact cannot show is read in the model source, which is committed and is ADR 0003 rev 4's source of
 truth — not restated in [`../ARCHITECTURE.md`](../ARCHITECTURE.md), which would put a second copy of
 every responsibility statement beside the first with nothing comparing them.
 
@@ -686,7 +686,7 @@ direction still needs one, and
 
 ### The record this one corrects
 
-**ADR 0003 rev 5 is corrected in part and superseded in part.** Its reservation of tags as the
+**ADR 0003 rev 4 is corrected in part and superseded in part.** Its reservation of tags as the
 architecture → requirements mechanism stands; the assumption that the tier is always `SRS` falls. Its
 ruling that the Component level would not be built is reversed rather than re-grounded, and is therefore
 superseded by this record — recorded by revving that document, which is what
@@ -698,4 +698,4 @@ constrains the code that must satisfy it. A view constrains nothing: it is a des
 a picture, and deleting it changes no behaviour. Applying a generality rule to a drawing would bar every
 design document in this repository from preceding its implementation, which is the order
 `CONTRIBUTING.md` opens by requiring. **The Code level's deferral is untouched** — nothing built it —
-and the rest of ADR 0003 rev 5, the tooling and the staleness gate, stands.
+and the rest of ADR 0003 rev 4, the tooling and the staleness gate, stands.

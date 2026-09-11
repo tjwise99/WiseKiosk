@@ -42,7 +42,7 @@ on.
 |---|---|---|---|
 | [0001](0001-backend-language-go.md) | 1 | 2026-07-21 | Backend in Go; the frontend/backend boundary contract is generated from one schema |
 | [0002](0002-requirements-management-doorstop.md) | 4 | 2026-07-21 | Requirements tracked and V&V-gated with Doorstop (SYS→SRS→TST tree) |
-| [0003](0003-architecture-as-code-likec4.md) | 5 | 2026-07-22 | Architecture modeled as code with LikeC4; browser-free Mermaid codegen, staleness-gated, plus an ungated interactive rendering embedded in the docs site |
+| [0003](0003-architecture-as-code-likec4.md) | 4 | 2026-07-22 | Architecture modeled as code with LikeC4; browser-free Mermaid codegen, staleness-gated, plus an ungated interactive rendering embedded in the docs site |
 | [0004](0004-docs-site-sphinx-needs.md) | 2 | 2026-07-22 | Documentation site built with Sphinx + MyST + sphinx-needs; traceability rendered by sphinx-needs, deployed to GitHub Pages |
 | [0005](0005-traceability-gating.md) | 3 | 2026-09-07 | All work traces to the requirements tree via in-repo gates; forward evidence and drift are Doorstop's own `references` + `keyword` and its sha hook, no gate over tests no item claims, derived verification status, tree as backlog; gate 3 is a non-blocking, tree-blind unit-test coverage bar |
 | [0006](0006-process-gates.md) | 5 | 2026-07-22 | Process gates: branches named type_number-snake_name, typed by ticket template and linked to an open issue; Conventional-Commit PR titles |
