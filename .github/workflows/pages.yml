@@ -43,8 +43,6 @@ jobs:
       - name: Install LikeC4 into the silo (docs/architecture/), locked
         run: npm --prefix docs/architecture ci
 
-      # Also builds `docs/architecture/embed/`, the interactive webcomponent bundle — must run
-      # before `site-build` below, which copies it in if present (docs/site/copy_explorer_assets.py).
       - name: Validate the architecture model and build its browser-free artifacts and interactive webcomponent bundle
         run: just arch-export
 
