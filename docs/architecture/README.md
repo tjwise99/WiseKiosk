@@ -1,10 +1,10 @@
 # WiseKiosk architecture model (LikeC4)
 
 The checkable, versioned model of WiseKiosk's architecture. It is the **single source of truth** for
-the diagrams in [`../ARCHITECTURE.md`](../ARCHITECTURE.md) and for the full [interactive
-site](https://tjwise99.github.io/WiseKiosk/architecture/) — both are generated from this model, never
-drawn by hand. Why LikeC4 and not D2/Mermaid/Structurizr/PlantUML: see
-[ADR 0003 rev 4](../decisions/0003-architecture-as-code-likec4.md).
+the diagrams in [`../ARCHITECTURE.md`](../ARCHITECTURE.md) and for the full interactive rendering
+embedded in [`architecture-explorer.md`](../architecture-explorer.md) — both are generated from this
+model, never drawn by hand. Why LikeC4 and not D2/Mermaid/Structurizr/PlantUML: see
+[ADR 0003 rev 5](../decisions/0003-architecture-as-code-likec4.md).
 
 This tooling is **dev-only and siloed here** (per [`CI.md`](../CI.md)'s repository-shape gate): its
 `package.json`, lockfile, and `node_modules/` live in this directory; nothing depends on it at app
@@ -26,8 +26,9 @@ docs/architecture/
     backendComponents.mmd     Backend Component view (Mermaid)
     frontendComponents.mmd    Frontend Component view (Mermaid)
     deployment.mmd            Deployment view (Mermaid)
-  site/                 the interactive site `likec4 build` produces — gitignored, ungated, rebuilt
-                         every `arch-export`; published to GitHub Pages, never committed
+  embed/                 the interactive webcomponent bundle `likec4 codegen webcomponent`
+    likec4-views.js      produces — gitignored, ungated, rebuilt every `arch-export`; copied into
+                          the docs site and embedded there, never committed
 ```
 
 `generated/` is cleared before codegen, which writes files and never prunes them: an artifact left
@@ -42,10 +43,10 @@ untracked rather than changed, so the diff is taken after `git add --intent-to-a
 2. Edit `model/*.likec4`.
 3. From the repo root, run `just arch-export` — this **validates** the model, **regenerates** every
    gated output (the artifacts in `generated/` *and* the diagrams spliced into
-   [`../ARCHITECTURE.md`](../ARCHITECTURE.md)), and rebuilds `site/`, the full interactive site —
-   gitignored, ungated, published to GitHub Pages by a separate workflow
+   [`../ARCHITECTURE.md`](../ARCHITECTURE.md)), and rebuilds `embed/`, the interactive webcomponent
+   bundle — gitignored, ungated, embedded in the docs site
    ([`../architecture-explorer.md`](../architecture-explorer.md)).
-4. Commit `model/`, `generated/`, and `../ARCHITECTURE.md` together. Never `site/` — it is
+4. Commit `model/`, `generated/`, and `../ARCHITECTURE.md` together. Never `embed/` — it is
    regenerated, never committed.
 
 `just arch-dev` opens LikeC4's live preview (a local dev server, needs a browser, and reads `model/`

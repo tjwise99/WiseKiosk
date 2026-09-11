@@ -2,10 +2,19 @@
 
 **Status:** accepted
 **Decided:** 2026-07-22 (issue #15)
-**Rev:** 4
+**Rev:** 5
 
 ## Revisions
 
+- **rev 5** — 2026-09-10 — replaces rev 4's standalone published site with the interactive rendering
+  embedded directly in the docs site: `likec4 codegen webcomponent`, not `likec4 build`, emits a single
+  self-contained bundle, loaded by a `<likec4-view>` custom element on
+  [`architecture-explorer.md`](../architecture-explorer.md) the same way
+  [`api-explorer.md`](../api-explorer.md) already embeds Swagger UI — the embedded-companion shape
+  [ADR 0029 rev 1](0029-api-explorer-swagger-ui.md) actually set, which rev 4 cited as precedent for a
+  separately-published site without following. Nothing about the gated Mermaid diagrams, the
+  staleness gate, or rev 4's rejected DOT/Graphviz alternative changes (#115 architecture model
+  reader).
 - **rev 4** — 2026-09-10 — #115 architecture model reader: publishes a second, ungated output
   alongside the gated Mermaid diagrams this record already produces — the full interactive site
   `likec4 build` generates, carrying every element's description, technology, icon, tag and
@@ -54,17 +63,20 @@ and Container view. It is:
   regenerates every generated output — the artifacts under `docs/architecture/` and the diagrams
   spliced into `ARCHITECTURE.md` — and runs `git diff --exit-code` on them, extending the "CI fails
   on stale generated code" rule to the architecture layer.
-- **Published a second way, ungated: the full interactive site.** `likec4 build` — the same model,
-  read once by the one `arch-export` recipe that also produces the gated diagrams — emits a
-  standalone web application carrying every element's description, technology, icon, tag and
-  per-element relationship; a merged edge in the gated Mermaid diagrams loses all but one label, and
-  Mermaid drops descriptions, technology and icons entirely. It is published to GitHub Pages,
-  following [ADR 0029 rev 1](0029-api-explorer-swagger-ui.md)'s precedent shape for an ungated,
-  interactive companion to a gated static artifact, and it is **not** staleness-gated — a
-  browser-shaped JavaScript application is exactly what this record's browser-free posture keeps out
-  of a gate, so it is produced but never diffed. No new dependency: `likec4 build` is the same LikeC4
-  npm package this record already adopts, and needs no headless browser — its own layout is bundled
-  WASM, the same mechanism `codegen mermaid` already uses.
+- **Rendered a second way, ungated, and embedded in the docs site: a webcomponent bundle.**
+  `likec4 codegen webcomponent` — the same model, read once by the one `arch-export` recipe that also
+  produces the gated diagrams — emits a single self-contained `.js` bundle carrying every view, every
+  element's description, technology, icon, tag and per-element relationship, plus the drill-in
+  navigation between views; a merged edge in the gated Mermaid diagrams loses all but one label, and
+  Mermaid drops descriptions, technology and icons entirely. The bundle is loaded by a `<likec4-view>`
+  custom element on [`architecture-explorer.md`](../architecture-explorer.md), the docs site's own page
+  for it — the embedded-companion shape [ADR 0029 rev 1](0029-api-explorer-swagger-ui.md) set for
+  Swagger UI on [`api-explorer.md`](../api-explorer.md), rather than a second site published at its own
+  subpath. It is **not** staleness-gated — a browser-shaped JavaScript bundle is exactly what this
+  record's browser-free posture keeps out of a gate, so it is produced but never diffed. No new
+  dependency: `likec4 codegen webcomponent` is the same LikeC4 npm package this record already adopts,
+  and needs no headless browser — its own layout is bundled WASM, the same mechanism `codegen mermaid`
+  already uses.
 
 The model is authored so Component and Code levels — and source `link`s into `backend/`/`frontend/` —
 can be **added later without restructuring** (LikeC4 nests elements additively). Neither is built
@@ -142,19 +154,20 @@ model reader):
   the requirements pass in issue #18, so this decision bound none of them. Which tier an element's tag
   names, and the binding itself, are
   [ADR 0019 rev 7](0019-boundary-at-what-deploys-and-tag-tier.md)'s.
-- **A second output, the interactive site, exists and is public, but is unverified by any gate.**
-  `likec4 build`'s correctness — that it reflects the current model at all — rests on nothing but the
-  fact that it is produced by the same `arch-export` recipe run that regenerates the gated diagrams,
-  reading the model once; there is no staleness check on it, by design, and none is added. A broken
-  or stale interactive site is a silent failure mode this revision accepts in exchange for not
-  putting a browser in `check-arch`.
+- **A second output, the embedded webcomponent bundle, exists and is public, but is unverified by any
+  gate.** `likec4 codegen webcomponent`'s correctness — that it reflects the current model at all —
+  rests on nothing but the fact that it is produced by the same `arch-export` recipe run that
+  regenerates the gated diagrams, reading the model once; there is no staleness check on it, by
+  design, and none is added. A broken or stale rendering is a silent failure mode this revision
+  accepts in exchange for not putting a browser in `check-arch`.
 - **[ADR 0004 rev 2](0004-docs-site-sphinx-needs.md)'s deferred question is answered here, and only
   here.** That record states plainly that "how LikeC4 output enters the site (rendered Mermaid, SVG
   export, or LikeC4's interactive build) is decided at implementation and forecloses nothing here" —
   this revision is that implementation decision, and the answer is: unchanged Mermaid for the site's
-  embedded diagrams, plus a link to the separately-built interactive site. ADR 0004 rev 2 itself is
-  left untouched — which toolchain builds the docs site was never this record's to decide, and
-  nothing in ADR 0004 rev 2's own text becomes false by this choice.
+  spliced diagrams, plus the full interactive rendering embedded directly in the site as a
+  webcomponent bundle. ADR 0004 rev 2 itself is left untouched — which toolchain builds the docs site
+  was never this record's to decide, and nothing in ADR 0004 rev 2's own text becomes false by this
+  choice.
 - **No separate implementation ticket was filed for issue #115.** This ADR rev and the CI and Pages
   workflow changes it needs land in the one pull request that closes #115 — the ADR is not merged
   ahead of code that implements it.
