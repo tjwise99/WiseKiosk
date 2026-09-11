@@ -2,7 +2,7 @@
 
 The checkable, versioned model of WiseKiosk's architecture. It is the **single source of truth** for
 the diagrams in [`../ARCHITECTURE.md`](../ARCHITECTURE.md) and for the full interactive rendering
-embedded in [`architecture-explorer.md`](../architecture-explorer.md) — both are generated from this
+embedded in [`explorer.md`](explorer.md) — both are generated from this
 model, never drawn by hand. Why LikeC4 and not D2/Mermaid/Structurizr/PlantUML: see
 [ADR 0003 rev 5](../decisions/0003-architecture-as-code-likec4.md).
 
@@ -45,7 +45,7 @@ untracked rather than changed, so the diff is taken after `git add --intent-to-a
    gated output (the artifacts in `generated/` *and* the diagrams spliced into
    [`../ARCHITECTURE.md`](../ARCHITECTURE.md)), and rebuilds `embed/`, the interactive webcomponent
    bundle — gitignored, ungated, embedded in the docs site
-   ([`../architecture-explorer.md`](../architecture-explorer.md)).
+   ([`explorer.md`](explorer.md)).
 4. Commit `model/`, `generated/`, and `../ARCHITECTURE.md` together. Never `embed/` — it is
    regenerated, never committed.
 

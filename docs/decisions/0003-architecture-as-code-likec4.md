@@ -9,7 +9,7 @@
 - **rev 5** — 2026-09-10 — replaces rev 4's standalone published site with the interactive rendering
   embedded directly in the docs site: `likec4 codegen webcomponent`, not `likec4 build`, emits a single
   self-contained bundle, loaded by a `<likec4-view>` custom element on
-  [`architecture-explorer.md`](../architecture-explorer.md) the same way
+  [`architecture/explorer.md`](../architecture/explorer.md) the same way
   [`api-explorer.md`](../api-explorer.md) already embeds Swagger UI — the embedded-companion shape
   [ADR 0029 rev 1](0029-api-explorer-swagger-ui.md) actually set, which rev 4 cited as precedent for a
   separately-published site without following. Nothing about the gated Mermaid diagrams, the
@@ -69,7 +69,7 @@ and Container view. It is:
   element's description, technology, icon, tag and per-element relationship, plus the drill-in
   navigation between views; a merged edge in the gated Mermaid diagrams loses all but one label, and
   Mermaid drops descriptions, technology and icons entirely. The bundle is loaded by a `<likec4-view>`
-  custom element on [`architecture-explorer.md`](../architecture-explorer.md), the docs site's own page
+  custom element on [`architecture/explorer.md`](../architecture/explorer.md), the docs site's own page
   for it — the embedded-companion shape [ADR 0029 rev 1](0029-api-explorer-swagger-ui.md) set for
   Swagger UI on [`api-explorer.md`](../api-explorer.md), rather than a second site published at its own
   subpath. It is **not** staleness-gated — a browser-shaped JavaScript bundle is exactly what this

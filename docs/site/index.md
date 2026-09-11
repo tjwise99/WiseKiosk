@@ -26,6 +26,7 @@ security
 :caption: Architecture model
 
 ../architecture/README
+../architecture/explorer
 ```
 
 ```{toctree}
