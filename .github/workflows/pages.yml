@@ -40,6 +40,12 @@ jobs:
         with:
           just-version: "1.58.0"
 
+      - name: Install LikeC4 into the silo (docs/architecture/), locked
+        run: npm --prefix docs/architecture ci
+
+      - name: Validate the architecture model and build its browser-free artifacts and interactive webcomponent bundle
+        run: just arch-export
+
       - name: Install the docs-site toolchain into a local venv (siloed under docs/site/)
         run: |
           python -m venv docs/site/.venv

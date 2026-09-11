@@ -85,16 +85,15 @@ check-site:
 arch-install:
     npm --prefix docs/architecture ci
 
-# `validate` runs first: `codegen` alone does not fail on a broken model. `generated/` is cleared
-# before codegen, which never prunes: an artifact left by a deleted view is byte-identical to what
-# is committed, so the staleness diff below cannot otherwise see it.
 [group('docs')]
-[doc('Validate the architecture model and regenerate its browser-free artifacts')]
+[doc('Validate the architecture model, regenerate its browser-free gated artifacts, and rebuild the embeddable interactive webcomponent bundle')]
 arch-export:
     docs/architecture/node_modules/.bin/likec4 validate docs/architecture/model
     rm -rf docs/architecture/generated
     docs/architecture/node_modules/.bin/likec4 codegen mermaid docs/architecture/model -o docs/architecture/generated
     python3 scripts/splice-arch-diagrams.py
+    rm -rf docs/architecture/embed
+    docs/architecture/node_modules/.bin/likec4 codegen webcomponent docs/architecture/model -o docs/architecture/embed/likec4-views.js
 
 # `add --intent-to-add` reaches regenerated artifacts that are untracked; the diff is taken against
 # HEAD because that same `git add` stages the deletion `arch-export` makes of an orphan, which an
@@ -219,10 +218,9 @@ run-container: config-seed
 preview: check-build
     frontend/node_modules/.bin/vite preview frontend
 
-# Depends on `site-build` so the docs site the server mounts is current, never a stale prior build.
 [group('run')]
-[doc('Build and serve the whole docs site at :5174, proxied to `just serve` — the API explorer page is interactive there; needs `just serve` running for "Try it out" to reach a live backend')]
-docs-serve: site-build
+[doc('Build and serve the whole docs site at :5174, proxied to `just serve` — the API explorer page is interactive there; needs `just serve` running for "Try it out" to reach a live backend; also regenerates the gated architecture artifacts (`arch-export`) if the model changed')]
+docs-serve: arch-export site-build
     @echo 'Docs: http://localhost:5174/ (API explorer: http://localhost:5174/api-explorer.html)'
     docs/site/node_modules/.bin/vite --config docs/site/vite.config.ts
 

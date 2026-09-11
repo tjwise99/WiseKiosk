@@ -1,9 +1,10 @@
 # WiseKiosk architecture model (LikeC4)
 
 The checkable, versioned model of WiseKiosk's architecture. It is the **single source of truth** for
-the diagrams in [`../ARCHITECTURE.md`](../ARCHITECTURE.md) — those are generated from this model, never
-drawn by hand. Why LikeC4 and not D2/Mermaid/Structurizr/PlantUML: see
-[ADR 0003 rev 3](../decisions/0003-architecture-as-code-likec4.md).
+the diagrams in [`../ARCHITECTURE.md`](../ARCHITECTURE.md) and for the full interactive rendering
+embedded in [`explorer.md`](explorer.md) — both are generated from this
+model, never drawn by hand. Why LikeC4 and not D2/Mermaid/Structurizr/PlantUML: see
+[ADR 0003 rev 4](../decisions/0003-architecture-as-code-likec4.md).
 
 This tooling is **dev-only and siloed here** (per [`CI.md`](../CI.md)'s repository-shape gate): its
 `package.json`, lockfile, and `node_modules/` live in this directory; nothing depends on it at app
@@ -25,6 +26,9 @@ docs/architecture/
     backendComponents.mmd     Backend Component view (Mermaid)
     frontendComponents.mmd    Frontend Component view (Mermaid)
     deployment.mmd            Deployment view (Mermaid)
+  embed/                the interactive webcomponent bundle `likec4 codegen webcomponent`
+                        produces — gitignored, rebuilt every `arch-export`; copied into the
+                        docs site, embedded there, never committed
 ```
 
 `generated/` is cleared before codegen, which writes files and never prunes them: an artifact left
@@ -37,13 +41,16 @@ untracked rather than changed, so the diff is taken after `git add --intent-to-a
 
 1. `just arch-install` the first time (runs `npm ci` here, installing the locked `likec4`).
 2. Edit `model/*.likec4`.
-3. From the repo root, run `just arch-export` — this **validates** the model and **regenerates** every
-   generated output: the artifacts in `generated/` *and* the diagrams spliced into
-   [`../ARCHITECTURE.md`](../ARCHITECTURE.md).
-4. Commit `model/`, `generated/`, and `../ARCHITECTURE.md` together.
+3. From the repo root, run `just arch-export` — this **validates** the model, **regenerates** every
+   gated output (the artifacts in `generated/` *and* the diagrams spliced into
+   [`../ARCHITECTURE.md`](../ARCHITECTURE.md)), and rebuilds `embed/`, the interactive webcomponent
+   bundle — gitignored, embedded in the docs site ([`explorer.md`](explorer.md)).
+4. Commit `model/`, `generated/`, and `../ARCHITECTURE.md` together. Never `embed/` — it is
+   regenerated, never committed.
 
-`just arch-dev` opens LikeC4's live preview (a local dev server, needs a browser) — handy while
-authoring, but it is **not** a gate.
+`just arch-dev` opens LikeC4's live preview (a local dev server, needs a browser, and reads `model/`
+directly rather than `arch-export`'s output) — handy while authoring, and the most current view there
+is, but it is **not** a gate.
 
 ## Validation and the staleness gate
 

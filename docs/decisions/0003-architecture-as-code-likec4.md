@@ -2,10 +2,16 @@
 
 **Status:** accepted
 **Decided:** 2026-07-22 (issue #15)
-**Rev:** 3
+**Rev:** 4
 
 ## Revisions
 
+- **rev 4** — 2026-09-10 — #115 architecture model reader: adds a second output — the full
+  interactive model embedded in the docs site, via `likec4 codegen webcomponent` and a `<likec4-view>`
+  element on [`architecture/explorer.md`](../architecture/explorer.md), the same embed shape
+  [ADR 0029 rev 1](0029-api-explorer-swagger-ui.md) set for Swagger UI on `api-explorer.md`. Carries
+  the descriptions, technology, tags and relationships the gated Mermaid diagrams drop; those diagrams
+  and their staleness gate are untouched.
 - **rev 3** — 2026-09-04 — replaces the stale claim that this record wires a Dependabot `npm`
   ecosystem with a timeless statement of npm dependency tracking for `/docs/architecture`; what was
   chosen is unchanged, so the Decided date does not move (#223 renovate cutover).
@@ -40,6 +46,12 @@ and Container view. It is:
   regenerates every generated output — the artifacts under `docs/architecture/` and the diagrams
   spliced into `ARCHITECTURE.md` — and runs `git diff --exit-code` on them, extending the "CI fails
   on stale generated code" rule to the architecture layer.
+- **Rendered a second way, ungated, embedded in the docs site: a webcomponent bundle.**
+  `likec4 codegen webcomponent` emits one self-contained `.js` bundle — every view, plus the
+  descriptions, technology, tags and relationships Mermaid drops — loaded by a `<likec4-view>` element
+  on [`architecture/explorer.md`](../architecture/explorer.md), the same embed shape
+  [ADR 0029 rev 1](0029-api-explorer-swagger-ui.md) set for Swagger UI. Not staleness-gated, same
+  browser-free posture as the Mermaid diagrams. No new dependency.
 
 The model is authored so Component and Code levels — and source `link`s into `backend/`/`frontend/` —
 can be **added later without restructuring** (LikeC4 nests elements additively). Neither is built
@@ -67,6 +79,16 @@ record in that part alone.
 
 LikeC4 was the only option that is a *validated model*, pure-JS (siloable, no native toolchain), and
 renderable browser-free.
+
+**For how the richer view reaches a reader** (#115 architecture model reader):
+
+- **`likec4 gen dot` piped through Graphviz, as the gated diagrams' rendering path** — rejected on
+  version-pin drift, confirmed empirically: CI's apt Graphviz and the dev host's Graphviz render
+  genuinely different SVG layouts from identical input, and no well-maintained, version-pinnable image
+  closes that gap.
+- **A standalone site (`likec4 build`) published at its own subpath** — rejected as not integrated
+  with the docs site; embedding follows the shape [ADR 0029 rev 1](0029-api-explorer-swagger-ui.md)
+  already set for Swagger UI instead.
 
 ## Consequences
 
