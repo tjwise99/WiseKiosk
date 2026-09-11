@@ -219,7 +219,7 @@ preview: check-build
     frontend/node_modules/.bin/vite preview frontend
 
 [group('run')]
-[doc('Build and serve the whole docs site at :5174, proxied to `just serve` — the API explorer page is interactive there; needs `just serve` running for "Try it out" to reach a live backend')]
+[doc('Build and serve the whole docs site at :5174, proxied to `just serve` — the API explorer page is interactive there; needs `just serve` running for "Try it out" to reach a live backend; also regenerates the gated architecture artifacts (`arch-export`) if the model changed')]
 docs-serve: arch-export site-build
     @echo 'Docs: http://localhost:5174/ (API explorer: http://localhost:5174/api-explorer.html)'
     docs/site/node_modules/.bin/vite --config docs/site/vite.config.ts

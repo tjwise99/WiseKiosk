@@ -43,12 +43,8 @@ jobs:
       - name: Install LikeC4 into the silo (docs/architecture/), locked
         run: npm --prefix docs/architecture ci
 
-      # Regenerates the gated Mermaid diagrams too (byte-identical to what is already
-      # committed on `main`), but what this step is here for is `docs/architecture/embed/`,
-      # the interactive webcomponent bundle — gitignored. Must run before `site-build`
-      # below: `copy_explorer_assets.py` copies it into the built docs site only if it already
-      # exists (ADR 0003 rev 4). No Graphviz needed: `likec4 codegen webcomponent` lays out the
-      # bundle with its own bundled WASM, same as `codegen mermaid` does for the gated diagrams.
+      # Also builds `docs/architecture/embed/`, the interactive webcomponent bundle — must run
+      # before `site-build` below, which copies it in if present (docs/site/copy_explorer_assets.py).
       - name: Validate the architecture model and build its browser-free artifacts and interactive webcomponent bundle
         run: just arch-export
 
