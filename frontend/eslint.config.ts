@@ -5,7 +5,7 @@ import tseslint from 'typescript-eslint';
 
 export default tseslint.config(
   {
-    ignores: ['dist/**', '.svelte-check/**', 'src/lib/boundary/client.ts'],
+    ignores: ['dist/**', '.svelte-check/**', 'src/lib/boundary/client.ts', 'coverage/**'],
   },
   js.configs.recommended,
   ...tseslint.configs.recommended,

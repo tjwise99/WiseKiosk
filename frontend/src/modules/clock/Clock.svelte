@@ -1,6 +1,7 @@
 <script lang="ts">
   import type { ClockOptions } from '../../config/types';
   import type { CommonProps } from '../../lib/modules';
+  import { partValue } from './parts';
 
   // No `reachable` prop is declared: the module fetches nothing, so an outage takes nothing from it
   // (docs/contracts/module-contract.md § An unavailable module and an unreachable backend are
@@ -54,8 +55,8 @@
       .map((part) => part.value)
       .join(''),
   );
-  const secondsText = $derived(timeParts.find((part) => part.type === 'second')?.value ?? '');
-  const meridiemText = $derived(timeParts.find((part) => part.type === 'dayPeriod')?.value ?? '');
+  const secondsText = $derived(partValue(timeParts, 'second'));
+  const meridiemText = $derived(partValue(timeParts, 'dayPeriod'));
 
   // The date's two lines each read from their own formatter — weekday, then day/month/year — each
   // in its own locale ordering.
@@ -73,7 +74,7 @@
     {#if showSeconds || !twentyFourHour}
       <div class="annotations">
         {#if showSeconds}
-          <span class="seconds tabular-figures">:{secondsText}</span>
+          <span class="seconds tabular-figures">{secondsText}</span>
         {/if}
         {#if !twentyFourHour}
           <span class="meridiem">{meridiemText}</span>
@@ -126,6 +127,12 @@
     font-size: var(--type-annotation);
     font-weight: var(--type-annotation-weight);
     line-height: 1;
+  }
+
+  /* The separator as CSS, not in the text node shared with `secondsText`: avoids the same
+     nullish-fallback branch App.svelte's edgeBandStyle comment describes. */
+  .seconds::before {
+    content: ':';
   }
 
   /* Pinned to the bottom by its own margin rather than by `justify-content: space-between` on the

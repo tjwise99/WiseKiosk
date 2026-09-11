@@ -1,6 +1,4 @@
-import { expect, test } from '@playwright/test';
-
-import { overlaps, regionBoxes, render, type Fixture } from './harness';
+import { expect, overlaps, regionBoxes, render, test, type Fixture } from './harness';
 
 /**
  * TST035. Over a fixture whose content fits the regions it is given: every module renders in the
@@ -177,4 +175,16 @@ test.describe('the assembled page', () => {
       expect(box!.right, `${region} right edge`).toBeCloseTo(frame!.x + frame!.width, 0);
     }
   });
+});
+
+test('names the module it does not recognise, in the region that named it, rather than rendering nothing', async ({
+  page,
+}) => {
+  // A module name the schema admits (it is an open string) but no entry registers — the same
+  // standing validate.test.ts's own "does not judge a module with no section of its own" case reads
+  // it under.
+  await render(page, { modules: [{ region: 'top_bar', module: 'compliments' }] });
+
+  const region = page.locator('[data-region="top_bar"]');
+  await expect(region).toContainText('compliments');
 });

@@ -1,7 +1,9 @@
 package staticserve
 
 import (
+	"errors"
 	"io"
+	"io/fs"
 	"net/http"
 	"net/http/httptest"
 	"os"
@@ -107,6 +109,56 @@ func TestMissingIndexAtRootIsNotFound(t *testing.T) {
 	response := serve(t, t.TempDir(), "/")
 	if response.StatusCode != http.StatusNotFound {
 		t.Errorf("status = %d, want %d", response.StatusCode, http.StatusNotFound)
+	}
+}
+
+// TestIndexThatIsItselfADirectoryIsNotFound covers a directory whose index.html
+// is not a file but another directory — neither the directory nor its
+// impostor index is served.
+func TestIndexThatIsItselfADirectoryIsNotFound(t *testing.T) {
+	dir := t.TempDir()
+	treeFile(t, dir, "sub/index.html/nested.txt", "unreachable")
+
+	response := serve(t, dir, "/sub/")
+	if response.StatusCode != http.StatusNotFound {
+		t.Errorf("status = %d, want %d", response.StatusCode, http.StatusNotFound)
+	}
+}
+
+// statFailingFile wraps an http.File whose Stat always fails, the shape open
+// cannot reach through http.Dir (a real filesystem entry that opens but
+// cannot be stat'd is not producible with treeFile).
+type statFailingFile struct {
+	http.File
+}
+
+func (statFailingFile) Stat() (fs.FileInfo, error) {
+	return nil, errors.New("stat failing file: synthetic failure")
+}
+
+// statFailingFS is an http.FileSystem whose every Open succeeds but whose
+// returned File's Stat always fails.
+type statFailingFS struct {
+	http.FileSystem
+}
+
+func (fsys statFailingFS) Open(name string) (http.File, error) {
+	file, err := fsys.FileSystem.Open(name)
+	if err != nil {
+		return nil, err
+	}
+	return statFailingFile{file}, nil
+}
+
+func TestAFileThatCannotBeStattedIsNotFound(t *testing.T) {
+	dir := t.TempDir()
+	treeFile(t, dir, "assets/app.js", "console.log(1)")
+
+	recorder := httptest.NewRecorder()
+	New(statFailingFS{http.Dir(dir)}).ServeHTTP(recorder, httptest.NewRequest(http.MethodGet, "/assets/app.js", nil))
+
+	if recorder.Result().StatusCode != http.StatusNotFound {
+		t.Errorf("status = %d, want %d", recorder.Result().StatusCode, http.StatusNotFound)
 	}
 }
 

@@ -1,6 +1,8 @@
 package main
 
 import (
+	"bytes"
+	"errors"
 	"net/http"
 	"net/http/httptest"
 	"os"
@@ -89,5 +91,81 @@ func TestApiSeamReceivesEveryApiPath(t *testing.T) {
 	}
 	if reached != "/api/source" {
 		t.Errorf("the seam saw %q, want %q", reached, "/api/source")
+	}
+}
+
+func TestRunReturnsTwoOnABadFlag(t *testing.T) {
+	var stderr bytes.Buffer
+	if code := run([]string{"-no-such-flag"}, &stderr); code != 2 {
+		t.Errorf("run: code = %d, want 2", code)
+	}
+	if stderr.Len() == 0 {
+		t.Error("run: no usage written to stderr for a bad flag")
+	}
+}
+
+func TestHealthCheckOriginDefaultsToTheFixedAddr(t *testing.T) {
+	// The literal, not "http://localhost"+addr — the same expression the
+	// production body uses would pass at a wrong addr too.
+	const want = "http://localhost:8080"
+	if got := healthCheckOrigin(); got != want {
+		t.Errorf("healthCheckOrigin() = %q, want %q", got, want)
+	}
+}
+
+func TestRunSelfCheckSucceeds(t *testing.T) {
+	server := httptest.NewServer(assembled(t, nil))
+	t.Cleanup(server.Close)
+
+	original := healthCheckOrigin
+	healthCheckOrigin = func() string { return server.URL }
+	t.Cleanup(func() { healthCheckOrigin = original })
+
+	var stderr bytes.Buffer
+	if code := run([]string{"-health-check"}, &stderr); code != 0 {
+		t.Errorf("run: code = %d, want 0; stderr = %q", code, stderr.String())
+	}
+}
+
+// TestRunSelfCheckFails probes a closed listener — the origin resolved once,
+// then torn down before run reaches it — the same unreachable-instance shape
+// health_test.go uses for Check itself.
+func TestRunSelfCheckFails(t *testing.T) {
+	server := httptest.NewServer(assembled(t, nil))
+	origin := server.URL
+	server.Close()
+
+	original := healthCheckOrigin
+	healthCheckOrigin = func() string { return origin }
+	t.Cleanup(func() { healthCheckOrigin = original })
+
+	var stderr bytes.Buffer
+	if code := run([]string{"-health-check"}, &stderr); code != 1 {
+		t.Errorf("run: code = %d, want 1", code)
+	}
+	if stderr.Len() == 0 {
+		t.Error("run: no error written to stderr for a failing self-check")
+	}
+}
+
+func TestRunServesUntilTheListenerFails(t *testing.T) {
+	original := serve
+	wantErr := errors.New("boom")
+	var gotAddr string
+	serve = func(a string, h http.Handler) error {
+		gotAddr = a
+		return wantErr
+	}
+	t.Cleanup(func() { serve = original })
+
+	var stderr bytes.Buffer
+	if code := run(nil, &stderr); code != 1 {
+		t.Errorf("run: code = %d, want 1", code)
+	}
+	if gotAddr != addr {
+		t.Errorf("run: serve called with addr = %q, want %q", gotAddr, addr)
+	}
+	if !strings.Contains(stderr.String(), wantErr.Error()) {
+		t.Errorf("run: stderr = %q, want it to contain %q", stderr.String(), wantErr.Error())
 	}
 }

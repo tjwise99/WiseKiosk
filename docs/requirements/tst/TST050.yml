@@ -11,17 +11,17 @@ ref: ''
 references:
 - keyword: test(`holds the regions ${depth}% of the display's height off every edge`
   path: frontend/tests/render/edge-band-depth.spec.ts
-  sha: 565dff7de864a6be11a1b942bd5dfd5faf8df71f96bedaa5e23a3915539d1e49
+  sha: 37bc0a91db49523b8d51d506926722e8d8eb9de8d9180a17553968f93af91d07
   type: file
 - keyword: test('the band tracks the depth rather than being one figure for both'
   path: frontend/tests/render/edge-band-depth.spec.ts
-  sha: 565dff7de864a6be11a1b942bd5dfd5faf8df71f96bedaa5e23a3915539d1e49
+  sha: 37bc0a91db49523b8d51d506926722e8d8eb9de8d9180a17553968f93af91d07
   type: file
 - keyword: test('assumes no band where the configuration declares none'
   path: frontend/tests/render/edge-band-depth.spec.ts
-  sha: 565dff7de864a6be11a1b942bd5dfd5faf8df71f96bedaa5e23a3915539d1e49
+  sha: 37bc0a91db49523b8d51d506926722e8d8eb9de8d9180a17553968f93af91d07
   type: file
-reviewed: g7J5IZeiQXNZZ2-8IlcPyPNcpvLGueBs_gCP5wY-PgI=
+reviewed: OmwNmgdD7TArEHr1nUgPQjst_s2xLq3FLOzUaksI3LU=
 status: accepted
 text: |
   Render a fixture configuration declaring the edge band at more than one depth and read each

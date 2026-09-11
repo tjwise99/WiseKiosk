@@ -1,16 +1,16 @@
-import { expect, test } from '@playwright/test';
-
 import type { WeatherPayload, WeatherRequest } from '../../lib/boundary/client';
 import { LIVENESS_INTERVAL_MS } from '../../lib/liveness';
 import {
   advanceHostClock,
   asksBeyondTheShell,
   channelsBeyondTheTier,
+  expect,
   holdHostClock,
   overlaps,
   render,
   serveLiveness,
   serveModuleData,
+  test,
   watchTraffic,
   type Box,
   type Fixture,

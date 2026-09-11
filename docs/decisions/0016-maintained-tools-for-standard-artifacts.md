@@ -63,7 +63,7 @@ This repository is guarded by the `check-*` recipes [`just verify`](../../justfi
 that exist only in CI: the pull-request-title check and the `secret-scan` job. There were fourteen
 when this was decided; the roster is `just --list`, and no count written here is compared against it. Nearly
 every obligation they assert was authored here, and that was never a decision. The gate records argue
-at length about *which hand-rolled form* a check should take — [ADR 0005 rev 3](0005-traceability-gating.md) on
+at length about *which hand-rolled form* a check should take — [ADR 0005 rev 4](0005-traceability-gating.md) on
 where evidence lives, [ADR 0006 rev 5](0006-process-gates.md) on what the gate reads,
 [ADR 0014 rev 4](0014-documentation-index-claims-documents.md) on whether a list may be hand-maintained — and
 never about whether to author one at all.

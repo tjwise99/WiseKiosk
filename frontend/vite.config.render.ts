@@ -1,7 +1,9 @@
 import { fileURLToPath } from 'node:url';
 
 import { defineConfig, mergeConfig, type Plugin } from 'vite';
+import istanbul from 'vite-plugin-istanbul';
 
+import { COVERAGE_EXCLUDE } from './coverage-exclude.ts';
 import viteConfig from './vite.config.ts';
 
 const PRODUCT_REGISTRY = fileURLToPath(new URL('./src/lib/modules.ts', import.meta.url));
@@ -36,8 +38,31 @@ function augmentRegistry(): Plugin {
  *
  * `build.assetsInlineLimit: 0` keeps every imported asset a served file rather than an inlined
  * `data:` URI (#266 security response headers).
+ *
+ * The Istanbul plugin only instruments when `VITE_COVERAGE=true` is set on the dev-server process
+ * (`requireEnv: true`), which `playwright.coverage.config.ts` alone sets — `check-render` and
+ * `check-render-policy` boot this same config without it, and a production `vite build` never loads
+ * this file at all, so instrumented code cannot reach the shipped kiosk build.
+ *
+ * `.ts` and `.svelte` both: `frontend/scripts/merge-coverage.ts` unions this tier's coverage with
+ * the unit tier's into one frontend-wide gate, so a `.ts` file the render tier also executes (a
+ * module the page mounts, `config/load.ts`) is instrumented here too rather than only where the unit
+ * tier reaches it — `COVERAGE_EXCLUDE` (shared with `vitest.config.ts` and the merge gate's own
+ * expected-file glob) keeps a boundary-generated file, a type-only declaration or a test file itself
+ * out of every population alike.
  */
 export default mergeConfig(
   viteConfig,
-  defineConfig({ plugins: [augmentRegistry()], build: { assetsInlineLimit: 0 } }),
+  defineConfig({
+    plugins: [
+      augmentRegistry(),
+      istanbul({
+        include: 'src/**/*.{ts,svelte}',
+        extension: ['.ts', '.svelte'],
+        exclude: COVERAGE_EXCLUDE,
+        requireEnv: true,
+      }),
+    ],
+    build: { assetsInlineLimit: 0, sourcemap: true },
+  }),
 );

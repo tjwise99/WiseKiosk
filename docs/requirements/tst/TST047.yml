@@ -11,17 +11,17 @@ ref: ''
 references:
 - keyword: test('renders every text element at full emission'
   path: frontend/tests/render/content-emission.spec.ts
-  sha: 5536a3946277f2c65c8592a58930d8e7506f92129cfaed5cae4bb5dcd62e9272
+  sha: 9e4a19acd5ead890b40e1c33ca01c4de5fce659d31640f4e62a779d6010053dc
   type: file
 - keyword: test('renders the backend-unreachable report at full emission too'
   path: frontend/tests/render/content-emission.spec.ts
-  sha: 5536a3946277f2c65c8592a58930d8e7506f92129cfaed5cae4bb5dcd62e9272
+  sha: 9e4a19acd5ead890b40e1c33ca01c4de5fce659d31640f4e62a779d6010053dc
   type: file
 - keyword: test('renders the configuration report at full emission too'
   path: frontend/tests/render/content-emission.spec.ts
-  sha: 5536a3946277f2c65c8592a58930d8e7506f92129cfaed5cae4bb5dcd62e9272
+  sha: 9e4a19acd5ead890b40e1c33ca01c4de5fce659d31640f4e62a779d6010053dc
   type: file
-reviewed: 72vk9Zo1knmnZhcv1ZCwxSHSWg3Uc44Us2gbT4ZzvoA=
+reviewed: 0l8EJEoSiLrQ7HSUa4ivjLB40kWcS-vnF15i3dM_dOM=
 status: accepted
 text: |
   Read the rendered value of every text element the page presents for reading, asserting each sits
