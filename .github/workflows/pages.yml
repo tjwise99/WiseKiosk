@@ -45,10 +45,10 @@ jobs:
 
       # Regenerates the gated Mermaid diagrams too (byte-identical to what is already
       # committed on `main`), but what this step is here for is `docs/architecture/embed/`,
-      # the interactive webcomponent bundle — gitignored, ungated, and copied into the built
-      # docs site below (ADR 0003 rev 5). No Graphviz needed: `likec4 codegen webcomponent`
-      # lays out the bundle with its own bundled WASM, same as `codegen mermaid` does for
-      # the gated diagrams.
+      # the interactive webcomponent bundle — gitignored, ungated. Must run before `site-build`
+      # below: `copy_explorer_assets.py` copies it into the built docs site only if it already
+      # exists (ADR 0003 rev 5). No Graphviz needed: `likec4 codegen webcomponent` lays out the
+      # bundle with its own bundled WASM, same as `codegen mermaid` does for the gated diagrams.
       - name: Validate the architecture model and build its browser-free artifacts and interactive webcomponent bundle
         run: just arch-export
 
@@ -62,14 +62,6 @@ jobs:
 
       - name: Regenerate needs pages from Doorstop and build the docs site
         run: just site-build
-
-      # docs/architecture/embed/ is gitignored and ungated — `likec4 codegen webcomponent`'s
-      # own output, not a Sphinx asset, so it is placed here rather than through
-      # copy_explorer_assets.py's enumerated-file shape (ADR 0003 rev 5).
-      - name: Copy the built interactive architecture webcomponent bundle into the docs site, at _static/likec4/
-        run: |
-          mkdir -p docs/site/_build/html/_static/likec4
-          cp docs/architecture/embed/likec4-views.js docs/site/_build/html/_static/likec4/
 
       - uses: actions/configure-pages@45bfe0192ca1faeb007ade9deae92b16b8254a0d # v6.0.0
 

@@ -221,10 +221,11 @@ run-container: config-seed
 preview: check-build
     frontend/node_modules/.bin/vite preview frontend
 
-# Depends on `site-build` so the docs site the server mounts is current, never a stale prior build.
+# Depends on `arch-export` and `site-build` so the docs site the server mounts — architecture embed
+# included — is current, never a stale prior build.
 [group('run')]
 [doc('Build and serve the whole docs site at :5174, proxied to `just serve` — the API explorer page is interactive there; needs `just serve` running for "Try it out" to reach a live backend')]
-docs-serve: site-build
+docs-serve: arch-export site-build
     @echo 'Docs: http://localhost:5174/ (API explorer: http://localhost:5174/api-explorer.html)'
     docs/site/node_modules/.bin/vite --config docs/site/vite.config.ts
 
