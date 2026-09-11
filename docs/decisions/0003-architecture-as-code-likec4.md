@@ -160,6 +160,10 @@ model reader):
   regenerates the gated diagrams, reading the model once; there is no staleness check on it, by
   design, and none is added. A broken or stale rendering is a silent failure mode this revision
   accepts in exchange for not putting a browser in `check-arch`.
+- **The bundle fetches its typeface from a CDN at runtime.** `likec4 codegen webcomponent`'s own
+  output pulls IBM Plex Sans from jsdelivr, not a font this record vendors or pins; if that request is
+  blocked or the reader is offline, the rendering degrades to the system sans-serif rather than
+  failing. Fonts only — the model itself is entirely self-contained in the bundle.
 - **[ADR 0004 rev 2](0004-docs-site-sphinx-needs.md)'s deferred question is answered here, and only
   here.** That record states plainly that "how LikeC4 output enters the site (rendered Mermaid, SVG
   export, or LikeC4's interactive build) is decided at implementation and forecloses nothing here" —
