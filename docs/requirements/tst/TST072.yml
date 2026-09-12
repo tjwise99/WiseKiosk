@@ -1,0 +1,22 @@
+active: false
+derived: false
+header: |
+  Pending: the module admits only a park in its supported set
+level: 94
+links:
+- SRS055: UubafMx2nFztXoz_jKG36DwOqQoomMSuRceOdeRhgno=
+normative: true
+ref: ''
+reviewed: pGFk_zDVHtYaYI0l5gCR3P0ypBQFFezmfADIFKZEgLI=
+status: proposed
+text: |
+  Pending: unit test exercising the constraint the module declares over parks in and out of its
+  supported set, without a network, asserting that a park in the set is admitted, that every other value
+  is rejected, and that no upstream request is issued for a rejected one. Lands with the wait-times
+  implementation (#309); activated and given a references entry then.
+verification-justification: |
+  Settles that the declared constraint admits a park from the module's supported set and rejects the rest
+  before any upstream call is made. Leaves unproven that an admitted park is one the source answers for on
+  a given day (an upstream non-answer via the failure path), and whether the supported set still matches
+  the source (the upstream-drift check's concern, not this one's).
+verification-method: test
