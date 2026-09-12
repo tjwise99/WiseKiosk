@@ -7,13 +7,19 @@ links:
 - SRS062: 1JdPgh3GUVYDJgVkm8ubE0Wmglwp1bNMn6Afc6ZhHEU=
 normative: true
 ref: ''
-reviewed: sB7qzB-8cJBhJO4-guVa9i0lUl1bTsmOFSIJYNjj7nc=
+reviewed: n48L-AScy9Vy9O7L9rVRh8eOhbv8Xy373OA9UnVXOGE=
 status: proposed
 text: |
-  Pending: render test that, against a source staged to change its answer, within the bound and without
-  the page being reloaded, the region shows the changed wait rather than the old one. Lands with the
-  wait-times implementation (#309); activated and given a references entry then.
+  Pending: two checks, one per half of what the bound is met between. A unit test over the module's
+  registered policy, asserting the interval a served answer is held for is no longer than the five-minute
+  freshness bound the requirement states. And a render test holding the page open against a source staged
+  to change its answer and a driven clock, asserting the region carries the changed wait on the display's
+  own cadence and without the page being reloaded. Lands with the wait-times implementation (#309);
+  activated and given a references entry then.
 verification-justification: |
-  Settles the display's distance from its source over the span the harness holds the page open. Leaves
-  unproven how far behind the queue the source itself runs, and an ageing that appears only after days.
+  Settles both halves: that an answer is held no longer than the figure the requirement states, and that
+  what is drawn follows a change at the source on a page nobody reloaded. Leaves unproven how far behind
+  the queue the source itself runs, which is another party's and outside this system. The render half is
+  asserted against a clock the harness drives, so a page left running far longer than the suite runs is
+  outside it.
 verification-method: test
