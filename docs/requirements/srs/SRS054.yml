@@ -24,15 +24,18 @@ rationale: |
   structure it binds. What is left is not a universal: a module whose subject its configuration does not
   name satisfies it vacuously, and which subject is named differs per module, so the sentence is this
   module's to carry and it is carried here.
-  This is not the constraint a park identifier must match. That item bounds which values the backend
-  will carry upstream at all and is a check on a request; this one says the configured parks are the
-  parks reported on, which is what a viewer would notice going wrong. A module could reject every
-  malformed park and still show the queues of somewhere else entirely.
+  This is not a check on the park a request carries. Whether a request names a well-formed park before
+  anything goes upstream is the framework's
+  (SRS012<!-- Request parameters validated against known-good per-source constraints -->) - the module
+  declares no known-good set of its own, the parks a source can answer for being the source's rather
+  than a class this module could check offline; this one says the configured parks are the parks
+  reported on, which is what a viewer would notice going wrong. A module could carry only well-formed
+  parks and still show the queues of somewhere else entirely.
   No supplier is named. That the parks are read from one service rather than another is an edit to this
   repository, and the want is written against the parks the operator names rather than against a
   vendor's catalogue.
 ref: ''
-reviewed: e-FPOIW7fOCnOiJD208qI3pFF2UBe06Ip5u_0N0J0dA=
+reviewed: eni3kG9QOwaPjkivJpvb3KdlRIguvP2EC1LWig1T8OU=
 status: accepted
 text: |
   The park-wait-times module shall report the wait times for the theme parks its configuration names,

@@ -90,7 +90,6 @@ specification {
   tag SRS052
   tag SRS053
   tag SRS054
-  tag SRS055
   tag SRS056
   tag SRS057
   tag SRS058
@@ -219,7 +218,6 @@ model {
       }
 
       waitTimesShaping = component 'Wait-times shaping' {
-        #SRS055
         #SRS056
         description '''
           The park-wait-times module's half of this container. Serves the route
