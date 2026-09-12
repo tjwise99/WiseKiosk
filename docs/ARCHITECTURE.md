@@ -52,6 +52,7 @@ graph TB
   Wisekiosk@{ shape: rectangle, label: "WiseKiosk" }
   Viewer@{ icon: "fa:user", shape: rounded, label: "Viewer" }
   OpenMeteo@{ shape: rectangle, label: "Open-Meteo" }
+  ThemeParksWiki@{ shape: rectangle, label: "themeparks.wiki" }
   Operator -. "`Supplies the secret for each source`" .-> Wisekiosk
   Operator -. "`Places the configuration into the served 
 tree`" .-> Wisekiosk
@@ -60,6 +61,8 @@ says when one failed, and mirrors the
 rest`" .-> Viewer
   Wisekiosk -. "`Fetches the weather for the location a 
 request names`" .-> OpenMeteo
+  Wisekiosk -. "`Fetches the wait times for the parks a 
+request names`" .-> ThemeParksWiki
 ```
 
 <!-- arch-export:end generated/index.mmd -->
@@ -89,6 +92,7 @@ graph TB
     Wisekiosk.Frontend@{ shape: rectangle, label: "Frontend" }
   end
   OpenMeteo@{ shape: rectangle, label: "Open-Meteo" }
+  ThemeParksWiki@{ shape: rectangle, label: "themeparks.wiki" }
   Viewer@{ icon: "fa:user", shape: rounded, label: "Viewer" }
   Operator -. "`Supplies the secret for each source`" .-> Wisekiosk.Backend
   Operator -. "`Places the configuration into the served 
@@ -99,6 +103,8 @@ unparsed`" .-> Wisekiosk.Backend
   Wisekiosk.Frontend -. "`Fetches the payload for each module`" .-> Wisekiosk.Backend
   Wisekiosk.Backend -. "`Fetches the weather for the location a 
 request names`" .-> OpenMeteo
+  Wisekiosk.Backend -. "`Fetches the wait times for the parks a 
+request names`" .-> ThemeParksWiki
   Wisekiosk.Frontend -. "`Renders the configured modules, legibly 
 says when one failed, and mirrors the 
 rest`" .-> Viewer
@@ -245,8 +251,10 @@ graph TB
     WisekioskBackend.ResponseCache@{ shape: rectangle, label: "Response cache" }
     WisekioskBackend.UpstreamClient@{ shape: rectangle, label: "Upstream client" }
     WisekioskBackend.RequestRejection@{ shape: rectangle, label: "Request rejection" }
+    WisekioskBackend.WaitTimesShaping@{ shape: rectangle, label: "Wait-times shaping" }
   end
   OpenMeteo@{ shape: rectangle, label: "Open-Meteo" }
+  ThemeParksWiki@{ shape: rectangle, label: "themeparks.wiki" }
   Operator -. "`Places the configuration into the served 
 tree`" .-> WisekioskBackend.StaticServing
   Operator -. "`Supplies the secret for each source`" .-> WisekioskBackend.UpstreamClient
@@ -262,6 +270,8 @@ the shared rejection`" .-> WisekioskBackend.RequestRejection
   WisekioskBackend.StaticServing -. "`Serves the single-page bundle`" .-> WisekioskFrontend
   WisekioskBackend.UpstreamClient -. "`Fetches the weather for the location a 
 request names`" .-> OpenMeteo
+  WisekioskBackend.UpstreamClient -. "`Fetches the wait times for the parks a 
+request names`" .-> ThemeParksWiki
 ```
 
 <!-- arch-export:end generated/backendComponents.mmd -->
@@ -344,6 +354,7 @@ graph TB
     WisekioskFrontend.PageShell@{ shape: rectangle, label: "Page shell" }
     WisekioskFrontend.Clock@{ shape: rectangle, label: "Clock" }
     WisekioskFrontend.Weather@{ shape: rectangle, label: "Weather" }
+    WisekioskFrontend.ParkWaitTimes@{ shape: rectangle, label: "Park wait times" }
     WisekioskFrontend.Configuration@{ shape: rectangle, label: "Configuration load and validation" }
     WisekioskFrontend.Layout@{ shape: rectangle, label: "Layout assembly" }
     WisekioskFrontend.ModuleHost@{ shape: rectangle, label: "Module host" }
