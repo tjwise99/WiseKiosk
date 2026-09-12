@@ -1,0 +1,19 @@
+active: false
+derived: false
+header: |
+  Pending: every configured park is drawn at once
+level: 96
+links:
+- SRS057: _79t_YFQn8xxhkQb2893ovAo9yWTKsDGoG4OcYxPF14=
+normative: true
+ref: ''
+reviewed: N0t4fafDDUoiAUL3vjErAuvSD81Hg3qLKqeWMAraazE=
+status: proposed
+text: |
+  Pending: render test that, under a configuration naming several parks, every named park is drawn at
+  the same sampled moment, none absent awaiting a rotation between parks. Lands with the wait-times
+  implementation (#309); activated and given a references entry then.
+verification-justification: |
+  Settles that no park waits its turn off screen. Leaves unproven that every named park fits legibly at a
+  given deployment's region size, which is a judgement about a real display in a real room.
+verification-method: test

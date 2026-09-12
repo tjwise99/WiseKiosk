@@ -1,0 +1,20 @@
+active: false
+derived: false
+header: |
+  Pending: the shaping builds each park's payload from a captured response
+level: 95
+links:
+- SRS056: CyK05LGQR0ChIvchNdaA4tKnX_i6TMbBNGZMBxgmEH4=
+normative: true
+ref: ''
+reviewed: OfA1G7Ki0pdKSLOhzqZ8aee4cfD3sJXp3DYhix7yXXo=
+status: proposed
+text: |
+  Pending: unit test that the shaping, run against a captured upstream response without a network,
+  produces for the named park its name, its operating hours, and for each ride the ride's name with a
+  wait that is a length of time or a not-operating state. Lands with the wait-times implementation
+  (#309); activated and given a references entry then.
+verification-justification: |
+  Settles the shaping of the responses that were captured. Leaves unproven that the payload is true of
+  the queue, and any response shape no capture holds, including a ride's wait missing.
+verification-method: test

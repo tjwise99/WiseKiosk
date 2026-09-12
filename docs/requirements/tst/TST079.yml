@@ -1,0 +1,19 @@
+active: false
+derived: false
+header: |
+  Pending: the shown wait is no more than five minutes behind the source
+level: 101
+links:
+- SRS062: 1JdPgh3GUVYDJgVkm8ubE0Wmglwp1bNMn6Afc6ZhHEU=
+normative: true
+ref: ''
+reviewed: sB7qzB-8cJBhJO4-guVa9i0lUl1bTsmOFSIJYNjj7nc=
+status: proposed
+text: |
+  Pending: render test that, against a source staged to change its answer, within the bound and without
+  the page being reloaded, the region shows the changed wait rather than the old one. Lands with the
+  wait-times implementation (#309); activated and given a references entry then.
+verification-justification: |
+  Settles the display's distance from its source over the span the harness holds the page open. Leaves
+  unproven how far behind the queue the source itself runs, and an ageing that appears only after days.
+verification-method: test

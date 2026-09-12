@@ -1,0 +1,20 @@
+active: false
+derived: false
+header: |
+  Pending: the module admits only a park it recognises
+level: 94
+links:
+- SRS055: wYbyXg429S8Hadxgz17gC28QXlNa1Z-ebzXxulSwEWw=
+normative: true
+ref: ''
+reviewed: dUjGmT8Ivmdt-G0kPhKqfOxluDyjPlUEqJh_2kqruBQ=
+status: proposed
+text: |
+  Pending: unit test that, exercised without a network, a request naming a park the module recognises is
+  admitted and one naming anything else is rejected with nothing sent upstream. Lands with the wait-times
+  implementation (#309); activated and given a references entry then.
+verification-justification: |
+  Settles that the declared known-good constraint admits a recognised park and rejects the rest before
+  any upstream call is made. Leaves unproven that an admitted park is one the source can answer on a
+  given day, which is an upstream failure rather than a rejection.
+verification-method: test
