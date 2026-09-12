@@ -1,0 +1,44 @@
+active: true
+derived: false
+header: |
+  The park-wait-times module arranges its parks in a grid its configuration shapes
+level: 63
+links:
+- SYS011: a3bqZRtHE8ujrhIgBKFUtcxWGSCLRHsqU6GgDgwwR38=
+normative: true
+rationale: |
+  The module is placed in a region whose proportion is a deployment's, and the same parks read best as a
+  wide strip in one region and a tall block in another. So how the park cards are arranged - how many
+  columns and how many rows - is the operator's, set within the region the layout gives the module: the
+  card is the same at every park count, and the grid only arranges the cards it is given.
+  This is the module's own configuration, and it is distinct from where the module is placed, which is
+  the configuration's region and the layout's to honour
+  (SRS017<!-- Full-screen assembly at kiosk; reflow, no horizontal scroll, at narrower widths -->). The
+  layout gives the module a region; this arranges the cards inside it.
+  What the item states is what the choice does, not what it is spelled. The column and row counts' key
+  names and their defaults belong to the module's section of the configuration schema, and a requirement
+  naming them would fix an interface the schema is the record of. That the keys are exercised at a
+  non-default value is SRS024's<!-- Every offered configuration key is exercised at a non-default
+  value -->, not restated.
+  It is distinct from every park being shown at once
+  (SRS057<!-- The park-wait-times module holds every configured park on screen at once -->): that obliges
+  no park waits off screen, this obliges the arrangement of the parks that are shown is the operator's.
+  A module could show every park in a shape fixed in its own code, meeting the one and failing this.
+  Reworded to another module the sentence names a different content to arrange; abstracted, it reads that
+  a module arranges its content in a configured shape, which is not a universal - a module with one
+  reading has nothing to arrange and satisfies it vacuously - so a grid of per-park cards is this
+  module's and the item is its own.
+ref: ''
+reviewed: ZHY-E0O0BpRfW77i9Dl3vybtXCpixlLLWoNQw_yYhRY=
+status: accepted
+text: |
+  The park-wait-times module shall arrange the parks it shows in a grid whose column and row counts its
+  configuration names.
+verification-justification: |
+  Read from a rendered page under at least two grid-shape configurations naming the same parks: the
+  cards are laid out in the column and row counts each configuration names, and a second shape re-lays
+  the same parks.
+  What it cannot settle is whether a chosen shape reads well at the deployed viewing distance - a denser
+  grid draws smaller cards, which is a judgement about a real display in a real room - nor that every
+  shape a configuration might name fits the region the module is given.
+verification-method: test

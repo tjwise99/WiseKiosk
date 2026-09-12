@@ -1,0 +1,48 @@
+active: true
+derived: false
+header: |
+  The park-wait-times module declares the known-good constraint the park it is asked about must satisfy
+level: 58
+links:
+- SYS011: a3bqZRtHE8ujrhIgBKFUtcxWGSCLRHsqU6GgDgwwR38=
+normative: true
+rationale: |
+  The framework obliges the validating and the rejecting, and hands the constraint itself to the source
+  that declares it
+  (SRS012<!-- Request parameters validated against known-good per-source constraints -->). This is that
+  hand-off taken up, and it is the one overlap with the framework a module's decomposition legitimately
+  carries: the framework says a constraint is applied before anything goes upstream, and the module says
+  which constraint that is.
+  What a park is, is the whole of what is fixed here. A theme park this module recognises is the class of
+  value it can be asked about, and anything outside that class is not an unlucky request but a request
+  this module cannot mean. Which parks the module recognises is a fixed set it carries rather than
+  content of the tree - the same standing as the icons it draws each park with - and this item obliges
+  that the set is what a request is judged against, not what is in it. How such a value is spelled on the
+  wire - which characters, which form of identifier - is the boundary schema's, and a requirement fixing
+  it would settle an interface that record is the record of.
+  What the module declares is a constraint on the value rather than on its spelling, and the difference
+  is not a change of words. The park a request names crosses in a body generated from the boundary
+  schema, so a spelling that is not the identifier's own kind is refused by the decoding before this
+  module sees it - a property of the generated boundary rather than an obligation this module could fail
+  on its own - and what is left for the module to declare, and the only half of it that can fail here, is
+  which values count as a park it recognises. An item obliging a constraint would be satisfied by a
+  module declaring one nothing applies.
+  It stands apart from the configured parks for a reason that is not tidiness: this bounds what the
+  backend will carry upstream from any caller, and holds against a request the page never made.
+  No supplier is named. The class is a park this module can report on, held against the module's own set,
+  rather than an entry in a vendor's catalogue - so swapping which service answers does not rewrite this
+  item.
+ref: ''
+reviewed: jCGMl1Y5DAc7-VylwMo5sMOlFSNe2OBy6j9Aa3RZJ9A=
+status: accepted
+text: |
+  The park-wait-times module shall declare the known-good constraint the park its requests carry must
+  satisfy, admitting a theme park it recognises and no other value.
+verification-justification: |
+  Read against the constraint the module declares, exercised without a network: a request naming a park
+  the module recognises is admitted and one naming anything else is rejected with nothing sent upstream.
+  What it cannot settle is that an admitted park is one the source has wait times for right now. A park
+  the module recognises may still be answered poorly or not at all by the source on a given day, which is
+  an upstream failure rather than a rejection, and the boundary between the two is what this item fixes
+  rather than something it proves right.
+verification-method: test
