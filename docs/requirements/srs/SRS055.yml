@@ -19,7 +19,8 @@ rationale: |
   identifier on its own says whether it names a real park. So the module cannot judge a park the way a
   coordinate is judged. What it can judge is against a set it holds itself: the module is built to support
   a fixed set of parks, holding for each the metadata it needs to render one and to address the source
-  for it - the park's upstream identity, its name, its icon - and it admits a park drawn from that set.
+  for it - the park's upstream identity, its name, and whatever else it renders a park with - and it
+  admits a park drawn from that set.
   A value outside the set is not an unlucky request but one the module was not built to serve.
   The set is the module's own, held offline, which is what makes this a real constraint rather than a
   restatement of the framework's obligation to validate. An operator configures a display by choosing
@@ -36,7 +37,7 @@ rationale: |
   re-populates the metadata each entry carries without changing that the module admits from a set of its
   own.
 ref: ''
-reviewed: PVsaILypxwUXPgFvRzkzbAD0t6QKRvH7gBnjjmvKFRk=
+reviewed: 4V-WEOxxj3PZYz0UW1clpLUkHcm_yEnpfMBLLpZEFjo=
 status: accepted
 text: |
   The park-wait-times module shall declare the known-good constraint the park its requests carry must
