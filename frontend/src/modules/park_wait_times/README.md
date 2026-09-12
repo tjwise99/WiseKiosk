@@ -151,9 +151,10 @@ Kingdom), `globe` (Epcot), `sorcerer-hat` (Hollywood Studios), `tree` (Animal Ki
 spired castle, a faceted sphere, a spreading tree — not reproductions of any park's trademarked logo
 or landmark; the actual branded marks are deliberately not used.
 
-Two things this spec leaves to phase 2/3, because they are behaviour and asset scope rather than
-composition: the **`park → icon` mapping** (a configured park with no matching glyph draws **no icon**,
-name only — the fallback), and whether the set is carried as these files or inlined by the component.
+Two things this spec leaves to the implementation phase, because they are behaviour and asset scope
+rather than composition: the **`park → icon` mapping** (a configured park with no matching glyph draws
+**no icon**, name only — the fallback), and whether the set is carried as these files or inlined by the
+component.
 
 ## What each choice realises
 
