@@ -1,0 +1,54 @@
+active: true
+derived: false
+header: |
+  The park-wait-times module declares the known-good constraint the park it is asked about must satisfy
+level: 58
+links:
+- SYS011: a3bqZRtHE8ujrhIgBKFUtcxWGSCLRHsqU6GgDgwwR38=
+normative: true
+rationale: |
+  The framework obliges the validating and the rejecting, and hands the constraint itself to the source
+  that declares it
+  (SRS012<!-- Request parameters validated against known-good per-source constraints -->). This is that
+  hand-off taken up, and it is the one overlap with the framework a module's decomposition legitimately
+  carries: the framework says a constraint is applied before anything goes upstream, and the module says
+  which constraint that is.
+  What a park is, is where this parts company with a location. A weather module is asked about a point on
+  the earth's surface - a value that describes itself, that any system can check is well formed without
+  asking anyone. A park is not that: it is an opaque identifier the source assigns, and nothing about the
+  identifier on its own says whether it names a real park. So the module cannot judge a park the way a
+  coordinate is judged. What it can judge is against a set it holds itself: the module is built to support
+  a fixed set of parks, holding for each the metadata it needs to render one and to address the source
+  for it - the park's upstream identity, its name, and whatever else it renders a park with - and it
+  admits a park drawn from that set.
+  A value outside the set is not an unlucky request but one the module was not built to serve.
+  The set is the module's own, held offline, which is what makes this a real constraint rather than a
+  restatement of the framework's obligation to validate. An operator configures a display by choosing
+  parks from the set the module supports, and the module holds what it needs for each without asking
+  anyone. How a park's identifier is spelled on the wire is the boundary schema's, and a requirement
+  fixing it would settle an interface that record is the record of.
+  What the module declares is a constraint on the value rather than on its spelling. An identifier that
+  is not of the source's kind is refused by the decoding before this module sees it, and what is left for
+  the module to declare, and the only half of it that can fail here, is which values are in the set it
+  supports.
+  It stands apart from the configured parks for a reason that is not tidiness: this bounds what the
+  backend will carry upstream from any caller, and holds against a request the page never made.
+  No supplier is named. The set is the module's, held offline, and swapping which service answers
+  re-populates the metadata each entry carries without changing that the module admits from a set of its
+  own.
+ref: ''
+reviewed: 4V-WEOxxj3PZYz0UW1clpLUkHcm_yEnpfMBLLpZEFjo=
+status: accepted
+text: |
+  The park-wait-times module shall declare the known-good constraint the park its requests carry must
+  satisfy, admitting a park drawn from its supported set and no other value.
+verification-justification: |
+  Read against the constraint the module declares, exercised without a network: a request naming a park
+  in the module's supported set is admitted and one naming anything else is rejected with nothing sent
+  upstream.
+  What it cannot settle is that an admitted park is one the source answers for right now, which is an
+  upstream non-answer surfaced by the failure path rather than a rejection; nor whether the supported set
+  the module holds still matches what the source offers - keeping the baked-in set current against the
+  source is the scheduled upstream-drift check's concern (docs/CI.md, Upstream contract checks), a
+  mechanism of its own rather than something this item is failed against.
+verification-method: test

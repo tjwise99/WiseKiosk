@@ -1,0 +1,21 @@
+active: false
+derived: false
+header: |
+  Pending: a wait is drawn as the time or state it is handed
+level: 100
+links:
+- SRS061: 6chYA8sTvBlutbW2-CJ7TVEogrgvTDpBgfVnH7nnnOM=
+normative: true
+ref: ''
+reviewed: OmXemiph5bwF4S0mWscJpNlT4cAx50SSbDNXXndlNk4=
+status: proposed
+text: |
+  Pending: render test that, handed payloads differing only in a ride's wait, a ride handed a length of
+  time draws that time and a ride handed a not-operating state draws that state, the drawing does not
+  follow the page's clock or the park's hours where they disagree with the payload, and a length of time
+  and a state are drawn as different kinds of mark. Lands with the wait-times implementation (#309);
+  activated and given a references entry then.
+verification-justification: |
+  Settles that the drawing follows the handed state rather than a derived one, and tells a time from a
+  state. Leaves unproven whether a viewer reads the two as distinct across the room.
+verification-method: test

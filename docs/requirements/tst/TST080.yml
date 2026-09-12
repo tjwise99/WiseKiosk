@@ -1,0 +1,20 @@
+active: false
+derived: false
+header: |
+  Pending: an answering source is asked at most once every five minutes per park
+level: 102
+links:
+- SRS063: w8WlCz1o8z8SDC2gjKOh4pAq7uROF8EoNGn7X0HyPmk=
+normative: true
+ref: ''
+reviewed: pjoGp9hcaqqp90X26kW6htgxMhChf4qm_ETUprC_AqA=
+status: proposed
+text: |
+  Pending: integration test over the requests the module's route issues against a staged answering
+  source and a driven clock: no more than one leaves in any five minutes for one park, and a second is
+  never outstanding while a first has not answered. Lands with the wait-times implementation (#309);
+  activated and given a references entry then.
+verification-justification: |
+  Settles the rate this system emits over the window the harness runs. Leaves unproven whether the
+  source accepts that rate, which is its own policy and outside this system.
+verification-method: test

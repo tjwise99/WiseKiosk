@@ -6,6 +6,7 @@ graph TB
   Wisekiosk@{ shape: rectangle, label: "WiseKiosk" }
   Viewer@{ icon: "fa:user", shape: rounded, label: "Viewer" }
   OpenMeteo@{ shape: rectangle, label: "Open-Meteo" }
+  ThemeParksWiki@{ shape: rectangle, label: "themeparks.wiki" }
   Operator -. "`Supplies the secret for each source`" .-> Wisekiosk
   Operator -. "`Places the configuration into the served 
 tree`" .-> Wisekiosk
@@ -14,3 +15,5 @@ says when one failed, and mirrors the
 rest`" .-> Viewer
   Wisekiosk -. "`Fetches the weather for the location a 
 request names`" .-> OpenMeteo
+  Wisekiosk -. "`Fetches the wait times for the parks a 
+request names`" .-> ThemeParksWiki

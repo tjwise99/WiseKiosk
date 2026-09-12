@@ -1,0 +1,19 @@
+active: false
+derived: false
+header: |
+  Pending: the longest waits are kept in view
+level: 97
+links:
+- SRS058: By4HtwrVndslJzygDUOVsxFhrBWAbUhxwa93xTSN5A8=
+normative: true
+ref: ''
+reviewed: Iyh5NDQnnBD_YqMyCgG3ywUdtpTIrVGco-r_bmXVbMY=
+status: proposed
+text: |
+  Pending: render test that, handed a payload whose rides carry differing waits, the rides kept in view
+  are those with the longest waits and they remain in view across the rotation of the rest. Lands with
+  the wait-times implementation (#309); activated and given a references entry then.
+verification-justification: |
+  Settles that the persistent reading is the longest waits and that it persists. Leaves unproven that the
+  number held is the right one to hold, which is a composition judgement.
+verification-method: test

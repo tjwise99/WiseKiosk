@@ -1,0 +1,51 @@
+active: true
+derived: false
+header: |
+  The park-wait-times module asks a failing source no more often than once every five minutes
+level: 67
+links:
+- SYS011: a3bqZRtHE8ujrhIgBKFUtcxWGSCLRHsqU6GgDgwwR38=
+normative: true
+rationale: |
+  A source that is failing is asked on a different argument from a source that is answering, and the
+  figure that follows is argued from the other side. The bound on the answering path is read out of how
+  stale a viewer's wait may be
+  (SRS062<!-- The wait a viewer sees is no more than five minutes behind its source -->): asking oftener
+  buys a viewer nothing, the answer already held being fresh enough. None of that holds during a failure.
+  There is no answer held, the region is telling a viewer its waits are unavailable, and what a retry
+  buys is the difference between a source that recovered a minute ago and a display that has not noticed.
+  So the figure is argued from recovery rather than from freshness: short enough that a recovered source
+  reaches the display well inside the tolerance the freshness figure sets, and no shorter than the
+  source's own stated floor, which is that it is not to be asked more than once every five minutes even
+  as it fails. The moment a source is least able to bear load is the moment it is failing, and a module
+  that answers a failure by asking harder is precisely what a politeness bound exists to forbid.
+  Here the two paths reach the same figure, and that is a coincidence of this source rather than one path
+  falling out of the other. The answering figure already sits at the source's stated floor, so the
+  failure path cannot argue for asking sooner; it is argued independently and comes out at once every
+  five minutes because that floor bounds it too, not because it was left to be whatever the answering
+  interval happened to be. Were the freshness bound looser, the answering path would ask less often than
+  this and the two would part.
+  The figure sits in a requirement for the reason the module's other timing figures do: the interval the
+  route holds a failure for is read out of this item rather than picked at the keyboard, and a value with
+  a comment beside it is a value with no argument behind it (module-contract.md, Writing the module's
+  requirements).
+  What is not restated is that the rate is bounded at all and not left for an operator to raise
+  (SRS011<!-- Upstream request rate is bounded, and the bound is not operator-tunable -->). The framework
+  obliges there be a bound; this says what this module's is on the path where the other item's figure
+  does not reach.
+ref: ''
+reviewed: 0aEte-I29QnaKYOUBKWVYnRKGTq9ODx7d-3XqA-L5gw=
+status: accepted
+text: |
+  The park-wait-times module shall issue no more than one request to its source for any one park in any
+  five minutes while that source is failing to answer.
+verification-justification: |
+  Read over the requests the module's route issues against a source staged to fail and a driven clock,
+  with the route called far oftener than the bound permits: no more than one request leaves for one park
+  in any five minutes.
+  What it cannot settle is what the source makes of being retried while it is down - another party's
+  tolerance for that is its own policy, published or not and changed without notice - nor whether five
+  minutes is the right trade between noticing a recovery and leaving a struggling source alone, which is
+  argued in the item rather than decided by any check. It is asserted under a clock the harness drives
+  and over the window the suite runs, so a failure lasting longer than the suite stages is outside it.
+verification-method: test

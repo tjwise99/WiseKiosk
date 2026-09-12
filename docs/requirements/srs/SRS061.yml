@@ -1,0 +1,43 @@
+active: true
+derived: false
+header: |
+  The park-wait-times module draws a wait as the time or the not-operating state it is handed
+level: 64
+links:
+- SYS011: a3bqZRtHE8ujrhIgBKFUtcxWGSCLRHsqU6GgDgwwR38=
+normative: true
+rationale: |
+  The payload carries each ride's wait as a length of time or as a not-operating state
+  (SRS056<!-- The park-wait-times module puts each park's ride waits across the boundary -->), and a
+  component is free to ignore that and work out for itself whether a ride can be ridden - from the park's
+  hours and the browser's clock, say. That draws the right answer only while the display and the park
+  keep the same time, and it misses a ride that broke down in the middle of the day entirely. So what is
+  obliged is that what the module draws follows the state it was handed rather than one it derived.
+  The second half is not implied by the first: a component can faithfully draw the handed state and still
+  render it so that a viewer cannot tell it from a wait. A not-operating ride shown as a bare figure
+  reads as a queue of some minutes, and a five-minute wait and a broken ride are then the same mark. A
+  wait that is a length of time and a wait that is a state are drawn as different kinds of mark, so the
+  two are not mistaken for one another while they share a column. Which marks carry that difference is
+  the module's rendering and the styling contract's, not this item's.
+  Abstraction splits the item. Drawing what the payload carries reads, with the module dropped, as a
+  module draws what its payload carries, which is module-contract.md's rather than the tree's - part 1's
+  component receives the module's payload as props and renders it - so that half is cited and neither
+  promoted nor escalated. Following a handed state rather than deriving one, and telling a value from a
+  state, does not abstract to a universal: a payload carrying no state has nothing to follow, and which
+  states this module's payload carries is its own, so that half is this item's and is what it is for.
+ref: ''
+reviewed: GEs8qJ6pnXaIzLntNYlgS8GkWX2iEESDpqfj8HOzBuU=
+status: accepted
+text: |
+  The park-wait-times module shall draw each ride's wait as the length of time it is handed or, where the
+  ride is not operating, as the state it is handed, following the payload rather than deciding for itself
+  whether a ride can be ridden, and drawing a length of time distinguishably from a state.
+verification-justification: |
+  Read from a rendered page handed payloads differing only in a ride's wait: a ride handed a length of
+  time draws that time and a ride handed a not-operating state draws that state, the drawing does not
+  follow the page's clock or the park's hours where they disagree with the payload, and a time and a
+  state are drawn as different kinds of mark.
+  What it cannot settle is whether a viewer reads the two as distinct across the room, which is a
+  judgement about a real display rather than a rendered page, nor that the state the payload carries is
+  true of the ride, the source being another party's system and outside this one.
+verification-method: test

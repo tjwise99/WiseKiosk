@@ -1,0 +1,51 @@
+active: true
+derived: false
+header: |
+  The park-wait-times module puts each park's ride waits across the boundary
+level: 59
+links:
+- SYS011: a3bqZRtHE8ujrhIgBKFUtcxWGSCLRHsqU6GgDgwwR38=
+normative: true
+rationale: |
+  A viewer standing in front of the display asks, of each park, three things at once: which park this is,
+  whether it is open, and for each ride how long the queue is. So the payload carries the park's name,
+  its operating hours for the day, and for every one of its rides the ride's name with its current wait.
+  The wait is carried as a span of time or as a not-operating fact in the one slot, because a ride a
+  viewer cannot board is an effectively infinite wait and answers the same question a number does - how
+  long until you can ride this - so a payload splitting the two into different fields would make the
+  component ask twice what a viewer asks once.
+  There is no forward half. The weather payload carries an outlook because a viewer reads the sky now and
+  the day ahead as one act; a wait time is a now-fact acted on the instant it is read, a park does not
+  publish the wait it expects an hour hence, and so nothing here reaches past the present
+  (SYS011<!-- A viewer can know how long the ride waits are across the parks without looking elsewhere -->).
+  Every ride is carried rather than the longest few, because which rides are held in view and which tour
+  past is a rendering of the whole payload and cannot be done over a payload that has already dropped the
+  rest; and because a shaping silently returning fewer rides would leave a viewer
+  reading a smaller park than the display was built for with nothing to fail against, while a check
+  written against the module's own idea of how many rides a park has asserts only that the module agrees
+  with itself.
+  The item states what a viewer is owed and not the shape it arrives in. The names of the fields, their
+  units, whether a not-operating ride is one state or several and however the source happens to encode a
+  closure are the boundary schema's and the shaping library's; a requirement fixing any of them would
+  settle an interface those records are the record of, and would tie the payload to one supplier's
+  vocabulary.
+  It is separate from what the module shows because a payload is settled without a page: the shaping runs
+  on a captured response with no browser and no network, and a module handed every ride a park has can
+  still draw half of them.
+ref: ''
+reviewed: o9HQHRXk_09LrNVpCl--blJ0EUApKF0m463cBZ02r-M=
+status: accepted
+text: |
+  The park-wait-times module shall put across the boundary, for each park a request names, the park's
+  name, its operating hours, and for each of the park's rides the ride's name together with its current
+  wait - a length of time, or that the ride is not operating.
+verification-justification: |
+  Read from the module's shaping run against a captured response from its source, without a network: for
+  the park the request named, what it produces carries the park's name and operating hours and, for each
+  ride, the ride's name with a wait that is either a length of time or a not-operating state.
+  What it cannot settle is that any of it is true of the queue, the source being another party's system
+  and outside this one. It is also bounded by the captures a suite holds: a response the source can
+  return and no capture contains is unasserted here, which includes a source that answers with a ride's
+  wait missing, so what is settled is the shaping of the responses that were captured rather than of
+  every response the source can produce.
+verification-method: test
