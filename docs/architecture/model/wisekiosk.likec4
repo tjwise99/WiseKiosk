@@ -100,6 +100,7 @@ specification {
   tag SRS062
   tag SRS063
   tag SRS064
+  tag SRS065
 }
 
 model {
@@ -431,6 +432,7 @@ model {
   }
 
   upstreamClient -> themeParksWiki 'Fetches the wait times for the parks a request names' {
+    #SRS065
     #SRS063
     #SRS064
     technology 'HTTPS'

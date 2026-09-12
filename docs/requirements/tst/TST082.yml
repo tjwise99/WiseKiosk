@@ -1,0 +1,21 @@
+active: false
+derived: false
+header: |
+  Pending: the module reads one external source and no other
+level: 104
+links:
+- SRS065: 8XXRPD9LZ5zZ6WmHtMsDibOsAH31QWM3hy5s4lM163Q=
+normative: true
+ref: ''
+reviewed: g2ozSfCRkdPD-4nCvxN_oLz_lg1Pu-9kPxrqyaXAM2E=
+status: proposed
+text: |
+  Pending: test that, under a rendered page, the request the module builds is the one its single source
+  answers and the wait times shown are parsed from that source's response, and that no request goes to
+  any other source. Lands with the wait-times implementation (#309); activated and given a references
+  entry then.
+verification-justification: |
+  Settles that this module asks one party and reads that party's answer. Leaves unproven that no second
+  source sits behind the first, the source being another party's system; and the absence half is
+  evidence over the traffic the harness observes rather than proof.
+verification-method: test
