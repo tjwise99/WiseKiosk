@@ -1,0 +1,44 @@
+active: true
+derived: false
+header: |
+  The wait a viewer sees is no more than five minutes behind its source
+level: 65
+links:
+- SYS011: a3bqZRtHE8ujrhIgBKFUtcxWGSCLRHsqU6GgDgwwR38=
+normative: true
+rationale: |
+  A posted wait time turns over on the scale of minutes. It is a figure a park revises as its staff walk
+  the queues rather than a reading off a sensor, and the parks' own feeds and the services that read them
+  refresh in a band of a few minutes - so what a source reports about a ride goes out of date by itself
+  while nothing else changes. A display that is glanced at rather than consulted has no way to tell a
+  viewer that its number has aged, so the only defence is that it cannot have aged much: five minutes is
+  short enough that the board and the queue agree, and long enough that asking again buys nothing the
+  source has itself not changed. The source's own guidance is that it is not to be polled more often than
+  once every five minutes and returns the same held figure to anyone who asks sooner, so five minutes
+  sits at the source's own refresh cadence rather than finer than it - asking faster spends a request for
+  a figure that did not move.
+  The bound is on the distance from the source rather than from the queue, deliberately. How long a park
+  takes to notice a queue has grown is the park's, and stating a bound that included it would oblige
+  something no display can control and no check can read.
+  Two settings are read out of this figure rather than chosen beside it: the interval the route holds a
+  successful answer for, and how often the module asks. Neither may be set so that a viewer sees a wait
+  older than this, which is the whole reason the figure sits in a requirement instead of in the code that
+  uses it.
+  No supplier is named. The figure is argued from how fast a wait time changes and what a glanced-at
+  display needs, so it is a criterion a candidate source is held to rather than a number read off one:
+  a source that moved slower than this, or would not be asked as often as this allows, is a source this
+  module could not use.
+ref: ''
+reviewed: vtT5crJ-8TGxFiq2Cou-2iTjBHKuoehbpLdibsM9j8E=
+status: accepted
+text: |
+  The wait times the module shows shall be no more than five minutes behind what its source reports.
+verification-justification: |
+  Read from a rendered page against a source staged to change its answer: within the bound, and without
+  the page being reloaded, what the region shows is the changed wait rather than the old one.
+  What it cannot settle is how far behind the queue the source itself runs, which is another party's
+  system and outside this one - so what is bounded is the display's distance from its source, not a
+  viewer's distance from the queue. Nor does it settle the behaviour of a page left running far longer
+  than a check runs: the bound is asserted over the span the harness holds the page open, so an ageing
+  that appears only after days is outside it.
+verification-method: test

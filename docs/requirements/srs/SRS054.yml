@@ -1,0 +1,47 @@
+active: true
+derived: false
+header: |
+  The park-wait-times module reports on the parks its configuration names
+level: 57
+links:
+- SYS011: a3bqZRtHE8ujrhIgBKFUtcxWGSCLRHsqU6GgDgwwR38=
+normative: true
+rationale: |
+  A wall display hangs where somebody chose to hang it, and the parks whose queues are worth its space
+  are the ones near enough to matter to whoever stands in front of it. Where a deployment hangs and which
+  parks it cares about are the operator's knowledge and not ours - the same image runs at one family's
+  house watching two Florida resorts and at another's watching a single park - so the parks are
+  configuration rather than a constant, and which parks the module reports on is one of the two things a
+  module's own decomposition carries.
+  What the item states is what the choice does, not what it is spelled. The key's name and its default
+  belong to the module's section of the configuration schema, and a requirement naming them would fix an
+  interface here that the schema is the record of. Nor does the item say the option is exercised: that
+  every offered key is driven at a non-default value is already obliged of every module
+  (SRS024<!-- Every offered configuration key is exercised at a non-default value -->).
+  Abstracted, the item reads that a module reports on the subject its configuration names, and that is
+  the reading the second stage runs on. No framework item says it, and module-contract.md does not
+  settle it either, using that same sentence as its worked example of abstracting rather than as
+  structure it binds. What is left is not a universal: a module whose subject its configuration does not
+  name satisfies it vacuously, and which subject is named differs per module, so the sentence is this
+  module's to carry and it is carried here.
+  This is not the constraint the park a request carries must satisfy. That item admits a park drawn from
+  the module's supported set and rejects the rest before anything goes upstream; this one says the
+  configured parks are the parks reported on, which is what a viewer would notice going wrong. A module
+  could admit only supported parks and still show the queues of somewhere else entirely.
+  No supplier is named. That the parks are read from one service rather than another is an edit to this
+  repository, and the want is written against the parks the operator names rather than against a
+  vendor's catalogue.
+ref: ''
+reviewed: W_2xDAUxJmRheevdwl-F0N4yJdgOGccWjVBAc3dR7bU=
+status: accepted
+text: |
+  The park-wait-times module shall report the wait times for the theme parks its configuration names,
+  and for no other.
+verification-justification: |
+  Read from a rendered page under a configuration naming parks, against a source staged to answer
+  differently by park: the requests the module causes carry the configured parks and the region shows
+  the answers given for them, and a second configuration naming different parks moves both.
+  What it cannot settle is that the source's answer is true of those parks - which park a supplier
+  believes it is answering for is its own, and outside this system. It also settles nothing about a
+  configuration naming no park, which is a configuration-validation question rather than this module's.
+verification-method: test

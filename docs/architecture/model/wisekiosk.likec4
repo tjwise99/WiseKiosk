@@ -39,6 +39,7 @@ specification {
   tag SYS008
   tag SYS009
   tag SYS010
+  tag SYS011
   tag SRS001
   tag SRS002
   tag SRS003
@@ -88,6 +89,18 @@ specification {
   tag SRS051
   tag SRS052
   tag SRS053
+  tag SRS054
+  tag SRS055
+  tag SRS056
+  tag SRS057
+  tag SRS058
+  tag SRS059
+  tag SRS060
+  tag SRS061
+  tag SRS062
+  tag SRS063
+  tag SRS064
+  tag SRS065
 }
 
 model {
@@ -202,6 +215,23 @@ model {
           days. Carries the policies its route runs under and hands the
           request to the framework pipeline that applies them. Its shaping is
           pure, reading nothing and calling nothing.
+        '''
+      }
+
+      waitTimesShaping = component 'Wait-times shaping' {
+        #SRS055
+        #SRS056
+        description '''
+          The park-wait-times module's half of this container. Serves the route
+          the boundary schema declares for it: reads the park out of the request
+          through the type generated from that schema, judges it against the
+          constraint this module declares, builds the request for the wait-times
+          source, and reshapes what comes back into the payload the module puts
+          across the boundary — each park's name and operating hours, and for
+          every ride its name with its current wait or its not-operating state.
+          Carries the policies its route runs under and hands the request to the
+          framework pipeline that applies them. Its shaping is pure, reading
+          nothing and calling nothing.
         '''
       }
     }
@@ -319,6 +349,30 @@ model {
           backend that is gone stands this module down.
         '''
       }
+
+      parkWaitTimes = component 'Park wait times' {
+        #SYS011
+        #SRS054
+        #SRS057
+        #SRS058
+        #SRS059
+        #SRS060
+        #SRS061
+        #SRS062
+        description '''
+          Renders the park wait times into the region the configuration gives
+          it: a card for every configured park, all of them held on screen at
+          once, each card keeping the park's longest current waits in view and
+          touring the rest of its rides on a configured interval, and drawing
+          each wait as the length of time or the not-operating state it is
+          handed rather than deciding for itself whether a ride can be ridden.
+          Reports on the parks its configuration names, arranged in a grid its
+          configuration shapes. It draws what it is given and fetches nothing:
+          the reading is its host's, on the cadence that keeps what a viewer
+          reads from falling far behind the source, and a backend that is gone
+          stands this module down.
+        '''
+      }
     }
 
     // Deliberately server->client, terminating on a container (../../ARCHITECTURE.md § Frontend).
@@ -365,6 +419,22 @@ model {
     #SRS041
     #SRS047
     #SRS049
+    technology 'HTTPS'
+  }
+
+  themeParksWiki = system 'themeparks.wiki' {
+    description '''
+      The wait-times service the park-wait-times module reads. Run by somebody
+      else and outside the boundary. Which service this is, is an edit to this
+      repository: no requirement names it, and the module's obligations are
+      written against a wait-times source rather than against this one.
+    '''
+  }
+
+  upstreamClient -> themeParksWiki 'Fetches the wait times for the parks a request names' {
+    #SRS065
+    #SRS063
+    #SRS064
     technology 'HTTPS'
   }
 

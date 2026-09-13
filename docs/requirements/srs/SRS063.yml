@@ -1,0 +1,51 @@
+active: true
+derived: false
+header: |
+  The park-wait-times module asks an answering source at most once every five minutes for a park
+level: 66
+links:
+- SYS011: a3bqZRtHE8ujrhIgBKFUtcxWGSCLRHsqU6GgDgwwR38=
+normative: true
+rationale: |
+  The source is a free service run by somebody else, and a display that is never turned off asks for
+  years. What ends that arrangement is not one bad hour but a steady rate somebody decides is unfair, so
+  the module sets its own politeness bound low enough that a deployment left running is not throttled or
+  cut off for asking too often.
+  Once every five minutes is what the freshness figure comes to and nothing beyond it: asking more often
+  cannot make what a viewer sees fresher than that item obliges
+  (SRS062<!-- The wait a viewer sees is no more than five minutes behind its source -->), and the source
+  returns the same held figure to a request that comes sooner, so the extra request is spent for no
+  viewer and against the source's own stated guidance. The bound is per park because that is what a
+  request is about - two parks are two conversations, and one being busy is no reason to starve the
+  other.
+  The bound is the answering source's, and the scoping is what makes the figure argued rather than merely
+  stated. Once every five minutes is read out of the freshness figure, and that reading rests on there
+  being a held answer already: asking oftener cannot make what a viewer sees fresher. Nothing of that
+  argument survives a failure, where what is held is no answer at all, so a source that is failing is
+  asked on a different argument and stated separately
+  (SRS064<!-- The park-wait-times module asks a failing source no more often than once every five
+  minutes -->). Left unscoped, this item would either forbid a retry worth making or permit the failure
+  path's rate, and it cannot honestly be both.
+  One request in flight is the second half and is not implied by the first. A module that reissued on top
+  of a slow answer would multiply its own rate exactly when the source is least able to bear it, which is
+  the moment a politeness bound is for; a per-interval count alone permits several at once.
+  What is not restated is that the rate is bounded at all and not left for an operator to raise
+  (SRS011<!-- Upstream request rate is bounded, and the bound is not operator-tunable -->). The framework
+  obliges there be a bound; this says what this module's is.
+ref: ''
+reviewed: 2g1HZ7HkBfjBCRkGZDGIFyzGE-aMKApertzNRLCQZRU=
+status: accepted
+text: |
+  The park-wait-times module shall issue no more than one request to its source for any one park in any
+  five minutes while that source is answering, and shall have no more than one request to that source in
+  flight at a time.
+verification-justification: |
+  Read over the requests the module's route issues against a staged source that answers and a driven
+  clock: no more than one leaves in any five minutes for one park, and a second is never outstanding
+  while a first has not answered.
+  What it cannot settle is that this rate is one the source accepts. What a free supplier will tolerate
+  is its own policy, published or not, changed without notice and not decidable here; the figure is
+  chosen to sit at the source's own stated ceiling, and a check reads what this system emits rather than
+  what another party thinks of it. It is also asserted over the window the harness runs, so a rate that
+  drifts only over days is outside it.
+verification-method: test

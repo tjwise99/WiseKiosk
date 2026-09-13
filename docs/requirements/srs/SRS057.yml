@@ -1,0 +1,39 @@
+active: true
+derived: false
+header: |
+  The park-wait-times module holds every configured park on screen at once
+level: 60
+links:
+- SYS011: a3bqZRtHE8ujrhIgBKFUtcxWGSCLRHsqU6GgDgwwR38=
+normative: true
+rationale: |
+  What a viewer asks of a wall display is answered by a glance, and a park that is off screen when they
+  glance is a park they cannot read. So every park the configuration names holds its place at the same
+  time, and whatever cycling the module does happens inside a park's own reading rather than by taking
+  one park away to show another.
+  This is a rendering obligation and invisible to the shaping: a payload carrying every configured park
+  is drawn just as well by a component that shows one park at a time and rotates the rest, and only a
+  page tells the two apart. That is why it is its own item rather than a clause of the payload's.
+  Reworded to another module, the sentence names a different set of subjects held at once. Abstracted, it
+  reads that a module shows all its configured subjects at once, and that is not a universal: a module
+  that tours its subjects, one headline at a time, satisfies nothing here and is a permitted shape rather
+  than a defect, so which modules hold everything at once is each module's own to say and this module's
+  is that it does.
+  How the parks are arranged when they are all shown is not obliged here - that is the grid's
+  (SRS060<!-- The park-wait-times module arranges its parks in a grid its configuration shapes -->) - nor
+  is how a single park tours its own rides (SRS059<!-- The park-wait-times module tours the remaining
+  rides on an interval its configuration sets -->). What this item forbids is a park waiting its turn
+  off screen.
+ref: ''
+reviewed: mn54dB371bM1c4Yqde7mwjDu7o8AnYDbqtxeKSB25BY=
+status: accepted
+text: |
+  The park-wait-times module shall show every park its configuration names at the same time, none
+  waiting off screen for its turn.
+verification-justification: |
+  Read from a rendered page under a configuration naming several parks: every named park is drawn at the
+  same sampled moment, none absent awaiting a rotation between parks.
+  What it cannot settle is that every named park fits legibly in the region a given deployment gives the
+  module - how small a card is drawn falls out of the grid's shape and the region's size and is a
+  judgement about a real display in a real room - nor whether the arrangement chosen reads well.
+verification-method: test

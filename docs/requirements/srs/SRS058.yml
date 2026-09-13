@@ -1,0 +1,39 @@
+active: true
+derived: false
+header: |
+  The park-wait-times module keeps each park's longest current waits in view
+level: 61
+links:
+- SYS011: a3bqZRtHE8ujrhIgBKFUtcxWGSCLRHsqU6GgDgwwR38=
+normative: true
+rationale: |
+  The reading a viewer most wants of a park is how bad its worst queues are right now, and a rotation
+  that has cycled past them answers that only when it comes round again. So the longest current waits are
+  held rather than toured: usable the instant a viewer looks, not on the next turn of the cycle.
+  Two obligations sit here and neither is the other's. The module identifies the longest waits, which is
+  a selection over the payload's rides ranked by how long each one is, and it holds them in view without
+  rotating them away. A module could tour every ride, holding nothing, and fail the persistence; or hold
+  a fixed or arbitrary handful and fail the selection. A ride that is not operating stands as an
+  effectively infinite wait (SRS061<!-- The park-wait-times module draws a wait as the time or the
+  not-operating state it is handed -->), so a shut headline ride is not quietly dropped from the reading
+  a viewer most wants.
+  How many waits are held, and where on a park's card they sit, is composition - the module's UI design
+  spec's rather than this item's - and is not fixed here. What is fixed is that the ones held are the
+  longest and that they stay.
+  Reworded to another module the sentence names a different subject's reading; there is no abstraction of
+  it that lands on a framework universal, a persistent ranked reading being this module's payload's and
+  nothing every module has.
+ref: ''
+reviewed: NHRnL_bO8JLVCkwKy9VWCfk4II4jSNSUGyXtc12yzV0=
+status: accepted
+text: |
+  The park-wait-times module shall keep in view, for each park and without rotating them away, the rides
+  whose current waits are the longest, so that a park's longest waits are readable the instant a viewer
+  looks.
+verification-justification: |
+  Read from a rendered page handed a payload whose rides carry differing waits: the rides kept in view
+  are those with the longest waits, and they remain in view across the rotation of the rest.
+  What it cannot settle is that the number held is the right one to hold - that is a composition
+  judgement the UI design spec makes - nor whether a viewer reads the ranking as intended. It is bounded
+  by the payloads a suite supplies.
+verification-method: test

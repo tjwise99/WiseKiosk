@@ -1,0 +1,20 @@
+active: false
+derived: false
+header: |
+  Pending: the parks lay out in the configured grid shape
+level: 99
+links:
+- SRS060: 6HGDyXBi1R_Xeal3ey8LWzU3b2g4sfhYD4Wi1Lb7YOY=
+normative: true
+ref: ''
+reviewed: v8RQ0fYPUlNGw9h9CIeduyblDfh-g5YBoChKHF2Ajkk=
+status: proposed
+text: |
+  Pending: render test that, under at least two grid-shape configurations naming the same parks, the
+  cards lay out in the column and row counts each configuration names, and a second shape re-lays the
+  same parks. Lands with the wait-times implementation (#309); activated and given a references entry
+  then.
+verification-justification: |
+  Settles that the grid shape follows configuration. Leaves unproven that a chosen shape reads well at
+  the deployed viewing distance, and that every shape a configuration might name fits the region.
+verification-method: test

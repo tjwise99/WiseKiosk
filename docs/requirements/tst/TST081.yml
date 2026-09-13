@@ -1,0 +1,21 @@
+active: false
+derived: false
+header: |
+  Pending: a failing source is asked no more than once every five minutes per park
+level: 103
+links:
+- SRS064: I-HE1hytNsPPOboqMH7zgBVffYQ-F9dDPEpxNW7bokg=
+normative: true
+ref: ''
+reviewed: u9RYVooWJHgkN_kq65EDrKXvDkUEeJNivMilxHzjYzA=
+status: proposed
+text: |
+  Pending: integration test over the requests the module's route issues against a source staged to fail
+  and a driven clock, with the route called far oftener than the bound permits: no more than one request
+  leaves for one park in any five minutes. Lands with the wait-times implementation (#309); activated and
+  given a references entry then.
+verification-justification: |
+  Settles the failure-path rate under a driven clock over the suite window. Leaves unproven what the
+  source makes of being retried while down, and whether five minutes is the right recovery-and-politeness
+  trade, which is argued in the parent.
+verification-method: test

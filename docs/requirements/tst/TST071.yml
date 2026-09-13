@@ -1,0 +1,21 @@
+active: false
+derived: false
+header: |
+  Pending: the module reports on the parks its configuration names
+level: 93
+links:
+- SRS054: nAt8cSSQkqM-5dcdliPpOBPWhNq4IfU-D3g61VSs0ss=
+normative: true
+ref: ''
+reviewed: hT6DfrjjZcPo9ZwGoPyXufML0Ry55j8Zcrr45GPCdSk=
+status: proposed
+text: |
+  Pending: render test that, under a configuration naming parks and a source staged to answer
+  differently by park, the requests the module causes carry the configured parks and the region shows
+  the answers given for them, and a second configuration naming different parks moves both. Lands with
+  the wait-times implementation (#309); activated and given a references entry then.
+verification-justification: |
+  Settles that the module fetches and shows the parks its configuration names and no other. Leaves
+  unproven that the source's answer is true of those parks, which is another party's system and outside
+  this one.
+verification-method: test

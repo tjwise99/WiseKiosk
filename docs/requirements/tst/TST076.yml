@@ -1,0 +1,21 @@
+active: false
+derived: false
+header: |
+  Pending: the remaining rides tour on the configured interval
+level: 98
+links:
+- SRS059: WLWFCDH_eQ2a0Y0np5Idcl8QXqvYacMrVTitsIzaRfU=
+normative: true
+ref: ''
+reviewed: jrRjWUXcApqlIKJJMCPkcl51anR2RDDDvTu0pqUikJA=
+status: proposed
+text: |
+  Pending: render test that, handed a payload with more rides than a park's held reading shows, under a
+  driven clock and at least two distinct rotation-interval configurations, which rides are shown changes
+  when each configured interval elapses and not before, and every ride not held is shown across a full
+  cycle. Lands with the wait-times implementation (#309); activated and given a references entry then.
+verification-justification: |
+  Settles that the remainder is reachable by a configuration-driven rotation that advances. Leaves
+  unproven that the interval used is exactly the configured number to the second, a driven-clock render
+  reading before and after a boundary rather than a stopwatch.
+verification-method: test

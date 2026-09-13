@@ -14,9 +14,9 @@ evening.*
 
 It is **not** a requirement. Composition is deliberately outside the requirements tree (the
 [display design study](../../../../docs/design/display-design-study.md), *What belongs in the
-specification*); what the tree owns is the behaviour, which is authored in phase 2 — the requirements
-sub-issue of the #298 wait-times epic — so the *Realises* column in *What each choice realises* below
-stays open until then. Where this spec and the
+specification*); what the tree owns is the behaviour, authored in phase 2 — the requirements
+sub-issue of the #298 wait-times epic — which the *Realises* column in *What each choice realises*
+below traces each composition choice to. Where this spec and the
 [display styling contract](../../../../docs/contracts/display-styling-contract.md) meet, the contract
 owns the shared design language (the type and spacing scales, the emission rule, the card and
 grouping vocabulary) and this spec owns only how this module reaches for it.
@@ -151,25 +151,28 @@ Kingdom), `globe` (Epcot), `sorcerer-hat` (Hollywood Studios), `tree` (Animal Ki
 spired castle, a faceted sphere, a spreading tree — not reproductions of any park's trademarked logo
 or landmark; the actual branded marks are deliberately not used.
 
-Two things this spec leaves to phase 2/3, because they are behaviour and asset scope rather than
-composition: the **`park → icon` mapping** (a configured park with no matching glyph draws **no icon**,
-name only — the fallback), and whether the set is carried as these files or inlined by the component.
+Two things this spec leaves to the implementation phase, because they are behaviour and asset scope
+rather than composition: the **`park → icon` mapping** (a configured park with no matching glyph draws
+**no icon**, name only — the fallback), and whether the set is carried as these files or inlined by the
+component.
 
 ## What each choice realises
 
-The composition choices this spec makes, each to be traced to the obligation phase 2 writes for it.
-The *Realises* column is authored when the requirements tree lands (the #298 epic's requirements
-sub-issue); until then it is deliberately open, not forgotten.
+The composition choices this spec makes, each traced to the obligation the requirements tree writes
+for it (the #298 epic's requirements sub-issue). Where a choice realises a framework obligation rather
+than one of this module's own — full-emission content, the emission ceiling, the type-size floor — the
+*Realises* column cites the framework item, since composition reaches for those the same way every
+module does.
 
 | Composition choice | Realises |
 |---|---|
-| a card per park, every configured park held on screen at once | *authored in phase 2* |
-| a persistent three-ride leaderboard of the longest current waits | *authored in phase 2* |
-| the remaining rides rotate two at a time, on a configured interval | *authored in phase 2* |
-| the wait slot carries a wait in minutes, or a `Down` / `Closed` state | *authored in phase 2* |
-| the grid shape (`nCol` × `nRows`) is configuration | *authored in phase 2* |
-| full-white content, dim strokes only, hierarchy by size and weight | *authored in phase 2* |
-| every type step at or above the type-size floor | *authored in phase 2* |
+| a card per park, every configured park held on screen at once | SRS057<!-- The park-wait-times module holds every configured park on screen at once --> |
+| a persistent three-ride leaderboard of the longest current waits | SRS058<!-- The park-wait-times module keeps each park's longest current waits in view --> |
+| the remaining rides rotate two at a time, on a configured interval | SRS059<!-- The park-wait-times module tours the remaining rides on an interval its configuration sets --> |
+| the wait slot carries a wait in minutes, or a `Down` / `Closed` state | SRS056<!-- The park-wait-times module puts each park's ride waits across the boundary --> / SRS061<!-- The park-wait-times module draws a wait as the time or the not-operating state it is handed --> |
+| the grid shape (`nCol` × `nRows`) is configuration | SRS060<!-- The park-wait-times module arranges its parks in a grid its configuration shapes --> |
+| full-white content, dim strokes only, hierarchy by size and weight | SRS032<!-- Readable text is carried at full emission --> / SRS030<!-- Only content is rendered above the emission ceiling --> |
+| every type step at or above the type-size floor | SRS033<!-- Text holds a minimum size against the display, at every resolution --> |
 
 ## To confirm in situ
 
