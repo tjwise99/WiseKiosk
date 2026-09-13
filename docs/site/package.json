@@ -9,6 +9,6 @@
   },
   "devDependencies": {
     "swagger-ui-dist": "5.32.15",
-    "vite": "8.2.2"
+    "vite": "8.3.0"
   }
 }
