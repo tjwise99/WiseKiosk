@@ -509,17 +509,17 @@ func TestTST079_ThePolicyHoldsAnAnswerNoLongerThanTheFreshnessBound(t *testing.T
 	}
 }
 
-// TestTST063PolicyComesToOnceEveryFiveMinutesForAPark reads this module's
+// TestTST080_ThePolicyComesToOnceEveryFiveMinutesForAPark reads this module's
 // half of
 // SRS063<!-- The park-wait-times module asks an answering source at most once every five minutes for a park -->:
 // the interval it registers, against what obliged it rather than against
 // itself. What the framework then does with that interval — one upstream
 // call per interval for one park's one endpoint, and never a second in flight
 // while a first has not answered — is the router package's to read, against a
-// fixture rather than these numbers; TestTST063IntegrationParkKeysAreCachedIndependently
+// fixture rather than these numbers; TestTST080_IntegrationParkKeysAreCachedIndependently
 // below reads the module's own contribution: that a park's cache key is its
 // own, distinct from every other park's.
-func TestTST063PolicyComesToOnceEveryFiveMinutesForAPark(t *testing.T) {
+func TestTST080_ThePolicyComesToOnceEveryFiveMinutesForAPark(t *testing.T) {
 	policy := Config()
 
 	const bound = 5 * time.Minute
@@ -533,12 +533,12 @@ func TestTST063PolicyComesToOnceEveryFiveMinutesForAPark(t *testing.T) {
 	}
 }
 
-// TestTST064PolicyComesToOnceEveryFiveMinutesForAFailingPark reads this
+// TestTST081_ThePolicyComesToOnceEveryFiveMinutesForAFailingPark reads this
 // module's half of
 // SRS064<!-- The park-wait-times module asks a failing source no more often than once every five minutes -->:
 // the interval it registers, against what obliged it. What the framework does
 // with that interval belongs to the router package.
-func TestTST064PolicyComesToOnceEveryFiveMinutesForAFailingPark(t *testing.T) {
+func TestTST081_ThePolicyComesToOnceEveryFiveMinutesForAFailingPark(t *testing.T) {
 	policy := Config()
 
 	const bound = 5 * time.Minute
@@ -584,7 +584,7 @@ func (s successTransport) RoundTrip(r *http.Request) (*http.Response, error) {
 	}, nil
 }
 
-// TestTST063IntegrationParkKeysAreCachedIndependently reads the integration
+// TestTST080_IntegrationParkKeysAreCachedIndependently reads the integration
 // half of TST080<!-- an answering source is asked at most once every five
 // minutes per park -->: fetchPark's two calls for one park are cached under
 // that park's own keys, so calling it again for the same park inside the
@@ -593,7 +593,7 @@ func (s successTransport) RoundTrip(r *http.Request) (*http.Response, error) {
 // one shared key. The five-minute bound itself is the policy assertion
 // above; what this proves is this module's own per-park keying, which the
 // framework's generic cache tests cannot, having no notion of "a park".
-func TestTST063IntegrationParkKeysAreCachedIndependently(t *testing.T) {
+func TestTST080_IntegrationParkKeysAreCachedIndependently(t *testing.T) {
 	live := liveResponseBytes(t)
 	schedule := scheduleResponseBytes(t)
 
@@ -661,13 +661,13 @@ func (f *failingTransport) RoundTrip(*http.Request) (*http.Response, error) {
 	}, nil
 }
 
-// TestTST064IntegrationAFailingParkIsRetriedNoOftenerThanTheNegativeInterval
+// TestTST081_IntegrationAFailingParkIsRetriedNoOftenerThanTheNegativeInterval
 // is TST081<!-- a failing source is asked no more than once every five
 // minutes per park -->'s integration half: a park whose own upstream calls
 // fail is held under the negative cache the same as a success is, so calling
 // fetchPark for it again inside the failure window costs no further upstream
 // call.
-func TestTST064IntegrationAFailingParkIsRetriedNoOftenerThanTheNegativeInterval(t *testing.T) {
+func TestTST081_IntegrationAFailingParkIsRetriedNoOftenerThanTheNegativeInterval(t *testing.T) {
 	transport := &failingTransport{}
 	held := http.DefaultTransport
 	http.DefaultTransport = transport
