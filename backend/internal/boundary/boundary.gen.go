@@ -25,6 +25,59 @@ type ClientRejection struct {
 	Message string `json:"message"`
 }
 
+// ParkWaitTimesHours The park's operating hours for the day. Absent where the source reports none.
+type ParkWaitTimesHours struct {
+	// Close When the park closes today, as an ISO 8601 timestamp carrying the park's own UTC offset.
+	Close string `json:"close"`
+
+	// Open When the park opens today, as an ISO 8601 timestamp carrying the park's own UTC offset.
+	Open string `json:"open"`
+}
+
+// ParkWaitTimesPark One park's reading, or why it has none. A park whose own upstream calls failed carries `available: false` and a reason rather than failing the whole request — the rest of the parks a request named are unaffected.
+type ParkWaitTimesPark struct {
+	// Available Whether this park's own reading could be produced.
+	Available bool `json:"available"`
+
+	// Hours The park's operating hours for the day. Absent where the source reports none.
+	Hours *ParkWaitTimesHours `json:"hours,omitempty"`
+
+	// Id The park's identity, echoing the request.
+	Id string `json:"id"`
+
+	// Message Plain-language text the module renders in this park's place. Present only where `available` is false.
+	Message *string `json:"message,omitempty"`
+
+	// Name The park's name.
+	Name string `json:"name"`
+
+	// Rides Every one of the park's rides, each with its name and current wait (SRS056<!-- The park-wait-times module puts each park's ride waits across the boundary -->). Present only where `available` is true.
+	Rides *[]ParkWaitTimesRide `json:"rides,omitempty"`
+}
+
+// ParkWaitTimesPayload The park-wait-times module's payload: one entry per park the request named, in the order named (SRS054<!-- The park-wait-times module reports on the parks its configuration names -->).
+type ParkWaitTimesPayload struct {
+	Parks []ParkWaitTimesPark `json:"parks"`
+}
+
+// ParkWaitTimesRequest The parks a request names. It is the whole of what this route reads of a request.
+type ParkWaitTimesRequest struct {
+	// Parks The parks the answer is about, each drawn from this module's supported set (SRS055<!-- The park-wait-times module declares the known-good constraint the park it is asked about must satisfy -->).
+	Parks []string `json:"parks"`
+}
+
+// ParkWaitTimesRide One ride's name and its current wait.
+type ParkWaitTimesRide struct {
+	// Name The ride's name.
+	Name string `json:"name"`
+
+	// Wait A ride's current wait: a length of time in minutes, or the not-operating state it is in — `"Down"`, `"Closed"` or `"Refurbishment"` — in the one JSON value rather than two fields a component would have to read together (SRS061<!-- The park-wait-times module draws a wait as the time or the not-operating state it is handed -->). Untyped here rather than `oneOf`: oapi-codegen's generated union type would pull in a runtime dependency, and this backend's runtime dependency set is empty ([ADR 0008 rev 5](../docs/decisions/0008-boundary-contract-openapi-codegen.md)); the shaping library and the component each read it with their own type switch instead.
+	Wait ParkWaitTimesWait `json:"wait"`
+}
+
+// ParkWaitTimesWait A ride's current wait: a length of time in minutes, or the not-operating state it is in — `"Down"`, `"Closed"` or `"Refurbishment"` — in the one JSON value rather than two fields a component would have to read together (SRS061<!-- The park-wait-times module draws a wait as the time or the not-operating state it is handed -->). Untyped here rather than `oneOf`: oapi-codegen's generated union type would pull in a runtime dependency, and this backend's runtime dependency set is empty ([ADR 0008 rev 5](../docs/decisions/0008-boundary-contract-openapi-codegen.md)); the shaping library and the component each read it with their own type switch instead.
+type ParkWaitTimesWait = interface{}
+
 // UpstreamFailure The body a module's failed data request carries back, distinct to its cause so an operator can tell a source being down from a key being wrong.
 type UpstreamFailure struct {
 	// Cause What kind of failure this was. An open string; the cause set is not fixed here.
@@ -115,6 +168,9 @@ type WeatherRequest struct {
 	Lon float64 `json:"lon"`
 }
 
+// PostApiParkWaitTimesJSONRequestBody defines body for PostApiParkWaitTimes for application/json ContentType.
+type PostApiParkWaitTimesJSONRequestBody = ParkWaitTimesRequest
+
 // PostApiWeatherJSONRequestBody defines body for PostApiWeather for application/json ContentType.
 type PostApiWeatherJSONRequestBody = WeatherRequest
 
@@ -192,6 +248,20 @@ func WithRequestEditorFn(fn RequestEditorFn) ClientOption {
 // The interface specification for the client above.
 type ClientInterface interface {
 
+	// PostApiParkWaitTimesWithBody Report the current wait times for the parks a request names.
+	//
+	// Takes any type of body and a specified content type.
+	//
+	// Corresponds with POST /api/park-wait-times (the `PostApiParkWaitTimes` operationId).
+	PostApiParkWaitTimesWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// PostApiParkWaitTimes Report the current wait times for the parks a request names.
+	//
+	// Takes a body of the `application/json` content type.
+	//
+	// Corresponds with POST /api/park-wait-times (the `PostApiParkWaitTimes` operationId).
+	PostApiParkWaitTimes(ctx context.Context, body PostApiParkWaitTimesJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// PostApiWeatherWithBody Report the weather at a point on the earth's surface.
 	//
 	// Takes any type of body and a specified content type.
@@ -210,6 +280,40 @@ type ClientInterface interface {
 	//
 	// Corresponds with GET /healthz (the `GetHealthz` operationId).
 	GetHealthz(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
+}
+
+// PostApiParkWaitTimesWithBody Report the current wait times for the parks a request names.
+//
+// Takes any type of body and a specified content type.
+//
+// Corresponds with POST /api/park-wait-times (the `PostApiParkWaitTimes` operationId).
+func (c *Client) PostApiParkWaitTimesWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewPostApiParkWaitTimesRequestWithBody(c.Server, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// PostApiParkWaitTimes Report the current wait times for the parks a request names.
+//
+// Takes a body of the `application/json` content type.
+//
+// Corresponds with POST /api/park-wait-times (the `PostApiParkWaitTimes` operationId).
+func (c *Client) PostApiParkWaitTimes(ctx context.Context, body PostApiParkWaitTimesJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewPostApiParkWaitTimesRequest(c.Server, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
 }
 
 // PostApiWeatherWithBody Report the weather at a point on the earth's surface.
@@ -259,6 +363,46 @@ func (c *Client) GetHealthz(ctx context.Context, reqEditors ...RequestEditorFn) 
 		return nil, err
 	}
 	return c.Client.Do(req)
+}
+
+// NewPostApiParkWaitTimesRequest calls the generic PostApiParkWaitTimes builder with application/json body
+func NewPostApiParkWaitTimesRequest(server string, body PostApiParkWaitTimesJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewPostApiParkWaitTimesRequestWithBody(server, "application/json", bodyReader)
+}
+
+// NewPostApiParkWaitTimesRequestWithBody constructs an http.Request for the PostApiParkWaitTimes method, with any body, and a specified content type
+func NewPostApiParkWaitTimesRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/park-wait-times")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
 }
 
 // NewPostApiWeatherRequest calls the generic PostApiWeather builder with application/json body
@@ -372,6 +516,20 @@ func WithBaseURL(baseURL string) ClientOption {
 // ClientWithResponsesInterface is the interface specification for the client with responses above.
 type ClientWithResponsesInterface interface {
 
+	// PostApiParkWaitTimesWithBodyWithResponse Report the current wait times for the parks a request names.
+	//
+	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /api/park-wait-times (the `PostApiParkWaitTimes` operationId).
+	PostApiParkWaitTimesWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*PostApiParkWaitTimesResponse, error)
+
+	// PostApiParkWaitTimesWithResponse Report the current wait times for the parks a request names.
+	//
+	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /api/park-wait-times (the `PostApiParkWaitTimes` operationId).
+	PostApiParkWaitTimesWithResponse(ctx context.Context, body PostApiParkWaitTimesJSONRequestBody, reqEditors ...RequestEditorFn) (*PostApiParkWaitTimesResponse, error)
+
 	// PostApiWeatherWithBodyWithResponse Report the weather at a point on the earth's surface.
 	//
 	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
@@ -392,6 +550,82 @@ type ClientWithResponsesInterface interface {
 	//
 	// Corresponds with GET /healthz (the `GetHealthz` operationId).
 	GetHealthzWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetHealthzResponse, error)
+}
+
+type PostApiParkWaitTimesResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *ParkWaitTimesPayload
+	// JSON400 the response for an HTTP 400 `application/json` response
+	JSON400 *ClientRejection
+	// JSON429 the response for an HTTP 429 `application/json` response
+	JSON429 *ClientRejection
+	// JSON502 the response for an HTTP 502 `application/json` response
+	JSON502 *UpstreamFailure
+	// JSON503 the response for an HTTP 503 `application/json` response
+	JSON503 *UpstreamFailure
+	// JSON504 the response for an HTTP 504 `application/json` response
+	JSON504 *UpstreamFailure
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r PostApiParkWaitTimesResponse) GetJSON200() *ParkWaitTimesPayload {
+	return r.JSON200
+}
+
+// GetJSON400 returns the response for an HTTP 400 `application/json` response
+func (r PostApiParkWaitTimesResponse) GetJSON400() *ClientRejection {
+	return r.JSON400
+}
+
+// GetJSON429 returns the response for an HTTP 429 `application/json` response
+func (r PostApiParkWaitTimesResponse) GetJSON429() *ClientRejection {
+	return r.JSON429
+}
+
+// GetJSON502 returns the response for an HTTP 502 `application/json` response
+func (r PostApiParkWaitTimesResponse) GetJSON502() *UpstreamFailure {
+	return r.JSON502
+}
+
+// GetJSON503 returns the response for an HTTP 503 `application/json` response
+func (r PostApiParkWaitTimesResponse) GetJSON503() *UpstreamFailure {
+	return r.JSON503
+}
+
+// GetJSON504 returns the response for an HTTP 504 `application/json` response
+func (r PostApiParkWaitTimesResponse) GetJSON504() *UpstreamFailure {
+	return r.JSON504
+}
+
+// GetBody returns the raw response body bytes
+func (r PostApiParkWaitTimesResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r PostApiParkWaitTimesResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r PostApiParkWaitTimesResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r PostApiParkWaitTimesResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
 }
 
 type PostApiWeatherResponse struct {
@@ -504,6 +738,32 @@ func (r GetHealthzResponse) ContentType() string {
 	return ""
 }
 
+// PostApiParkWaitTimesWithBodyWithResponse Report the current wait times for the parks a request names.
+//
+// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /api/park-wait-times (the `PostApiParkWaitTimes` operationId).
+func (c *ClientWithResponses) PostApiParkWaitTimesWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*PostApiParkWaitTimesResponse, error) {
+	rsp, err := c.PostApiParkWaitTimesWithBody(ctx, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParsePostApiParkWaitTimesResponse(rsp)
+}
+
+// PostApiParkWaitTimesWithResponse Report the current wait times for the parks a request names.
+//
+// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /api/park-wait-times (the `PostApiParkWaitTimes` operationId).
+func (c *ClientWithResponses) PostApiParkWaitTimesWithResponse(ctx context.Context, body PostApiParkWaitTimesJSONRequestBody, reqEditors ...RequestEditorFn) (*PostApiParkWaitTimesResponse, error) {
+	rsp, err := c.PostApiParkWaitTimes(ctx, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParsePostApiParkWaitTimesResponse(rsp)
+}
+
 // PostApiWeatherWithBodyWithResponse Report the weather at a point on the earth's surface.
 //
 // Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
@@ -541,6 +801,67 @@ func (c *ClientWithResponses) GetHealthzWithResponse(ctx context.Context, reqEdi
 		return nil, err
 	}
 	return ParseGetHealthzResponse(rsp)
+}
+
+// ParsePostApiParkWaitTimesResponse parses an HTTP response from a PostApiParkWaitTimesWithResponse call
+func ParsePostApiParkWaitTimesResponse(rsp *http.Response) (*PostApiParkWaitTimesResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &PostApiParkWaitTimesResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest ParkWaitTimesPayload
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest ClientRejection
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 429:
+		var dest ClientRejection
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON429 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 502:
+		var dest UpstreamFailure
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON502 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 503:
+		var dest UpstreamFailure
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON503 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 504:
+		var dest UpstreamFailure
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON504 = &dest
+
+	}
+
+	return response, nil
 }
 
 // ParsePostApiWeatherResponse parses an HTTP response from a PostApiWeatherWithResponse call
@@ -622,6 +943,9 @@ func ParseGetHealthzResponse(rsp *http.Response) (*GetHealthzResponse, error) {
 
 // ServerInterface represents all server handlers.
 type ServerInterface interface {
+	// PostApiParkWaitTimes Report the current wait times for the parks a request names.
+	// (POST /api/park-wait-times)
+	PostApiParkWaitTimes(w http.ResponseWriter, r *http.Request)
 	// PostApiWeather Report the weather at a point on the earth's surface.
 	// (POST /api/weather)
 	PostApiWeather(w http.ResponseWriter, r *http.Request)
@@ -638,6 +962,20 @@ type ServerInterfaceWrapper struct {
 }
 
 type MiddlewareFunc func(http.Handler) http.Handler
+
+// PostApiParkWaitTimes operation middleware
+func (siw *ServerInterfaceWrapper) PostApiParkWaitTimes(w http.ResponseWriter, r *http.Request) {
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.PostApiParkWaitTimes(w, r)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
 
 // PostApiWeather operation middleware
 func (siw *ServerInterfaceWrapper) PostApiWeather(w http.ResponseWriter, r *http.Request) {
@@ -789,6 +1127,7 @@ func HandlerWithOptions(si ServerInterface, options StdHTTPServerOptions) http.H
 
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/healthz", wrapper.GetHealthz)
 	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/api/weather", wrapper.PostApiWeather)
+	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/api/park-wait-times", wrapper.PostApiParkWaitTimes)
 
 	return m
 }
