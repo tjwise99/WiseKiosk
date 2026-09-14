@@ -11,24 +11,24 @@ references:
 - keyword: 'test(''TST075: holds each park’s longest current waits in view, unmoved
     by the rotation of the rest'', async ({'
   path: frontend/src/modules/park_wait_times/park_wait_times.spec.ts
-  sha: 86e6fecb66995b9742c195970498d30a903df14450bee943748422d2a2f92fb7
+  sha: 1a562bfd2545b082293e47001e3c8cde9d420ef59a4aae1e3f63143b0177d10f
   type: file
 - keyword: 'test(''TST075: a not-operating ride outranks every numeric wait, being
     the longer one'', async ({ page }) => {'
   path: frontend/src/modules/park_wait_times/park_wait_times.spec.ts
-  sha: 86e6fecb66995b9742c195970498d30a903df14450bee943748422d2a2f92fb7
+  sha: 1a562bfd2545b082293e47001e3c8cde9d420ef59a4aae1e3f63143b0177d10f
   type: file
 - keyword: 'test(''TST075: the same rule read the other way round — a numeric wait
     never outranks a ride that cannot be ridden'', async ({'
   path: frontend/src/modules/park_wait_times/park_wait_times.spec.ts
-  sha: 86e6fecb66995b9742c195970498d30a903df14450bee943748422d2a2f92fb7
+  sha: 1a562bfd2545b082293e47001e3c8cde9d420ef59a4aae1e3f63143b0177d10f
   type: file
 - keyword: 'test(''TST075: two not-operating rides keep the source’s own order between
     them, neither outranking the other'', async ({'
   path: frontend/src/modules/park_wait_times/park_wait_times.spec.ts
-  sha: 86e6fecb66995b9742c195970498d30a903df14450bee943748422d2a2f92fb7
+  sha: 1a562bfd2545b082293e47001e3c8cde9d420ef59a4aae1e3f63143b0177d10f
   type: file
-reviewed: U2Uy-0cv0oTzybTZA3pNxeCQfEQoLXLshieoX1bJH1U=
+reviewed: eCY2TyjZiU4hR88jibGXmshOEiDF_6sPK4CFIOxxvuI=
 status: accepted
 text: |
   Render test that, handed a park's rides with differing waits, the leaderboard holds the three longest
