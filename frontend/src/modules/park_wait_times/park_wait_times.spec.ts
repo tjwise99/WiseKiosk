@@ -315,6 +315,33 @@ test('TST076: the rotation interval is the configuration’s, not one fixed in t
   expect(await rideNamesIn(card, TOUR_ROW)).toEqual(['The Seas', 'Living with the Land']);
 });
 
+test('TST076: a placement that omits its own rotation interval tours on the schema’s default of eight seconds', async ({
+  page,
+}) => {
+  // rotation_interval_seconds is genuinely absent from this placement's own options (unlike the
+  // cases above, which all set it) — the schema's own default: 8 (config/schema.json) is what
+  // ajv's useDefaults fills in before the component ever reads the config, and the component reads
+  // that value directly rather than falling back to one of its own (ParkWaitTimes.svelte no longer
+  // carries a `?? 8`). This is the one render case that would catch that fill silently stopping.
+  await holdHostClock(page, HOST_TIME);
+  await serveModuleData(page, () => ({
+    status: 200,
+    data: parksPayload([onePark('epcot', { rides: rankedRoster() })]),
+  }));
+  await render(page, placed(['epcot']));
+
+  const card = page.locator(CARD);
+  expect(await rideNamesIn(card, TOUR_ROW)).toEqual(['Mission: Space', 'Imagination!']);
+
+  // A step short of eight seconds finds the same pair still shown.
+  await advanceHostClock(page, 8 * 1000 - 500);
+  expect(await rideNamesIn(card, TOUR_ROW)).toEqual(['Mission: Space', 'Imagination!']);
+
+  // The eight-second default elapses, and the tour advances.
+  await advanceHostClock(page, 500);
+  expect(await rideNamesIn(card, TOUR_ROW)).toEqual(['The Seas', 'Living with the Land']);
+});
+
 test('TST076: the footer marks the tour’s own position, one segment per page', async ({ page }) => {
   await holdHostClock(page, HOST_TIME);
   await serveModuleData(page, () => ({
@@ -488,6 +515,12 @@ test('holds a park’s place in the grid and shows why, when that park’s own r
   await expect(failing.locator(PARK_UNAVAILABLE)).toHaveText(REASON);
   await expect(failing.locator(LEADERBOARD_ROW)).toHaveCount(0);
   await expect(healthy.locator(LEADERBOARD_ROW)).toContainText('Test Track');
+
+  // The failing park's own header — icon and name — stays drawn: the README's own wording is
+  // "in place of its rides" (§ States, Park unavailable), not the whole card, so a viewer can tell
+  // which park failed rather than reading only its grid position.
+  await expect(failing.locator('[data-pwt-header]')).toBeVisible();
+  await expect(failing.locator('[data-pwt-header]')).toContainText('magic-kingdom');
 });
 
 test('shows that it is reading while its route has not answered yet', async ({ page }) => {

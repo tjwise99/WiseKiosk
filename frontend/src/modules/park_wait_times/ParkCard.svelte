@@ -74,25 +74,25 @@
 </script>
 
 <li class="card" data-pwt-card data-pwt-park={park.id}>
+  <div class="header" data-pwt-header>
+    <div class="identity">
+      {#if icon}
+        <!-- icon is one of this module's own bundled .svg files, inlined at build time via
+             Vite's `?raw` import — never a network response or anything a viewer's configuration
+             can reach. -->
+        <!-- eslint-disable-next-line svelte/no-at-html-tags -->
+        <span class="icon" data-pwt-icon aria-hidden="true">{@html icon}</span>
+      {/if}
+      <span class="name section-label">{park.name}</span>
+    </div>
+    {#if park.hours}
+      <span class="hours" data-pwt-hours>{clockTime(park.hours.open)}–{clockTime(park.hours.close)}</span>
+    {/if}
+  </div>
+
   {#if !park.available}
     <p class="unavailable" data-pwt-unavailable>{park.message}</p>
   {:else}
-    <div class="header" data-pwt-header>
-      <div class="identity">
-        {#if icon}
-          <!-- icon is one of this module's own bundled .svg files, inlined at build time via
-               Vite's `?raw` import — never a network response or anything a viewer's configuration
-               can reach. -->
-          <!-- eslint-disable-next-line svelte/no-at-html-tags -->
-          <span class="icon" data-pwt-icon aria-hidden="true">{@html icon}</span>
-        {/if}
-        <span class="name section-label">{park.name}</span>
-      </div>
-      {#if park.hours}
-        <span class="hours" data-pwt-hours>{clockTime(park.hours.open)}–{clockTime(park.hours.close)}</span>
-      {/if}
-    </div>
-
     <ol class="leaderboard" data-pwt-leaderboard>
       {#each held as ride (ride.name)}
         <li class="row" data-pwt-leaderboard-row>
@@ -197,7 +197,7 @@
   }
 
   .tour {
-    gap: var(--space-xs);
+    gap: var(--space-sm);
   }
 
   .row {
@@ -233,11 +233,14 @@
   .more {
     display: flex;
     flex-direction: column;
-    gap: var(--space-xs);
+    /* The label-to-rows and rows-to-footer gaps are both this one flex gap — the styling
+       contract's own md step (./README.md § Type and spacing) — rather than a margin or padding
+       on either neighbour, which would stack with it rather than set it. */
+    gap: var(--space-md);
   }
 
   .more-label {
-    margin: 0 0 var(--space-xs) 0;
+    margin: 0;
     padding-bottom: var(--space-xs);
     font-size: var(--type-section-header);
     font-weight: var(--type-section-header-weight);
@@ -247,7 +250,6 @@
   .footer {
     display: flex;
     gap: var(--space-xs);
-    margin-top: var(--space-md);
   }
 
   .segment {
