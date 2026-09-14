@@ -27,7 +27,7 @@ export type Module = string;
 /**
  * What this placement asks of the module it names. The keys on offer are the named module's own, declared in that module's section below, and a module with no section there is not judged by another module's keys; two placements of the same module are configured apart, each from its own entry.
  */
-export type ModuleOptions = ClockOptions | WeatherOptions | {};
+export type ModuleOptions = ClockOptions | WeatherOptions | ParkWaitTimesOptions | {};
 /**
  * Whether the hour is presented in twenty-four-hour form. False presents it in twelve-hour form, carrying the indicator that tells the two halves of the day apart.
  */
@@ -52,6 +52,24 @@ export type Longitude = number;
  * Seconds the Next Hours graph shows each series — temperature, then precipitation — before switching between them. Floored at two seconds, below which the switch would strobe.
  */
 export type SeriesSwitchSeconds = number;
+/**
+ * The parks this placement shows, drawn from the module's supported set and rejected by the backend where they are not (SRS055). Every configured park holds its place in the grid at once (SRS057).
+ *
+ * @minItems 1
+ */
+export type Parks = [string, ...string[]];
+/**
+ * How many columns the park cards are laid out into (SRS060).
+ */
+export type Columns = number;
+/**
+ * How many rows the park cards are laid out into (SRS060).
+ */
+export type Rows = number;
+/**
+ * Seconds each pair of "more waits" rides is shown before the rotation advances to the next pair (SRS059). Floored at two seconds, below which the rotation would strobe.
+ */
+export type RotationIntervalSeconds = number;
 /**
  * Every module this deployment displays, each with the region it is laid out into. A region may carry several modules, and a region no entry names holds nothing.
  */
@@ -91,4 +109,13 @@ export interface WeatherOptions {
 export interface WeatherLocation {
   lat: Latitude;
   lon: Longitude;
+}
+/**
+ * The park-wait-times module's section: what a placement of the module asks of it. Its two required keys carry no default — which parks are shown and how their cards are laid out are the operator's to choose, and there is no shape or roster that would do in the absence of ones the placement names. The remaining key is omissible, and a placement configured without it takes the default below.
+ */
+export interface ParkWaitTimesOptions {
+  parks: Parks;
+  columns: Columns;
+  rows: Rows;
+  rotation_interval_seconds?: RotationIntervalSeconds;
 }
