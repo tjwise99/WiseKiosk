@@ -92,8 +92,8 @@
 
   .waiting {
     margin: 0;
-    font-size: var(--type-body);
-    font-weight: var(--type-body-weight);
+    font-size: var(--type-section-header);
+    font-weight: var(--type-section-header-weight);
   }
 
   .grid {

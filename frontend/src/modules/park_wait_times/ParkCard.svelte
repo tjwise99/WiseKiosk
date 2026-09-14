@@ -143,8 +143,8 @@
 
   .unavailable {
     margin: 0;
-    font-size: var(--type-body);
-    font-weight: var(--type-body-weight);
+    font-size: var(--type-section-header);
+    font-weight: var(--type-section-header-weight);
   }
 
   .header {
@@ -165,8 +165,8 @@
   .icon {
     display: inline-flex;
     align-items: center;
-    width: var(--type-annotation);
-    height: var(--type-annotation);
+    width: var(--type-body);
+    height: var(--type-body);
     color: var(--emission-content);
   }
 
@@ -176,13 +176,13 @@
   }
 
   .name {
-    font-size: var(--type-annotation);
-    font-weight: var(--type-annotation-weight);
+    font-size: var(--type-body);
+    font-weight: var(--type-body-weight);
   }
 
   .hours {
-    font-size: var(--type-body);
-    font-weight: var(--type-body-weight);
+    font-size: var(--type-section-header);
+    font-weight: var(--type-section-header-weight);
     white-space: nowrap;
   }
 
@@ -205,8 +205,8 @@
     align-items: baseline;
     justify-content: space-between;
     gap: var(--space-sm);
-    font-size: var(--type-body);
-    font-weight: var(--type-body-weight);
+    font-size: var(--type-section-header);
+    font-weight: var(--type-section-header-weight);
   }
 
   .ride-name {
@@ -242,8 +242,8 @@
   .more-label {
     margin: 0;
     padding-bottom: var(--space-xs);
-    font-size: var(--type-section-header);
-    font-weight: var(--type-section-header-weight);
+    font-size: var(--type-caption);
+    font-weight: var(--type-caption-weight);
     border-bottom: var(--divider-stroke-width) solid var(--emission-stroke);
   }
 
