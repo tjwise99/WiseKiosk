@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { untrack } from 'svelte';
+
   import type { ParkWaitTimesOptions } from '../../config/types';
   import type { ParkWaitTimesPayload } from '../../lib/boundary/client';
   import type { CommonProps } from '../../lib/modules';
@@ -34,9 +36,12 @@
 
   /** The grid's own column and row counts, read once rather than tracked: a placement's shape is
       fixed at the config load that named it (the shell loads config once at boot, never live), so
-      there is no later change for a reactive binding to catch — a plain snapshot, not a `$derived`. */
-  const gridColumns = pwtConfig.columns;
-  const gridRows = pwtConfig.rows;
+      there is no later change for a reactive binding to catch — a plain snapshot, not a `$derived`.
+      `untrack` is the deliberate spelling of that: without it Svelte's compiler warns that this
+      reference "only captures the initial value" (state_referenced_locally), which is exactly and
+      intentionally what it does. */
+  const gridColumns = untrack(() => pwtConfig.columns);
+  const gridRows = untrack(() => pwtConfig.rows);
 
   /** Sets the grid's own column and row counts as CSS custom properties, once: an action rather
       than a `style:` binding, so nothing here carries Svelte's per-render dirty-check for a shape
