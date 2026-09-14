@@ -202,6 +202,67 @@ test('TST075: a not-operating ride outranks every numeric wait, being the longer
   ]);
 });
 
+test('TST075: the same rule read the other way round — a numeric wait never outranks a ride that cannot be ridden', async ({
+  page,
+}) => {
+  // The previous case put the not-operating ride ahead of the roster; this one puts it behind, so
+  // the ranking is read in both directions rather than one order happening to pass by construction.
+  await serveModuleData(page, () => ({
+    status: 200,
+    data: parksPayload([
+      onePark('epcot', {
+        rides: [
+          { name: 'Guardians of the Galaxy: Cosmic Rewind', wait: 'Down' },
+          { name: 'Test Track', wait: 60 },
+        ],
+      }),
+    ]),
+  }));
+  await render(page, placed(['epcot']));
+
+  const card = page.locator(CARD);
+  expect(await rideNamesIn(card, LEADERBOARD_ROW)).toEqual([
+    'Guardians of the Galaxy: Cosmic Rewind',
+    'Test Track',
+  ]);
+});
+
+test('TST075: two not-operating rides keep the source’s own order between them, neither outranking the other', async ({
+  page,
+}) => {
+  // Neither ride carries a figure to break the tie with, so the ranking falls back to the order the
+  // source gave them in — asserted with the pair alone, so nothing else in the roster could settle it.
+  await serveModuleData(page, () => ({
+    status: 200,
+    data: parksPayload([
+      onePark('hollywood-studios', {
+        rides: [
+          { name: 'Rise of the Resistance', wait: 'Down' },
+          { name: 'Star Tours', wait: 'Closed' },
+        ],
+      }),
+    ]),
+  }));
+  await render(page, placed(['hollywood-studios']));
+
+  const card = page.locator(CARD);
+  expect(await rideNamesIn(card, LEADERBOARD_ROW)).toEqual(['Rise of the Resistance', 'Star Tours']);
+});
+
+test('draws a park’s hours as given even where they do not parse into an hour and a minute', async ({
+  page,
+}) => {
+  // clockTime's own fallback: a timestamp the `T\d\d:\d\d` read cannot find a match in is shown
+  // whole rather than this component refusing to draw the park's hours at all.
+  await serveModuleData(page, () => ({
+    status: 200,
+    data: parksPayload([onePark('magic-kingdom', { hours: { open: 'not-a-timestamp', close: 'also-not-one' } })]),
+  }));
+  await render(page, placed(['magic-kingdom']));
+
+  await expect(page.locator('[data-pwt-hours]')).toHaveText('not-a-timestamp–also-not-one');
+});
+
 test('TST076: tours the remaining rides two at a time, on the configured interval, reaching every one of them', async ({
   page,
 }) => {
