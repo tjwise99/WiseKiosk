@@ -2,11 +2,10 @@
   import type { ParkWaitTimesPark, ParkWaitTimesRide } from '../../lib/boundary/client';
 
   /**
-   * One park's card (./README.md § The card, top to bottom). Owns its own rotation timer, because
-   * the "more waits" tour advances independently per park
-   * (SRS059<!-- The park-wait-times module tours the remaining rides on an interval its
-   * configuration sets -->) — a `{#each}` block in the parent has nowhere of its own to hold that
-   * state, so each card is its own component instead.
+   * One park's card (./README.md § The card, top to bottom). Owns its own rotation timer — each
+   * card's tour runs independent of every other's (./README.md § More waits;
+   * SRS059<!-- The park-wait-times module tours the remaining rides on an interval its
+   * configuration sets -->).
    */
   const {
     park,

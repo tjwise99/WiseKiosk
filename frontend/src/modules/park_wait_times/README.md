@@ -61,7 +61,9 @@ usable the instant they look, not on the next rotation.
 Beneath a *More waits* label and its divider, the rest of the park's rides tour through **two at a
 time**, advancing on a configured interval (the same on-an-interval idiom as the weather module's
 series toggle). Everything the leaderboard does not hold still shows, eventually — so the module is
-both a glance ("how bad is it right now") and, given a few seconds, a full reading of the park.
+both a glance ("how bad is it right now") and, given a few seconds, a full reading of the park. Each
+card's tour runs on its own timer, independent of every other card's — one park's rotation is never
+held back by, or synchronised to, another's.
 
 ### Footer — the rotation counter
 
