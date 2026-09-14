@@ -135,6 +135,9 @@ never a blank region (the styling contract; the
 - **Ride not operating** — `Down` or `Closed` in the wait slot, drawn as data, no special card.
 - **Ride in refurbishment** — `Refurbishment` in the wait slot, a third state distinct from `Down` and `Closed`, drawn as data, no special card.
 - **Park closed** — every ride reports `Closed`; the card holds its place in the grid.
+- **Park unavailable** — that park's own reading could not be produced while the rest of the grid
+  answered; its card holds its place, showing a plain-language reason in place of its rides, and
+  every other park reads normally.
 - **Loading** — a plain line (*Reading wait times…*) at the `body` step. A module asked for but
   unanswered is neither a reading nor a failure.
 - **Unavailable** — the failure's own plain-language message at the `body` step, in the module's own
