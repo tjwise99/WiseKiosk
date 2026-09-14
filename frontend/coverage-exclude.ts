@@ -8,6 +8,7 @@ export const COVERAGE_EXCLUDE = [
   'src/lib/boundary/**',
   'src/config/types.ts',
   'src/modules/weather/props.ts',
+  'src/modules/park_wait_times/props.ts',
   'src/lib/payload.ts',
   '**/*.test.ts',
   '**/*.spec.ts',
