@@ -2,7 +2,10 @@
 // field per upstream-backed module (ADR 0021 rev 3, ADR 0008 rev 5).
 package registry
 
-import "github.com/tjwise99/WiseKiosk/backend/internal/modules/weather"
+import (
+	"github.com/tjwise99/WiseKiosk/backend/internal/modules/park_wait_times"
+	"github.com/tjwise99/WiseKiosk/backend/internal/modules/weather"
+)
 
 // Modules serves every module data route the boundary schema declares. Each
 // field is one module's route, carrying that module's registration entry in the
@@ -14,4 +17,5 @@ import "github.com/tjwise99/WiseKiosk/backend/internal/modules/weather"
 // generated server interface.
 type Modules struct {
 	weather.WeatherRoute
+	park_wait_times.ParkWaitTimesRoute
 }

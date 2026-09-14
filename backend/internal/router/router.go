@@ -138,6 +138,18 @@ type Route struct {
 	proxy *upstream.Proxy
 }
 
+// Fetch runs the pipeline for one (key, target) pair without writing a
+// response: the same cache, rate-limit and outbound-timeout bounds Serve
+// answers a whole request with, for a caller that combines more than one
+// fetch into a single response — a module whose request names several
+// things this source is asked about individually, one Fetch per thing,
+// rather than the one-target-per-request shape Serve assumes. The
+// returned error means this caller's context ended, exactly as it does
+// for Serve, and is the caller's to answer.
+func (rt *Route) Fetch(ctx context.Context, key, target string) (upstream.Result, error) {
+	return rt.proxy.Do(ctx, rt.entry.Source, key, rt.fetch(target))
+}
+
 // Serve answers the request from the pipeline. The module has already judged
 // what the request named and reduced it to the two strings here: key names what
 // the answer is about, and is what the response cache and the rate budget are
@@ -145,7 +157,7 @@ type Route struct {
 // target is the upstream URL the module built for it. The pipeline's error
 // means this caller's context ended, and is answered as this module's failure.
 func (rt *Route) Serve(w http.ResponseWriter, r *http.Request, key, target string) {
-	result, err := rt.proxy.Do(r.Context(), rt.entry.Source, key, rt.fetch(target))
+	result, err := rt.Fetch(r.Context(), key, target)
 	if err != nil {
 		// The pipeline errors only where this caller's context ended: a client
 		// that has gone, which is what ends one here, or a server shutting down
