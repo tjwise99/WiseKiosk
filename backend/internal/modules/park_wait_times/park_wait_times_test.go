@@ -861,15 +861,31 @@ func TestAParkWithNoOperatingScheduleEntryStillAnswersWithItsRides(t *testing.T)
 func TestPostApiParkWaitTimesAnswersShuttingDownWhenTheCallersContextEnds(t *testing.T) {
 	// A transport that never answers, so the flight this request joins never
 	// completes and the only way this test's call to Fetch can return is the
-	// already-cancelled context below.
+	// already-cancelled context below. upstream.Proxy.Do runs the fetch
+	// against a context derived from context.Background(), not the caller's
+	// own ctx (proxy.go), so this flight keeps running in its own goroutine
+	// after PostApiParkWaitTimes has already answered — releasing it (below)
+	// is not enough on its own; cleanup waits for it to actually finish
+	// before handing http.DefaultTransport back, or that goroutine's own
+	// read of the global races the next test's write to it.
 	block := make(chan struct{})
+	released := make(chan struct{})
 	transport := roundTrip(func(*http.Request) (*http.Response, error) {
+		defer close(released)
 		<-block
 		return nil, errors.New("unreachable: this test never lets the call finish")
 	})
 	held := http.DefaultTransport
 	http.DefaultTransport = transport
-	t.Cleanup(func() { close(block); http.DefaultTransport = held })
+	t.Cleanup(func() {
+		close(block)
+		select {
+		case <-released:
+		case <-time.After(5 * time.Second):
+			t.Error("the flight this test released never returned")
+		}
+		http.DefaultTransport = held
+	})
 	freshRoute(t)
 
 	ctx, cancel := context.WithCancel(context.Background())
