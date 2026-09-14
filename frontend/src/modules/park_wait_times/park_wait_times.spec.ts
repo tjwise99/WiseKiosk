@@ -555,6 +555,76 @@ test('renders why its own route failed, in its own place, while the backend is r
   await expect(page.locator('[data-backend-unreachable]')).toHaveCount(0);
 });
 
+test('does not scroll sideways at a six-across layout with real park and ride names', async ({
+  page,
+}) => {
+  // The grid's own tracks are `1fr` with no `minmax(0, …)` floor, so a real unabbreviated roster
+  // (six real park names and real ride names, not a short placeholder) forces every track wider
+  // than its share of the viewport once there is no room to wrap — the live measurement (2602px
+  // content in a 1920px frame) rather than a synthetic one. The deployed config's own 3×2 shape
+  // has room to wrap and does not reproduce it; six-across is the narrowest configured shape the
+  // module's own columns/rows options (config/schema.json) allow for a six-park roster, so it is
+  // the shape this defect actually bites at, not merely one the module happens to ship with today.
+  const roster = [
+    'magic-kingdom',
+    'epcot',
+    'hollywood-studios',
+    'animal-kingdom',
+    'universal-studios',
+    'islands-of-adventure',
+  ];
+  const names: Record<string, string> = {
+    'magic-kingdom': 'Magic Kingdom',
+    epcot: 'Epcot',
+    'hollywood-studios': 'Hollywood Studios',
+    'animal-kingdom': 'Animal Kingdom',
+    'universal-studios': 'Universal Studios',
+    'islands-of-adventure': 'Islands of Adventure',
+  };
+  const rides: Record<string, ParkWaitTimesRide[]> = {
+    'magic-kingdom': [
+      { name: 'Seven Dwarfs Mine Train', wait: 90 },
+      { name: "Walt Disney's Carousel of Progress", wait: 15 },
+    ],
+    epcot: [
+      { name: 'Guardians of the Galaxy: Cosmic Rewind', wait: 75 },
+      { name: 'Remy’s Ratatouille Adventure', wait: 40 },
+    ],
+    'hollywood-studios': [
+      { name: 'Star Wars: Rise of the Resistance', wait: 85 },
+      { name: 'Mickey & Minnie’s Runaway Railway', wait: 35 },
+    ],
+    'animal-kingdom': [
+      { name: 'Avatar Flight of Passage', wait: 95 },
+      { name: 'Expedition Everest - Legend of the Forbidden Mountain', wait: 30 },
+    ],
+    'universal-studios': [
+      { name: "Harry Potter and the Escape from Gringotts", wait: 70 },
+      { name: 'Revenge of the Mummy', wait: 25 },
+    ],
+    'islands-of-adventure': [
+      { name: 'Harry Potter and the Forbidden Journey', wait: 80 },
+      { name: 'Jurassic World VelociCoaster', wait: 45 },
+    ],
+  };
+  await serveModuleData(page, (_asked, body) => {
+    const { parks } = body as { parks: string[] };
+    return {
+      status: 200,
+      data: parksPayload(parks.map((id) => onePark(id, { name: names[id], rides: rides[id] }))),
+    };
+  });
+  await render(page, placed(roster, { columns: 6, rows: 1 }));
+
+  await expect(page.locator(CARD)).toHaveCount(roster.length);
+
+  const { scrollWidth, clientWidth } = await page.evaluate(() => ({
+    scrollWidth: document.documentElement.scrollWidth,
+    clientWidth: document.documentElement.clientWidth,
+  }));
+  expect(scrollWidth).toBeLessThanOrEqual(clientWidth);
+});
+
 test('stands down to nothing while the backend is unreachable, and stops asking it', async ({ page }) => {
   await holdHostClock(page, HOST_TIME);
 

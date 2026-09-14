@@ -98,7 +98,10 @@
 
   .grid {
     display: grid;
-    grid-template-columns: repeat(var(--pwt-columns), 1fr);
+    /* minmax(0, 1fr) rather than bare 1fr: a track's automatic minimum is otherwise its content's
+       min-content, so a card's own name or ride text can force every track wider than the grid's
+       own container. */
+    grid-template-columns: repeat(var(--pwt-columns), minmax(0, 1fr));
     grid-template-rows: repeat(var(--pwt-rows), auto);
     gap: var(--space-lg);
     margin: 0;
