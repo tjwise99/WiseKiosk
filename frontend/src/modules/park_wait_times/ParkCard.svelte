@@ -245,6 +245,11 @@
     font-size: var(--type-caption);
     font-weight: var(--type-caption-weight);
     border-bottom: var(--divider-stroke-width) solid var(--emission-stroke);
+    /* A group heading names what follows and is read left-to-right, so it stays left-aligned
+       whichever side the module itself is justified to — the same idiom, and the same reason, as the
+       weather module's `Next hours` / `Next days` headings. Without this it inherits the region's
+       content anchor and floats centred (or right) above the left-starting rotation rows. */
+    text-align: left;
   }
 
   .footer {
