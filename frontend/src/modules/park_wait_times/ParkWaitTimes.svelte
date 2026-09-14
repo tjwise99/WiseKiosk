@@ -26,10 +26,25 @@
   const pwtConfig = $derived(config as ParkWaitTimesOptions);
   const pwtPayload = $derived(payload as Payload<ParkWaitTimesPayload>);
 
-  /** The switch cadence to fall back to should the config arrive without the schema's own default
-      populated — the placement's `rotation_interval_seconds`, config/schema.json's own default. */
-  const DEFAULT_ROTATION_SECONDS = 8;
-  const rotationSeconds = $derived(pwtConfig.rotation_interval_seconds ?? DEFAULT_ROTATION_SECONDS);
+  /** The placement's rotation cadence. `ParkWaitTimesOptions` types this optional because a
+      placement is free to omit it in the source file, but `config/schema.json`'s own `default: 8`
+      is filled in by ajv's `useDefaults` before this component ever sees the config
+      (vite-plugin-config-validator.ts) — the value is always present by the time it is read here. */
+  const rotationSeconds = $derived(pwtConfig.rotation_interval_seconds as number);
+
+  /** The grid's own column and row counts, read once rather than tracked: a placement's shape is
+      fixed at the config load that named it (the shell loads config once at boot, never live), so
+      there is no later change for a reactive binding to catch — a plain snapshot, not a `$derived`. */
+  const gridColumns = pwtConfig.columns;
+  const gridRows = pwtConfig.rows;
+
+  /** Sets the grid's own column and row counts as CSS custom properties, once: an action rather
+      than a `style:` binding, so nothing here carries Svelte's per-render dirty-check for a shape
+      that cannot change after mount. `.grid`'s own rule (below) reads them back with `var()`. */
+  function gridShape(node: HTMLElement, shape: { columns: number; rows: number }): void {
+    node.style.setProperty('--pwt-columns', String(shape.columns));
+    node.style.setProperty('--pwt-rows', String(shape.rows));
+  }
 
   /**
    * This module's own park icon set (the park-wait-times UI design spec § The park icon set), keyed
@@ -54,12 +69,7 @@
     {:else if pwtPayload.state === 'unavailable'}
       <p class="waiting" data-module-unavailable>{pwtPayload.failure.message}</p>
     {:else}
-      <ol
-        class="grid"
-        data-pwt-grid
-        style:grid-template-columns="repeat({pwtConfig.columns}, 1fr)"
-        style:grid-template-rows="repeat({pwtConfig.rows}, auto)"
-      >
+      <ol class="grid" data-pwt-grid use:gridShape={{ columns: gridColumns, rows: gridRows }}>
         {#each pwtPayload.data.parks as park (park.id)}
           <ParkCard {park} icon={ICONS[park.id]} {rotationSeconds} />
         {/each}
@@ -83,6 +93,8 @@
 
   .grid {
     display: grid;
+    grid-template-columns: repeat(var(--pwt-columns), 1fr);
+    grid-template-rows: repeat(var(--pwt-rows), auto);
     gap: var(--space-lg);
     margin: 0;
     padding: 0;
