@@ -177,12 +177,20 @@
 
   .name {
     font-size: var(--type-body);
-    font-weight: var(--type-body-weight);
+    /* The card's most prominent element leads its rows — at the owner-stepped body SIZE but the
+       heavier weight, so the identity carries by size, weight, and its uppercase-tracked idiom
+       together (./README.md § Type and spacing). Weight is decoupled from the size token here
+       because the shared tokens pair section-header's 700 with a smaller size than body's; the row
+       readings below take body's own 600 weight so this name out-weights them. */
+    font-weight: var(--type-section-header-weight);
   }
 
   .hours {
     font-size: var(--type-section-header);
-    font-weight: var(--type-section-header-weight);
+    /* The hours are the park name's quiet peer (./README.md § Header): the section-header SIZE the
+       owner stepped them to, at body's lighter weight rather than the section-header token's own 700,
+       so they read as the quiet reading they are and do not compete with the name. */
+    font-weight: var(--type-body-weight);
     white-space: nowrap;
   }
 
@@ -206,7 +214,11 @@
     justify-content: space-between;
     gap: var(--space-sm);
     font-size: var(--type-section-header);
-    font-weight: var(--type-section-header-weight);
+    /* Row readings take body's own 600 weight at the owner-stepped section-header SIZE — decoupled
+       from the section-header token's 700 so the ride name reads as content, not a label, and the
+       wait figure's explicit 700 (below) stays the one bold mark on the row, distinguishing the
+       number from its name (./README.md § Type and spacing). */
+    font-weight: var(--type-body-weight);
   }
 
   .ride-name {
