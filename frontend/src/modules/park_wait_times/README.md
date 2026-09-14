@@ -133,6 +133,7 @@ never a blank region (the styling contract; the
 
 - **Park open, ride operating** — the composition above.
 - **Ride not operating** — `Down` or `Closed` in the wait slot, drawn as data, no special card.
+- **Ride in refurbishment** — `Refurbishment` in the wait slot, a third state distinct from `Down` and `Closed`, drawn as data, no special card.
 - **Park closed** — every ride reports `Closed`; the card holds its place in the grid.
 - **Loading** — a plain line (*Reading wait times…*) at the `body` step. A module asked for but
   unanswered is neither a reading nor a failure.
