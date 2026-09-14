@@ -1,18 +1,40 @@
-active: false
+active: true
 derived: false
 header: |
-  Pending: the longest waits are kept in view
+  The longest current waits are kept in view
 level: 97
 links:
 - SRS058: By4HtwrVndslJzygDUOVsxFhrBWAbUhxwa93xTSN5A8=
 normative: true
 ref: ''
-reviewed: Iyh5NDQnnBD_YqMyCgG3ywUdtpTIrVGco-r_bmXVbMY=
-status: proposed
+references:
+- keyword: 'test(''TST075: holds each park’s longest current waits in view, unmoved
+    by the rotation of the rest'', async ({'
+  path: frontend/src/modules/park_wait_times/park_wait_times.spec.ts
+  sha: c066f16d5a2cdf715ee471b243eafaade00fa882414a49f5fc664208e9e1a7cf
+  type: file
+- keyword: 'test(''TST075: a not-operating ride outranks every numeric wait, being
+    the longer one'', async ({ page }) => {'
+  path: frontend/src/modules/park_wait_times/park_wait_times.spec.ts
+  sha: c066f16d5a2cdf715ee471b243eafaade00fa882414a49f5fc664208e9e1a7cf
+  type: file
+- keyword: 'test(''TST075: the same rule read the other way round — a numeric wait
+    never outranks a ride that cannot be ridden'', async ({'
+  path: frontend/src/modules/park_wait_times/park_wait_times.spec.ts
+  sha: c066f16d5a2cdf715ee471b243eafaade00fa882414a49f5fc664208e9e1a7cf
+  type: file
+- keyword: 'test(''TST075: two not-operating rides keep the source’s own order between
+    them, neither outranking the other'', async ({'
+  path: frontend/src/modules/park_wait_times/park_wait_times.spec.ts
+  sha: c066f16d5a2cdf715ee471b243eafaade00fa882414a49f5fc664208e9e1a7cf
+  type: file
+reviewed: gBX1HG7YA1jFjhQ0ga1FZ8ZraQkO2uH-X4B7T0iuiq4=
+status: accepted
 text: |
-  Pending: render test that, handed a payload whose rides carry differing waits, the rides kept in view
-  are those with the longest waits and they remain in view across the rotation of the rest. Lands with
-  the wait-times implementation (#309); activated and given a references entry then.
+  Render test that, handed a park's rides with differing waits, the leaderboard holds the three longest
+  — descending, a not-operating ride outranking every numeric one regardless of which side of the
+  comparison it falls on, and two tied not-operating rides falling back to the source's own order — and
+  reads unmoved while the rotation of the remaining rides advances underneath it.
 verification-justification: |
   Settles that the persistent reading is the longest waits and that it persists. Leaves unproven that the
   number held is the right one to hold, which is a composition judgement.

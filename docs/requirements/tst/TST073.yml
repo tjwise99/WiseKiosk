@@ -1,19 +1,36 @@
-active: false
+active: true
 derived: false
 header: |
-  Pending: the shaping builds each park's payload from a captured response
+  The shaping builds each park's rides and hours from a captured response
 level: 95
 links:
 - SRS056: CyK05LGQR0ChIvchNdaA4tKnX_i6TMbBNGZMBxgmEH4=
 normative: true
 ref: ''
-reviewed: OfA1G7Ki0pdKSLOhzqZ8aee4cfD3sJXp3DYhix7yXXo=
-status: proposed
+references:
+- keyword: func TestTST073_ShapingBuildsTheParksRidesFromTheCapturedResponse(t *testing.T)
+    {
+  path: backend/internal/modules/park_wait_times/park_wait_times_test.go
+  sha: 1939223bd39a544dd4dd1387a3bb2ea1cae0429d7e1110dc75166b995a6d174b
+  type: file
+- keyword: func TestTST073_AResponseMissingAValueTheRideNeedsIsNotShaped(t *testing.T)
+    {
+  path: backend/internal/modules/park_wait_times/park_wait_times_test.go
+  sha: 1939223bd39a544dd4dd1387a3bb2ea1cae0429d7e1110dc75166b995a6d174b
+  type: file
+- keyword: func TestTST073_ShapingBuildsTheParksHoursFromTheCapturedResponse(t *testing.T)
+    {
+  path: backend/internal/modules/park_wait_times/park_wait_times_test.go
+  sha: 1939223bd39a544dd4dd1387a3bb2ea1cae0429d7e1110dc75166b995a6d174b
+  type: file
+reviewed: fBcBpu3SNA15r_jaqXI0kyJ_UDVd3MO77Jx4QQGRYv4=
+status: accepted
 text: |
-  Pending: unit test that the shaping, run against a captured upstream response without a network,
-  produces for the named park its name, its operating hours, and for each ride the ride's name with a
-  wait that is a length of time or a not-operating state. Lands with the wait-times implementation
-  (#309); activated and given a references entry then.
+  Unit test that shapeRides and shapeHours, run against a captured live-data and schedule response with
+  no network, keep only the attraction rows and produce, for the captured park, its rides in the
+  source's own order — each with its name and its wait as a length of time or one of the three
+  not-operating states — and its opening and closing time for the day; and that a ride's own missing
+  wait value is refused rather than shaped.
 verification-justification: |
   Settles the shaping of the responses that were captured. Leaves unproven that the payload is true of
   the queue, and any response shape no capture holds, including a ride's wait missing.

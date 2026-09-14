@@ -1,19 +1,25 @@
-active: false
+active: true
 derived: false
 header: |
-  Pending: the module admits only a park in its supported set
+  The module admits only a park in its supported set
 level: 94
 links:
 - SRS055: zMlnMg1XZsVFLrEizVsaYIHuSO4vl171t6k_dVGXUN0=
 normative: true
 ref: ''
-reviewed: pGFk_zDVHtYaYI0l5gCR3P0ypBQFFezmfADIFKZEgLI=
-status: proposed
+references:
+- keyword: func TestTST072_ThePatternAdmitsASupportedParkAndRejectsEveryOther(t *testing.T)
+    {
+  path: backend/internal/modules/park_wait_times/park_wait_times_test.go
+  sha: 1939223bd39a544dd4dd1387a3bb2ea1cae0429d7e1110dc75166b995a6d174b
+  type: file
+reviewed: 54SrTpBZYyeD_zFILT7dIV-15hE2dzpgpkWiATcUpkU=
+status: accepted
 text: |
-  Pending: unit test exercising the constraint the module declares over parks in and out of its
-  supported set, without a network, asserting that a park in the set is admitted, that every other value
-  is rejected, and that no upstream request is issued for a rejected one. Lands with the wait-times
-  implementation (#309); activated and given a references entry then.
+  Unit test exercising validate against the module's own supported-park table, without a network:
+  every slug the table declares is admitted and resolves the entity id declared for it, every other
+  value is rejected, and a request naming one unsupported park among several supported ones is refused
+  whole, with no upstream call issued for any of the parks it named.
 verification-justification: |
   Settles that the declared constraint admits a park from the module's supported set and rejects the rest
   before any upstream call is made. Leaves unproven that an admitted park is one the source answers for on

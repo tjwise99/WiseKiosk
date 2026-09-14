@@ -1,19 +1,30 @@
-active: false
+active: true
 derived: false
 header: |
-  Pending: a failing source is asked no more than once every five minutes per park
+  A failing source is asked no more than once every five minutes per park
 level: 103
 links:
 - SRS064: I-HE1hytNsPPOboqMH7zgBVffYQ-F9dDPEpxNW7bokg=
 normative: true
 ref: ''
-reviewed: u9RYVooWJHgkN_kq65EDrKXvDkUEeJNivMilxHzjYzA=
-status: proposed
+references:
+- keyword: func TestTST081_ThePolicyComesToOnceEveryFiveMinutesForAFailingPark(t *testing.T)
+    {
+  path: backend/internal/modules/park_wait_times/park_wait_times_test.go
+  sha: 1939223bd39a544dd4dd1387a3bb2ea1cae0429d7e1110dc75166b995a6d174b
+  type: file
+- keyword: func TestTST081_IntegrationAFailingParkIsRetriedNoOftenerThanTheNegativeInterval(t
+    *testing.T) {
+  path: backend/internal/modules/park_wait_times/park_wait_times_test.go
+  sha: 1939223bd39a544dd4dd1387a3bb2ea1cae0429d7e1110dc75166b995a6d174b
+  type: file
+reviewed: woLwyq-t-0kSYesex71-DlCDWfkdLzSiDQkal3kZa4g=
+status: accepted
 text: |
-  Pending: integration test over the requests the module's route issues against a source staged to fail
-  and a driven clock, with the route called far oftener than the bound permits: no more than one request
-  leaves for one park in any five minutes. Lands with the wait-times implementation (#309); activated and
-  given a references entry then.
+  Unit test over the module's registered policy — the failure interval it declares holds the
+  five-minute bound. And an integration test over fetchPark against a source staged to fail, called far
+  oftener than the bound permits: a park held under the negative cache costs no further upstream call
+  on a second ask inside the failure window.
 verification-justification: |
   Settles the failure-path rate under a driven clock over the suite window. Leaves unproven what the
   source makes of being retried while down, and whether five minutes is the right recovery-and-politeness

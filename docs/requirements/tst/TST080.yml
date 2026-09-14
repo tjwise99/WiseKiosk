@@ -1,19 +1,31 @@
-active: false
+active: true
 derived: false
 header: |
-  Pending: an answering source is asked at most once every five minutes per park
+  An answering source is asked at most once every five minutes per park
 level: 102
 links:
 - SRS063: w8WlCz1o8z8SDC2gjKOh4pAq7uROF8EoNGn7X0HyPmk=
 normative: true
 ref: ''
-reviewed: pjoGp9hcaqqp90X26kW6htgxMhChf4qm_ETUprC_AqA=
-status: proposed
+references:
+- keyword: func TestTST080_ThePolicyComesToOnceEveryFiveMinutesForAPark(t *testing.T)
+    {
+  path: backend/internal/modules/park_wait_times/park_wait_times_test.go
+  sha: 1939223bd39a544dd4dd1387a3bb2ea1cae0429d7e1110dc75166b995a6d174b
+  type: file
+- keyword: func TestTST080_IntegrationParkKeysAreCachedIndependently(t *testing.T)
+    {
+  path: backend/internal/modules/park_wait_times/park_wait_times_test.go
+  sha: 1939223bd39a544dd4dd1387a3bb2ea1cae0429d7e1110dc75166b995a6d174b
+  type: file
+reviewed: QYvdw4i0NS5uUC7Rz0i_Gzhqgnz6GD8a447Rwnr4Td4=
+status: accepted
 text: |
-  Pending: integration test over the requests the module's route issues against a staged answering
-  source and a driven clock: no more than one leaves in any five minutes for one park, and a second is
-  never outstanding while a first has not answered. Lands with the wait-times implementation (#309);
-  activated and given a references entry then.
+  Unit test over the module's registered policy — the cache interval and the rate/burst figures it
+  declares hold the five-minute-per-park bound. And an integration test over fetchPark against a staged
+  answering source: a park's own two upstream calls are cached under that park's own keys, so asking
+  again inside the freshness window costs no further call, and a second park's own fetch is unaffected
+  by the first's cache.
 verification-justification: |
   Settles the rate this system emits over the window the harness runs. Leaves unproven whether the
   source accepts that rate, which is its own policy and outside this system.
