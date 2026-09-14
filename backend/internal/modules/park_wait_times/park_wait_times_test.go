@@ -843,48 +843,75 @@ func TestAParksOwnFailureDoesNotFailTheWholeRequest(t *testing.T) {
 	}
 }
 
-// hangingTransport never answers: every call blocks until the request's own
-// context ends, then returns that context's own error — the shape a source
-// that never comes back takes, for a caller whose deadline is the pipeline's
-// own outbound timeout (upstream.Proxy.fetch's, not this test's).
-type hangingTransport struct{}
-
-func (hangingTransport) RoundTrip(r *http.Request) (*http.Response, error) {
-	<-r.Context().Done()
-	return nil, r.Context().Err()
+// barrierTransport proves concurrency rather than timing it: every call
+// blocks until n calls have arrived at once, then releases all of them
+// together with a failure. A sequential fan-out never has more than one
+// call in flight, so it can never reach n and the safety timeout fires,
+// failing the test outright rather than merely running slower unnoticed — a
+// deterministic pass/fail with no wall-clock margin to go flaky under CI
+// load, unlike timing the whole request against a budget would be.
+type barrierTransport struct {
+	mu       sync.Mutex
+	arrived  int
+	n        int
+	release  chan struct{}
+	timedOut atomic.Bool
 }
 
-// TestColdStartWithSeveralUnreachableParksAnswersWithinOneParksOwnTimeout is
-// the owner's ruling on the concurrent fan-out, read end-to-end: with every
-// configured park's own source unreachable at once — the cold-start case,
-// nothing yet cached — the whole request still answers inside roughly one
-// park's own timeout budget, each park marked unavailable, rather than that
-// budget summed across every park. A sequential fan-out (fetching park by
-// park) would cost the sum instead, which is exactly what this proves against:
-// the assertion below fails under that shape and passes under this one.
-func TestColdStartWithSeveralUnreachableParksAnswersWithinOneParksOwnTimeout(t *testing.T) {
-	held := http.DefaultTransport
-	http.DefaultTransport = hangingTransport{}
-	t.Cleanup(func() { http.DefaultTransport = held })
+func newBarrierTransport(n int, safety time.Duration) *barrierTransport {
+	bt := &barrierTransport{n: n, release: make(chan struct{})}
+	time.AfterFunc(safety, func() {
+		bt.mu.Lock()
+		defer bt.mu.Unlock()
+		select {
+		case <-bt.release:
+		default:
+			bt.timedOut.Store(true)
+			close(bt.release)
+		}
+	})
+	return bt
+}
 
-	// A real, short outbound timeout stands in for the registered five
-	// seconds, the same reasoning TST081's integration test uses: this test
-	// measures wall-clock time against it, and nobody should wait out the
-	// registered figure real-time to run it.
-	const shrunkTimeout = 200 * time.Millisecond
-	cfg := Config()
-	cfg.Timeout = shrunkTimeout
-	freshRouteWithConfig(t, cfg)
+func (bt *barrierTransport) RoundTrip(*http.Request) (*http.Response, error) {
+	bt.mu.Lock()
+	bt.arrived++
+	if bt.arrived >= bt.n {
+		select {
+		case <-bt.release:
+		default:
+			close(bt.release)
+		}
+	}
+	bt.mu.Unlock()
 
+	<-bt.release
+	return nil, errors.New("barrierTransport: simulated failure, released once every park's call was in flight at once")
+}
+
+// TestColdStartFetchesEveryParkConcurrentlyNotSequentially is the owner's
+// ruling on the fan-out fork, read end-to-end: with the cache cold, every
+// configured park's own live-data call is genuinely in flight at once
+// (barrierTransport's own proof, not a timing inference), and the whole
+// request still answers with each park marked unavailable rather than
+// failing outright — the per-park degradation this module has always
+// promised, extended to concurrent calls.
+func TestColdStartFetchesEveryParkConcurrentlyNotSequentially(t *testing.T) {
 	parks := []string{"magic-kingdom", "epcot", "hollywood-studios"}
-	body := `{"parks":["magic-kingdom","epcot","hollywood-studios"]}`
+	barrier := newBarrierTransport(len(parks), 2*time.Second)
 
-	started := time.Now()
-	recorder := serve(t, body)
-	elapsed := time.Since(started)
+	held := http.DefaultTransport
+	http.DefaultTransport = barrier
+	t.Cleanup(func() { http.DefaultTransport = held })
+	freshRoute(t)
 
+	recorder := serve(t, `{"parks":["magic-kingdom","epcot","hollywood-studios"]}`)
+
+	if barrier.timedOut.Load() {
+		t.Fatal("fewer than three parks' own calls were ever in flight at once — parks were fetched one at a time, not concurrently")
+	}
 	if recorder.Code != http.StatusOK {
-		t.Fatalf("status = %d, want %d (%s) — every park's own timeout is that park's failure, not the whole request's",
+		t.Fatalf("status = %d, want %d (%s) — every park's own failure is that park's, not the whole request's",
 			recorder.Code, http.StatusOK, recorder.Body)
 	}
 
@@ -899,17 +926,6 @@ func TestColdStartWithSeveralUnreachableParksAnswersWithinOneParksOwnTimeout(t *
 		if park.Available {
 			t.Errorf("%s: available = true against a source that never answered, want false", park.Id)
 		}
-	}
-
-	// The three parks' own timeouts ran concurrently: the whole request cost
-	// roughly one of them, not their sum. A margin over the one timeout
-	// absorbs scheduling jitter; the sum three unreachable parks would cost
-	// sequentially (600ms at this shrunk figure) sits well above it, so a
-	// regression to the old per-park loop fails this rather than merely
-	// running slower unnoticed.
-	if budget := shrunkTimeout * 3 / 2; elapsed > budget {
-		t.Errorf("three concurrently-unreachable parks cost %s, want at most %s (roughly one park's own timeout, not the sum of three)",
-			elapsed, budget)
 	}
 }
 

@@ -322,7 +322,8 @@ test('TST076: a placement that omits its own rotation interval tours on the sche
   // cases above, which all set it) — the schema's own default: 8 (config/schema.json) is what
   // ajv's useDefaults fills in before the component ever reads the config, and the component reads
   // that value directly rather than falling back to one of its own (ParkWaitTimes.svelte no longer
-  // carries a `?? 8`). This is the one render case that would catch that fill silently stopping.
+  // carries a `?? 8`). This pins the eight-second figure that fill is now the only source of;
+  // it does not by itself prove every way that fill could stop working.
   await holdHostClock(page, HOST_TIME);
   await serveModuleData(page, () => ({
     status: 200,
