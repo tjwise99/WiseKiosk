@@ -13,6 +13,7 @@ import (
 	"path/filepath"
 	"regexp"
 	"strings"
+	"sync"
 	"sync/atomic"
 	"testing"
 	"time"
@@ -91,8 +92,23 @@ func serve(t *testing.T, body string) *httptest.ResponseRecorder {
 // leave a cached answer or a spent rate token for whatever runs next.
 func freshRoute(t *testing.T) {
 	t.Helper()
+	freshRouteWithConfig(t, Config())
+}
+
+// freshRouteWithConfig is freshRoute's own build, against a policy other
+// than the module's registered one: the router package exposes no fake
+// clock outside itself (its own is package-private, driving router_test.go
+// and rate_test.go directly), so a case proving a held interval end-to-end
+// substitutes a small real one here rather than waiting out the registered
+// figure in real time.
+func freshRouteWithConfig(t *testing.T, cfg upstream.Config) {
+	t.Helper()
 	held := served
-	served = router.NewRoute(entry())
+	served = router.NewRoute(router.Entry{
+		Config: cfg,
+		Source: Source,
+		Shape:  func(body []byte) (any, error) { return shapeRides(body) },
+	})
 	t.Cleanup(func() { served = held })
 }
 
@@ -541,8 +557,12 @@ func TestTST080_ThePolicyComesToOnceEveryFiveMinutesForAPark(t *testing.T) {
 func TestTST081_ThePolicyComesToOnceEveryFiveMinutesForAFailingPark(t *testing.T) {
 	policy := Config()
 
+	// The interval is what holds the rate on this path: the route answers from
+	// the held failure until it lapses, so one park costs one upstream call per
+	// interval for as long as its source is failing — a TOO-SHORT interval is
+	// the violation, retrying a failing source oftener than the bound permits.
 	const bound = 5 * time.Minute
-	if policy.NegativeTTL > bound {
+	if policy.NegativeTTL < bound {
 		t.Errorf("a %s failure interval asks for one park oftener than once every %s, want no oftener than that",
 			policy.NegativeTTL, bound)
 	}
@@ -562,21 +582,27 @@ func TestThePolicyIsComplete(t *testing.T) {
 }
 
 // successTransport answers every call as a success, from the body given for
-// the URL it was asked, and counts every URL it was asked for.
+// the URL it was asked, and counts every URL it was asked for. Its own map
+// is guarded by a mutex rather than left to the atomic.Int64 values alone:
+// the concurrent fan-out (route.go) now calls this transport from more than
+// one goroutine at once, and a plain map is not safe for that regardless of
+// what its values are.
 type successTransport struct {
+	mu      sync.Mutex
 	calls   map[string]*atomic.Int64
 	bodyFor func(url string) []byte
 }
 
-func (s successTransport) RoundTrip(r *http.Request) (*http.Response, error) {
+func (s *successTransport) RoundTrip(r *http.Request) (*http.Response, error) {
 	url := r.URL.String()
-	if counter, ok := s.calls[url]; ok {
-		counter.Add(1)
-	} else {
-		fresh := &atomic.Int64{}
-		fresh.Add(1)
-		s.calls[url] = fresh
+	s.mu.Lock()
+	counter, ok := s.calls[url]
+	if !ok {
+		counter = &atomic.Int64{}
+		s.calls[url] = counter
 	}
+	s.mu.Unlock()
+	counter.Add(1)
 	return &http.Response{
 		StatusCode: http.StatusOK,
 		Body:       io.NopCloser(bytes.NewReader(s.bodyFor(url))),
@@ -607,7 +633,7 @@ func TestTST080_IntegrationParkKeysAreCachedIndependently(t *testing.T) {
 		},
 	}
 	held := http.DefaultTransport
-	http.DefaultTransport = transport
+	http.DefaultTransport = &transport
 	t.Cleanup(func() { http.DefaultTransport = held })
 	freshRoute(t)
 
@@ -666,13 +692,23 @@ func (f *failingTransport) RoundTrip(*http.Request) (*http.Response, error) {
 // minutes per park -->'s integration half: a park whose own upstream calls
 // fail is held under the negative cache the same as a success is, so calling
 // fetchPark for it again inside the failure window costs no further upstream
-// call.
+// call — and, proved end-to-end against a shrunk interval below, a call once
+// the window has elapsed does retry, so the bound is not merely uncrossed by
+// accident.
 func TestTST081_IntegrationAFailingParkIsRetriedNoOftenerThanTheNegativeInterval(t *testing.T) {
 	transport := &failingTransport{}
 	held := http.DefaultTransport
 	http.DefaultTransport = transport
 	t.Cleanup(func() { http.DefaultTransport = held })
-	freshRoute(t)
+
+	// A real, short interval stands in for the registered five minutes: the
+	// router package's own fake clock is package-private (router_test.go,
+	// rate_test.go), so this is the one way to prove the hold actually lapses
+	// without a test that waits out five real minutes.
+	const shrunkBound = 100 * time.Millisecond
+	cfg := Config()
+	cfg.NegativeTTL = shrunkBound
+	freshRouteWithConfig(t, cfg)
 
 	ctx := context.Background()
 	park := supported["magic-kingdom"]
@@ -693,10 +729,27 @@ func TestTST081_IntegrationAFailingParkIsRetriedNoOftenerThanTheNegativeInterval
 		t.Fatalf("fetchPark #2: available = true against a failing source, want false")
 	}
 
-	// Called far oftener than the bound permits, and yet the failing source's
+	// Called again well inside the interval, and yet the failing source's
 	// endpoint was reached once: the live fetch's own failure is held.
 	if calls := transport.calls.Load(); calls != 1 {
-		t.Errorf("a park failing twice in a row over its held interval cost %d upstream calls, want 1", calls)
+		t.Errorf("a park failing twice in a row inside its held interval cost %d upstream calls, want 1", calls)
+	}
+
+	// The interval elapses, and a further ask does retry — without this half
+	// a policy that never expired (or one held forever by a bug) would still
+	// pass the assertion above, which only reads what happens before the
+	// bound.
+	time.Sleep(shrunkBound + 150*time.Millisecond)
+
+	third, err := fetchPark(ctx, "magic-kingdom", park)
+	if err != nil {
+		t.Fatalf("fetchPark #3: unexpected error: %v", err)
+	}
+	if third.Available {
+		t.Fatalf("fetchPark #3: available = true against a failing source, want false")
+	}
+	if calls := transport.calls.Load(); calls != 2 {
+		t.Errorf("a park asked again once its held interval elapsed cost %d upstream calls, want 2", calls)
 	}
 }
 
@@ -712,7 +765,7 @@ func TestPostApiParkWaitTimesFansOutOverEveryConfiguredPark(t *testing.T) {
 		bodyFor: func(string) []byte { return live },
 	}
 	held := http.DefaultTransport
-	http.DefaultTransport = transport
+	http.DefaultTransport = &transport
 	t.Cleanup(func() { http.DefaultTransport = held })
 	freshRoute(t)
 
@@ -787,6 +840,76 @@ func TestAParksOwnFailureDoesNotFailTheWholeRequest(t *testing.T) {
 	}
 	if epcot.Rides == nil || len(*epcot.Rides) == 0 {
 		t.Error("epcot: carries no rides despite its own source serving")
+	}
+}
+
+// hangingTransport never answers: every call blocks until the request's own
+// context ends, then returns that context's own error — the shape a source
+// that never comes back takes, for a caller whose deadline is the pipeline's
+// own outbound timeout (upstream.Proxy.fetch's, not this test's).
+type hangingTransport struct{}
+
+func (hangingTransport) RoundTrip(r *http.Request) (*http.Response, error) {
+	<-r.Context().Done()
+	return nil, r.Context().Err()
+}
+
+// TestColdStartWithSeveralUnreachableParksAnswersWithinOneParksOwnTimeout is
+// the owner's ruling on the concurrent fan-out, read end-to-end: with every
+// configured park's own source unreachable at once — the cold-start case,
+// nothing yet cached — the whole request still answers inside roughly one
+// park's own timeout budget, each park marked unavailable, rather than that
+// budget summed across every park. A sequential fan-out (fetching park by
+// park) would cost the sum instead, which is exactly what this proves against:
+// the assertion below fails under that shape and passes under this one.
+func TestColdStartWithSeveralUnreachableParksAnswersWithinOneParksOwnTimeout(t *testing.T) {
+	held := http.DefaultTransport
+	http.DefaultTransport = hangingTransport{}
+	t.Cleanup(func() { http.DefaultTransport = held })
+
+	// A real, short outbound timeout stands in for the registered five
+	// seconds, the same reasoning TST081's integration test uses: this test
+	// measures wall-clock time against it, and nobody should wait out the
+	// registered figure real-time to run it.
+	const shrunkTimeout = 200 * time.Millisecond
+	cfg := Config()
+	cfg.Timeout = shrunkTimeout
+	freshRouteWithConfig(t, cfg)
+
+	parks := []string{"magic-kingdom", "epcot", "hollywood-studios"}
+	body := `{"parks":["magic-kingdom","epcot","hollywood-studios"]}`
+
+	started := time.Now()
+	recorder := serve(t, body)
+	elapsed := time.Since(started)
+
+	if recorder.Code != http.StatusOK {
+		t.Fatalf("status = %d, want %d (%s) — every park's own timeout is that park's failure, not the whole request's",
+			recorder.Code, http.StatusOK, recorder.Body)
+	}
+
+	var payload boundary.ParkWaitTimesPayload
+	if err := json.Unmarshal(recorder.Body.Bytes(), &payload); err != nil {
+		t.Fatalf("reading the served payload: %v", err)
+	}
+	if len(payload.Parks) != len(parks) {
+		t.Fatalf("parks = %d, want %d: %+v", len(payload.Parks), len(parks), payload.Parks)
+	}
+	for _, park := range payload.Parks {
+		if park.Available {
+			t.Errorf("%s: available = true against a source that never answered, want false", park.Id)
+		}
+	}
+
+	// The three parks' own timeouts ran concurrently: the whole request cost
+	// roughly one of them, not their sum. A margin over the one timeout
+	// absorbs scheduling jitter; the sum three unreachable parks would cost
+	// sequentially (600ms at this shrunk figure) sits well above it, so a
+	// regression to the old per-park loop fails this rather than merely
+	// running slower unnoticed.
+	if budget := shrunkTimeout * 3 / 2; elapsed > budget {
+		t.Errorf("three concurrently-unreachable parks cost %s, want at most %s (roughly one park's own timeout, not the sum of three)",
+			elapsed, budget)
 	}
 }
 
@@ -904,8 +1027,8 @@ func TestPostApiParkWaitTimesAnswersShuttingDownWhenTheCallersContextEnds(t *tes
 	if err := json.Unmarshal(recorder.Body.Bytes(), &failure); err != nil {
 		t.Fatalf("reading the failure body %q: %v", recorder.Body, err)
 	}
-	if failure.Cause != "shutting-down" {
-		t.Errorf("Cause = %q, want %q", failure.Cause, "shutting-down")
+	if failure.Cause != causeShuttingDown {
+		t.Errorf("Cause = %q, want %q", failure.Cause, causeShuttingDown)
 	}
 }
 

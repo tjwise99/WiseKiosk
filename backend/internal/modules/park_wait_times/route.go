@@ -8,12 +8,20 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"sync"
 	"time"
 
 	"github.com/tjwise99/WiseKiosk/backend/internal/boundary"
 	"github.com/tjwise99/WiseKiosk/backend/internal/router"
 	"github.com/tjwise99/WiseKiosk/backend/internal/upstream"
 )
+
+// causeShuttingDown is the one boundary.UpstreamFailure.Cause this route
+// answers with — router.go's own private constant of the same name and
+// value, named here rather than imported since it is unexported there;
+// naming it once keeps this route's own answer and the test that reads it
+// back from drifting apart.
+const causeShuttingDown = "shutting-down"
 
 // entry is this module's route registration: the module contract's part 5,
 // assembled from the shaping library beside it rather than restated
@@ -54,6 +62,14 @@ type ParkWaitTimesRoute struct{}
 // cache/rate-limit/timeout pipeline once per park per endpoint via
 // Route.Fetch rather than once per request via Route.Serve.
 //
+// The parks a request names are fetched concurrently, one goroutine per
+// park (the owner's ruling): a cold cache with several parks down would
+// otherwise answer in roughly their timeout summed rather than once, which
+// a viewer's own 10-second liveness budget does not have — concurrent
+// parks that are all down instead time out together, in roughly one park's
+// own timeout. The per-key cache (SRS063/SRS064) already dedups identical
+// concurrent asks, so nothing here duplicates that.
+//
 // A park whose own fetches fail carries `available: false` and a
 // plain-language reason rather than failing the whole read — the parks a
 // request named that did answer are unaffected (the owner's ruling on
@@ -79,10 +95,11 @@ func (ParkWaitTimesRoute) PostApiParkWaitTimes(w http.ResponseWriter, r *http.Re
 		return
 	}
 
-	payload := boundary.ParkWaitTimesPayload{Parks: make([]boundary.ParkWaitTimesPark, 0, len(request.Parks))}
-	for _, slug := range request.Parks {
-		park, err := fetchPark(r.Context(), slug, named[slug])
-		if err != nil {
+	fetched := fetchParksConcurrently(r.Context(), request.Parks, named)
+
+	payload := boundary.ParkWaitTimesPayload{Parks: make([]boundary.ParkWaitTimesPark, 0, len(fetched))}
+	for _, result := range fetched {
+		if result.err != nil {
 			// The pipeline errors only where this caller's context ended: a
 			// client that has gone, or a server shutting down under one still
 			// connected. Written the same 503 outcome Route.Serve answers it
@@ -91,15 +108,45 @@ func (ParkWaitTimesRoute) PostApiParkWaitTimes(w http.ResponseWriter, r *http.Re
 			// it reached so far.
 			writeJSON(w, http.StatusServiceUnavailable, boundary.UpstreamFailure{
 				Module:  Source,
-				Cause:   "shutting-down",
+				Cause:   causeShuttingDown,
 				Message: "this backend stopped serving before this source could answer",
 			})
 			return
 		}
-		payload.Parks = append(payload.Parks, park)
+		payload.Parks = append(payload.Parks, result.park)
 	}
 
 	writeJSON(w, http.StatusOK, payload)
+}
+
+// fetchedPark is one park's own fetchPark outcome, carried alongside the
+// request's own order rather than read off a map — a request naming the
+// same park twice is degenerate but not itself rejected, and a map would
+// collapse the two into one entry.
+type fetchedPark struct {
+	park boundary.ParkWaitTimesPark
+	err  error
+}
+
+// fetchParksConcurrently runs fetchPark for every named park at once, each
+// on its own goroutine, and returns their outcomes in the request's own
+// order. Every goroutine writes to its own index of a slice sized once
+// before any of them starts, and nothing else touches that slice until
+// every goroutine has returned (wg.Wait) — race-free without a mutex,
+// because no two goroutines ever write the same element.
+func fetchParksConcurrently(ctx context.Context, slugs []string, named map[string]supportedPark) []fetchedPark {
+	results := make([]fetchedPark, len(slugs))
+	var wg sync.WaitGroup
+	for i, slug := range slugs {
+		wg.Add(1)
+		go func(i int, slug string) {
+			defer wg.Done()
+			park, err := fetchPark(ctx, slug, named[slug])
+			results[i] = fetchedPark{park: park, err: err}
+		}(i, slug)
+	}
+	wg.Wait()
+	return results
 }
 
 // fetchPark answers one park: its rides, read from the source's live-data
