@@ -11,9 +11,9 @@ references:
 - keyword: func TestTST072_ThePatternAdmitsASupportedParkAndRejectsEveryOther(t *testing.T)
     {
   path: backend/internal/modules/park_wait_times/park_wait_times_test.go
-  sha: a013c5fadeb4251b70e0235f0eac67e4102f3ddb058b205e49c216ac87c3f5cd
+  sha: a1b5fe8361bc1688508a1c3d2039b4dee3b4e2de3289006b4489ed3386ebe358
   type: file
-reviewed: Kng1WmIxxgqbchZfUg_i9vA1A5xXCzuO3Dv6FlP9OzI=
+reviewed: F4IOrLXffTmKtDHNc9drNsGeTIh4dA0bU9ltGSEMxe0=
 status: accepted
 text: |
   Unit test exercising validate against the module's own supported-park table, without a network:

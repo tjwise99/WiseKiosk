@@ -24,12 +24,6 @@ rationale: |
   reading a smaller park than the display was built for with nothing to fail against, while a check
   written against the module's own idea of how many rides a park has asserts only that the module agrees
   with itself.
-  A ride exists here once the source gives it a wait to carry - a length of time, or one of its
-  not-operating states. An attraction the source reports as operating with nothing posted - a
-  walk-through landmark the source types no differently from a queued ride - has no wait to carry and so
-  is not a ride this item obliges the module to report; leaving it out is not the smaller-park failure the
-  paragraph above rules out, because that paragraph binds the rides the source did give a wait for, not
-  every row the source happens to type as an attraction.
   The item states what a viewer is owed and not the shape it arrives in. The names of the fields, their
   units, whether a not-operating ride is one state or several and however the source happens to encode a
   closure are the boundary schema's and the shaping library's; a requirement fixing any of them would
@@ -39,13 +33,12 @@ rationale: |
   on a captured response with no browser and no network, and a module handed every ride a park has can
   still draw half of them.
 ref: ''
-reviewed: zgVM8lhmdTvTw4fhbcLnHx5oXdWYw7USWEYpsqy02G0=
+reviewed: o9HQHRXk_09LrNVpCl--blJ0EUApKF0m463cBZ02r-M=
 status: accepted
 text: |
   The park-wait-times module shall put across the boundary, for each park a request names, the park's
-  name, its operating hours, and for each of the park's rides - an attraction the source reports a wait
-  for, whether a length of time or that the ride is not operating - the ride's name together with that
-  wait.
+  name, its operating hours, and for each of the park's rides the ride's name together with its current
+  wait - a length of time, or that the ride is not operating.
 verification-justification: |
   Read from the module's shaping run against a captured response from its source, without a network: for
   the park the request named, what it produces carries the park's name and operating hours and, for each

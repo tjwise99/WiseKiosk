@@ -142,7 +142,7 @@ export interface ParkWaitTimesPark {
   /** Plain-language text the module renders in this park's place. Present only where `available` is false. */
   message?: string;
   hours?: ParkWaitTimesHours;
-  /** Every one of the park's rides that the source reports a wait for, each with its name and current wait (SRS056<!-- The park-wait-times module puts each park's ride waits across the boundary -->). An attraction the source reports as operating with nothing posted is not a ride here and does not appear. Present only where `available` is true. */
+  /** Every one of the park's rides, each with its name and current wait (SRS056<!-- The park-wait-times module puts each park's ride waits across the boundary -->). Present only where `available` is true. */
   rides?: ParkWaitTimesRide[];
 }
 
