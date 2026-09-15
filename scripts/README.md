@@ -37,7 +37,6 @@ when a link breaks. Nothing enforces this — a wrong success line fails no buil
 | `check-adr-revs.py` | [cases](cases/check-adr-revs-py.md) |
 | `check-arch / splice-arch-diagrams.py` | [cases](cases/check-arch.md) |
 | `check-arch-trace.py` | [cases](cases/check-arch-trace-py.md) |
-| `check-boundary` | [cases](cases/check-boundary.md) |
 | `check-go` | [cases](cases/check-go.md) |
 | `check-fuzz` | [cases](cases/check-fuzz.md) |
 | `check-lint-go` | [cases](cases/check-lint-go.md) |

@@ -16,7 +16,7 @@ against)
 
 ## Context
 
-[ADR 0022 rev 2](0022-config-schema-format.md) fixed the configuration schema's format — JSON Schema
+[ADR 0022 rev 3](0022-config-schema-format.md) fixed the configuration schema's format — JSON Schema
 2020-12 — and deliberately left the library open: *"the concrete validator … is chosen when the
 frontend skeleton (#10) is built, against a bundle that does not exist yet."* That bundle is what
 #10 frontend skeleton builds, so the deferral closes here.
@@ -33,7 +33,7 @@ Three constraints decide it, and none of them is about validation features.
 - **Weight is the live cost.** The frontend runs on a Pi Zero-class browser host
   (SRS021<!-- Frontend runs on a Pi Zero-class browser host -->), and
   [ADR 0018 rev 1](0018-frontend-svelte-vite-static-spa.md) is a stack chosen against exactly that.
-  ADR 0022 rev 2 names the remedy without picking it: *"addressable by compiling the schema to a
+  ADR 0022 rev 3 names the remedy without picking it: *"addressable by compiling the schema to a
   standalone validation function at build, so the full runtime need not ship."*
 
 ## Decision
@@ -59,7 +59,7 @@ Three constraints decide it, and none of them is about validation features.
   stopped at the first failure would make the operator's second problem invisible until they had
   fixed the first.
 - **The compiled function is the one enforcer.** The configuration-object TypeScript types
-  ADR 0022 rev 2 requires are generated from that same file, so the types and the enforcement have
+  ADR 0022 rev 3 requires are generated from that same file, so the types and the enforcement have
   one source and neither is a second statement of the rules.
 
 ## Alternatives considered
@@ -71,7 +71,7 @@ Three constraints decide it, and none of them is about validation features.
   schema, once, every time it boots — 161.7 kB minified where the compiled function is 6.4 kB.
   Every byte of the compiler's generality is spent on a configurability the deployment does not have.
 - **`@cfworker/json-schema`.** 2020-12 capable and far smaller than ajv, which is what makes it the
-  honest rival — it was the candidate ADR 0022 rev 2 named beside ajv. Rejected because it is a
+  honest rival — it was the candidate ADR 0022 rev 3 named beside ajv. Rejected because it is a
   runtime *evaluator*: it walks the schema document to decide each value, so the bundle carries a
   general evaluator on top of the document that ships either way. Compiling carries the document and
   no evaluator at all, which is strictly less however small the evaluator is. Its real advantage —
@@ -80,7 +80,7 @@ Three constraints decide it, and none of them is about validation features.
 - **Hand-written validation, no library at all.** The smallest possible bundle, no dependency, and
   the page would still be the one enforcer. Rejected because the schema is authored as data precisely
   so that readers other than the page consume it
-  ([ADR 0022 rev 2](0022-config-schema-format.md) names the configuration generator, a future editor
+  ([ADR 0022 rev 3](0022-config-schema-format.md) names the configuration generator, a future editor
   and the docsite): hand-written checks are a second statement of the rules that no gate compares
   against the document, and the first divergence is a configuration the operator's tooling accepts
   and the display rejects. Compiling from the document is what makes the code and the data one thing.
@@ -94,7 +94,7 @@ Three constraints decide it, and none of them is about validation features.
   to `check-build`, which is the earliest point it can be found and the only one where nobody is
   standing in front of a wall.
 - **The schema's own prose is bundle weight.** Its `title` and `description` text is embedded with the
-  document, and those exist for the readers ADR 0022 rev 2 names rather than for the page. That is
+  document, and those exist for the readers ADR 0022 rev 3 names rather than for the page. That is
   accepted: they are what makes the schema an operator-facing artifact, and dropping them to save
   bytes would trade the reason the format was chosen for a fraction of one gzipped kilobyte. It is
   worth re-reading as modules add their sections (#12 first module end-to-end), because the emitted

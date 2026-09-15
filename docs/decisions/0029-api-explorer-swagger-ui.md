@@ -2,17 +2,22 @@
 
 **Status:** accepted
 **Decided:** 2026-09-09 (#195 API explorer implementation, owner-ruled the same day)
-**Rev:** 1
+**Rev:** 2
 
 ## Revisions
 
+- **rev 2** — 2026-09-15 — drops "drift-gated" from the parenthetical describing
+  `boundary.gen.go`: `check-boundary` is deleted, and the file is `oapi-codegen` output generated at
+  build rather than a committed, drift-gated artifact
+  ([ADR 0008 rev 6](0008-boundary-contract-openapi-codegen.md)). What this ADR decides is unchanged,
+  so the `Decided` date does not move (#339 generated-code-not-committed).
 - **rev 1** — 2026-09-09 — first written (#195 API explorer).
 
 ## Context
 
-`boundary/openapi.yaml` ([ADR 0008 rev 5](0008-boundary-contract-openapi-codegen.md)) is the whole
+`boundary/openapi.yaml` ([ADR 0008 rev 6](0008-boundary-contract-openapi-codegen.md)) is the whole
 wire contract, but it had no browsable or interactive rendering — a developer read the YAML by hand.
-ADR 0008 rev 5 withdrew the docsite-renderer decision and delegated it to #195, deferred until real
+ADR 0008 rev 6 withdrew the docsite-renderer decision and delegated it to #195, deferred until real
 content existed; `boundary/openapi.yaml` now carries `/healthz` and `/api/weather`, so that deferral
 has lapsed.
 
@@ -84,7 +89,8 @@ across two otherwise-unrelated dev-tooling silos for one number that is not expe
   observable header behavior there reads as a new obligation under
   [ADR 0011 rev 2](0011-requirement-or-convention.md);
   and the OPTIONS preflight `/api/weather` needs cannot be added to the generated router
-  (`backend/internal/boundary/boundary.gen.go`, drift-gated `oapi-codegen` output) without either
+  (`backend/internal/boundary/boundary.gen.go`, `oapi-codegen` output generated at build) without
+  either
   forking `boundary/openapi.yaml` or a second, separate bypass-middleware mechanism ahead of it.
 - **Serving the explorer through the backend itself, via its existing `-static-root` flag** (pointed at
   the built docs site instead of `frontend/dist` — the same one-origin composition `just

@@ -58,7 +58,7 @@ EXTENSIONS = {
     "Doorstop item and silo config YAML (ADR 0017 rev 8)",
     "yaml": "derived — a toolchain's own required input format: pre-commit's "
     ".pre-commit-config.yaml (ADR 0016 rev 11), the boundary schema both code generators "
-    "read and oapi-codegen's own configuration (ADR 0008 rev 5, ADR 0017 rev 8)",
+    "read and oapi-codegen's own configuration (ADR 0008 rev 6, ADR 0017 rev 8)",
     "mod": "derived — the Go toolchain's own manifest format: backend/go.mod "
     "(ADR 0017 rev 8)",
     "sum": "derived — the Go toolchain's own lockfile format: backend/go.sum "
@@ -105,7 +105,7 @@ NO_EXTENSION = {
     "justfile": "derived — invoking `just`, named explicitly in ADR 0017 rev 8",
     "LICENSE": "documentation — legal text, not an authored program",
     "Dockerfile": "derived — the container build's own required input format, named explicitly in "
-    "ADR 0017 rev 8 (ADR 0021 rev 3)",
+    "ADR 0017 rev 8 (ADR 0021 rev 4)",
     ".gitignore": "derived — git's own required input format",
     ".gitattributes": "derived — git's own required input format",
     ".editorconfig": "derived — EditorConfig's own required input format",

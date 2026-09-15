@@ -40,7 +40,7 @@ export interface ModuleEntry {
  * (docs/contracts/module-contract.md § Dependency direction). The reading is bound here rather than
  * in the module so that the component stays fed by its props alone (part 1); what does the reading
  * is the client generated from the boundary schema, so no request is written by hand
- * (ADR 0008 rev 5).
+ * (ADR 0008 rev 6).
  */
 export const modules: Record<string, ModuleEntry> = {
   clock: { component: Clock },
