@@ -866,6 +866,56 @@ test('holds every card to a full card’s own height when every park is Closed, 
   ).toBeLessThan(1);
 });
 
+test('draws every ride name flush left in its own column, whatever its own length — the wait stays right', async ({
+  page,
+}) => {
+  // `placed`'s own default region (middle_center) is centre-anchored — the exact case that
+  // centred every ride name before this fix: RegionFrame's own `text-align` (`placementStyle()`,
+  // regions.ts) inherits straight through ParkCard.svelte's rows unless a row explicitly
+  // overrides it, the same way `.wait`'s own `text-align: right` already does. The park's own
+  // name is long enough that the card — and so the ride-name column, which the park's own header
+  // sizes (ParkWaitTimes.svelte's `headerWidthPx`), never a ride name — is wider than the shorter
+  // ride name below: a column no wider than every name in it would leave a centred name
+  // indistinguishable from a left-aligned one, both overflowing the same way.
+  await serveModuleData(page, () => ({
+    status: 200,
+    data: parksPayload([
+      onePark('epcot', {
+        name: 'Islands of Adventure',
+        hours: { open: '2026-01-01T09:00:00Z', close: '2026-01-01T21:00:00Z' },
+        rides: [
+          { name: 'Guardians of the Galaxy: Cosmic Rewind', wait: 65 },
+          { name: 'Frozen Ever After', wait: 40 },
+        ],
+      }),
+    ]),
+  }));
+  await render(page, placed(['epcot']));
+
+  const rows = page.locator(LEADERBOARD_ROW);
+  const names = await rows.evaluateAll((els) =>
+    els.map((el) => {
+      const column = el.querySelector('[data-pwt-ride-name]') as HTMLElement;
+      const text = column.querySelector('span') as HTMLElement;
+      return { columnLeft: column.getBoundingClientRect().x, textLeft: text.getBoundingClientRect().x };
+    }),
+  );
+  for (const { columnLeft, textLeft } of names) {
+    expect(Math.abs(textLeft - columnLeft), 'the ride name starts flush at its own column’s left edge').toBeLessThan(
+      1,
+    );
+  }
+  // The direct proof a shorter name is not centred within a column a longer one fills: both start
+  // at the very same x regardless of the name's own length.
+  expect(
+    Math.abs(names[0].textLeft - names[1].textLeft),
+    'a shorter ride name starts at the same x as a longer one',
+  ).toBeLessThan(1);
+
+  const waitTextAlign = await rows.first().locator(WAIT).evaluate((el) => getComputedStyle(el).textAlign);
+  expect(waitTextAlign, 'the wait figure stays right-aligned').toBe('right');
+});
+
 test('stands down to nothing while the backend is unreachable, and stops asking it', async ({ page }) => {
   await holdHostClock(page, HOST_TIME);
 

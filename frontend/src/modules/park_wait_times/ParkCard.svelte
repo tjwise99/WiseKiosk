@@ -350,6 +350,12 @@
     flex: 1 1 auto;
     min-width: 0;
     overflow: hidden;
+    /* A ride name reads left-to-right regardless of the placement's own anchor — `.wait`'s own
+       `text-align: right`, below, is the same local override against the same inheritance: a
+       region's `text-align` (RegionFrame's `placementStyle()`) is handed down as the module's
+       own content anchor, and a card centred in its region would otherwise centre every name
+       inside it too. */
+    text-align: left;
   }
 
   .ride-name-text {
