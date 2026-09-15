@@ -25,23 +25,13 @@
   }
 
   /**
-   * The park's rides ranked by how long a viewer would wait, worst first: a ride that is not
-   * operating is an effectively infinite wait and sorts ahead of every numeric one
-   * (SRS058<!-- The park-wait-times module keeps each park's longest current waits in view -->);
-   * among ties (including every not-operating ride, which carries no minute figure to break the
-   * tie with) the source's own order is kept, so the ranking is stable rather than arbitrary.
+   * The park's numeric-wait rides ranked worst first, longest wait leading
+   * (SRS058<!-- The park-wait-times module keeps each park's longest current waits in view -->). A
+   * not-operating ride carries no minute figure to rank by and is not among these — it is not
+   * dropped from the reading, it tours instead (`remaining`, below).
    */
   function ranked(rides: ParkWaitTimesRide[]): ParkWaitTimesRide[] {
-    return rides
-      .map((ride, index) => ({ ride, index }))
-      .sort((a, b) => {
-        const aMinutes = isMinutes(a.ride.wait);
-        const bMinutes = isMinutes(b.ride.wait);
-        if (aMinutes !== bMinutes) return aMinutes ? 1 : -1;
-        if (aMinutes && bMinutes) return (b.ride.wait as number) - (a.ride.wait as number);
-        return a.index - b.index;
-      })
-      .map(({ ride }) => ride);
+    return rides.filter((ride) => isMinutes(ride.wait)).sort((a, b) => (b.wait as number) - (a.wait as number));
   }
 
   const rides = $derived(park.rides ?? []);

@@ -175,10 +175,10 @@ test('TST075: holds each park’s longest current waits in view, unmoved by the 
   expect(await rideNamesIn(card, LEADERBOARD_ROW)).toEqual(['Test Track', 'Soarin', 'Spaceship Earth']);
 });
 
-test('TST075: a not-operating ride outranks every numeric wait, being the longer one', async ({ page }) => {
-  // The rule the ranking rests on and a case reading numeric waits alone cannot exercise: a ride
-  // that cannot be ridden at all is a longer wait than any figure, so it holds a leaderboard place
-  // ahead of a numeric wait that would otherwise have earned one.
+test('TST075: a not-operating ride does not take a leaderboard place — it tours instead', async ({ page }) => {
+  // A ride with no minute figure has nothing for the leaderboard's ranking to compare, so it is not
+  // among the held rides regardless of where it would have sorted by source order or by name; it
+  // still reads, in the rotation below rather than the leaderboard.
   await serveModuleData(page, () => ({
     status: 200,
     data: parksPayload([
@@ -187,6 +187,7 @@ test('TST075: a not-operating ride outranks every numeric wait, being the longer
           { name: 'Seven Dwarfs Mine Train', wait: 90 },
           { name: 'The Hall of Presidents', wait: 'Closed' },
           { name: 'Big Thunder Mountain Railroad', wait: 45 },
+          { name: 'Splash Mountain', wait: 20 },
           { name: 'The Barnstormer', wait: 10 },
         ],
       }),
@@ -196,57 +197,11 @@ test('TST075: a not-operating ride outranks every numeric wait, being the longer
 
   const card = page.locator(CARD);
   expect(await rideNamesIn(card, LEADERBOARD_ROW)).toEqual([
-    'The Hall of Presidents',
     'Seven Dwarfs Mine Train',
     'Big Thunder Mountain Railroad',
+    'Splash Mountain',
   ]);
-});
-
-test('TST075: the same rule read the other way round — a numeric wait never outranks a ride that cannot be ridden', async ({
-  page,
-}) => {
-  // The previous case put the not-operating ride ahead of the roster; this one puts it behind, so
-  // the ranking is read in both directions rather than one order happening to pass by construction.
-  await serveModuleData(page, () => ({
-    status: 200,
-    data: parksPayload([
-      onePark('epcot', {
-        rides: [
-          { name: 'Guardians of the Galaxy: Cosmic Rewind', wait: 'Down' },
-          { name: 'Test Track', wait: 60 },
-        ],
-      }),
-    ]),
-  }));
-  await render(page, placed(['epcot']));
-
-  const card = page.locator(CARD);
-  expect(await rideNamesIn(card, LEADERBOARD_ROW)).toEqual([
-    'Guardians of the Galaxy: Cosmic Rewind',
-    'Test Track',
-  ]);
-});
-
-test('TST075: two not-operating rides keep the source’s own order between them, neither outranking the other', async ({
-  page,
-}) => {
-  // Neither ride carries a figure to break the tie with, so the ranking falls back to the order the
-  // source gave them in — asserted with the pair alone, so nothing else in the roster could settle it.
-  await serveModuleData(page, () => ({
-    status: 200,
-    data: parksPayload([
-      onePark('hollywood-studios', {
-        rides: [
-          { name: 'Rise of the Resistance', wait: 'Down' },
-          { name: 'Star Tours', wait: 'Closed' },
-        ],
-      }),
-    ]),
-  }));
-  await render(page, placed(['hollywood-studios']));
-
-  const card = page.locator(CARD);
-  expect(await rideNamesIn(card, LEADERBOARD_ROW)).toEqual(['Rise of the Resistance', 'Star Tours']);
+  expect(await rideNamesIn(card, TOUR_ROW)).toEqual(['The Hall of Presidents', 'The Barnstormer']);
 });
 
 test('draws a park’s hours as given even where they do not parse into an hour and a minute', async ({

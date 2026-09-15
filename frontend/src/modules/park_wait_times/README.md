@@ -52,9 +52,11 @@ line).
 
 ### Leaderboard — the three longest waits, held
 
-The three longest current waits in the park, persistent: each a ride **name** on the left and its
-**wait** on the right. This is the reading a viewer most wants, so it never leaves the screen — it is
-usable the instant they look, not on the next rotation.
+The three longest current **numeric** waits in the park, persistent: each a ride **name** on the left
+and its **wait** on the right. A ride that is not operating carries no minute figure to rank by, so it
+does not hold a leaderboard place — it still reads, in the rotation below. This is the reading a viewer
+most wants, so it never leaves the screen — it is usable the instant they look, not on the next
+rotation.
 
 ### More waits — the rotation
 
