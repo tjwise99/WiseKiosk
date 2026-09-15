@@ -127,24 +127,29 @@ corpus convention are the same kind of machinery, routed the same way to
 The backend is Go and the frontend is TypeScript, so they share no types
 ([ADR 0001 rev 1](decisions/0001-backend-language-go.md)). The tier is therefore not a pair of
 hand-maintained type declarations checked for agreement by a test — it is **one schema, with both
-sides generated from it**, and the tier's job in CI is to prove the generation is real and current:
+sides generated from it at build, when missing, and never committed**
+([ADR 0008 rev 6](decisions/0008-boundary-contract-openapi-codegen.md)), and the tier's job in CI is
+to prove the generation is real and that what is compiled is what was generated:
 
-- Generation from the one schema by the codegen mechanism
-  ([ADR 0008 rev 6](decisions/0008-boundary-contract-openapi-codegen.md)), the CI drift gate failing
-  on committed output that differs from a fresh regeneration, and version-pinned generators so
-  regeneration is deterministic. What is generated is the whole wire contract on each side — types,
-  the route table and a client — so a route that moves in the schema alone is inside what the gate
-  compares, rather than a hand-written path on each side needing a check of its own. Generation is
-  **SRS015<!-- One schema, all boundary value classes -->**, the drift gate is verified under
-  **SRS016<!-- Both sides consume the generated types -->**, and the version pin is no requirement's
-  — a repository convention, in [`CI.md § Publishing and
+- Generation from the one schema by the codegen mechanism, under each side's own toolchain, with
+  version-pinned generators so regeneration is deterministic. Because neither generated file is ever
+  committed, a fresh checkout always regenerates both before anything downstream reads them — there
+  is no committed copy for a schema edit or a generator bump to drift from. What is generated is the
+  whole wire contract on each side — types, the route table and a client — so a route that moves in
+  the schema moves identically on both sides, rather than a hand-written path on each side needing a
+  check of its own. Generation is **SRS015<!-- One schema, all boundary value classes -->**'s, and the
+  version pin is no requirement's — a repository convention, in [`CI.md § Publishing and
   provenance`](CI.md#publishing-and-provenance).
 - That the generated types are the ones actually *used* on both sides, including the per-module
   error-render path, rather than shadowed by a hand-declared twin —
   **SRS016<!-- Both sides consume the generated types -->**, under
-  **SYS005<!-- Single-definition internal contract -->**.
+  **SYS005<!-- Single-definition internal contract -->**. Because the generated files are never
+  committed, every build's first compile of either side — `go build` and the whole-project
+  `tsc --noEmit` alike — is against output regenerated in that same run: a hand-declared twin
+  compiles today and fails the moment the schema moves it, and there is no window where a committed,
+  possibly-stale copy could stand in for it instead.
 - That the frontend adds no second, runtime validator over proxied payloads, so agreement rests on
-  the schema and the drift gate rather than a bundled re-check —
+  generation and compilation rather than a bundled re-check —
   [ADR 0008 rev 6](decisions/0008-boundary-contract-openapi-codegen.md), which carries the decision
   and its premise. No requirement states this: it was deleted as a prohibition against a case that
   does not exist.
