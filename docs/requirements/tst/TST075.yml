@@ -11,14 +11,14 @@ references:
 - keyword: 'test(''TST075: holds each park’s longest current waits in view, unmoved
     by the rotation of the rest'', async ({'
   path: frontend/src/modules/park_wait_times/park_wait_times.spec.ts
-  sha: c595e1e0b537ff3c97da536a53ceab12a5c974a929fdb81cee4c26ded48affdf
+  sha: 7972957bc3b8154e287bf1f6446e6a300d946c5a394737b57fddfad7cd9c1d2e
   type: file
 - keyword: 'test(''TST075: a not-operating ride does not take a leaderboard place
     — it tours instead'', async ({ page }) => {'
   path: frontend/src/modules/park_wait_times/park_wait_times.spec.ts
-  sha: c595e1e0b537ff3c97da536a53ceab12a5c974a929fdb81cee4c26ded48affdf
+  sha: 7972957bc3b8154e287bf1f6446e6a300d946c5a394737b57fddfad7cd9c1d2e
   type: file
-reviewed: fhx7nazzNiNPoBpq2FrdZy7TjSeBtml_0xfKxERzBnQ=
+reviewed: Bq3cabXAId2cxQzkeXWqZTvdl_Dk__VKHu1tJG_eVgw=
 status: accepted
 text: |
   Render test that, handed a park's rides with differing waits, the leaderboard holds the three longest
