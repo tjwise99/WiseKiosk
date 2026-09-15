@@ -588,6 +588,109 @@ test('lays out uniform, aligned cards that do not run past the viewport, with re
   expect(scrollWidth).toBeLessThanOrEqual(clientWidth);
 });
 
+test('leaves a park’s leaderboard at its own real row count — no permanent blank row where it holds fewer than three numeric waits', async ({
+  page,
+}) => {
+  await serveModuleData(page, () => ({
+    status: 200,
+    data: parksPayload([
+      onePark('epcot', {
+        rides: [
+          { name: 'Test Track', wait: 60 },
+          { name: 'Spaceship Earth', wait: 10 },
+        ],
+      }),
+    ]),
+  }));
+  await render(page, placed(['epcot']));
+
+  const card = page.locator(CARD);
+  await expect(card.locator(LEADERBOARD_ROW)).toHaveCount(2);
+  // The mechanism that reserved a third slot regardless of how many rides a park holds is gone —
+  // not merely unfilled here, absent from the DOM.
+  await expect(card.locator('[data-pwt-leaderboard-placeholder]')).toHaveCount(0);
+});
+
+test('holds the footer’s own position across the tour’s pages, including a last page short a ride', async ({
+  page,
+}) => {
+  await holdHostClock(page, HOST_TIME);
+  await serveModuleData(page, () => ({
+    status: 200,
+    data: parksPayload([
+      onePark('magic-kingdom', {
+        rides: [
+          { name: 'Seven Dwarfs Mine Train', wait: 90 },
+          { name: 'Big Thunder Mountain Railroad', wait: 45 },
+          { name: 'Pirates of the Caribbean', wait: 30 },
+          { name: "Walt Disney's Carousel of Progress", wait: 10 },
+          { name: 'Tomorrowland Speedway', wait: 8 },
+          { name: 'Jungle Cruise', wait: 6 },
+          { name: "It's a Small World", wait: 4 },
+          { name: 'Haunted Mansion', wait: 2 },
+        ],
+      }),
+    ]),
+  }));
+  await render(page, placed(['magic-kingdom'], { rotationIntervalSeconds: 5 }));
+
+  const card = page.locator(CARD);
+  const footerY = async () => (await card.locator(FOOTER_SEGMENT).first().boundingBox())?.y;
+
+  // Held: Seven Dwarfs Mine Train, Big Thunder Mountain Railroad, Pirates of the Caribbean.
+  // Remaining, in source order: Carousel of Progress, Tomorrowland Speedway, Jungle Cruise, Small
+  // World, Haunted Mansion — five, an odd count, three pages (2, 2, 1).
+  const footer0 = await footerY();
+  await expect(card.locator(TOUR_ROW)).toHaveCount(2);
+
+  await advanceHostClock(page, 5 * 1000);
+  await expect(card.locator(TOUR_ROW)).toHaveCount(2);
+  expect(await footerY()).toBe(footer0);
+
+  await advanceHostClock(page, 5 * 1000);
+  // The odd last page: one real row, padded by exactly one blank row so the footer beneath it does
+  // not move up for having one fewer ride to show — padding the two full pages above never carried.
+  await expect(card.locator(TOUR_ROW)).toHaveCount(1);
+  await expect(card.locator('[data-pwt-tour-placeholder]')).toHaveCount(1);
+  expect(await footerY()).toBe(footer0);
+});
+
+test('holds every card to the same height, whatever its own park’s shape — a Closed card, a short open card with nothing to tour, and a full leaderboard-plus-tour card together', async ({
+  page,
+}) => {
+  const roster = ['epcot', 'islands-of-adventure', 'magic-kingdom'];
+  const rides: Record<string, ParkWaitTimesRide[]> = {
+    epcot: [
+      { name: 'Test Track', wait: 60 },
+      { name: 'Spaceship Earth', wait: 10 },
+    ],
+    'islands-of-adventure': [
+      { name: 'Harry Potter and the Forbidden Journey', wait: 'Closed' },
+      { name: 'Jurassic World VelociCoaster', wait: 'Down' },
+    ],
+    'magic-kingdom': [
+      { name: 'Seven Dwarfs Mine Train', wait: 90 },
+      { name: 'Big Thunder Mountain Railroad', wait: 45 },
+      { name: 'Pirates of the Caribbean', wait: 30 },
+      { name: "Walt Disney's Carousel of Progress", wait: 10 },
+      { name: 'Tomorrowland Speedway', wait: 8 },
+    ],
+  };
+  await serveModuleData(page, (_asked, body) => {
+    const { parks } = body as { parks: string[] };
+    return {
+      status: 200,
+      data: parksPayload(parks.map((id) => onePark(id, { rides: rides[id] }))),
+    };
+  });
+  await render(page, placed(roster, { columns: 3, rows: 1 }));
+
+  const heights = await page
+    .locator(CARD)
+    .evaluateAll((els) => els.map((el) => el.getBoundingClientRect().height));
+  expect(new Set(heights).size, 'every card the same height').toBe(1);
+});
+
 test('stands down to nothing while the backend is unreachable, and stops asking it', async ({ page }) => {
   await holdHostClock(page, HOST_TIME);
 

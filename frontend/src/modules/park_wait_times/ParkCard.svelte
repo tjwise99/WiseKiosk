@@ -41,14 +41,6 @@
       tour. Distinct from `!park.available`, a failed reading; this is a successful one that simply
       found nothing open. */
   const noOpenRides = $derived(held.length === 0);
-  /** `held`, padded to exactly `HELD_COUNT` slots with `null` — a park with fewer than `HELD_COUNT`
-      numeric-wait rides still reserves every leaderboard slot's height, so the card's own sectional
-      structure and the grid rows across every card stay aligned regardless of how many rides a park
-      has open. A reserved-but-unfilled slot draws nothing (`noOpenRides` above is what a park with
-      none at all draws instead of the leaderboard entirely). */
-  const heldSlots = $derived(
-    Array.from({ length: HELD_COUNT }, (_unused, index) => held[index] ?? null),
-  );
   /** Everything the leaderboard does not hold, in the source's own order — the tour reaches all of
       it eventually rather than reordering it around the leaderboard's own ranking. */
   const remaining = $derived(rides.filter((ride) => !held.includes(ride)));
@@ -66,12 +58,14 @@
 
   const page = $derived(tick % pageCount);
   const shown = $derived(remaining.slice(page * TOUR_SIZE, page * TOUR_SIZE + TOUR_SIZE));
-  /** `shown`, padded to exactly `TOUR_SIZE` slots with `null` — an odd `remaining` count leaves the
-      last page one ride short of every other page; without padding that page's own tour section is
-      shorter, and the footer beneath it moves up a line. A reserved-but-unfilled slot draws nothing,
-      the same technique `heldSlots` uses for the leaderboard. */
-  const shownSlots = $derived(
-    Array.from({ length: TOUR_SIZE }, (_unused, index) => shown[index] ?? null),
+  /** How many blank rows the tour's *current* page is short of a full one — zero on every page
+      except a last page whose remainder does not divide evenly by `TOUR_SIZE`; that one page alone
+      is padded with blank rows of the same row height, so the footer beneath the tour holds its
+      normal line rather than moving up for having one fewer ride to show. A full page carries no
+      padding at all — there is nothing permanent reserved here, unlike a fixed `TOUR_SIZE`-slot
+      pool would be. */
+  const tourPadding = $derived(
+    Array.from({ length: TOUR_SIZE - shown.length }, (_unused, index) => index),
   );
   const pages = $derived(Array.from({ length: pageCount }, (_unused, index) => index));
 
@@ -149,16 +143,10 @@
     </div>
   {:else}
     <ol class="leaderboard" data-pwt-leaderboard>
-      {#each heldSlots as slot, index (slot?.name ?? index)}
-        {#if slot}
-          <li class="row" data-pwt-leaderboard-row>
-            {@render rideRow(slot)}
-          </li>
-        {:else}
-          <li class="row" data-pwt-leaderboard-placeholder aria-hidden="true">
-            <span class="ride-name">&nbsp;</span>
-          </li>
-        {/if}
+      {#each held as ride (ride.name)}
+        <li class="row" data-pwt-leaderboard-row>
+          {@render rideRow(ride)}
+        </li>
       {/each}
     </ol>
 
@@ -166,16 +154,15 @@
       <div class="more" data-pwt-more-waits>
         <h3 class="more-label section-label">More waits</h3>
         <ol class="tour">
-          {#each shownSlots as ride, index (ride?.name ?? index)}
-            {#if ride}
-              <li class="row" data-pwt-tour-row>
-                {@render rideRow(ride)}
-              </li>
-            {:else}
-              <li class="row" data-pwt-tour-placeholder aria-hidden="true">
-                <span class="ride-name">&nbsp;</span>
-              </li>
-            {/if}
+          {#each shown as ride (ride.name)}
+            <li class="row" data-pwt-tour-row>
+              {@render rideRow(ride)}
+            </li>
+          {/each}
+          {#each tourPadding as index (index)}
+            <li class="row" data-pwt-tour-placeholder aria-hidden="true">
+              <span class="ride-name">&nbsp;</span>
+            </li>
           {/each}
         </ol>
         <div class="footer" data-pwt-footer>
