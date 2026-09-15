@@ -369,6 +369,12 @@
        contract's own md step (./README.md § Type and spacing) — rather than a margin or padding
        on either neighbour, which would stack with it rather than set it. */
     gap: var(--space-md);
+    /* Anchors the footer to `.card`'s own bottom edge: `.card`'s `min-height` slack (above) would
+       otherwise sit as trailing space below the footer on a card shorter than the row's tallest.
+       Pushing `.more` down leaves that slack between the leaderboard and `.more` instead — stable
+       because every card's content heights are fixed, unlike a `justify-content: space-between`
+       across `.card`'s children. */
+    margin-top: auto;
   }
 
   .more-label {

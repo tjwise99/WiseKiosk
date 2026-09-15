@@ -66,6 +66,7 @@ const MODULE_UNAVAILABLE = '[data-module-unavailable]';
 const PARK_UNAVAILABLE = '[data-pwt-unavailable]';
 const LEADERBOARD_ROW = '[data-pwt-leaderboard-row]';
 const TOUR_ROW = '[data-pwt-tour-row]';
+const FOOTER = '[data-pwt-footer]';
 const FOOTER_SEGMENT = '[data-pwt-footer-segment]';
 const WAIT = '[data-pwt-wait]';
 
@@ -653,6 +654,37 @@ test('holds the footer’s own position across the tour’s pages, including a l
   await expect(card.locator(TOUR_ROW)).toHaveCount(1);
   await expect(card.locator('[data-pwt-tour-placeholder]')).toHaveCount(1);
   expect(await footerY()).toBe(footer0);
+});
+
+test('anchors the footer to the card’s own bottom edge, with nothing beneath it', async ({ page }) => {
+  // The card's own uniform min-height (`cardHeightPx`, ParkWaitTimes.svelte) can sit taller than a
+  // card's own content — read here even against a single card, the footer must sit flush with the
+  // card's own inner bottom edge (inside its padding and border) rather than leaving trailing space
+  // below it: the leftover, if any, belongs above the More Waits block, not beneath the footer.
+  await serveModuleData(page, () => ({
+    status: 200,
+    data: parksPayload([onePark('epcot', { rides: rankedRoster() })]),
+  }));
+  await render(page, placed(['epcot']));
+
+  const card = page.locator(CARD);
+  const cardBox = await card.boundingBox();
+  const footerBox = await card.locator(FOOTER).boundingBox();
+  if (!cardBox || !footerBox) {
+    throw new Error('the card or its footer did not render a box');
+  }
+  // `boundingBox` reads the card's own border box; its inner (padding) bottom edge is that box's
+  // bottom less its own bottom border and padding.
+  const { paddingBottom, borderBottomWidth } = await card.evaluate((element) => {
+    const style = getComputedStyle(element);
+    return {
+      paddingBottom: parseFloat(style.paddingBottom),
+      borderBottomWidth: parseFloat(style.borderBottomWidth),
+    };
+  });
+  const cardInnerBottom = cardBox.y + cardBox.height - paddingBottom - borderBottomWidth;
+  const gap = cardInnerBottom - (footerBox.y + footerBox.height);
+  expect(Math.abs(gap), 'the footer’s bottom edge sits flush with the card’s own inner bottom edge').toBeLessThan(1);
 });
 
 test('holds every card to the same height, whatever its own park’s shape — a Closed card, a short open card with nothing to tour, and a full leaderboard-plus-tour card together', async ({
