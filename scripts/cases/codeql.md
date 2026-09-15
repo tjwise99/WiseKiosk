@@ -45,7 +45,7 @@ diff view's own behaviour rather than the pattern no longer firing.
 
 - **No case proves a seed *stops* raising its alert once fixed.** Every other recorded gate in this
   repository pairs its must-fail row with a must-pass row over the same seed, bumped or corrected
-  ([`check-boundary.md`](check-boundary.md)'s pattern). The throwaway branch was deleted after one
+  ([`check-arch.md`](check-arch.md)'s pattern). The throwaway branch was deleted after one
   observation in each direction rather than pushed a third time with the vulnerable lines removed,
   because the four rows above already demonstrate the analysis reaches and reports each pattern —
   what is unverified is only that removing the pattern silences the specific alert rather than some

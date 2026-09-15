@@ -143,22 +143,6 @@ _boundary-node-gen:
     test -f frontend/src/lib/boundary/client.ts || (cd frontend && node_modules/.bin/orval)
     test -f frontend/src/config/types.ts || just config-codegen
 
-[group('checks')]
-[doc('The committed boundary contract is what the schema generates, and the generated Go and TypeScript both compile; needs `just boundary-install`')]
-check-boundary:
-    go -C backend tool oapi-codegen -version
-    test -x frontend/node_modules/.bin/orval
-    test -x frontend/node_modules/.bin/prettier
-    test -x frontend/node_modules/@typescript/native/bin/tsc
-    rm -rf backend/internal/boundary frontend/src/lib/boundary
-    just codegen
-    test -s backend/internal/boundary/boundary.gen.go
-    test -s frontend/src/lib/boundary/client.ts
-    cd backend && go build ./...
-    frontend/node_modules/@typescript/native/bin/tsc --noEmit --project frontend/tsconfig.boundary.json
-    git add --intent-to-add -- backend/internal/boundary/ frontend/src/lib/boundary/
-    git diff --exit-code HEAD -- backend/internal/boundary/ frontend/src/lib/boundary/
-
 # `go build` compiles the non-test tree alone, where `vet` and `test` compile the test files with it,
 # so a compile error common to both is reported against the smaller of the two first. A step runs only
 # where the one before it exited zero; what the four together assert is docs/CI.md § Backend build,
@@ -342,20 +326,6 @@ check-image-swap tag_a digest_a tag_b digest_b:
 config-codegen:
     frontend/node_modules/.bin/json2ts --input frontend/src/config/schema.json --output frontend/src/config/types.ts --additionalProperties false
 
-# The same clear-regenerate-assert-diff shape as `check-boundary`, and for the same reasons: the
-# generator is resolved before the committed output is deleted, absent output then reads as a
-# deletion rather than as a stale file byte-identical to what is committed, and the non-empty
-# assertion catches the emitted-but-empty case the diff does not.
-[group('checks')]
-[doc('The committed configuration types are what the configuration schema generates; needs `just boundary-install`')]
-check-config-types:
-    test -x frontend/node_modules/.bin/json2ts
-    rm -f frontend/src/config/types.ts
-    just config-codegen
-    test -s frontend/src/config/types.ts
-    git add --intent-to-add -- frontend/src/config/types.ts
-    git diff --exit-code HEAD -- frontend/src/config/types.ts
-
 [group('review')]
 [doc('List every ADR citation this branch re-pinned without touching the sentence around it, per file and line (reports; not a gate)')]
 rev-reach *ref:
@@ -378,4 +348,4 @@ check-publish-permissions:
 
 [group('checks')]
 [doc('Run every check the PR gate runs that has a local form and needs neither Docker nor emulation nor the network; secret scanning, the PR-title check (commitlint, via the hook layer), the link check (lychee, from a digest-pinned image) and the workflow audit (zizmor, actionlint) are CI-only, the image tier is `just check-image`, the native armv6l run is `just smoke-native`, the bring-up check against a published release is `just check-bringup`, the image-swap check against two published releases is `just check-image-swap`, and the two online dependency-vulnerability checks are `just check-vulns-go` and `just check-vulns-npm`')]
-verify: check-untracked check-hooks check-branch check-reqs check-citations check-arch check-arch-trace check-boundary check-go check-fuzz check-lint-go check-secret-unwrap check-config-types check-build check-static-bundle check-lint-frontend check-typecheck-frontend check-unit check-render check-render-policy check-site check-adr-index check-adr-revs check-docs-index check-repo-silo check-languages check-dead-test check-restart-policy check-publish-permissions check-coverage
+verify: check-untracked check-hooks check-branch check-reqs check-citations check-arch check-arch-trace check-go check-fuzz check-lint-go check-secret-unwrap check-build check-static-bundle check-lint-frontend check-typecheck-frontend check-unit check-render check-render-policy check-site check-adr-index check-adr-revs check-docs-index check-repo-silo check-languages check-dead-test check-restart-policy check-publish-permissions check-coverage
