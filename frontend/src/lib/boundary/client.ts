@@ -97,6 +97,62 @@ export interface WeatherPayload {
   daily: WeatherDay[];
 }
 
+/**
+ * The parks a request names. It is the whole of what this route reads of a request.
+ */
+export interface ParkWaitTimesRequest {
+  /** The parks the answer is about, each drawn from this module's supported set (SRS055<!-- The park-wait-times module declares the known-good constraint the park it is asked about must satisfy -->). */
+  parks: string[];
+}
+
+/**
+ * The park's operating hours for the day. Absent where the source reports none.
+ */
+export interface ParkWaitTimesHours {
+  /** When the park opens today, as an ISO 8601 timestamp carrying the park's own UTC offset. */
+  open: string;
+  /** When the park closes today, as an ISO 8601 timestamp carrying the park's own UTC offset. */
+  close: string;
+}
+
+/**
+ * A ride's current wait: a length of time in minutes, or the not-operating state it is in — `"Down"`, `"Closed"` or `"Refurb"` — in the one JSON value rather than two fields a component would have to read together (SRS061<!-- The park-wait-times module draws a wait as the time or the not-operating state it is handed -->). Untyped here rather than `oneOf`: oapi-codegen's generated union type would pull in a runtime dependency, and this backend's runtime dependency set is empty ([ADR 0008 rev 5](../docs/decisions/0008-boundary-contract-openapi-codegen.md)); the shaping library and the component each read it with their own type switch instead.
+ */
+export interface ParkWaitTimesWait {}
+
+/**
+ * One ride's name and its current wait.
+ */
+export interface ParkWaitTimesRide {
+  /** The ride's name. */
+  name: string;
+  wait: ParkWaitTimesWait;
+}
+
+/**
+ * One park's reading, or why it has none. A park whose own upstream calls failed carries `available: false` and a reason rather than failing the whole request — the rest of the parks a request named are unaffected.
+ */
+export interface ParkWaitTimesPark {
+  /** The park's identity, echoing the request. */
+  id: string;
+  /** The park's name. */
+  name: string;
+  /** Whether this park's own reading could be produced. */
+  available: boolean;
+  /** Plain-language text the module renders in this park's place. Present only where `available` is false. */
+  message?: string;
+  hours?: ParkWaitTimesHours;
+  /** Every one of the park's rides, each with its name and current wait (SRS056<!-- The park-wait-times module puts each park's ride waits across the boundary -->). Present only where `available` is true. */
+  rides?: ParkWaitTimesRide[];
+}
+
+/**
+ * The park-wait-times module's payload: one entry per park the request named, in the order named (SRS054<!-- The park-wait-times module reports on the parks its configuration names -->).
+ */
+export interface ParkWaitTimesPayload {
+  parks: ParkWaitTimesPark[];
+}
+
 export type getHealthzResponse200 = {
   data: void;
   status: 200;
@@ -215,4 +271,92 @@ export const postApiWeather = async (
     status: res.status,
     headers: res.headers,
   } as postApiWeatherResponse;
+};
+
+export type postApiParkWaitTimesResponse200 = {
+  data: ParkWaitTimesPayload;
+  status: 200;
+};
+
+export type postApiParkWaitTimesResponse400 = {
+  data: ClientRejection;
+  status: 400;
+};
+
+export type postApiParkWaitTimesResponse429 = {
+  data: ClientRejection;
+  status: 429;
+};
+
+export type postApiParkWaitTimesResponse502 = {
+  data: UpstreamFailure;
+  status: 502;
+};
+
+export type postApiParkWaitTimesResponse503 = {
+  data: UpstreamFailure;
+  status: 503;
+};
+
+export type postApiParkWaitTimesResponse504 = {
+  data: UpstreamFailure;
+  status: 504;
+};
+
+export type postApiParkWaitTimesResponseSuccess =
+  postApiParkWaitTimesResponse200 & {
+    headers: Headers;
+  };
+export type postApiParkWaitTimesResponseError = (
+  | postApiParkWaitTimesResponse400
+  | postApiParkWaitTimesResponse429
+  | postApiParkWaitTimesResponse502
+  | postApiParkWaitTimesResponse503
+  | postApiParkWaitTimesResponse504
+) & {
+  headers: Headers;
+};
+
+export type postApiParkWaitTimesResponse =
+  postApiParkWaitTimesResponseSuccess | postApiParkWaitTimesResponseError;
+
+export const getPostApiParkWaitTimesUrl = () => {
+  return `/api/park-wait-times`;
+};
+
+/**
+ * @summary Report the current wait times for the parks a request names.
+ */
+export const postApiParkWaitTimes = async (
+  parkWaitTimesRequest: ParkWaitTimesRequest,
+  options?: RequestInit,
+): Promise<postApiParkWaitTimesResponse> => {
+  const getHeaders = (
+    h?: NonNullable<RequestInit["headers"]>,
+  ): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Array.isArray(h)) return Object.fromEntries(h);
+    return h;
+  };
+  const res = await fetch(getPostApiParkWaitTimesUrl(), {
+    ...options,
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      ...getHeaders(options?.headers),
+    },
+    body: JSON.stringify(parkWaitTimesRequest),
+  });
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+
+  const data: postApiParkWaitTimesResponse["data"] = body
+    ? JSON.parse(body)
+    : {};
+  return {
+    data,
+    status: res.status,
+    headers: res.headers,
+  } as postApiParkWaitTimesResponse;
 };

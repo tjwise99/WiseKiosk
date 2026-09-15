@@ -1,0 +1,275 @@
+{
+  "id": "75ea578a-adc8-4116-a54d-dccb60765ef9",
+  "name": "Magic Kingdom Park",
+  "entityType": "PARK",
+  "timezone": "America/New_York",
+  "liveData": [
+    {
+      "id": "75ea578a-adc8-4116-a54d-dccb60765ef9",
+      "name": "Magic Kingdom Park",
+      "entityType": "PARK",
+      "parkId": null,
+      "externalId": "80007944;entityType=theme-park",
+      "queue": {
+        "STANDBY": {
+          "waitTime": null
+        }
+      },
+      "status": "OPERATING",
+      "lastUpdated": "2024-05-14T13:36:04.087Z"
+    },
+    {
+      "id": "2ebfb38c-5cb5-4de1-86c0-f7af14188022",
+      "name": "The Hall of Presidents",
+      "entityType": "ATTRACTION",
+      "parkId": "75ea578a-adc8-4116-a54d-dccb60765ef9",
+      "externalId": "80069754;entityType=Attraction",
+      "queue": {
+        "STANDBY": {
+          "waitTime": null
+        }
+      },
+      "status": "CLOSED",
+      "forecast": [
+        {
+          "time": "2026-09-13T08:00:00-04:00",
+          "waitTime": 0,
+          "percentage": 0
+        },
+        {
+          "time": "2026-09-13T09:00:00-04:00",
+          "waitTime": 15,
+          "percentage": 12
+        },
+        {
+          "time": "2026-09-13T10:00:00-04:00",
+          "waitTime": 15,
+          "percentage": 12
+        },
+        {
+          "time": "2026-09-13T11:00:00-04:00",
+          "waitTime": 15,
+          "percentage": 12
+        },
+        {
+          "time": "2026-09-13T12:00:00-04:00",
+          "waitTime": 15,
+          "percentage": 12
+        },
+        {
+          "time": "2026-09-13T13:00:00-04:00",
+          "waitTime": 15,
+          "percentage": 12
+        },
+        {
+          "time": "2026-09-13T14:00:00-04:00",
+          "waitTime": 15,
+          "percentage": 12
+        },
+        {
+          "time": "2026-09-13T15:00:00-04:00",
+          "waitTime": 15,
+          "percentage": 12
+        },
+        {
+          "time": "2026-09-13T16:00:00-04:00",
+          "waitTime": 0,
+          "percentage": 0
+        },
+        {
+          "time": "2026-09-13T17:00:00-04:00",
+          "waitTime": 0,
+          "percentage": 0
+        }
+      ],
+      "operatingHours": [
+        {
+          "type": "Operating",
+          "endTime": "2026-09-13T16:00:00-04:00",
+          "startTime": "2026-09-13T09:00:00-04:00"
+        }
+      ],
+      "lastUpdated": "2026-09-13T20:00:28.675Z"
+    },
+    {
+      "id": "0aae716c-af13-4439-b638-d75fb1649df3",
+      "name": "Mad Tea Party",
+      "entityType": "ATTRACTION",
+      "parkId": "75ea578a-adc8-4116-a54d-dccb60765ef9",
+      "externalId": "80010162;entityType=Attraction",
+      "queue": {
+        "STANDBY": {
+          "waitTime": 10
+        },
+        "RETURN_TIME": {
+          "state": "FINISHED",
+          "returnEnd": null,
+          "returnStart": null
+        }
+      },
+      "status": "OPERATING",
+      "operatingHours": [
+        {
+          "type": "Early Entry",
+          "endTime": "2026-09-13T08:00:00-04:00",
+          "startTime": "2026-09-13T07:30:00-04:00"
+        },
+        {
+          "type": "Operating",
+          "endTime": "2026-09-13T18:00:00-04:00",
+          "startTime": "2026-09-13T08:00:00-04:00"
+        },
+        {
+          "type": "Special Ticketed Event",
+          "endTime": "2026-09-14T00:00:00-04:00",
+          "startTime": "2026-09-13T18:30:00-04:00"
+        }
+      ],
+      "lastUpdated": "2026-09-14T00:51:39.709Z"
+    },
+    {
+      "id": "f010bc01-b450-4476-a5f3-a5f2813104b2",
+      "name": "Casey Jr. Splash 'N' Soak Station",
+      "entityType": "ATTRACTION",
+      "parkId": "75ea578a-adc8-4116-a54d-dccb60765ef9",
+      "externalId": "16512939;entityType=Attraction",
+      "status": "CLOSED",
+      "operatingHours": [
+        {
+          "type": "Operating",
+          "endTime": "2026-09-13T18:00:00-04:00",
+          "startTime": "2026-09-13T08:00:00-04:00"
+        }
+      ],
+      "lastUpdated": "2026-09-13T22:00:01.116Z"
+    },
+    {
+      "id": "9d4d5229-7142-44b6-b4fb-528920969a2c",
+      "name": "Seven Dwarfs Mine Train",
+      "entityType": "ATTRACTION",
+      "parkId": "75ea578a-adc8-4116-a54d-dccb60765ef9",
+      "externalId": "16767284;entityType=Attraction",
+      "queue": {
+        "STANDBY": {
+          "waitTime": 25
+        },
+        "PAID_RETURN_TIME": {
+          "price": {
+            "amount": 1100,
+            "currency": "USD",
+            "formatted": "$11.00"
+          },
+          "state": "FINISHED",
+          "returnEnd": null,
+          "returnStart": null
+        }
+      },
+      "status": "OPERATING",
+      "operatingHours": [
+        {
+          "type": "Early Entry",
+          "endTime": "2026-09-13T08:00:00-04:00",
+          "startTime": "2026-09-13T07:30:00-04:00"
+        },
+        {
+          "type": "Operating",
+          "endTime": "2026-09-13T18:00:00-04:00",
+          "startTime": "2026-09-13T08:00:00-04:00"
+        },
+        {
+          "type": "Special Ticketed Event",
+          "endTime": "2026-09-14T00:00:00-04:00",
+          "startTime": "2026-09-13T18:30:00-04:00"
+        }
+      ],
+      "lastUpdated": "2026-09-14T01:15:39.585Z"
+    },
+    {
+      "id": "8183f3f2-1b59-4b9c-b634-6a863bdf8d84",
+      "name": "Walt Disney's Carousel of Progress",
+      "entityType": "ATTRACTION",
+      "parkId": "75ea578a-adc8-4116-a54d-dccb60765ef9",
+      "externalId": "80010232;entityType=Attraction",
+      "status": "REFURBISHMENT",
+      "operatingHours": [],
+      "lastUpdated": "2026-09-04T18:16:27.839Z"
+    },
+    {
+      "id": "924a3b2c-6b4b-49e5-99d3-e9dc3f2e8a48",
+      "name": "The Barnstormer",
+      "entityType": "ATTRACTION",
+      "parkId": "75ea578a-adc8-4116-a54d-dccb60765ef9",
+      "externalId": "16491297;entityType=Attraction",
+      "queue": {
+        "STANDBY": {
+          "waitTime": 5
+        },
+        "RETURN_TIME": {
+          "state": "FINISHED",
+          "returnEnd": null,
+          "returnStart": null
+        }
+      },
+      "status": "OPERATING",
+      "operatingHours": [
+        {
+          "type": "Early Entry",
+          "endTime": "2026-09-13T08:00:00-04:00",
+          "startTime": "2026-09-13T07:30:00-04:00"
+        },
+        {
+          "type": "Operating",
+          "endTime": "2026-09-13T18:00:00-04:00",
+          "startTime": "2026-09-13T08:00:00-04:00"
+        },
+        {
+          "type": "Special Ticketed Event",
+          "endTime": "2026-09-14T00:00:00-04:00",
+          "startTime": "2026-09-13T18:30:00-04:00"
+        }
+      ],
+      "lastUpdated": "2026-09-13T22:30:30.370Z"
+    },
+    {
+      "id": "90d79335-c907-4069-a021-d0fe1ec73ae2",
+      "name": "Cinderella Castle",
+      "entityType": "ATTRACTION",
+      "parkId": "75ea578a-adc8-4116-a54d-dccb60765ef9",
+      "externalId": "16767209;entityType=Attraction",
+      "status": "CLOSED",
+      "operatingHours": [
+        {
+          "type": "Operating",
+          "endTime": "2026-09-13T18:00:00-04:00",
+          "startTime": "2026-09-13T08:00:00-04:00"
+        }
+      ],
+      "lastUpdated": "2026-09-13T22:00:01.240Z"
+    },
+    {
+      "id": "c1f39c15-7845-46b5-b6fd-2ae368a32a37",
+      "name": "Captain Jack\u2019s Buccaneer Bash at Mickey\u2019s Not-So-Scary Halloween Party",
+      "entityType": "SHOW",
+      "parkId": "75ea578a-adc8-4116-a54d-dccb60765ef9",
+      "externalId": "412734987;entityType=Entertainment",
+      "status": "OPERATING",
+      "showtimes": [
+        {
+          "type": "Special Ticketed Event",
+          "endTime": "2026-09-14T00:00:00-04:00",
+          "startTime": "2026-09-13T19:00:00-04:00"
+        }
+      ],
+      "lastUpdated": "2026-09-13T04:00:41.331Z"
+    },
+    {
+      "id": "6ea670b8-3097-4d60-b69c-94e16071da17",
+      "name": "Jungle Navigation Co. LTD Skipper Canteen",
+      "entityType": "RESTAURANT",
+      "parkId": "75ea578a-adc8-4116-a54d-dccb60765ef9",
+      "externalId": "18185631;entityType=restaurant",
+      "status": "OPERATING",
+      "lastUpdated": "2026-09-13T22:45:06.317Z"
+    }
+  ]
+}

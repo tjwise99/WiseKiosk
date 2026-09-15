@@ -1,18 +1,30 @@
-active: false
+active: true
 derived: false
 header: |
-  Pending: the longest waits are kept in view
+  The longest current waits are kept in view
 level: 97
 links:
-- SRS058: By4HtwrVndslJzygDUOVsxFhrBWAbUhxwa93xTSN5A8=
+- SRS058: DINNllNPPJpQkJmO3p1sWcCO1rkwuryq2QSq06QCMY0=
 normative: true
 ref: ''
-reviewed: Iyh5NDQnnBD_YqMyCgG3ywUdtpTIrVGco-r_bmXVbMY=
-status: proposed
+references:
+- keyword: 'test(''TST075: holds each park’s longest current waits in view, unmoved
+    by the rotation of the rest'', async ({'
+  path: frontend/src/modules/park_wait_times/park_wait_times.spec.ts
+  sha: 7972957bc3b8154e287bf1f6446e6a300d946c5a394737b57fddfad7cd9c1d2e
+  type: file
+- keyword: 'test(''TST075: a not-operating ride does not take a leaderboard place
+    — it tours instead'', async ({ page }) => {'
+  path: frontend/src/modules/park_wait_times/park_wait_times.spec.ts
+  sha: 7972957bc3b8154e287bf1f6446e6a300d946c5a394737b57fddfad7cd9c1d2e
+  type: file
+reviewed: Bq3cabXAId2cxQzkeXWqZTvdl_Dk__VKHu1tJG_eVgw=
+status: accepted
 text: |
-  Pending: render test that, handed a payload whose rides carry differing waits, the rides kept in view
-  are those with the longest waits and they remain in view across the rotation of the rest. Lands with
-  the wait-times implementation (#309); activated and given a references entry then.
+  Render test that, handed a park's rides with differing waits, the leaderboard holds the three longest
+  waits that are a length of time, descending — a not-operating ride, carrying no such length to rank,
+  takes no leaderboard place regardless of where it sits in the source, and still reads in the rotation
+  of the rest rather than being dropped — and reads unmoved while that rotation advances underneath it.
 verification-justification: |
   Settles that the persistent reading is the longest waits and that it persists. Leaves unproven that the
   number held is the right one to hold, which is a composition judgement.
