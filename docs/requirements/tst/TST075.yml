@@ -4,7 +4,7 @@ header: |
   The longest current waits are kept in view
 level: 97
 links:
-- SRS058: YeZofK9qpJLBJGqZjpw05VuR-lFhJTRigC5hDQRPEU4=
+- SRS058: DINNllNPPJpQkJmO3p1sWcCO1rkwuryq2QSq06QCMY0=
 normative: true
 ref: ''
 references:
@@ -18,13 +18,13 @@ references:
   path: frontend/src/modules/park_wait_times/park_wait_times.spec.ts
   sha: db50505415f909cbb83e9e0121d56c28e4db76841a6b4e1297dbaa1f99451918
   type: file
-reviewed: 66PrPM_K8WaQ1Ul8n2v5upZwO5V8msj8rWvWjhCeKvk=
+reviewed: VdZnrYxs8FliUkhCM9Vl5PORj7B1tQO3R6gH9AUHsTk=
 status: accepted
 text: |
   Render test that, handed a park's rides with differing waits, the leaderboard holds the three longest
-  numeric waits, descending — a not-operating ride, carrying no figure to rank, takes no leaderboard
-  place regardless of where it sits in the source, and still reads in the rotation of the rest rather
-  than being dropped — and reads unmoved while that rotation advances underneath it.
+  waits that are a length of time, descending — a not-operating ride, carrying no such length to rank,
+  takes no leaderboard place regardless of where it sits in the source, and still reads in the rotation
+  of the rest rather than being dropped — and reads unmoved while that rotation advances underneath it.
 verification-justification: |
   Settles that the persistent reading is the longest waits and that it persists. Leaves unproven that the
   number held is the right one to hold, which is a composition judgement.
