@@ -116,7 +116,7 @@ export interface ParkWaitTimesHours {
 }
 
 /**
- * A ride's current wait: a length of time in minutes, or the not-operating state it is in — `"Down"`, `"Closed"` or `"Refurbishment"` — in the one JSON value rather than two fields a component would have to read together (SRS061<!-- The park-wait-times module draws a wait as the time or the not-operating state it is handed -->). Untyped here rather than `oneOf`: oapi-codegen's generated union type would pull in a runtime dependency, and this backend's runtime dependency set is empty ([ADR 0008 rev 5](../docs/decisions/0008-boundary-contract-openapi-codegen.md)); the shaping library and the component each read it with their own type switch instead.
+ * A ride's current wait: a length of time in minutes, or the not-operating state it is in — `"Down"`, `"Closed"` or `"Refurb"` — in the one JSON value rather than two fields a component would have to read together (SRS061<!-- The park-wait-times module draws a wait as the time or the not-operating state it is handed -->). Untyped here rather than `oneOf`: oapi-codegen's generated union type would pull in a runtime dependency, and this backend's runtime dependency set is empty ([ADR 0008 rev 5](../docs/decisions/0008-boundary-contract-openapi-codegen.md)); the shaping library and the component each read it with their own type switch instead.
  */
 export interface ParkWaitTimesWait {}
 

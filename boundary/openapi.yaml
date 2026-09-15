@@ -401,7 +401,7 @@ components:
     ParkWaitTimesWait:
       description: >-
         A ride's current wait: a length of time in minutes, or the not-operating state it is in —
-        `"Down"`, `"Closed"` or `"Refurbishment"` — in the one JSON value rather than two fields a
+        `"Down"`, `"Closed"` or `"Refurb"` — in the one JSON value rather than two fields a
         component would have to read together
         (SRS061<!-- The park-wait-times module draws a wait as the time or the not-operating state
         it is handed -->). Untyped here rather than `oneOf`: oapi-codegen's generated union type

@@ -110,7 +110,7 @@ func scheduleURL(entityID string) string {
 const (
 	waitDown          = "Down"
 	waitClosed        = "Closed"
-	waitRefurbishment = "Refurbishment"
+	waitRefurbishment = "Refurb"
 )
 
 // liveResponse is the source's /live response, read no further than this
