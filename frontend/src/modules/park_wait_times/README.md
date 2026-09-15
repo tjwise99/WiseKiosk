@@ -60,7 +60,8 @@ rotation.
 
 ### More waits — the rotation
 
-Beneath a *More waits* label and its divider, the rest of the park's rides tour through **two at a
+Beneath a plain divider (the label dropped to save vertical space; owner ruling, #309), the rest of
+the park's rides tour through **two at a
 time**, advancing on a configured interval (the same on-an-interval idiom as the weather module's
 series toggle). Everything the leaderboard does not hold still shows, eventually — so the module is
 both a glance ("how bad is it right now") and, given a few seconds, a full reading of the park. Each
@@ -111,7 +112,6 @@ monitor (the contract's calibrated bounds).
 | park name | `body` (uppercase, tracked) |
 | park hours | `section-header` |
 | leaderboard ride name, leaderboard wait | `section-header` |
-| *More waits* label | `caption` (uppercase, tracked) |
 | rotation ride name, rotation wait | `section-header` |
 | a `Down` / `Closed` / `Refurb` state word | `caption` (uppercase, tracked) |
 | closed-park icon | `annotation` |
@@ -126,18 +126,18 @@ traded for width here: the marquee is what a long ride name gives up its width f
 original one-size step-down, is what fixes the card's own width instead.
 
 Within a card, the header is set from the leaderboard by `md`; leaderboard rows and rotation rows from
-each other by `sm`; a *More waits* label from its rows by `md`; the footer bar from the rotation by
+each other by `sm`; the More Waits divider from its rows by `md`; the footer bar from the rotation by
 `md`. Cards are set apart in the grid by `lg`.
 
 ## Grouping, and coherence with the rest of the display
 
 Hierarchy is carried by **size, weight, and position only — never by dimming or colour** (the
-contract's emission rule). Every reading — park name, hours, ride names, waits, the *More waits*
-label — is drawn at `--emission-content`; the only dim marks are the header and *More waits* dividers
-and the card outline, all `--emission-stroke` below the emission ceiling, and the footer bar's unfilled
-segments. This is the display's coherence device: the same uppercase-tracked label idiom (this
-module's *More waits*, the weather module's group labels, the clock's weekday), the same dim-stroke
-divider weight everywhere, the same type scale, and `tabular-nums` throughout.
+contract's emission rule). Every reading — park name, hours, ride names, waits — is drawn at
+`--emission-content`; the only dim marks are the header and More Waits dividers and the card outline,
+all `--emission-stroke` below the emission ceiling, and the footer bar's unfilled segments. This is
+the display's coherence device: the same uppercase-tracked label idiom (the weather module's group
+labels, the clock's weekday), the same dim-stroke divider weight everywhere, the same type scale, and
+`tabular-nums` throughout.
 
 ## States
 

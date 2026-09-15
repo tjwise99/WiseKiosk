@@ -64,7 +64,10 @@ const CARD = '[data-pwt-card]';
 const LOADING = '[data-module-loading]';
 const MODULE_UNAVAILABLE = '[data-module-unavailable]';
 const PARK_UNAVAILABLE = '[data-pwt-unavailable]';
+const HEADER = '[data-pwt-header]';
+const LEADERBOARD = '[data-pwt-leaderboard]';
 const LEADERBOARD_ROW = '[data-pwt-leaderboard-row]';
+const MORE_WAITS = '[data-pwt-more-waits]';
 const TOUR_ROW = '[data-pwt-tour-row]';
 const FOOTER = '[data-pwt-footer]';
 const FOOTER_SEGMENT = '[data-pwt-footer-segment]';
@@ -687,7 +690,71 @@ test('anchors the footer to the card’s own bottom edge, with nothing beneath i
   expect(Math.abs(gap), 'the footer’s bottom edge sits flush with the card’s own inner bottom edge').toBeLessThan(1);
 });
 
-test('holds every card to the same height, whatever its own park’s shape — a Closed card, a short open card with nothing to tour, and a full leaderboard-plus-tour card together', async ({
+test('holds two full cards — a leaderboard and its own More Waits block — to the same natural height, neither forced by a min-height', async ({
+  page,
+}) => {
+  // Two different real rosters, each with a full three-ride leaderboard plus at least one page of
+  // touring rides, so a coincidence of ride counts cannot explain the two landing on the same height
+  // — every real park draws the same structure, so with nothing forcing it they line up on their own
+  // (owner ruling, #309).
+  const rides: Record<string, ParkWaitTimesRide[]> = {
+    'magic-kingdom': rankedRoster(),
+    epcot: [
+      { name: 'Guardians of the Galaxy: Cosmic Rewind', wait: 75 },
+      { name: 'Remy’s Ratatouille Adventure', wait: 40 },
+      { name: 'Test Track', wait: 25 },
+      { name: 'Soarin’', wait: 15 },
+    ],
+  };
+  await serveModuleData(page, (_asked, body) => {
+    const { parks } = body as { parks: string[] };
+    return { status: 200, data: parksPayload(parks.map((id) => onePark(id, { rides: rides[id] }))) };
+  });
+  await render(page, placed(['magic-kingdom', 'epcot'], { columns: 2, rows: 1 }));
+
+  const cards = page.locator(CARD);
+  const heights = await cards.evaluateAll((els) => els.map((el) => el.getBoundingClientRect().height));
+  expect(Math.abs(heights[0] - heights[1]), 'both full cards land at the same natural height').toBeLessThan(1);
+
+  // Neither card carries a forced floor: `.card-closed`'s own `min-height` (ParkCard.svelte) applies
+  // only to a Closed card, so an open card's `min-height` is left at the property's own initial
+  // value — `auto`, not `0px`, being a grid item (a grid item's `auto` does not stretch a card past
+  // its own content the way it would default `align-items` to do; `.grid`'s own `align-items: start`
+  // is what leaves each card at its own height, ParkWaitTimes.svelte).
+  const minHeights = await cards.evaluateAll((els) => els.map((el) => getComputedStyle(el).minHeight));
+  expect(minHeights).toEqual(['auto', 'auto']);
+});
+
+test('leaves no slack between the leaderboard and the More Waits divider — the same gap as the header’s own, not a leftover from forcing height', async ({
+  page,
+}) => {
+  await serveModuleData(page, () => ({
+    status: 200,
+    data: parksPayload([onePark('epcot', { rides: rankedRoster() })]),
+  }));
+  await render(page, placed(['epcot']));
+
+  const card = page.locator(CARD);
+  const headerBox = await card.locator(HEADER).boundingBox();
+  const leaderboardBox = await card.locator(LEADERBOARD).boundingBox();
+  const moreBox = await card.locator(MORE_WAITS).boundingBox();
+  if (!headerBox || !leaderboardBox || !moreBox) {
+    throw new Error('the header, leaderboard or More Waits block did not render a box');
+  }
+  const headerToLeaderboardGap = leaderboardBox.y - (headerBox.y + headerBox.height);
+  const leaderboardToMoreGap = moreBox.y - (leaderboardBox.y + leaderboardBox.height);
+  // `.card`'s own single flex `gap` (the styling contract's `md` step) is what sets every one of its
+  // children apart, header-to-leaderboard the same as leaderboard-to-More-Waits — proving there is no
+  // extra slack between the leaderboard and More Waits beyond that one gap. The bug this rewrites
+  // forced a taller card and pushed More Waits down (`margin-top: auto`) to fill it, landing the
+  // difference here instead.
+  expect(
+    Math.abs(leaderboardToMoreGap - headerToLeaderboardGap),
+    'the leaderboard-to-More-Waits gap is the same as the header-to-leaderboard gap',
+  ).toBeLessThan(1);
+});
+
+test('holds the Closed card to a full card’s own height, without forcing an open card that has less to show', async ({
   page,
 }) => {
   const roster = ['epcot', 'islands-of-adventure', 'magic-kingdom'];
@@ -717,10 +784,50 @@ test('holds every card to the same height, whatever its own park’s shape — a
   });
   await render(page, placed(roster, { columns: 3, rows: 1 }));
 
-  const heights = await page
-    .locator(CARD)
-    .evaluateAll((els) => els.map((el) => el.getBoundingClientRect().height));
-  expect(new Set(heights).size, 'every card the same height').toBe(1);
+  const heights = Object.fromEntries(
+    await page
+      .locator(CARD)
+      .evaluateAll((els) =>
+        els.map((el) => [el.getAttribute('data-pwt-park') ?? '', el.getBoundingClientRect().height] as const),
+      ),
+  );
+
+  // The Closed card (no ride reporting a length of time) is forced to match a full
+  // leaderboard-plus-More-Waits card's own height (`.card-closed`, ParkCard.svelte) — the one card
+  // whose real content is shorter than that structure.
+  expect(
+    Math.abs(heights['islands-of-adventure'] - heights['magic-kingdom']),
+    'the Closed card matches the full card’s height',
+  ).toBeLessThan(1);
+
+  // epcot holds a leaderboard (two numeric rides) but nothing left to tour — open, so it is not
+  // `.card-closed` and is left at its own, smaller, natural height rather than forced to match: only
+  // the Closed card is forced (owner ruling, #309).
+  expect(
+    heights['magic-kingdom'] - heights['epcot'],
+    'an open card with less to show is left shorter, not forced to match',
+  ).toBeGreaterThan(10);
+
+  // Neither `.card`'s own min-height nor `.grid`'s own item-stretch (its default `align-items`,
+  // ParkWaitTimes.svelte) may leave epcot's own box taller than its own content: the card's inner
+  // bottom edge (its border, one card-padding below the leaderboard) sits flush against the
+  // leaderboard itself, not against the row's tallest neighbour.
+  const epcotBox = await page.locator(`${CARD}[data-pwt-park="epcot"]`).boundingBox();
+  const epcotLeaderboardBox = await page.locator(`${CARD}[data-pwt-park="epcot"] ${LEADERBOARD}`).boundingBox();
+  if (!epcotBox || !epcotLeaderboardBox) {
+    throw new Error('epcot’s card or leaderboard did not render a box');
+  }
+  const cardBottomChrome = await page
+    .locator(`${CARD}[data-pwt-park="epcot"]`)
+    .evaluate((el) => {
+      const style = getComputedStyle(el);
+      return parseFloat(style.paddingBottom) + parseFloat(style.borderBottomWidth);
+    });
+  const trailingSpace =
+    epcotBox.y + epcotBox.height - (epcotLeaderboardBox.y + epcotLeaderboardBox.height) - cardBottomChrome;
+  expect(Math.abs(trailingSpace), 'no dead space below epcot’s own leaderboard, past its own padding').toBeLessThan(
+    1,
+  );
 });
 
 test('stands down to nothing while the backend is unreachable, and stops asking it', async ({ page }) => {

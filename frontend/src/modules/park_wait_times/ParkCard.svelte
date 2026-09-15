@@ -103,7 +103,7 @@
   }
 </script>
 
-<li class="card" data-pwt-card data-pwt-park={park.id}>
+<li class="card" class:card-closed={park.available && noOpenRides} data-pwt-card data-pwt-park={park.id}>
   <div class="header" data-pwt-header>
     <div class="identity">
       {#if icon}
@@ -152,7 +152,7 @@
 
     {#if remaining.length > 0}
       <div class="more" data-pwt-more-waits>
-        <h3 class="more-label section-label">More waits</h3>
+        <div class="more-divider" data-pwt-more-divider aria-hidden="true"></div>
         <ol class="tour">
           {#each shown as ride (ride.name)}
             <li class="row" data-pwt-tour-row>
@@ -183,11 +183,19 @@
     padding: var(--space-md);
     border: calc(var(--divider-stroke-width) * 2) solid var(--emission-stroke);
     border-radius: var(--space-sm);
-    /* The tallest card any park draws (ParkWaitTimes.svelte's `cardHeightPx`) — a Closed card, or
-       an open one with fewer rides and no tour, is not left shorter than its neighbours. `.closed`'s
-       own `flex: 1` fills the reserved height by centring in it; an open card with nothing to grow
-       into leaves the difference as trailing space below its own content, drawing nothing new to
-       fill it. */
+    /* `--pwt-card-height` (below) is `getBoundingClientRect().height` — a border box. Without this,
+       `min-height`'s content-box default would add this card's own padding and border on top of
+       that measurement a second time, growing the Closed card past the full card it is meant to
+       match. */
+    box-sizing: border-box;
+  }
+
+  /* Only the Closed card — the one with real content shorter than a real park's leaderboard plus
+     its own More Waits block — is forced to match: `--pwt-card-height` (ParkWaitTimes.svelte's
+     `cardHeightPx`) is the tallest card actually laid out, in practice a full card. An open card is
+     left at its own natural height, so it never holds slack for `.closed`'s centring to fill and
+     there is nothing between its own leaderboard and More Waits but the card's own `gap` above. */
+  .card-closed {
     min-height: var(--pwt-card-height);
   }
 
@@ -199,7 +207,7 @@
 
   /* A park with no ride reporting a length of time (`noOpenRides`) draws its icon and `Closed` in
      place of the leaderboard and tour, filling the rest of the card's own box — `flex: 1` against
-     `.card`'s column so this centres in whatever height the row's tallest card holds, rather than
+     `.card`'s column so this centres in the height `.card-closed` (above) forces, rather than
      leaving the card short and misaligned with its neighbours. */
   .closed {
     display: flex;
@@ -365,29 +373,19 @@
   .more {
     display: flex;
     flex-direction: column;
-    /* The label-to-rows and rows-to-footer gaps are both this one flex gap — the styling
+    /* The divider-to-rows and rows-to-footer gaps are both this one flex gap — the styling
        contract's own md step (./README.md § Type and spacing) — rather than a margin or padding
-       on either neighbour, which would stack with it rather than set it. */
+       on either neighbour, which would stack with it rather than set it. Natural height (`.card`,
+       above) leaves nothing to anchor the footer against; it is flush at `.card`'s own bottom
+       because it is `.more`'s own last row. */
     gap: var(--space-md);
-    /* Anchors the footer to `.card`'s own bottom edge: `.card`'s `min-height` slack (above) would
-       otherwise sit as trailing space below the footer on a card shorter than the row's tallest.
-       Pushing `.more` down leaves that slack between the leaderboard and `.more` instead — stable
-       because every card's content heights are fixed, unlike a `justify-content: space-between`
-       across `.card`'s children. */
-    margin-top: auto;
   }
 
-  .more-label {
-    margin: 0;
-    padding-bottom: var(--space-xs);
-    font-size: var(--type-caption);
-    font-weight: var(--type-caption-weight);
+  .more-divider {
+    /* The rule that set the *More waits* label off from the rows below it, kept as a bare divider
+       now that the label itself is dropped to save vertical space — the leaderboard and the tour
+       stay visually separated by the line alone. */
     border-bottom: var(--divider-stroke-width) solid var(--emission-stroke);
-    /* A group heading names what follows and is read left-to-right, so it stays left-aligned
-       whichever side the module itself is justified to — the same idiom, and the same reason, as the
-       weather module's `Next hours` / `Next days` headings. Without this it inherits the region's
-       content anchor and floats centred (or right) above the left-starting rotation rows. */
-    text-align: left;
   }
 
   .footer {

@@ -138,12 +138,12 @@
     );
   }
 
-  /** The one height every card takes: the tallest a card actually lays out to, so a Closed card
-      (icon and a word) or an open one with fewer rides and no tour never comes up shorter than its
-      neighbours — the same "identical at every park count" rule `--pwt-card-width` already holds
-      for width, read here for height. `--pwt-card-height` is cleared first so a floor a previous
-      measurement set cannot hold a card that has since drawn less content up to a height nothing
-      here still needs; every card is a `[data-pwt-card]`. */
+  /** The height a Closed card is forced to (`ParkCard.svelte`'s `.card-closed`): the tallest a card
+      actually lays out to, in practice a real park's own leaderboard-plus-More-Waits card, so a
+      Closed card's icon and word never come up shorter than its neighbours. An open card is left at
+      its own natural height and is not measured against this floor. `--pwt-card-height` is cleared
+      first so a floor a previous measurement set cannot hold a card that has since drawn less
+      content up to a height nothing here still needs; every card is a `[data-pwt-card]`. */
   function cardHeightPx(root: HTMLElement): number {
     root.style.removeProperty('--pwt-card-height');
     const cards = root.querySelectorAll('[data-pwt-card]');
@@ -230,5 +230,10 @@
     margin: 0;
     padding: 0;
     list-style: none;
+    /* Grid's own default (`stretch`) would fill every card to its row's tallest regardless of
+       `.card`'s own natural height (ParkCard.svelte) — reintroducing the dead space that fix was
+       meant to remove, just moved from inside the card to the grid's own stretch. `start` leaves
+       each card at its own height; only `.card-closed`'s explicit `min-height` still forces one. */
+    align-items: start;
   }
 </style>
