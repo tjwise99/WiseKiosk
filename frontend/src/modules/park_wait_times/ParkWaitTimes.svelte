@@ -88,11 +88,12 @@
   );
 
   /** The one width every card, and so every grid column, takes: the widest a park's own header —
-      icon, name, hours — draws across the configured roster, and nothing past it. A ride name too
-      wide for its column scrolls to reveal itself (`ParkCard.svelte`'s `marquee` action) rather
-      than growing the card past this. The declarations mirror `ParkCard.svelte`'s
-      `.identity`/`.icon`/`.name`/`.header`/`.hours` rules, read side by side with them for the same
-      reason `waitColumnWidthPx` reads `.wait`'s. */
+      icon, name, hours — draws across the configured roster, plus the card's own padding and
+      border around it, and nothing past that. A ride name too wide for its column scrolls to
+      reveal itself (`ParkCard.svelte`'s `marquee` action) rather than growing the card past this.
+      The declarations mirror `ParkCard.svelte`'s `.card`/`.identity`/`.icon`/`.name`/`.header`/
+      `.hours` rules, read side by side with them for the same reason `waitColumnWidthPx` reads
+      `.wait`'s. */
   function headerWidthPx(root: HTMLElement, rows: { name: string; hours: string | undefined }[]): number {
     const icon = resolved(root, 'width:var(--type-body);').width;
     const identityGap = resolved(root, 'width:var(--space-xs);').width;
@@ -101,17 +102,18 @@
       'text-transform:uppercase;letter-spacing:var(--type-section-header-tracking);';
     const headerGap = resolved(root, 'width:var(--space-sm);').width;
     const hoursFont = 'font-size:var(--type-section-header);font-weight:var(--type-section-header-weight);';
+    const cardPadding = resolved(root, 'width:var(--space-md);').width;
+    const cardBorder = resolved(root, 'width:calc(var(--divider-stroke-width) * 2);').width;
 
-    return Math.ceil(
-      Math.max(
-        0,
-        ...rows.map((row) => {
-          const nameWidth = resolved(root, nameFont, row.name).width;
-          const hoursWidth = row.hours ? headerGap + resolved(root, hoursFont, row.hours).width : 0;
-          return icon + identityGap + nameWidth + hoursWidth;
-        }),
-      ),
+    const contentWidth = Math.max(
+      0,
+      ...rows.map((row) => {
+        const nameWidth = resolved(root, nameFont, row.name).width;
+        const hoursWidth = row.hours ? headerGap + resolved(root, hoursFont, row.hours).width : 0;
+        return icon + identityGap + nameWidth + hoursWidth;
+      }),
     );
+    return Math.ceil(contentWidth + cardPadding * 2 + cardBorder * 2);
   }
 
   /** The wait column's own fixed width — long enough for whichever of the three not-operating words
@@ -136,10 +138,24 @@
     );
   }
 
-  /** Writes `--pwt-card-width` and `--pwt-wait-width` from `headers`/`waitColumnWidthPx` — the
-      latter is geometry and token driven, fixed once, but the former reads the payload's own park
-      names and hours, so it is reapplied whenever `headers` changes rather than only at mount (the
-      pattern `gridShape` does not need, its shape being the placement's own and fixed for good). */
+  /** The one height every card takes: the tallest a card actually lays out to, so a Closed card
+      (icon and a word) or an open one with fewer rides and no tour never comes up shorter than its
+      neighbours — the same "identical at every park count" rule `--pwt-card-width` already holds
+      for width, read here for height. `--pwt-card-height` is cleared first so a floor a previous
+      measurement set cannot hold a card that has since drawn less content up to a height nothing
+      here still needs; every card is a `[data-pwt-card]`. */
+  function cardHeightPx(root: HTMLElement): number {
+    root.style.removeProperty('--pwt-card-height');
+    const cards = root.querySelectorAll('[data-pwt-card]');
+    return Math.ceil(Math.max(0, ...Array.from(cards, (card) => card.getBoundingClientRect().height)));
+  }
+
+  /** Writes `--pwt-card-width`, `--pwt-wait-width` and `--pwt-card-height` — the first from
+      `headers`, the payload's own park names and hours, reapplied whenever `headers` changes rather
+      than only at mount (the pattern `gridShape` does not need, its shape being the placement's own
+      and fixed for good); the second geometry and token driven, fixed once; the third read off the
+      cards themselves once the first two have already set their own width, so `cardHeightPx` measures
+      the layout those two produce rather than one still pending them. */
   function cardGeometry(
     node: HTMLElement,
     rows: { name: string; hours: string | undefined }[],
@@ -147,6 +163,7 @@
     function apply(current: { name: string; hours: string | undefined }[]): void {
       node.style.setProperty('--pwt-card-width', `${headerWidthPx(node, current)}px`);
       node.style.setProperty('--pwt-wait-width', `${waitColumnWidthPx(node)}px`);
+      node.style.setProperty('--pwt-card-height', `${cardHeightPx(node)}px`);
     }
     apply(rows);
     return { update: apply };

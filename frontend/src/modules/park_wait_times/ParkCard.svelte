@@ -196,6 +196,12 @@
     padding: var(--space-md);
     border: calc(var(--divider-stroke-width) * 2) solid var(--emission-stroke);
     border-radius: var(--space-sm);
+    /* The tallest card any park draws (ParkWaitTimes.svelte's `cardHeightPx`) — a Closed card, or
+       an open one with fewer rides and no tour, is not left shorter than its neighbours. `.closed`'s
+       own `flex: 1` fills the reserved height by centring in it; an open card with nothing to grow
+       into leaves the difference as trailing space below its own content, drawing nothing new to
+       fill it. */
+    min-height: var(--pwt-card-height);
   }
 
   .unavailable {
