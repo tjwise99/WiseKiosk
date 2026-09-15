@@ -660,10 +660,9 @@ test('holds the footer’s own position across the tour’s pages, including a l
 });
 
 test('anchors the footer to the card’s own bottom edge, with nothing beneath it', async ({ page }) => {
-  // The card's own uniform min-height (`cardHeightPx`, ParkWaitTimes.svelte) can sit taller than a
-  // card's own content — read here even against a single card, the footer must sit flush with the
-  // card's own inner bottom edge (inside its padding and border) rather than leaving trailing space
-  // below it: the leftover, if any, belongs above the More Waits block, not beneath the footer.
+  // Read here even against a single card, the footer must sit flush with the card's own inner
+  // bottom edge (inside its padding and border) rather than leaving trailing space below it — a
+  // card is its own natural height, so nothing beneath the footer is left to fill.
   await serveModuleData(page, () => ({
     status: 200,
     data: parksPayload([onePark('epcot', { rides: rankedRoster() })]),
@@ -716,11 +715,10 @@ test('holds two full cards — a leaderboard and its own More Waits block — to
   const heights = await cards.evaluateAll((els) => els.map((el) => el.getBoundingClientRect().height));
   expect(Math.abs(heights[0] - heights[1]), 'both full cards land at the same natural height').toBeLessThan(1);
 
-  // Neither card carries a forced floor: `.card-closed`'s own `min-height` (ParkCard.svelte) applies
-  // only to a Closed card, so an open card's `min-height` is left at the property's own initial
-  // value — `auto`, not `0px`, being a grid item (a grid item's `auto` does not stretch a card past
-  // its own content the way it would default `align-items` to do; `.grid`'s own `align-items: start`
-  // is what leaves each card at its own height, ParkWaitTimes.svelte).
+  // Neither card carries a forced floor: an open card's `min-height` is left at the property's own
+  // initial value — `auto`, not `0px`, being a grid item (a grid item's `auto` does not stretch a
+  // card past its own content the way it would default `align-items` to do; `.grid`'s own
+  // `align-items: start` is what leaves each card at its own height, ParkWaitTimes.svelte).
   const minHeights = await cards.evaluateAll((els) => els.map((el) => getComputedStyle(el).minHeight));
   expect(minHeights).toEqual(['auto', 'auto']);
 });
@@ -792,17 +790,16 @@ test('holds the Closed card to a full card’s own height, without forcing an op
       ),
   );
 
-  // The Closed card (no ride reporting a length of time) is forced to match a full
-  // leaderboard-plus-More-Waits card's own height (`.card-closed`, ParkCard.svelte) — the one card
-  // whose real content is shorter than that structure.
+  // The Closed card (no ride reporting a length of time) matches a full leaderboard-plus-More-Waits
+  // card's own height — not forced by anything external, but because its own hidden skeleton
+  // (`ParkCard.svelte`'s `.closed-frame`) draws that same structure itself.
   expect(
     Math.abs(heights['islands-of-adventure'] - heights['magic-kingdom']),
     'the Closed card matches the full card’s height',
   ).toBeLessThan(1);
 
-  // epcot holds a leaderboard (two numeric rides) but nothing left to tour — open, so it is not
-  // `.card-closed` and is left at its own, smaller, natural height rather than forced to match: only
-  // the Closed card is forced (owner ruling, #309).
+  // epcot holds a leaderboard (two numeric rides) but nothing left to tour — open, its own natural
+  // height, smaller than the Closed card's own reserved full-card footprint (owner ruling, #309).
   expect(
     heights['magic-kingdom'] - heights['epcot'],
     'an open card with less to show is left shorter, not forced to match',
@@ -828,6 +825,45 @@ test('holds the Closed card to a full card’s own height, without forcing an op
   expect(Math.abs(trailingSpace), 'no dead space below epcot’s own leaderboard, past its own padding').toBeLessThan(
     1,
   );
+});
+
+test('holds every card to a full card’s own height when every park is Closed, not just when one full card is on screen to borrow from', async ({
+  page,
+}) => {
+  const roster = ['epcot', 'islands-of-adventure', 'magic-kingdom'];
+  const allClosed: ParkWaitTimesRide[] = [
+    { name: 'Guardians of the Galaxy: Cosmic Rewind', wait: 'Closed' },
+    { name: 'Space Mountain', wait: 'Down' },
+  ];
+
+  await serveModuleData(page, (_asked, body) => {
+    const { parks } = body as { parks: string[] };
+    return { status: 200, data: parksPayload(parks.map((id) => onePark(id, { rides: allClosed }))) };
+  });
+  await render(page, placed(roster, { columns: 3, rows: 1 }));
+
+  const closedHeights = await page.locator(CARD).evaluateAll((els) => els.map((el) => el.getBoundingClientRect().height));
+  expect(
+    new Set(closedHeights).size,
+    'every Closed card the same height, with no open card on screen for a live-measured floor to borrow from',
+  ).toBe(1);
+
+  // The same roster, every park filled — the reference a Closed card's own hidden skeleton
+  // (`ParkCard.svelte`'s `.closed-frame`) draws, whether or not any other card on the page happens
+  // to be filled too.
+  await serveModuleData(page, (_asked, body) => {
+    const { parks } = body as { parks: string[] };
+    return { status: 200, data: parksPayload(parks.map((id) => onePark(id, { rides: rankedRoster() }))) };
+  });
+  await render(page, placed(roster, { columns: 3, rows: 1 }));
+
+  const filledHeights = await page.locator(CARD).evaluateAll((els) => els.map((el) => el.getBoundingClientRect().height));
+  expect(new Set(filledHeights).size, 'every filled card the same height').toBe(1);
+
+  expect(
+    Math.abs(closedHeights[0] - filledHeights[0]),
+    'an all-Closed grid holds the same footprint as a filled grid',
+  ).toBeLessThan(1);
 });
 
 test('stands down to nothing while the backend is unreachable, and stops asking it', async ({ page }) => {

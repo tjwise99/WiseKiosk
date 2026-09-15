@@ -18,6 +18,13 @@
   const HELD_COUNT = 3;
   const TOUR_SIZE = 2;
 
+  /** The Closed state's own hidden skeleton row counts — always a full leaderboard (`HELD_COUNT`)
+      and one full tour page (`TOUR_SIZE`), never this park's own (zero) rides: a stable reference
+      so a Closed card reserves the same footprint a real leaderboard-plus-tour card draws,
+      regardless of what any other card on the page currently has to show (`noOpenRides`, below). */
+  const SKELETON_LEADERBOARD_ROWS = Array.from({ length: HELD_COUNT }, (_unused, index) => index);
+  const SKELETON_TOUR_ROWS = Array.from({ length: TOUR_SIZE }, (_unused, index) => index);
+
   /** A ride's wait is either a number of minutes or one of the not-operating state words
       (boundary/openapi.yaml's ParkWaitTimesWait); this is the one place that is told apart. */
   function isMinutes(wait: unknown): wait is number {
@@ -103,7 +110,7 @@
   }
 </script>
 
-<li class="card" class:card-closed={park.available && noOpenRides} data-pwt-card data-pwt-park={park.id}>
+<li class="card" data-pwt-card data-pwt-park={park.id}>
   <div class="header" data-pwt-header>
     <div class="identity">
       {#if icon}
@@ -134,12 +141,31 @@
   {#if !park.available}
     <p class="unavailable" data-pwt-unavailable>{park.message}</p>
   {:else if noOpenRides}
-    <div class="closed" data-pwt-closed>
-      {#if icon}
-        <!-- eslint-disable-next-line svelte/no-at-html-tags -->
-        <span class="closed-icon" aria-hidden="true">{@html icon}</span>
-      {/if}
-      <span class="closed-label section-label" data-pwt-closed-label>Closed</span>
+    <div class="closed-frame">
+      <!-- Hidden, not absent: the skeleton's own layout is what reserves this card's height at a
+           full card's footprint, whatever else on the page is currently open or closed
+           (`SKELETON_LEADERBOARD_ROWS`/`SKELETON_TOUR_ROWS`, above). -->
+      <ol class="leaderboard skeleton" aria-hidden="true">
+        {#each SKELETON_LEADERBOARD_ROWS as index (index)}
+          <li class="row"><span class="ride-name">&nbsp;</span></li>
+        {/each}
+      </ol>
+      <div class="more skeleton" aria-hidden="true">
+        <div class="more-divider"></div>
+        <ol class="tour">
+          {#each SKELETON_TOUR_ROWS as index (index)}
+            <li class="row"><span class="ride-name">&nbsp;</span></li>
+          {/each}
+        </ol>
+        <div class="footer"><span class="segment"></span></div>
+      </div>
+      <div class="closed" data-pwt-closed>
+        {#if icon}
+          <!-- eslint-disable-next-line svelte/no-at-html-tags -->
+          <span class="closed-icon" aria-hidden="true">{@html icon}</span>
+        {/if}
+        <span class="closed-label section-label" data-pwt-closed-label>Closed</span>
+      </div>
     </div>
   {:else}
     <ol class="leaderboard" data-pwt-leaderboard>
@@ -183,20 +209,10 @@
     padding: var(--space-md);
     border: calc(var(--divider-stroke-width) * 2) solid var(--emission-stroke);
     border-radius: var(--space-sm);
-    /* `--pwt-card-height` (below) is `getBoundingClientRect().height` — a border box. Without this,
-       `min-height`'s content-box default would add this card's own padding and border on top of
-       that measurement a second time, growing the Closed card past the full card it is meant to
-       match. */
+    /* `--pwt-card-width` (ParkWaitTimes.svelte's `headerWidthPx`) is computed as a border box —
+       content plus this card's own padding and border. Without this, the grid's fixed column width
+       would apply that total to the content box instead, growing every card past its own column. */
     box-sizing: border-box;
-  }
-
-  /* Only the Closed card — the one with real content shorter than a real park's leaderboard plus
-     its own More Waits block — is forced to match: `--pwt-card-height` (ParkWaitTimes.svelte's
-     `cardHeightPx`) is the tallest card actually laid out, in practice a full card. An open card is
-     left at its own natural height, so it never holds slack for `.closed`'s centring to fill and
-     there is nothing between its own leaderboard and More Waits but the card's own `gap` above. */
-  .card-closed {
-    min-height: var(--pwt-card-height);
   }
 
   .unavailable {
@@ -206,12 +222,28 @@
   }
 
   /* A park with no ride reporting a length of time (`noOpenRides`) draws its icon and `Closed` in
-     place of the leaderboard and tour, filling the rest of the card's own box — `flex: 1` against
-     `.card`'s column so this centres in the height `.card-closed` (above) forces, rather than
-     leaving the card short and misaligned with its neighbours. */
-  .closed {
+     place of the leaderboard and tour — over the hidden skeleton (`.skeleton`, below), which is
+     what reserves this frame's own height at a full card's footprint without depending on any
+     other card's own content. */
+  .closed-frame {
+    position: relative;
     display: flex;
-    flex: 1;
+    flex-direction: column;
+    gap: var(--space-md);
+  }
+
+  /* Kept in layout, not painted: a `.leaderboard`/`.more` skeleton takes exactly the height its
+     real counterpart would (the same rules, the same row markup, `&nbsp;`-filled the same way
+     `ParkCard.svelte`'s own tour padding rows already are) without drawing anything — `.closed`
+     (below) is what the card actually shows. */
+  .skeleton {
+    visibility: hidden;
+  }
+
+  .closed {
+    position: absolute;
+    inset: 0;
+    display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;

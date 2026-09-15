@@ -138,24 +138,11 @@
     );
   }
 
-  /** The height a Closed card is forced to (`ParkCard.svelte`'s `.card-closed`): the tallest a card
-      actually lays out to, in practice a real park's own leaderboard-plus-More-Waits card, so a
-      Closed card's icon and word never come up shorter than its neighbours. An open card is left at
-      its own natural height and is not measured against this floor. `--pwt-card-height` is cleared
-      first so a floor a previous measurement set cannot hold a card that has since drawn less
-      content up to a height nothing here still needs; every card is a `[data-pwt-card]`. */
-  function cardHeightPx(root: HTMLElement): number {
-    root.style.removeProperty('--pwt-card-height');
-    const cards = root.querySelectorAll('[data-pwt-card]');
-    return Math.ceil(Math.max(0, ...Array.from(cards, (card) => card.getBoundingClientRect().height)));
-  }
-
-  /** Writes `--pwt-card-width`, `--pwt-wait-width` and `--pwt-card-height` — the first from
-      `headers`, the payload's own park names and hours, reapplied whenever `headers` changes rather
-      than only at mount (the pattern `gridShape` does not need, its shape being the placement's own
-      and fixed for good); the second geometry and token driven, fixed once; the third read off the
-      cards themselves once the first two have already set their own width, so `cardHeightPx` measures
-      the layout those two produce rather than one still pending them. */
+  /** Writes `--pwt-card-width` and `--pwt-wait-width` — geometry and token driven, from `headers`,
+      the payload's own park names and hours, reapplied whenever `headers` changes rather than only
+      at mount (the pattern `gridShape` does not need, its shape being the placement's own and fixed
+      for good). A card's own height is never written here: every card, open or Closed, draws its
+      own (`ParkCard.svelte`'s natural-height leaderboard/tour, or its own hidden skeleton). */
   function cardGeometry(
     node: HTMLElement,
     rows: { name: string; hours: string | undefined }[],
@@ -163,7 +150,6 @@
     function apply(current: { name: string; hours: string | undefined }[]): void {
       node.style.setProperty('--pwt-card-width', `${headerWidthPx(node, current)}px`);
       node.style.setProperty('--pwt-wait-width', `${waitColumnWidthPx(node)}px`);
-      node.style.setProperty('--pwt-card-height', `${cardHeightPx(node)}px`);
     }
     apply(rows);
     return { update: apply };
@@ -230,10 +216,10 @@
     margin: 0;
     padding: 0;
     list-style: none;
-    /* Grid's own default (`stretch`) would fill every card to its row's tallest regardless of
-       `.card`'s own natural height (ParkCard.svelte) — reintroducing the dead space that fix was
-       meant to remove, just moved from inside the card to the grid's own stretch. `start` leaves
-       each card at its own height; only `.card-closed`'s explicit `min-height` still forces one. */
+    /* Grid's own default (`stretch`) would fill every card to its row's tallest regardless of its
+       own natural height (ParkCard.svelte) — reintroducing dead space inside a shorter card rather
+       than leaving it at its own footprint. `start` leaves every card, open or Closed, at the
+       height it draws on its own. */
     align-items: start;
   }
 </style>
