@@ -51,6 +51,66 @@
     node.style.setProperty('--pwt-rows', String(shape.rows));
   }
 
+  /** Resolves a CSS declaration to real pixels by applying it, literally, to an absolutely
+      positioned probe and reading the box it lays out — never a class name: `ParkCard.svelte`'s own
+      rules are scoped to that component, so an element this module creates would not match them, and
+      a custom property's own computed text (e.g. `"1vh"`) is not its resolved size either way. Each
+      caller below passes the exact declaration the row/name/wait mark it stands in for uses, so the
+      one thing keeping this in step with `ParkCard.svelte`'s CSS is that the two are read side by
+      side, not a shared class. */
+  function resolved(root: HTMLElement, cssText: string, text = ''): DOMRect {
+    const probe = document.createElement('span');
+    probe.style.cssText = `position:absolute;visibility:hidden;white-space:nowrap;${cssText}`;
+    probe.textContent = text;
+    root.appendChild(probe);
+    const box = probe.getBoundingClientRect();
+    root.removeChild(probe);
+    return box;
+  }
+
+  /** A ride name too wide for its column scrolls to reveal itself rather than growing the card
+      (`ParkCard.svelte`'s `marquee` action), so the card is a fixed width — long enough to lay the
+      configured columns out across the viewport without running past its edge, and no wider. Read
+      once, geometry only — the viewport, the frame's own inset (RegionFrame.svelte's
+      `--edge-band`) and the grid's own column gap — never the payload, so this never moves as
+      parks or rides change. */
+  function cardWidthPx(root: HTMLElement, columns: number): number {
+    const frame = document.querySelector('[data-frame]') as HTMLElement | null;
+    const edgeBand = frame ? Number.parseFloat(getComputedStyle(frame).paddingLeft) : 0;
+    const gap = resolved(root, 'width:var(--space-xs);').width;
+    const available = document.documentElement.clientWidth - edgeBand * 2 - gap * (columns - 1);
+    return Math.floor(available / columns);
+  }
+
+  /** The wait column's own fixed width — long enough for whichever of the three not-operating words
+      (SRS061<!-- The park-wait-times module draws a wait as the time or the not-operating state it
+      is handed -->) or a worst-case length of time it is ever handed, so a wait changing under the
+      display never shifts the column (SRS058<!-- The park-wait-times module keeps each park's
+      longest current waits in view -->). The declarations mirror `ParkCard.svelte`'s `.wait`/
+      `.wait.state` rules, read side by side with them for the same reason `cardWidthPx` reads
+      `.row`'s. */
+  function waitColumnWidthPx(root: HTMLElement): number {
+    const numericWait = 'font-size:var(--type-caption);font-weight:700;';
+    const stateWait = 'font-size:var(--type-caption);font-weight:var(--type-caption-weight);text-transform:uppercase;';
+    return Math.ceil(
+      Math.max(
+        resolved(root, numericWait, '999').width,
+        resolved(root, stateWait, 'Down').width,
+        resolved(root, stateWait, 'Closed').width,
+        resolved(root, stateWait, 'Refurb').width,
+      ),
+    );
+  }
+
+  /** Writes `--pwt-card-width` and `--pwt-wait-width`, once: both are geometry and token driven,
+      never the payload's, so — unlike `gridShape`'s own shape, which is the placement's — there is
+      nothing here for a later poll to move either. `.grid`'s and `ParkCard.svelte`'s own rules read
+      them back with `var()`. */
+  function cardGeometry(node: HTMLElement, columns: number): void {
+    node.style.setProperty('--pwt-card-width', `${cardWidthPx(node, columns)}px`);
+    node.style.setProperty('--pwt-wait-width', `${waitColumnWidthPx(node)}px`);
+  }
+
   /**
    * This module's own park icon set (the park-wait-times UI design spec § The park icon set), keyed
    * by the same slug the configuration and the boundary payload use. A configured park with no
@@ -74,7 +134,12 @@
     {:else if pwtPayload.state === 'unavailable'}
       <p class="waiting" data-module-unavailable>{pwtPayload.failure.message}</p>
     {:else}
-      <ol class="grid" data-pwt-grid use:gridShape={{ columns: gridColumns, rows: gridRows }}>
+      <ol
+        class="grid"
+        data-pwt-grid
+        use:gridShape={{ columns: gridColumns, rows: gridRows }}
+        use:cardGeometry={gridColumns}
+      >
         {#each pwtPayload.data.parks as park (park.id)}
           <ParkCard {park} icon={ICONS[park.id]} {rotationSeconds} />
         {/each}
@@ -98,12 +163,15 @@
 
   .grid {
     display: grid;
-    /* minmax(0, 1fr) rather than bare 1fr: a track's automatic minimum is otherwise its content's
-       min-content, so a card's own name or ride text can force every track wider than the grid's
-       own container. */
-    grid-template-columns: repeat(var(--pwt-columns), minmax(0, 1fr));
+    /* Every column the same fixed width — `--pwt-card-width`, `cardGeometry`'s own — long enough
+       for the configured columns to lay out across the viewport without running past its edge. A
+       ride name too wide for its own column scrolls to reveal itself (`ParkCard.svelte`'s
+       `marquee`) rather than growing the card. */
+    grid-template-columns: repeat(var(--pwt-columns), var(--pwt-card-width));
     grid-template-rows: repeat(var(--pwt-rows), auto);
-    gap: var(--space-lg);
+    /* Stepped down from --space-lg to the spacing scale's own floor: three fixed-width cards at
+       --pwt-columns: 3 need the module's own spacing tightened to fit the corner. */
+    gap: var(--space-xs);
     margin: 0;
     padding: 0;
     list-style: none;

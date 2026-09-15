@@ -510,16 +510,14 @@ test('renders why its own route failed, in its own place, while the backend is r
   await expect(page.locator('[data-backend-unreachable]')).toHaveCount(0);
 });
 
-test('does not scroll sideways at a six-across layout with real park and ride names', async ({
+test('lays out uniform, aligned cards that do not run past the viewport, with real park and ride names', async ({
   page,
 }) => {
-  // The grid's own tracks are `1fr` with no `minmax(0, …)` floor, so a real unabbreviated roster
-  // (six real park names and real ride names, not a short placeholder) forces every track wider
-  // than its share of the viewport once there is no room to wrap — the live measurement (2602px
-  // content in a 1920px frame) rather than a synthetic one. The deployed config's own 3×2 shape
-  // has room to wrap and does not reproduce it; six-across is the narrowest configured shape the
-  // module's own columns/rows options (config/schema.json) allow for a six-park roster, so it is
-  // the shape this defect actually bites at, not merely one the module happens to ship with today.
+  // The card is a fixed width (ParkWaitTimes.svelte's `cardGeometry`), not one grown to its own
+  // content — a name too wide for its column scrolls to reveal itself (`ParkCard.svelte`'s
+  // `marquee`) rather than widening the card or wrapping the grid past the viewport, and every card
+  // takes the same width regardless of what its own park's names are. Read at the deployed
+  // three-column shape (config.json), over a real (unabbreviated) roster.
   const roster = [
     'magic-kingdom',
     'epcot',
@@ -569,9 +567,19 @@ test('does not scroll sideways at a six-across layout with real park and ride na
       data: parksPayload(parks.map((id) => onePark(id, { name: names[id], rides: rides[id] }))),
     };
   });
-  await render(page, placed(roster, { columns: 6, rows: 1 }));
+  await render(page, placed(roster, { columns: 3, rows: 2 }));
 
-  await expect(page.locator(CARD)).toHaveCount(roster.length);
+  const cards = page.locator(CARD);
+  await expect(cards).toHaveCount(roster.length);
+
+  const boxes = await cards.evaluateAll((els) => els.map((el) => el.getBoundingClientRect()));
+  const widths = new Set(boxes.map((box) => box.width));
+  expect(widths.size, 'every card the same width').toBe(1);
+
+  // The two rows of three: each row's own three cards share one top, proving the grid holds its
+  // shape rather than one card (an empty leaderboard, an overflowing name) sitting off the line.
+  const tops = new Set(boxes.map((box) => box.top));
+  expect(tops.size, 'exactly two distinct row positions').toBe(2);
 
   const { scrollWidth, clientWidth } = await page.evaluate(() => ({
     scrollWidth: document.documentElement.scrollWidth,
