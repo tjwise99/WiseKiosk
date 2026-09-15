@@ -208,6 +208,23 @@ test('TST075: a not-operating ride does not take a leaderboard place — it tour
   expect(await rideNamesIn(card, TOUR_ROW)).toEqual(['The Hall of Presidents', 'The Barnstormer']);
 });
 
+test('draws a park’s hours beside its name in the header, read off its own open and close timestamps', async ({
+  page,
+}) => {
+  // The header's own second line — icon+name, then hours — reading a well-formed pair the backend's
+  // own schedule shaping (park_wait_times.go's shapeHours) actually produces: a plain HH:MM–HH:MM,
+  // not the not-a-timestamp fallback the next test covers.
+  await serveModuleData(page, () => ({
+    status: 200,
+    data: parksPayload([
+      onePark('magic-kingdom', { hours: { open: '2026-09-15T09:00:00-04:00', close: '2026-09-15T18:00:00-04:00' } }),
+    ]),
+  }));
+  await render(page, placed(['magic-kingdom']));
+
+  await expect(page.locator('[data-pwt-hours]')).toHaveText('09:00–18:00');
+});
+
 test('draws a park’s hours as given even where they do not parse into an hour and a minute', async ({
   page,
 }) => {
