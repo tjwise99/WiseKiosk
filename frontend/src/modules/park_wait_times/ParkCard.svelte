@@ -66,6 +66,13 @@
 
   const page = $derived(tick % pageCount);
   const shown = $derived(remaining.slice(page * TOUR_SIZE, page * TOUR_SIZE + TOUR_SIZE));
+  /** `shown`, padded to exactly `TOUR_SIZE` slots with `null` — an odd `remaining` count leaves the
+      last page one ride short of every other page; without padding that page's own tour section is
+      shorter, and the footer beneath it moves up a line. A reserved-but-unfilled slot draws nothing,
+      the same technique `heldSlots` uses for the leaderboard. */
+  const shownSlots = $derived(
+    Array.from({ length: TOUR_SIZE }, (_unused, index) => shown[index] ?? null),
+  );
   const pages = $derived(Array.from({ length: pageCount }, (_unused, index) => index));
 
   /** The hours right-aligned in the header — a plain `HH:MM` read off each timestamp's own local
@@ -159,10 +166,16 @@
       <div class="more" data-pwt-more-waits>
         <h3 class="more-label section-label">More waits</h3>
         <ol class="tour">
-          {#each shown as ride (ride.name)}
-            <li class="row" data-pwt-tour-row>
-              {@render rideRow(ride)}
-            </li>
+          {#each shownSlots as ride, index (ride?.name ?? index)}
+            {#if ride}
+              <li class="row" data-pwt-tour-row>
+                {@render rideRow(ride)}
+              </li>
+            {:else}
+              <li class="row" data-pwt-tour-placeholder aria-hidden="true">
+                <span class="ride-name">&nbsp;</span>
+              </li>
+            {/if}
           {/each}
         </ol>
         <div class="footer" data-pwt-footer>
