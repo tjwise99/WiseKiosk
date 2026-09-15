@@ -50,7 +50,7 @@ and Container view. It is:
   `likec4 codegen webcomponent` emits one self-contained `.js` bundle — every view, plus the
   descriptions, technology, tags and relationships Mermaid drops — loaded by a `<likec4-view>` element
   on [`architecture/explorer.md`](../architecture/explorer.md), the same embed shape
-  [ADR 0029 rev 1](0029-api-explorer-swagger-ui.md) set for Swagger UI. Not staleness-gated, same
+  [ADR 0029 rev 2](0029-api-explorer-swagger-ui.md) set for Swagger UI. Not staleness-gated, same
   browser-free posture as the Mermaid diagrams. No new dependency.
 
 The model is authored so Component and Code levels — and source `link`s into `backend/`/`frontend/` —
@@ -87,7 +87,7 @@ renderable browser-free.
   genuinely different SVG layouts from identical input, and no well-maintained, version-pinnable image
   closes that gap.
 - **A standalone site (`likec4 build`) published at its own subpath** — rejected as not integrated
-  with the docs site; embedding follows the shape [ADR 0029 rev 1](0029-api-explorer-swagger-ui.md)
+  with the docs site; embedding follows the shape [ADR 0029 rev 2](0029-api-explorer-swagger-ui.md)
   already set for Swagger UI instead.
 
 ## Consequences

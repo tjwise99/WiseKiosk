@@ -27,7 +27,7 @@ const CONTENT_TYPES: Record<string, string> = {
  * (`backend/internal/staticserve`) — the built site's own `index.html` is a redirect stub to
  * `site/`, so `/` behaves the same way opening the file directly would.
  *
- * Falls through to Vite's own 404 when the docs build hasn't been run yet (ADR 0029 rev 1).
+ * Falls through to Vite's own 404 when the docs build hasn't been run yet (ADR 0029 rev 2).
  */
 function docsSite(): Plugin {
   return {
@@ -53,9 +53,9 @@ function docsSite(): Plugin {
 }
 
 /**
- * The docs silo's own, self-contained dev server (#195, ADR 0029 rev 1): serves the built docs site
+ * The docs silo's own, self-contained dev server (#195, ADR 0029 rev 2): serves the built docs site
  * and proxies `/api`,`/healthz` to the backend on its fixed port (ADR 0020 rev 4) — the same proxy
- * target `frontend/vite.config.ts` also hardcodes (ADR 0029 rev 1).
+ * target `frontend/vite.config.ts` also hardcodes (ADR 0029 rev 2).
  */
 export default defineConfig({
   plugins: [docsSite()],

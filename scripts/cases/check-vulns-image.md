@@ -4,7 +4,7 @@ The inputs this check has been run against, in both directions. What it *asserts
 [`docs/CI.md`](../../docs/CI.md) § *Image vulnerabilities*'s and § *The exception register*'s;
 how to run a case is [`../README.md`](../README.md)'s.
 
-**No fixture is committed** — [ADR 0010 rev 2](../../docs/decisions/0010-runtime-materialised-gate-fixtures.md)
+**No fixture is committed** — [ADR 0010 rev 3](../../docs/decisions/0010-runtime-materialised-gate-fixtures.md)
 forbids a resolvable vulnerable artifact in the tracked tree. Every row below is a throwaway image
 built at record time, run through the production script (`python3 scripts/vulns/check_vulns.py --scope
 image --image <tag> --register <register>`) with `--image` pointed at it. Trivy 0.74.0 (the version

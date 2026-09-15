@@ -66,7 +66,7 @@ writes.
 That the gate can fail — a canonical vulnerable pattern per language, run through the production
 analysis and observed to raise the expected alert — is proven once against a throwaway branch and
 recorded in [`../scripts/cases/codeql.md`](../scripts/cases/codeql.md), per
-[ADR 0010 rev 2](decisions/0010-runtime-materialised-gate-fixtures.md): no vulnerable artifact is
+[ADR 0010 rev 3](decisions/0010-runtime-materialised-gate-fixtures.md): no vulnerable artifact is
 ever committed in resolvable form, and fallibility is recorded once rather than re-tested by a
 standing meta-gate.
 
@@ -289,7 +289,7 @@ why it is not a `just verify` dependency either (§ *Gate wiring*).
 ## Generated boundary contract
 
 The one OpenAPI schema is hand-authored and both sides' **routes, client, server and types** are
-generated from it ([ADR 0008 rev 5](decisions/0008-boundary-contract-openapi-codegen.md)). The gate
+generated from it ([ADR 0008 rev 6](decisions/0008-boundary-contract-openapi-codegen.md)). The gate
 regenerates the Go and TypeScript output and fails on any difference, so a schema edit that reaches
 neither side, and a hand-edit of either, both fail.
 
@@ -368,7 +368,7 @@ Both recipes need the network on every run (`vuln.go.dev`, the npm registry), so
 verify` dependency (§ *Gate wiring*) — each runs instead as a blocking step in its own CI job,
 `backend-tests` for Go and `frontend` for npm.
 
-**No fixture is committed** — [ADR 0010 rev 2](decisions/0010-runtime-materialised-gate-fixtures.md)
+**No fixture is committed** — [ADR 0010 rev 3](decisions/0010-runtime-materialised-gate-fixtures.md)
 forbids a resolvable vulnerable artifact in the tracked tree. Each case is built in a throwaway
 directory at record time (a Go `main` importing a named vulnerable module version and calling its
 symbol; a `package.json` pinning a dependency with a named advisory) and run through the production
@@ -390,7 +390,7 @@ always eligible relief, because nothing in a built image is first-party.
 This is what covers operating-system and base-layer packages. The source-level dependency gate never
 inspects them.
 
-**No fixture is committed** — [ADR 0010 rev 2](decisions/0010-runtime-materialised-gate-fixtures.md)
+**No fixture is committed** — [ADR 0010 rev 3](decisions/0010-runtime-materialised-gate-fixtures.md)
 forbids a resolvable vulnerable artifact in the tracked tree. The case is built as a throwaway image at
 record time and run through the production script with `--image` pointed at it; the seed Dockerfile and
 the vulnerability ids it names are recorded verbatim so a reviewer can rebuild it. Recorded in
@@ -1060,7 +1060,7 @@ violate any of them, so they are checks here rather than obligations there.
   and the allowlist is a package set, saying nothing about how much of a granted package ships.
 - **The committed configuration types are what the configuration schema generates.** The
   configuration-object TypeScript types are generated from `frontend/src/config/schema.json` and
-  committed ([ADR 0022 rev 2](decisions/0022-config-schema-format.md)), so the gate regenerates and
+  committed ([ADR 0022 rev 3](decisions/0022-config-schema-format.md)), so the gate regenerates and
   fails on any difference — the same clear-regenerate-assert-diff shape § *Generated boundary contract*
   runs one layer over, and for the same reason: the generator is resolved before the committed output
   is cleared, absent output then reads as a deletion rather than as a stale file, and a non-empty
@@ -1103,7 +1103,7 @@ what runs where, and what each is allowed to let through, is here.
 
 **Why a credential is allowed here at all.** A withdrawn requirement once forbade any CI workflow
 from holding an upstream credential. It banned a normal practice, and forced the tier into a nested
-module that [ADR 0010 rev 2](decisions/0010-runtime-materialised-gate-fixtures.md) independently found
+module that [ADR 0010 rev 3](decisions/0010-runtime-materialised-gate-fixtures.md) independently found
 leaky. Holding it in a scheduled job, off the merge path, is the narrower answer.
 
 Unbuilt; owned by #99 upstream contract checks.
@@ -1159,7 +1159,7 @@ already decided, which is what makes it a check and not a want.
   applied in what they say, where a check restating their globs would decide none of them.
   A source-level `t.Skip` is outside this: the file still compiles and is still discovered, so it is
   reached, and a test that skips at run time is the tier's business rather than this gate's.
-  **There is no per-file allowlist**, by [ADR 0010 rev 2](decisions/0010-runtime-materialised-gate-fixtures.md)
+  **There is no per-file allowlist**, by [ADR 0010 rev 3](decisions/0010-runtime-materialised-gate-fixtures.md)
   — a file that stops being reached is closed by wiring it to a runner or by deleting it, never by
   an entry beside it.
   **Both ends fail closed.** A discovery command that cannot run leaves the reach unmeasured, and
