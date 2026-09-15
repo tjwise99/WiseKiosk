@@ -11,9 +11,9 @@ references:
 - keyword: 'test(''TST071: reports on the parks its configuration names, in the region
     it names, and moves with a second configuration'', async ({'
   path: frontend/src/modules/park_wait_times/park_wait_times.spec.ts
-  sha: fe1cad20d3bf9062dd037631315d43287b54420e17bfcbb6cdcb4ddb5aa648d8
+  sha: fd673cf0b037e27750cbcebaa60bb050e7f10edc8749f3930782ab38eba29c7a
   type: file
-reviewed: YqbUxPgv4O9-CqAevBCa3qCwFP_I4_QdUEN1J-Fvfd0=
+reviewed: cIICO607_cQ7Qn4jO5vKmJwnMq_x4SyRfeHZIxoWXFU=
 status: accepted
 text: |
   Render test loading the page under two placements, each naming a different park, against a source
