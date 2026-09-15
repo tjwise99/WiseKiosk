@@ -68,30 +68,64 @@
     return box;
   }
 
-  /** A ride name too wide for its column scrolls to reveal itself rather than growing the card
-      (`ParkCard.svelte`'s `marquee` action), so the card is a fixed width — long enough to lay the
-      configured columns out across the viewport without running past its edge, and no wider. Read
-      once, geometry only — the viewport, the frame's own inset (RegionFrame.svelte's
-      `--edge-band`) and the grid's own column gap — never the payload, so this never moves as
-      parks or rides change. */
-  function cardWidthPx(root: HTMLElement, columns: number): number {
-    const frame = document.querySelector('[data-frame]') as HTMLElement | null;
-    const edgeBand = frame ? Number.parseFloat(getComputedStyle(frame).paddingLeft) : 0;
-    const gap = resolved(root, 'width:var(--space-xs);').width;
-    const available = document.documentElement.clientWidth - edgeBand * 2 - gap * (columns - 1);
-    return Math.floor(available / columns);
+  /** The `HH:MM–HH:MM` a park's header draws (`ParkCard.svelte`'s own `clockTime`, mirrored here so
+      the width this measures is the text that actually renders — a plain read off each timestamp's
+      own local clock, not re-read against the host's zone). */
+  function clockTime(iso: string): string {
+    const match = /T(\d{2}):(\d{2})/.exec(iso);
+    return match ? `${match[1]}:${match[2]}` : iso;
+  }
+
+  /** One park's header content, read from the payload: its name, and its hours as the text the
+      header draws, where it has hours to draw. */
+  const headers = $derived(
+    pwtPayload.state === 'ok'
+      ? pwtPayload.data.parks.map((park) => ({
+          name: park.name,
+          hours: park.hours ? `${clockTime(park.hours.open)}–${clockTime(park.hours.close)}` : undefined,
+        }))
+      : [],
+  );
+
+  /** The one width every card, and so every grid column, takes: the widest a park's own header —
+      icon, name, hours — draws across the configured roster, and nothing past it. A ride name too
+      wide for its column scrolls to reveal itself (`ParkCard.svelte`'s `marquee` action) rather
+      than growing the card past this. The declarations mirror `ParkCard.svelte`'s
+      `.identity`/`.icon`/`.name`/`.header`/`.hours` rules, read side by side with them for the same
+      reason `waitColumnWidthPx` reads `.wait`'s. */
+  function headerWidthPx(root: HTMLElement, rows: { name: string; hours: string | undefined }[]): number {
+    const icon = resolved(root, 'width:var(--type-body);').width;
+    const identityGap = resolved(root, 'width:var(--space-xs);').width;
+    const nameFont =
+      'font-size:var(--type-body);font-weight:var(--type-section-header-weight);' +
+      'text-transform:uppercase;letter-spacing:var(--type-section-header-tracking);';
+    const headerGap = resolved(root, 'width:var(--space-sm);').width;
+    const hoursFont = 'font-size:var(--type-section-header);font-weight:var(--type-section-header-weight);';
+
+    return Math.ceil(
+      Math.max(
+        0,
+        ...rows.map((row) => {
+          const nameWidth = resolved(root, nameFont, row.name).width;
+          const hoursWidth = row.hours ? headerGap + resolved(root, hoursFont, row.hours).width : 0;
+          return icon + identityGap + nameWidth + hoursWidth;
+        }),
+      ),
+    );
   }
 
   /** The wait column's own fixed width — long enough for whichever of the three not-operating words
       (SRS061<!-- The park-wait-times module draws a wait as the time or the not-operating state it
       is handed -->) or a worst-case length of time it is ever handed, so a wait changing under the
       display never shifts the column (SRS058<!-- The park-wait-times module keeps each park's
-      longest current waits in view -->). The declarations mirror `ParkCard.svelte`'s `.wait`/
-      `.wait.state` rules, read side by side with them for the same reason `cardWidthPx` reads
-      `.row`'s. */
+      longest current waits in view -->). The declarations mirror `ParkCard.svelte`'s `.row`/`.wait`/
+      `.wait.state` rules, read side by side with them for the same reason `headerWidthPx` reads
+      `.name`'s. */
   function waitColumnWidthPx(root: HTMLElement): number {
-    const numericWait = 'font-size:var(--type-caption);font-weight:700;';
-    const stateWait = 'font-size:var(--type-caption);font-weight:var(--type-caption-weight);text-transform:uppercase;';
+    const numericWait = 'font-size:var(--type-section-header);font-weight:700;';
+    const stateWait =
+      'font-size:var(--type-caption);font-weight:var(--type-caption-weight);' +
+      'text-transform:uppercase;letter-spacing:var(--type-section-header-tracking);';
     return Math.ceil(
       Math.max(
         resolved(root, numericWait, '999').width,
@@ -102,13 +136,20 @@
     );
   }
 
-  /** Writes `--pwt-card-width` and `--pwt-wait-width`, once: both are geometry and token driven,
-      never the payload's, so — unlike `gridShape`'s own shape, which is the placement's — there is
-      nothing here for a later poll to move either. `.grid`'s and `ParkCard.svelte`'s own rules read
-      them back with `var()`. */
-  function cardGeometry(node: HTMLElement, columns: number): void {
-    node.style.setProperty('--pwt-card-width', `${cardWidthPx(node, columns)}px`);
-    node.style.setProperty('--pwt-wait-width', `${waitColumnWidthPx(node)}px`);
+  /** Writes `--pwt-card-width` and `--pwt-wait-width` from `headers`/`waitColumnWidthPx` — the
+      latter is geometry and token driven, fixed once, but the former reads the payload's own park
+      names and hours, so it is reapplied whenever `headers` changes rather than only at mount (the
+      pattern `gridShape` does not need, its shape being the placement's own and fixed for good). */
+  function cardGeometry(
+    node: HTMLElement,
+    rows: { name: string; hours: string | undefined }[],
+  ): { update(rows: { name: string; hours: string | undefined }[]): void } {
+    function apply(current: { name: string; hours: string | undefined }[]): void {
+      node.style.setProperty('--pwt-card-width', `${headerWidthPx(node, current)}px`);
+      node.style.setProperty('--pwt-wait-width', `${waitColumnWidthPx(node)}px`);
+    }
+    apply(rows);
+    return { update: apply };
   }
 
   /**
@@ -138,7 +179,7 @@
         class="grid"
         data-pwt-grid
         use:gridShape={{ columns: gridColumns, rows: gridRows }}
-        use:cardGeometry={gridColumns}
+        use:cardGeometry={headers}
       >
         {#each pwtPayload.data.parks as park (park.id)}
           <ParkCard {park} icon={ICONS[park.id]} {rotationSeconds} />
@@ -163,15 +204,12 @@
 
   .grid {
     display: grid;
-    /* Every column the same fixed width — `--pwt-card-width`, `cardGeometry`'s own — long enough
-       for the configured columns to lay out across the viewport without running past its edge. A
-       ride name too wide for its own column scrolls to reveal itself (`ParkCard.svelte`'s
-       `marquee`) rather than growing the card. */
+    /* Every column the same fixed width — `--pwt-card-width`, `cardGeometry`'s own — the widest a
+       park's own header draws, and no wider. A ride name too wide for its own column scrolls to
+       reveal itself (`ParkCard.svelte`'s `marquee`) rather than growing the card past it. */
     grid-template-columns: repeat(var(--pwt-columns), var(--pwt-card-width));
     grid-template-rows: repeat(var(--pwt-rows), auto);
-    /* Stepped down from --space-lg to the spacing scale's own floor: three fixed-width cards at
-       --pwt-columns: 3 need the module's own spacing tightened to fit the corner. */
-    gap: var(--space-xs);
+    gap: var(--space-lg);
     margin: 0;
     padding: 0;
     list-style: none;

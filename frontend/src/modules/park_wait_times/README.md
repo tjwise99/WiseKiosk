@@ -88,12 +88,13 @@ with no ride reporting a length of time is not read row by row at all — see *P
 
 ## The grid — constant card, configured shape
 
-The card is **identical at every park count** and a **fixed width**, sized to the columns the grid
-lays out across the region rather than to its own content; the grid only arranges the cards. The
-number of **columns and rows is configuration** (`nCol` × `nRows`) — six parks as 3 × 2, or 2 × 3, or
-6 × 1 — so an operator lays the module out for the region it is placed in.
+The card is **identical at every park count** and a **fixed width**: the widest a park's own header
+(icon, name, hours) draws across the configured roster, and no wider — a ride name does not set it,
+however long. The grid only arranges the cards; the number of **columns and rows is configuration**
+(`nCol` × `nRows`) — six parks as 3 × 2, or 2 × 3, or 6 × 1 — so an operator lays the module out for
+the region it is placed in.
 
-A park name is drawn on a single line and never wraps. A ride name is too, but where a fixed card
+A park name is drawn on a single line and never wraps. A ride name is too, but where the fixed card
 leaves it no room, it scrolls to reveal itself rather than wrapping, truncating, or widening the card
 — paused, scrolled left to the end, paused, reset, on loop (a Spotify-style marquee); a name that
 already fits is left static.
@@ -107,11 +108,11 @@ monitor (the contract's calibrated bounds).
 
 | Element | Step |
 |---|---|
-| park name | `section-header` (uppercase, tracked) |
-| park hours | `caption` |
-| leaderboard ride name, leaderboard wait | `caption` |
+| park name | `body` (uppercase, tracked) |
+| park hours | `section-header` |
+| leaderboard ride name, leaderboard wait | `section-header` |
 | *More waits* label | `caption` (uppercase, tracked) |
-| rotation ride name, rotation wait | `caption` |
+| rotation ride name, rotation wait | `section-header` |
 | a `Down` / `Closed` / `Refurb` state word | `caption` (uppercase, tracked) |
 | closed-park icon | `annotation` |
 | closed-park `Closed` label | `body` (uppercase, tracked) |
@@ -119,14 +120,14 @@ monitor (the contract's calibrated bounds).
 The park name is the card's one prominent step so the identity leads; the wait figure sits at the
 **same step as its ride name**, weighted (bold) and `tabular-nums` rather than enlarged, so the number
 scans without dominating the name. All figures are `tabular-nums`, so a wait changing under the
-display never shifts the layout and the right-hand column stays aligned down a card. Every step here
-is one below the size that shipped originally (owner call, #309): three fixed-width, full-name cards
-fit `bottom_left` at three columns only once the module's own type is tightened toward the type-size
-floor — the same reason the card and grid gaps below stepped down with it.
+display never shifts the layout and the right-hand column stays aligned down a card. Legibility is not
+traded for width here: the marquee is what a long ride name gives up its width for
+(owner ruling, #309), not the type scale — the header, driven to the same steps by the owner's
+original one-size step-down, is what fixes the card's own width instead.
 
-Within a card, the header is set from the leaderboard by `sm`; leaderboard rows and rotation rows from
+Within a card, the header is set from the leaderboard by `md`; leaderboard rows and rotation rows from
 each other by `sm`; a *More waits* label from its rows by `md`; the footer bar from the rotation by
-`md`. Cards are set apart in the grid by `xs`.
+`md`. Cards are set apart in the grid by `lg`.
 
 ## Grouping, and coherence with the rest of the display
 

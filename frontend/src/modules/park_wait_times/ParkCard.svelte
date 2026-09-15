@@ -179,19 +179,16 @@
   .card {
     display: flex;
     flex-direction: column;
-    gap: var(--space-sm);
-    /* Stepped down from --space-md to the spacing scale's own floor, with the rest of the card's
-       own chrome: three fixed-width cards fit the corner at --pwt-columns: 3 only once the
-       module's own spacing is tightened (./README.md § Type and spacing). */
-    padding: var(--space-xs);
+    gap: var(--space-md);
+    padding: var(--space-md);
     border: calc(var(--divider-stroke-width) * 2) solid var(--emission-stroke);
     border-radius: var(--space-sm);
   }
 
   .unavailable {
     margin: 0;
-    font-size: var(--type-caption);
-    font-weight: var(--type-caption-weight);
+    font-size: var(--type-section-header);
+    font-weight: var(--type-section-header-weight);
   }
 
   /* A park with no ride reporting a length of time (`noOpenRides`) draws its icon and `Closed` in
@@ -241,9 +238,8 @@
   .icon {
     display: inline-flex;
     align-items: center;
-    /* Follows .name's own token, stepped down with it, so the two stay the matched pair they were. */
-    width: var(--type-section-header);
-    height: var(--type-section-header);
+    width: var(--type-body);
+    height: var(--type-body);
     color: var(--emission-content);
   }
 
@@ -253,10 +249,12 @@
   }
 
   .name {
-    /* Stepped down from --type-body: the card's most prominent element still leads its rows at the
-       heavier of the two tokens this size pairs with naturally, so weight follows size directly,
-       without the decoupling the body-sized step needed. */
-    font-size: var(--type-section-header);
+    font-size: var(--type-body);
+    /* The card's most prominent element leads its rows — at the owner-stepped body SIZE but the
+       heavier weight, so the identity carries by size, weight, and its uppercase-tracked idiom
+       together (./README.md § Type and spacing). Weight is decoupled from the size token here
+       because the shared tokens pair section-header's 700 with a smaller size than body's; the row
+       readings below take body's own 600 weight so this name out-weights them. */
     font-weight: var(--type-section-header-weight);
     /* A park name never wraps, even where a ride name may need to scroll to be read in full
        (`.ride-name-text.marquee`, below) — the header is not part of that trade. */
@@ -264,10 +262,10 @@
   }
 
   .hours {
-    /* The hours are the park name's quiet peer (./README.md § Header): one step below whatever size
-       .name takes, at body's lighter weight rather than this size's own heavier token, so they read
-       as the quiet reading they are and do not compete with the name. Follows .name's step down. */
-    font-size: var(--type-caption);
+    font-size: var(--type-section-header);
+    /* The hours are the park name's quiet peer (./README.md § Header): the section-header SIZE the
+       owner stepped them to, at body's lighter weight rather than the section-header token's own 700,
+       so they read as the quiet reading they are and do not compete with the name. */
     font-weight: var(--type-body-weight);
     white-space: nowrap;
   }
@@ -289,13 +287,13 @@
   .row {
     display: flex;
     align-items: baseline;
-    gap: var(--space-xs);
-    /* Stepped down from --type-section-header, the scale's floor. Caption's own 600 weight keeps
-       the ride name reading as content, not a label, the same relationship the size
-       above it had — the wait figure's explicit 700 (below) stays the one bold mark on the row,
-       distinguishing the number from its name (./README.md § Type and spacing). */
-    font-size: var(--type-caption);
-    font-weight: var(--type-caption-weight);
+    gap: var(--space-sm);
+    font-size: var(--type-section-header);
+    /* Row readings take body's own 600 weight at the owner-stepped section-header SIZE — decoupled
+       from the section-header token's 700 so the ride name reads as content, not a label, and the
+       wait figure's explicit 700 (below) stays the one bold mark on the row, distinguishing the
+       number from its name (./README.md § Type and spacing). */
+    font-weight: var(--type-body-weight);
   }
 
   .ride-name {
@@ -350,14 +348,12 @@
   }
 
   /* The not-operating state word, drawn as a different kind of mark from a figure
-     (the park-wait-times UI design spec § The wait slot). Untracked, unlike the shared
-     section-label idiom (app.css's `--type-section-header-tracking`): tracking is what a group
-     heading over a divider borrows the idiom for, not a per-row mark competing with a ride name for
-     the same width budget every row already reserves. */
+     (the park-wait-times UI design spec § The wait slot). */
   .wait.state {
     font-size: var(--type-caption);
     font-weight: var(--type-caption-weight);
     text-transform: uppercase;
+    letter-spacing: var(--type-section-header-tracking);
   }
 
   .more {
