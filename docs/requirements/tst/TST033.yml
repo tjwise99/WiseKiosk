@@ -1,24 +1,25 @@
 active: false
 derived: false
 header: |
-  Pending: boundary codegen drift-gate test
+  Retired: boundary codegen drift-gate test
 level: '1.30'
 links:
 - SRS016: hVQCRJ-6Bfgxlzn8FkpR-gonQWctL67--tefiCtcID8=
 normative: true
-rationale: ''
+rationale: |
+  Retired (#339): the mechanism it would have tested - a CI check clearing and regenerating both
+  sides, then diffing the result against a committed copy - no longer exists. Neither generated
+  boundary file is committed (ADR 0008 rev 6), so there is no committed copy for a seeded mismatch
+  to diff against.
 ref: ''
-reviewed: _MfAFtippwqeMQGlNxcBtKXA6xqMpj62BWBEzfjMXaE=
+reviewed: 3QtGz2Jel7wz2H-xncQI3PuajRw4mZEyKJ2AqH3G0_w=
 status: proposed
 text: |
-  Pending: test that injects a deliberate mismatch between the schema and the
-  committed generated code, asserts the CI drift check fails, then regenerates and
-  asserts the build passes. Lands with the codegen mechanism (#7). The check is
-  repo-level (it spans both packages); this item cites the workflow wiring in its
-  text because Doorstop references cannot reach a path under a dot-directory such
-  as .github/ (ADR 0002 rev 4, ADR 0005 rev 4).
+  Retired, unwritten, with the mechanism it verified. It would have injected a deliberate mismatch
+  between the schema and a committed generated file, asserted a CI drift check failed, then
+  regenerated and asserted the build passed. The mechanism generates at build instead, when the
+  target file is absent, and a malformed schema now fails compilation rather than a diff.
 verification-justification: |
-  Settles that a seeded schema/code mismatch fails the drift check and that regeneration clears it.
-  Leaves unproven drift the generators do not express - a schema change producing byte-identical
-  output passes.
+  Would have settled that a seeded schema/code mismatch failed the drift check and that
+  regeneration cleared it. Nothing is settled or left unproven by a retired item.
 verification-method: test
