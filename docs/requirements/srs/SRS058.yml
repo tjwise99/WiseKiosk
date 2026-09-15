@@ -13,10 +13,9 @@ rationale: |
   Two obligations sit here and neither is the other's. The module identifies the longest waits, which is
   a selection over the payload's rides ranked by how long each one is, and it holds them in view without
   rotating them away. A module could tour every ride, holding nothing, and fail the persistence; or hold
-  a fixed or arbitrary handful and fail the selection. A ride that is not operating stands as an
-  effectively infinite wait (SRS061<!-- The park-wait-times module draws a wait as the time or the
-  not-operating state it is handed -->), so a shut headline ride is not quietly dropped from the reading
-  a viewer most wants.
+  a fixed or arbitrary handful and fail the selection. A ride that is not operating carries no length of
+  time in its wait (SRS061<!-- The park-wait-times module draws a wait as the time or the not-operating
+  state it is handed -->), so it has nothing for this selection to rank and takes no place in it.
   How many waits are held, and where on a park's card they sit, is composition - the module's UI design
   spec's rather than this item's - and is not fixed here. What is fixed is that the ones held are the
   longest and that they stay.
@@ -24,7 +23,7 @@ rationale: |
   it that lands on a framework universal, a persistent ranked reading being this module's payload's and
   nothing every module has.
 ref: ''
-reviewed: NHRnL_bO8JLVCkwKy9VWCfk4II4jSNSUGyXtc12yzV0=
+reviewed: yF_T7aXnYOn-SXd8ug4gI7H-chNKQertY9VmUhRLCCs=
 status: accepted
 text: |
   The park-wait-times module shall keep in view, for each park and without rotating them away, the rides
