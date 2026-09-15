@@ -134,6 +134,15 @@ codegen:
     cd backend && go tool oapi-codegen -config oapi-codegen.yaml ../boundary/openapi.yaml
     cd frontend && node_modules/.bin/orval
 
+[private]
+_boundary-go-gen:
+    test -f backend/internal/boundary/boundary.gen.go || (cd backend && go tool oapi-codegen -config oapi-codegen.yaml ../boundary/openapi.yaml)
+
+[private]
+_boundary-node-gen:
+    test -f frontend/src/lib/boundary/client.ts || (cd frontend && node_modules/.bin/orval)
+    test -f frontend/src/config/types.ts || just config-codegen
+
 [group('checks')]
 [doc('The committed boundary contract is what the schema generates, and the generated Go and TypeScript both compile; needs `just boundary-install`')]
 check-boundary:
@@ -158,7 +167,7 @@ check-boundary:
 # perturbs the memory that soak measures.
 [group('checks')]
 [doc('The backend Go tree builds, passes vet, its package tests pass, and the internal packages are free of data races; needs `just boundary-install`')]
-check-go:
+check-go: _boundary-go-gen
     go -C backend build ./...
     go -C backend vet ./...
     go -C backend test ./...
@@ -166,14 +175,14 @@ check-go:
 
 [group('checks')]
 [doc('FuzzShape, FuzzDecodeRequest and FuzzValidate each run fuzzed for 10s, asserting no panic or hang on crafted bytes; needs `just boundary-install`')]
-check-fuzz:
+check-fuzz: _boundary-go-gen
     go -C backend test ./internal/modules/weather/ -run '^$' -fuzz '^FuzzShape$' -fuzztime 10s
     go -C backend test ./internal/modules/weather/ -run '^$' -fuzz '^FuzzDecodeRequest$' -fuzztime 10s
     go -C backend test ./internal/modules/weather/ -run '^$' -fuzz '^FuzzValidate$' -fuzztime 10s
 
 [group('checks')]
 [doc('The backend Go tree is clean under golangci-lint default linter set (errcheck, govet, ineffassign, staticcheck, unused), non-zero exit on any finding')]
-check-lint-go:
+check-lint-go: _boundary-go-gen
     go -C backend tool golangci-lint run ./...
 
 [group('checks')]
@@ -193,17 +202,17 @@ config-seed:
 
 [group('run')]
 [doc('Serve the display page on a local dev server (hot reload); /api and /healthz are proxied to `just serve`, and the page reads the gitignored frontend/public/config.json the `config-seed` prerequisite writes')]
-dev: config-seed
+dev: config-seed _boundary-node-gen
     frontend/node_modules/.bin/vite frontend
 
 [group('run')]
 [doc('Run the backend with reload on change, serving /api and /healthz for `just dev` to proxy to; weather is keyless (Open-Meteo), so this serves live data with no secret plumbing')]
-serve:
+serve: _boundary-go-gen
     go -C backend run github.com/bokwoon95/wgo@v0.7.1 run ./cmd -static-root ../frontend/dist
 
 [group('run')]
 [doc('Build the bundle and serve the whole app from the backend on :8080 — the working tree as one process, no reload')]
-run: config-seed check-build
+run: config-seed check-build _boundary-go-gen
     go -C backend run ./cmd -static-root ../frontend/dist
 
 [group('run')]
@@ -226,7 +235,7 @@ docs-serve: arch-export site-build
 
 [group('checks')]
 [doc('The frontend builds to a static single-page bundle; needs `just boundary-install`')]
-check-build:
+check-build: _boundary-node-gen
     frontend/node_modules/.bin/vite build frontend
 
 # Depends on `check-build` rather than assuming an emitted tree: what it reads is what that build
@@ -238,7 +247,7 @@ check-static-bundle: check-build
 
 [group('checks')]
 [doc('The frontend is clean under eslint (flat config, recommended sets) and svelte-check (--tsgo); needs `just boundary-install`')]
-check-lint-frontend:
+check-lint-frontend: _boundary-node-gen
     cd frontend && node_modules/.bin/eslint .
     cd frontend && node_modules/.bin/svelte-check --tsconfig ./tsconfig.json --tsgo
 
@@ -249,32 +258,32 @@ check-vulns-npm:
 
 [group('checks')]
 [doc('The whole frontend typecheck (tsc --noEmit, TS 7) is clean; needs `just boundary-install`')]
-check-typecheck-frontend:
+check-typecheck-frontend: _boundary-node-gen
     frontend/node_modules/@typescript/native/bin/tsc --noEmit -p frontend/tsconfig.json
 
 [group('checks')]
 [doc('The frontend unit tier passes (Vitest); needs `just boundary-install`')]
-check-unit:
+check-unit: _boundary-node-gen
     frontend/node_modules/.bin/vitest run --root frontend
 
 [group('checks')]
 [doc('The frontend render tier passes at each supported viewport (Playwright); needs `just boundary-install` and `just render-install`')]
-check-render:
+check-render: _boundary-node-gen
     frontend/node_modules/.bin/playwright test --config frontend/playwright.config.ts
 
 [group('checks')]
 [doc('The render tier renders under the security response headers the backend serves, and raises no console warning of a rejected directive or an unrecognised feature; needs `just boundary-install` and `just render-install`')]
-check-render-policy:
+check-render-policy: _boundary-node-gen
     frontend/node_modules/.bin/playwright test --config frontend/playwright.policy.config.ts
 
 [group('checks')]
 [doc('Every committed test file is discovered by a configured runner, asked of each runner rather than restating its globs; needs `just boundary-install`')]
-check-dead-test:
+check-dead-test: _boundary-go-gen _boundary-node-gen
     python3 scripts/check-dead-test.py
 
 [group('checks')]
 [doc('The unit-test coverage bar: go-test-coverage over the backend, and one merged Istanbul gate (vitest coverage-istanbul + vite-plugin-istanbul, unioned by scripts/merge-coverage.ts) over every frontend `.ts` and `.svelte` file, each against its own configured bar, per-file and total; then one diagnostic HTML report over both languages (gcov2lcov + grcov), never gating; needs `just boundary-install`, `just render-install` and `grcov` on PATH')]
-check-coverage:
+check-coverage: _boundary-go-gen _boundary-node-gen
     go -C backend test -covermode=atomic -coverpkg=./... -coverprofile=cover.out ./...
     go -C backend tool go-test-coverage --config=.testcoverage.yml
     frontend/node_modules/.bin/vitest run --root frontend --coverage
@@ -313,7 +322,7 @@ native_goarm := "6"
 
 [group('checks')]
 [doc('The application builds from source for armv6l — the bundle, and the backend cross-compiled — and comes up serving on it; needs emulation for a binary this host cannot execute')]
-smoke-native: check-build
+smoke-native: check-build _boundary-go-gen
     mkdir -p bin
     GOOS=linux GOARCH={{native_goarch}} GOARM={{native_goarm}} CGO_ENABLED=0 go -C backend build -o ../bin/wisekiosk-armv6 ./cmd
     python3 scripts/native/smoke.py bin/wisekiosk-armv6 frontend/dist {{native_goarch}}/{{native_goarm}}

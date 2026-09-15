@@ -54,6 +54,12 @@ docs/site/vendor/
 # hook scripts it invokes (scripts/).
 scripts/.venv/
 
+# Generated boundary contract and configuration types — produced at build time, when missing, by
+# each consumer's own toolchain, never committed (ADR 0008 rev 5, ADR 0022 rev 2).
+backend/internal/boundary/boundary.gen.go
+frontend/src/lib/boundary/client.ts
+frontend/src/config/types.ts
+
 # Coverage / logs
 coverage/
 *.log
