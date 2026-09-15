@@ -101,7 +101,9 @@
       'font-size:var(--type-body);font-weight:var(--type-section-header-weight);' +
       'text-transform:uppercase;letter-spacing:var(--type-section-header-tracking);';
     const headerGap = resolved(root, 'width:var(--space-sm);').width;
-    const hoursFont = 'font-size:var(--type-section-header);font-weight:var(--type-section-header-weight);';
+    // `.hours` (ParkCard.svelte) renders at body's own lighter weight, not section-header's —
+    // this probe mirrors that exactly, the same contract `waitColumnWidthPx` holds for `.wait`.
+    const hoursFont = 'font-size:var(--type-section-header);font-weight:var(--type-body-weight);';
     const cardPadding = resolved(root, 'width:var(--space-md);').width;
     const cardBorder = resolved(root, 'width:calc(var(--divider-stroke-width) * 2);').width;
 
@@ -124,7 +126,9 @@
       `.wait.state` rules, read side by side with them for the same reason `headerWidthPx` reads
       `.name`'s. */
   function waitColumnWidthPx(root: HTMLElement): number {
-    const numericWait = 'font-size:var(--type-section-header);font-weight:700;';
+    // `.tabular-figures` (app.css) sets `font-variant-numeric:tabular-nums` on the rendered figure —
+    // mirrored here so '999' probes the same glyph widths the column actually draws.
+    const numericWait = 'font-size:var(--type-section-header);font-weight:700;font-variant-numeric:tabular-nums;';
     const stateWait =
       'font-size:var(--type-caption);font-weight:var(--type-caption-weight);' +
       'text-transform:uppercase;letter-spacing:var(--type-section-header-tracking);';
@@ -194,9 +198,15 @@
 
 <style>
   .park-wait-times {
-    /* The module sizes to its own content and takes the region's anchor, the same as every other
-       module's root (RegionFrame's `placementStyle()`). */
+    /* The module sizes to its own content and takes the region's anchor for its own box, the same
+       as every other module's root (RegionFrame's `placementStyle()`). */
     min-width: 0;
+    /* `placementStyle()` also hands every region's content an inherited `text-align` — the module's
+       own reading is never that anchor: every card's header, ride names and the loading/unavailable
+       lines below read left regardless of where the module itself sits. `.wait` (ParkCard.svelte)
+       opts back into `right`, and the Closed state's icon+label opt back into `center`, each still
+       explicit against this one default rather than the region's own. */
+    text-align: left;
   }
 
   .waiting {

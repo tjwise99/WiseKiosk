@@ -481,6 +481,84 @@ test('holds a park’s place in the grid and shows why, when that park’s own r
   // which park failed rather than reading only its grid position.
   await expect(failing.locator('[data-pwt-header]')).toBeVisible();
   await expect(failing.locator('[data-pwt-header]')).toContainText('magic-kingdom');
+
+  // Reads left like the rest of the card, not centred by the region this placement sits in
+  // (`middle_center`, `placed`'s own default) — the same inherited-`text-align` risk the ride-name
+  // fix corrected, here for the failure reason (audit finding L2).
+  const cardBox = await failing.boundingBox();
+  const reasonBox = await failing.locator(PARK_UNAVAILABLE).boundingBox();
+  if (!cardBox || !reasonBox) {
+    throw new Error('the failing card or its reason did not render a box');
+  }
+  const cardChromeLeft = await failing.evaluate((el) => {
+    const style = getComputedStyle(el);
+    return parseFloat(style.paddingLeft) + parseFloat(style.borderLeftWidth);
+  });
+  expect(
+    Math.abs(reasonBox.x - (cardBox.x + cardChromeLeft)),
+    'the failure reason starts flush at the card’s own left content edge',
+  ).toBeLessThan(1);
+});
+
+test('holds a park-unavailable card to a full card’s own height, the same hidden-skeleton reference the Closed card uses', async ({
+  page,
+}) => {
+  const roster = ['epcot', 'islands-of-adventure', 'magic-kingdom'];
+  const REASON = 'The wait-times source did not answer for this park.';
+  await serveModuleData(page, (_asked, body) => {
+    const { parks } = body as { parks: string[] };
+    return {
+      status: 200,
+      data: parksPayload(
+        parks.map((id) =>
+          id === 'epcot' ? onePark(id, { available: false, message: REASON }) : onePark(id, { rides: rankedRoster() }),
+        ),
+      ),
+    };
+  });
+  await render(page, placed(roster, { columns: 3, rows: 1 }));
+
+  const heights = Object.fromEntries(
+    await page
+      .locator(CARD)
+      .evaluateAll((els) => els.map((el) => [el.getAttribute('data-pwt-park') ?? '', el.getBoundingClientRect().height] as const)),
+  );
+  expect(
+    Math.abs(heights['epcot'] - heights['magic-kingdom']),
+    'the unavailable card matches a full leaderboard-plus-tour card’s own height',
+  ).toBeLessThan(1);
+});
+
+test('holds every card to a full card’s own height when every park is unavailable, not just when one full card is on screen to borrow from', async ({
+  page,
+}) => {
+  const roster = ['epcot', 'islands-of-adventure', 'magic-kingdom'];
+  const REASON = 'The wait-times source did not answer for this park.';
+  await serveModuleData(page, (_asked, body) => {
+    const { parks } = body as { parks: string[] };
+    return { status: 200, data: parksPayload(parks.map((id) => onePark(id, { available: false, message: REASON }))) };
+  });
+  await render(page, placed(roster, { columns: 3, rows: 1 }));
+
+  const unavailableHeights = await page.locator(CARD).evaluateAll((els) => els.map((el) => el.getBoundingClientRect().height));
+  expect(
+    new Set(unavailableHeights).size,
+    'every unavailable card the same height, with no filled card on screen to borrow from',
+  ).toBe(1);
+
+  await serveModuleData(page, (_asked, body) => {
+    const { parks } = body as { parks: string[] };
+    return { status: 200, data: parksPayload(parks.map((id) => onePark(id, { rides: rankedRoster() }))) };
+  });
+  await render(page, placed(roster, { columns: 3, rows: 1 }));
+
+  const filledHeights = await page.locator(CARD).evaluateAll((els) => els.map((el) => el.getBoundingClientRect().height));
+  expect(new Set(filledHeights).size, 'every filled card the same height').toBe(1);
+
+  expect(
+    Math.abs(unavailableHeights[0] - filledHeights[0]),
+    'an all-unavailable grid holds the same footprint as a filled grid',
+  ).toBeLessThan(1);
 });
 
 test('shows that it is reading while its route has not answered yet', async ({ page }) => {
@@ -495,6 +573,19 @@ test('shows that it is reading while its route has not answered yet', async ({ p
   await expect(loading).not.toBeEmpty();
   await expect(page.locator(CARD)).toHaveCount(0);
   await expect(page.locator(MODULE_UNAVAILABLE)).toHaveCount(0);
+
+  // Reads left, not centred by the region (`middle_center`) — same inherited-`text-align` risk as
+  // the ride-name bug, here for the loading line (audit finding L3).
+  const module = page.locator(`[data-region="middle_center"] ${MODULE}`);
+  const moduleBox = await module.boundingBox();
+  const loadingBox = await loading.boundingBox();
+  if (!moduleBox || !loadingBox) {
+    throw new Error('the module or the loading line did not render a box');
+  }
+  expect(
+    Math.abs(loadingBox.x - moduleBox.x),
+    'the loading line starts flush at the module’s own left edge',
+  ).toBeLessThan(1);
 });
 
 test('renders why its own route failed, in its own place, while the backend is reachable', async ({
@@ -512,6 +603,19 @@ test('renders why its own route failed, in its own place, while the backend is r
   await expect(box).toContainText(REASON);
   await expect(page.locator(CARD)).toHaveCount(0);
   await expect(page.locator('[data-backend-unreachable]')).toHaveCount(0);
+
+  // Reads left, not centred by the region — same inherited-`text-align` risk as the ride-name bug,
+  // here for the module-unavailable line (audit finding L3).
+  const module = page.locator(`[data-region="middle_center"] ${MODULE}`);
+  const moduleBox = await module.boundingBox();
+  const messageBox = await box.boundingBox();
+  if (!moduleBox || !messageBox) {
+    throw new Error('the module or the module-unavailable line did not render a box');
+  }
+  expect(
+    Math.abs(messageBox.x - moduleBox.x),
+    'the module-unavailable line starts flush at the module’s own left edge',
+  ).toBeLessThan(1);
 });
 
 test('lays out uniform, aligned cards that do not run past the viewport, with real park and ride names', async ({
@@ -914,6 +1018,191 @@ test('draws every ride name flush left in its own column, whatever its own lengt
 
   const waitTextAlign = await rows.first().locator(WAIT).evaluate((el) => getComputedStyle(el).textAlign);
   expect(waitTextAlign, 'the wait figure stays right-aligned').toBe('right');
+});
+
+test('sizes every card to the widest rendered header, and no wider — the true content, not the probe’s own formula', async ({
+  page,
+}) => {
+  const roster = ['magic-kingdom', 'epcot', 'islands-of-adventure'];
+  const names: Record<string, string> = {
+    'magic-kingdom': 'Magic Kingdom',
+    epcot: 'Epcot',
+    'islands-of-adventure': 'Islands of Adventure',
+  };
+  const hours = { open: '2026-01-01T09:00:00Z', close: '2026-01-01T21:00:00Z' };
+  await serveModuleData(page, (_asked, body) => {
+    const { parks } = body as { parks: string[] };
+    return { status: 200, data: parksPayload(parks.map((id) => onePark(id, { name: names[id], hours }))) };
+  });
+  await render(page, placed(roster, { columns: 3, rows: 1 }));
+
+  // 'Islands of Adventure' is the widest header in this roster — read its own true rendered content
+  // span (identity's own left edge to hours' own right edge) directly off the DOM, rather than
+  // re-deriving ParkWaitTimes.svelte's own probe formula: a probe that has drifted from the CSS it
+  // measures (L1 — the hours were probed at the wrong font-weight) computes the same wrong number
+  // every card shares, so comparing cards only to each other cannot catch it.
+  const widest = page.locator(`${CARD}[data-pwt-park="islands-of-adventure"]`);
+  const measured = await widest.evaluate((card) => {
+    const identity = card.querySelector('.identity') as HTMLElement;
+    const hoursEl = card.querySelector('[data-pwt-hours]') as HTMLElement;
+    const style = getComputedStyle(card);
+    return {
+      cardWidth: card.getBoundingClientRect().width,
+      headerContentWidth: hoursEl.getBoundingClientRect().right - identity.getBoundingClientRect().left,
+      chrome:
+        parseFloat(style.paddingLeft) +
+        parseFloat(style.paddingRight) +
+        parseFloat(style.borderLeftWidth) +
+        parseFloat(style.borderRightWidth),
+    };
+  });
+
+  const expectedCardWidth = Math.ceil(measured.headerContentWidth + measured.chrome);
+  expect(
+    Math.abs(measured.cardWidth - expectedCardWidth),
+    'the card is exactly the widest header’s own rendered width, no wider and no narrower',
+  ).toBeLessThan(2);
+});
+
+test('draws every wait right-aligned and tabular, the column never moving under a changing digit count', async ({
+  page,
+}) => {
+  await serveModuleData(page, () => ({
+    status: 200,
+    data: parksPayload([
+      onePark('epcot', {
+        rides: [
+          { name: 'A', wait: 5 },
+          { name: 'B', wait: 45 },
+          { name: 'C', wait: 120 },
+        ],
+      }),
+    ]),
+  }));
+  await render(page, placed(['epcot']));
+
+  const waits = page.locator(WAIT);
+  await expect(waits).toHaveCount(3);
+
+  const textAlign = await waits.first().evaluate((el) => getComputedStyle(el).textAlign);
+  expect(textAlign, 'the wait column reads right-aligned').toBe('right');
+
+  const variants = await waits.evaluateAll((els) => els.map((el) => getComputedStyle(el).fontVariantNumeric));
+  for (const variant of variants) {
+    expect(variant, 'a numeric wait renders tabular figures').toContain('tabular-nums');
+  }
+
+  // The column's own reserved box — not the glyphs' own position, which text-align already covers
+  // above — never moves, whether the figure is one, two or three digits.
+  const lefts = await waits.evaluateAll((els) => els.map((el) => el.getBoundingClientRect().x));
+  expect(new Set(lefts).size, 'the wait column’s own left edge holds across 1, 2 and 3 digits').toBe(1);
+});
+
+test('scrolls a ride name too wide for its own column, the full name still in the DOM', async ({ page }) => {
+  const longName = 'Guardians of the Galaxy: Cosmic Rewind — The Complete Extended Experience Edition';
+  await serveModuleData(page, () => ({
+    status: 200,
+    data: parksPayload([onePark('epcot', { rides: [{ name: longName, wait: 40 }] })]),
+  }));
+  await render(page, placed(['epcot']));
+
+  const text = page.locator('.ride-name-text').first();
+  await expect(text, 'a name wider than its column gets the marquee class').toHaveClass(/marquee/);
+  await expect(text, 'the full name is in the DOM, not truncated').toHaveText(longName);
+  const animationName = await text.evaluate((el) => getComputedStyle(el).animationName);
+  expect(animationName, 'the marquee animates, rather than being a static class with no motion').toContain(
+    'pwt-marquee',
+  );
+});
+
+test('leaves a ride name that already fits its own column static, no marquee', async ({ page }) => {
+  // A park with a long enough name/hours that its own header — the ride-name column's own width,
+  // never a ride name — leaves genuine room for 'Test Track' to fit: a short park name (this
+  // fixture's own default) produces too narrow a column, and 'Test Track' would overflow it for an
+  // unrelated reason, a false positive for this specific invariant.
+  await serveModuleData(page, () => ({
+    status: 200,
+    data: parksPayload([
+      onePark('epcot', {
+        name: 'Islands of Adventure',
+        hours: { open: '2026-01-01T09:00:00Z', close: '2026-01-01T21:00:00Z' },
+        rides: [{ name: 'Test Track', wait: 40 }],
+      }),
+    ]),
+  }));
+  await render(page, placed(['epcot']));
+
+  const text = page.locator('.ride-name-text').first();
+  await expect(text, 'a name that already fits never gets the marquee class').not.toHaveClass(/marquee/);
+});
+
+test('suppresses the marquee under prefers-reduced-motion, an overflowing name left static', async ({ page }) => {
+  const longName = 'Guardians of the Galaxy: Cosmic Rewind — The Complete Extended Experience Edition';
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await serveModuleData(page, () => ({
+    status: 200,
+    data: parksPayload([onePark('epcot', { rides: [{ name: longName, wait: 40 }] })]),
+  }));
+  await render(page, placed(['epcot']));
+
+  const text = page.locator('.ride-name-text').first();
+  await expect(
+    text,
+    'reduced motion leaves an overflowing name static, the full text still in the DOM',
+  ).not.toHaveClass(/marquee/);
+  await expect(text).toHaveText(longName);
+});
+
+test('draws the Closed card’s icon and label centred — the one deliberate exception to reading left', async ({
+  page,
+}) => {
+  await serveModuleData(page, () => ({
+    status: 200,
+    data: parksPayload([onePark('islands-of-adventure', { rides: [{ name: 'Test', wait: 'Closed' }] })]),
+  }));
+  await render(page, placed(['islands-of-adventure']));
+
+  const closed = page.locator('[data-pwt-closed]');
+  await expect(closed.locator('[data-pwt-closed-label]')).toHaveText('Closed');
+  await expect(closed.locator('.closed-icon')).toBeVisible();
+
+  const style = await closed.evaluate((el) => ({
+    alignItems: getComputedStyle(el).alignItems,
+    textAlign: getComputedStyle(el).textAlign,
+  }));
+  // A guard against a future left-align sweep wrongly straightening this: the Closed content is
+  // explicitly opted back into centring, not left to inherit the module's own left default.
+  expect(style.alignItems, 'the Closed content stays centred, not the module’s own left default').toBe('center');
+  expect(style.textAlign, 'the Closed content’s own text-align stays centred too').toBe('center');
+});
+
+test('draws the More Waits divider with no heading text', async ({ page }) => {
+  await serveModuleData(page, () => ({
+    status: 200,
+    data: parksPayload([onePark('epcot', { rides: rankedRoster() })]),
+  }));
+  await render(page, placed(['epcot']));
+
+  const more = page.locator(MORE_WAITS);
+  await expect(more.locator('h1, h2, h3, h4, h5, h6')).toHaveCount(0);
+  await expect(more, 'no heading text sits alongside the divider and the tour rows').not.toContainText('More waits');
+});
+
+test('keeps a long park name on one line, never wrapping the header', async ({ page }) => {
+  await serveModuleData(page, () => ({
+    status: 200,
+    data: parksPayload([onePark('epcot', { name: 'A Very Extraordinarily Long Theme Park Name That Keeps Right On Going' })]),
+  }));
+  await render(page, placed(['epcot']));
+
+  const name = page.locator('.name').first();
+  const whiteSpace = await name.evaluate((el) => getComputedStyle(el).whiteSpace);
+  expect(whiteSpace, 'the park name is set to never wrap').toBe('nowrap');
+
+  // A wrapped text node renders as more than one client rect, one per visual line — a single-line
+  // nowrap name renders as exactly one, whatever its own length.
+  const rectCount = await name.evaluate((el) => el.getClientRects().length);
+  expect(rectCount, 'the name renders as a single line, not wrapped onto a second').toBe(1);
 });
 
 test('stands down to nothing while the backend is unreachable, and stops asking it', async ({ page }) => {

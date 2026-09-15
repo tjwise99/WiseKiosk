@@ -138,27 +138,35 @@
     {/if}
   {/snippet}
 
-  {#if !park.available}
-    <p class="unavailable" data-pwt-unavailable>{park.message}</p>
-  {:else if noOpenRides}
-    <div class="closed-frame">
-      <!-- Hidden, not absent: the skeleton's own layout is what reserves this card's height at a
-           full card's footprint, whatever else on the page is currently open or closed
-           (`SKELETON_LEADERBOARD_ROWS`/`SKELETON_TOUR_ROWS`, above). -->
-      <ol class="leaderboard skeleton" aria-hidden="true">
-        {#each SKELETON_LEADERBOARD_ROWS as index (index)}
+  {#snippet fullCardSkeleton()}
+    <!-- Hidden, not absent: the skeleton's own layout is what reserves this frame's height at a
+         full card's footprint, whatever else on the page is currently open, Closed or itself
+         unavailable (`SKELETON_LEADERBOARD_ROWS`/`SKELETON_TOUR_ROWS`, above) — shared by the
+         Closed state and a park-unavailable card alike, the same reference either way. -->
+    <ol class="leaderboard skeleton" aria-hidden="true">
+      {#each SKELETON_LEADERBOARD_ROWS as index (index)}
+        <li class="row"><span class="ride-name">&nbsp;</span></li>
+      {/each}
+    </ol>
+    <div class="more skeleton" aria-hidden="true">
+      <div class="more-divider"></div>
+      <ol class="tour">
+        {#each SKELETON_TOUR_ROWS as index (index)}
           <li class="row"><span class="ride-name">&nbsp;</span></li>
         {/each}
       </ol>
-      <div class="more skeleton" aria-hidden="true">
-        <div class="more-divider"></div>
-        <ol class="tour">
-          {#each SKELETON_TOUR_ROWS as index (index)}
-            <li class="row"><span class="ride-name">&nbsp;</span></li>
-          {/each}
-        </ol>
-        <div class="footer"><span class="segment"></span></div>
-      </div>
+      <div class="footer"><span class="segment"></span></div>
+    </div>
+  {/snippet}
+
+  {#if !park.available}
+    <div class="full-frame">
+      {@render fullCardSkeleton()}
+      <p class="unavailable" data-pwt-unavailable>{park.message}</p>
+    </div>
+  {:else if noOpenRides}
+    <div class="full-frame">
+      {@render fullCardSkeleton()}
       <div class="closed" data-pwt-closed>
         {#if icon}
           <!-- eslint-disable-next-line svelte/no-at-html-tags -->
@@ -215,17 +223,26 @@
     box-sizing: border-box;
   }
 
+  /* A park that failed its own reading (`!park.available`) draws the reason in place of the
+     leaderboard and tour — over the hidden skeleton (`.skeleton`, below), the same full-card
+     reference `.closed` (below) draws from, so the card holds its place in the grid at a full
+     card's own height rather than collapsing for having nothing to show. Reads left, this
+     module's own default (`.park-wait-times`, ParkWaitTimes.svelte) — a reason is read the same
+     way the card's own rows are, not centred. */
   .unavailable {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
     margin: 0;
     font-size: var(--type-section-header);
     font-weight: var(--type-section-header-weight);
   }
 
-  /* A park with no ride reporting a length of time (`noOpenRides`) draws its icon and `Closed` in
-     place of the leaderboard and tour — over the hidden skeleton (`.skeleton`, below), which is
-     what reserves this frame's own height at a full card's footprint without depending on any
-     other card's own content. */
-  .closed-frame {
+  /* Shared by the park-unavailable message and the Closed state alike: the hidden skeleton
+     (`.skeleton`, below) is what reserves this frame's own height at a full card's footprint
+     without depending on any other card's own content. */
+  .full-frame {
     position: relative;
     display: flex;
     flex-direction: column;
@@ -235,7 +252,7 @@
   /* Kept in layout, not painted: a `.leaderboard`/`.more` skeleton takes exactly the height its
      real counterpart would (the same rules, the same row markup, `&nbsp;`-filled the same way
      `ParkCard.svelte`'s own tour padding rows already are) without drawing anything — `.closed`
-     (below) is what the card actually shows. */
+     and `.unavailable` (above) are what the card actually shows. */
   .skeleton {
     visibility: hidden;
   }
@@ -248,6 +265,10 @@
     align-items: center;
     justify-content: center;
     gap: var(--space-sm);
+    /* The one deliberate exception to this module's own left default (`.park-wait-times`,
+       ParkWaitTimes.svelte): a Closed park draws an icon and a single short word, centred in the
+       card the same way it always has — opted back in explicitly rather than left to inherit. */
+    text-align: center;
   }
 
   .closed-icon {
@@ -346,16 +367,12 @@
     /* The column a name is read in — fixed by `flex: 1` against `.wait`'s own fixed reservation
        (below), never the region or the name's own length, so no two cards' columns ever land at a
        different width. `overflow: hidden` is what a name too wide for it scrolls inside of
-       (`.ride-name-text.marquee`, below) rather than an ellipsis mechanism. */
+       (`.ride-name-text.marquee`, below) rather than an ellipsis mechanism. Reads left because
+       ParkWaitTimes.svelte's `.park-wait-times` sets that as this module's own default, against the
+       region's own inherited anchor — `.wait`, below, is the one column that opts back to `right`. */
     flex: 1 1 auto;
     min-width: 0;
     overflow: hidden;
-    /* A ride name reads left-to-right regardless of the placement's own anchor — `.wait`'s own
-       `text-align: right`, below, is the same local override against the same inheritance: a
-       region's `text-align` (RegionFrame's `placementStyle()`) is handed down as the module's
-       own content anchor, and a card centred in its region would otherwise centre every name
-       inside it too. */
-    text-align: left;
   }
 
   .ride-name-text {
