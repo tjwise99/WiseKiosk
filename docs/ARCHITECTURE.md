@@ -384,7 +384,7 @@ found rather than the first, which is why the validator collects them all
 JSON Schema 2020-12 ([ADR 0022 rev 3](decisions/0022-config-schema-format.md)) and compiled at build
 time to a standalone validation function, so the bundle carries a function specialised to it rather
 than a schema evaluator ([ADR 0028 rev 2](decisions/0028-bundled-config-validator.md)). The
-configuration-object TypeScript types are generated from the same file and drift-gated, so the
+configuration-object TypeScript types are generated from the same file at build, when missing, so the
 schema is the one statement of the configuration's shape and the region roster
 ([ADR 0025 rev 3](decisions/0025-display-region-roster.md)) has one machine-readable form that both
 the validator and the layout read.
