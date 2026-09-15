@@ -52,7 +52,7 @@ up-front cost, not a retrofit. Choosing Go without it is not on the table.
 - **The boundary contract becomes a hard, up-front obligation.** A schema→codegen mechanism must be
   chosen and stood up before the second module (resolved by
   [ADR 0008 rev 6](0008-boundary-contract-openapi-codegen.md)), and it becomes the Boundary tier of the
-  test architecture — CI must verify the generated code is in sync.
+  test architecture — CI generates and compiles both sides against the one schema.
   Under Node this would have been nearly free; under Go it is paid work, done knowingly.
 - **Response shaping is more verbose** than TypeScript — explicit struct definitions per payload.
 - **Learning value is realised** — the stated goal — at the price above.
