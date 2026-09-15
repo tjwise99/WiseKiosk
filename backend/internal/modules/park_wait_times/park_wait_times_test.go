@@ -310,7 +310,10 @@ func TestShapeWaitReadsEveryStatusTheSourceDeclares(t *testing.T) {
 
 // TestTST073_AResponseMissingAValueTheRideNeedsIsNotShaped is the other half
 // of the shaping obligation: a response missing a value a kept row needs is
-// an error rather than a payload carrying a zero nobody reported.
+// an error rather than a payload carrying a zero nobody reported. An
+// OPERATING row reporting no wait is not among these —
+// TestShapeRidesFiltersAnOperatingRowWithNoPostedWait covers that row and
+// the whole-park cascade it used to trigger.
 func TestTST073_AResponseMissingAValueTheRideNeedsIsNotShaped(t *testing.T) {
 	cases := map[string]func(read map[string]any){
 		"an attraction with no name": func(read map[string]any) {
@@ -324,12 +327,6 @@ func TestTST073_AResponseMissingAValueTheRideNeedsIsNotShaped(t *testing.T) {
 		"an attraction reporting a status this module does not recognise": func(read map[string]any) {
 			rows := read["liveData"].([]any)
 			rows[1].(map[string]any)["status"] = "BOARDING_GROUP"
-		},
-		"an operating attraction reporting no wait at all": func(read map[string]any) {
-			rows := read["liveData"].([]any)
-			row := rows[2].(map[string]any)
-			row["status"] = "OPERATING"
-			row["queue"] = map[string]any{}
 		},
 	}
 
@@ -354,6 +351,46 @@ func TestTST073_AResponseMissingAValueTheRideNeedsIsNotShaped(t *testing.T) {
 				t.Error("the error says nothing about what could not be read")
 			}
 		})
+	}
+}
+
+// TestShapeRidesFiltersAnOperatingRowWithNoPostedWait reads
+// SRS056<!-- The park-wait-times module puts each park's ride waits across the boundary -->
+// against the captured response with one attraction mutated to report
+// OPERATING with no posted wait — the shape themeparks.wiki gives a
+// walk-through landmark, typed ATTRACTION no differently from a queued
+// ride: the row is left out of the rides list, every other row still
+// shapes, and the call itself does not error.
+func TestShapeRidesFiltersAnOperatingRowWithNoPostedWait(t *testing.T) {
+	var read map[string]any
+	if err := json.Unmarshal(liveResponseBytes(t), &read); err != nil {
+		t.Fatalf("reading the captured response: %v", err)
+	}
+	rows := read["liveData"].([]any)
+	landmark := rows[2].(map[string]any)
+	landmarkName := landmark["name"].(string)
+	landmark["status"] = "OPERATING"
+	landmark["queue"] = map[string]any{}
+
+	body, err := json.Marshal(read)
+	if err != nil {
+		t.Fatalf("writing the modified response: %v", err)
+	}
+
+	rides, err := shapeRides(body)
+	if err != nil {
+		t.Fatalf("shapeRides: unexpected error: %v", err)
+	}
+	for _, ride := range rides {
+		if ride.Name == landmarkName {
+			t.Errorf("rides carries %q, want it filtered out as not a ride", landmarkName)
+		}
+	}
+	// The capture's seven attractions, minus the one turned into a
+	// no-wait landmark above; the show, restaurant and park rows were
+	// never carried to begin with.
+	if len(rides) != 6 {
+		t.Errorf("shaped %d rides, want 6 (the capture's 7 attractions minus the filtered landmark): %+v", len(rides), rides)
 	}
 }
 
@@ -988,6 +1025,59 @@ func TestAParkWithNoOperatingScheduleEntryStillAnswersWithItsRides(t *testing.T)
 	}
 	if park.Rides == nil || len(*park.Rides) == 0 {
 		t.Error("carries no rides despite its own live call serving")
+	}
+}
+
+// TestAParkWithANoWaitLandmarkStaysAvailable is fetchPark's own read of
+// SRS056<!-- The park-wait-times module puts each park's ride waits across the boundary -->:
+// a park whose live response mixes a landmark reporting OPERATING with no
+// posted wait among its real rides does not cascade to `available: false`
+// over that one row — it answers with the landmark filtered and its real
+// rides intact.
+func TestAParkWithANoWaitLandmarkStaysAvailable(t *testing.T) {
+	var read map[string]any
+	if err := json.Unmarshal(liveResponseBytes(t), &read); err != nil {
+		t.Fatalf("reading the captured response: %v", err)
+	}
+	rows := read["liveData"].([]any)
+	landmark := rows[2].(map[string]any)
+	landmarkName := landmark["name"].(string)
+	landmark["status"] = "OPERATING"
+	landmark["queue"] = map[string]any{}
+	live, err := json.Marshal(read)
+	if err != nil {
+		t.Fatalf("writing the modified response: %v", err)
+	}
+
+	transport := roundTrip(func(r *http.Request) (*http.Response, error) {
+		if strings.HasSuffix(r.URL.Path, "/live") {
+			return &http.Response{StatusCode: http.StatusOK, Body: io.NopCloser(bytes.NewReader(live)), Header: make(http.Header)}, nil
+		}
+		return &http.Response{StatusCode: http.StatusServiceUnavailable, Body: io.NopCloser(bytes.NewReader(nil)), Header: make(http.Header)}, nil
+	})
+	held := http.DefaultTransport
+	http.DefaultTransport = transport
+	t.Cleanup(func() { http.DefaultTransport = held })
+	freshRoute(t)
+
+	ctx := context.Background()
+	park, err := fetchPark(ctx, "magic-kingdom", supported["magic-kingdom"])
+	if err != nil {
+		t.Fatalf("fetchPark: unexpected error: %v", err)
+	}
+	if !park.Available {
+		t.Fatalf("available = false, want true — a no-wait landmark must not cascade the whole park to unavailable")
+	}
+	if park.Rides == nil {
+		t.Fatal("carries no rides despite its own live call serving")
+	}
+	for _, ride := range *park.Rides {
+		if ride.Name == landmarkName {
+			t.Errorf("rides carries %q, want it filtered out as not a ride", landmarkName)
+		}
+	}
+	if len(*park.Rides) != 6 {
+		t.Errorf("shaped %d rides, want 6 (the capture's 7 attractions minus the filtered landmark): %+v", len(*park.Rides), *park.Rides)
 	}
 }
 

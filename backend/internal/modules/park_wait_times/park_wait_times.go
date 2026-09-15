@@ -141,8 +141,10 @@ type standbyBlock struct {
 // list, attractions only and in the order the source gives them
 // (SRS056<!-- The park-wait-times module puts each park's ride waits across
 // the boundary -->). A response missing a value a kept row needs is an
-// error rather than a payload carrying a zero nobody reported. The body is
-// the cached response every caller it is served to holds, and nothing here
+// error rather than a payload carrying a zero nobody reported, except an
+// attraction reporting OPERATING with no posted wait, which is left out of
+// the list rather than failing the whole park's shaping. The body is the
+// cached response every caller it is served to holds, and nothing here
 // writes to it.
 func shapeRides(body []byte) ([]boundary.ParkWaitTimesRide, error) {
 	var read liveResponse
@@ -167,6 +169,11 @@ func shapeRides(body []byte) ([]boundary.ParkWaitTimesRide, error) {
 		}
 
 		wait, err := shapeWait(*row.Status, row.Queue)
+		if errors.Is(err, errNoPostedWait) {
+			// Left out of the rides list rather than failing this park's
+			// whole shaping.
+			continue
+		}
 		if err != nil {
 			return nil, fmt.Errorf("%q %w", *row.Name, err)
 		}
@@ -175,19 +182,24 @@ func shapeRides(body []byte) ([]boundary.ParkWaitTimesRide, error) {
 	return rides, nil
 }
 
+// errNoPostedWait is shapeWait's sentinel for an OPERATING row with nothing
+// to draw a wait from: shapeRides reads it apart from every other shaping
+// failure so that one such row is left out of the park's rides rather than
+// failing the park's whole shaping.
+var errNoPostedWait = errors.New("is operating but the response reports no wait")
+
 // shapeWait reads one ride's wait — a length of time in minutes, or one of
 // the three not-operating states — into the boundary's untyped slot
 // (SRS061<!-- The park-wait-times module draws a wait as the time or the
 // not-operating state it is handed -->; boundary/openapi.yaml's
-// ParkWaitTimesWait). An operating ride the source reports no wait for has
-// nothing this module can draw and is refused rather than shown as a zero
-// nobody reported; a status outside the four the source declares is refused
-// the same way.
+// ParkWaitTimesWait). An operating ride the source reports no wait for
+// returns errNoPostedWait rather than a zero nobody reported; a status
+// outside the four the source declares is refused the same way.
 func shapeWait(status string, queue *queueBlock) (any, error) {
 	switch status {
 	case "OPERATING":
 		if queue == nil || queue.Standby == nil || queue.Standby.WaitTime == nil {
-			return nil, errors.New("is operating but the response reports no wait")
+			return nil, errNoPostedWait
 		}
 		return *queue.Standby.WaitTime, nil
 	case "DOWN":
