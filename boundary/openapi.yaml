@@ -364,7 +364,6 @@ components:
           description: The park's identity, echoing the request.
         name:
           type: string
-          description: The park's name.
         available:
           type: boolean
           description: Whether this park's own reading could be produced.
@@ -408,7 +407,6 @@ components:
       properties:
         name:
           type: string
-          description: The ride's name.
         state:
           $ref: '#/components/schemas/ParkWaitTimesState'
         waitMinutes:
