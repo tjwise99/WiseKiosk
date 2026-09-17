@@ -24,15 +24,18 @@ import (
 )
 
 // The two captured responses every shaping case runs against: one park's real
-// live-data answer and its real schedule answer, both taken for the park below.
+// live-data answer and its real schedule answer, both taken for Magic Kingdom.
 // No case here reaches a network.
 const (
 	capturedLive     = "testdata/mk-live.json"
 	capturedSchedule = "testdata/mk-schedule.json"
 )
 
-// The park the captures were taken for.
-const capturedSlug = "magic-kingdom"
+// epcotEntityID is epcot's known themeparks.wiki entity id, one of the six
+// prettyNameEntityIDs resolves (#309 build spec decision 3) — a second
+// known-good id besides magicKingdomEntityID, for tests distinguishing two
+// parks' own cache keys and upstream calls.
+const epcotEntityID = "47f90d2c-e191-4239-a466-5892ef59a88b"
 
 // liveResponseBytes and scheduleResponseBytes read the captured responses.
 func liveResponseBytes(t *testing.T) []byte {
@@ -58,22 +61,6 @@ type roundTrip func(*http.Request) (*http.Response, error)
 
 func (f roundTrip) RoundTrip(r *http.Request) (*http.Response, error) {
 	return f(r)
-}
-
-// stagedSource puts a transport that answers nothing in front of every
-// outbound call for the length of the test, and returns the count of the
-// calls that reach it.
-func stagedSource(t *testing.T) *atomic.Int64 {
-	t.Helper()
-
-	var calls atomic.Int64
-	held := http.DefaultTransport
-	http.DefaultTransport = roundTrip(func(*http.Request) (*http.Response, error) {
-		calls.Add(1)
-		return nil, errors.New("no case in this package asks the source")
-	})
-	t.Cleanup(func() { http.DefaultTransport = held })
-	return &calls
 }
 
 // serve runs one request against this module's own schema handler, which is
@@ -109,88 +96,8 @@ func freshRouteWithConfig(t *testing.T, cfg upstream.Config) {
 	t.Cleanup(func() { served = held })
 }
 
-// TestTST072_ThePatternAdmitsASupportedParkAndRejectsEveryOther reads
-// SRS055<!-- The park-wait-times module declares the known-good constraint the park it is asked about must satisfy -->
-// against the constraint itself, without a network: every slug in the
-// module's supported set is admitted and resolves the entity id that set
-// declares for it, and a slug outside it is rejected.
-func TestTST072_ThePatternAdmitsASupportedParkAndRejectsEveryOther(t *testing.T) {
-	for slug, want := range supported {
-		t.Run("admits "+slug, func(t *testing.T) {
-			got, err := validate(slug)
-			if err != nil {
-				t.Fatalf("validate(%q): unexpected rejection: %v", slug, err)
-			}
-			if got != want {
-				t.Errorf("validate(%q) = %+v, want %+v", slug, got, want)
-			}
-		})
-	}
-
-	rejected := []string{"", "disney-world", "Magic-Kingdom", "magic-kingdom ", "hogsmeade"}
-	for _, slug := range rejected {
-		t.Run(fmt.Sprintf("rejects %q", slug), func(t *testing.T) {
-			if _, err := validate(slug); err == nil {
-				t.Fatalf("validate(%q): no error, want a rejection", slug)
-			}
-		})
-	}
-
-	// The rejection is judged before any upstream call: a request naming one
-	// unsupported park among several supported ones is refused in full, with
-	// no call issued for any of the parks it named.
-	t.Run("a request naming one unsupported park among several is refused whole, with no upstream call", func(t *testing.T) {
-		asked := stagedSource(t)
-		freshRoute(t)
-
-		recorder := serve(t, `{"parks":["magic-kingdom","hogsmeade","epcot"]}`)
-
-		if calls := asked.Load(); calls != 0 {
-			t.Errorf("a rejected request cost %d upstream calls, want none", calls)
-		}
-		if recorder.Code != http.StatusBadRequest {
-			t.Fatalf("status = %d, want %d (%s)", recorder.Code, http.StatusBadRequest, recorder.Body)
-		}
-
-		var rejection boundary.ClientRejection
-		if err := json.Unmarshal(recorder.Body.Bytes(), &rejection); err != nil {
-			t.Fatalf("reading the rejection %q: %v", recorder.Body, err)
-		}
-		if rejection.Message == "" {
-			t.Error("the rejection carries no text to render")
-		}
-	})
-}
-
 // uuidShape is the shape of a themeparks.wiki entity id.
 var uuidShape = regexp.MustCompile(`^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$`)
-
-// TestSupportedParksResolveWellFormedDistinctEntityIDs: every supported park
-// names a well-formed, distinct themeparks.wiki entity id.
-func TestSupportedParksResolveWellFormedDistinctEntityIDs(t *testing.T) {
-	if len(supported) == 0 {
-		t.Fatal("the module declares no supported park")
-	}
-
-	seenIDs := make(map[string]string, len(supported))
-	seenNames := make(map[string]string, len(supported))
-	for slug, park := range supported {
-		if !uuidShape.MatchString(park.entityID) {
-			t.Errorf("%q's entity id %q is not shaped like a themeparks.wiki id", slug, park.entityID)
-		}
-		if park.name == "" {
-			t.Errorf("%q carries no render name", slug)
-		}
-		if other, taken := seenIDs[park.entityID]; taken {
-			t.Errorf("%q and %q share the entity id %q", slug, other, park.entityID)
-		}
-		seenIDs[park.entityID] = slug
-		if other, taken := seenNames[park.name]; taken {
-			t.Errorf("%q and %q share the render name %q", slug, other, park.name)
-		}
-		seenNames[park.name] = slug
-	}
-}
 
 // intp is a pointer to an int literal — the shape waitMinutes takes on the
 // boundary, a posted wait or nil.
@@ -640,19 +547,19 @@ func TestShapeHoursSelectsTheDayInTheOperatingEntrysOwnOffset(t *testing.T) {
 // this module was not handed
 // (SRS065<!-- The park-wait-times module takes what it shows from one external wait-times source -->).
 func TestLiveAndScheduleURLsNameTheParksEntity(t *testing.T) {
-	park := supported[capturedSlug]
+	entityID := magicKingdomEntityID
 
-	live := liveURL(park.entityID)
-	if !strings.Contains(live, park.entityID) || !strings.HasSuffix(live, "/live") {
-		t.Errorf("liveURL(%q) = %q, want the entity id and the /live suffix", park.entityID, live)
+	live := liveURL(entityID)
+	if !strings.Contains(live, entityID) || !strings.HasSuffix(live, "/live") {
+		t.Errorf("liveURL(%q) = %q, want the entity id and the /live suffix", entityID, live)
 	}
 	if !strings.HasPrefix(live, "https://") {
-		t.Errorf("liveURL(%q) = %q, want an https request", park.entityID, live)
+		t.Errorf("liveURL(%q) = %q, want an https request", entityID, live)
 	}
 
-	schedule := scheduleURL(park.entityID)
-	if !strings.Contains(schedule, park.entityID) || !strings.HasSuffix(schedule, "/schedule") {
-		t.Errorf("scheduleURL(%q) = %q, want the entity id and the /schedule suffix", park.entityID, schedule)
+	schedule := scheduleURL(entityID)
+	if !strings.Contains(schedule, entityID) || !strings.HasSuffix(schedule, "/schedule") {
+		t.Errorf("scheduleURL(%q) = %q, want the entity id and the /schedule suffix", entityID, schedule)
 	}
 }
 
@@ -775,19 +682,17 @@ func TestTST080_IntegrationParkKeysAreCachedIndependently(t *testing.T) {
 	freshRoute(t)
 
 	ctx := context.Background()
-	magicKingdom := supported["magic-kingdom"]
-	epcot := supported["epcot"]
 
-	if _, err := fetchPark(ctx, "magic-kingdom", magicKingdom); err != nil {
+	if _, err := fetchPark(ctx, "magic-kingdom", magicKingdomEntityID); err != nil {
 		t.Fatalf("fetchPark(magic-kingdom) #1: unexpected error: %v", err)
 	}
-	if _, err := fetchPark(ctx, "magic-kingdom", magicKingdom); err != nil {
+	if _, err := fetchPark(ctx, "magic-kingdom", magicKingdomEntityID); err != nil {
 		t.Fatalf("fetchPark(magic-kingdom) #2: unexpected error: %v", err)
 	}
 
 	magicKingdomCalls := int64(0)
 	for url, counter := range transport.calls {
-		if strings.Contains(url, magicKingdom.entityID) {
+		if strings.Contains(url, magicKingdomEntityID) {
 			magicKingdomCalls += counter.Load()
 		}
 	}
@@ -795,12 +700,12 @@ func TestTST080_IntegrationParkKeysAreCachedIndependently(t *testing.T) {
 		t.Errorf("magic kingdom's own two endpoints cost %d upstream calls across two fetches, want 2 (one live, one schedule, the second fetch served from cache)", magicKingdomCalls)
 	}
 
-	if _, err := fetchPark(ctx, "epcot", epcot); err != nil {
+	if _, err := fetchPark(ctx, "epcot", epcotEntityID); err != nil {
 		t.Fatalf("fetchPark(epcot): unexpected error: %v", err)
 	}
 	epcotCalls := int64(0)
 	for url, counter := range transport.calls {
-		if strings.Contains(url, epcot.entityID) {
+		if strings.Contains(url, epcotEntityID) {
 			epcotCalls += counter.Load()
 		}
 	}
@@ -845,9 +750,8 @@ func TestTST081_IntegrationAFailingParkIsRetriedNoOftenerThanTheNegativeInterval
 	freshRouteWithConfig(t, cfg)
 
 	ctx := context.Background()
-	park := supported["magic-kingdom"]
 
-	first, err := fetchPark(ctx, "magic-kingdom", park)
+	first, err := fetchPark(ctx, "magic-kingdom", magicKingdomEntityID)
 	if err != nil {
 		t.Fatalf("fetchPark #1: unexpected error: %v", err)
 	}
@@ -855,7 +759,7 @@ func TestTST081_IntegrationAFailingParkIsRetriedNoOftenerThanTheNegativeInterval
 		t.Fatalf("fetchPark #1: available = true against a failing source, want false")
 	}
 
-	second, err := fetchPark(ctx, "magic-kingdom", park)
+	second, err := fetchPark(ctx, "magic-kingdom", magicKingdomEntityID)
 	if err != nil {
 		t.Fatalf("fetchPark #2: unexpected error: %v", err)
 	}
@@ -872,7 +776,7 @@ func TestTST081_IntegrationAFailingParkIsRetriedNoOftenerThanTheNegativeInterval
 	// The interval elapses, and a further ask does retry.
 	time.Sleep(shrunkBound + 150*time.Millisecond)
 
-	third, err := fetchPark(ctx, "magic-kingdom", park)
+	third, err := fetchPark(ctx, "magic-kingdom", magicKingdomEntityID)
 	if err != nil {
 		t.Fatalf("fetchPark #3: unexpected error: %v", err)
 	}
@@ -932,7 +836,7 @@ func TestPostApiParkWaitTimesFansOutOverEveryConfiguredPark(t *testing.T) {
 func TestAParksOwnFailureDoesNotFailTheWholeRequest(t *testing.T) {
 	live := liveResponseBytes(t)
 	transport := roundTrip(func(r *http.Request) (*http.Response, error) {
-		if strings.Contains(r.URL.String(), supported["magic-kingdom"].entityID) {
+		if strings.Contains(r.URL.String(), magicKingdomEntityID) {
 			return &http.Response{StatusCode: http.StatusServiceUnavailable, Body: io.NopCloser(bytes.NewReader(nil)), Header: make(http.Header)}, nil
 		}
 		return &http.Response{StatusCode: http.StatusOK, Body: io.NopCloser(bytes.NewReader(live)), Header: make(http.Header)}, nil
@@ -942,7 +846,7 @@ func TestAParksOwnFailureDoesNotFailTheWholeRequest(t *testing.T) {
 	t.Cleanup(func() { http.DefaultTransport = held })
 	freshRoute(t)
 
-	recorder := serve(t, `{"parks":["magic-kingdom","epcot"]}`)
+	recorder := serve(t, `{"parks":["Magic Kingdom","epcot"]}`)
 	if recorder.Code != http.StatusOK {
 		t.Fatalf("status = %d, want %d (%s) — one park's failure must not fail the whole request", recorder.Code, http.StatusOK, recorder.Body)
 	}
@@ -1069,7 +973,7 @@ func TestAParkWhoseResponseCannotBeShapedIsUnavailable(t *testing.T) {
 	freshRoute(t)
 
 	ctx := context.Background()
-	park, err := fetchPark(ctx, "magic-kingdom", supported["magic-kingdom"])
+	park, err := fetchPark(ctx, "magic-kingdom", magicKingdomEntityID)
 	if err != nil {
 		t.Fatalf("fetchPark: unexpected error: %v", err)
 	}
@@ -1102,7 +1006,7 @@ func TestAParkWithNoOperatingScheduleEntryStillAnswersWithItsRides(t *testing.T)
 	freshRoute(t)
 
 	ctx := context.Background()
-	park, err := fetchPark(ctx, "magic-kingdom", supported["magic-kingdom"])
+	park, err := fetchPark(ctx, "magic-kingdom", magicKingdomEntityID)
 	if err != nil {
 		t.Fatalf("fetchPark: unexpected error: %v", err)
 	}
@@ -1150,7 +1054,7 @@ func TestAParkWithANoWaitLandmarkStaysAvailable(t *testing.T) {
 	freshRoute(t)
 
 	ctx := context.Background()
-	park, err := fetchPark(ctx, "magic-kingdom", supported["magic-kingdom"])
+	park, err := fetchPark(ctx, "magic-kingdom", magicKingdomEntityID)
 	if err != nil {
 		t.Fatalf("fetchPark: unexpected error: %v", err)
 	}
@@ -1196,7 +1100,7 @@ func TestFetchParkDeliversHoursForATodayOperatingEntry(t *testing.T) {
 	freshRoute(t)
 
 	ctx := context.Background()
-	park, err := fetchPark(ctx, "magic-kingdom", supported["magic-kingdom"])
+	park, err := fetchPark(ctx, "magic-kingdom", magicKingdomEntityID)
 	if err != nil {
 		t.Fatalf("fetchPark: unexpected error: %v", err)
 	}
@@ -1232,7 +1136,7 @@ func TestFetchParkAnswersWithNilHoursWhenTheScheduleAnswersButCannotBeShaped(t *
 	freshRoute(t)
 
 	ctx := context.Background()
-	park, err := fetchPark(ctx, "magic-kingdom", supported["magic-kingdom"])
+	park, err := fetchPark(ctx, "magic-kingdom", magicKingdomEntityID)
 	if err != nil {
 		t.Fatalf("fetchPark: unexpected error: %v", err)
 	}
@@ -1450,20 +1354,22 @@ func FuzzDecodeRequest(f *testing.F) {
 	})
 }
 
-// FuzzValidateParks drives validate with a park slug (`check-fuzz`,
-// docs/CI.md § Backend fuzz), seeded from the module's own supported set and
-// from values outside it.
-func FuzzValidateParks(f *testing.F) {
-	for slug := range supported {
-		f.Add(slug)
+// FuzzResolveEntityID drives resolveEntityID with a config-named park
+// (`check-fuzz`, docs/CI.md § Backend fuzz) — the pretty-name/pass-through
+// resolution that replaced validate's whole-request gate (#309 build spec
+// decisions 3-4) — seeded from the module's own pretty-name set and from
+// values outside it.
+func FuzzResolveEntityID(f *testing.F) {
+	for name := range prettyNameEntityIDs {
+		f.Add(name)
 	}
-	for _, slug := range []string{"", "disney-world", "Magic-Kingdom", "magic-kingdom "} {
-		f.Add(slug)
+	for _, name := range []string{"", "disney-world", "Magic-Kingdom", "magic-kingdom "} {
+		f.Add(name)
 	}
 
-	f.Fuzz(func(t *testing.T, slug string) {
-		runWithin(t, fuzzHangBudget, "FuzzValidateParks", func() error {
-			_, _ = validate(slug)
+	f.Fuzz(func(t *testing.T, name string) {
+		runWithin(t, fuzzHangBudget, "FuzzResolveEntityID", func() error {
+			_ = resolveEntityID(name)
 			return nil
 		})
 	})
