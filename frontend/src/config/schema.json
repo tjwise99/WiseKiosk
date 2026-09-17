@@ -149,7 +149,7 @@
     },
     "parkWaitTimesOptions": {
       "title": "Park wait times options",
-      "description": "The park-wait-times module's section: what a placement of the module asks of it. Its two required keys carry no default — which parks are shown and how their cards are laid out are the operator's to choose, and there is no shape or roster that would do in the absence of ones the placement names. The remaining key is omissible, and a placement configured without it takes the default below.",
+      "description": "The park-wait-times module's section: what a placement of the module asks of it. Its required keys carry no default — which parks are shown and how their cards are laid out are the operator's to choose. Every other key is omissible, each taking its default below.",
       "type": "object",
       "additionalProperties": false,
       "required": ["parks", "columns", "rows"],
