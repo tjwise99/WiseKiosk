@@ -201,13 +201,12 @@ var defaultBlacklistIDs = []string{
 // apostrophes folded to ASCII (ADR 0008 rev 6).
 func normalizeRideName(name string) string {
 	name = strings.ToLower(strings.TrimSpace(name))
+	quoteFold := strings.NewReplacer(
+		"‘", "'", "’", "'",
+		"“", `"`, "”", `"`,
+	)
 	return quoteFold.Replace(name)
 }
-
-var quoteFold = strings.NewReplacer(
-	"‘", "'", "’", "'",
-	"“", `"`, "”", `"`,
-)
 
 // newExclusion builds the request's exclusion: the default id list
 // (unless turned off) unioned with the request's blacklist names.
