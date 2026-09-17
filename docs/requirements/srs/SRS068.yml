@@ -15,8 +15,8 @@ rationale: |
   upstream calls carry. A park named outside that convenience is not a mistake the module is
   positioned to catch - it has nothing of its own to check the name against - so it is carried through
   unexamined and the upstream's own answer becomes the request's answer to whether the park exists.
-  Whether a passed-through or resolved identifier is one the source currently recognizes is not this
-  item's concern: that is a failure reaching this module's own response, and
+  Whether a passed-through or resolved identifier is one the source recognizes at the time of the
+  request is not this item's concern: that is a failure reaching this module's own response, and
   SRS067<!-- The park-wait-times module confines a failure to the part of its own response the
   failure touches --> already obliges that it costs only the one park.
   No supplier is named, and neither is the offline set's membership: which parks it names is this
@@ -34,6 +34,6 @@ verification-justification: |
   to the identity recorded for it there, and a configured name matching none of it is carried to the
   source exactly as given, in both cases with the request answered rather than refused.
   What it cannot settle is whether an identifier that passed through unexamined, or one the offline
-  set resolved, is one the source currently answers for - that is the source's own failure, surfaced
-  by the failure path this item does not cover.
+  set resolved, is one the source answers for at the time of the request - that is the source's own
+  failure, surfaced by the failure path this item does not cover.
 verification-method: test

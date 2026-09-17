@@ -31,7 +31,7 @@ text: |
 verification-justification: |
   Settles that a recognized name resolves to its own known identity and an unrecognized one passes
   through unexamined, both admitted rather than refused.
-  What it cannot settle is whether a resolved or passed-through identifier is one the source currently
-  answers for, which is the source's own failure, surfaced by the failure path this item does not
-  cover.
+  What it cannot settle is whether a resolved or passed-through identifier is one the source answers
+  for at the time of the request, which is the source's own failure, surfaced by the failure path this
+  item does not cover.
 verification-method: test

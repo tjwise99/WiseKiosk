@@ -19,7 +19,7 @@ rationale: |
   Today this module has two such instances: a park among the parks a request names, and a field within
   one park's own answer (its hours against its rides, two separate upstream calls). Neither is named
   here - each is its own verifying test - because the obligation is the confinement, not the roster of
-  parts it currently applies to; a third instance would be a new test under this item, not a rewrite of
+  parts it happens to apply to; a third instance would be a new test under this item, not a rewrite of
   it.
 
   What draws in a confined part's place is a different item's: this states only that a failure stays
