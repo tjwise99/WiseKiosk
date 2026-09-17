@@ -27,7 +27,7 @@ rationale: |
   state, does not abstract to a universal: a payload carrying no state has nothing to follow, and which
   states this module's payload carries is its own, so that half is this item's and is what it is for.
 ref: ''
-reviewed: GEs8qJ6pnXaIzLntNYlgS8GkWX2iEESDpqfj8HOzBuU=
+reviewed: 3MnAvNBwP4xYxeP7tsyDsOkTG9VYaFT47KEHMXlGyV4=
 status: accepted
 text: |
   The park-wait-times module shall draw each ride's wait as the length of time it is handed or, where the

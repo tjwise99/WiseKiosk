@@ -4,35 +4,35 @@ header: |
   The shaping builds each park's rides and hours from a captured response
 level: 95
 links:
-- SRS056: rawiNxTJ0fNv4XGGGHiiI0r9yEk09vQzN7XxwZLlvL0=
+- SRS056: pLPYX71qA0PLRTzDfUqixDmNKL_5xsgMnwZq5aGwuMc=
 normative: true
 ref: ''
 references:
 - keyword: func TestTST073_ShapingBuildsTheParksRidesFromTheCapturedResponse(t *testing.T)
     {
   path: backend/internal/modules/park_wait_times/park_wait_times_test.go
-  sha: 28c2991540b50e998d542fe132ed780449dd8f423d36b133706659fa6f01ac8c
+  sha: fd0dc175dbaa1f9f515272c450f3963e5a191240fb8a71c34ed99dc00d374828
   type: file
 - keyword: func TestTST073_AResponseMissingAValueTheRideNeedsIsNotShaped(t *testing.T)
     {
   path: backend/internal/modules/park_wait_times/park_wait_times_test.go
-  sha: 28c2991540b50e998d542fe132ed780449dd8f423d36b133706659fa6f01ac8c
+  sha: fd0dc175dbaa1f9f515272c450f3963e5a191240fb8a71c34ed99dc00d374828
   type: file
 - keyword: func TestTST073_ShapingBuildsTheParksHoursFromTheCapturedResponse(t *testing.T)
     {
   path: backend/internal/modules/park_wait_times/park_wait_times_test.go
-  sha: 28c2991540b50e998d542fe132ed780449dd8f423d36b133706659fa6f01ac8c
+  sha: fd0dc175dbaa1f9f515272c450f3963e5a191240fb8a71c34ed99dc00d374828
   type: file
 - keyword: func TestShapeRidesFiltersAnOperatingRowWithNoPostedWait(t *testing.T)
     {
   path: backend/internal/modules/park_wait_times/park_wait_times_test.go
-  sha: 28c2991540b50e998d542fe132ed780449dd8f423d36b133706659fa6f01ac8c
+  sha: fd0dc175dbaa1f9f515272c450f3963e5a191240fb8a71c34ed99dc00d374828
   type: file
 - keyword: func TestAParkWithANoWaitLandmarkStaysAvailable(t *testing.T) {
   path: backend/internal/modules/park_wait_times/park_wait_times_test.go
-  sha: 28c2991540b50e998d542fe132ed780449dd8f423d36b133706659fa6f01ac8c
+  sha: fd0dc175dbaa1f9f515272c450f3963e5a191240fb8a71c34ed99dc00d374828
   type: file
-reviewed: 3bbO-sHv2BW3kF_bEhPuorKOndqwrGmcu9XCH5U35kA=
+reviewed: sAcZY_z2p7bm_wpWqbkh6bmf_ys0uTIznWqRp_5peFg=
 status: accepted
 text: |
   Unit test that shapeRides and shapeHours, run against a captured live-data and schedule response with

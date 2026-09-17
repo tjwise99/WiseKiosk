@@ -4,21 +4,21 @@ header: |
   A park's rides answer intact when only its schedule call fails
 level: 106
 links:
-- SRS067: 0qYihdoBtqYLDVzy_lOmxNLkleLimKYbwt7fsj42lVw=
+- SRS067: 32McDmA67tMJCF1GTk_Wl2ZOXDFwjBb193mQ8trC0Tk=
 normative: true
 ref: ''
 references:
 - keyword: func TestAParkWithNoOperatingScheduleEntryStillAnswersWithItsRides(t *testing.T)
     {
   path: backend/internal/modules/park_wait_times/park_wait_times_test.go
-  sha: 28c2991540b50e998d542fe132ed780449dd8f423d36b133706659fa6f01ac8c
+  sha: fd0dc175dbaa1f9f515272c450f3963e5a191240fb8a71c34ed99dc00d374828
   type: file
 - keyword: func TestFetchParkAnswersWithNilHoursWhenTheScheduleAnswersButCannotBeShaped(t
     *testing.T) {
   path: backend/internal/modules/park_wait_times/park_wait_times_test.go
-  sha: 28c2991540b50e998d542fe132ed780449dd8f423d36b133706659fa6f01ac8c
+  sha: fd0dc175dbaa1f9f515272c450f3963e5a191240fb8a71c34ed99dc00d374828
   type: file
-reviewed: BQb-azgKKBNZ9d35Z6meitV2ygJzoQlpUiXl8znxkyo=
+reviewed: BRZNM1gHTSdUCrU2eo6xl3ZpU54eJvRe68n8LVMePHg=
 status: accepted
 text: |
   Unit test of fetchPark's own assembly of a park's payload against a schedule call staged to fail two

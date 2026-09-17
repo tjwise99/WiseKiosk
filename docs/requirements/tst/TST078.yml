@@ -4,16 +4,16 @@ header: |
   A wait is drawn as the time or state it is handed
 level: 100
 links:
-- SRS061: 6chYA8sTvBlutbW2-CJ7TVEogrgvTDpBgfVnH7nnnOM=
+- SRS061: pypwdn1_8XoIrwTAPmJpsUNEFpBnu2Wh8EH0utHEOdc=
 normative: true
 ref: ''
 references:
 - keyword: 'test(''TST078: draws a ride’s wait as the mark its own payload names,
     not the page’s clock or the park’s hours'', async ({'
   path: frontend/src/modules/park_wait_times/park_wait_times.spec.ts
-  sha: 6b635850371a7c13f9c22587354fd9712f8809441521b4d5080fe987b529b976
+  sha: 6cd65b223542cb215a6839b16c5f35c694edc2ed9cdfc839bfe456e34ce3236c
   type: file
-reviewed: cWhpik-T8XdWv-_KzADVf-249X1cfZo7MFKxGI_PVRI=
+reviewed: 3P88PAU1rm_Qv8EFC8DDM6DA05AXknk4ZjWH0Ub9qyM=
 status: accepted
 text: |
   Render test that, handed one park whose own hours say it is open at the clock's held moment, a ride

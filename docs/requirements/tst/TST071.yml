@@ -4,16 +4,16 @@ header: |
   The module reports on the parks its configuration names, in the region it names
 level: 93
 links:
-- SRS054: nAt8cSSQkqM-5dcdliPpOBPWhNq4IfU-D3g61VSs0ss=
+- SRS054: ShUci8ENoXNl50V-SY6lOE5d1TMwI2AJZT3dju5er5Q=
 normative: true
 ref: ''
 references:
 - keyword: 'test(''TST071: reports on the parks its configuration names, in the region
     it names, and moves with a second configuration'', async ({'
   path: frontend/src/modules/park_wait_times/park_wait_times.spec.ts
-  sha: 6b635850371a7c13f9c22587354fd9712f8809441521b4d5080fe987b529b976
+  sha: 6cd65b223542cb215a6839b16c5f35c694edc2ed9cdfc839bfe456e34ce3236c
   type: file
-reviewed: DLAJn4gwMTbLTmRvDcfav-pyS5a2sZ_iJ7dmKsk1slg=
+reviewed: 6UJP51gRYdLDuIr-fiUCIq8fwaly1l6_LGIgewNdSO4=
 status: accepted
 text: |
   Render test loading the page under two placements, each naming a different park, against a source

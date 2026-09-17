@@ -4,19 +4,21 @@ header: |
   An unrecognized park's failure is confined to it and told apart from a transient one
 level: 109
 links:
-- SRS067: null
+- SRS067: 32McDmA67tMJCF1GTk_Wl2ZOXDFwjBb193mQ8trC0Tk=
 normative: true
 ref: ''
 references:
-- keyword: func TestUpstream404IsUnsupportedDistinctFromATransientFailure(t *testing.T) {
+- keyword: func TestUpstream404IsUnsupportedDistinctFromATransientFailure(t *testing.T)
+    {
   path: backend/internal/modules/park_wait_times/park_wait_times_test.go
-  sha: fe417337e86bfbe8c7ebbc968ae356b2b505717a07b96ac469e64c4b002b45a5
+  sha: fd0dc175dbaa1f9f515272c450f3963e5a191240fb8a71c34ed99dc00d374828
   type: file
-- keyword: "test('renders each unavailable park’s own message verbatim, transient or permanent — the card never branches on the wording', async ({"
+- keyword: test('renders each unavailable park’s own message verbatim, transient or
+    permanent — the card never branches on the wording', async ({
   path: frontend/src/modules/park_wait_times/park_wait_times.spec.ts
   sha: 6cd65b223542cb215a6839b16c5f35c694edc2ed9cdfc839bfe456e34ce3236c
   type: file
-reviewed: null
+reviewed: EBmKxgruLiUD3J8ikPdEfebz-1MdOu4EGjHDDyOyi24=
 status: accepted
 text: |
   Two checks. A unit test that serves a request naming two configured parks, one whose upstream call

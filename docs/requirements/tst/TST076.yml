@@ -11,19 +11,19 @@ references:
 - keyword: 'test(''TST076: tours the remaining rides two at a time, on the configured
     interval, reaching every one of them'', async ({'
   path: frontend/src/modules/park_wait_times/park_wait_times.spec.ts
-  sha: 6b635850371a7c13f9c22587354fd9712f8809441521b4d5080fe987b529b976
+  sha: 6cd65b223542cb215a6839b16c5f35c694edc2ed9cdfc839bfe456e34ce3236c
   type: file
 - keyword: 'test(''TST076: the rotation interval is the configuration’s, not one fixed
     in the module'', async ({ page }) => {'
   path: frontend/src/modules/park_wait_times/park_wait_times.spec.ts
-  sha: 6b635850371a7c13f9c22587354fd9712f8809441521b4d5080fe987b529b976
+  sha: 6cd65b223542cb215a6839b16c5f35c694edc2ed9cdfc839bfe456e34ce3236c
   type: file
 - keyword: 'test(''TST076: the footer marks the tour’s own position, one segment per
     page'', async ({ page }) => {'
   path: frontend/src/modules/park_wait_times/park_wait_times.spec.ts
-  sha: 6b635850371a7c13f9c22587354fd9712f8809441521b4d5080fe987b529b976
+  sha: 6cd65b223542cb215a6839b16c5f35c694edc2ed9cdfc839bfe456e34ce3236c
   type: file
-reviewed: GJZLbAQLKFLYx1KJfiUbOF0IyWRgHRhVk_YGtMDRU_c=
+reviewed: nLCxoVGUcv0uQyLAaYW4UnkQacYbx-S_KoRhol5b5CU=
 status: accepted
 text: |
   Render test that, handed a park with more rides than the leaderboard holds, under a driven clock and

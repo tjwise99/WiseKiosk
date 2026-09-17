@@ -43,7 +43,7 @@ rationale: |
   silently dropped; this item says what does not count as a ride in the first place, which the parent
   leaves to "the boundary schema's and the shaping library's" (#309).
 ref: ''
-reviewed: _sVsMsovU-eeIVm3jOMINrrk52_yqbi67DaY5yxxroI=
+reviewed: IxyXJjc9a0ltE7YUf8LqWVA5omwXfeeaZJZSTtEHcbw=
 status: accepted
 text: |
   The park-wait-times module shall exclude from a park's rides any entity its configuration names for

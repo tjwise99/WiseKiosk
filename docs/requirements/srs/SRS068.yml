@@ -4,7 +4,7 @@ header: |
   The park-wait-times module resolves a park it recognizes and passes through one it does not
 level: 71
 links:
-- SYS011: null
+- SYS011: a3bqZRtHE8ujrhIgBKFUtcxWGSCLRHsqU6GgDgwwR38=
 normative: true
 rationale: |
   A park is not judged against a roster the module owns: the roster is the upstream's to keep, and a
@@ -23,7 +23,7 @@ rationale: |
   repository's own curation, changeable without touching what the module is obliged to do with a name
   that is or is not in it.
 ref: ''
-reviewed: null
+reviewed: jZYiSb_KUB_b6kmcswYlaN_zSG4MtXRBQkw91Oud0cg=
 status: accepted
 text: |
   The park-wait-times module shall resolve a configured park that matches one in a small set it holds

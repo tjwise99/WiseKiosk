@@ -4,23 +4,23 @@ header: |
   The module resolves a park it recognizes and passes an unrecognized one through
 level: 108
 links:
-- SRS068: null
+- SRS068: KyPeoil6xL7LoSXxEE4cmZLR3zK5ko6kAQTH3mIX2Ak=
 normative: true
 ref: ''
 references:
 - keyword: func TestPrettyNameResolvesToItsUUID(t *testing.T) {
   path: backend/internal/modules/park_wait_times/park_wait_times_test.go
-  sha: fe417337e86bfbe8c7ebbc968ae356b2b505717a07b96ac469e64c4b002b45a5
+  sha: fd0dc175dbaa1f9f515272c450f3963e5a191240fb8a71c34ed99dc00d374828
   type: file
 - keyword: func TestPrettyNameMatchIsNormalized(t *testing.T) {
   path: backend/internal/modules/park_wait_times/park_wait_times_test.go
-  sha: fe417337e86bfbe8c7ebbc968ae356b2b505717a07b96ac469e64c4b002b45a5
+  sha: fd0dc175dbaa1f9f515272c450f3963e5a191240fb8a71c34ed99dc00d374828
   type: file
 - keyword: func TestUnrecognizedConfigStringPassesThroughAsIs(t *testing.T) {
   path: backend/internal/modules/park_wait_times/park_wait_times_test.go
-  sha: fe417337e86bfbe8c7ebbc968ae356b2b505717a07b96ac469e64c4b002b45a5
+  sha: fd0dc175dbaa1f9f515272c450f3963e5a191240fb8a71c34ed99dc00d374828
   type: file
-reviewed: null
+reviewed: e9odvFlVfQlda20qOqcII9vdrnFlKRpVEJF63eCYkoE=
 status: accepted
 text: |
   Unit tests exercising the module's own HTTP handler, without a network: a configured park whose
