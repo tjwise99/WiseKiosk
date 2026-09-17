@@ -217,9 +217,9 @@ test('TST076: a placement that omits its own rotation interval tours on the sche
   // rotation_interval_seconds is genuinely absent from this placement's own options (unlike the
   // cases above, which all set it) — the schema's own default: 8 (config/schema.json) is what
   // ajv's useDefaults fills in before the component ever reads the config, and the component reads
-  // that value directly rather than falling back to one of its own (ParkWaitTimes.svelte no longer
-  // carries a `?? 8`). This pins the eight-second figure that fill is now the only source of;
-  // it does not by itself prove every way that fill could stop working.
+  // that value directly rather than falling back to one of its own. This pins the eight-second
+  // figure as the only source that fill comes from; it does not by itself prove every way that
+  // fill could stop working.
   await holdHostClock(page, HOST_TIME);
   await serveModuleData(page, () => ({
     status: 200,

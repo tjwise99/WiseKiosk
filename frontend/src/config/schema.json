@@ -156,26 +156,26 @@
       "properties": {
         "parks": {
           "title": "Parks",
-          "description": "The parks this placement shows, drawn from the module's supported set and rejected by the backend where they are not (SRS055). Every configured park holds its place in the grid at once (SRS057).",
+          "description": "The parks this placement shows, drawn from the module's supported set and rejected by the backend where they are not (SRS055<!-- The park-wait-times module declares the known-good constraint the park it is asked about must satisfy -->). Every configured park holds its place in the grid at once (SRS057<!-- The park-wait-times module holds every configured park on screen at once -->).",
           "type": "array",
           "minItems": 1,
           "items": { "type": "string" }
         },
         "columns": {
           "title": "Columns",
-          "description": "How many columns the park cards are laid out into (SRS060).",
+          "description": "How many columns the park cards are laid out into (SRS060<!-- The park-wait-times module arranges its parks in a grid its configuration shapes -->).",
           "type": "integer",
           "minimum": 1
         },
         "rows": {
           "title": "Rows",
-          "description": "How many rows the park cards are laid out into (SRS060).",
+          "description": "How many rows the park cards are laid out into (SRS060<!-- The park-wait-times module arranges its parks in a grid its configuration shapes -->).",
           "type": "integer",
           "minimum": 1
         },
         "rotation_interval_seconds": {
           "title": "Rotation interval seconds",
-          "description": "Seconds each pair of \"more waits\" rides is shown before the rotation advances to the next pair (SRS059). Floored at two seconds, below which the rotation would strobe.",
+          "description": "Seconds each pair of \"more waits\" rides is shown before the rotation advances to the next pair (SRS059<!-- The park-wait-times module tours the remaining rides on an interval its configuration sets -->). Floored at two seconds, below which the rotation would strobe.",
           "type": "number",
           "minimum": 2,
           "default": 8
