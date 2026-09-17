@@ -72,7 +72,7 @@ export function hoursText(hours: { open: string; close: string }): string {
   return `${clockTime(hours.open)}–${clockTime(hours.close)}`;
 }
 
-/** This module's icon set for the six parks it has always shown, keyed by each park's own upstream
+/** This module's icon set — the six parks it ships an icon for, keyed by each park's own upstream
     entity id — the identifier the backend resolves a park to and carries as `id` across the boundary
     (boundary/openapi.yaml's ParkWaitTimesPark.id) — so a known park chosen by its pretty name or by
     its raw id alike resolves to one of these keys (the park-wait-times UI design spec § The park icon

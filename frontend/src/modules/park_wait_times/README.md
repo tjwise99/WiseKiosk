@@ -63,8 +63,7 @@ does not hold a leaderboard place — it still reads, in the rotation below.
 Beneath a plain divider (the label dropped to save vertical space; owner ruling, #309), the rest of
 the park's rides tour through **two at a
 time**, advancing on a configured interval (the same on-an-interval idiom as the weather module's
-series toggle). Each card's tour runs on its own timer, independent of every other card's — one
-park's rotation is never held back by, or synchronised to, another's.
+series toggle). Each card's tour runs on its own timer, independent of every other card's.
 
 ### Footer — the rotation counter
 
@@ -121,8 +120,7 @@ The park name is the card's one prominent step so the identity leads; the wait f
 scans without dominating the name. All figures are `tabular-nums`, so a wait changing under the
 display never shifts the layout and the right-hand column stays aligned down a card. Legibility is not
 traded for width here: the marquee is what a long ride name gives up its width for
-(owner ruling, #309), not the type scale — the header, driven to the same steps by the owner's
-original one-size step-down, is what fixes the card's own width instead.
+(owner ruling, #309), not the type scale — the header is what fixes the card's own width instead.
 
 Within a card, the header is set from the leaderboard by `md`; leaderboard rows and rotation rows from
 each other by `sm`; the More Waits divider from its rows by `md`; the footer bar from the rotation by
