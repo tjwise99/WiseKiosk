@@ -683,10 +683,10 @@ func TestTST080_IntegrationParkKeysAreCachedIndependently(t *testing.T) {
 	ctx := context.Background()
 
 	if _, err := fetchPark(ctx, "Magic Kingdom"); err != nil {
-		t.Fatalf("fetchPark(magic-kingdom) #1: unexpected error: %v", err)
+		t.Fatalf("fetchPark(Magic Kingdom) #1: unexpected error: %v", err)
 	}
 	if _, err := fetchPark(ctx, "Magic Kingdom"); err != nil {
-		t.Fatalf("fetchPark(magic-kingdom) #2: unexpected error: %v", err)
+		t.Fatalf("fetchPark(Magic Kingdom) #2: unexpected error: %v", err)
 	}
 
 	magicKingdomCalls := int64(0)
@@ -865,13 +865,13 @@ func TestAParksOwnFailureDoesNotFailTheWholeRequest(t *testing.T) {
 
 	magicKingdom, epcot := payload.Parks[0], payload.Parks[1]
 	if magicKingdom.Available {
-		t.Error("magic-kingdom: available = true against a failing source, want false")
+		t.Error("Magic Kingdom: available = true against a failing source, want false")
 	}
 	if magicKingdom.Message == nil || *magicKingdom.Message == "" {
-		t.Error("magic-kingdom: carries no message explaining its own failure")
+		t.Error("Magic Kingdom: carries no message explaining its own failure")
 	}
 	if magicKingdom.Rides != nil {
-		t.Error("magic-kingdom: carries rides despite being unavailable")
+		t.Error("Magic Kingdom: carries rides despite being unavailable")
 	}
 	if !epcot.Available {
 		t.Error("epcot: available = false, want true — the other park's failure must not reach it")
@@ -931,7 +931,7 @@ func (bt *barrierTransport) RoundTrip(*http.Request) (*http.Response, error) {
 // proof, not a timing inference), and the whole request still answers with
 // each park marked unavailable rather than failing outright.
 func TestColdStartFetchesEveryParkConcurrentlyNotSequentially(t *testing.T) {
-	parks := []string{"magic-kingdom", "epcot", "hollywood-studios"}
+	parks := []string{"Magic Kingdom", "Epcot", "Hollywood Studios"}
 	barrier := newBarrierTransport(len(parks), 2*time.Second)
 
 	held := http.DefaultTransport
@@ -939,7 +939,7 @@ func TestColdStartFetchesEveryParkConcurrentlyNotSequentially(t *testing.T) {
 	t.Cleanup(func() { http.DefaultTransport = held })
 	freshRoute(t)
 
-	recorder := serve(t, `{"parks":["magic-kingdom","epcot","hollywood-studios"]}`)
+	recorder := serve(t, `{"parks":["Magic Kingdom","Epcot","Hollywood Studios"]}`)
 
 	if barrier.timedOut.Load() {
 		t.Fatal("fewer than three parks' own calls were ever in flight at once — parks were fetched one at a time, not concurrently")
@@ -986,6 +986,10 @@ func TestAParkWhoseResponseCannotBeShapedIsUnavailable(t *testing.T) {
 	}
 	if park.Message == nil || *park.Message != errMalformedPayload.Error() {
 		t.Errorf("Message = %v, want %q", park.Message, errMalformedPayload.Error())
+	}
+	// A recognized park keeps its pretty name even where its reading failed.
+	if park.Name != "Magic Kingdom" {
+		t.Errorf("Name = %q, want the pretty name %q carried through the failure", park.Name, "Magic Kingdom")
 	}
 }
 
@@ -1192,7 +1196,7 @@ func TestPostApiParkWaitTimesAnswersShuttingDownWhenTheCallersContextEnds(t *tes
 	ctx, cancel := context.WithCancel(context.Background())
 	cancel()
 	request := httptest.NewRequest(
-		http.MethodPost, "/api/park-wait-times", strings.NewReader(`{"parks":["magic-kingdom"]}`),
+		http.MethodPost, "/api/park-wait-times", strings.NewReader(`{"parks":["Magic Kingdom"]}`),
 	).WithContext(ctx)
 	recorder := httptest.NewRecorder()
 
@@ -1360,9 +1364,9 @@ func FuzzDecodeRequest(f *testing.F) {
 
 // FuzzResolvePark drives resolvePark with a config-named park
 // (`check-fuzz`, docs/CI.md § Backend fuzz) — the pretty-name/entity-id/pass-
-// through resolution that replaced validate's whole-request gate (#309 build
-// spec decisions 3-4) — seeded from the module's own known parks (both a pretty
-// name and an entity id) and from values outside it.
+// through resolution (#309 build spec decisions 3-4) — seeded from the module's
+// own known parks (both a pretty name and an entity id) and from values outside
+// it.
 func FuzzResolvePark(f *testing.F) {
 	for _, p := range knownParks {
 		f.Add(p.name)
@@ -1542,7 +1546,7 @@ func TestBlacklistPreFilterDropsAPrebuiltIDAcrossEveryStatus(t *testing.T) {
 			t.Cleanup(func() { http.DefaultTransport = held })
 			freshRoute(t)
 
-			recorder := serve(t, `{"parks":["magic-kingdom"]}`)
+			recorder := serve(t, `{"parks":["Magic Kingdom"]}`)
 			if recorder.Code != http.StatusOK {
 				t.Fatalf("status = %d, want %d (%s) — a blacklisted entity must not fail the park's shaping", recorder.Code, http.StatusOK, recorder.Body)
 			}
@@ -1592,7 +1596,7 @@ func TestUseDefaultBlacklistFalseIgnoresThePrebuiltList(t *testing.T) {
 	t.Cleanup(func() { http.DefaultTransport = held })
 	freshRoute(t)
 
-	recorder := serve(t, `{"parks":["magic-kingdom"],"useDefaultBlacklist":false,"blacklist":["User Blacklisted Ride"]}`)
+	recorder := serve(t, `{"parks":["Magic Kingdom"],"useDefaultBlacklist":false,"blacklist":["User Blacklisted Ride"]}`)
 	if recorder.Code != http.StatusOK {
 		t.Fatalf("status = %d, want %d (%s)", recorder.Code, http.StatusOK, recorder.Body)
 	}
@@ -1626,7 +1630,7 @@ func TestBlacklistIsTheAdditiveUnionOfThePrebuiltAndUserLists(t *testing.T) {
 
 	// Names the park's real "Mad Tea Party" on the user list, alongside the
 	// prebuilt id above, and asks nothing of the toggle.
-	recorder := serve(t, `{"parks":["magic-kingdom"],"blacklist":["Mad Tea Party"]}`)
+	recorder := serve(t, `{"parks":["Magic Kingdom"],"blacklist":["Mad Tea Party"]}`)
 	if recorder.Code != http.StatusOK {
 		t.Fatalf("status = %d, want %d (%s)", recorder.Code, http.StatusOK, recorder.Body)
 	}
@@ -1685,7 +1689,7 @@ func TestUserBlacklistNameMatchIsNormalizedExact(t *testing.T) {
 			freshRoute(t)
 
 			body, err := json.Marshal(map[string]any{
-				"parks":     []string{"magic-kingdom"},
+				"parks":     []string{"Magic Kingdom"},
 				"blacklist": []string{c.blacklist},
 			})
 			if err != nil {
@@ -1932,11 +1936,12 @@ func TestUpstream404IsUnsupportedDistinctFromATransientFailure(t *testing.T) {
 }
 
 // TestAKnownParkShowsItsPrettyNameNotTheUpstreams: a recognized park's card
-// shows this module's own pretty name, never the fuller name the upstream
-// carries — the reason the offline set holds a name at all. Magic Kingdom's
-// captured live response names the park "Magic Kingdom Park"; the card must
-// still read "Magic Kingdom". The contrast is guarded so the test cannot pass
-// without the two names differing.
+// shows this module's own pretty name, never a name the source carries — the
+// reason the offline set holds a name at all. The pretty name must beat both
+// places a source name could come from: the live response's own PARK row
+// ("Magic Kingdom Park" in the capture) and a succeeding schedule answer whose
+// top-level name is a distinct sentinel. Serving a succeeding, differently-named
+// schedule is what pins the !known guard — a known park must ignore it.
 func TestAKnownParkShowsItsPrettyNameNotTheUpstreams(t *testing.T) {
 	live := liveResponseBytes(t)
 	var read map[string]any
@@ -1952,12 +1957,23 @@ func TestAKnownParkShowsItsPrettyNameNotTheUpstreams(t *testing.T) {
 		t.Fatal("the fixture's PARK row carries no upstream name to contrast against")
 	}
 	const prettyName = "Magic Kingdom"
+	const scheduleName = "Schedule Sentinel Name"
 	if upstreamName == prettyName {
 		t.Fatalf("fixture's upstream name %q equals the pretty name — the test needs them to differ", upstreamName)
 	}
 
+	schedule := []byte(`{"name":"` + scheduleName + `","schedule":[]}`)
+	transport := successTransport{
+		calls: make(map[string]*atomic.Int64),
+		bodyFor: func(url string) []byte {
+			if strings.HasSuffix(url, "/live") {
+				return live
+			}
+			return schedule
+		},
+	}
 	held := http.DefaultTransport
-	http.DefaultTransport = liveTransport(live)
+	http.DefaultTransport = &transport
 	t.Cleanup(func() { http.DefaultTransport = held })
 	freshRoute(t)
 
@@ -2030,29 +2046,58 @@ func TestAKnownParkStaysAvailableWhenTheLiveResponseHasNoParkRow(t *testing.T) {
 	}
 }
 
+// TestAPassThroughParkRecognizedByItsEntityIDShowsThePrettyName covers the
+// second row of the resolution table: a configured string that is a known
+// park's entity id — not its pretty name — still resolves to that park's own
+// pretty name, not the fuller name the source carries. Configuring by the id
+// is the case FuzzResolvePark only line-covers; here it is asserted end to end.
+func TestAPassThroughParkRecognizedByItsEntityIDShowsThePrettyName(t *testing.T) {
+	held := http.DefaultTransport
+	http.DefaultTransport = liveTransport(liveResponseBytes(t))
+	t.Cleanup(func() { http.DefaultTransport = held })
+	freshRoute(t)
+
+	// Magic Kingdom named by its raw entity id, the value an operator lifting a
+	// UUID out of the source would configure.
+	recorder := serve(t, `{"parks":["`+magicKingdomEntityID+`"]}`)
+	if recorder.Code != http.StatusOK {
+		t.Fatalf("status = %d, want %d (%s)", recorder.Code, http.StatusOK, recorder.Body)
+	}
+	var payload boundary.ParkWaitTimesPayload
+	if err := json.Unmarshal(recorder.Body.Bytes(), &payload); err != nil {
+		t.Fatalf("reading the served payload: %v", err)
+	}
+	if len(payload.Parks) != 1 {
+		t.Fatalf("parks = %d, want 1: %+v", len(payload.Parks), payload.Parks)
+	}
+	park := payload.Parks[0]
+	if park.Name != "Magic Kingdom" {
+		t.Errorf("Name = %q, want the pretty name %q for a park configured by its own entity id", park.Name, "Magic Kingdom")
+	}
+	if park.Id != magicKingdomEntityID {
+		t.Errorf("Id = %q, want the entity id %q", park.Id, magicKingdomEntityID)
+	}
+}
+
 // TestAPassThroughParkIsNamedFromTheSchedule reads the pass-through half of the
-// reversed decision 5: a park this module does not recognize takes its shown
-// name from the source's own schedule answer — the one name every park carries,
-// the live park-identity row being absent for some (the Universal parks) — not
-// from the config string that named it. The stand-in is an unrecognized
-// identifier fetched as-is, whose schedule answer (the Magic Kingdom capture,
-// reused only for its top-level name) names a park the config string is not.
+// resolution: a park this module does not recognize takes its shown name from
+// the source's own schedule answer — the one name every park carries, the live
+// park-identity row being absent for some. The live fixture is a real Universal
+// capture with no PARK row at all, so the name can only come from the schedule;
+// the schedule's top-level name is a sentinel present in no live row, so a
+// name drawn from the live response instead could not produce it.
 func TestAPassThroughParkIsNamedFromTheSchedule(t *testing.T) {
 	const configured = "some-unknown-entity-id"
-	schedule := scheduleResponseBytes(t)
-	var read map[string]any
-	if err := json.Unmarshal(schedule, &read); err != nil {
-		t.Fatalf("reading the captured schedule: %v", err)
+	const scheduleName = "Sentinel Park Name"
+	live, err := os.ReadFile(filepath.FromSlash("testdata/us-live.json"))
+	if err != nil {
+		t.Fatalf("reading the Universal live fixture: %v", err)
 	}
-	scheduleName, ok := read["name"].(string)
-	if !ok || scheduleName == "" {
-		t.Fatal("the schedule fixture carries no top-level name to be drawn from")
-	}
-	if scheduleName == configured {
-		t.Fatalf("schedule name %q equals the configured string — the test needs them to differ", scheduleName)
+	schedule := []byte(`{"name":"` + scheduleName + `","schedule":[]}`)
+	if bytes.Contains(live, []byte(scheduleName)) {
+		t.Fatalf("the sentinel schedule name %q appears in the live fixture — it must not, or the test could not tell the schedule from the live response", scheduleName)
 	}
 
-	live := liveResponseBytes(t)
 	transport := successTransport{
 		calls: make(map[string]*atomic.Int64),
 		bodyFor: func(url string) []byte {
@@ -2083,5 +2128,63 @@ func TestAPassThroughParkIsNamedFromTheSchedule(t *testing.T) {
 	}
 	if payload.Parks[0].Id != configured {
 		t.Errorf("Id = %q, want the configured string %q fetched through unchanged", payload.Parks[0].Id, configured)
+	}
+}
+
+// TestAPassThroughParkFallsBackToTheConfiguredNameWhenTheSourceSuppliesNone is
+// the last row's fallback: a pass-through park whose schedule answer gives no
+// name is shown under the configured string itself, rather than left nameless.
+// Both ways the source can withhold a name are covered — the schedule call
+// failing, and answering with no top-level name.
+func TestAPassThroughParkFallsBackToTheConfiguredNameWhenTheSourceSuppliesNone(t *testing.T) {
+	const configured = "another-unknown-entity-id"
+	live, err := os.ReadFile(filepath.FromSlash("testdata/us-live.json"))
+	if err != nil {
+		t.Fatalf("reading the Universal live fixture: %v", err)
+	}
+	cases := map[string]http.RoundTripper{
+		"the schedule call fails": roundTrip(func(r *http.Request) (*http.Response, error) {
+			if strings.HasSuffix(r.URL.Path, "/live") {
+				return &http.Response{StatusCode: http.StatusOK, Body: io.NopCloser(bytes.NewReader(live)), Header: make(http.Header)}, nil
+			}
+			return &http.Response{StatusCode: http.StatusServiceUnavailable, Body: io.NopCloser(bytes.NewReader(nil)), Header: make(http.Header)}, nil
+		}),
+		"the schedule carries no name": roundTrip(func(r *http.Request) (*http.Response, error) {
+			body := live
+			if strings.HasSuffix(r.URL.Path, "/schedule") {
+				body = []byte(`{"schedule":[]}`)
+			}
+			return &http.Response{StatusCode: http.StatusOK, Body: io.NopCloser(bytes.NewReader(body)), Header: make(http.Header)}, nil
+		}),
+		"the schedule answers with nothing readable": roundTrip(func(r *http.Request) (*http.Response, error) {
+			body := live
+			if strings.HasSuffix(r.URL.Path, "/schedule") {
+				body = []byte("not json")
+			}
+			return &http.Response{StatusCode: http.StatusOK, Body: io.NopCloser(bytes.NewReader(body)), Header: make(http.Header)}, nil
+		}),
+	}
+	for name, transport := range cases {
+		t.Run(name, func(t *testing.T) {
+			held := http.DefaultTransport
+			http.DefaultTransport = transport
+			t.Cleanup(func() { http.DefaultTransport = held })
+			freshRoute(t)
+
+			recorder := serve(t, `{"parks":["`+configured+`"]}`)
+			if recorder.Code != http.StatusOK {
+				t.Fatalf("status = %d, want %d (%s)", recorder.Code, http.StatusOK, recorder.Body)
+			}
+			var payload boundary.ParkWaitTimesPayload
+			if err := json.Unmarshal(recorder.Body.Bytes(), &payload); err != nil {
+				t.Fatalf("reading the served payload: %v", err)
+			}
+			if len(payload.Parks) != 1 {
+				t.Fatalf("parks = %d, want 1: %+v", len(payload.Parks), payload.Parks)
+			}
+			if payload.Parks[0].Name != configured {
+				t.Errorf("Name = %q, want the configured string %q when the source supplies no name", payload.Parks[0].Name, configured)
+			}
+		})
 	}
 }

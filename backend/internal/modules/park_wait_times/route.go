@@ -93,16 +93,16 @@ type fetchedPark struct {
 // fetchParksConcurrently runs fetchPark per park concurrently, returns
 // outcomes in request order; each goroutine writes its own pre-sized slice
 // index (race-free, no mutex).
-func fetchParksConcurrently(ctx context.Context, slugs []string, excluded exclusion) []fetchedPark {
-	results := make([]fetchedPark, len(slugs))
+func fetchParksConcurrently(ctx context.Context, configuredParks []string, excluded exclusion) []fetchedPark {
+	results := make([]fetchedPark, len(configuredParks))
 	var wg sync.WaitGroup
-	for i, slug := range slugs {
+	for i, configured := range configuredParks {
 		wg.Add(1)
-		go func(i int, slug string) {
+		go func(i int, configured string) {
 			defer wg.Done()
-			park, err := fetchParkExcluding(ctx, slug, excluded)
+			park, err := fetchParkExcluding(ctx, configured, excluded)
 			results[i] = fetchedPark{park: park, err: err}
-		}(i, slug)
+		}(i, configured)
 	}
 	wg.Wait()
 	return results
