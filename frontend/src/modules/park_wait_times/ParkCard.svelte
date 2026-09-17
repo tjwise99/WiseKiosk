@@ -34,8 +34,7 @@
 
   const rides = $derived(park.rides ?? []);
   const held = $derived(heldRides(rides, HELD_COUNT));
-  /** No ride reporting a length of time draws this park as closed (`.closed`, below); distinct
-      from `!park.available`, a failed reading — this is a successful one that found nothing open. */
+  /** No ride reporting a length of time draws this park as closed (`.closed`, below). */
   const noOpenRides = $derived(ridesAreClosed(rides));
   const remaining = $derived(remainingRides(rides, held));
   const pageCount = $derived(pageCountOf(remaining.length, TOUR_SIZE));

@@ -197,8 +197,7 @@ var defaultBlacklistIDs = []string{
 	"24712410-a3a8-4ee0-b2f7-df889424ae76", // Sinners (Universal Studios)
 }
 
-// normalizeRideName folds a name trimmed, case-folded, curly quotes and
-// apostrophes folded to ASCII (ADR 0008 rev 6).
+// normalizeRideName folds a ride name to its comparison key (ADR 0008 rev 6).
 func normalizeRideName(name string) string {
 	name = strings.ToLower(strings.TrimSpace(name))
 	quoteFold := strings.NewReplacer(
@@ -258,8 +257,6 @@ func shapeRidesExcluding(body []byte, excluded exclusion) ([]boundary.ParkWaitTi
 
 		state, waitMinutes, err := shapeWait(*row.Status, row.Queue)
 		if errors.Is(err, errNoPostedWait) {
-			// Left out of the rides list rather than failing this park's
-			// whole shaping.
 			continue
 		}
 		if err != nil {
