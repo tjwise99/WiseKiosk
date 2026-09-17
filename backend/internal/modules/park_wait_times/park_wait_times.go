@@ -241,10 +241,8 @@ func shapeRidesExcluding(body []byte, excluded exclusion) ([]boundary.ParkWaitTi
 		if excluded(row) {
 			continue
 		}
-		// Only a ride is a ride: a show, a restaurant or the park's own row
-		// is not carried
-		// (SRS056<!-- The park-wait-times module puts each park's ride waits
-		// across the boundary -->).
+		// A show, a restaurant or the park's own row is not carried — attractions only
+		// (SRS056<!-- The park-wait-times module puts each park's ride waits across the boundary -->).
 		if row.EntityType == nil || *row.EntityType != "ATTRACTION" {
 			continue
 		}
@@ -306,7 +304,7 @@ type scheduleEntry struct {
 }
 
 // shapeHours reads today's operating hours from the schedule; today read
-// against `now` (driven in tests) to stay pure
+// against `now` to stay pure
 // (SRS056<!-- The park-wait-times module puts each park's ride waits across
 // the boundary -->; boundary/openapi.yaml's ParkWaitTimesHours). Returns nil
 // where the source reports no OPERATING entry.
