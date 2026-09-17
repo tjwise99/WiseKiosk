@@ -31,10 +31,9 @@ const (
 	capturedSchedule = "testdata/mk-schedule.json"
 )
 
-// epcotEntityID is epcot's known themeparks.wiki entity id, one of the six
-// prettyNameEntityIDs resolves (#309 build spec decision 3) — a second
-// known-good id besides magicKingdomEntityID, for tests distinguishing two
-// parks' own cache keys and upstream calls.
+// epcotEntityID is Epcot's known themeparks.wiki entity id, one of the six in
+// knownParks — a second known-good id besides magicKingdomEntityID, for tests
+// distinguishing two parks' own cache keys and upstream calls.
 const epcotEntityID = "47f90d2c-e191-4239-a466-5892ef59a88b"
 
 // liveResponseBytes and scheduleResponseBytes read the captured responses.
@@ -683,10 +682,10 @@ func TestTST080_IntegrationParkKeysAreCachedIndependently(t *testing.T) {
 
 	ctx := context.Background()
 
-	if _, err := fetchPark(ctx, "magic-kingdom", magicKingdomEntityID); err != nil {
+	if _, err := fetchPark(ctx, "Magic Kingdom"); err != nil {
 		t.Fatalf("fetchPark(magic-kingdom) #1: unexpected error: %v", err)
 	}
-	if _, err := fetchPark(ctx, "magic-kingdom", magicKingdomEntityID); err != nil {
+	if _, err := fetchPark(ctx, "Magic Kingdom"); err != nil {
 		t.Fatalf("fetchPark(magic-kingdom) #2: unexpected error: %v", err)
 	}
 
@@ -700,8 +699,8 @@ func TestTST080_IntegrationParkKeysAreCachedIndependently(t *testing.T) {
 		t.Errorf("magic kingdom's own two endpoints cost %d upstream calls across two fetches, want 2 (one live, one schedule, the second fetch served from cache)", magicKingdomCalls)
 	}
 
-	if _, err := fetchPark(ctx, "epcot", epcotEntityID); err != nil {
-		t.Fatalf("fetchPark(epcot): unexpected error: %v", err)
+	if _, err := fetchPark(ctx, "Epcot"); err != nil {
+		t.Fatalf("fetchPark(Epcot): unexpected error: %v", err)
 	}
 	epcotCalls := int64(0)
 	for url, counter := range transport.calls {
@@ -751,7 +750,7 @@ func TestTST081_IntegrationAFailingParkIsRetriedNoOftenerThanTheNegativeInterval
 
 	ctx := context.Background()
 
-	first, err := fetchPark(ctx, "magic-kingdom", magicKingdomEntityID)
+	first, err := fetchPark(ctx, "Magic Kingdom")
 	if err != nil {
 		t.Fatalf("fetchPark #1: unexpected error: %v", err)
 	}
@@ -759,7 +758,7 @@ func TestTST081_IntegrationAFailingParkIsRetriedNoOftenerThanTheNegativeInterval
 		t.Fatalf("fetchPark #1: available = true against a failing source, want false")
 	}
 
-	second, err := fetchPark(ctx, "magic-kingdom", magicKingdomEntityID)
+	second, err := fetchPark(ctx, "Magic Kingdom")
 	if err != nil {
 		t.Fatalf("fetchPark #2: unexpected error: %v", err)
 	}
@@ -776,7 +775,7 @@ func TestTST081_IntegrationAFailingParkIsRetriedNoOftenerThanTheNegativeInterval
 	// The interval elapses, and a further ask does retry.
 	time.Sleep(shrunkBound + 150*time.Millisecond)
 
-	third, err := fetchPark(ctx, "magic-kingdom", magicKingdomEntityID)
+	third, err := fetchPark(ctx, "Magic Kingdom")
 	if err != nil {
 		t.Fatalf("fetchPark #3: unexpected error: %v", err)
 	}
@@ -804,7 +803,7 @@ func TestPostApiParkWaitTimesFansOutOverEveryConfiguredPark(t *testing.T) {
 	t.Cleanup(func() { http.DefaultTransport = held })
 	freshRoute(t)
 
-	recorder := serve(t, `{"parks":["epcot","magic-kingdom"]}`)
+	recorder := serve(t, `{"parks":["Epcot","Magic Kingdom"]}`)
 	if recorder.Code != http.StatusOK {
 		t.Fatalf("status = %d, want %d (%s)", recorder.Code, http.StatusOK, recorder.Body)
 	}
@@ -818,8 +817,9 @@ func TestPostApiParkWaitTimesFansOutOverEveryConfiguredPark(t *testing.T) {
 	}
 	// Each park carries the identifier it was resolved to and fetched by (a recognized name → its
 	// entity id, an unrecognized one passed through), in the request's own order — derived from
-	// resolveEntityID rather than restated, so the order check cannot drift from the resolution.
-	wantFirst, wantSecond := resolveEntityID("epcot"), resolveEntityID("magic-kingdom")
+	// resolvePark rather than restated, so the order check cannot drift from the resolution.
+	_, wantFirst, _ := resolvePark("Epcot")
+	_, wantSecond, _ := resolvePark("Magic Kingdom")
 	if payload.Parks[0].Id != wantFirst || payload.Parks[1].Id != wantSecond {
 		t.Errorf("parks = [%s, %s], want the request's own order [%s, %s]",
 			payload.Parks[0].Id, payload.Parks[1].Id, wantFirst, wantSecond)
@@ -977,7 +977,7 @@ func TestAParkWhoseResponseCannotBeShapedIsUnavailable(t *testing.T) {
 	freshRoute(t)
 
 	ctx := context.Background()
-	park, err := fetchPark(ctx, "magic-kingdom", magicKingdomEntityID)
+	park, err := fetchPark(ctx, "Magic Kingdom")
 	if err != nil {
 		t.Fatalf("fetchPark: unexpected error: %v", err)
 	}
@@ -1010,7 +1010,7 @@ func TestAParkWithNoOperatingScheduleEntryStillAnswersWithItsRides(t *testing.T)
 	freshRoute(t)
 
 	ctx := context.Background()
-	park, err := fetchPark(ctx, "magic-kingdom", magicKingdomEntityID)
+	park, err := fetchPark(ctx, "Magic Kingdom")
 	if err != nil {
 		t.Fatalf("fetchPark: unexpected error: %v", err)
 	}
@@ -1058,7 +1058,7 @@ func TestAParkWithANoWaitLandmarkStaysAvailable(t *testing.T) {
 	freshRoute(t)
 
 	ctx := context.Background()
-	park, err := fetchPark(ctx, "magic-kingdom", magicKingdomEntityID)
+	park, err := fetchPark(ctx, "Magic Kingdom")
 	if err != nil {
 		t.Fatalf("fetchPark: unexpected error: %v", err)
 	}
@@ -1104,7 +1104,7 @@ func TestFetchParkDeliversHoursForATodayOperatingEntry(t *testing.T) {
 	freshRoute(t)
 
 	ctx := context.Background()
-	park, err := fetchPark(ctx, "magic-kingdom", magicKingdomEntityID)
+	park, err := fetchPark(ctx, "Magic Kingdom")
 	if err != nil {
 		t.Fatalf("fetchPark: unexpected error: %v", err)
 	}
@@ -1140,7 +1140,7 @@ func TestFetchParkAnswersWithNilHoursWhenTheScheduleAnswersButCannotBeShaped(t *
 	freshRoute(t)
 
 	ctx := context.Background()
-	park, err := fetchPark(ctx, "magic-kingdom", magicKingdomEntityID)
+	park, err := fetchPark(ctx, "Magic Kingdom")
 	if err != nil {
 		t.Fatalf("fetchPark: unexpected error: %v", err)
 	}
@@ -1358,22 +1358,23 @@ func FuzzDecodeRequest(f *testing.F) {
 	})
 }
 
-// FuzzResolveEntityID drives resolveEntityID with a config-named park
-// (`check-fuzz`, docs/CI.md § Backend fuzz) — the pretty-name/pass-through
-// resolution that replaced validate's whole-request gate (#309 build spec
-// decisions 3-4) — seeded from the module's own pretty-name set and from
-// values outside it.
-func FuzzResolveEntityID(f *testing.F) {
-	for name := range prettyNameEntityIDs {
-		f.Add(name)
+// FuzzResolvePark drives resolvePark with a config-named park
+// (`check-fuzz`, docs/CI.md § Backend fuzz) — the pretty-name/entity-id/pass-
+// through resolution that replaced validate's whole-request gate (#309 build
+// spec decisions 3-4) — seeded from the module's own known parks (both a pretty
+// name and an entity id) and from values outside it.
+func FuzzResolvePark(f *testing.F) {
+	for _, p := range knownParks {
+		f.Add(p.name)
+		f.Add(p.id)
 	}
 	for _, name := range []string{"", "disney-world", "Magic-Kingdom", "magic-kingdom "} {
 		f.Add(name)
 	}
 
 	f.Fuzz(func(t *testing.T, name string) {
-		runWithin(t, fuzzHangBudget, "FuzzResolveEntityID", func() error {
-			_ = resolveEntityID(name)
+		runWithin(t, fuzzHangBudget, "FuzzResolvePark", func() error {
+			_, _, _ = resolvePark(name)
 			return nil
 		})
 	})
@@ -1709,19 +1710,19 @@ func TestUserBlacklistNameMatchIsNormalizedExact(t *testing.T) {
 
 // --- The #309 parks-roster removal: pretty-name resolution, pass-through, 404-vs-transient ---
 //
-// The offline supported/validateParks gatekeeping is replaced by a three-tier
-// resolution: a normalized pretty-name hit resolves to its known entity id;
-// a miss passes the config string through to the upstream as-is; an upstream
-// 404 is this park's own unsupported outcome, distinct from a transient
-// failure. No tier rejects the whole request (SRS067<!-- The park-wait-times
-// module confines a failure to the part of its own response the failure
-// touches -->). Every case below drives the module's own HTTP handler, not
-// the soon-to-be-removed supported/validate/validateParks directly, so it
-// says nothing about their replacement's internal shape.
+// There is no roster gatekeeping: a configured park resolves through knownParks
+// — a normalized pretty-name or entity-id hit takes that park's own pretty name
+// and entity id; a miss passes the config string through to the upstream as-is
+// and takes the source's own name; an upstream 404 is this park's own
+// unsupported outcome, distinct from a transient failure. No tier rejects the
+// whole request (SRS067<!-- The park-wait-times module confines a failure to
+// the part of its own response the failure touches -->). Every case below
+// drives the module's own HTTP handler, not resolvePark directly, so it says
+// nothing about the resolution's internal shape.
 //
-// magicKingdomEntityID is supported["magic-kingdom"].entityID as it stands
-// before the roster's removal — the pretty-name map decision 3 inverts is
-// built from this same data, not a new one.
+// magicKingdomEntityID is Magic Kingdom's entry in knownParks, named here for
+// the cases that assert which identifier a resolved park's own upstream call
+// carried.
 const magicKingdomEntityID = "75ea578a-adc8-4116-a54d-dccb60765ef9"
 
 // capturingTransport answers a park's /live call with body and its /schedule
@@ -1930,26 +1931,29 @@ func TestUpstream404IsUnsupportedDistinctFromATransientFailure(t *testing.T) {
 	}
 }
 
-// TestDisplayNameComesFromUpstreamNotTheConfigString reads decision 5: with
-// the pretty-name-to-render-name map gone, a resolved park's displayed name
-// is the name the upstream's own PARK row carries, not the config string (a
-// pretty name or a pass-through identifier) that named it. The expected name
-// is read out of the capture itself, not hardcoded, since it is the capture's
-// own PARK row this test is about (mk-live.json's first row).
-func TestDisplayNameComesFromUpstreamNotTheConfigString(t *testing.T) {
+// TestAKnownParkShowsItsPrettyNameNotTheUpstreams: a recognized park's card
+// shows this module's own pretty name, never the fuller name the upstream
+// carries — the reason the offline set holds a name at all. Magic Kingdom's
+// captured live response names the park "Magic Kingdom Park"; the card must
+// still read "Magic Kingdom". The contrast is guarded so the test cannot pass
+// without the two names differing.
+func TestAKnownParkShowsItsPrettyNameNotTheUpstreams(t *testing.T) {
 	live := liveResponseBytes(t)
 	var read map[string]any
 	if err := json.Unmarshal(live, &read); err != nil {
 		t.Fatalf("reading the captured response: %v", err)
 	}
-	rows := read["liveData"].([]any)
-	parkRow := rows[0].(map[string]any)
+	parkRow := read["liveData"].([]any)[0].(map[string]any)
 	if parkRow["entityType"] != "PARK" {
-		t.Fatalf("fixture's first row is entityType %v, want PARK — this test assumes the capture's own park-identity row", parkRow["entityType"])
+		t.Fatalf("fixture's first row is entityType %v, want PARK — this test reads the capture's own upstream park name", parkRow["entityType"])
 	}
 	upstreamName, ok := parkRow["name"].(string)
 	if !ok || upstreamName == "" {
-		t.Fatal("the fixture's PARK row carries no name to compare against")
+		t.Fatal("the fixture's PARK row carries no upstream name to contrast against")
+	}
+	const prettyName = "Magic Kingdom"
+	if upstreamName == prettyName {
+		t.Fatalf("fixture's upstream name %q equals the pretty name — the test needs them to differ", upstreamName)
 	}
 
 	held := http.DefaultTransport
@@ -1968,7 +1972,116 @@ func TestDisplayNameComesFromUpstreamNotTheConfigString(t *testing.T) {
 	if len(payload.Parks) != 1 {
 		t.Fatalf("parks = %d, want 1: %+v", len(payload.Parks), payload.Parks)
 	}
-	if payload.Parks[0].Name != upstreamName {
-		t.Errorf("Name = %q, want the upstream's own park name %q, not the config's pretty name", payload.Parks[0].Name, upstreamName)
+	if payload.Parks[0].Name != prettyName {
+		t.Errorf("Name = %q, want the module's own pretty name %q, not the upstream's %q", payload.Parks[0].Name, prettyName, upstreamName)
+	}
+}
+
+// TestAKnownParkStaysAvailableWhenTheLiveResponseHasNoParkRow: the Universal
+// parks' live response carries no PARK-identity row. A recognized park takes
+// its name from the offline set rather than the live response, so a missing
+// PARK row costs it nothing — it stays available and reads under its own pretty
+// name. The fixture is a real Universal Studios capture; the guard below fails
+// if it ever gains a PARK row, since then it would not stand for the case.
+func TestAKnownParkStaysAvailableWhenTheLiveResponseHasNoParkRow(t *testing.T) {
+	live, err := os.ReadFile(filepath.FromSlash("testdata/us-live.json"))
+	if err != nil {
+		t.Fatalf("reading the Universal live fixture: %v", err)
+	}
+	var read struct {
+		LiveData []struct {
+			EntityType string `json:"entityType"`
+		} `json:"liveData"`
+	}
+	if err := json.Unmarshal(live, &read); err != nil {
+		t.Fatalf("reading the fixture: %v", err)
+	}
+	for _, row := range read.LiveData {
+		if row.EntityType == "PARK" {
+			t.Fatal("the Universal fixture carries a PARK row — it must not, to stand for the parks whose live response omits one")
+		}
+	}
+
+	held := http.DefaultTransport
+	http.DefaultTransport = liveTransport(live)
+	t.Cleanup(func() { http.DefaultTransport = held })
+	freshRoute(t)
+
+	recorder := serve(t, `{"parks":["Universal Studios"]}`)
+	if recorder.Code != http.StatusOK {
+		t.Fatalf("status = %d, want %d (%s)", recorder.Code, http.StatusOK, recorder.Body)
+	}
+	var payload boundary.ParkWaitTimesPayload
+	if err := json.Unmarshal(recorder.Body.Bytes(), &payload); err != nil {
+		t.Fatalf("reading the served payload: %v", err)
+	}
+	if len(payload.Parks) != 1 {
+		t.Fatalf("parks = %d, want 1: %+v", len(payload.Parks), payload.Parks)
+	}
+	park := payload.Parks[0]
+	if !park.Available {
+		t.Errorf("available = false for a recognized park whose live response has no PARK row, want true (message %v)", park.Message)
+	}
+	if park.Name != "Universal Studios" {
+		t.Errorf("Name = %q, want the pretty name %q", park.Name, "Universal Studios")
+	}
+	if park.Rides == nil || len(*park.Rides) == 0 {
+		t.Error("rides empty, want the fixture's attractions carried")
+	}
+}
+
+// TestAPassThroughParkIsNamedFromTheSchedule reads the pass-through half of the
+// reversed decision 5: a park this module does not recognize takes its shown
+// name from the source's own schedule answer — the one name every park carries,
+// the live park-identity row being absent for some (the Universal parks) — not
+// from the config string that named it. The stand-in is an unrecognized
+// identifier fetched as-is, whose schedule answer (the Magic Kingdom capture,
+// reused only for its top-level name) names a park the config string is not.
+func TestAPassThroughParkIsNamedFromTheSchedule(t *testing.T) {
+	const configured = "some-unknown-entity-id"
+	schedule := scheduleResponseBytes(t)
+	var read map[string]any
+	if err := json.Unmarshal(schedule, &read); err != nil {
+		t.Fatalf("reading the captured schedule: %v", err)
+	}
+	scheduleName, ok := read["name"].(string)
+	if !ok || scheduleName == "" {
+		t.Fatal("the schedule fixture carries no top-level name to be drawn from")
+	}
+	if scheduleName == configured {
+		t.Fatalf("schedule name %q equals the configured string — the test needs them to differ", scheduleName)
+	}
+
+	live := liveResponseBytes(t)
+	transport := successTransport{
+		calls: make(map[string]*atomic.Int64),
+		bodyFor: func(url string) []byte {
+			if strings.HasSuffix(url, "/live") {
+				return live
+			}
+			return schedule
+		},
+	}
+	held := http.DefaultTransport
+	http.DefaultTransport = &transport
+	t.Cleanup(func() { http.DefaultTransport = held })
+	freshRoute(t)
+
+	recorder := serve(t, `{"parks":["`+configured+`"]}`)
+	if recorder.Code != http.StatusOK {
+		t.Fatalf("status = %d, want %d (%s)", recorder.Code, http.StatusOK, recorder.Body)
+	}
+	var payload boundary.ParkWaitTimesPayload
+	if err := json.Unmarshal(recorder.Body.Bytes(), &payload); err != nil {
+		t.Fatalf("reading the served payload: %v", err)
+	}
+	if len(payload.Parks) != 1 {
+		t.Fatalf("parks = %d, want 1: %+v", len(payload.Parks), payload.Parks)
+	}
+	if payload.Parks[0].Name != scheduleName {
+		t.Errorf("Name = %q, want the source's own schedule name %q for a pass-through park", payload.Parks[0].Name, scheduleName)
+	}
+	if payload.Parks[0].Id != configured {
+		t.Errorf("Id = %q, want the configured string %q fetched through unchanged", payload.Parks[0].Id, configured)
 	}
 }

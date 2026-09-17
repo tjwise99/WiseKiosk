@@ -100,7 +100,7 @@ func fetchParksConcurrently(ctx context.Context, slugs []string, excluded exclus
 		wg.Add(1)
 		go func(i int, slug string) {
 			defer wg.Done()
-			park, err := fetchParkExcluding(ctx, slug, resolveEntityID(slug), excluded)
+			park, err := fetchParkExcluding(ctx, slug, excluded)
 			results[i] = fetchedPark{park: park, err: err}
 		}(i, slug)
 	}
@@ -113,36 +113,44 @@ func fetchParksConcurrently(ctx context.Context, slugs []string, excluded exclus
 // SRS067<!-- The park-wait-times module confines a failure to the part of
 // its own response the failure touches --> for why hours failing costs
 // this park only its hours, not its rides.
-func fetchPark(ctx context.Context, slug, entityID string) (boundary.ParkWaitTimesPark, error) {
-	return fetchParkExcluding(ctx, slug, entityID, noExclusion)
+func fetchPark(ctx context.Context, configured string) (boundary.ParkWaitTimesPark, error) {
+	return fetchParkExcluding(ctx, configured, noExclusion)
 }
 
-// fetchParkExcluding is fetchPark with a caller-supplied exclusion. A 404
-// against entityID is this park's own unsupported outcome — permanent,
-// distinct from every other failure, which stays transient/retryable (#309
-// build spec decisions 1-2).
-func fetchParkExcluding(ctx context.Context, slug, entityID string, excluded exclusion) (boundary.ParkWaitTimesPark, error) {
-	liveResult, err := served.Fetch(ctx, slug+":live", liveURL(entityID))
+// fetchParkExcluding is fetchPark with a caller-supplied exclusion. It resolves
+// the configured park to what its card shows and what its requests fetch
+// (resolvePark): a recognized park keeps its pretty name throughout; an
+// unrecognized one is fetched as configured and named from the schedule
+// answer's own park name, falling back to the configured string until that
+// answer arrives. A 404 against the fetched identifier is this park's own
+// unsupported outcome — permanent, distinct from every other failure, which
+// stays transient/retryable (#309 build spec decisions 1-2).
+func fetchParkExcluding(ctx context.Context, configured string, excluded exclusion) (boundary.ParkWaitTimesPark, error) {
+	name, entityID, known := resolvePark(configured)
+	// label is the name shown until the schedule answer can better it: a known
+	// park's pretty name, or the configured string for a pass-through park.
+	label := name
+	if label == "" {
+		label = configured
+	}
+
+	liveResult, err := served.Fetch(ctx, entityID+":live", liveURL(entityID))
 	if err != nil {
 		return boundary.ParkWaitTimesPark{}, err
 	}
 	if liveResult.Kind == upstream.UpstreamStatus && liveResult.Status == http.StatusNotFound {
-		return unavailable(entityID, slug, errUnsupportedPark.Error()), nil
+		return unavailable(entityID, label, errUnsupportedPark.Error()), nil
 	}
 	if liveResult.Kind != upstream.Success {
-		return unavailable(entityID, slug, failureMessage(liveResult)), nil
+		return unavailable(entityID, label, failureMessage(liveResult)), nil
 	}
 	rides, err := shapeRidesExcluding(liveResult.Body, excluded)
 	if err != nil {
-		return unavailable(entityID, slug, errMalformedPayload.Error()), nil
-	}
-	name, err := shapeParkName(liveResult.Body)
-	if err != nil {
-		return unavailable(entityID, slug, errMalformedPayload.Error()), nil
+		return unavailable(entityID, label, errMalformedPayload.Error()), nil
 	}
 
 	var hours *boundary.ParkWaitTimesHours
-	scheduleResult, err := served.Fetch(ctx, slug+":schedule", scheduleURL(entityID))
+	scheduleResult, err := served.Fetch(ctx, entityID+":schedule", scheduleURL(entityID))
 	if err != nil {
 		return boundary.ParkWaitTimesPark{}, err
 	}
@@ -150,11 +158,18 @@ func fetchParkExcluding(ctx context.Context, slug, entityID string, excluded exc
 		if shaped, err := shapeHours(scheduleResult.Body, time.Now()); err == nil {
 			hours = shaped
 		}
+		// A pass-through park draws its name from the source's own; a
+		// recognized one keeps the pretty name resolvePark gave it.
+		if !known {
+			if upstreamName := shapeScheduleName(scheduleResult.Body); upstreamName != "" {
+				label = upstreamName
+			}
+		}
 	}
 
 	return boundary.ParkWaitTimesPark{
 		Id:        entityID,
-		Name:      name,
+		Name:      label,
 		Available: true,
 		Hours:     hours,
 		Rides:     &rides,
@@ -162,13 +177,13 @@ func fetchParkExcluding(ctx context.Context, slug, entityID string, excluded exc
 }
 
 // unavailable is a park's payload entry where its own upstream calls could
-// not be read. Id carries the resolved fetch identifier (resolveEntityID's
-// output — a known park's entity id, or a passed-through string), the same
-// as an available park, so the frontend keys its icon on it uniformly
-// (#309 build spec decision 5). There is no upstream name to carry here, so
-// Name falls back to slug, the config string that named this park.
-func unavailable(entityID, slug, message string) boundary.ParkWaitTimesPark {
-	return boundary.ParkWaitTimesPark{Id: entityID, Name: slug, Available: false, Message: &message}
+// not be read. Id carries the resolved fetch identifier (resolvePark's output —
+// a known park's entity id, or a passed-through string), the same as an
+// available park, so the frontend keys its icon on it uniformly. name is the
+// best identity in hand: a known park's pretty name, or the configured string
+// for a park whose own name the source never got to supply.
+func unavailable(entityID, name, message string) boundary.ParkWaitTimesPark {
+	return boundary.ParkWaitTimesPark{Id: entityID, Name: name, Available: false, Message: &message}
 }
 
 // errMalformedPayload is what a readable-but-unshapeable response renders

@@ -368,6 +368,11 @@ components:
             unchanged. Stable across the park's states, so the frontend keys its icon on it.
         name:
           type: string
+          description: >-
+            What the park's card reads. For a park the module recognizes — by its pretty name or its
+            upstream entity id — this is the module's own pretty name for it, never the fuller name the
+            source carries; for a park passed through unrecognized, it is the source's own name, or the
+            configured string until the source supplies one.
         available:
           type: boolean
           description: Whether this park's own reading could be produced.

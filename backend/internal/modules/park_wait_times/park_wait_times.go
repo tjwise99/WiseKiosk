@@ -34,32 +34,42 @@ func Config() upstream.Config {
 	}
 }
 
-// prettyNameEntityIDs is the six parks this module ships offline pretty-name
-// resolution for: a config string normalizing to one of these keys resolves
-// to its known upstream entity id, matched via normalizeName then
-// whole-name exact.
-var prettyNameEntityIDs = map[string]string{
-	normalizeName("Magic Kingdom"):        "75ea578a-adc8-4116-a54d-dccb60765ef9",
-	normalizeName("Epcot"):                "47f90d2c-e191-4239-a466-5892ef59a88b",
-	normalizeName("Hollywood Studios"):    "288747d1-8b4f-4a64-867e-ea7c9b27bad8",
-	normalizeName("Animal Kingdom"):       "1c84a229-8862-4648-9c71-378ddd2c7693",
-	normalizeName("Universal Studios"):    "eb3f4560-2383-4a36-9152-6b3e5ed6bc57",
-	normalizeName("Islands of Adventure"): "267615cc-8943-4c2a-ae2c-5da728ca591f",
+// knownParks is the small offline set this module ships pretty-name and icon
+// resolution for: each park's canonical display name beside its upstream entity
+// id. A configured park matching one — its pretty name, case- and space-folded,
+// or its entity id — is shown under this name and fetched by this id; the
+// frontend keys the park's icon on the id.
+var knownParks = []struct {
+	name string
+	id   string
+}{
+	{"Magic Kingdom", "75ea578a-adc8-4116-a54d-dccb60765ef9"},
+	{"Epcot", "47f90d2c-e191-4239-a466-5892ef59a88b"},
+	{"Hollywood Studios", "288747d1-8b4f-4a64-867e-ea7c9b27bad8"},
+	{"Animal Kingdom", "1c84a229-8862-4648-9c71-378ddd2c7693"},
+	{"Universal Studios", "eb3f4560-2383-4a36-9152-6b3e5ed6bc57"},
+	{"Islands of Adventure", "267615cc-8943-4c2a-ae2c-5da728ca591f"},
 }
 
-// resolveEntityID maps a config-named park to the identifier its upstream
-// requests carry: a normalized match against prettyNameEntityIDs resolves
-// to its known entity id; anything else — an unrecognized name, or an
-// entity id already — passes through to the upstream exactly as named,
-// unexamined
+// resolvePark maps a configured park string to the identity its card shows and
+// the identifier its requests fetch. A value matching a known park — its pretty
+// name (case- and space-folded) or its upstream entity id — resolves to that
+// park's canonical pretty name and entity id, with known true; the shown name
+// is this module's own, never the upstream's. Anything else passes through
+// unexamined: entityID is the configured string fetched as-is, known is false,
+// and name is left empty for the caller to fill from the upstream's own answer
 // (SRS068<!-- The park-wait-times module resolves a park it recognizes and
-// passes through one it does not -->). No tier rejects the request; an
-// unresolved identifier stands or falls on the upstream's own answer.
-func resolveEntityID(name string) string {
-	if id, ok := prettyNameEntityIDs[normalizeName(name)]; ok {
-		return id
+// passes through one it does not -->). No tier rejects the request; a
+// passed-through identifier stands or falls on the upstream's own answer.
+func resolvePark(configured string) (name, entityID string, known bool) {
+	norm := normalizeName(configured)
+	trimmed := strings.TrimSpace(configured)
+	for _, p := range knownParks {
+		if normalizeName(p.name) == norm || strings.EqualFold(trimmed, p.id) {
+			return p.name, p.id, true
+		}
 	}
-	return name
+	return "", configured, false
 }
 
 // The upstream requests — two per park, no credential
@@ -114,28 +124,6 @@ type standbyBlock struct {
 // the list rather than failing the whole park's shaping.
 func shapeRides(body []byte) ([]boundary.ParkWaitTimesRide, error) {
 	return shapeRidesExcluding(body, noExclusion)
-}
-
-// shapeParkName reads the same live-data response for the park's own
-// identity row (entityType PARK) and returns its name — a resolved park's
-// display name, not the config string that named it (#309 build spec
-// decision 5). An error where the response carries no such row, or the row
-// carries no name, is this park's own malformed-payload failure, the same
-// as a response shapeRides cannot read.
-func shapeParkName(body []byte) (string, error) {
-	var read liveResponse
-	if err := json.Unmarshal(body, &read); err != nil {
-		return "", fmt.Errorf("reading the source's response: %w", err)
-	}
-	for _, row := range read.LiveData {
-		if row.EntityType != nil && *row.EntityType == "PARK" {
-			if row.Name == nil || *row.Name == "" {
-				return "", errors.New("the park's own row carries no name")
-			}
-			return *row.Name, nil
-		}
-	}
-	return "", errors.New("the response carries no park-identity row")
 }
 
 // exclusion reports whether one live-data row is dropped before it is
@@ -316,7 +304,24 @@ func shapeWait(status string, queue *queueBlock) (boundary.ParkWaitTimesState, *
 }
 
 type scheduleResponse struct {
+	Name     *string         `json:"name"`
 	Schedule []scheduleEntry `json:"schedule"`
+}
+
+// shapeScheduleName reads the park's own display name from the schedule
+// response's top-level name — the one name every park carries, the Universal
+// parks included, whose live response has no park-identity row to read. Used
+// only to name a park this module does not recognize; a known park shows its
+// configured pretty name (resolvePark). Empty where the response carries none.
+func shapeScheduleName(body []byte) string {
+	var read scheduleResponse
+	if err := json.Unmarshal(body, &read); err != nil {
+		return ""
+	}
+	if read.Name == nil {
+		return ""
+	}
+	return *read.Name
 }
 
 type scheduleEntry struct {
