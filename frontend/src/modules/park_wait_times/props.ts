@@ -1,6 +1,6 @@
 /**
  * Pins the component's props to the boundary; `.svelte` props are opaque to `tsc`, so pinned here.
- * `just check-boundary` compiles this against a freshly regenerated client.
+ * `just check-typecheck-frontend` compiles this against a freshly regenerated client.
  */
 
 import type { ParkWaitTimesOptions } from '../../config/types';
