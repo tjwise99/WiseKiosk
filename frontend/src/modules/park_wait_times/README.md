@@ -79,9 +79,10 @@ what make it read as chrome, not content.
 The wait on every row — leaderboard or rotation — answers one question: *how long until you can ride
 this?* Its answer is either a **wait in minutes** or a **not-operating state** — `Down` (a temporary
 stoppage), `Closed` (outside the ride's hours, or the whole park's), or `Refurb` (a longer closure). A
-state is not a different kind of thing from a number here: a ride you cannot board is an effectively
-infinite wait, so it belongs in the same slot. A number reads as a figure; a state reads as an
-uppercase-tracked word, so the two are never mistaken for one another while sharing the column. A park
+state is not a different kind of thing from a number here: both answer the same question, so they
+share the one slot rather than each claiming a place of their own. A number reads as a figure; a
+state reads as an uppercase-tracked word, so the two are never mistaken for one another while
+sharing the column. A park
 with no ride reporting a length of time is not read row by row at all — see *Park closed* under
 *States*.
 
