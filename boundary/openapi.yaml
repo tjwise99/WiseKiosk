@@ -382,8 +382,8 @@ components:
           type: array
           description: >-
             Every one of the park's rides, each with its name and current wait
-            (SRS056<!-- The park-wait-times module puts each park's ride waits across the
-            boundary -->). Present only where `available` is true.
+            (SRS056<!-- The park-wait-times module puts each park's identity, hours, and ride
+            waits across the boundary -->). Present only where `available` is true.
           items:
             $ref: '#/components/schemas/ParkWaitTimesRide'
     ParkWaitTimesHours:

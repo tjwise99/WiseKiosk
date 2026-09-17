@@ -34,11 +34,10 @@ func Config() upstream.Config {
 	}
 }
 
-// prettyNameEntityIDs is the six parks the module has always shown, offline
-// (#309 build spec decision 3): a config string normalizing to one of these
-// keys resolves to its known upstream entity id. Inverted from the removed
-// `supported` roster, matched the same way the ride blacklist matches a
-// name (normalizeName), then whole-name exact.
+// prettyNameEntityIDs is the six parks this module ships offline pretty-name
+// resolution for: a config string normalizing to one of these keys resolves
+// to its known upstream entity id, matched via normalizeName then
+// whole-name exact.
 var prettyNameEntityIDs = map[string]string{
 	normalizeName("Magic Kingdom"):        "75ea578a-adc8-4116-a54d-dccb60765ef9",
 	normalizeName("Epcot"):                "47f90d2c-e191-4239-a466-5892ef59a88b",
