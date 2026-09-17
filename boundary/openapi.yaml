@@ -318,9 +318,10 @@ components:
         parks:
           type: array
           description: >-
-            The parks the answer is about, each drawn from this module's supported set
-            (SRS055<!-- The park-wait-times module declares the known-good constraint the park it is
-            asked about must satisfy -->).
+            The parks the answer is about, each resolved by this module against a set of names it
+            knows or passed to the source exactly as given
+            (SRS068<!-- The park-wait-times module resolves a park it recognizes and passes through
+            one it does not -->).
           items:
             type: string
         useDefaultBlacklist:

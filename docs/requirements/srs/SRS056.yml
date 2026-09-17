@@ -1,7 +1,7 @@
 active: true
 derived: false
 header: |
-  The park-wait-times module puts each park's ride waits across the boundary
+  The park-wait-times module puts each park's identity, hours, and ride waits across the boundary
 level: 59
 links:
 - SYS011: a3bqZRtHE8ujrhIgBKFUtcxWGSCLRHsqU6GgDgwwR38=
@@ -10,9 +10,9 @@ rationale: |
   A viewer standing in front of the display asks, of each park, three things at once: which park this is,
   whether it is open, and for each ride how long the queue is. So the payload carries the park's name,
   its operating hours for the day, and for every one of its rides the ride's name with its current wait.
-  The wait is carried as a span of time or as a not-operating fact, because a ride a viewer cannot board
-  is an effectively infinite wait and answers the same question a number does - how long until you can
-  ride this.
+  The wait is carried as a span of time or as a not-operating fact, because a ride a viewer cannot
+  board answers the same question a number does - how long until you can ride this - and the two share
+  one slot rather than each claiming a place of their own.
   There is no forward half. The weather payload carries an outlook because a viewer reads the sky now and
   the day ahead as one act; a wait time is a now-fact acted on the instant it is read, a park does not
   publish the wait it expects an hour hence, and so nothing here reaches past the present

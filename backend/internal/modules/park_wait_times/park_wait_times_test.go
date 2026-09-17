@@ -121,7 +121,7 @@ func showWaitMinutes(p *int) string {
 }
 
 // TestTST073_ShapingBuildsTheParksRidesFromTheCapturedResponse reads
-// SRS056<!-- The park-wait-times module puts each park's ride waits across the boundary -->
+// SRS056<!-- The park-wait-times module puts each park's identity, hours, and ride waits across the boundary -->
 // against the captured live-data response, with no network: only the
 // attraction rows are kept, in the source's own order, each carrying its name,
 // its operating state, and its posted wait as the source reported it.
@@ -279,7 +279,7 @@ func TestTST073_AResponseMissingAValueTheRideNeedsIsNotShaped(t *testing.T) {
 }
 
 // TestShapeRidesFiltersAnOperatingRowWithNoPostedWait reads
-// SRS056<!-- The park-wait-times module puts each park's ride waits across the boundary -->
+// SRS056<!-- The park-wait-times module puts each park's identity, hours, and ride waits across the boundary -->
 // against the captured response with one attraction mutated to report
 // OPERATING with no posted wait — the shape themeparks.wiki gives a
 // walk-through landmark, typed ATTRACTION no differently from a queued
@@ -320,7 +320,7 @@ func TestShapeRidesFiltersAnOperatingRowWithNoPostedWait(t *testing.T) {
 
 // TestTST073_ShapingBuildsTheParksHoursFromTheCapturedResponse reads the
 // hours half of
-// SRS056<!-- The park-wait-times module puts each park's ride waits across the boundary -->
+// SRS056<!-- The park-wait-times module puts each park's identity, hours, and ride waits across the boundary -->
 // against the captured schedule response: the `OPERATING`-typed entry for the
 // day named is what is read, not an early entry or a ticketed evening event
 // on the same date.
@@ -483,7 +483,7 @@ func TestShapeHoursReturnsNilForAnEmptySchedule(t *testing.T) {
 }
 
 // TestShapeHoursSelectsTheDayInTheOperatingEntrysOwnOffset reads
-// shapeHours's day-selection (SRS056<!-- The park-wait-times module puts each park's ride waits across the boundary -->)
+// shapeHours's day-selection (SRS056<!-- The park-wait-times module puts each park's identity, hours, and ride waits across the boundary -->)
 // against an offset other than the captured fixture's own -04:00: "today" is
 // judged in the OPERATING entry's own offset, never a fixed offset or the
 // caller's. sameDay's own semantics are pinned by TestSameDay; this is
@@ -992,7 +992,7 @@ func TestAParkWhoseResponseCannotBeShapedIsUnavailable(t *testing.T) {
 // TestAParkWithNoOperatingScheduleEntryStillAnswersWithItsRides is the
 // quieter-content half of fetchPark: a schedule that could not be shaped
 // costs this park its hours only, not its rides, which is what
-// SRS056<!-- The park-wait-times module puts each park's ride waits across the boundary -->
+// SRS056<!-- The park-wait-times module puts each park's identity, hours, and ride waits across the boundary -->
 // owes a viewer regardless of whether the source reports hours for today.
 func TestAParkWithNoOperatingScheduleEntryStillAnswersWithItsRides(t *testing.T) {
 	live := liveResponseBytes(t)
@@ -1026,7 +1026,7 @@ func TestAParkWithNoOperatingScheduleEntryStillAnswersWithItsRides(t *testing.T)
 }
 
 // TestAParkWithANoWaitLandmarkStaysAvailable is fetchPark's own read of
-// SRS056<!-- The park-wait-times module puts each park's ride waits across the boundary -->:
+// SRS056<!-- The park-wait-times module puts each park's identity, hours, and ride waits across the boundary -->:
 // a park whose live response mixes a landmark reporting OPERATING with no
 // posted wait among its real rides does not cascade to `available: false`
 // over that one row — it answers with the landmark filtered and its real
@@ -1081,7 +1081,7 @@ func TestAParkWithANoWaitLandmarkStaysAvailable(t *testing.T) {
 // TestFetchParkDeliversHoursForATodayOperatingEntry reads fetchPark's own
 // call to time.Now() on its positive path: a schedule whose OPERATING entry
 // is today's carries that day's hours into the park's payload
-// (SRS056<!-- The park-wait-times module puts each park's ride waits across the boundary -->).
+// (SRS056<!-- The park-wait-times module puts each park's identity, hours, and ride waits across the boundary -->).
 // The schedule fixture's OPERATING entry is built from today's own UTC date
 // at test time, spanning the whole UTC day so no day-boundary is crossed
 // however long the test takes to run.

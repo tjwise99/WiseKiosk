@@ -156,7 +156,7 @@
       "properties": {
         "parks": {
           "title": "Parks",
-          "description": "The parks this placement shows, drawn from the module's supported set and rejected by the backend where they are not (SRS055<!-- The park-wait-times module declares the known-good constraint the park it is asked about must satisfy -->). Every configured park holds its place in the grid at once (SRS057<!-- The park-wait-times module holds every configured park on screen at once -->).",
+          "description": "The parks this placement shows, each resolved by the backend against a set of names it knows or passed to the source exactly as given (SRS068<!-- The park-wait-times module resolves a park it recognizes and passes through one it does not -->). Every configured park holds its place in the grid at once (SRS057<!-- The park-wait-times module holds every configured park on screen at once -->).",
           "type": "array",
           "minItems": 1,
           "items": { "type": "string" }

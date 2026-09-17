@@ -49,13 +49,13 @@ var prettyNameEntityIDs = map[string]string{
 }
 
 // resolveEntityID maps a config-named park to the identifier its upstream
-// requests carry (#309 build spec decisions 3-4): a normalized match
-// against prettyNameEntityIDs resolves to its known entity id; anything
-// else — an unrecognized name, or an entity id already — passes through to
-// the upstream exactly as named, unexamined
-// (SRS054<!-- The park-wait-times module reports on the parks its
-// configuration names -->). No tier rejects the request; an unresolved
-// identifier stands or falls on the upstream's own answer.
+// requests carry: a normalized match against prettyNameEntityIDs resolves
+// to its known entity id; anything else — an unrecognized name, or an
+// entity id already — passes through to the upstream exactly as named,
+// unexamined
+// (SRS068<!-- The park-wait-times module resolves a park it recognizes and
+// passes through one it does not -->). No tier rejects the request; an
+// unresolved identifier stands or falls on the upstream's own answer.
 func resolveEntityID(name string) string {
 	if id, ok := prettyNameEntityIDs[normalizeName(name)]; ok {
 		return id
@@ -107,8 +107,9 @@ type standbyBlock struct {
 
 // shapeRides reads the source's live-data response into the park's ride
 // list, attractions only and in the order the source gives them
-// (SRS056<!-- The park-wait-times module puts each park's ride waits across
-// the boundary -->). A response missing a value a kept row needs is an
+// (SRS056<!-- The park-wait-times module puts each park's identity, hours,
+// and ride waits across the boundary -->). A response missing a value a
+// kept row needs is an
 // error rather than a payload carrying a zero nobody reported, except an
 // attraction reporting OPERATING with no posted wait, which is left out of
 // the list rather than failing the whole park's shaping.
@@ -263,7 +264,8 @@ func shapeRidesExcluding(body []byte, excluded exclusion) ([]boundary.ParkWaitTi
 			continue
 		}
 		// A show, a restaurant or the park's own row is not carried — attractions only
-		// (SRS056<!-- The park-wait-times module puts each park's ride waits across the boundary -->).
+		// (SRS056<!-- The park-wait-times module puts each park's identity, hours, and ride waits
+		// across the boundary -->).
 		if row.EntityType == nil || *row.EntityType != "ATTRACTION" {
 			continue
 		}
@@ -326,9 +328,10 @@ type scheduleEntry struct {
 
 // shapeHours reads today's operating hours from the schedule; today read
 // against `now` to stay pure
-// (SRS056<!-- The park-wait-times module puts each park's ride waits across
-// the boundary -->; boundary/openapi.yaml's ParkWaitTimesHours). Returns nil
-// where the source reports no OPERATING entry.
+// (SRS056<!-- The park-wait-times module puts each park's identity, hours,
+// and ride waits across the boundary -->; boundary/openapi.yaml's
+// ParkWaitTimesHours). Returns nil where the source reports no OPERATING
+// entry.
 func shapeHours(body []byte, now time.Time) (*boundary.ParkWaitTimesHours, error) {
 	var read scheduleResponse
 	if err := json.Unmarshal(body, &read); err != nil {

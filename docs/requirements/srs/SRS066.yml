@@ -37,8 +37,9 @@ rationale: |
   catalogue of one it has, is unproven by it, which is what the verification-justification below
   already says.
 
-  This is a refinement of SRS056<!-- The park-wait-times module puts each park's ride waits across the
-  boundary --> rather than a competing obligation: that item says every ride is carried and none
+  This is a refinement of SRS056<!-- The park-wait-times module puts each park's identity, hours, and
+  ride waits across the boundary --> rather than a competing obligation: that item says every ride is
+  carried and none
   silently dropped; this item says what does not count as a ride in the first place, which the parent
   leaves to "the boundary schema's and the shaping library's" (#309).
 ref: ''
