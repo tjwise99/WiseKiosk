@@ -1946,10 +1946,11 @@ func TestUnrecognizedConfigStringPassesThroughAsIs(t *testing.T) {
 
 // TestUpstream404IsUnsupportedDistinctFromATransientFailure reads decisions
 // 1-2 of the #309 build spec: a park whose upstream call answers 404 is
-// reported available:false with a message distinct from the wording a
-// transient (non-404) failure carries, and neither park's own failure fails
-// the whole request (SRS067<!-- The park-wait-times module confines a
-// failure to the part of its own response the failure touches -->).
+// reported available:false with the locked wording "the source has no such
+// park" — not the generic per-status text a transient (non-404) failure
+// still carries — and neither park's own failure fails the whole request
+// (SRS067<!-- The park-wait-times module confines a failure to the part of
+// its own response the failure touches -->).
 func TestUpstream404IsUnsupportedDistinctFromATransientFailure(t *testing.T) {
 	const notFoundBody = `{"success":false,"error":{"message":"entity not found","code":404}}`
 
@@ -1996,15 +1997,20 @@ func TestUpstream404IsUnsupportedDistinctFromATransientFailure(t *testing.T) {
 		t.Fatal("transient-park: carries no message")
 	}
 
+	// wantUnsupportedMessage is the locked unsupported-park wording (#309
+	// build spec decision 1, owner-decided) — deliberately not the generic
+	// per-status text every other UpstreamStatus outcome gets, so a GREEN
+	// that leaves 404 falling through to the existing status-passthrough
+	// cannot pass this by accident.
+	const wantUnsupportedMessage = "the source has no such park"
+	if *unsupported.Message != wantUnsupportedMessage {
+		t.Errorf("unsupported-park's message = %q, want the locked unsupported wording %q", *unsupported.Message, wantUnsupportedMessage)
+	}
 	// The literal text below is the existing transient wording a viewer already
 	// sees for any non-404 upstream status (route.go's failureMessage,
 	// UpstreamStatus case) — asserted as the observable message text itself,
 	// not through calling that helper, so this stays a behavioral check of
 	// what the response says rather than a coupling to how it is produced.
-	genericStatusMessage := fmt.Sprintf("the source answered with status %d", http.StatusNotFound)
-	if *unsupported.Message == genericStatusMessage {
-		t.Errorf("unsupported-park's message = %q, want a distinct 404/unsupported wording, not the generic %q every other status also gets", *unsupported.Message, genericStatusMessage)
-	}
 	wantTransientMessage := fmt.Sprintf("the source answered with status %d", http.StatusServiceUnavailable)
 	if *transientPark.Message != wantTransientMessage {
 		t.Errorf("transient-park's message = %q, want the existing transient wording %q unchanged", *transientPark.Message, wantTransientMessage)
