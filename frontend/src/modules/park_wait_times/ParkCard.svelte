@@ -357,14 +357,14 @@
   }
 
   .wait {
-    /* One constant reservation for the column — long enough for whichever not-operating word or
-       worst-case figure a wait is ever handed, so the column never moves under a changing value and
-       never shrinks the name column to make room for one that just grew (SRS058, SRS061). Sized off
-       the caption token the widest reading — a six-letter not-operating word ("REFURB"/"CLOSED"),
-       wider than a three-digit "999" — is drawn at, so it tracks the type scale; expressed against
-       the token rather than in the element's own `ch` because `.wait.state` (below) draws a step
-       smaller, and a font-relative unit would recompute there and move the column between a numeric
-       and a state row. */
+    /* One constant reservation for the wait column, so it never moves under a changing value or
+       between a numeric reading and a not-operating word (SRS058, SRS061). Reserves the width of the
+       widest reading: the longest not-operating word, "REFURB"/"CLOSED" — six glyphs at the caption
+       step, whose rendered width (glyphs plus tracking) runs ~4.75x that step, wider than a
+       three-digit "999" at the larger figure step. Sized off the caption TOKEN, not the element's
+       own `ch`, so both readings get this one width: `.wait.state` (below) draws at the caption step
+       and `.wait` at the figure step, so a font-relative `ch` resolves to two different widths and
+       shifts the column between them (proven by the constant-column render test below). */
     flex: 0 0 auto;
     min-width: calc(var(--type-caption) * 4.75);
     text-align: right;
