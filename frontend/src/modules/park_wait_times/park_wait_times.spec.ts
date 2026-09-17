@@ -422,6 +422,38 @@ test('holds a park’s place in the grid and shows why, when that park’s own r
   await expect(failing.locator('[data-pwt-header]')).toContainText('magic-kingdom');
 });
 
+test('renders each unavailable park’s own message verbatim, transient or permanent — the card never branches on the wording', async ({
+  page,
+}) => {
+  // The permanent unsupported-park outcome and a transient failure are both `available: false`,
+  // told apart only by the message the backend sends (#309 build spec decision 1). The card draws
+  // whatever text it is handed, the same way for either — it never matches on the wording to treat
+  // one specially. Two unavailable parks carrying distinct messages, each shown its own, is the
+  // proof: these strings are the test's own data, not a copy of a backend contract this side
+  // depends on — the exact unsupported wording is the backend's own, tested there.
+  const transient = 'the source did not answer in time';
+  const unsupported = 'the source has no such park';
+  await serveModuleData(page, (_asked, body) => {
+    const { parks } = body as { parks: string[] };
+    return {
+      status: 200,
+      data: parksPayload(
+        parks.map((id) => onePark(id, { available: false, message: id === 'epcot' ? unsupported : transient })),
+      ),
+    };
+  });
+  await render(page, placed(['magic-kingdom', 'epcot'], { columns: 2, rows: 1 }));
+
+  await expect(
+    page.locator(`${CARD}[data-pwt-park="magic-kingdom"] ${PARK_UNAVAILABLE}`),
+    'the transient failure shows its own message',
+  ).toHaveText(transient);
+  await expect(
+    page.locator(`${CARD}[data-pwt-park="epcot"] ${PARK_UNAVAILABLE}`),
+    'the permanent unsupported failure shows its own distinct message, through the same path',
+  ).toHaveText(unsupported);
+});
+
 test('holds a park-unavailable card to a full card’s own height, the same hidden-skeleton reference the Closed card uses', async ({
   page,
 }) => {
@@ -541,8 +573,8 @@ test('sets the module’s own left default against the region’s inherited cent
 test('lays out uniform, aligned cards that do not run past the viewport, with real park and ride names', async ({
   page,
 }) => {
-  // The card is a fixed width (ParkWaitTimes.svelte's `cardGeometry`), not one grown to its own
-  // content — a name too wide for its column scrolls to reveal itself (`ParkCard.svelte`'s
+  // The card is a fixed width (ParkWaitTimes.svelte's measured `--pwt-card-width`), not one grown to
+  // its own content — a name too wide for its column scrolls to reveal itself (`ParkCard.svelte`'s
   // `marquee`) rather than widening the card or wrapping the grid past the viewport, and every card
   // takes the same width regardless of what its own park's names are. Read at the deployed
   // three-column shape (config.json), over a real (unabbreviated) roster.
@@ -898,7 +930,7 @@ test('draws every ride name flush left in its own column, whatever its own lengt
   // regions.ts) inherits straight through ParkCard.svelte's rows unless a row explicitly
   // overrides it, the same way `.wait`'s own `text-align: right` already does. The park's own
   // name is long enough that the card — and so the ride-name column, which the park's own header
-  // sizes (ParkWaitTimes.svelte's `headerWidthPx`), never a ride name — is wider than the shorter
+  // sizes (ParkWaitTimes.svelte's measured `--pwt-card-width`), never a ride name — is wider than the shorter
   // ride name below: a column no wider than every name in it would leave a centred name
   // indistinguishable from a left-aligned one, both overflowing the same way.
   await serveModuleData(page, () => ({
@@ -1016,6 +1048,42 @@ test('draws every wait right-aligned and tabular, the column never moving under 
   // above — never moves, whether the figure is one, two or three digits.
   const lefts = await waits.evaluateAll((els) => els.map((el) => el.getBoundingClientRect().x));
   expect(new Set(lefts).size, 'the wait column’s own left edge holds across 1, 2 and 3 digits').toBe(1);
+});
+
+test('reserves one constant wait column across a numeric wait and the longest not-operating word alike, neither wider than the other', async ({
+  page,
+}) => {
+  // The column's reservation must clear the widest reading it is ever handed — a six-letter
+  // not-operating word ("REFURB"/"CLOSED"), wider on the page than a three-digit "999" — so it
+  // never moves between a numeric row and a state row (SRS058, SRS061). A card whose leaderboard
+  // holds numeric waits and whose tour holds those two words shows both kinds at once: every wait
+  // box the same width is the proof the reservation covers the longest word rather than that word
+  // growing its own box past a shorter one's.
+  await holdHostClock(page, HOST_TIME);
+  await serveModuleData(page, () => ({
+    status: 200,
+    data: parksPayload([
+      onePark('epcot', {
+        rides: [
+          ride('A', 5),
+          ride('B', 45),
+          ride('C', 120),
+          ride('D', 'Refurb'),
+          ride('E', 'Closed'),
+        ],
+      }),
+    ]),
+  }));
+  await render(page, placed(['epcot']));
+
+  const waits = page.locator(WAIT);
+  await expect(waits).toHaveCount(5);
+  const kinds = await waits.evaluateAll((els) => els.map((el) => el.getAttribute('data-pwt-wait-kind')));
+  expect(new Set(kinds), 'both a numeric wait and a not-operating word are on screen').toEqual(
+    new Set(['minutes', 'state']),
+  );
+  const widths = await waits.evaluateAll((els) => els.map((el) => Math.round(el.getBoundingClientRect().width)));
+  expect(new Set(widths).size, 'every wait box the same width, numeric and state alike').toBe(1);
 });
 
 test('scrolls a ride name too wide for its own column, the full name still in the DOM', async ({ page }) => {

@@ -62,10 +62,9 @@
       `prefers-reduced-motion: reduce` by leaving the row static. Read once: `rideRow` keys each row
       on the ride's own name. */
   function marquee(node: HTMLElement): void {
-    // Measured next frame, not at mount: ParkWaitTimes.svelte's `cardGeometry` sets
-    // `--pwt-card-width`/`--pwt-wait-width` on the grid root, which mounts after this row's —
-    // reading `.ride-name`'s clientWidth before that applies would catch it unconstrained and
-    // never find an overflow.
+    // Measured next frame, not at mount: ParkWaitTimes.svelte sets `--pwt-card-width` on the grid
+    // root, which mounts after this row's — reading `.ride-name`'s clientWidth before that applies
+    // would catch it unconstrained and never find an overflow.
     requestAnimationFrame(() => {
       // node itself is an unconstrained inline-block, sized to its own text — `.ride-name`, its
       // parent, is the clipping column `scrollWidth` must be read against.
@@ -183,7 +182,7 @@
     padding: var(--space-md);
     border: calc(var(--divider-stroke-width) * 2) solid var(--emission-stroke);
     border-radius: var(--space-sm);
-    /* `--pwt-card-width` (ParkWaitTimes.svelte's `headerWidthPx`) is computed as a border box —
+    /* `--pwt-card-width` (ParkWaitTimes.svelte) is measured as a border box — the widest header's
        content plus this card's own padding and border. Without this, the grid's fixed column width
        would apply that total to the content box instead, growing every card past its own column. */
     box-sizing: border-box;
@@ -358,11 +357,16 @@
   }
 
   .wait {
-    /* Fixed by ParkWaitTimes.svelte's `--pwt-wait-width` — long enough for whichever not-operating
-       word or worst-case figure a wait is ever handed, so the column never moves under a changing
-       value and never shrinks the name column to make room for one that just grew. */
+    /* One constant reservation for the column — long enough for whichever not-operating word or
+       worst-case figure a wait is ever handed, so the column never moves under a changing value and
+       never shrinks the name column to make room for one that just grew (SRS058, SRS061). Sized off
+       the caption token the widest reading — a six-letter not-operating word ("REFURB"/"CLOSED"),
+       wider than a three-digit "999" — is drawn at, so it tracks the type scale; expressed against
+       the token rather than in the element's own `ch` because `.wait.state` (below) draws a step
+       smaller, and a font-relative unit would recompute there and move the column between a numeric
+       and a state row. */
     flex: 0 0 auto;
-    min-width: var(--pwt-wait-width);
+    min-width: calc(var(--type-caption) * 4.75);
     text-align: right;
     font-weight: 700;
     white-space: nowrap;

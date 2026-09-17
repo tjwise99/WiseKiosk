@@ -67,9 +67,7 @@ export function clockTime(iso: string): string {
   return match ? `${match[1]}:${match[2]}` : iso;
 }
 
-/** The hours line's text, the one source `ParkWaitTimes.svelte`'s header-width measurement and
-    `ParkCard.svelte`'s render both derive from, so a measured width can never drift from what is
-    drawn. */
+/** The hours line's text a header draws: each park's open–close on its own local clock. */
 export function hoursText(hours: { open: string; close: string }): string {
   return `${clockTime(hours.open)}–${clockTime(hours.close)}`;
 }
