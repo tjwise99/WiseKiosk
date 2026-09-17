@@ -279,16 +279,12 @@ func shapeRidesExcluding(body []byte, excluded exclusion) ([]boundary.ParkWaitTi
 // to draw a wait from.
 var errNoPostedWait = errors.New("is operating but the response reports no wait")
 
-// shapeWait reads one ride's status into its boundary state and, when it is
+// shapeWait reads one ride's status into its boundary state and, when
 // operating, its posted standby wait in minutes
 // (SRS061<!-- The park-wait-times module draws a wait as the time or the
 // not-operating state it is handed -->; boundary/openapi.yaml's
-// ParkWaitTimesState and waitMinutes). The state is read from the generated
-// boundary enum so a rename there fails this compile rather than drifting.
-// waitMinutes is nil in every state but Operating. An operating ride the
-// source reports no wait for returns errNoPostedWait rather than a zero nobody
-// reported; a status outside the four the source declares is refused the same
-// way.
+// ParkWaitTimesState and waitMinutes). waitMinutes is nil in every state but
+// Operating.
 func shapeWait(status string, queue *queueBlock) (boundary.ParkWaitTimesState, *int, error) {
 	switch status {
 	case "OPERATING":

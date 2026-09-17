@@ -44,14 +44,12 @@ var served = router.NewRoute(entry())
 type ParkWaitTimesRoute struct{}
 
 // PostApiParkWaitTimes serves the schema's POST /api/park-wait-times. A
-// request may name several parks (SRS054<!-- The park-wait-times module
-// reports on the parks its configuration names -->), fetched concurrently,
-// one goroutine per park; each park read through its own pair of fetches,
-// the framework cache/rate/timeout pipeline running once per park per
-// endpoint via Route.Fetch, not Route.Serve. See
-// SRS067<!-- The park-wait-times module confines a failure to the part of
-// its own response the failure touches --> for the per-park degradation
-// this handler is built on.
+// request may name several parks
+// (SRS054<!-- The park-wait-times module reports on the parks its
+// configuration names -->), each fetched concurrently through its own pair
+// of Route.Fetch calls rather than Route.Serve
+// (SRS067<!-- The park-wait-times module confines a failure to the part of
+// its own response the failure touches -->).
 func (ParkWaitTimesRoute) PostApiParkWaitTimes(w http.ResponseWriter, r *http.Request) {
 	router.BoundBody(w, r)
 
