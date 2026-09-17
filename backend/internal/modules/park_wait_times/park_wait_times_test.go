@@ -1796,3 +1796,263 @@ func TestUserBlacklistNameMatchIsNormalizedExact(t *testing.T) {
 		})
 	}
 }
+
+// --- The #309 parks-roster removal: pretty-name resolution, pass-through, 404-vs-transient ---
+//
+// The offline supported/validateParks gatekeeping is replaced by a three-tier
+// resolution: a normalized pretty-name hit resolves to its known entity id;
+// a miss passes the config string through to the upstream as-is; an upstream
+// 404 is this park's own unsupported outcome, distinct from a transient
+// failure. No tier rejects the whole request (SRS067<!-- The park-wait-times
+// module confines a failure to the part of its own response the failure
+// touches -->). Every case below drives the module's own HTTP handler, not
+// the soon-to-be-removed supported/validate/validateParks directly, so it
+// says nothing about their replacement's internal shape.
+//
+// magicKingdomEntityID is supported["magic-kingdom"].entityID as it stands
+// before the roster's removal — the pretty-name map decision 3 inverts is
+// built from this same data, not a new one.
+const magicKingdomEntityID = "75ea578a-adc8-4116-a54d-dccb60765ef9"
+
+// capturingTransport answers a park's /live call with body and its /schedule
+// call with a failure (mirroring liveTransport), while recording every
+// request URL it saw — this suite's way of reading which identifier a
+// resolved park's own upstream call actually carried.
+type capturingTransport struct {
+	mu   sync.Mutex
+	body []byte
+	urls []string
+}
+
+func (c *capturingTransport) RoundTrip(r *http.Request) (*http.Response, error) {
+	c.mu.Lock()
+	c.urls = append(c.urls, r.URL.String())
+	c.mu.Unlock()
+	if strings.HasSuffix(r.URL.Path, "/live") {
+		return &http.Response{StatusCode: http.StatusOK, Body: io.NopCloser(bytes.NewReader(c.body)), Header: make(http.Header)}, nil
+	}
+	return &http.Response{StatusCode: http.StatusServiceUnavailable, Body: io.NopCloser(bytes.NewReader(nil)), Header: make(http.Header)}, nil
+}
+
+func (c *capturingTransport) sawURLContaining(substr string) bool {
+	c.mu.Lock()
+	defer c.mu.Unlock()
+	for _, u := range c.urls {
+		if strings.Contains(u, substr) {
+			return true
+		}
+	}
+	return false
+}
+
+// TestPrettyNameResolvesToItsUUID reads decisions 3-4 of the #309 build spec:
+// a config entry naming a park by its known pretty name resolves to that
+// park's upstream entity id, and the upstream call this park's own fetch
+// makes carries that id — not the pretty name itself.
+func TestPrettyNameResolvesToItsUUID(t *testing.T) {
+	transport := &capturingTransport{body: liveResponseBytes(t)}
+	held := http.DefaultTransport
+	http.DefaultTransport = transport
+	t.Cleanup(func() { http.DefaultTransport = held })
+	freshRoute(t)
+
+	recorder := serve(t, `{"parks":["Magic Kingdom"]}`)
+	if recorder.Code != http.StatusOK {
+		t.Fatalf("status = %d, want %d (%s) — a pretty name must resolve, not be rejected", recorder.Code, http.StatusOK, recorder.Body)
+	}
+
+	var payload boundary.ParkWaitTimesPayload
+	if err := json.Unmarshal(recorder.Body.Bytes(), &payload); err != nil {
+		t.Fatalf("reading the served payload: %v", err)
+	}
+	if len(payload.Parks) != 1 {
+		t.Fatalf("parks = %d, want 1: %+v", len(payload.Parks), payload.Parks)
+	}
+	park := payload.Parks[0]
+	if park.Id != "Magic Kingdom" {
+		t.Errorf("Id = %q, want the request's own string echoed back", park.Id)
+	}
+	if !park.Available {
+		t.Errorf("available = false, want true — the pretty name should have resolved to a fetchable park: %+v", park)
+	}
+	if !transport.sawURLContaining(magicKingdomEntityID) {
+		t.Errorf("no upstream call carried the pretty name's own entity id %q — want its /live and /schedule calls to use the id, not the pretty name", magicKingdomEntityID)
+	}
+}
+
+// TestPrettyNameMatchIsNormalized reads decision 3's normalization: a pretty
+// name given with different case or surrounding whitespace still matches,
+// the same convention as the user-blacklist name match (trim + case-fold).
+// None of the module's six known pretty names carries an apostrophe, so this
+// case cannot exercise the curly-quote fold half of that convention against
+// real data; that half is already covered where it is exercisable, against
+// ride names (TestUserBlacklistNameMatchIsNormalizedExact above).
+func TestPrettyNameMatchIsNormalized(t *testing.T) {
+	variants := []string{
+		"magic kingdom",
+		"MAGIC KINGDOM",
+		"  Magic Kingdom  ",
+	}
+	for _, name := range variants {
+		t.Run(fmt.Sprintf("%q", name), func(t *testing.T) {
+			transport := &capturingTransport{body: liveResponseBytes(t)}
+			held := http.DefaultTransport
+			http.DefaultTransport = transport
+			t.Cleanup(func() { http.DefaultTransport = held })
+			freshRoute(t)
+
+			body, err := json.Marshal(boundary.ParkWaitTimesRequest{Parks: []string{name}})
+			if err != nil {
+				t.Fatalf("encoding the request: %v", err)
+			}
+			recorder := serve(t, string(body))
+			if recorder.Code != http.StatusOK {
+				t.Fatalf("status = %d, want %d (%s) — %q should still match the pretty name despite its case/whitespace", recorder.Code, http.StatusOK, recorder.Body, name)
+			}
+			var payload boundary.ParkWaitTimesPayload
+			if err := json.Unmarshal(recorder.Body.Bytes(), &payload); err != nil {
+				t.Fatalf("reading the served payload: %v", err)
+			}
+			if len(payload.Parks) != 1 || !payload.Parks[0].Available {
+				t.Fatalf("parks = %+v, want one available park", payload.Parks)
+			}
+			if !transport.sawURLContaining(magicKingdomEntityID) {
+				t.Errorf("%q did not resolve to the pretty name's own entity id %q", name, magicKingdomEntityID)
+			}
+		})
+	}
+}
+
+// TestUnrecognizedConfigStringPassesThroughAsIs reads decision 4's second
+// tier: a config string that matches no pretty name is fetched from the
+// upstream as-is, treated as the identifier, rather than being rejected.
+func TestUnrecognizedConfigStringPassesThroughAsIs(t *testing.T) {
+	const raw = "not-a-known-pretty-name"
+
+	transport := &capturingTransport{body: liveResponseBytes(t)}
+	held := http.DefaultTransport
+	http.DefaultTransport = transport
+	t.Cleanup(func() { http.DefaultTransport = held })
+	freshRoute(t)
+
+	recorder := serve(t, `{"parks":["`+raw+`"]}`)
+	if recorder.Code != http.StatusOK {
+		t.Fatalf("status = %d, want %d (%s) — an unrecognized park must not fail the request", recorder.Code, http.StatusOK, recorder.Body)
+	}
+	if !transport.sawURLContaining(raw) {
+		t.Errorf("no upstream call carried %q verbatim — want a config string matching no pretty name fetched as the identifier as-is", raw)
+	}
+}
+
+// TestUpstream404IsUnsupportedDistinctFromATransientFailure reads decisions
+// 1-2 of the #309 build spec: a park whose upstream call answers 404 is
+// reported available:false with a message distinct from the wording a
+// transient (non-404) failure carries, and neither park's own failure fails
+// the whole request (SRS067<!-- The park-wait-times module confines a
+// failure to the part of its own response the failure touches -->).
+func TestUpstream404IsUnsupportedDistinctFromATransientFailure(t *testing.T) {
+	const notFoundBody = `{"success":false,"error":{"message":"entity not found","code":404}}`
+
+	transport := roundTrip(func(r *http.Request) (*http.Response, error) {
+		switch {
+		case strings.Contains(r.URL.String(), "unsupported-park"):
+			return &http.Response{StatusCode: http.StatusNotFound, Body: io.NopCloser(strings.NewReader(notFoundBody)), Header: make(http.Header)}, nil
+		case strings.Contains(r.URL.String(), "transient-park"):
+			return &http.Response{StatusCode: http.StatusServiceUnavailable, Body: io.NopCloser(bytes.NewReader(nil)), Header: make(http.Header)}, nil
+		default:
+			t.Fatalf("unexpected upstream call: %s", r.URL)
+			return nil, nil
+		}
+	})
+	held := http.DefaultTransport
+	http.DefaultTransport = transport
+	t.Cleanup(func() { http.DefaultTransport = held })
+	freshRoute(t)
+
+	recorder := serve(t, `{"parks":["unsupported-park","transient-park"]}`)
+	if recorder.Code != http.StatusOK {
+		t.Fatalf("status = %d, want %d (%s) — neither park's own failure may fail the whole request", recorder.Code, http.StatusOK, recorder.Body)
+	}
+
+	var payload boundary.ParkWaitTimesPayload
+	if err := json.Unmarshal(recorder.Body.Bytes(), &payload); err != nil {
+		t.Fatalf("reading the served payload: %v", err)
+	}
+	if len(payload.Parks) != 2 {
+		t.Fatalf("parks = %d, want 2: %+v", len(payload.Parks), payload.Parks)
+	}
+	unsupported, transientPark := payload.Parks[0], payload.Parks[1]
+
+	if unsupported.Available {
+		t.Error("unsupported-park: available = true against a 404, want false")
+	}
+	if transientPark.Available {
+		t.Error("transient-park: available = true against a 503, want false")
+	}
+	if unsupported.Message == nil || *unsupported.Message == "" {
+		t.Fatal("unsupported-park: carries no message")
+	}
+	if transientPark.Message == nil || *transientPark.Message == "" {
+		t.Fatal("transient-park: carries no message")
+	}
+
+	// The literal text below is the existing transient wording a viewer already
+	// sees for any non-404 upstream status (route.go's failureMessage,
+	// UpstreamStatus case) — asserted as the observable message text itself,
+	// not through calling that helper, so this stays a behavioral check of
+	// what the response says rather than a coupling to how it is produced.
+	genericStatusMessage := fmt.Sprintf("the source answered with status %d", http.StatusNotFound)
+	if *unsupported.Message == genericStatusMessage {
+		t.Errorf("unsupported-park's message = %q, want a distinct 404/unsupported wording, not the generic %q every other status also gets", *unsupported.Message, genericStatusMessage)
+	}
+	wantTransientMessage := fmt.Sprintf("the source answered with status %d", http.StatusServiceUnavailable)
+	if *transientPark.Message != wantTransientMessage {
+		t.Errorf("transient-park's message = %q, want the existing transient wording %q unchanged", *transientPark.Message, wantTransientMessage)
+	}
+	if *unsupported.Message == *transientPark.Message {
+		t.Error("the 404 (unsupported) and the 503 (transient) park share the same message, want them distinct")
+	}
+}
+
+// TestDisplayNameComesFromUpstreamNotTheConfigString reads decision 5: with
+// the pretty-name-to-render-name map gone, a resolved park's displayed name
+// is the name the upstream's own PARK row carries, not the config string (a
+// pretty name or a pass-through identifier) that named it. The expected name
+// is read out of the capture itself, not hardcoded, since it is the capture's
+// own PARK row this test is about (mk-live.json's first row).
+func TestDisplayNameComesFromUpstreamNotTheConfigString(t *testing.T) {
+	live := liveResponseBytes(t)
+	var read map[string]any
+	if err := json.Unmarshal(live, &read); err != nil {
+		t.Fatalf("reading the captured response: %v", err)
+	}
+	rows := read["liveData"].([]any)
+	parkRow := rows[0].(map[string]any)
+	if parkRow["entityType"] != "PARK" {
+		t.Fatalf("fixture's first row is entityType %v, want PARK — this test assumes the capture's own park-identity row", parkRow["entityType"])
+	}
+	upstreamName, ok := parkRow["name"].(string)
+	if !ok || upstreamName == "" {
+		t.Fatal("the fixture's PARK row carries no name to compare against")
+	}
+
+	held := http.DefaultTransport
+	http.DefaultTransport = liveTransport(live)
+	t.Cleanup(func() { http.DefaultTransport = held })
+	freshRoute(t)
+
+	recorder := serve(t, `{"parks":["Magic Kingdom"]}`)
+	if recorder.Code != http.StatusOK {
+		t.Fatalf("status = %d, want %d (%s)", recorder.Code, http.StatusOK, recorder.Body)
+	}
+	var payload boundary.ParkWaitTimesPayload
+	if err := json.Unmarshal(recorder.Body.Bytes(), &payload); err != nil {
+		t.Fatalf("reading the served payload: %v", err)
+	}
+	if len(payload.Parks) != 1 {
+		t.Fatalf("parks = %d, want 1: %+v", len(payload.Parks), payload.Parks)
+	}
+	if payload.Parks[0].Name != upstreamName {
+		t.Errorf("Name = %q, want the upstream's own park name %q, not the config's pretty name", payload.Parks[0].Name, upstreamName)
+	}
+}
