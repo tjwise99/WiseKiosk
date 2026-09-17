@@ -67,6 +67,13 @@ export function clockTime(iso: string): string {
   return match ? `${match[1]}:${match[2]}` : iso;
 }
 
+/** The hours line's text, the one source `ParkWaitTimes.svelte`'s header-width measurement and
+    `ParkCard.svelte`'s render both derive from, so a measured width can never drift from what is
+    drawn. */
+export function hoursText(hours: { open: string; close: string }): string {
+  return `${clockTime(hours.open)}–${clockTime(hours.close)}`;
+}
+
 /** This module's icon set, keyed by park slug (the park-wait-times UI design spec § The park icon
     set). */
 const ICONS: Record<string, string> = {

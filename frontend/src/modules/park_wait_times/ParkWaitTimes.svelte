@@ -6,7 +6,7 @@
   import type { CommonProps } from '../../lib/modules';
   import type { Payload } from '../../lib/payload';
 
-  import { clockTime, iconFor } from './park_wait_times';
+  import { hoursText, iconFor } from './park_wait_times';
   import ParkCard from './ParkCard.svelte';
   import { WAIT_STATE_WORDS } from './wait-state-words';
 
@@ -56,7 +56,7 @@
     pwtPayload.state === 'ok'
       ? pwtPayload.data.parks.map((park) => ({
           name: park.name,
-          hours: park.hours ? `${clockTime(park.hours.open)}–${clockTime(park.hours.close)}` : undefined,
+          hours: park.hours ? hoursText(park.hours) : undefined,
         }))
       : [],
   );

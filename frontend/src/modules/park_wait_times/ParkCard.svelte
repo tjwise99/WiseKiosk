@@ -1,8 +1,8 @@
 <script lang="ts">
   import { ParkWaitTimesState, type ParkWaitTimesPark, type ParkWaitTimesRide } from '../../lib/boundary/client';
   import {
-    clockTime,
     heldRides,
+    hoursText,
     noOpenRides as ridesAreClosed,
     pageCount as pageCountOf,
     pageSlice,
@@ -92,7 +92,7 @@
       <span class="name section-label">{park.name}</span>
     </div>
     {#if park.hours}
-      <span class="hours" data-pwt-hours>{clockTime(park.hours.open)}–{clockTime(park.hours.close)}</span>
+      <span class="hours" data-pwt-hours>{hoursText(park.hours)}</span>
     {/if}
   </div>
 
