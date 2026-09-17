@@ -206,58 +206,16 @@ jobs:
       - name: Every tagged identifier resolves to an accepted item, and every accepted, active item is tagged
         run: just check-arch-trace
 
-  boundary:
-    name: boundary
-    # Regenerates the Go and TypeScript boundary contract — routes, client,
-    # server and types — from the one schema and fails on any drift: the
-    # staleness gate for the boundary layer, the same shape the architecture job
-    # runs for the architecture layer. Because the routes are generated too, a
-    # renamed path is drift the gate sees rather than a hand-written string on
-    # each side (ADR 0008 rev 5). The gate clears and regenerates before it
-    # diffs, so a generator that cannot run leaves absent output that reads as a
-    # deletion rather than a false clean; that it can fail is recorded in
-    # scripts/cases/check-boundary.md, not re-tested here. Each generator is
-    # pinned in the silo it belongs to: oapi-codegen through backend/go.mod's
-    # tool directive, orval through frontend/package-lock.json. No secrets: pure
-    # codegen, compilation and comparison.
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        with:
-          persist-credentials: false
-
-      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
-        with:
-          go-version: "1.27"
-
-      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
-        with:
-          node-version: 26
-
-      - uses: extractions/setup-just@53165ef7e734c5c07cb06b3c8e7b647c5aa16db3 # v4
-        with:
-          just-version: "1.58.0"
-
-      - name: Install the Go module's dependencies into the silo (backend/), locked
-        run: go -C backend mod download
-
-      - name: Install orval and its formatter into the silo (frontend/), locked
-        run: npm --prefix frontend ci
-
-      - name: The committed boundary contract is what the schema generates, and the generated Go and TypeScript both compile
-        run: just check-boundary
-
   frontend:
     name: frontend
     # Builds the static single-page bundle, then holds it to what ADR 0018 rev 1 decided: one HTML
     # entry with an empty mount, no server half, no SSR target or adapter declared, and every npm
-    # package in the emitted module graph in the committed allowlist. Then the configuration types
-    # are regenerated from the configuration schema and diffed, the same staleness gate the boundary
-    # job runs one layer over. Then eslint, svelte-check and the whole-project TS 7 typecheck run
-    # (docs/CI.md § Lint and type checks), then `npm audit` over the whole dependency tree
-    # (docs/CI.md § Dependency vulnerabilities) — the one step here needing the network. Every
-    # generator and runner is pinned in the silo it belongs to, through frontend/package-lock.json.
-    # No secrets: build, comparison, static assertion and an unauthenticated registry query.
+    # package in the emitted module graph in the committed allowlist. Then eslint, svelte-check and
+    # the whole-project TS 7 typecheck run (docs/CI.md § Lint and type checks), then `npm audit` over
+    # the whole dependency tree (docs/CI.md § Dependency vulnerabilities) — the one step here needing
+    # the network. Every generator and runner is pinned in the silo it belongs to, through
+    # frontend/package-lock.json. No secrets: build, static assertion and an unauthenticated registry
+    # query.
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -277,9 +235,6 @@ jobs:
 
       - name: The frontend build emits a static single-page bundle
         run: just check-static-bundle
-
-      - name: The committed configuration types are what the configuration schema generates
-        run: just check-config-types
 
       - name: The frontend is clean under eslint and svelte-check
         run: just check-lint-frontend
@@ -343,9 +298,9 @@ jobs:
     # (docs/CI.md § Backend fuzz), `just check-lint-go` (docs/CI.md § Lint and type checks),
     # `just check-secret-unwrap` (docs/CI.md § Module and framework structure) and
     # `just check-vulns-go` (docs/CI.md § Dependency vulnerabilities, the one step here needing the
-    # network). A job of its own rather than a step on `boundary`, which already carries the drift
-    # gate: one job answers with one check-run, so a shared one gives the two gates a single name to
-    # be required on and a single verdict. The `cmd` package's bounded-footprint soak runs inside
+    # network). A job of its own, bundling five related backend checks: one job answers with one
+    # check-run, giving the required-status-check ruleset a single name to require rather than five.
+    # The `cmd` package's bounded-footprint soak runs inside
     # `go test ./...` and is ~2min of this job, and is the one package the recipe's race-detector
     # pass leaves out. No secrets: the tests serve over loopback (`net/http/httptest`) and reach no
     # network origin but govulncheck's own query to vuln.go.dev, which is unauthenticated.
@@ -423,14 +378,14 @@ jobs:
         run: just render-install
 
       - name: Install grcov, pinned
-        uses: taiki-e/install-action@c3ec0de9ae7f1019cea21aa96aa0a895b9552063 # v2.87.9
+        uses: taiki-e/install-action@3f74d7c16a4242f1c95561e98edc25d36adb4375 # v2.87.12
         with:
           tool: grcov
 
       - name: The unit-test coverage bar over the backend and the frontend, and the unified report
         run: just check-coverage
 
-      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         if: always()
         with:
           name: coverage-report

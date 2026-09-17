@@ -4,17 +4,24 @@
 **Decided:** 2026-09-05 (the never-commit-a-vulnerable-artifact rule taken 2026-07-24 in the closing
 review pass of the requirements rewrite #18 stands; the record-once mechanism replacing the standing
 meta-gate decided in #263 CodeQL gate)
-**Rev:** 2
+**Rev:** 3
 
 ## Revisions
 
+- **rev 3** — 2026-09-15 — retargets both worked-example citations of the convention this ADR states,
+  from `docs/CI.md` § *Generated boundary contract* — a section deleted along with `check-boundary`
+  itself ([ADR 0008 rev 6](0008-boundary-contract-openapi-codegen.md)) — to
+  `scripts/cases/check-arch.md`, a surviving gate record that carries the same
+  prove-fallibility-once/record/no-standing-meta-gate pattern. What this ADR decides is unchanged, so
+  the `Decided` date does not move (#339 generated-code-not-committed).
 - **rev 2** — 2026-09-05 — the Decision no longer prescribes a per-run meta-gate or a committed
   `scripts/gate-fixtures/*.tmpl` tree: a negative fixture is built in a throwaway copy at the time
   the gate is recorded instead, and the observation is recorded verbatim in the check's own
-  `scripts/cases` file — the convention [`../CI.md`](../CI.md) § *Generated boundary contract*
-  already states for every other gate. The never-commit-a-vulnerable-artifact rule and the reasoning
-  for it are unchanged; the Consequences bullet naming a second copy of each scanner invocation is
-  dropped, since there is no longer a second job to drift from the first (#263 CodeQL gate).
+  `scripts/cases` file — the convention
+  [`../../scripts/cases/check-arch.md`](../../scripts/cases/check-arch.md) states for every other gate. The
+  never-commit-a-vulnerable-artifact rule and the reasoning for it are unchanged; the Consequences
+  bullet naming a second copy of each scanner invocation is dropped, since there is no longer a
+  second job to drift from the first (#263 CodeQL gate).
 - **rev 1** — 2026-08-05 — revision tracking begins; text as merged (#118 ADR revisions).
 
 ## Context
@@ -47,9 +54,9 @@ the gate is recorded — a scratch directory, or, where the gate only runs in CI
 draft pull request and never merged — run through the same production job or recipe the gate itself
 runs, its finding observed once, and the observation recorded verbatim in the check's own file under
 [`scripts/cases/`](../../scripts/README.md). This is the general convention
-[`../CI.md`](../CI.md) § *Generated boundary contract* states for every other gate: a check's
-fallibility is proven once against a throwaway copy and recorded, not re-tested by a standing
-meta-gate.
+[`../../scripts/cases/check-arch.md`](../../scripts/cases/check-arch.md) states for every other gate:
+a check's fallibility is proven once against a throwaway copy and recorded, not re-tested by a
+standing meta-gate.
 
 Two properties follow, and they are the point:
 

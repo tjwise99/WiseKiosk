@@ -198,7 +198,7 @@ the upstream client all module-owned and leave the framework half empty — agai
 dependency direction, under which framework code "is shared code from the moment it is written". Parts
 2 and 6 earn no component either: a module's configuration is a section of the one schema the frontend
 validates against, and the boundary-schema fragment belongs to the one schema, which
-[ADR 0008 rev 5](0008-boundary-contract-openapi-codegen.md) gives to neither side. Part 3 is
+[ADR 0008 rev 6](0008-boundary-contract-openapi-codegen.md) gives to neither side. Part 3 is
 tests, which run nowhere in either container and are [`../TESTING.md`](../TESTING.md)'s.
 
 **Only the framework half is drawn.** [ADR 0012 rev 2](0012-module-requirements-in-tree.md) makes a
@@ -594,7 +594,7 @@ Viewer, and that relationship's endpoint is the module component this record lea
 compensating for an undrawn element is a seam, and it closes when the module components land.
 
 **No element carries a `link`.** No source exists, and where it will sit is
-[ADR 0021 rev 3](0021-repository-layout.md); each
+[ADR 0021 rev 4](0021-repository-layout.md); each
 container and component gains one when the code it describes is written, which is the review obligation
 [`../../CONTRIBUTING.md`](../../CONTRIBUTING.md) carries as its architecture-links question.
 
@@ -682,7 +682,7 @@ two pressures may answer only one; this one answers both.
 **The completeness direction needs no seeded defect fixture.** It fails on the tree's real state
 wherever an accepted, active item is bound nowhere, which is better evidence than a seed. The legal
 direction still needs one, and
-[ADR 0010 rev 2](0010-runtime-materialised-gate-fixtures.md) is the mechanism.
+[ADR 0010 rev 3](0010-runtime-materialised-gate-fixtures.md) is the mechanism.
 
 ### The record this one corrects
 

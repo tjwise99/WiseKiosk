@@ -49,7 +49,7 @@ record cites that contract rather than restating any of it.
 `top_bar`, `top_left`, `top_center`, `top_right`, `upper_third`, `middle_center`, `lower_third`,
 `bottom_left`, `bottom_center`, `bottom_right`, `bottom_bar`.
 Each is an enum member the configuration schema offers as a module's `region` value, the same shape
-[ADR 0022 rev 2](0022-config-schema-format.md)'s illustrative example shows for one key;
+[ADR 0022 rev 3](0022-config-schema-format.md)'s illustrative example shows for one key;
 SRS024<!-- Every offered configuration key is exercised at a non-default value -->'s per-key
 enumeration ranges over exactly that fixed set, and SRS017<!-- Full-screen assembly at kiosk;
 reflow, no horizontal scroll, at narrower widths -->'s disjointness and reflow obligations bind the

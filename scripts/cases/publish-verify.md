@@ -157,7 +157,7 @@ rather than in the release. Fixed in `verify_release.py` by asserting the two te
 above and leaving the wrong-signer-workflow case unasserted on text until one can be observed.
 
 **Fallibility is recorded once here, against throwaway copies; no standing meta-gate re-tests it**
-([`docs/CI.md`](../../docs/CI.md) § *Generated boundary contract* states that convention).
+([`check-arch.md`](check-arch.md) states that convention).
 
 ## Known gaps, per the owner
 

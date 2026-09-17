@@ -13,13 +13,17 @@ rationale: |
   is shared with the operator and governed by
   SYS003<!-- A deployment is parameterised from outside the image -->.
 ref: ''
-reviewed: RsIk5RfNLF3jaTziLtI1mSgNBrglOJNGzwp-XUndpOI=
+reviewed: E_rninQeRnjGxdhB6VCp0ZYjodrHOSGmWdZv894Uz3Y=
 status: accepted
 text: |
   Every shape shared between WiseKiosk's own components shall have exactly one machine-readable
   definition, generated into every implementation that must agree on it.
 verification-justification: |
-  Generation and agreement are decided by the drift gate: a committed artifact differing from a fresh
-  regeneration fails. What no check settles is whether the definition is the right shape — only that
-  both sides hold the same one.
+  Generation and agreement are settled structurally: neither side's generated declaration is ever a
+  committed, independently-driftable artifact, so there is no state in which one side's definition
+  could differ from the other's while both still agree with the one schema. That both sides actually
+  consume what is generated, rather than a hand-declared twin, is
+  TST034's<!-- Both sides consume the generated boundary types -->, under
+  SRS016<!-- Both sides consume the generated types -->. What no check settles is whether the
+  definition is the right shape — only that both sides hold the same one.
 verification-method: test
