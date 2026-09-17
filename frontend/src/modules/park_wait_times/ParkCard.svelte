@@ -3,6 +3,7 @@
   import {
     clockTime,
     heldRides,
+    noOpenRides as ridesAreClosed,
     pageCount as pageCountOf,
     pageSlice,
     remainingRides,
@@ -35,7 +36,7 @@
   const held = $derived(heldRides(rides, HELD_COUNT));
   /** No ride reporting a length of time draws this park as closed (`.closed`, below); distinct
       from `!park.available`, a failed reading — this is a successful one that found nothing open. */
-  const noOpenRides = $derived(held.length === 0);
+  const noOpenRides = $derived(ridesAreClosed(rides));
   const remaining = $derived(remainingRides(rides, held));
   const pageCount = $derived(pageCountOf(remaining.length, TOUR_SIZE));
 
