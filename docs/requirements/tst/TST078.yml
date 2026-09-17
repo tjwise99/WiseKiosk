@@ -1,20 +1,25 @@
-active: false
+active: true
 derived: false
 header: |
-  Pending: a wait is drawn as the time or state it is handed
+  A wait is drawn as the time or state it is handed
 level: 100
 links:
 - SRS061: 6chYA8sTvBlutbW2-CJ7TVEogrgvTDpBgfVnH7nnnOM=
 normative: true
 ref: ''
-reviewed: OmXemiph5bwF4S0mWscJpNlT4cAx50SSbDNXXndlNk4=
-status: proposed
+references:
+- keyword: 'test(''TST078: draws a ride’s wait as the mark its own payload names,
+    not the page’s clock or the park’s hours'', async ({'
+  path: frontend/src/modules/park_wait_times/park_wait_times.spec.ts
+  sha: 6b635850371a7c13f9c22587354fd9712f8809441521b4d5080fe987b529b976
+  type: file
+reviewed: cWhpik-T8XdWv-_KzADVf-249X1cfZo7MFKxGI_PVRI=
+status: accepted
 text: |
-  Pending: render test that, handed payloads differing only in a ride's wait, a ride handed a length of
-  time draws that time and a ride handed a not-operating state draws that state, the drawing does not
-  follow the page's clock or the park's hours where they disagree with the payload, and a length of time
-  and a state are drawn as different kinds of mark. Lands with the wait-times implementation (#309);
-  activated and given a references entry then.
+  Render test that, handed one park whose own hours say it is open at the clock's held moment, a ride
+  the payload gives a numeric wait draws that figure and a ride the payload gives a not-operating state
+  draws that state — as two different kinds of mark, a class distinction rather than only different
+  text — neither following the park's hours nor the page's clock where they disagree with the payload.
 verification-justification: |
   Settles that the drawing follows the handed state rather than a derived one, and tells a time from a
   state. Leaves unproven whether a viewer reads the two as distinct across the room.

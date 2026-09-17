@@ -1,0 +1,59 @@
+active: true
+derived: false
+header: |
+  The park-wait-times module excludes entities its configuration or its own defaults name
+level: 69
+links:
+- SYS011: a3bqZRtHE8ujrhIgBKFUtcxWGSCLRHsqU6GgDgwwR38=
+normative: true
+rationale: |
+  The source types every one of a park's queued rides as an ATTRACTION, and it types some things
+  beside them the same way - continuous-load transport, a fixed-showtime stage show, a walk-through
+  landmark with nothing to queue for. A viewer reading a park's wait times means the things they can
+  stand in line for; an entity typed ATTRACTION that answers no such question is not a ride, and
+  putting it across the boundary anyway answers a question nobody asked.
+
+  Which entities those are, for a park the module already knows, is a fact about the source's own
+  catalogue rather than something every deployment should have to state from scratch, so the module
+  carries a default list of its own. But the catalogue is another party's and can change, and a
+  deployer watching one specific park may know of an entity the default has not caught up with, or may
+  disagree with an entry the default carries - so a deployer names its own entities besides the
+  default, and can turn the default off rather than living with an entry it disputes.
+
+  How an entity is identified, and how a deployer's own name is matched against what the source sends,
+  is the shaping library's, not this item's: a requirement fixing either would settle an interface the
+  boundary schema and the shaping code are the record of.
+
+  The default list is a curation, not a rule derived from the type alone: it was built once against
+  the six configured parks' own captured catalogues, judged on what an entity is rather than on what it
+  happens to report. A walk-through with nothing to queue for is excluded even where the source posts
+  it a numeric wait - the entrance is throttled, not the queue. Continuous-load transport is not
+  excluded on sight either way: the same category covers both a boarding station a park guest queues
+  for and rides as one (kept), and an experience nobody would call a ride despite the tag (excluded) -
+  the default was curated entity by entity rather than by category. A paid overlay layered onto a base
+  park's own attraction for a separate ticketed event is excluded on the same ground: the wait it
+  reports is not the one the park's own rate card measures. None of this is a standing rule a future
+  catalogue re-derives on its own - a park the default has not been curated against, or a change to the
+  catalogue of one it has, is unproven by it, which is what the verification-justification below
+  already says.
+
+  This is a refinement of SRS056<!-- The park-wait-times module puts each park's ride waits across the
+  boundary --> rather than a competing obligation: that item says every ride is carried and none
+  silently dropped; this item says what does not count as a ride in the first place, which the parent
+  leaves to "the boundary schema's and the shaping library's" (#309).
+ref: ''
+reviewed: _sVsMsovU-eeIVm3jOMINrrk52_yqbi67DaY5yxxroI=
+status: accepted
+text: |
+  The park-wait-times module shall exclude from a park's rides any entity its configuration names for
+  exclusion, and shall exclude, unless a deployer turns it off, a default set of entities the module
+  names on its own.
+verification-justification: |
+  Read from the shaping run against a captured response whose rows include entities the default set
+  names and entities a configuration separately names: each is absent from the park's rides regardless
+  of the status it reports, an entity the default alone names reappears once a deployer turns the
+  default off, and an entity the configuration names stays excluded either way.
+  What it cannot settle is that the default names every entity a park's catalogue holds that is not a
+  ride - a park the default has not been curated against, or a change to one it has, is unproven here -
+  nor that a deployer's own name is written well enough to match what the source sends.
+verification-method: test

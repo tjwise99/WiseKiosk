@@ -202,6 +202,75 @@ describe('the configuration validator', () => {
     expect(result.valid).toBe(true);
   });
 
+  // The park-wait-times module's blacklist keys (#309): the toggle for its own prebuilt
+  // exclusion list and the operator's own list of ride names to exclude besides it, each omissible
+  // and each taking a default the schema states rather than the placement — driven the same four
+  // ways the clock's and weather's own keys are above.
+  it('accepts the blacklist keys the park-wait-times module offers, at values that are not their defaults', () => {
+    const result = validateConfiguration({
+      modules: [
+        {
+          region: 'middle_center',
+          module: 'park_wait_times',
+          options: {
+            parks: ['magic-kingdom'],
+            columns: 1,
+            rows: 1,
+            use_default_blacklist: false,
+            blacklist: ['Cinderella Castle'],
+          },
+        },
+      ],
+    });
+
+    expect(result.valid).toBe(true);
+  });
+
+  it('rejects a park-wait-times blacklist toggle carrying the wrong kind of value', () => {
+    const result = validateConfiguration({
+      modules: [
+        {
+          region: 'middle_center',
+          module: 'park_wait_times',
+          options: { parks: ['magic-kingdom'], columns: 1, rows: 1, use_default_blacklist: 'yes' },
+        },
+      ],
+    });
+
+    expect(result.valid).toBe(false);
+    if (result.valid) {
+      return;
+    }
+    // The fault is read rather than the verdict, for the reason the clock's and weather's own
+    // wrong-type cases give above: a schema that rejected every configuration would satisfy the
+    // verdict alone, and would not name the key or say what was wrong with it.
+    expect(result.faults).toContainEqual({
+      where: '/modules/0/options/use_default_blacklist',
+      what: 'must be boolean',
+    });
+  });
+
+  it('rejects a park-wait-times blacklist carrying the wrong kind of value', () => {
+    const result = validateConfiguration({
+      modules: [
+        {
+          region: 'middle_center',
+          module: 'park_wait_times',
+          options: { parks: ['magic-kingdom'], columns: 1, rows: 1, blacklist: 'Cinderella Castle' },
+        },
+      ],
+    });
+
+    expect(result.valid).toBe(false);
+    if (result.valid) {
+      return;
+    }
+    expect(result.faults).toContainEqual({
+      where: '/modules/0/options/blacklist',
+      what: 'must be array',
+    });
+  });
+
   it('rejects a document that is not an object at all', () => {
     const result = validateConfiguration([]);
 

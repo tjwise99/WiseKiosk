@@ -1,19 +1,25 @@
-active: false
+active: true
 derived: false
 header: |
-  Pending: the module reports on the parks its configuration names
+  The module reports on the parks its configuration names, in the region it names
 level: 93
 links:
 - SRS054: nAt8cSSQkqM-5dcdliPpOBPWhNq4IfU-D3g61VSs0ss=
 normative: true
 ref: ''
-reviewed: hT6DfrjjZcPo9ZwGoPyXufML0Ry55j8Zcrr45GPCdSk=
-status: proposed
+references:
+- keyword: 'test(''TST071: reports on the parks its configuration names, in the region
+    it names, and moves with a second configuration'', async ({'
+  path: frontend/src/modules/park_wait_times/park_wait_times.spec.ts
+  sha: 6b635850371a7c13f9c22587354fd9712f8809441521b4d5080fe987b529b976
+  type: file
+reviewed: DLAJn4gwMTbLTmRvDcfav-pyS5a2sZ_iJ7dmKsk1slg=
+status: accepted
 text: |
-  Pending: render test that, under a configuration naming parks and a source staged to answer
-  differently by park, the requests the module causes carry the configured parks and the region shows
-  the answers given for them, and a second configuration naming different parks moves both. Lands with
-  the wait-times implementation (#309); activated and given a references entry then.
+  Render test loading the page under two placements, each naming a different park, against a source
+  staged to answer by the parks a request carries: the request each placement causes carries its own
+  park, and its own region shows the answer given for it. A second configuration renaming both
+  placements' parks moves both requests and both regions with it.
 verification-justification: |
   Settles that the module fetches and shows the parks its configuration names and no other. Leaves
   unproven that the source's answer is true of those parks, which is another party's system and outside

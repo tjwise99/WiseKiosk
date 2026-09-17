@@ -1,19 +1,66 @@
-active: false
+active: true
 derived: false
 header: |
-  Pending: the longest waits are kept in view
+  The longest current waits are kept in view
 level: 97
 links:
-- SRS058: By4HtwrVndslJzygDUOVsxFhrBWAbUhxwa93xTSN5A8=
+- SRS058: DINNllNPPJpQkJmO3p1sWcCO1rkwuryq2QSq06QCMY0=
 normative: true
 ref: ''
-reviewed: Iyh5NDQnnBD_YqMyCgG3ywUdtpTIrVGco-r_bmXVbMY=
-status: proposed
+references:
+- keyword: it('keeps only numeric waits, longest first', () => {
+  path: frontend/src/modules/park_wait_times/park_wait_times.test.ts
+  sha: 833bacb3498a266ee0fab9261b7b8c176e9df79ceef738b10840a02c352f7a41
+  type: file
+- keyword: it('leaves a park with no numeric wait ranking nothing', () => {
+  path: frontend/src/modules/park_wait_times/park_wait_times.test.ts
+  sha: 833bacb3498a266ee0fab9261b7b8c176e9df79ceef738b10840a02c352f7a41
+  type: file
+- keyword: it('holds the count longest numeric waits, in descending order', () =>
+    {
+  path: frontend/src/modules/park_wait_times/park_wait_times.test.ts
+  sha: 833bacb3498a266ee0fab9261b7b8c176e9df79ceef738b10840a02c352f7a41
+  type: file
+- keyword: it('holds fewer than the count when the park has fewer numeric waits',
+    () => {
+  path: frontend/src/modules/park_wait_times/park_wait_times.test.ts
+  sha: 833bacb3498a266ee0fab9261b7b8c176e9df79ceef738b10840a02c352f7a41
+  type: file
+- keyword: it('is true for a park whose every ride reports a not-operating state',
+    () => {
+  path: frontend/src/modules/park_wait_times/park_wait_times.test.ts
+  sha: 833bacb3498a266ee0fab9261b7b8c176e9df79ceef738b10840a02c352f7a41
+  type: file
+- keyword: it('is true for a park with no rides at all', () => {
+  path: frontend/src/modules/park_wait_times/park_wait_times.test.ts
+  sha: 833bacb3498a266ee0fab9261b7b8c176e9df79ceef738b10840a02c352f7a41
+  type: file
+- keyword: it('is false as soon as one ride reports a numeric wait', () => {
+  path: frontend/src/modules/park_wait_times/park_wait_times.test.ts
+  sha: 833bacb3498a266ee0fab9261b7b8c176e9df79ceef738b10840a02c352f7a41
+  type: file
+- keyword: it('is everything the leaderboard does not hold, in the source’s own order
+    — not re-sorted', () => {
+  path: frontend/src/modules/park_wait_times/park_wait_times.test.ts
+  sha: 833bacb3498a266ee0fab9261b7b8c176e9df79ceef738b10840a02c352f7a41
+  type: file
+- keyword: it('a not-operating ride, never held, tours in the remainder', () => {
+  path: frontend/src/modules/park_wait_times/park_wait_times.test.ts
+  sha: 833bacb3498a266ee0fab9261b7b8c176e9df79ceef738b10840a02c352f7a41
+  type: file
+reviewed: bnmnbRauIGAcELsqu0qsM9Lb00jfwhmovAgwVgdVUQI=
+status: accepted
 text: |
-  Pending: render test that, handed a payload whose rides carry differing waits, the rides kept in view
-  are those with the longest waits and they remain in view across the rotation of the rest. Lands with
-  the wait-times implementation (#309); activated and given a references entry then.
+  Unit test of ranked, heldRides, remainingRides and noOpenRides, the pure functions the leaderboard is
+  built from: ranked and heldRides keep only rides carrying a numeric wait, longest first, holding the
+  configured count of them, and hold nothing for a park with no numeric wait. remainingRides carries
+  everything heldRides did not, in the source's own order - a not-operating ride, never held, tours
+  there instead. noOpenRides is true only where every one of a park's rides is a not-operating state, or
+  the park has none.
 verification-justification: |
-  Settles that the persistent reading is the longest waits and that it persists. Leaves unproven that the
-  number held is the right one to hold, which is a composition judgement.
+  Settles the pure computation the leaderboard is built from: which rides rank and how many are held,
+  that the remainder is exactly the complement of what is held rather than re-sorted or missing an
+  entry, and that a park with nothing open is told apart from one that is not. Leaves unproven that the
+  number held is the right one to hold, which is a composition judgement, and how the held/remaining
+  split renders on screen, which the render suite covers separately.
 verification-method: test

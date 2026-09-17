@@ -1,9 +1,10 @@
 import type { Component } from 'svelte';
 
-import type { ModuleOptions, WeatherOptions } from '../config/types';
+import type { ModuleOptions, ParkWaitTimesOptions, WeatherOptions } from '../config/types';
 import Clock from '../modules/clock/Clock.svelte';
+import ParkWaitTimes from '../modules/park_wait_times/ParkWaitTimes.svelte';
 import Weather from '../modules/weather/Weather.svelte';
-import { postApiWeather } from './boundary/client';
+import { postApiParkWaitTimes, postApiWeather } from './boundary/client';
 import type { ModuleAnswer, Payload } from './payload';
 
 /**
@@ -58,6 +59,24 @@ export const modules: Record<string, ModuleEntry> = {
     // SRS046<!-- The weather a viewer sees is no more than fifteen minutes behind its source -->'s and
     // SRS047<!-- The weather module asks an answering source at most four times an hour for a location -->'s
     // figures are met.
+    readIntervalMs: 5 * 60 * 1000,
+  },
+  park_wait_times: {
+    component: ParkWaitTimes,
+    // The narrowing is what validation already guarantees: the schema requires a placement to
+    // name its parks, so the whole list is handed over in one request body rather than one call
+    // per park (the module reads several parks per answer, unlike weather's one point).
+    read: (config, options) => {
+      const { parks, use_default_blacklist, blacklist } = config as ParkWaitTimesOptions;
+      return postApiParkWaitTimes(
+        { parks, useDefaultBlacklist: use_default_blacklist, blacklist },
+        options,
+      );
+    },
+    // How often the module is re-read, which is where
+    // SRS062<!-- The wait a viewer sees is no more than five minutes behind its source -->'s and
+    // SRS063<!-- The park-wait-times module asks an answering source at most once every five
+    // minutes for a park -->'s figures are met.
     readIntervalMs: 5 * 60 * 1000,
   },
 };

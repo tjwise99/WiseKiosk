@@ -1,19 +1,23 @@
-active: false
+active: true
 derived: false
 header: |
-  Pending: the parks lay out in the configured grid shape
+  The parks lay out in the configured grid shape
 level: 99
 links:
 - SRS060: 6HGDyXBi1R_Xeal3ey8LWzU3b2g4sfhYD4Wi1Lb7YOY=
 normative: true
 ref: ''
-reviewed: v8RQ0fYPUlNGw9h9CIeduyblDfh-g5YBoChKHF2Ajkk=
-status: proposed
+references:
+- keyword: 'test(''TST077: lays its cards out in the column and row counts its configuration
+    names, and a second shape re-lays them'', async ({'
+  path: frontend/src/modules/park_wait_times/park_wait_times.spec.ts
+  sha: 6b635850371a7c13f9c22587354fd9712f8809441521b4d5080fe987b529b976
+  type: file
+reviewed: 3_f8zvtlYzjbup1xMw6BU7b8eCmudGDPSO7zxk8V8pQ=
+status: accepted
 text: |
-  Pending: render test that, under at least two grid-shape configurations naming the same parks, the
-  cards lay out in the column and row counts each configuration names, and a second shape re-lays the
-  same parks. Lands with the wait-times implementation (#309); activated and given a references entry
-  then.
+  Render test that, under one grid-shape configuration and then a second naming the same parks, the
+  cards' computed column and row track counts follow each configuration in turn.
 verification-justification: |
   Settles that the grid shape follows configuration. Leaves unproven that a chosen shape reads well at
   the deployed viewing distance, and that every shape a configuration might name fits the region.

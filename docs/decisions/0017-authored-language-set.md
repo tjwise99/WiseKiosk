@@ -4,10 +4,17 @@
 **Decided:** 2026-08-16 (CSS's product-stylesheet disposition added; the audience rule itself taken
 2026-08-04 in #60 authored-language set, taken after
 [ADR 0016 rev 11](0016-maintained-tools-for-standard-artifacts.md) settled which authored checks survive at all)
-**Rev:** 8
+**Rev:** 9
 
 ## Revisions
 
+- **rev 9** — 2026-09-13 — `scripts/check-languages.py` declares `svg` an asset a build serves rather
+  than an authored program: the park-wait-times module's icon set
+  (`frontend/src/modules/park_wait_times/icons/`) is original, stylised line-glyph artwork, the same
+  kind of shipped, hand-drawn visual asset `woff2` and `gif` already carry a disposition for here,
+  rather than program text a comment-discipline gate would read. The audience rule, the derivation
+  rule and the authored language set are unchanged, so the `Decided` date does not move (#309
+  wait-times implementation).
 - **rev 8** — 2026-08-18 — the carve-out for what a build serves is stated over *a* build rather
   than a documentation build, and `scripts/check-languages.py` declares `woff2` under it: the
   frontend skeleton bundles the Inter variable font [the display styling

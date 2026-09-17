@@ -43,7 +43,9 @@ Each card reads as three stacked zones under a header, every zone a full-white c
 
 - a **park icon** and the **park name** on a shared centre line, the icon left of the name — the icon
   gives the park an identity a viewer recognises before reading the word (see *The park icon set*);
-- the park's **operating hours** for the day, right-aligned on the same line.
+- the park's **operating hours** for the day, right-aligned on the same line. Where the hours cannot
+  be read, the line is simply absent — no placeholder, and the rest of the card is unaffected
+  (SRS067<!-- The park-wait-times module confines a failure to the part of its own response the failure touches -->).
 
 The park name is the card's title and the most prominent element on it; the hours are its quiet peer.
 The header sits above a dim divider — the label-over-rule idiom the whole display shares (the clock's
@@ -52,16 +54,21 @@ line).
 
 ### Leaderboard — the three longest waits, held
 
-The three longest current waits in the park, persistent: each a ride **name** on the left and its
-**wait** on the right. This is the reading a viewer most wants, so it never leaves the screen — it is
-usable the instant they look, not on the next rotation.
+The three longest current **numeric** waits in the park, persistent: each a ride **name** on the left
+and its **wait** on the right. A ride that is not operating carries no minute figure to rank by, so it
+does not hold a leaderboard place — it still reads, in the rotation below. This is the reading a viewer
+most wants, so it never leaves the screen — it is usable the instant they look, not on the next
+rotation.
 
 ### More waits — the rotation
 
-Beneath a *More waits* label and its divider, the rest of the park's rides tour through **two at a
+Beneath a plain divider (the label dropped to save vertical space; owner ruling, #309), the rest of
+the park's rides tour through **two at a
 time**, advancing on a configured interval (the same on-an-interval idiom as the weather module's
 series toggle). Everything the leaderboard does not hold still shows, eventually — so the module is
-both a glance ("how bad is it right now") and, given a few seconds, a full reading of the park.
+both a glance ("how bad is it right now") and, given a few seconds, a full reading of the park. Each
+card's tour runs on its own timer, independent of every other card's — one park's rotation is never
+held back by, or synchronised to, another's.
 
 ### Footer — the rotation counter
 
@@ -75,20 +82,25 @@ what make it read as chrome, not content.
 
 The wait on every row — leaderboard or rotation — answers one question: *how long until you can ride
 this?* Its answer is either a **wait in minutes** or a **not-operating state** — `Down` (a temporary
-stoppage) or `Closed` (outside the ride's hours, or the whole park's). A state is not a different kind
-of thing from a number here: a ride you cannot board is an effectively infinite wait, so it belongs
-in the same slot. A number reads as a figure; a state reads as an uppercase-tracked word, so the two
-are never mistaken for one another while sharing the column. A park closed for the evening is not a
-special card — every one of its rides simply reports `Closed`, which the card draws as it draws any
-other data (Animal Kingdom, in the reference render).
+stoppage), `Closed` (outside the ride's hours, or the whole park's), or `Refurb` (a longer closure). A
+state is not a different kind of thing from a number here: a ride you cannot board is an effectively
+infinite wait, so it belongs in the same slot. A number reads as a figure; a state reads as an
+uppercase-tracked word, so the two are never mistaken for one another while sharing the column. A park
+with no ride reporting a length of time is not read row by row at all — see *Park closed* under
+*States*.
 
 ## The grid — constant card, configured shape
 
-The card is **identical at every park count**; the grid only arranges the cards. The number of
-**columns and rows is configuration** (`nCol` × `nRows`) — six parks as 3 × 2, or 2 × 3, or 6 × 1 —
-so an operator lays the module out for the region it is placed in. Park and ride names are drawn on a
-**single line and never wrap**; a card is sized to hold its content rather than the content reflowed
-to fit a card.
+The card is **identical at every park count** and a **fixed width**: the widest a park's own header
+(icon, name, hours) draws across the configured roster, and no wider — a ride name does not set it,
+however long. The grid only arranges the cards; the number of **columns and rows is configuration**
+(`nCol` × `nRows`) — six parks as 3 × 2, or 2 × 3, or 6 × 1 — so an operator lays the module out for
+the region it is placed in.
+
+A park name is drawn on a single line and never wraps. A ride name is too, but where the fixed card
+leaves it no room, it scrolls to reveal itself rather than wrapping, truncating, or widening the card
+— paused, scrolled left to the end, paused, reset, on loop (a Spotify-style marquee); a name that
+already fits is left static.
 
 ## Type and spacing
 
@@ -99,31 +111,35 @@ monitor (the contract's calibrated bounds).
 
 | Element | Step |
 |---|---|
-| park name | `annotation` (uppercase, tracked) |
-| park hours | `body` |
-| leaderboard ride name, leaderboard wait | `body` |
-| *More waits* label | `section-header` (uppercase, tracked) |
-| rotation ride name, rotation wait | `body` |
-| a `Down` / `Closed` state word | `caption` (uppercase, tracked) |
+| park name | `body` (uppercase, tracked) |
+| park hours | `section-header` |
+| leaderboard ride name, leaderboard wait | `section-header` |
+| rotation ride name, rotation wait | `section-header` |
+| a `Down` / `Closed` / `Refurb` state word | `caption` (uppercase, tracked) |
+| closed-park icon | `annotation` |
+| closed-park `Closed` label | `body` (uppercase, tracked) |
 
 The park name is the card's one prominent step so the identity leads; the wait figure sits at the
 **same step as its ride name**, weighted (bold) and `tabular-nums` rather than enlarged, so the number
 scans without dominating the name. All figures are `tabular-nums`, so a wait changing under the
-display never shifts the layout and the right-hand column stays aligned down a card.
+display never shifts the layout and the right-hand column stays aligned down a card. Legibility is not
+traded for width here: the marquee is what a long ride name gives up its width for
+(owner ruling, #309), not the type scale — the header, driven to the same steps by the owner's
+original one-size step-down, is what fixes the card's own width instead.
 
 Within a card, the header is set from the leaderboard by `md`; leaderboard rows and rotation rows from
-each other by `sm`; a *More waits* label from its rows by `md`; the footer bar from the rotation by
+each other by `sm`; the More Waits divider from its rows by `md`; the footer bar from the rotation by
 `md`. Cards are set apart in the grid by `lg`.
 
 ## Grouping, and coherence with the rest of the display
 
 Hierarchy is carried by **size, weight, and position only — never by dimming or colour** (the
-contract's emission rule). Every reading — park name, hours, ride names, waits, the *More waits*
-label — is drawn at `--emission-content`; the only dim marks are the header and *More waits* dividers
-and the card outline, all `--emission-stroke` below the emission ceiling, and the footer bar's unfilled
-segments. This is the display's coherence device: the same uppercase-tracked label idiom (this
-module's *More waits*, the weather module's group labels, the clock's weekday), the same dim-stroke
-divider weight everywhere, the same type scale, and `tabular-nums` throughout.
+contract's emission rule). Every reading — park name, hours, ride names, waits — is drawn at
+`--emission-content`; the only dim marks are the header and More Waits dividers and the card outline,
+all `--emission-stroke` below the emission ceiling, and the footer bar's unfilled segments. This is
+the display's coherence device: the same uppercase-tracked label idiom (the weather module's group
+labels, the clock's weekday), the same dim-stroke divider weight everywhere, the same type scale, and
+`tabular-nums` throughout.
 
 ## States
 
@@ -133,7 +149,13 @@ never a blank region (the styling contract; the
 
 - **Park open, ride operating** — the composition above.
 - **Ride not operating** — `Down` or `Closed` in the wait slot, drawn as data, no special card.
-- **Park closed** — every ride reports `Closed`; the card holds its place in the grid.
+- **Ride in refurbishment** — `Refurb` in the wait slot, a third state distinct from `Down` and `Closed`, drawn as data, no special card.
+- **Park closed** — no ride reports a length of time, drawn from the ride data alone, never the
+  park's hours; the card's icon and `Closed` replace its leaderboard and tour, in the same box, so
+  the grid stays aligned.
+- **Park unavailable** — that park's own reading could not be produced while the rest of the grid
+  answered; its card holds its place, showing a plain-language reason in place of its rides, and
+  every other park reads normally.
 - **Loading** — a plain line (*Reading wait times…*) at the `body` step. A module asked for but
   unanswered is neither a reading nor a failure.
 - **Unavailable** — the failure's own plain-language message at the `body` step, in the module's own
@@ -169,8 +191,9 @@ module does.
 | a card per park, every configured park held on screen at once | SRS057<!-- The park-wait-times module holds every configured park on screen at once --> |
 | a persistent three-ride leaderboard of the longest current waits | SRS058<!-- The park-wait-times module keeps each park's longest current waits in view --> |
 | the remaining rides rotate two at a time, on a configured interval | SRS059<!-- The park-wait-times module tours the remaining rides on an interval its configuration sets --> |
-| the wait slot carries a wait in minutes, or a `Down` / `Closed` state | SRS056<!-- The park-wait-times module puts each park's ride waits across the boundary --> / SRS061<!-- The park-wait-times module draws a wait as the time or the not-operating state it is handed --> |
+| the wait slot carries a wait in minutes, or a `Down` / `Closed` / `Refurb` state | SRS056<!-- The park-wait-times module puts each park's ride waits across the boundary --> / SRS061<!-- The park-wait-times module draws a wait as the time or the not-operating state it is handed --> |
 | the grid shape (`nCol` × `nRows`) is configuration | SRS060<!-- The park-wait-times module arranges its parks in a grid its configuration shapes --> |
+| the hours line is absent, with no placeholder, when a park's hours cannot be read | SRS067<!-- The park-wait-times module confines a failure to the part of its own response the failure touches --> |
 | full-white content, dim strokes only, hierarchy by size and weight | SRS032<!-- Readable text is carried at full emission --> / SRS030<!-- Only content is rendered above the emission ceiling --> |
 | every type step at or above the type-size floor | SRS033<!-- Text holds a minimum size against the display, at every resolution --> |
 
@@ -184,4 +207,7 @@ Confirmed against a photograph of the deployed display, not a monitor (the desig
 - whether the footer bar's **filled** segments read best at `--emission-content` or a step below the
   ceiling, since the bar is chrome rather than a datum;
 - the type steps against the type-size floor at the deployed viewing distance, once the grid's
-  `nCol` × `nRows` for the placed region is set (a denser grid draws smaller cards).
+  `nCol` × `nRows` for the placed region is set (a denser grid draws smaller cards);
+- the marquee's scroll speed and pause timing read comfortably at the deployed viewing distance, and
+  that the deployment's own Pi Zero-class host holds the frame rate the compositor-only animation
+  assumes (SRS021<!-- Frontend runs on a Pi Zero-class browser host -->).

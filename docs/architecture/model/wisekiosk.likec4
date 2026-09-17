@@ -101,6 +101,8 @@ specification {
   tag SRS063
   tag SRS064
   tag SRS065
+  tag SRS066
+  tag SRS067
 }
 
 model {
@@ -221,6 +223,8 @@ model {
       waitTimesShaping = component 'Wait-times shaping' {
         #SRS055
         #SRS056
+        #SRS066
+        #SRS067
         description '''
           The park-wait-times module's half of this container. Serves the route
           the boundary schema declares for it: reads the park out of the request

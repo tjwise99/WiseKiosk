@@ -45,6 +45,7 @@
             "anyOf": [
               { "$ref": "#/$defs/clockOptions" },
               { "$ref": "#/$defs/weatherOptions" },
+              { "$ref": "#/$defs/parkWaitTimesOptions" },
               { "type": "object" }
             ]
           }
@@ -64,6 +65,16 @@
           "then": {
             "required": ["options"],
             "properties": { "options": { "$ref": "#/$defs/weatherOptions" } }
+          },
+          "else": {
+            "if": {
+              "required": ["module"],
+              "properties": { "module": { "const": "park_wait_times" } }
+            },
+            "then": {
+              "required": ["options"],
+              "properties": { "options": { "$ref": "#/$defs/parkWaitTimesOptions" } }
+            }
           }
         }
       }
@@ -133,6 +144,54 @@
           "type": "number",
           "minimum": 2,
           "default": 10
+        }
+      }
+    },
+    "parkWaitTimesOptions": {
+      "title": "Park wait times options",
+      "description": "The park-wait-times module's section: what a placement of the module asks of it. Its two required keys carry no default — which parks are shown and how their cards are laid out are the operator's to choose, and there is no shape or roster that would do in the absence of ones the placement names. The remaining key is omissible, and a placement configured without it takes the default below.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["parks", "columns", "rows"],
+      "properties": {
+        "parks": {
+          "title": "Parks",
+          "description": "The parks this placement shows, drawn from the module's supported set and rejected by the backend where they are not (SRS055). Every configured park holds its place in the grid at once (SRS057).",
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string" }
+        },
+        "columns": {
+          "title": "Columns",
+          "description": "How many columns the park cards are laid out into (SRS060).",
+          "type": "integer",
+          "minimum": 1
+        },
+        "rows": {
+          "title": "Rows",
+          "description": "How many rows the park cards are laid out into (SRS060).",
+          "type": "integer",
+          "minimum": 1
+        },
+        "rotation_interval_seconds": {
+          "title": "Rotation interval seconds",
+          "description": "Seconds each pair of \"more waits\" rides is shown before the rotation advances to the next pair (SRS059). Floored at two seconds, below which the rotation would strobe.",
+          "type": "number",
+          "minimum": 2,
+          "default": 8
+        },
+        "use_default_blacklist": {
+          "title": "Use default blacklist",
+          "description": "Whether the module's own prebuilt list of non-ride entities is applied besides this placement's own blacklist.",
+          "type": "boolean",
+          "default": true
+        },
+        "blacklist": {
+          "title": "Blacklist",
+          "description": "Ride names this placement excludes besides the prebuilt list, each matched against a ride's name trimmed, case-folded and folded for the curly quotes and apostrophes a plainly-typed name would otherwise miss, then compared whole rather than as a substring.",
+          "type": "array",
+          "items": { "type": "string" },
+          "default": []
         }
       }
     }

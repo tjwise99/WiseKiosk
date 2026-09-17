@@ -1,0 +1,39 @@
+active: true
+derived: false
+header: |
+  The park-wait-times module confines a failure to the part of its own response the failure touches
+level: 70
+links:
+- SYS011: a3bqZRtHE8ujrhIgBKFUtcxWGSCLRHsqU6GgDgwwR38=
+normative: true
+rationale: |
+  SYS001<!-- Failure is legible and proportionate --> forbids degrading more of the display than a
+  failure requires; this reads the same ethos one grain inside a single module's own response, a grain
+  the framework does not otherwise reach.
+  SRS001<!-- A failed module shows why, and only that module --> comes closest and stops at
+  module-to-module, with nothing to say about the parts one module's own payload is built from. It sits
+  here rather than as a framework item because no other module yet has a response built from parts that
+  can each fail apart from the rest; a module that gains one states and verifies its own instances the
+  same way.
+
+  Today this module has two such instances: a park among the parks a request names, and a field within
+  one park's own answer (its hours against its rides, two separate upstream calls). Neither is named
+  here - each is its own verifying test - because the obligation is the confinement, not the roster of
+  parts it currently applies to; a third instance would be a new test under this item, not a rewrite of
+  it.
+
+  What draws in a confined part's place is a different item's: this states only that a failure stays
+  confined to what it touched.
+ref: ''
+reviewed: vnY31OzpoUH2YyrtUjbm0zqHTc03xS2Xf-jITCh5mKg=
+status: accepted
+text: |
+  Where the park-wait-times module's own response has a part that can fail apart from the rest, the
+  module shall confine that part's failure to it, carrying every other part unaffected.
+verification-justification: |
+  Each instance is its own verifying test, read against a failure staged to touch one part while the
+  rest of the response is staged to answer: the touched part alone carries why, and every other part
+  carries its answer unchanged.
+  What no single instance settles is a failure straddling two parts at once, which no capture stages,
+  nor how a touched part's absence is drawn on a rendered page, which is a different item's.
+verification-method: test

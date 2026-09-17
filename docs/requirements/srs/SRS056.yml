@@ -10,10 +10,9 @@ rationale: |
   A viewer standing in front of the display asks, of each park, three things at once: which park this is,
   whether it is open, and for each ride how long the queue is. So the payload carries the park's name,
   its operating hours for the day, and for every one of its rides the ride's name with its current wait.
-  The wait is carried as a span of time or as a not-operating fact in the one slot, because a ride a
-  viewer cannot board is an effectively infinite wait and answers the same question a number does - how
-  long until you can ride this - so a payload splitting the two into different fields would make the
-  component ask twice what a viewer asks once.
+  The wait is carried as a span of time or as a not-operating fact, because a ride a viewer cannot board
+  is an effectively infinite wait and answers the same question a number does - how long until you can
+  ride this.
   There is no forward half. The weather payload carries an outlook because a viewer reads the sky now and
   the day ahead as one act; a wait time is a now-fact acted on the instant it is read, a park does not
   publish the wait it expects an hour hence, and so nothing here reaches past the present
@@ -33,7 +32,7 @@ rationale: |
   on a captured response with no browser and no network, and a module handed every ride a park has can
   still draw half of them.
 ref: ''
-reviewed: o9HQHRXk_09LrNVpCl--blJ0EUApKF0m463cBZ02r-M=
+reviewed: bfxez-GLeyd77cKsiDX4Ra8cTg8r-MCKZFFUb8YBxVg=
 status: accepted
 text: |
   The park-wait-times module shall put across the boundary, for each park a request names, the park's

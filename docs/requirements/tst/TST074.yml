@@ -1,18 +1,24 @@
-active: false
+active: true
 derived: false
 header: |
-  Pending: every configured park is drawn at once
+  Every configured park is drawn at once
 level: 96
 links:
 - SRS057: _79t_YFQn8xxhkQb2893ovAo9yWTKsDGoG4OcYxPF14=
 normative: true
 ref: ''
-reviewed: N0t4fafDDUoiAUL3vjErAuvSD81Hg3qLKqeWMAraazE=
-status: proposed
+references:
+- keyword: 'test(''TST074: draws every configured park at once, none absent awaiting
+    a rotation between parks'', async ({'
+  path: frontend/src/modules/park_wait_times/park_wait_times.spec.ts
+  sha: 6b635850371a7c13f9c22587354fd9712f8809441521b4d5080fe987b529b976
+  type: file
+reviewed: zdnHapKgZODzksuIU_hE8CjMP4lXlScp10kaTnhzU_A=
+status: accepted
 text: |
-  Pending: render test that, under a configuration naming several parks, every named park is drawn at
-  the same sampled moment, none absent awaiting a rotation between parks. Lands with the wait-times
-  implementation (#309); activated and given a references entry then.
+  Render test that, under a configuration naming four parks, every named park's card is present on
+  the first paint — read without advancing the clock, so a park rotating onto screen only later would
+  still be caught rather than passing a count taken after one.
 verification-justification: |
   Settles that no park waits its turn off screen. Leaves unproven that every named park fits legibly at a
   given deployment's region size, which is a judgement about a real display in a real room.
