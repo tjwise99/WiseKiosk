@@ -158,14 +158,14 @@ check-go: _boundary-go-gen
     go -C backend test -race ./internal/...
 
 [group('checks')]
-[doc('Every module fuzz target (weather: FuzzShape, FuzzDecodeRequest, FuzzValidate; park_wait_times: FuzzShapeRides, FuzzDecodeRequest, FuzzValidateParks) runs fuzzed for 10s, asserting no panic or hang on crafted bytes; needs `just boundary-install`')]
+[doc('Every module fuzz target (weather: FuzzShape, FuzzDecodeRequest, FuzzValidate; park_wait_times: FuzzShapeRides, FuzzDecodeRequest, FuzzResolveEntityID) runs fuzzed for 10s, asserting no panic or hang on crafted bytes; needs `just boundary-install`')]
 check-fuzz: _boundary-go-gen
     go -C backend test ./internal/modules/weather/ -run '^$' -fuzz '^FuzzShape$' -fuzztime 10s
     go -C backend test ./internal/modules/weather/ -run '^$' -fuzz '^FuzzDecodeRequest$' -fuzztime 10s
     go -C backend test ./internal/modules/weather/ -run '^$' -fuzz '^FuzzValidate$' -fuzztime 10s
     go -C backend test ./internal/modules/park_wait_times/ -run '^$' -fuzz '^FuzzShapeRides$' -fuzztime 10s
     go -C backend test ./internal/modules/park_wait_times/ -run '^$' -fuzz '^FuzzDecodeRequest$' -fuzztime 10s
-    go -C backend test ./internal/modules/park_wait_times/ -run '^$' -fuzz '^FuzzValidateParks$' -fuzztime 10s
+    go -C backend test ./internal/modules/park_wait_times/ -run '^$' -fuzz '^FuzzResolveEntityID$' -fuzztime 10s
 
 [group('checks')]
 [doc('The backend Go tree is clean under golangci-lint default linter set (errcheck, govet, ineffassign, staticcheck, unused), non-zero exit on any finding')]
