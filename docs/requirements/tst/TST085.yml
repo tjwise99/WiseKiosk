@@ -10,9 +10,9 @@ ref: ''
 references:
 - keyword: func TestAParksOwnFailureDoesNotFailTheWholeRequest(t *testing.T) {
   path: backend/internal/modules/park_wait_times/park_wait_times_test.go
-  sha: fd0dc175dbaa1f9f515272c450f3963e5a191240fb8a71c34ed99dc00d374828
+  sha: bdca42d94a85f760cdd4adab1aa85e7d2a4e5db58ff1c034c8872d463b9af851
   type: file
-reviewed: Ghl23XADdhKIObXtxDQi8k58zsVillx7UKq_VdrUZkI=
+reviewed: dUnuOAmaRG81ggBea7nb-XbnKud-hRYUdaXRDGr9YJc=
 status: accepted
 text: |
   Unit test that serves a request naming two configured parks with one park's own upstream calls

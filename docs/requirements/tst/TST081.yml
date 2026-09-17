@@ -11,14 +11,14 @@ references:
 - keyword: func TestTST081_ThePolicyComesToOnceEveryFiveMinutesForAFailingPark(t *testing.T)
     {
   path: backend/internal/modules/park_wait_times/park_wait_times_test.go
-  sha: fd0dc175dbaa1f9f515272c450f3963e5a191240fb8a71c34ed99dc00d374828
+  sha: bdca42d94a85f760cdd4adab1aa85e7d2a4e5db58ff1c034c8872d463b9af851
   type: file
 - keyword: func TestTST081_IntegrationAFailingParkIsRetriedNoOftenerThanTheNegativeInterval(t
     *testing.T) {
   path: backend/internal/modules/park_wait_times/park_wait_times_test.go
-  sha: fd0dc175dbaa1f9f515272c450f3963e5a191240fb8a71c34ed99dc00d374828
+  sha: bdca42d94a85f760cdd4adab1aa85e7d2a4e5db58ff1c034c8872d463b9af851
   type: file
-reviewed: jyH-iEr4xgo0jbIDsFzDZWdyRru7lvU0QXaa7xZ6dbc=
+reviewed: gcGsM8DLZmakKFaEX5bmLr-4D_sgyDEUQw2tHNJLHKs=
 status: accepted
 text: |
   Unit test over the module's registered policy — the failure interval it declares holds the

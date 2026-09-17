@@ -11,28 +11,28 @@ references:
 - keyword: func TestTST073_ShapingBuildsTheParksRidesFromTheCapturedResponse(t *testing.T)
     {
   path: backend/internal/modules/park_wait_times/park_wait_times_test.go
-  sha: fd0dc175dbaa1f9f515272c450f3963e5a191240fb8a71c34ed99dc00d374828
+  sha: bdca42d94a85f760cdd4adab1aa85e7d2a4e5db58ff1c034c8872d463b9af851
   type: file
 - keyword: func TestTST073_AResponseMissingAValueTheRideNeedsIsNotShaped(t *testing.T)
     {
   path: backend/internal/modules/park_wait_times/park_wait_times_test.go
-  sha: fd0dc175dbaa1f9f515272c450f3963e5a191240fb8a71c34ed99dc00d374828
+  sha: bdca42d94a85f760cdd4adab1aa85e7d2a4e5db58ff1c034c8872d463b9af851
   type: file
 - keyword: func TestTST073_ShapingBuildsTheParksHoursFromTheCapturedResponse(t *testing.T)
     {
   path: backend/internal/modules/park_wait_times/park_wait_times_test.go
-  sha: fd0dc175dbaa1f9f515272c450f3963e5a191240fb8a71c34ed99dc00d374828
+  sha: bdca42d94a85f760cdd4adab1aa85e7d2a4e5db58ff1c034c8872d463b9af851
   type: file
 - keyword: func TestShapeRidesFiltersAnOperatingRowWithNoPostedWait(t *testing.T)
     {
   path: backend/internal/modules/park_wait_times/park_wait_times_test.go
-  sha: fd0dc175dbaa1f9f515272c450f3963e5a191240fb8a71c34ed99dc00d374828
+  sha: bdca42d94a85f760cdd4adab1aa85e7d2a4e5db58ff1c034c8872d463b9af851
   type: file
 - keyword: func TestAParkWithANoWaitLandmarkStaysAvailable(t *testing.T) {
   path: backend/internal/modules/park_wait_times/park_wait_times_test.go
-  sha: fd0dc175dbaa1f9f515272c450f3963e5a191240fb8a71c34ed99dc00d374828
+  sha: bdca42d94a85f760cdd4adab1aa85e7d2a4e5db58ff1c034c8872d463b9af851
   type: file
-reviewed: sAcZY_z2p7bm_wpWqbkh6bmf_ys0uTIznWqRp_5peFg=
+reviewed: SnnoB2jP3V4huLlqbTRbU1oAltBxVEqonaZUCIJ28aU=
 status: accepted
 text: |
   Unit test that shapeRides and shapeHours, run against a captured live-data and schedule response with
