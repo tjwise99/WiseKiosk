@@ -34,36 +34,33 @@ func Config() upstream.Config {
 	}
 }
 
-// supportedPark is one served park: its upstream identity and render name, held offline
-// (SRS055<!-- The park-wait-times module declares the known-good constraint
-// the park it is asked about must satisfy -->).
-type supportedPark struct {
-	entityID string
-	name     string
+// prettyNameEntityIDs is the six parks the module has always shown, offline
+// (#309 build spec decision 3): a config string normalizing to one of these
+// keys resolves to its known upstream entity id. Inverted from the removed
+// `supported` roster, matched the same way the ride blacklist matches a
+// name (normalizeName), then whole-name exact.
+var prettyNameEntityIDs = map[string]string{
+	normalizeName("Magic Kingdom"):        "75ea578a-adc8-4116-a54d-dccb60765ef9",
+	normalizeName("Epcot"):                "47f90d2c-e191-4239-a466-5892ef59a88b",
+	normalizeName("Hollywood Studios"):    "288747d1-8b4f-4a64-867e-ea7c9b27bad8",
+	normalizeName("Animal Kingdom"):       "1c84a229-8862-4648-9c71-378ddd2c7693",
+	normalizeName("Universal Studios"):    "eb3f4560-2383-4a36-9152-6b3e5ed6bc57",
+	normalizeName("Islands of Adventure"): "267615cc-8943-4c2a-ae2c-5da728ca591f",
 }
 
-// supported is the module's whole supported set: a request naming a slug
-// outside it is refused before anything goes upstream
-// (SRS055<!-- The park-wait-times module declares the known-good constraint
-// the park it is asked about must satisfy -->).
-var supported = map[string]supportedPark{
-	"magic-kingdom":        {entityID: "75ea578a-adc8-4116-a54d-dccb60765ef9", name: "Magic Kingdom"},
-	"epcot":                {entityID: "47f90d2c-e191-4239-a466-5892ef59a88b", name: "Epcot"},
-	"hollywood-studios":    {entityID: "288747d1-8b4f-4a64-867e-ea7c9b27bad8", name: "Hollywood Studios"},
-	"animal-kingdom":       {entityID: "1c84a229-8862-4648-9c71-378ddd2c7693", name: "Animal Kingdom"},
-	"universal-studios":    {entityID: "eb3f4560-2383-4a36-9152-6b3e5ed6bc57", name: "Universal Studios"},
-	"islands-of-adventure": {entityID: "267615cc-8943-4c2a-ae2c-5da728ca591f", name: "Islands of Adventure"},
-}
-
-// validate judges one park slug against the constraint
-// (SRS055<!-- The park-wait-times module declares the known-good constraint
-// the park it is asked about must satisfy -->). The error text names the rejected slug.
-func validate(slug string) (supportedPark, error) {
-	park, ok := supported[slug]
-	if !ok {
-		return supportedPark{}, fmt.Errorf("%q is not a park this module supports", slug)
+// resolveEntityID maps a config-named park to the identifier its upstream
+// requests carry (#309 build spec decisions 3-4): a normalized match
+// against prettyNameEntityIDs resolves to its known entity id; anything
+// else — an unrecognized name, or an entity id already — passes through to
+// the upstream exactly as named, unexamined
+// (SRS054<!-- The park-wait-times module reports on the parks its
+// configuration names -->). No tier rejects the request; an unresolved
+// identifier stands or falls on the upstream's own answer.
+func resolveEntityID(name string) string {
+	if id, ok := prettyNameEntityIDs[normalizeName(name)]; ok {
+		return id
 	}
-	return park, nil
+	return name
 }
 
 // The upstream requests — two per park, no credential
@@ -117,6 +114,28 @@ type standbyBlock struct {
 // the list rather than failing the whole park's shaping.
 func shapeRides(body []byte) ([]boundary.ParkWaitTimesRide, error) {
 	return shapeRidesExcluding(body, noExclusion)
+}
+
+// shapeParkName reads the same live-data response for the park's own
+// identity row (entityType PARK) and returns its name — a resolved park's
+// display name, not the config string that named it (#309 build spec
+// decision 5). An error where the response carries no such row, or the row
+// carries no name, is this park's own malformed-payload failure, the same
+// as a response shapeRides cannot read.
+func shapeParkName(body []byte) (string, error) {
+	var read liveResponse
+	if err := json.Unmarshal(body, &read); err != nil {
+		return "", fmt.Errorf("reading the source's response: %w", err)
+	}
+	for _, row := range read.LiveData {
+		if row.EntityType != nil && *row.EntityType == "PARK" {
+			if row.Name == nil || *row.Name == "" {
+				return "", errors.New("the park's own row carries no name")
+			}
+			return *row.Name, nil
+		}
+	}
+	return "", errors.New("the response carries no park-identity row")
 }
 
 // exclusion reports whether one live-data row is dropped before it is
@@ -197,8 +216,10 @@ var defaultBlacklistIDs = []string{
 	"24712410-a3a8-4ee0-b2f7-df889424ae76", // Sinners (Universal Studios)
 }
 
-// normalizeRideName folds a ride name to its comparison key (ADR 0008 rev 6).
-func normalizeRideName(name string) string {
+// normalizeName folds a name — a ride's, or a config-named park's — to its
+// comparison key (ADR 0008 rev 6; #309 build spec decision 3, the same
+// convention reused for the pretty-name map).
+func normalizeName(name string) string {
 	name = strings.ToLower(strings.TrimSpace(name))
 	quoteFold := strings.NewReplacer(
 		"‘", "'", "’", "'",
@@ -218,13 +239,13 @@ func newExclusion(useDefaultBlacklist bool, userBlacklist []string) exclusion {
 	}
 	names := make(map[string]bool, len(userBlacklist))
 	for _, name := range userBlacklist {
-		names[normalizeRideName(name)] = true
+		names[normalizeName(name)] = true
 	}
 	return func(row liveRow) bool {
 		if row.Id != nil && ids[*row.Id] {
 			return true
 		}
-		return row.Name != nil && names[normalizeRideName(*row.Name)]
+		return row.Name != nil && names[normalizeName(*row.Name)]
 	}
 }
 

@@ -63,14 +63,8 @@ func (ParkWaitTimesRoute) PostApiParkWaitTimes(w http.ResponseWriter, r *http.Re
 		router.Reject(w, router.InvalidParameters, err.Error())
 		return
 	}
-	named, err := validateParks(request.Parks)
-	if err != nil {
-		router.Reject(w, router.InvalidParameters, err.Error())
-		return
-	}
-
 	excluded := newExclusion(blacklistToggle(request), blacklistNames(request))
-	fetched := fetchParksConcurrently(r.Context(), request.Parks, named, excluded)
+	fetched := fetchParksConcurrently(r.Context(), request.Parks, excluded)
 
 	payload := boundary.ParkWaitTimesPayload{Parks: make([]boundary.ParkWaitTimesPark, 0, len(fetched))}
 	for _, result := range fetched {
@@ -99,14 +93,14 @@ type fetchedPark struct {
 // fetchParksConcurrently runs fetchPark per park concurrently, returns
 // outcomes in request order; each goroutine writes its own pre-sized slice
 // index (race-free, no mutex).
-func fetchParksConcurrently(ctx context.Context, slugs []string, named map[string]supportedPark, excluded exclusion) []fetchedPark {
+func fetchParksConcurrently(ctx context.Context, slugs []string, excluded exclusion) []fetchedPark {
 	results := make([]fetchedPark, len(slugs))
 	var wg sync.WaitGroup
 	for i, slug := range slugs {
 		wg.Add(1)
 		go func(i int, slug string) {
 			defer wg.Done()
-			park, err := fetchParkExcluding(ctx, slug, named[slug], excluded)
+			park, err := fetchParkExcluding(ctx, slug, resolveEntityID(slug), excluded)
 			results[i] = fetchedPark{park: park, err: err}
 		}(i, slug)
 	}
@@ -119,26 +113,36 @@ func fetchParksConcurrently(ctx context.Context, slugs []string, named map[strin
 // SRS067<!-- The park-wait-times module confines a failure to the part of
 // its own response the failure touches --> for why hours failing costs
 // this park only its hours, not its rides.
-func fetchPark(ctx context.Context, slug string, info supportedPark) (boundary.ParkWaitTimesPark, error) {
-	return fetchParkExcluding(ctx, slug, info, noExclusion)
+func fetchPark(ctx context.Context, slug, entityID string) (boundary.ParkWaitTimesPark, error) {
+	return fetchParkExcluding(ctx, slug, entityID, noExclusion)
 }
 
-// fetchParkExcluding is fetchPark with a caller-supplied exclusion.
-func fetchParkExcluding(ctx context.Context, slug string, info supportedPark, excluded exclusion) (boundary.ParkWaitTimesPark, error) {
-	liveResult, err := served.Fetch(ctx, slug+":live", liveURL(info.entityID))
+// fetchParkExcluding is fetchPark with a caller-supplied exclusion. A 404
+// against entityID is this park's own unsupported outcome — permanent,
+// distinct from every other failure, which stays transient/retryable (#309
+// build spec decisions 1-2).
+func fetchParkExcluding(ctx context.Context, slug, entityID string, excluded exclusion) (boundary.ParkWaitTimesPark, error) {
+	liveResult, err := served.Fetch(ctx, slug+":live", liveURL(entityID))
 	if err != nil {
 		return boundary.ParkWaitTimesPark{}, err
 	}
+	if liveResult.Kind == upstream.UpstreamStatus && liveResult.Status == http.StatusNotFound {
+		return unavailable(slug, errUnsupportedPark.Error()), nil
+	}
 	if liveResult.Kind != upstream.Success {
-		return unavailable(slug, info.name, failureMessage(liveResult)), nil
+		return unavailable(slug, failureMessage(liveResult)), nil
 	}
 	rides, err := shapeRidesExcluding(liveResult.Body, excluded)
 	if err != nil {
-		return unavailable(slug, info.name, errMalformedPayload.Error()), nil
+		return unavailable(slug, errMalformedPayload.Error()), nil
+	}
+	name, err := shapeParkName(liveResult.Body)
+	if err != nil {
+		return unavailable(slug, errMalformedPayload.Error()), nil
 	}
 
 	var hours *boundary.ParkWaitTimesHours
-	scheduleResult, err := served.Fetch(ctx, slug+":schedule", scheduleURL(info.entityID))
+	scheduleResult, err := served.Fetch(ctx, slug+":schedule", scheduleURL(entityID))
 	if err != nil {
 		return boundary.ParkWaitTimesPark{}, err
 	}
@@ -150,7 +154,7 @@ func fetchParkExcluding(ctx context.Context, slug string, info supportedPark, ex
 
 	return boundary.ParkWaitTimesPark{
 		Id:        slug,
-		Name:      info.name,
+		Name:      name,
 		Available: true,
 		Hours:     hours,
 		Rides:     &rides,
@@ -158,14 +162,21 @@ func fetchParkExcluding(ctx context.Context, slug string, info supportedPark, ex
 }
 
 // unavailable is a park's payload entry where its own upstream calls could
-// not be read.
-func unavailable(slug, name, message string) boundary.ParkWaitTimesPark {
-	return boundary.ParkWaitTimesPark{Id: slug, Name: name, Available: false, Message: &message}
+// not be read. There is no upstream name to carry here, so Name falls back
+// to slug, the config string that named this park (#309 build spec
+// decision 5).
+func unavailable(slug, message string) boundary.ParkWaitTimesPark {
+	return boundary.ParkWaitTimesPark{Id: slug, Name: slug, Available: false, Message: &message}
 }
 
 // errMalformedPayload is what a readable-but-unshapeable response renders
 // as.
 var errMalformedPayload = errors.New("the source's response could not be read as this module's payload")
+
+// errUnsupportedPark is a resolved-or-passed-through identifier the source
+// itself does not recognise (a 404) — this park's own permanent failure,
+// distinct from a transient one (#309 build spec decisions 1-2).
+var errUnsupportedPark = errors.New("the source has no such park")
 
 // failureMessage is the plain-language reason per pipeline outcome. Status
 // mapping: router.go.
@@ -225,24 +236,6 @@ func blacklistNames(request boundary.ParkWaitTimesRequest) []string {
 		return nil
 	}
 	return *request.Blacklist
-}
-
-// validateParks judges every park a request names against the constraint
-// this module declares (SRS055<!-- The park-wait-times module declares the
-// known-good constraint the park it is asked about must satisfy -->),
-// admitted or refused as a whole: a request naming one park outside the
-// supported set is rejected in full, nothing sent upstream for any of the
-// parks it named.
-func validateParks(slugs []string) (map[string]supportedPark, error) {
-	named := make(map[string]supportedPark, len(slugs))
-	for _, slug := range slugs {
-		park, err := validate(slug)
-		if err != nil {
-			return nil, err
-		}
-		named[slug] = park
-	}
-	return named, nil
 }
 
 func writeJSON(w http.ResponseWriter, status int, value any) {
