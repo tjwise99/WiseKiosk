@@ -85,8 +85,6 @@ func scheduleURL(entityID string) string {
 	return entityBaseURL + entityID + "/schedule"
 }
 
-// liveResponse is the source's /live response, read no further than this
-// package.
 type liveResponse struct {
 	LiveData []liveRow `json:"liveData"`
 }
@@ -125,7 +123,6 @@ func shapeRides(body []byte) ([]boundary.ParkWaitTimesRide, error) {
 // read as a ride.
 type exclusion func(row liveRow) bool
 
-// noExclusion is shapeRides's own exclusion: every row passes.
 func noExclusion(liveRow) bool { return false }
 
 // defaultBlacklistIDs are entity ids the source tags ATTRACTION but the display omits by default
@@ -207,7 +204,6 @@ func normalizeRideName(name string) string {
 	return quoteFold.Replace(name)
 }
 
-// quoteFold maps curly quotes/apostrophes to ASCII.
 var quoteFold = strings.NewReplacer(
 	"‘", "'", "’", "'",
 	"“", `"`, "”", `"`,
@@ -303,8 +299,6 @@ func shapeWait(status string, queue *queueBlock) (boundary.ParkWaitTimesState, *
 	}
 }
 
-// scheduleResponse is the source's /schedule response, read no further than
-// this package.
 type scheduleResponse struct {
 	Schedule []scheduleEntry `json:"schedule"`
 }

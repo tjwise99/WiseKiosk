@@ -245,7 +245,6 @@ func validateParks(slugs []string) (map[string]supportedPark, error) {
 	return named, nil
 }
 
-// writeJSON writes value as the body under status.
 func writeJSON(w http.ResponseWriter, status int, value any) {
 	encoded, err := json.Marshal(value)
 	if err != nil {
