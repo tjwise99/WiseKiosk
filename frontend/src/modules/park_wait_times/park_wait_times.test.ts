@@ -12,6 +12,7 @@ import {
   ranked,
   remainingRides,
   tourPadding,
+  uniformCardWidth,
 } from './park_wait_times';
 
 /** A ride fixture: a number sets an Operating wait in minutes; a state word sets that state with
@@ -147,5 +148,31 @@ describe('iconFor', () => {
 
   it('resolves nothing for an id the module has no glyph for — the name-only fallback', () => {
     expect(iconFor('00000000-0000-4000-8000-000000000000')).toBeUndefined();
+  });
+});
+
+describe('uniformCardWidth', () => {
+  it('is zero for an empty roster — no card to size', () => {
+    expect(uniformCardWidth([])).toBe(0);
+  });
+
+  it('sizes a card to its identity, the gap and hours, and the card chrome, rounded up', () => {
+    // 100 + (8 + 40) + 20.4 = 168.4 → 169
+    expect(uniformCardWidth([{ identityWidth: 100, hoursWidth: 40, gap: 8, chrome: 20.4 }])).toBe(169);
+  });
+
+  it('drops the gap and hours for a park drawing no hours', () => {
+    // 100 + 20, the gap ignored where there are no hours
+    expect(uniformCardWidth([{ identityWidth: 100, hoursWidth: null, gap: 8, chrome: 20 }])).toBe(120);
+  });
+
+  it('takes the widest card across the roster, not the first or last', () => {
+    expect(
+      uniformCardWidth([
+        { identityWidth: 100, hoursWidth: null, gap: 8, chrome: 20 }, // 120
+        { identityWidth: 130, hoursWidth: 50, gap: 8, chrome: 20 }, // 208
+        { identityWidth: 90, hoursWidth: 30, gap: 8, chrome: 20 }, // 148
+      ]),
+    ).toBe(208);
   });
 });

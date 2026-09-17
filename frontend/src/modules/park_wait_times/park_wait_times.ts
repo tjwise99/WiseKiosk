@@ -72,6 +72,31 @@ export function hoursText(hours: { open: string; close: string }): string {
   return `${clockTime(hours.open)}–${clockTime(hours.close)}`;
 }
 
+/** One card's header measured off the rendered page, in px: its identity block, its hours (null
+    where the park draws none), the gap between them, and the card's own horizontal padding and
+    border. The reading is the browser's; the width arithmetic below is pure. */
+export interface CardHeaderMeasure {
+  identityWidth: number;
+  hoursWidth: number | null;
+  gap: number;
+  chrome: number;
+}
+
+/** One card's own border-box width from its measured header: the identity, plus the gap and hours
+    where it has them, plus the card's padding and border. */
+function cardWidth({ identityWidth, hoursWidth, gap, chrome }: CardHeaderMeasure): number {
+  return identityWidth + (hoursWidth === null ? 0 : gap + hoursWidth) + chrome;
+}
+
+/** The one width every card and grid column takes: the widest card across the roster, rounded up so
+    a fractional measurement never clips the header it was taken from (SRS058<!-- The park-wait-times
+    module keeps each park's longest current waits in view -->). Zero for an empty roster — there is
+    then no card to size. */
+export function uniformCardWidth(measures: CardHeaderMeasure[]): number {
+  if (measures.length === 0) return 0;
+  return Math.ceil(Math.max(...measures.map(cardWidth)));
+}
+
 /** This module's icon set — the six parks it ships an icon for, keyed by each park's own upstream
     entity id — the identifier the backend resolves a park to and carries as `id` across the boundary
     (boundary/openapi.yaml's ParkWaitTimesPark.id) — so a known park chosen by its pretty name or by

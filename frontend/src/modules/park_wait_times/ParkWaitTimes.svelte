@@ -6,7 +6,7 @@
   import type { CommonProps } from '../../lib/modules';
   import type { Payload } from '../../lib/payload';
 
-  import { iconFor } from './park_wait_times';
+  import { iconFor, uniformCardWidth } from './park_wait_times';
   import ParkCard from './ParkCard.svelte';
 
   /**
@@ -50,28 +50,27 @@
     void pwtPayload;
     const grid = gridEl;
     if (grid === undefined) return;
-    const cards = Array.from(grid.querySelectorAll<HTMLElement>('[data-pwt-card]'));
-    if (cards.length === 0) return;
-    const widest = Math.max(
-      ...cards.map((card) => {
-        const identity = card.querySelector<HTMLElement>('.identity');
-        const header = card.querySelector<HTMLElement>('[data-pwt-header]');
-        const hours = card.querySelector<HTMLElement>('[data-pwt-hours]');
-        if (identity === null || header === null) return 0;
-        const cardStyle = getComputedStyle(card);
-        const chrome =
+    // The reading is the browser's — each rendered card's own `.identity`/`.hours` box, the header
+    // gap and the card chrome; `uniformCardWidth` (park_wait_times.ts) turns those into the one
+    // width. `.identity` and `[data-pwt-header]` are drawn on every card (ParkCard.svelte), so they
+    // are read directly; `.hours` is drawn only where the park has hours.
+    const measures = Array.from(grid.querySelectorAll<HTMLElement>('[data-pwt-card]')).map((card) => {
+      const identity = card.querySelector('.identity') as HTMLElement;
+      const header = card.querySelector('[data-pwt-header]') as HTMLElement;
+      const hours = card.querySelector('[data-pwt-hours]');
+      const cardStyle = getComputedStyle(card);
+      return {
+        identityWidth: identity.getBoundingClientRect().width,
+        hoursWidth: hours === null ? null : hours.getBoundingClientRect().width,
+        gap: parseFloat(getComputedStyle(header).columnGap),
+        chrome:
           parseFloat(cardStyle.paddingLeft) +
           parseFloat(cardStyle.paddingRight) +
           parseFloat(cardStyle.borderLeftWidth) +
-          parseFloat(cardStyle.borderRightWidth);
-        let content = identity.getBoundingClientRect().width;
-        if (hours !== null) {
-          content += parseFloat(getComputedStyle(header).columnGap) + hours.getBoundingClientRect().width;
-        }
-        return content + chrome;
-      }),
-    );
-    grid.style.setProperty('--pwt-card-width', `${Math.ceil(widest)}px`);
+          parseFloat(cardStyle.borderRightWidth),
+      };
+    });
+    grid.style.setProperty('--pwt-card-width', `${uniformCardWidth(measures)}px`);
   });
 </script>
 
