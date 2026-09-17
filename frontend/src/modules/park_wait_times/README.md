@@ -56,19 +56,15 @@ line).
 
 The three longest current **numeric** waits in the park, persistent: each a ride **name** on the left
 and its **wait** on the right. A ride that is not operating carries no minute figure to rank by, so it
-does not hold a leaderboard place — it still reads, in the rotation below. This is the reading a viewer
-most wants, so it never leaves the screen — it is usable the instant they look, not on the next
-rotation.
+does not hold a leaderboard place — it still reads, in the rotation below.
 
 ### More waits — the rotation
 
 Beneath a plain divider (the label dropped to save vertical space; owner ruling, #309), the rest of
 the park's rides tour through **two at a
 time**, advancing on a configured interval (the same on-an-interval idiom as the weather module's
-series toggle). Everything the leaderboard does not hold still shows, eventually — so the module is
-both a glance ("how bad is it right now") and, given a few seconds, a full reading of the park. Each
-card's tour runs on its own timer, independent of every other card's — one park's rotation is never
-held back by, or synchronised to, another's.
+series toggle). Each card's tour runs on its own timer, independent of every other card's — one
+park's rotation is never held back by, or synchronised to, another's.
 
 ### Footer — the rotation counter
 
