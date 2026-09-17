@@ -1,0 +1,50 @@
+active: true
+derived: false
+header: |
+  The blacklist pre-filter excludes named entities from a park's rides
+level: 105
+links:
+- SRS066: bKhYwj_I4NulwTnjHmnIcMXK8IckUukanf9Y2avxi2U=
+normative: true
+ref: ''
+references:
+- keyword: func TestDefaultBlacklistIDsAreCuratedAndWellFormed(t *testing.T) {
+  path: backend/internal/modules/park_wait_times/park_wait_times_test.go
+  sha: bdca42d94a85f760cdd4adab1aa85e7d2a4e5db58ff1c034c8872d463b9af851
+  type: file
+- keyword: func TestBlacklistPreFilterDropsAPrebuiltIDAcrossEveryStatus(t *testing.T)
+    {
+  path: backend/internal/modules/park_wait_times/park_wait_times_test.go
+  sha: bdca42d94a85f760cdd4adab1aa85e7d2a4e5db58ff1c034c8872d463b9af851
+  type: file
+- keyword: func TestUseDefaultBlacklistFalseIgnoresThePrebuiltList(t *testing.T) {
+  path: backend/internal/modules/park_wait_times/park_wait_times_test.go
+  sha: bdca42d94a85f760cdd4adab1aa85e7d2a4e5db58ff1c034c8872d463b9af851
+  type: file
+- keyword: func TestBlacklistIsTheAdditiveUnionOfThePrebuiltAndUserLists(t *testing.T)
+    {
+  path: backend/internal/modules/park_wait_times/park_wait_times_test.go
+  sha: bdca42d94a85f760cdd4adab1aa85e7d2a4e5db58ff1c034c8872d463b9af851
+  type: file
+- keyword: func TestUserBlacklistNameMatchIsNormalizedExact(t *testing.T) {
+  path: backend/internal/modules/park_wait_times/park_wait_times_test.go
+  sha: bdca42d94a85f760cdd4adab1aa85e7d2a4e5db58ff1c034c8872d463b9af851
+  type: file
+reviewed: 1NUUdfp2bKsvUBHksShoO-hBsFrhHt-WpN_eMGuyanQ=
+status: accepted
+text: |
+  Unit test that the blacklist pre-filter, run against a capture whose rows include entities a default
+  set names and entities a configuration separately names, drops each excluded entity from the park's
+  rides under every status a row can report; that turning the default off restores an entity only the
+  default named while an entity the configuration names stays excluded; that the default and a
+  configuration's own list are additive rather than one replacing the other; and that a configured name
+  matches after folding case, surrounding space and curly-quote punctuation, not by literal equality.
+verification-justification: |
+  Settles the filter's own behaviour against constructed rows and configurations: which entities the
+  curated default names, that the default and a configuration's list combine rather than either
+  replacing the other, that turning the default off is a real off rather than a smaller default, and
+  that a configured name need not be typed byte-for-byte to match.
+  What it cannot settle is that the curated default names the right entities for a park no capture yet
+  covers, nor that a deployer who mistypes a name beyond the folded punctuation gets the exclusion they
+  meant.
+verification-method: test

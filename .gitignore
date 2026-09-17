@@ -2,7 +2,7 @@
 /bin/
 *.exe
 *.out
-*.test
+/backend/**/*.test
 
 # The bring-up check's own working directory — the release assets it downloads and the
 # configuration it copies from them (docs/CI.md § Deployment and bring-up).

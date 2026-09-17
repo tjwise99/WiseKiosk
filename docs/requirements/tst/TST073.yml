@@ -1,20 +1,54 @@
-active: false
+active: true
 derived: false
 header: |
-  Pending: the shaping builds each park's payload from a captured response
+  The shaping builds each park's rides and hours from a captured response
 level: 95
 links:
-- SRS056: CyK05LGQR0ChIvchNdaA4tKnX_i6TMbBNGZMBxgmEH4=
+- SRS056: pLPYX71qA0PLRTzDfUqixDmNKL_5xsgMnwZq5aGwuMc=
 normative: true
 ref: ''
-reviewed: OfA1G7Ki0pdKSLOhzqZ8aee4cfD3sJXp3DYhix7yXXo=
-status: proposed
+references:
+- keyword: func TestTST073_ShapingBuildsTheParksRidesFromTheCapturedResponse(t *testing.T)
+    {
+  path: backend/internal/modules/park_wait_times/park_wait_times_test.go
+  sha: bdca42d94a85f760cdd4adab1aa85e7d2a4e5db58ff1c034c8872d463b9af851
+  type: file
+- keyword: func TestTST073_AResponseMissingAValueTheRideNeedsIsNotShaped(t *testing.T)
+    {
+  path: backend/internal/modules/park_wait_times/park_wait_times_test.go
+  sha: bdca42d94a85f760cdd4adab1aa85e7d2a4e5db58ff1c034c8872d463b9af851
+  type: file
+- keyword: func TestTST073_ShapingBuildsTheParksHoursFromTheCapturedResponse(t *testing.T)
+    {
+  path: backend/internal/modules/park_wait_times/park_wait_times_test.go
+  sha: bdca42d94a85f760cdd4adab1aa85e7d2a4e5db58ff1c034c8872d463b9af851
+  type: file
+- keyword: func TestShapeRidesFiltersAnOperatingRowWithNoPostedWait(t *testing.T)
+    {
+  path: backend/internal/modules/park_wait_times/park_wait_times_test.go
+  sha: bdca42d94a85f760cdd4adab1aa85e7d2a4e5db58ff1c034c8872d463b9af851
+  type: file
+- keyword: func TestAParkWithANoWaitLandmarkStaysAvailable(t *testing.T) {
+  path: backend/internal/modules/park_wait_times/park_wait_times_test.go
+  sha: bdca42d94a85f760cdd4adab1aa85e7d2a4e5db58ff1c034c8872d463b9af851
+  type: file
+reviewed: SnnoB2jP3V4huLlqbTRbU1oAltBxVEqonaZUCIJ28aU=
+status: accepted
 text: |
-  Pending: unit test that the shaping, run against a captured upstream response without a network,
-  produces for the named park its name, its operating hours, and for each ride the ride's name with a
-  wait that is a length of time or a not-operating state. Lands with the wait-times implementation
-  (#309); activated and given a references entry then.
+  Unit test that shapeRides and shapeHours, run against a captured live-data and schedule response with
+  no network, keep only the attraction rows and produce, for the captured park, its rides in the
+  source's own order — each with its name and its wait as a length of time or one of the three
+  not-operating states — and its opening and closing time for the day, drawn from the first OPERATING
+  entry whose calendar date, read in that entry's own UTC offset, matches the day of the moment read,
+  passing over an entry of another type and an OPERATING entry whose date does not match; and that an
+  attraction reporting no wait while operating is dropped from the park's rides rather than carried
+  with a wait it was not given.
 verification-justification: |
-  Settles the shaping of the responses that were captured. Leaves unproven that the payload is true of
-  the queue, and any response shape no capture holds, including a ride's wait missing.
+  Settles the shaping of the responses that were captured, including a capture mutated so one
+  attraction reports OPERATING with no posted wait, dropped rather than shaped, and the park's own
+  fetch left available and carrying its other rides over that one row. Leaves unproven that the
+  payload is true of the queue, and any response shape no capture holds, including a schedule whose
+  day-selection turns on an OPERATING entry that is not the first of its type, a day with only
+  ticketed entries, an empty schedule, or an entry read against a UTC offset the captures do not
+  exercise.
 verification-method: test

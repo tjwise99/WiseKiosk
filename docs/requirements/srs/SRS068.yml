@@ -1,0 +1,39 @@
+active: true
+derived: false
+header: |
+  The park-wait-times module resolves a park it recognizes and passes through one it does not
+level: 71
+links:
+- SYS011: a3bqZRtHE8ujrhIgBKFUtcxWGSCLRHsqU6GgDgwwR38=
+normative: true
+rationale: |
+  A park is not judged against a roster the module owns: the roster is the upstream's to keep, and a
+  module holding a copy of it only drifts out of date against what the source actually offers.
+  What the module holds for itself is a convenience rather than a gate. A handful of parks it is built
+  to show are worth naming plainly in configuration rather than by their raw upstream identifier, so
+  the module holds, offline, what it needs to turn a plain park name into the identifier its own
+  upstream calls carry. A park named outside that convenience is not a mistake the module is
+  positioned to catch - it has nothing of its own to check the name against - so it is carried through
+  unexamined and the upstream's own answer becomes the request's answer to whether the park exists.
+  Whether a passed-through or resolved identifier is one the source recognizes at the time of the
+  request is not this item's concern: that is a failure reaching this module's own response, and
+  SRS067<!-- The park-wait-times module confines a failure to the part of its own response the
+  failure touches --> already obliges that it costs only the one park.
+  No supplier is named, and neither is the offline set's membership: which parks it names is this
+  repository's own curation, changeable without touching what the module is obliged to do with a name
+  that is or is not in it.
+ref: ''
+reviewed: jZYiSb_KUB_b6kmcswYlaN_zSG4MtXRBQkw91Oud0cg=
+status: accepted
+text: |
+  The park-wait-times module shall resolve a configured park that matches one in a small set it holds
+  offline to the identity it addresses that park by upstream, and shall carry through, to its source
+  and exactly as it was named, a configured park that matches none of that set, rather than refuse it.
+verification-justification: |
+  Read against resolution run without a network: a configured name matching the offline set resolves
+  to the identity recorded for it there, and a configured name matching none of it is carried to the
+  source exactly as given, in both cases with the request answered rather than refused.
+  What it cannot settle is whether an identifier that passed through unexamined, or one the offline
+  set resolved, is one the source answers for at the time of the request - that is the source's own
+  failure, surfaced by the failure path this item does not cover.
+verification-method: test

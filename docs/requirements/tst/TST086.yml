@@ -1,0 +1,37 @@
+active: true
+derived: false
+header: |
+  The module resolves a park it recognizes and passes an unrecognized one through
+level: 108
+links:
+- SRS068: KyPeoil6xL7LoSXxEE4cmZLR3zK5ko6kAQTH3mIX2Ak=
+normative: true
+ref: ''
+references:
+- keyword: func TestPrettyNameResolvesToItsUUID(t *testing.T) {
+  path: backend/internal/modules/park_wait_times/park_wait_times_test.go
+  sha: bdca42d94a85f760cdd4adab1aa85e7d2a4e5db58ff1c034c8872d463b9af851
+  type: file
+- keyword: func TestPrettyNameMatchIsNormalized(t *testing.T) {
+  path: backend/internal/modules/park_wait_times/park_wait_times_test.go
+  sha: bdca42d94a85f760cdd4adab1aa85e7d2a4e5db58ff1c034c8872d463b9af851
+  type: file
+- keyword: func TestUnrecognizedConfigStringPassesThroughAsIs(t *testing.T) {
+  path: backend/internal/modules/park_wait_times/park_wait_times_test.go
+  sha: bdca42d94a85f760cdd4adab1aa85e7d2a4e5db58ff1c034c8872d463b9af851
+  type: file
+reviewed: Rx48U_QyETwsHmNjM40TTLRn40Op-eoa1Hlcyq8mAZ4=
+status: accepted
+text: |
+  Unit tests exercising the module's own HTTP handler, without a network: a configured park whose
+  name matches one in the module's offline set is fetched from the upstream at the identity recorded
+  for it there, matching regardless of case or surrounding space; a configured park matching none of
+  that set is fetched from the upstream exactly as it was named, treated as the identifier itself -
+  neither outcome refuses the request.
+verification-justification: |
+  Settles that a recognized name resolves to its own known identity and an unrecognized one passes
+  through unexamined, both admitted rather than refused.
+  What it cannot settle is whether a resolved or passed-through identifier is one the source answers
+  for at the time of the request, which is the source's own failure, surfaced by the failure path this
+  item does not cover.
+verification-method: test

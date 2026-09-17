@@ -1,0 +1,41 @@
+{
+  "id": "75ea578a-adc8-4116-a54d-dccb60765ef9",
+  "name": "Magic Kingdom Park",
+  "entityType": "PARK",
+  "timezone": "America/New_York",
+  "schedule": [
+    {
+      "date": "2026-09-13",
+      "type": "TICKETED_EVENT",
+      "closingTime": "2026-09-13T08:00:00-04:00",
+      "description": "Early Entry",
+      "openingTime": "2026-09-13T07:30:00-04:00"
+    },
+    {
+      "date": "2026-09-13",
+      "type": "OPERATING",
+      "closingTime": "2026-09-13T18:00:00-04:00",
+      "openingTime": "2026-09-13T08:00:00-04:00"
+    },
+    {
+      "date": "2026-09-13",
+      "type": "TICKETED_EVENT",
+      "closingTime": "2026-09-14T00:00:00-04:00",
+      "description": "Special Ticketed Event",
+      "openingTime": "2026-09-13T19:00:00-04:00"
+    },
+    {
+      "date": "2026-09-14",
+      "type": "TICKETED_EVENT",
+      "closingTime": "2026-09-14T09:00:00-04:00",
+      "description": "Early Entry",
+      "openingTime": "2026-09-14T08:30:00-04:00"
+    },
+    {
+      "date": "2026-09-14",
+      "type": "OPERATING",
+      "closingTime": "2026-09-14T23:00:00-04:00",
+      "openingTime": "2026-09-14T09:00:00-04:00"
+    }
+  ]
+}

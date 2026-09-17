@@ -1,21 +1,30 @@
-active: false
+active: true
 derived: false
 header: |
-  Pending: the shown wait is no more than five minutes behind the source
+  The shown wait is no more than five minutes behind the source
 level: 101
 links:
 - SRS062: 1JdPgh3GUVYDJgVkm8ubE0Wmglwp1bNMn6Afc6ZhHEU=
 normative: true
 ref: ''
-reviewed: n48L-AScy9Vy9O7L9rVRh8eOhbv8Xy373OA9UnVXOGE=
-status: proposed
+references:
+- keyword: func TestTST079_ThePolicyHoldsAnAnswerNoLongerThanTheFreshnessBound(t *testing.T)
+    {
+  path: backend/internal/modules/park_wait_times/park_wait_times_test.go
+  sha: bdca42d94a85f760cdd4adab1aa85e7d2a4e5db58ff1c034c8872d463b9af851
+  type: file
+- keyword: 'test(''TST079: follows its source to a new reading inside the freshness
+    bound, without reloading'', async ({'
+  path: frontend/src/modules/park_wait_times/park_wait_times.spec.ts
+  sha: 6cd65b223542cb215a6839b16c5f35c694edc2ed9cdfc839bfe456e34ce3236c
+  type: file
+reviewed: ca_cOzmATRl2F1IEshaZmnbdRZDOLU_6aj2fIAYI0g8=
+status: accepted
 text: |
-  Pending: two checks, one per half of what the bound is met between. A unit test over the module's
-  registered policy, asserting the interval a served answer is held for is no longer than the five-minute
-  freshness bound the requirement states. And a render test holding the page open against a source staged
-  to change its answer and a driven clock, asserting the region carries the changed wait on the display's
-  own cadence and without the page being reloaded. Lands with the wait-times implementation (#309);
-  activated and given a references entry then.
+  Two checks. A unit test over the module's registered policy, asserting the interval a served answer
+  is held for is no longer than the five-minute bound. And a render test holding the page open against
+  a source staged to change its answer and a driven clock, asserting the region carries the changed
+  wait once the module's own read interval elapses, without the page being reloaded.
 verification-justification: |
   Settles both halves: that an answer is held no longer than the figure the requirement states, and that
   what is drawn follows a change at the source on a page nobody reloaded. Leaves unproven how far behind

@@ -8,7 +8,8 @@ links:
 normative: true
 rationale: |
   The payload carries each ride's wait as a length of time or as a not-operating state
-  (SRS056<!-- The park-wait-times module puts each park's ride waits across the boundary -->), and a
+  (SRS056<!-- The park-wait-times module puts each park's identity, hours, and ride waits across the
+  boundary -->), and a
   component is free to ignore that and work out for itself whether a ride can be ridden - from the park's
   hours and the browser's clock, say. That draws the right answer only while the display and the park
   keep the same time, and it misses a ride that broke down in the middle of the day entirely. So what is
@@ -26,7 +27,7 @@ rationale: |
   state, does not abstract to a universal: a payload carrying no state has nothing to follow, and which
   states this module's payload carries is its own, so that half is this item's and is what it is for.
 ref: ''
-reviewed: GEs8qJ6pnXaIzLntNYlgS8GkWX2iEESDpqfj8HOzBuU=
+reviewed: 3MnAvNBwP4xYxeP7tsyDsOkTG9VYaFT47KEHMXlGyV4=
 status: accepted
 text: |
   The park-wait-times module shall draw each ride's wait as the length of time it is handed or, where the
