@@ -353,10 +353,7 @@ components:
             $ref: '#/components/schemas/ParkWaitTimesPark'
     ParkWaitTimesPark:
       type: object
-      description: >-
-        One park's reading, or why it has none. A park whose own upstream calls failed carries
-        `available: false` and a reason rather than failing the whole request — the rest of the
-        parks a request named are unaffected.
+      description: One park's reading, or why it has none.
       required:
         - id
         - name
@@ -421,6 +418,8 @@ components:
             The standby wait in minutes when `state` is `Operating`; null in every other state
             (SRS061<!-- The park-wait-times module draws a wait as the time or the not-operating
             state it is handed -->).
+    # A $reffed bare-string enum rather than a oneOf: generates a plain string type and constants,
+    # pulling none of the runtime dependency a union would (ADR 0008 rev 6).
     ParkWaitTimesState:
       type: string
       enum:
@@ -431,7 +430,4 @@ components:
       description: >-
         A ride's operating state — `Operating`, or the not-operating state it is in
         (SRS061<!-- The park-wait-times module draws a wait as the time or the not-operating state
-        it is handed -->), the single generated set both sides read. A `$ref`ed bare-string enum
-        rather than a `oneOf`: it generates a plain string type and constants, pulling none of the
-        runtime dependency a union would
-        ([ADR 0008 rev 6](../docs/decisions/0008-boundary-contract-openapi-codegen.md)).
+        it is handed -->), the single generated set both sides read.
