@@ -127,18 +127,18 @@ func fetchParkExcluding(ctx context.Context, slug, entityID string, excluded exc
 		return boundary.ParkWaitTimesPark{}, err
 	}
 	if liveResult.Kind == upstream.UpstreamStatus && liveResult.Status == http.StatusNotFound {
-		return unavailable(slug, errUnsupportedPark.Error()), nil
+		return unavailable(entityID, slug, errUnsupportedPark.Error()), nil
 	}
 	if liveResult.Kind != upstream.Success {
-		return unavailable(slug, failureMessage(liveResult)), nil
+		return unavailable(entityID, slug, failureMessage(liveResult)), nil
 	}
 	rides, err := shapeRidesExcluding(liveResult.Body, excluded)
 	if err != nil {
-		return unavailable(slug, errMalformedPayload.Error()), nil
+		return unavailable(entityID, slug, errMalformedPayload.Error()), nil
 	}
 	name, err := shapeParkName(liveResult.Body)
 	if err != nil {
-		return unavailable(slug, errMalformedPayload.Error()), nil
+		return unavailable(entityID, slug, errMalformedPayload.Error()), nil
 	}
 
 	var hours *boundary.ParkWaitTimesHours
@@ -153,7 +153,7 @@ func fetchParkExcluding(ctx context.Context, slug, entityID string, excluded exc
 	}
 
 	return boundary.ParkWaitTimesPark{
-		Id:        slug,
+		Id:        entityID,
 		Name:      name,
 		Available: true,
 		Hours:     hours,
@@ -162,11 +162,13 @@ func fetchParkExcluding(ctx context.Context, slug, entityID string, excluded exc
 }
 
 // unavailable is a park's payload entry where its own upstream calls could
-// not be read. There is no upstream name to carry here, so Name falls back
-// to slug, the config string that named this park (#309 build spec
-// decision 5).
-func unavailable(slug, message string) boundary.ParkWaitTimesPark {
-	return boundary.ParkWaitTimesPark{Id: slug, Name: slug, Available: false, Message: &message}
+// not be read. Id carries the resolved fetch identifier (resolveEntityID's
+// output — a known park's entity id, or a passed-through string), the same
+// as an available park, so the frontend keys its icon on it uniformly
+// (#309 build spec decision 5). There is no upstream name to carry here, so
+// Name falls back to slug, the config string that named this park.
+func unavailable(entityID, slug, message string) boundary.ParkWaitTimesPark {
+	return boundary.ParkWaitTimesPark{Id: entityID, Name: slug, Available: false, Message: &message}
 }
 
 // errMalformedPayload is what a readable-but-unshapeable response renders

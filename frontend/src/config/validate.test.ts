@@ -213,7 +213,7 @@ describe('the configuration validator', () => {
           region: 'middle_center',
           module: 'park_wait_times',
           options: {
-            parks: ['magic-kingdom'],
+            parks: ['Magic Kingdom'],
             columns: 1,
             rows: 1,
             use_default_blacklist: false,
@@ -232,7 +232,7 @@ describe('the configuration validator', () => {
         {
           region: 'middle_center',
           module: 'park_wait_times',
-          options: { parks: ['magic-kingdom'], columns: 1, rows: 1, use_default_blacklist: 'yes' },
+          options: { parks: ['Magic Kingdom'], columns: 1, rows: 1, use_default_blacklist: 'yes' },
         },
       ],
     });
@@ -256,7 +256,7 @@ describe('the configuration validator', () => {
         {
           region: 'middle_center',
           module: 'park_wait_times',
-          options: { parks: ['magic-kingdom'], columns: 1, rows: 1, blacklist: 'Cinderella Castle' },
+          options: { parks: ['Magic Kingdom'], columns: 1, rows: 1, blacklist: 'Cinderella Castle' },
         },
       ],
     });

@@ -57,7 +57,7 @@ describe('the module registry', () => {
     });
 
     await modules.park_wait_times.read!({
-      parks: ['magic-kingdom', 'epcot'],
+      parks: ['Magic Kingdom', 'Epcot'],
       columns: 2,
       rows: 1,
       use_default_blacklist: false,
@@ -65,7 +65,7 @@ describe('the module registry', () => {
     });
 
     expect(body).toEqual({
-      parks: ['magic-kingdom', 'epcot'],
+      parks: ['Magic Kingdom', 'Epcot'],
       useDefaultBlacklist: false,
       blacklist: ['Cinderella Castle'],
     });

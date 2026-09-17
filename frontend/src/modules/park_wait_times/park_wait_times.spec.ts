@@ -84,6 +84,22 @@ const FOOTER = '[data-pwt-footer]';
 const FOOTER_SEGMENT = '[data-pwt-footer-segment]';
 const WAIT = '[data-pwt-wait]';
 
+/** The six known parks by their own upstream entity id — the identifier the backend resolves a
+    park to and carries as `id` (boundary/openapi.yaml's ParkWaitTimesPark.id), the value the
+    frontend keys its icon on. A render fixture names parks by these ids (the pass-through path,
+    id unchanged), so `data-pwt-park`, the icon lookup and the `#each` key all read the same value
+    the backend would send for a park chosen by name or by id. */
+const MAGIC_KINGDOM = '75ea578a-adc8-4116-a54d-dccb60765ef9';
+const EPCOT = '47f90d2c-e191-4239-a466-5892ef59a88b';
+const HOLLYWOOD_STUDIOS = '288747d1-8b4f-4a64-867e-ea7c9b27bad8';
+const ANIMAL_KINGDOM = '1c84a229-8862-4648-9c71-378ddd2c7693';
+const UNIVERSAL_STUDIOS = 'eb3f4560-2383-4a36-9152-6b3e5ed6bc57';
+const ISLANDS_OF_ADVENTURE = '267615cc-8943-4c2a-ae2c-5da728ca591f';
+
+/** An id the module has no icon for — an unrecognized park, drawn name-only (the sanctioned
+    fallback). Shaped like an entity id, since that is what the boundary carries. */
+const UNKNOWN_PARK = '00000000-0000-4000-8000-000000000000';
+
 /** A card's own leaderboard-row and tour-row ride names, read in the order drawn. */
 async function rideNamesIn(card: ReturnType<import('@playwright/test').Page['locator']>, selector: string): Promise<string[]> {
   return card.locator(selector).locator('.ride-name').allTextContents();
@@ -101,32 +117,32 @@ test('TST071: reports on the parks its configuration names, in the region it nam
 
   await render(page, {
     modules: [
-      { region: 'middle_center', module: 'park_wait_times', options: { parks: ['magic-kingdom'], columns: 1, rows: 1 } },
-      { region: 'lower_third', module: 'park_wait_times', options: { parks: ['epcot'], columns: 1, rows: 1 } },
+      { region: 'middle_center', module: 'park_wait_times', options: { parks: [MAGIC_KINGDOM], columns: 1, rows: 1 } },
+      { region: 'lower_third', module: 'park_wait_times', options: { parks: [EPCOT], columns: 1, rows: 1 } },
     ],
   });
 
   // Each region shows the answer given for the park its own placement named.
   const here = page.locator(`[data-region="middle_center"] [data-pwt-park]`);
   const there = page.locator(`[data-region="lower_third"] [data-pwt-park]`);
-  await expect(here).toHaveAttribute('data-pwt-park', 'magic-kingdom');
-  await expect(there).toHaveAttribute('data-pwt-park', 'epcot');
+  await expect(here).toHaveAttribute('data-pwt-park', MAGIC_KINGDOM);
+  await expect(there).toHaveAttribute('data-pwt-park', EPCOT);
 
   // A second configuration moves both.
   await render(page, {
     modules: [
-      { region: 'middle_center', module: 'park_wait_times', options: { parks: ['hollywood-studios'], columns: 1, rows: 1 } },
-      { region: 'lower_third', module: 'park_wait_times', options: { parks: ['animal-kingdom'], columns: 1, rows: 1 } },
+      { region: 'middle_center', module: 'park_wait_times', options: { parks: [HOLLYWOOD_STUDIOS], columns: 1, rows: 1 } },
+      { region: 'lower_third', module: 'park_wait_times', options: { parks: [ANIMAL_KINGDOM], columns: 1, rows: 1 } },
     ],
   });
-  await expect(here).toHaveAttribute('data-pwt-park', 'hollywood-studios');
-  await expect(there).toHaveAttribute('data-pwt-park', 'animal-kingdom');
+  await expect(here).toHaveAttribute('data-pwt-park', HOLLYWOOD_STUDIOS);
+  await expect(there).toHaveAttribute('data-pwt-park', ANIMAL_KINGDOM);
 });
 
 test('TST074: draws every configured park at once, none absent awaiting a rotation between parks', async ({
   page,
 }) => {
-  const roster = ['magic-kingdom', 'epcot', 'hollywood-studios', 'animal-kingdom'];
+  const roster = [MAGIC_KINGDOM, EPCOT, HOLLYWOOD_STUDIOS, ANIMAL_KINGDOM];
   await serveModuleData(page, (_asked, body) => {
     const { parks } = body as { parks: string[] };
     return { status: 200, data: parksPayload(parks.map((id) => onePark(id))) };
@@ -165,9 +181,9 @@ test('TST076: tours the remaining rides two at a time, on the configured interva
   await holdHostClock(page, HOST_TIME);
   await serveModuleData(page, () => ({
     status: 200,
-    data: parksPayload([onePark('epcot', { rides: rankedRoster() })]),
+    data: parksPayload([onePark(EPCOT, { rides: rankedRoster() })]),
   }));
-  await render(page, placed(['epcot'], { rotationIntervalSeconds: 6 }));
+  await render(page, placed([EPCOT], { rotationIntervalSeconds: 6 }));
 
   const card = page.locator(CARD);
   // Held: Test Track, Soarin, Spaceship Earth. Remaining, in the source's own order: Mission: Space,
@@ -194,9 +210,9 @@ test('TST076: the rotation interval is the configuration’s, not one fixed in t
   await holdHostClock(page, HOST_TIME);
   await serveModuleData(page, () => ({
     status: 200,
-    data: parksPayload([onePark('epcot', { rides: rankedRoster() })]),
+    data: parksPayload([onePark(EPCOT, { rides: rankedRoster() })]),
   }));
-  await render(page, placed(['epcot'], { rotationIntervalSeconds: 20 }));
+  await render(page, placed([EPCOT], { rotationIntervalSeconds: 20 }));
 
   const card = page.locator(CARD);
   expect(await rideNamesIn(card, TOUR_ROW)).toEqual(['Mission: Space', 'Imagination!']);
@@ -223,9 +239,9 @@ test('TST076: a placement that omits its own rotation interval tours on the sche
   await holdHostClock(page, HOST_TIME);
   await serveModuleData(page, () => ({
     status: 200,
-    data: parksPayload([onePark('epcot', { rides: rankedRoster() })]),
+    data: parksPayload([onePark(EPCOT, { rides: rankedRoster() })]),
   }));
-  await render(page, placed(['epcot']));
+  await render(page, placed([EPCOT]));
 
   const card = page.locator(CARD);
   expect(await rideNamesIn(card, TOUR_ROW)).toEqual(['Mission: Space', 'Imagination!']);
@@ -243,9 +259,9 @@ test('TST076: the footer marks the tour’s own position, one segment per page',
   await holdHostClock(page, HOST_TIME);
   await serveModuleData(page, () => ({
     status: 200,
-    data: parksPayload([onePark('epcot', { rides: rankedRoster() })]),
+    data: parksPayload([onePark(EPCOT, { rides: rankedRoster() })]),
   }));
-  await render(page, placed(['epcot'], { rotationIntervalSeconds: 5 }));
+  await render(page, placed([EPCOT], { rotationIntervalSeconds: 5 }));
 
   const segments = page.locator(CARD).locator(FOOTER_SEGMENT);
   await expect(segments).toHaveCount(2);
@@ -260,7 +276,7 @@ test('TST076: the footer marks the tour’s own position, one segment per page',
 test('TST077: lays its cards out in the column and row counts its configuration names, and a second shape re-lays them', async ({
   page,
 }) => {
-  const roster = ['magic-kingdom', 'epcot', 'hollywood-studios'];
+  const roster = [MAGIC_KINGDOM, EPCOT, HOLLYWOOD_STUDIOS];
   await serveModuleData(page, (_asked, body) => {
     const { parks } = body as { parks: string[] };
     return { status: 200, data: parksPayload(parks.map((id) => onePark(id))) };
@@ -296,7 +312,7 @@ test('TST078: draws a ride’s wait as the mark its own payload names, not the p
   await serveModuleData(page, () => ({
     status: 200,
     data: parksPayload([
-      onePark('magic-kingdom', {
+      onePark(MAGIC_KINGDOM, {
         hours: openNow,
         rides: [
           ride('Big Thunder Mountain Railroad', 25),
@@ -305,7 +321,7 @@ test('TST078: draws a ride’s wait as the mark its own payload names, not the p
       }),
     ]),
   }));
-  await render(page, placed(['magic-kingdom']));
+  await render(page, placed([MAGIC_KINGDOM]));
 
   const minutes = page.locator(`${WAIT}[data-pwt-wait-kind="minutes"]`);
   const state = page.locator(`${WAIT}[data-pwt-wait-kind="state"]`);
@@ -332,9 +348,9 @@ test('TST079: follows its source to a new reading inside the freshness bound, wi
   await holdHostClock(page, HOST_TIME);
   await serveModuleData(page, () => ({
     status: 200,
-    data: parksPayload([onePark('magic-kingdom', { rides: [ride('The Barnstormer', 10)] })]),
+    data: parksPayload([onePark(MAGIC_KINGDOM, { rides: [ride('The Barnstormer', 10)] })]),
   }));
-  await render(page, placed(['magic-kingdom']));
+  await render(page, placed([MAGIC_KINGDOM]));
 
   const wait = page.locator(WAIT).first();
   await expect(wait).toHaveText('10');
@@ -348,7 +364,7 @@ test('TST079: follows its source to a new reading inside the freshness bound, wi
   // The source now says something else, staged as the answer a later poll receives.
   const afterTheChange = await serveModuleData(page, () => ({
     status: 200,
-    data: parksPayload([onePark('magic-kingdom', { rides: [ride('The Barnstormer', 35)] })]),
+    data: parksPayload([onePark(MAGIC_KINGDOM, { rides: [ride('The Barnstormer', 35)] })]),
   }));
 
   await advanceHostClock(page, READ_INTERVAL_MS - ALMOST);
@@ -373,9 +389,9 @@ test('TST082: draws the wait times its own route answered with, and reads no oth
   const traffic = watchTraffic(page);
   const served = await serveModuleData(page, () => ({
     status: 200,
-    data: parksPayload([onePark('magic-kingdom', { rides: [ride('The Barnstormer', 10)] })]),
+    data: parksPayload([onePark(MAGIC_KINGDOM, { rides: [ride('The Barnstormer', 10)] })]),
   }));
-  await render(page, placed(['magic-kingdom']));
+  await render(page, placed([MAGIC_KINGDOM]));
 
   await expect(page.locator(WAIT).first()).toHaveText('10');
   expect(served.urls.length, 'the module asked its own route').toBeGreaterThan(0);
@@ -399,18 +415,18 @@ test('holds a park’s place in the grid and shows why, when that park’s own r
       status: 200,
       data: parksPayload(
         parks.map((id) =>
-          id === 'magic-kingdom'
+          id === MAGIC_KINGDOM
             ? onePark(id, { available: false, message: REASON })
             : onePark(id, { rides: [ride('Test Track', 40)] }),
         ),
       ),
     };
   });
-  await render(page, placed(['magic-kingdom', 'epcot'], { columns: 2, rows: 1 }));
+  await render(page, placed([MAGIC_KINGDOM, EPCOT], { columns: 2, rows: 1 }));
 
   await expect(page.locator(CARD)).toHaveCount(2);
-  const failing = page.locator(`${CARD}[data-pwt-park="magic-kingdom"]`);
-  const healthy = page.locator(`${CARD}[data-pwt-park="epcot"]`);
+  const failing = page.locator(`${CARD}[data-pwt-park="${MAGIC_KINGDOM}"]`);
+  const healthy = page.locator(`${CARD}[data-pwt-park="${EPCOT}"]`);
   await expect(failing.locator(PARK_UNAVAILABLE)).toHaveText(REASON);
   await expect(failing.locator(LEADERBOARD_ROW)).toHaveCount(0);
   await expect(healthy.locator(LEADERBOARD_ROW)).toContainText('Test Track');
@@ -419,7 +435,7 @@ test('holds a park’s place in the grid and shows why, when that park’s own r
   // "in place of its rides" (§ States, Park unavailable), not the whole card, so a viewer can tell
   // which park failed rather than reading only its grid position.
   await expect(failing.locator('[data-pwt-header]')).toBeVisible();
-  await expect(failing.locator('[data-pwt-header]')).toContainText('magic-kingdom');
+  await expect(failing.locator('[data-pwt-header]')).toContainText(MAGIC_KINGDOM);
 });
 
 test('renders each unavailable park’s own message verbatim, transient or permanent — the card never branches on the wording', async ({
@@ -438,18 +454,18 @@ test('renders each unavailable park’s own message verbatim, transient or perma
     return {
       status: 200,
       data: parksPayload(
-        parks.map((id) => onePark(id, { available: false, message: id === 'epcot' ? unsupported : transient })),
+        parks.map((id) => onePark(id, { available: false, message: id === EPCOT ? unsupported : transient })),
       ),
     };
   });
-  await render(page, placed(['magic-kingdom', 'epcot'], { columns: 2, rows: 1 }));
+  await render(page, placed([MAGIC_KINGDOM, EPCOT], { columns: 2, rows: 1 }));
 
   await expect(
-    page.locator(`${CARD}[data-pwt-park="magic-kingdom"] ${PARK_UNAVAILABLE}`),
+    page.locator(`${CARD}[data-pwt-park="${MAGIC_KINGDOM}"] ${PARK_UNAVAILABLE}`),
     'the transient failure shows its own message',
   ).toHaveText(transient);
   await expect(
-    page.locator(`${CARD}[data-pwt-park="epcot"] ${PARK_UNAVAILABLE}`),
+    page.locator(`${CARD}[data-pwt-park="${EPCOT}"] ${PARK_UNAVAILABLE}`),
     'the permanent unsupported failure shows its own distinct message, through the same path',
   ).toHaveText(unsupported);
 });
@@ -457,7 +473,7 @@ test('renders each unavailable park’s own message verbatim, transient or perma
 test('holds a park-unavailable card to a full card’s own height, the same hidden-skeleton reference the Closed card uses', async ({
   page,
 }) => {
-  const roster = ['epcot', 'islands-of-adventure', 'magic-kingdom'];
+  const roster = [EPCOT, ISLANDS_OF_ADVENTURE, MAGIC_KINGDOM];
   const REASON = 'The wait-times source did not answer for this park.';
   await serveModuleData(page, (_asked, body) => {
     const { parks } = body as { parks: string[] };
@@ -465,7 +481,7 @@ test('holds a park-unavailable card to a full card’s own height, the same hidd
       status: 200,
       data: parksPayload(
         parks.map((id) =>
-          id === 'epcot' ? onePark(id, { available: false, message: REASON }) : onePark(id, { rides: rankedRoster() }),
+          id === EPCOT ? onePark(id, { available: false, message: REASON }) : onePark(id, { rides: rankedRoster() }),
         ),
       ),
     };
@@ -478,7 +494,7 @@ test('holds a park-unavailable card to a full card’s own height, the same hidd
       .evaluateAll((els) => els.map((el) => [el.getAttribute('data-pwt-park') ?? '', el.getBoundingClientRect().height] as const)),
   );
   expect(
-    Math.abs(heights['epcot'] - heights['magic-kingdom']),
+    Math.abs(heights[EPCOT] - heights[MAGIC_KINGDOM]),
     'the unavailable card matches a full leaderboard-plus-tour card’s own height',
   ).toBeLessThan(1);
 });
@@ -486,7 +502,7 @@ test('holds a park-unavailable card to a full card’s own height, the same hidd
 test('holds every card to a full card’s own height when every park is unavailable, not just when one full card is on screen to borrow from', async ({
   page,
 }) => {
-  const roster = ['epcot', 'islands-of-adventure', 'magic-kingdom'];
+  const roster = [EPCOT, ISLANDS_OF_ADVENTURE, MAGIC_KINGDOM];
   const REASON = 'The wait-times source did not answer for this park.';
   await serveModuleData(page, (_asked, body) => {
     const { parks } = body as { parks: string[] };
@@ -520,7 +536,7 @@ test('shows that it is reading while its route has not answered yet', async ({ p
   // what is on screen before there is one. The route is taken and never fulfilled, which is the
   // ask-in-flight the module first paints against.
   await page.route('**/api/*', () => {});
-  await render(page, placed(['magic-kingdom']));
+  await render(page, placed([MAGIC_KINGDOM]));
 
   const loading = page.locator(`[data-region="middle_center"] ${LOADING}`);
   await expect(loading).toBeVisible();
@@ -537,7 +553,7 @@ test('renders why its own route failed, in its own place, while the backend is r
     status: 502,
     data: { module: 'park_wait_times', cause: 'upstream_unavailable', message: REASON },
   }));
-  await render(page, placed(['magic-kingdom']));
+  await render(page, placed([MAGIC_KINGDOM]));
 
   const box = page.locator(`[data-region="middle_center"] ${MODULE_UNAVAILABLE}`);
   await expect(box).toBeVisible();
@@ -562,9 +578,9 @@ test('sets the module’s own left default against the region’s inherited cent
   // claim this test can back with geometry.
   await serveModuleData(page, () => ({
     status: 200,
-    data: parksPayload([onePark('magic-kingdom')]),
+    data: parksPayload([onePark(MAGIC_KINGDOM)]),
   }));
-  await render(page, placed(['magic-kingdom']));
+  await render(page, placed([MAGIC_KINGDOM]));
 
   const textAlign = await page.locator(MODULE).evaluate((el) => getComputedStyle(el).textAlign);
   expect(textAlign, 'the module’s own root sets a left default against the region’s own anchor').toBe('left');
@@ -579,43 +595,43 @@ test('lays out uniform, aligned cards that do not run past the viewport, with re
   // takes the same width regardless of what its own park's names are. Read at the deployed
   // three-column shape (config.json), over a real (unabbreviated) roster.
   const roster = [
-    'magic-kingdom',
-    'epcot',
-    'hollywood-studios',
-    'animal-kingdom',
-    'universal-studios',
-    'islands-of-adventure',
+    MAGIC_KINGDOM,
+    EPCOT,
+    HOLLYWOOD_STUDIOS,
+    ANIMAL_KINGDOM,
+    UNIVERSAL_STUDIOS,
+    ISLANDS_OF_ADVENTURE,
   ];
   const names: Record<string, string> = {
-    'magic-kingdom': 'Magic Kingdom',
-    epcot: 'Epcot',
-    'hollywood-studios': 'Hollywood Studios',
-    'animal-kingdom': 'Animal Kingdom',
-    'universal-studios': 'Universal Studios',
-    'islands-of-adventure': 'Islands of Adventure',
+    [MAGIC_KINGDOM]: 'Magic Kingdom',
+    [EPCOT]: 'Epcot',
+    [HOLLYWOOD_STUDIOS]: 'Hollywood Studios',
+    [ANIMAL_KINGDOM]: 'Animal Kingdom',
+    [UNIVERSAL_STUDIOS]: 'Universal Studios',
+    [ISLANDS_OF_ADVENTURE]: 'Islands of Adventure',
   };
   const rides: Record<string, ParkWaitTimesRide[]> = {
-    'magic-kingdom': [
+    [MAGIC_KINGDOM]: [
       ride('Seven Dwarfs Mine Train', 90),
       ride("Walt Disney's Carousel of Progress", 15),
     ],
-    epcot: [
+    [EPCOT]: [
       ride('Guardians of the Galaxy: Cosmic Rewind', 75),
       ride('Remy’s Ratatouille Adventure', 40),
     ],
-    'hollywood-studios': [
+    [HOLLYWOOD_STUDIOS]: [
       ride('Star Wars: Rise of the Resistance', 85),
       ride('Mickey & Minnie’s Runaway Railway', 35),
     ],
-    'animal-kingdom': [
+    [ANIMAL_KINGDOM]: [
       ride('Avatar Flight of Passage', 95),
       ride('Expedition Everest - Legend of the Forbidden Mountain', 30),
     ],
-    'universal-studios': [
+    [UNIVERSAL_STUDIOS]: [
       ride("Harry Potter and the Escape from Gringotts", 70),
       ride('Revenge of the Mummy', 25),
     ],
-    'islands-of-adventure': [
+    [ISLANDS_OF_ADVENTURE]: [
       ride('Harry Potter and the Forbidden Journey', 80),
       ride('Jurassic World VelociCoaster', 45),
     ],
@@ -654,7 +670,7 @@ test('leaves a park’s leaderboard at its own real row count — no permanent b
   await serveModuleData(page, () => ({
     status: 200,
     data: parksPayload([
-      onePark('epcot', {
+      onePark(EPCOT, {
         rides: [
           ride('Test Track', 60),
           ride('Spaceship Earth', 10),
@@ -662,7 +678,7 @@ test('leaves a park’s leaderboard at its own real row count — no permanent b
       }),
     ]),
   }));
-  await render(page, placed(['epcot']));
+  await render(page, placed([EPCOT]));
 
   const card = page.locator(CARD);
   await expect(card.locator(LEADERBOARD_ROW)).toHaveCount(2);
@@ -678,7 +694,7 @@ test('holds the footer’s own position across the tour’s pages, including a l
   await serveModuleData(page, () => ({
     status: 200,
     data: parksPayload([
-      onePark('magic-kingdom', {
+      onePark(MAGIC_KINGDOM, {
         rides: [
           ride('Seven Dwarfs Mine Train', 90),
           ride('Big Thunder Mountain Railroad', 45),
@@ -692,7 +708,7 @@ test('holds the footer’s own position across the tour’s pages, including a l
       }),
     ]),
   }));
-  await render(page, placed(['magic-kingdom'], { rotationIntervalSeconds: 5 }));
+  await render(page, placed([MAGIC_KINGDOM], { rotationIntervalSeconds: 5 }));
 
   const card = page.locator(CARD);
   const footerY = async () => (await card.locator(FOOTER_SEGMENT).first().boundingBox())?.y;
@@ -721,9 +737,9 @@ test('anchors the footer to the card’s own bottom edge, with nothing beneath i
   // card is its own natural height, so nothing beneath the footer is left to fill.
   await serveModuleData(page, () => ({
     status: 200,
-    data: parksPayload([onePark('epcot', { rides: rankedRoster() })]),
+    data: parksPayload([onePark(EPCOT, { rides: rankedRoster() })]),
   }));
-  await render(page, placed(['epcot']));
+  await render(page, placed([EPCOT]));
 
   const card = page.locator(CARD);
   const cardBox = await card.boundingBox();
@@ -753,8 +769,8 @@ test('holds two full cards — a leaderboard and its own More Waits block — to
   // — every real park draws the same structure, so with nothing forcing it they line up on their own
   // (owner ruling, #309).
   const rides: Record<string, ParkWaitTimesRide[]> = {
-    'magic-kingdom': rankedRoster(),
-    epcot: [
+    [MAGIC_KINGDOM]: rankedRoster(),
+    [EPCOT]: [
       ride('Guardians of the Galaxy: Cosmic Rewind', 75),
       ride('Remy’s Ratatouille Adventure', 40),
       ride('Test Track', 25),
@@ -765,7 +781,7 @@ test('holds two full cards — a leaderboard and its own More Waits block — to
     const { parks } = body as { parks: string[] };
     return { status: 200, data: parksPayload(parks.map((id) => onePark(id, { rides: rides[id] }))) };
   });
-  await render(page, placed(['magic-kingdom', 'epcot'], { columns: 2, rows: 1 }));
+  await render(page, placed([MAGIC_KINGDOM, EPCOT], { columns: 2, rows: 1 }));
 
   const cards = page.locator(CARD);
   const heights = await cards.evaluateAll((els) => els.map((el) => el.getBoundingClientRect().height));
@@ -784,9 +800,9 @@ test('leaves no slack between the leaderboard and the More Waits divider — the
 }) => {
   await serveModuleData(page, () => ({
     status: 200,
-    data: parksPayload([onePark('epcot', { rides: rankedRoster() })]),
+    data: parksPayload([onePark(EPCOT, { rides: rankedRoster() })]),
   }));
-  await render(page, placed(['epcot']));
+  await render(page, placed([EPCOT]));
 
   const card = page.locator(CARD);
   const headerBox = await card.locator(HEADER).boundingBox();
@@ -811,17 +827,17 @@ test('leaves no slack between the leaderboard and the More Waits divider — the
 test('holds the Closed card to a full card’s own height, without forcing an open card that has less to show', async ({
   page,
 }) => {
-  const roster = ['epcot', 'islands-of-adventure', 'magic-kingdom'];
+  const roster = [EPCOT, ISLANDS_OF_ADVENTURE, MAGIC_KINGDOM];
   const rides: Record<string, ParkWaitTimesRide[]> = {
-    epcot: [
+    [EPCOT]: [
       ride('Test Track', 60),
       ride('Spaceship Earth', 10),
     ],
-    'islands-of-adventure': [
+    [ISLANDS_OF_ADVENTURE]: [
       ride('Harry Potter and the Forbidden Journey', 'Closed'),
       ride('Jurassic World VelociCoaster', 'Down'),
     ],
-    'magic-kingdom': [
+    [MAGIC_KINGDOM]: [
       ride('Seven Dwarfs Mine Train', 90),
       ride('Big Thunder Mountain Railroad', 45),
       ride('Pirates of the Caribbean', 30),
@@ -850,14 +866,14 @@ test('holds the Closed card to a full card’s own height, without forcing an op
   // card's own height — not forced by anything external, but because its own hidden skeleton
   // (`ParkCard.svelte`'s `.closed-frame`) draws that same structure itself.
   expect(
-    Math.abs(heights['islands-of-adventure'] - heights['magic-kingdom']),
+    Math.abs(heights[ISLANDS_OF_ADVENTURE] - heights[MAGIC_KINGDOM]),
     'the Closed card matches the full card’s height',
   ).toBeLessThan(1);
 
   // epcot holds a leaderboard (two numeric rides) but nothing left to tour — open, its own natural
   // height, smaller than the Closed card's own reserved full-card footprint (owner ruling, #309).
   expect(
-    heights['magic-kingdom'] - heights['epcot'],
+    heights[MAGIC_KINGDOM] - heights[EPCOT],
     'an open card with less to show is left shorter, not forced to match',
   ).toBeGreaterThan(10);
 
@@ -865,13 +881,13 @@ test('holds the Closed card to a full card’s own height, without forcing an op
   // ParkWaitTimes.svelte) may leave epcot's own box taller than its own content: the card's inner
   // bottom edge (its border, one card-padding below the leaderboard) sits flush against the
   // leaderboard itself, not against the row's tallest neighbour.
-  const epcotBox = await page.locator(`${CARD}[data-pwt-park="epcot"]`).boundingBox();
-  const epcotLeaderboardBox = await page.locator(`${CARD}[data-pwt-park="epcot"] ${LEADERBOARD}`).boundingBox();
+  const epcotBox = await page.locator(`${CARD}[data-pwt-park="${EPCOT}"]`).boundingBox();
+  const epcotLeaderboardBox = await page.locator(`${CARD}[data-pwt-park="${EPCOT}"] ${LEADERBOARD}`).boundingBox();
   if (!epcotBox || !epcotLeaderboardBox) {
     throw new Error('epcot’s card or leaderboard did not render a box');
   }
   const cardBottomChrome = await page
-    .locator(`${CARD}[data-pwt-park="epcot"]`)
+    .locator(`${CARD}[data-pwt-park="${EPCOT}"]`)
     .evaluate((el) => {
       const style = getComputedStyle(el);
       return parseFloat(style.paddingBottom) + parseFloat(style.borderBottomWidth);
@@ -886,7 +902,7 @@ test('holds the Closed card to a full card’s own height, without forcing an op
 test('holds every card to a full card’s own height when every park is Closed, not just when one full card is on screen to borrow from', async ({
   page,
 }) => {
-  const roster = ['epcot', 'islands-of-adventure', 'magic-kingdom'];
+  const roster = [EPCOT, ISLANDS_OF_ADVENTURE, MAGIC_KINGDOM];
   const allClosed: ParkWaitTimesRide[] = [
     ride('Guardians of the Galaxy: Cosmic Rewind', 'Closed'),
     ride('Space Mountain', 'Down'),
@@ -936,7 +952,7 @@ test('draws every ride name flush left in its own column, whatever its own lengt
   await serveModuleData(page, () => ({
     status: 200,
     data: parksPayload([
-      onePark('epcot', {
+      onePark(EPCOT, {
         name: 'Islands of Adventure',
         hours: { open: '2026-01-01T09:00:00Z', close: '2026-01-01T21:00:00Z' },
         rides: [
@@ -946,7 +962,7 @@ test('draws every ride name flush left in its own column, whatever its own lengt
       }),
     ]),
   }));
-  await render(page, placed(['epcot']));
+  await render(page, placed([EPCOT]));
 
   const rows = page.locator(LEADERBOARD_ROW);
   const names = await rows.evaluateAll((els) =>
@@ -975,11 +991,11 @@ test('draws every ride name flush left in its own column, whatever its own lengt
 test('sizes every card to the widest rendered header, and no wider — the true content, not the probe’s own formula', async ({
   page,
 }) => {
-  const roster = ['magic-kingdom', 'epcot', 'islands-of-adventure'];
+  const roster = [MAGIC_KINGDOM, EPCOT, ISLANDS_OF_ADVENTURE];
   const names: Record<string, string> = {
-    'magic-kingdom': 'Magic Kingdom',
-    epcot: 'Epcot',
-    'islands-of-adventure': 'Islands of Adventure',
+    [MAGIC_KINGDOM]: 'Magic Kingdom',
+    [EPCOT]: 'Epcot',
+    [ISLANDS_OF_ADVENTURE]: 'Islands of Adventure',
   };
   const hours = { open: '2026-01-01T09:00:00Z', close: '2026-01-01T21:00:00Z' };
   await serveModuleData(page, (_asked, body) => {
@@ -993,7 +1009,7 @@ test('sizes every card to the widest rendered header, and no wider — the true 
   // re-deriving ParkWaitTimes.svelte's own probe formula: a probe that has drifted from the CSS it
   // measures (L1 — the hours were probed at the wrong font-weight) computes the same wrong number
   // every card shares, so comparing cards only to each other cannot catch it.
-  const widest = page.locator(`${CARD}[data-pwt-park="islands-of-adventure"]`);
+  const widest = page.locator(`${CARD}[data-pwt-park="${ISLANDS_OF_ADVENTURE}"]`);
   const measured = await widest.evaluate((card) => {
     const identity = card.querySelector('.identity') as HTMLElement;
     const hoursEl = card.querySelector('[data-pwt-hours]') as HTMLElement;
@@ -1022,7 +1038,7 @@ test('draws every wait right-aligned and tabular, the column never moving under 
   await serveModuleData(page, () => ({
     status: 200,
     data: parksPayload([
-      onePark('epcot', {
+      onePark(EPCOT, {
         rides: [
           ride('A', 5),
           ride('B', 45),
@@ -1031,7 +1047,7 @@ test('draws every wait right-aligned and tabular, the column never moving under 
       }),
     ]),
   }));
-  await render(page, placed(['epcot']));
+  await render(page, placed([EPCOT]));
 
   const waits = page.locator(WAIT);
   await expect(waits).toHaveCount(3);
@@ -1063,7 +1079,7 @@ test('reserves one constant wait column across a numeric wait and the longest no
   await serveModuleData(page, () => ({
     status: 200,
     data: parksPayload([
-      onePark('epcot', {
+      onePark(EPCOT, {
         rides: [
           ride('A', 5),
           ride('B', 45),
@@ -1074,7 +1090,7 @@ test('reserves one constant wait column across a numeric wait and the longest no
       }),
     ]),
   }));
-  await render(page, placed(['epcot']));
+  await render(page, placed([EPCOT]));
 
   const waits = page.locator(WAIT);
   await expect(waits).toHaveCount(5);
@@ -1090,9 +1106,9 @@ test('scrolls a ride name too wide for its own column, the full name still in th
   const longName = 'Guardians of the Galaxy: Cosmic Rewind — The Complete Extended Experience Edition';
   await serveModuleData(page, () => ({
     status: 200,
-    data: parksPayload([onePark('epcot', { rides: [ride(longName, 40)] })]),
+    data: parksPayload([onePark(EPCOT, { rides: [ride(longName, 40)] })]),
   }));
-  await render(page, placed(['epcot']));
+  await render(page, placed([EPCOT]));
 
   const text = page.locator('.ride-name-text').first();
   await expect(text, 'a name wider than its column gets the marquee class').toHaveClass(/marquee/);
@@ -1111,14 +1127,14 @@ test('leaves a ride name that already fits its own column static, no marquee', a
   await serveModuleData(page, () => ({
     status: 200,
     data: parksPayload([
-      onePark('epcot', {
+      onePark(EPCOT, {
         name: 'Islands of Adventure',
         hours: { open: '2026-01-01T09:00:00Z', close: '2026-01-01T21:00:00Z' },
         rides: [ride('Test Track', 40)],
       }),
     ]),
   }));
-  await render(page, placed(['epcot']));
+  await render(page, placed([EPCOT]));
 
   const text = page.locator('.ride-name-text').first();
   await expect(text, 'a name that already fits never gets the marquee class').not.toHaveClass(/marquee/);
@@ -1129,9 +1145,9 @@ test('suppresses the marquee under prefers-reduced-motion, an overflowing name l
   await page.emulateMedia({ reducedMotion: 'reduce' });
   await serveModuleData(page, () => ({
     status: 200,
-    data: parksPayload([onePark('epcot', { rides: [ride(longName, 40)] })]),
+    data: parksPayload([onePark(EPCOT, { rides: [ride(longName, 40)] })]),
   }));
-  await render(page, placed(['epcot']));
+  await render(page, placed([EPCOT]));
 
   const text = page.locator('.ride-name-text').first();
   await expect(
@@ -1146,9 +1162,9 @@ test('draws the Closed card’s icon and label centred — the one deliberate ex
 }) => {
   await serveModuleData(page, () => ({
     status: 200,
-    data: parksPayload([onePark('islands-of-adventure', { rides: [ride('Test', 'Closed')] })]),
+    data: parksPayload([onePark(ISLANDS_OF_ADVENTURE, { rides: [ride('Test', 'Closed')] })]),
   }));
-  await render(page, placed(['islands-of-adventure']));
+  await render(page, placed([ISLANDS_OF_ADVENTURE]));
 
   const closed = page.locator('[data-pwt-closed]');
   await expect(closed.locator('[data-pwt-closed-label]')).toHaveText('Closed');
@@ -1167,9 +1183,9 @@ test('draws the Closed card’s icon and label centred — the one deliberate ex
 test('draws the More Waits divider with no heading text', async ({ page }) => {
   await serveModuleData(page, () => ({
     status: 200,
-    data: parksPayload([onePark('epcot', { rides: rankedRoster() })]),
+    data: parksPayload([onePark(EPCOT, { rides: rankedRoster() })]),
   }));
-  await render(page, placed(['epcot']));
+  await render(page, placed([EPCOT]));
 
   const more = page.locator(MORE_WAITS);
   await expect(more.locator('h1, h2, h3, h4, h5, h6')).toHaveCount(0);
@@ -1182,13 +1198,13 @@ test('draws a park’s hours to the right of its name, both on the header’s ow
   await serveModuleData(page, () => ({
     status: 200,
     data: parksPayload([
-      onePark('magic-kingdom', {
+      onePark(MAGIC_KINGDOM, {
         name: 'Magic Kingdom',
         hours: { open: '2026-01-01T09:00:00Z', close: '2026-01-01T21:00:00Z' },
       }),
     ]),
   }));
-  await render(page, placed(['magic-kingdom']));
+  await render(page, placed([MAGIC_KINGDOM]));
 
   const name = page.locator('.name').first();
   const hours = page.locator('.hours').first();
@@ -1214,58 +1230,27 @@ test('draws a park’s hours to the right of its name, both on the header’s ow
   expect(whiteSpace, 'the hours never wrap').toBe('nowrap');
 });
 
-test('draws a park’s name with no icon at all, for a park the module has no matching glyph for', async ({ page }) => {
+test('draws a park’s name with no icon at all, for an id the module has no matching glyph for', async ({ page }) => {
   await serveModuleData(page, () => ({
     status: 200,
-    data: parksPayload([onePark('a-park-with-no-icon', { name: 'A Park With No Icon' })]),
+    data: parksPayload([onePark(UNKNOWN_PARK, { name: 'A Park With No Icon' })]),
   }));
-  await render(page, placed(['a-park-with-no-icon']));
+  await render(page, placed([UNKNOWN_PARK]));
 
   const header = page.locator(HEADER);
   await expect(header, 'the park’s own name is drawn').toContainText('A Park With No Icon');
   await expect(
     header.locator('[data-pwt-icon]'),
-    'no icon element renders for a park the module has no glyph for — the sanctioned fallback is name-only',
+    'no icon element renders for an id the module has no glyph for — the sanctioned fallback is name-only',
   ).toHaveCount(0);
-});
-
-// The module's own supported roster
-// (backend/internal/modules/park_wait_times/park_wait_times.go's `supported` map) — held here so a
-// park added to that map with no matching entry in this module's own ICONS set
-// (ParkWaitTimes.svelte) is caught here rather than shipping a silent name-only fallback nobody
-// meant. Frontend and backend have no shared, generated source for this roster (config/schema.json's
-// own `parks` field is unconstrained free-form strings — SRS055 validation is the backend's alone),
-// so this list is this test's own copy, kept in step with the backend's by citation rather than
-// import.
-const BACKEND_SUPPORTED_PARKS = [
-  'magic-kingdom',
-  'epcot',
-  'hollywood-studios',
-  'animal-kingdom',
-  'universal-studios',
-  'islands-of-adventure',
-];
-
-test('resolves an icon for every park the backend supports, not just one', async ({ page }) => {
-  await serveModuleData(page, () => ({
-    status: 200,
-    data: parksPayload(BACKEND_SUPPORTED_PARKS.map((id) => onePark(id))),
-  }));
-  await render(page, placed(BACKEND_SUPPORTED_PARKS, { columns: BACKEND_SUPPORTED_PARKS.length, rows: 1 }));
-
-  for (const id of BACKEND_SUPPORTED_PARKS) {
-    const icon = page.locator(`[data-pwt-park="${id}"] [data-pwt-icon]`);
-    await expect(icon, `${id} resolves an icon`).toBeVisible();
-    await expect(icon.locator('svg'), `${id}’s icon carries real glyph content`).toHaveCount(1);
-  }
 });
 
 test('keeps a long park name on one line, never wrapping the header', async ({ page }) => {
   await serveModuleData(page, () => ({
     status: 200,
-    data: parksPayload([onePark('epcot', { name: 'A Very Extraordinarily Long Theme Park Name That Keeps Right On Going' })]),
+    data: parksPayload([onePark(EPCOT, { name: 'A Very Extraordinarily Long Theme Park Name That Keeps Right On Going' })]),
   }));
-  await render(page, placed(['epcot']));
+  await render(page, placed([EPCOT]));
 
   const name = page.locator('.name').first();
   const whiteSpace = await name.evaluate((el) => getComputedStyle(el).whiteSpace);
@@ -1282,9 +1267,9 @@ test('draws the park’s own icon beside its name in the header, for a park the 
 }) => {
   await serveModuleData(page, () => ({
     status: 200,
-    data: parksPayload([onePark('magic-kingdom', { name: 'Magic Kingdom' })]),
+    data: parksPayload([onePark(MAGIC_KINGDOM, { name: 'Magic Kingdom' })]),
   }));
-  await render(page, placed(['magic-kingdom']));
+  await render(page, placed([MAGIC_KINGDOM]));
 
   const header = page.locator(HEADER);
   await expect(header, 'the park’s own name is drawn').toContainText('Magic Kingdom');
@@ -1298,18 +1283,18 @@ test('stands down to nothing while the backend is unreachable, and stops asking 
 
   const whileServing = await serveModuleData(page, () => ({
     status: 200,
-    data: parksPayload([onePark('magic-kingdom')]),
+    data: parksPayload([onePark(MAGIC_KINGDOM)]),
   }));
-  await render(page, placed(['magic-kingdom']));
+  await render(page, placed([MAGIC_KINGDOM]));
   await expect(page.locator(MODULE)).toBeVisible();
   const askedOnce = whileServing.urls.length;
   expect(askedOnce, 'it asked while the backend was serving').toBeGreaterThan(0);
 
   const whileGone = await serveModuleData(page, () => ({
     status: 200,
-    data: parksPayload([onePark('magic-kingdom')]),
+    data: parksPayload([onePark(MAGIC_KINGDOM)]),
   }));
-  await render(page, placed(['magic-kingdom']), 'frame', { healthz: 'abort' });
+  await render(page, placed([MAGIC_KINGDOM]), 'frame', { healthz: 'abort' });
 
   await expect(page.locator('[data-backend-unreachable]')).toBeVisible();
   await expect(page.locator(`[data-region="middle_center"] ${MODULE}`)).toHaveCount(0);

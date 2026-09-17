@@ -72,15 +72,19 @@ export function hoursText(hours: { open: string; close: string }): string {
   return `${clockTime(hours.open)}–${clockTime(hours.close)}`;
 }
 
-/** This module's icon set, keyed by park slug (the park-wait-times UI design spec § The park icon
-    set). */
+/** This module's icon set for the six parks it has always shown, keyed by each park's own upstream
+    entity id — the identifier the backend resolves a park to and carries as `id` across the boundary
+    (boundary/openapi.yaml's ParkWaitTimesPark.id) — so a known park chosen by its pretty name or by
+    its raw id alike resolves to one of these keys (the park-wait-times UI design spec § The park icon
+    set). Best-effort by owner ruling: this set is the frontend's own, with no shared source to gate
+    it against the backend, so a park the module has no key for simply gets the name-only fallback. */
 const ICONS: Record<string, string> = {
-  'magic-kingdom': castle,
-  epcot: globe,
-  'hollywood-studios': sorcererHat,
-  'animal-kingdom': tree,
-  'universal-studios': clapperboard,
-  'islands-of-adventure': coaster,
+  '75ea578a-adc8-4116-a54d-dccb60765ef9': castle, // Magic Kingdom
+  '47f90d2c-e191-4239-a466-5892ef59a88b': globe, // Epcot
+  '288747d1-8b4f-4a64-867e-ea7c9b27bad8': sorcererHat, // Hollywood Studios
+  '1c84a229-8862-4648-9c71-378ddd2c7693': tree, // Animal Kingdom
+  'eb3f4560-2383-4a36-9152-6b3e5ed6bc57': clapperboard, // Universal Studios
+  '267615cc-8943-4c2a-ae2c-5da728ca591f': coaster, // Islands of Adventure
 };
 
 /** The park's glyph, or undefined for a park the module has none for — the spec's name-only

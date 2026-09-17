@@ -816,9 +816,13 @@ func TestPostApiParkWaitTimesFansOutOverEveryConfiguredPark(t *testing.T) {
 	if len(payload.Parks) != 2 {
 		t.Fatalf("parks = %d, want 2: %+v", len(payload.Parks), payload.Parks)
 	}
-	if payload.Parks[0].Id != "epcot" || payload.Parks[1].Id != "magic-kingdom" {
-		t.Errorf("parks = [%s, %s], want the request's own order [epcot, magic-kingdom]",
-			payload.Parks[0].Id, payload.Parks[1].Id)
+	// Each park carries the identifier it was resolved to and fetched by (a recognized name → its
+	// entity id, an unrecognized one passed through), in the request's own order — derived from
+	// resolveEntityID rather than restated, so the order check cannot drift from the resolution.
+	wantFirst, wantSecond := resolveEntityID("epcot"), resolveEntityID("magic-kingdom")
+	if payload.Parks[0].Id != wantFirst || payload.Parks[1].Id != wantSecond {
+		t.Errorf("parks = [%s, %s], want the request's own order [%s, %s]",
+			payload.Parks[0].Id, payload.Parks[1].Id, wantFirst, wantSecond)
 	}
 	for _, park := range payload.Parks {
 		if !park.Available {
@@ -1775,8 +1779,8 @@ func TestPrettyNameResolvesToItsUUID(t *testing.T) {
 		t.Fatalf("parks = %d, want 1: %+v", len(payload.Parks), payload.Parks)
 	}
 	park := payload.Parks[0]
-	if park.Id != "Magic Kingdom" {
-		t.Errorf("Id = %q, want the request's own string echoed back", park.Id)
+	if park.Id != magicKingdomEntityID {
+		t.Errorf("Id = %q, want the resolved entity id %q — the id carries the fetch identifier, not the pretty name", park.Id, magicKingdomEntityID)
 	}
 	if !park.Available {
 		t.Errorf("available = false, want true — the pretty name should have resolved to a fetchable park: %+v", park)
