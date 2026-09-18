@@ -124,10 +124,11 @@ error is reported against it rather than buried under the test files' copy of th
   `CGO_ENABLED=0`, exiting 2 with `-race requires cgo` — which `ubuntu-latest` carries and a local run
   wants on `PATH`.
 
-- **The `cmd` soak is outside the `-race` step**, which is scoped to `./internal/...`. The detector's
-  shadow allocation inflates the resident set the bounded-footprint soak asserts is bounded, so
-  running it there would have the instrument move what it measures — and it would roughly double a
-  step already ~120s. `cmd` is covered once, by the plain `test ./...` before it.
+- **The `cmd` soak is outside the `-race` step**, which is scoped to `./internal/...`. Including it
+  would re-run the ~120s bounded-footprint soak under the detector, roughly doubling a step already
+  that long, for race coverage the `./internal/...` pass already provides — the soak's purpose is
+  live-heap growth, not race detection, and it trips no data race. `cmd` is covered once, by the
+  plain `test ./...` before it.
 
 **What it leaves unproven.** `go vet` is a fixed analyser set rather than a linter; a configured Go
 linter is § *Lint and type checks*'s. And

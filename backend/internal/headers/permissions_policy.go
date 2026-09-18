@@ -5,23 +5,22 @@ import (
 	"strings"
 )
 
-// universe is the Permissions-Policy directive names Chromium 151.0.7922.34
-// (the "Chrome for Testing" build Playwright 1.62.1 drives — chromium/chromium
-// tag 151.0.7922.34, commit 782af9cb30a53f54487e5d2e44738645a8ec457c) both
+// universe is the Permissions-Policy directive names Chromium 153.0.8010.12
+// (the "Chrome for Testing" build Playwright 1.63.0 drives — chromium/chromium
+// tag 153.0.8010.12, commit 971a7443b0c9b0a9b2860529b33331b76077ec62) both
 // declares in
-// https://github.com/chromium/chromium/blob/782af9cb30a53f54487e5d2e44738645a8ec457c/services/network/public/cpp/permissions_policy/permissions_policy_features.json5
+// https://github.com/chromium/chromium/blob/971a7443b0c9b0a9b2860529b33331b76077ec62/services/network/public/cpp/permissions_policy/permissions_policy_features.json5
 // and actually parses under a stock launch. That file also declares directive
 // names gated behind an origin trial or an unshipped runtime flag, which this
 // browser logs as "Unrecognized feature" or "Origin trial controlled feature
 // not enabled" — headers_test.go and the render tier's policy project
 // (frontend/playwright.policy.config.ts) both fail on either, which is how the
 // excluded names were found; a name is added back only once that check passes
-// clean with it present. Snapshotted 2026-09-05; a Chromium bump is a resync
+// clean with it present. Snapshotted 2026-09-18; a Chromium bump is a resync
 // of this slice against the render tier's own bundled browser.
 var universe = []string{
 	"accelerometer",
 	"aria-notify",
-	"attribution-reporting",
 	"autoplay",
 	"browsing-topics",
 	"interest-cohort",
@@ -67,7 +66,6 @@ var universe = []string{
 	"hid",
 	"identity-credentials-get",
 	"idle-detection",
-	"join-ad-interest-group",
 	"keyboard-map",
 	"language-detector",
 	"language-model",
@@ -82,15 +80,11 @@ var universe = []string{
 	"otp-credentials",
 	"payment",
 	"picture-in-picture",
-	"private-aggregation",
 	"private-state-token-issuance",
 	"publickey-credentials-create",
 	"publickey-credentials-get",
-	"run-ad-auction",
 	"screen-wake-lock",
 	"serial",
-	"shared-storage",
-	"shared-storage-select-url",
 	"storage-access",
 	"summarizer",
 	"sync-xhr",
