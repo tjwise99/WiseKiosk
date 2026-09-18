@@ -4,21 +4,21 @@ header: |
   An answering source is asked at most once every five minutes per park
 level: 102
 links:
-- SRS063: OybLXgG0WtQYK6CEw1D0aR6165-GIMgBa7E8dZtjp5c=
+- SRS063: Nk1SoqQ_McsgEDBHg44xkbOymftLbCbspTkdIMG-wp0=
 normative: true
 ref: ''
 references:
 - keyword: func TestTST080_ThePolicyComesToOnceEveryFiveMinutesForAPark(t *testing.T)
     {
   path: backend/internal/modules/park_wait_times/park_wait_times_test.go
-  sha: baa7cc215ee07880bead61f67ea142250f3cbd858ee0e4e5b3d1d1de0aa683e3
+  sha: 94ec26c3dcd9f90840db9f1ad40cb64e883691429ea7ab32db31e890096918b0
   type: file
 - keyword: func TestTST080_IntegrationParkKeysAreCachedIndependently(t *testing.T)
     {
   path: backend/internal/modules/park_wait_times/park_wait_times_test.go
-  sha: baa7cc215ee07880bead61f67ea142250f3cbd858ee0e4e5b3d1d1de0aa683e3
+  sha: 94ec26c3dcd9f90840db9f1ad40cb64e883691429ea7ab32db31e890096918b0
   type: file
-reviewed: W6NJMNyBoUBPVK76U9-nqFIxSX5ROtdJFzOGVmA2yCk=
+reviewed: AZ49mCO2N8_GT6oO3MWzhVGkQ6d0452m80C02DyROIg=
 status: accepted
 text: |
   Unit test over the module's registered policy — the cache interval and the rate/burst figures it

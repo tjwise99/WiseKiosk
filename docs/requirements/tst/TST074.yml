@@ -11,9 +11,9 @@ references:
 - keyword: 'test(''TST074: draws every configured park at once, none absent awaiting
     a rotation between parks'', async ({'
   path: frontend/src/modules/park_wait_times/park_wait_times.spec.ts
-  sha: 2f79c71a7ae7463202a620fb5f2ea1f9ce84917bc2e1b57b8789bb478f17e4e8
+  sha: dcce13a40a0b3e6e997d0c17dba2077ad8b8c1662110d9399005a3db6662b643
   type: file
-reviewed: 0ffSm5gPoHNn8P6dIk4bO5CS7T_-gc43ZF7jT35GiYM=
+reviewed: ougi5bBo6p_EhVgrCgb19eIIZmG8wVu_T1QMUYWIdms=
 status: accepted
 text: |
   Render test that, under a configuration naming four parks, every named park's card is present on

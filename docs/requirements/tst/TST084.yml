@@ -11,14 +11,14 @@ references:
 - keyword: func TestAParkWithNoOperatingScheduleEntryStillAnswersWithItsRides(t *testing.T)
     {
   path: backend/internal/modules/park_wait_times/park_wait_times_test.go
-  sha: baa7cc215ee07880bead61f67ea142250f3cbd858ee0e4e5b3d1d1de0aa683e3
+  sha: 94ec26c3dcd9f90840db9f1ad40cb64e883691429ea7ab32db31e890096918b0
   type: file
 - keyword: func TestFetchParkAnswersWithNilHoursWhenTheScheduleAnswersButCannotBeShaped(t
     *testing.T) {
   path: backend/internal/modules/park_wait_times/park_wait_times_test.go
-  sha: baa7cc215ee07880bead61f67ea142250f3cbd858ee0e4e5b3d1d1de0aa683e3
+  sha: 94ec26c3dcd9f90840db9f1ad40cb64e883691429ea7ab32db31e890096918b0
   type: file
-reviewed: Tj9kI6CBPSv7TidPmwWZHvHh0TkRLmSMNqviseJdHS8=
+reviewed: _o6AQ1hO7kvW3Qe12wwSz5osmsI_86dgkuwD2AwqNeI=
 status: accepted
 text: |
   Unit test of fetchPark's own assembly of a park's payload against a schedule call staged to fail two
