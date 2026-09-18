@@ -52,8 +52,9 @@ first execution under `-race`. A gate reading the count cannot tell the two apar
   With the subtle row's seed still in place, `test -race -run 'Test[^C]' ./internal/ratelimit/` — the
   package's every test but the concurrent one — exits 0: the race is there and undriven, so unseen.
   The step is also scoped to `./internal/...`, so nothing it reports concerns `cmd`, whose
-  bounded-footprint soak is excluded because the detector's shadow allocation would inflate the
-  resident set that soak asserts is bounded.
+  bounded-footprint soak is excluded because including it would re-run the ~120s soak under the
+  detector, roughly doubling the step, for race coverage the `./internal/...` pass already
+  provides — the soak's purpose is live-heap growth, not race detection, and it trips no data race.
 - **A cached result is read as a pass.** `go test` answers `(cached)` for a package whose inputs have
   not moved since a passing run, so a local re-run over an untouched tree asserts the cache rather
   than an execution. Go invalidates the entry on any input the test read, so it is not a stale-result
