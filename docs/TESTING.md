@@ -39,8 +39,8 @@ with the `internal/` packages run again under the race detector
 ([`CI.md § Backend build, vet and tests`](CI.md#backend-build-vet-and-tests)). Nothing is held back
 behind a build tag or a short-mode skip, so a backend test runs by existing — which is what makes its
 *location* the thing an author has to get right. The one platform constraint is the footprint tier's
-sampling, which reads open descriptors from `/proc` and is confined to Linux by its filename, live
-heap from the Go runtime's own memory statistics; the predicates it judges with are not.
+sampling, which reads open descriptors from `/proc` and live heap from the Go runtime's own memory
+statistics, and is confined to Linux by its filename; the predicates it judges with are not.
 
 - **Package mechanics** — beside the package, `backend/internal/<package>/*_test.go`. What one
   package's own logic does, decided without a server: the cache against its clock, the rate limiter
