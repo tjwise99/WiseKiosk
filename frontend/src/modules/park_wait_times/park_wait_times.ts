@@ -12,8 +12,11 @@ import tree from './icons/tree.svg?raw';
     one source `heldRides` and `noOpenRides` both derive from, so they cannot disagree. */
 export function ranked(rides: ParkWaitTimesRide[]): ParkWaitTimesRide[] {
   return rides
-    .filter((ride) => ride.state === ParkWaitTimesState.Operating)
-    .sort((a, b) => (b.waitMinutes as number) - (a.waitMinutes as number));
+    .filter(
+      (ride): ride is ParkWaitTimesRide & { waitMinutes: number } =>
+        ride.state === ParkWaitTimesState.Operating && ride.waitMinutes !== null,
+    )
+    .sort((a, b) => b.waitMinutes - a.waitMinutes);
 }
 
 /** The leaderboard: the `count` longest numeric waits
@@ -36,7 +39,8 @@ export function remainingRides(
   rides: ParkWaitTimesRide[],
   held: ParkWaitTimesRide[],
 ): ParkWaitTimesRide[] {
-  return rides.filter((ride) => !held.includes(ride));
+  const heldSet = new Set(held);
+  return rides.filter((ride) => !heldSet.has(ride));
 }
 
 /** How many tour pages the remainder fills, at `tourSize` per page — never fewer than one, so an
