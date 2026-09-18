@@ -244,6 +244,45 @@ func openDescriptors(t *testing.T) int {
 	return len(entries)
 }
 
+// heapSink holds the allocation TestHeapInuseSamplerReflectsHeldMemory
+// measures, at package scope so the compiler cannot prove it dead and elide
+// it.
+var heapSink []byte
+
+// TestHeapInuseSamplerReflectsHeldMemory drives a known allocation through the
+// live-heap sampler directly: held, live heap must rise by most of what was
+// allocated; freed and collected, it must fall back to most of the way where
+// it started. The bound is a fraction of the allocation itself, not a tuned
+// constant, so the test needs no artifact-specific calibration and stays
+// deterministic.
+func TestHeapInuseSamplerReflectsHeldMemory(t *testing.T) {
+	const holdKB = 8 * 1024 // 8 MiB, in the kB heapInuseKB reports
+
+	runtime.GC()
+	baseline := heapInuseKB(t)
+
+	heapSink = make([]byte, holdKB*1024)
+	for i := range heapSink {
+		heapSink[i] = byte(i)
+	}
+	runtime.GC()
+	held := heapInuseKB(t)
+
+	if grew := held - baseline; grew < holdKB/2 {
+		t.Fatalf("holding %d kB raised live heap by %d kB (baseline %d kB, held %d kB), want at least %d kB",
+			holdKB, grew, baseline, held, holdKB/2)
+	}
+
+	heapSink = nil
+	runtime.GC()
+	after := heapInuseKB(t)
+
+	if remaining := after - baseline; remaining >= holdKB/2 {
+		t.Fatalf("freeing the hold left live heap %d kB above baseline (baseline %d kB, after %d kB), want under %d kB",
+			remaining, baseline, after, holdKB/2)
+	}
+}
+
 // goroutineFloor is the lowest of floorReadings goroutine counts taken
 // floorSpacing apart.
 func goroutineFloor() int {

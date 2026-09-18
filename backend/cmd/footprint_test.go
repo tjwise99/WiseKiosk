@@ -117,12 +117,12 @@ func render(series []sample) string {
 }
 
 // synthesise builds a series of n samples from a function per resource.
-func synthesise(n int, rssKB, fds, goroutines func(int) int) []sample {
+func synthesise(n int, heapKB, fds, goroutines func(int) int) []sample {
 	series := make([]sample, n)
 	for i := range series {
 		series[i] = sample{
 			at:         time.Duration(i) * time.Second,
-			rssKB:      rssKB(i),
+			heapKB:     heapKB(i),
 			fds:        fds(i),
 			goroutines: goroutines(i),
 		}
@@ -143,39 +143,39 @@ func flat(value int) func(int) int {
 func TestFootprintPredicatesJudgeSyntheticSeries(t *testing.T) {
 	const (
 		samples     = 40
-		steadyRSS   = 16000
+		steadyHeap  = 16000
 		steadyFDs   = 10
 		steadyTasks = 14
 	)
 
-	steady := synthesise(samples, flat(steadyRSS), flat(steadyFDs), flat(steadyTasks))
+	steady := synthesise(samples, flat(steadyHeap), flat(steadyFDs), flat(steadyTasks))
 
-	// A fifth of steadyRSS added linearly across the series, which the quartile
-	// comparison reads as about three quarters of that.
+	// A fifth of steadyHeap added linearly across the series, which the
+	// quartile comparison reads as about three quarters of that.
 	ramping := synthesise(samples, func(i int) int {
-		return steadyRSS + i*steadyRSS/5/(samples-1)
+		return steadyHeap + i*steadyHeap/5/(samples-1)
 	}, flat(steadyFDs), flat(steadyTasks))
 
 	spiking := synthesise(samples, func(i int) int {
 		if i == samples/2 {
-			return steadyRSS * 3
+			return steadyHeap * 3
 		}
-		return steadyRSS
+		return steadyHeap
 	}, flat(steadyFDs), flat(steadyTasks))
 
-	climbingFDs := synthesise(samples, flat(steadyRSS), func(i int) int {
+	climbingFDs := synthesise(samples, flat(steadyHeap), func(i int) int {
 		return steadyFDs + i
 	}, flat(steadyTasks))
 
-	churningFDs := synthesise(samples, flat(steadyRSS), func(i int) int {
+	churningFDs := synthesise(samples, flat(steadyHeap), func(i int) int {
 		return steadyFDs + i%3
 	}, flat(steadyTasks))
 
-	climbingTasks := synthesise(samples, flat(steadyRSS), flat(steadyFDs), func(i int) int {
+	climbingTasks := synthesise(samples, flat(steadyHeap), flat(steadyFDs), func(i int) int {
 		return steadyTasks + i/10
 	})
 
-	dippingTasks := synthesise(samples, flat(steadyRSS), flat(steadyFDs), func(i int) int {
+	dippingTasks := synthesise(samples, flat(steadyHeap), flat(steadyFDs), func(i int) int {
 		if i == samples/2 {
 			return steadyTasks + 6
 		}
@@ -201,10 +201,10 @@ func TestFootprintPredicatesJudgeSyntheticSeries(t *testing.T) {
 		judge  func([]sample) bool
 		want   bool
 	}{
-		{"resident memory holding steady", steady, judgeMemory, false},
-		{"resident memory ramping", ramping, judgeMemory, true},
-		{"resident memory spiking once", spiking, judgeMemory, false},
-		{"resident memory over too short a series", steady[:3], judgeMemory, false},
+		{"heap holding steady", steady, judgeMemory, false},
+		{"heap ramping", ramping, judgeMemory, true},
+		{"heap spiking once", spiking, judgeMemory, false},
+		{"heap over too short a series", steady[:3], judgeMemory, false},
 		{"descriptors holding steady", steady, judgeHandles, false},
 		{"descriptors climbing", climbingFDs, judgeHandles, true},
 		{"descriptors churning inside the margin", churningFDs, judgeHandles, false},
