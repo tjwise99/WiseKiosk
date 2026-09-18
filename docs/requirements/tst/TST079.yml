@@ -11,14 +11,14 @@ references:
 - keyword: func TestTST079_ThePolicyHoldsAnAnswerNoLongerThanTheFreshnessBound(t *testing.T)
     {
   path: backend/internal/modules/park_wait_times/park_wait_times_test.go
-  sha: 94ec26c3dcd9f90840db9f1ad40cb64e883691429ea7ab32db31e890096918b0
+  sha: 36023efc4a68536c47f0513c8de6a81a7ae92e456b4b54dc14a6ecf9a3d6b0c6
   type: file
 - keyword: 'test(''TST079: follows its source to a new reading inside the freshness
     bound, without reloading'', async ({'
   path: frontend/src/modules/park_wait_times/park_wait_times.spec.ts
-  sha: dcce13a40a0b3e6e997d0c17dba2077ad8b8c1662110d9399005a3db6662b643
+  sha: 78eb517e4dece93bf01b5763ecb95e0f20cce59e67ab0919fff2e2766987fbad
   type: file
-reviewed: EObyo-C_8K9qxRQQVMakeKfV3U1Azr6irBh-smX9eEI=
+reviewed: uh7eeZqwus5ambJxwFU7QxWeuItUz__dObH65NEd04g=
 status: accepted
 text: |
   Two checks. A unit test over the module's registered policy, asserting the interval a served answer

@@ -11,14 +11,14 @@ references:
 - keyword: func TestTST080_ThePolicyComesToOnceEveryFiveMinutesForAPark(t *testing.T)
     {
   path: backend/internal/modules/park_wait_times/park_wait_times_test.go
-  sha: 94ec26c3dcd9f90840db9f1ad40cb64e883691429ea7ab32db31e890096918b0
+  sha: 36023efc4a68536c47f0513c8de6a81a7ae92e456b4b54dc14a6ecf9a3d6b0c6
   type: file
 - keyword: func TestTST080_IntegrationParkKeysAreCachedIndependently(t *testing.T)
     {
   path: backend/internal/modules/park_wait_times/park_wait_times_test.go
-  sha: 94ec26c3dcd9f90840db9f1ad40cb64e883691429ea7ab32db31e890096918b0
+  sha: 36023efc4a68536c47f0513c8de6a81a7ae92e456b4b54dc14a6ecf9a3d6b0c6
   type: file
-reviewed: AZ49mCO2N8_GT6oO3MWzhVGkQ6d0452m80C02DyROIg=
+reviewed: C-mkQrya_Zbwx51EJyiVmYbk_8w9loqJYr7sAobf3YY=
 status: accepted
 text: |
   Unit test over the module's registered policy — the cache interval and the rate/burst figures it
