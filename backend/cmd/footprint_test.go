@@ -9,10 +9,10 @@ import (
 	"time"
 )
 
-// memoryGrowthLimit is what the resident-memory predicate judges against,
+// memoryGrowthLimit is what the live-heap predicate judges against,
 // tunable so a longer observation can be judged on a tighter figure.
 var memoryGrowthLimit = flag.Float64("footprint-memory-growth", 0.10,
-	"the fractional rise in resident memory the footprint run fails past")
+	"the fractional rise in live heap the footprint run fails past")
 
 const (
 	// handleMargin is how far above the idle baseline the descriptor count may
@@ -31,12 +31,12 @@ const (
 // sample is one instant's reading of the three sampled resources.
 type sample struct {
 	at         time.Duration
-	rssKB      int
+	heapKB     int
 	fds        int
 	goroutines int
 }
 
-// memoryGrew reports the fractional change from the median resident memory of
+// memoryGrew reports the fractional change from the median live heap of
 // the series' first quartile to that of its last, and whether it exceeds limit.
 // A quartile median moves on a sustained rise and not on a single spike. A
 // series too short to hold a quartile, or one starting at zero, reports no
@@ -50,21 +50,21 @@ func memoryGrew(judged []sample, limit float64) (float64, bool) {
 		return 0, false
 	}
 
-	first := medianRSS(judged[:quartile])
+	first := medianHeap(judged[:quartile])
 	if first == 0 {
 		return 0, false
 	}
 
-	growth := (medianRSS(judged[len(judged)-quartile:]) - first) / first
+	growth := (medianHeap(judged[len(judged)-quartile:]) - first) / first
 	return growth, growth > limit
 }
 
-// medianRSS is the median resident memory of part, averaging the middle pair
+// medianHeap is the median live heap of part, averaging the middle pair
 // where part holds an even number of samples.
-func medianRSS(part []sample) float64 {
+func medianHeap(part []sample) float64 {
 	values := make([]int, len(part))
 	for i, s := range part {
-		values[i] = s.rssKB
+		values[i] = s.heapKB
 	}
 	sort.Ints(values)
 
@@ -106,10 +106,10 @@ func tasksGrew(judged []sample) (int, int, bool) {
 // rather than the verdict.
 func render(series []sample) string {
 	var out strings.Builder
-	out.WriteString("  elapsed\trss kB\tfds\tgoroutines\n")
+	out.WriteString("  elapsed\theap kB\tfds\tgoroutines\n")
 	for _, s := range series {
 		out.WriteString("  " + s.at.String())
-		out.WriteString("\t" + strconv.Itoa(s.rssKB))
+		out.WriteString("\t" + strconv.Itoa(s.heapKB))
 		out.WriteString("\t" + strconv.Itoa(s.fds))
 		out.WriteString("\t" + strconv.Itoa(s.goroutines) + "\n")
 	}

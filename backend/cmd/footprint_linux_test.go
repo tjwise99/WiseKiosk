@@ -1,6 +1,7 @@
-// Resident memory and open descriptors are read from /proc, so the sampling
-// half of the harness is constrained to Linux by this file's name. The
-// predicates it judges with carry no such constraint and sit beside it.
+// Live heap is read from the Go runtime's own memory statistics, and open
+// descriptors are read from /proc, so the sampling half of the harness is
+// constrained to Linux by this file's name. The predicates it judges with
+// carry no such constraint and sit beside it.
 package main
 
 import (
@@ -8,9 +9,7 @@ import (
 	"net/http"
 	"os"
 	"runtime"
-	"runtime/debug"
 	"strconv"
-	"strings"
 	"sync"
 	"sync/atomic"
 	"testing"
@@ -69,7 +68,7 @@ var requests = []struct {
 }
 
 // TestRunningFootprintStaysBounded drives the assembled server under sustained
-// load, samples resident memory, open descriptors and the goroutine count at a
+// load, samples live heap, open descriptors and the goroutine count at a
 // fixed interval, and judges the post-warmup series with the three predicates
 // beside it. An idle sample taken before anything has issued a request is what
 // the descriptor margin is measured against.
@@ -112,7 +111,7 @@ func TestRunningFootprintStaysBounded(t *testing.T) {
 	failed := false
 	if growth, grew := memoryGrew(judged, *memoryGrowthLimit); grew {
 		failed = true
-		t.Errorf("resident memory rose %.1f%% across the run, past the %.1f%% the run allows",
+		t.Errorf("live heap rose %.1f%% across the run, past the %.1f%% the run allows",
 			growth*100, *memoryGrowthLimit*100)
 	}
 	if peak, grew := handlesGrew(judged, baseline.fds); grew {
@@ -125,7 +124,7 @@ func TestRunningFootprintStaysBounded(t *testing.T) {
 		t.Errorf("goroutines ended the run at %d, above the %d the first judged sample held", last, first)
 	}
 
-	t.Logf("idle baseline: rss %d kB, descriptors %d, goroutines %d", baseline.rssKB, baseline.fds, baseline.goroutines)
+	t.Logf("idle baseline: live heap %d kB, descriptors %d, goroutines %d", baseline.heapKB, baseline.fds, baseline.goroutines)
 	t.Logf("%d requests over %s, %d samples at %s, %d judged after warmup",
 		issued.Load(), *loadDuration, len(series), *sampleInterval, len(judged))
 	if failed {
@@ -190,7 +189,6 @@ func collect(t *testing.T, duration, interval time.Duration) []sample {
 			// rather than uncollected garbage or GC-pacing slack; a real leak
 			// retains memory GC cannot free and still reads as growth.
 			runtime.GC()
-			debug.FreeOSMemory()
 			series = append(series, takeSample(t, time.Since(started).Round(time.Millisecond)))
 		case <-deadline:
 			return series
@@ -201,35 +199,16 @@ func collect(t *testing.T, duration, interval time.Duration) []sample {
 // takeSample reads the three resources at one instant.
 func takeSample(t *testing.T, at time.Duration) sample {
 	t.Helper()
-	return sample{at: at, rssKB: residentKB(t), fds: openDescriptors(t), goroutines: goroutineFloor()}
+	return sample{at: at, heapKB: heapInuseKB(t), fds: openDescriptors(t), goroutines: goroutineFloor()}
 }
 
-// residentKB reads the VmRSS line of /proc/self/status, in kilobytes.
-func residentKB(t *testing.T) int {
+// heapInuseKB reads the Go runtime's live-heap accounting, in kilobytes.
+func heapInuseKB(t *testing.T) int {
 	t.Helper()
 
-	status, err := os.ReadFile("/proc/self/status")
-	if err != nil {
-		t.Fatalf("reading /proc/self/status: %v", err)
-	}
-	for _, line := range strings.Split(string(status), "\n") {
-		rest, found := strings.CutPrefix(line, "VmRSS:")
-		if !found {
-			continue
-		}
-		fields := strings.Fields(rest)
-		if len(fields) == 0 {
-			break
-		}
-		kb, err := strconv.Atoi(fields[0])
-		if err != nil {
-			t.Fatalf("reading VmRSS from %q: %v", line, err)
-		}
-		return kb
-	}
-
-	t.Fatal("/proc/self/status carries no VmRSS line")
-	return 0
+	var stats runtime.MemStats
+	runtime.ReadMemStats(&stats)
+	return int(stats.HeapInuse / 1024)
 }
 
 // openDescriptors counts the entries of /proc/self/fd. The handle the read
