@@ -12,6 +12,7 @@ import (
 	"os"
 	"path/filepath"
 	"regexp"
+	"slices"
 	"strings"
 	"sync"
 	"sync/atomic"
@@ -554,8 +555,8 @@ func TestShapeScheduleSelectsTheDayInTheOperatingEntrysOwnOffset(t *testing.T) {
 
 // TestLiveAndScheduleURLsNameTheParksEntity reads the upstream requests a
 // real fetch actually issues, not a URL-building helper in isolation: both
-// carry the entity id resolved for the park, and nothing this module was not
-// handed
+// are exactly the entity id's own live and schedule URLs, nothing this
+// module was not handed
 // (SRS065<!-- The park-wait-times module takes what it shows from one external wait-times source -->).
 func TestLiveAndScheduleURLsNameTheParksEntity(t *testing.T) {
 	entityID := magicKingdomEntityID
@@ -574,26 +575,19 @@ func TestLiveAndScheduleURLsNameTheParksEntity(t *testing.T) {
 	urls := append([]string(nil), transport.urls...)
 	transport.mu.Unlock()
 
-	var sawLive, sawSchedule bool
+	// Exact equality, not a substring/suffix check: a loose check would still
+	// pass a call that carried the right id and suffix at the wrong host.
+	wantLive, wantSchedule := liveURL(entityID), scheduleURL(entityID)
+	if !slices.Contains(urls, wantLive) {
+		t.Errorf("no request for %q among %v", wantLive, urls)
+	}
+	if !slices.Contains(urls, wantSchedule) {
+		t.Errorf("no request for %q among %v", wantSchedule, urls)
+	}
 	for _, u := range urls {
-		if !strings.HasPrefix(u, "https://") {
-			t.Errorf("upstream request %q is not an https request", u)
+		if u != wantLive && u != wantSchedule {
+			t.Errorf("upstream request %q, want only the resolved entity's own live/schedule URLs", u)
 		}
-		if !strings.Contains(u, entityID) {
-			t.Errorf("upstream request %q does not carry the resolved entity id %q", u, entityID)
-		}
-		switch {
-		case strings.HasSuffix(u, "/live"):
-			sawLive = true
-		case strings.HasSuffix(u, "/schedule"):
-			sawSchedule = true
-		}
-	}
-	if !sawLive {
-		t.Errorf("no /live call among %v, want one carrying the entity id", urls)
-	}
-	if !sawSchedule {
-		t.Errorf("no /schedule call among %v, want one carrying the entity id", urls)
 	}
 }
 
