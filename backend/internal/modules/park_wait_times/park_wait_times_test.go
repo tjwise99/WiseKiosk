@@ -815,22 +815,61 @@ func TestPostApiParkWaitTimesFansOutOverEveryConfiguredPark(t *testing.T) {
 	if len(payload.Parks) != 2 {
 		t.Fatalf("parks = %d, want 2: %+v", len(payload.Parks), payload.Parks)
 	}
-	// Each park carries the identifier it was resolved to and fetched by (a recognized name → its
-	// entity id, an unrecognized one passed through), in the request's own order — derived from
-	// resolvePark rather than restated, so the order check cannot drift from the resolution.
+	// Each park carries the pretty name it was resolved to, in the request's own order — the wire
+	// carries no id (#344 closeout WI-3) to check the order against instead.
+	if payload.Parks[0].Name != "Epcot" || payload.Parks[1].Name != "Magic Kingdom" {
+		t.Errorf("parks = [%s, %s], want the request's own order [Epcot, Magic Kingdom]",
+			payload.Parks[0].Name, payload.Parks[1].Name)
+	}
+	// Each was fetched from the upstream at the identity resolvePark gave it (TST086: "fetched at
+	// the identity recorded") — derived from resolvePark rather than restated, so this cannot drift
+	// from the resolution.
 	_, wantFirst, _ := resolvePark("Epcot")
 	_, wantSecond, _ := resolvePark("Magic Kingdom")
-	if payload.Parks[0].Id != wantFirst || payload.Parks[1].Id != wantSecond {
-		t.Errorf("parks = [%s, %s], want the request's own order [%s, %s]",
-			payload.Parks[0].Id, payload.Parks[1].Id, wantFirst, wantSecond)
+	transport.mu.Lock()
+	_, sawFirst := transport.calls[liveURL(wantFirst)]
+	_, sawSecond := transport.calls[liveURL(wantSecond)]
+	transport.mu.Unlock()
+	if !sawFirst || !sawSecond {
+		t.Errorf("no /live call carried the resolved identity for both Epcot (%s) and Magic Kingdom (%s)", wantFirst, wantSecond)
 	}
 	for _, park := range payload.Parks {
 		if !park.Available {
-			t.Errorf("park %s: available = false, want true against a serving source", park.Id)
+			t.Errorf("park %s: available = false, want true against a serving source", park.Name)
 		}
 		if park.Rides == nil || len(*park.Rides) == 0 {
-			t.Errorf("park %s: carries no rides", park.Id)
+			t.Errorf("park %s: carries no rides", park.Name)
 		}
+	}
+}
+
+// TestPostApiParkWaitTimesPayloadCarriesNoParkID reads #344 closeout WI-3: a
+// served park carries no `id` key on the wire, read off the raw JSON rather
+// than the generated struct so this stays meaningful once the field is gone
+// from boundary.ParkWaitTimesPark.
+func TestPostApiParkWaitTimesPayloadCarriesNoParkID(t *testing.T) {
+	live := liveResponseBytes(t)
+	held := http.DefaultTransport
+	http.DefaultTransport = liveTransport(live)
+	t.Cleanup(func() { http.DefaultTransport = held })
+	freshRoute(t)
+
+	recorder := serve(t, `{"parks":["Magic Kingdom"]}`)
+	if recorder.Code != http.StatusOK {
+		t.Fatalf("status = %d, want %d (%s)", recorder.Code, http.StatusOK, recorder.Body)
+	}
+
+	var raw struct {
+		Parks []map[string]json.RawMessage `json:"parks"`
+	}
+	if err := json.Unmarshal(recorder.Body.Bytes(), &raw); err != nil {
+		t.Fatalf("reading the served payload as raw JSON: %v", err)
+	}
+	if len(raw.Parks) != 1 {
+		t.Fatalf("parks = %d, want 1: %+v", len(raw.Parks), raw.Parks)
+	}
+	if _, present := raw.Parks[0]["id"]; present {
+		t.Errorf(`park carries an "id" key on the wire, want none: %s`, recorder.Body)
 	}
 }
 
@@ -958,7 +997,7 @@ func TestColdStartFetchesEveryParkConcurrentlyNotSequentially(t *testing.T) {
 	}
 	for _, park := range payload.Parks {
 		if park.Available {
-			t.Errorf("%s: available = true against a source that never answered, want false", park.Id)
+			t.Errorf("%s: available = true against a source that never answered, want false", park.Name)
 		}
 	}
 }
@@ -1209,8 +1248,10 @@ func TestPostApiParkWaitTimesAnswersShuttingDownWhenTheCallersContextEnds(t *tes
 	if err := json.Unmarshal(recorder.Body.Bytes(), &failure); err != nil {
 		t.Fatalf("reading the failure body %q: %v", recorder.Body, err)
 	}
-	if failure.Cause != causeShuttingDown {
-		t.Errorf("Cause = %q, want %q", failure.Cause, causeShuttingDown)
+	// Checked against the framework's own exported constant, not this package's identically-valued
+	// private one (#344 closeout WI-5).
+	if failure.Cause != router.CauseShuttingDown {
+		t.Errorf("Cause = %q, want router.CauseShuttingDown (%q)", failure.Cause, router.CauseShuttingDown)
 	}
 }
 
@@ -1763,7 +1804,10 @@ func (c *capturingTransport) sawURLContaining(substr string) bool {
 // TestPrettyNameResolvesToItsUUID reads decisions 3-4 of the #309 build spec:
 // a config entry naming a park by its known pretty name resolves to that
 // park's upstream entity id, and the upstream call this park's own fetch
-// makes carries that id — not the pretty name itself.
+// makes carries that id — not the pretty name itself (TST086: fetched at the
+// identity recorded). The id itself never crosses the boundary (#344 closeout
+// WI-3), so this is read off the upstream call the transport captured, not a
+// wire field.
 func TestPrettyNameResolvesToItsUUID(t *testing.T) {
 	transport := &capturingTransport{body: liveResponseBytes(t)}
 	held := http.DefaultTransport
@@ -1784,9 +1828,6 @@ func TestPrettyNameResolvesToItsUUID(t *testing.T) {
 		t.Fatalf("parks = %d, want 1: %+v", len(payload.Parks), payload.Parks)
 	}
 	park := payload.Parks[0]
-	if park.Id != magicKingdomEntityID {
-		t.Errorf("Id = %q, want the resolved entity id %q — the id carries the fetch identifier, not the pretty name", park.Id, magicKingdomEntityID)
-	}
 	if !park.Available {
 		t.Errorf("available = false, want true — the pretty name should have resolved to a fetchable park: %+v", park)
 	}
@@ -2049,11 +2090,14 @@ func TestAKnownParkStaysAvailableWhenTheLiveResponseHasNoParkRow(t *testing.T) {
 // TestAPassThroughParkRecognizedByItsEntityIDShowsThePrettyName covers the
 // second row of the resolution table: a configured string that is a known
 // park's entity id — not its pretty name — still resolves to that park's own
-// pretty name, not the fuller name the source carries. Configuring by the id
-// is the case FuzzResolvePark only line-covers; here it is asserted end to end.
+// pretty name, not the fuller name the source carries, and is fetched at that
+// same id (TST086: fetched at the identity recorded — the id itself never
+// crosses the boundary, #344 closeout WI-3). Configuring by the id is the
+// case FuzzResolvePark only line-covers; here it is asserted end to end.
 func TestAPassThroughParkRecognizedByItsEntityIDShowsThePrettyName(t *testing.T) {
+	transport := &capturingTransport{body: liveResponseBytes(t)}
 	held := http.DefaultTransport
-	http.DefaultTransport = liveTransport(liveResponseBytes(t))
+	http.DefaultTransport = transport
 	t.Cleanup(func() { http.DefaultTransport = held })
 	freshRoute(t)
 
@@ -2074,8 +2118,8 @@ func TestAPassThroughParkRecognizedByItsEntityIDShowsThePrettyName(t *testing.T)
 	if park.Name != "Magic Kingdom" {
 		t.Errorf("Name = %q, want the pretty name %q for a park configured by its own entity id", park.Name, "Magic Kingdom")
 	}
-	if park.Id != magicKingdomEntityID {
-		t.Errorf("Id = %q, want the entity id %q", park.Id, magicKingdomEntityID)
+	if !transport.sawURLContaining(magicKingdomEntityID) {
+		t.Errorf("no upstream call carried the entity id %q the park was configured by", magicKingdomEntityID)
 	}
 }
 
@@ -2126,8 +2170,12 @@ func TestAPassThroughParkIsNamedFromTheSchedule(t *testing.T) {
 	if payload.Parks[0].Name != scheduleName {
 		t.Errorf("Name = %q, want the source's own schedule name %q for a pass-through park", payload.Parks[0].Name, scheduleName)
 	}
-	if payload.Parks[0].Id != configured {
-		t.Errorf("Id = %q, want the configured string %q fetched through unchanged", payload.Parks[0].Id, configured)
+	// Fetched through as configured (TST086), not carried as a wire field (#344 closeout WI-3).
+	transport.mu.Lock()
+	_, sawConfigured := transport.calls[liveURL(configured)]
+	transport.mu.Unlock()
+	if !sawConfigured {
+		t.Errorf("no /live call carried the configured string %q fetched through unchanged", configured)
 	}
 }
 

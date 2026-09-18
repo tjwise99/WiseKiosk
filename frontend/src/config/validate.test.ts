@@ -271,6 +271,87 @@ describe('the configuration validator', () => {
     });
   });
 
+  // The park-wait-times module's own required keys (#344 closeout WI-4): which parks are shown
+  // and how the grid is shaped carry no default, the same way weather's location does not above.
+  it('names the missing key when a park-wait-times placement omits its own parks list', () => {
+    const result = validateConfiguration({
+      modules: [
+        { region: 'middle_center', module: 'park_wait_times', options: { columns: 1, rows: 1 } },
+      ],
+    });
+
+    expect(result.valid).toBe(false);
+    if (result.valid) {
+      return;
+    }
+    expect(result.faults).toContainEqual({
+      where: '/modules/0/options',
+      what: "must have required property 'parks': parks",
+    });
+  });
+
+  it('rejects a park-wait-times parks list left empty', () => {
+    const result = validateConfiguration({
+      modules: [
+        { region: 'middle_center', module: 'park_wait_times', options: { parks: [], columns: 1, rows: 1 } },
+      ],
+    });
+
+    expect(result.valid).toBe(false);
+    if (result.valid) {
+      return;
+    }
+    expect(result.faults).toContainEqual({
+      where: '/modules/0/options/parks',
+      what: 'must NOT have fewer than 1 items',
+    });
+  });
+
+  it('rejects a park-wait-times grid shaped with fewer than one column or row', () => {
+    const zeroColumns = validateConfiguration({
+      modules: [
+        { region: 'middle_center', module: 'park_wait_times', options: { parks: ['Epcot'], columns: 0, rows: 1 } },
+      ],
+    });
+    expect(zeroColumns.valid).toBe(false);
+    if (zeroColumns.valid) {
+      return;
+    }
+    expect(zeroColumns.faults).toContainEqual({ where: '/modules/0/options/columns', what: 'must be >= 1' });
+
+    const zeroRows = validateConfiguration({
+      modules: [
+        { region: 'middle_center', module: 'park_wait_times', options: { parks: ['Epcot'], columns: 1, rows: 0 } },
+      ],
+    });
+    expect(zeroRows.valid).toBe(false);
+    if (zeroRows.valid) {
+      return;
+    }
+    expect(zeroRows.faults).toContainEqual({ where: '/modules/0/options/rows', what: 'must be >= 1' });
+  });
+
+  it('rejects a park-wait-times rotation interval below the two-second floor', () => {
+    const result = validateConfiguration({
+      modules: [
+        {
+          region: 'middle_center',
+          module: 'park_wait_times',
+          options: { parks: ['Epcot'], columns: 1, rows: 1, rotation_interval_seconds: 1 },
+        },
+      ],
+    });
+
+    expect(result.valid).toBe(false);
+    if (result.valid) {
+      return;
+    }
+    expect(result.faults).toContainEqual({
+      where: '/modules/0/options/rotation_interval_seconds',
+      what: 'must be >= 2',
+    });
+  });
+
   it('rejects a document that is not an object at all', () => {
     const result = validateConfiguration([]);
 

@@ -139,15 +139,15 @@ describe('clockTime', () => {
 });
 
 describe('iconFor', () => {
-  it('resolves a real glyph for a park the module has one for, keyed on its entity id', () => {
-    // Magic Kingdom's own entity id — the identifier the boundary carries as `id`
-    // (boundary/openapi.yaml's ParkWaitTimesPark.id), which the icon set is keyed on.
-    const icon = iconFor('75ea578a-adc8-4116-a54d-dccb60765ef9');
+  it('resolves a real glyph for a park the module has one for, keyed on its pretty name', () => {
+    // The icon set is keyed on the pretty name (boundary/openapi.yaml's ParkWaitTimesPark.name),
+    // the one identity the wire carries (#344 closeout WI-3).
+    const icon = iconFor('Magic Kingdom');
     expect(icon).toContain('<svg');
   });
 
-  it('resolves nothing for an id the module has no glyph for — the name-only fallback', () => {
-    expect(iconFor('00000000-0000-4000-8000-000000000000')).toBeUndefined();
+  it('resolves nothing for a name the module has no glyph for — the name-only fallback', () => {
+    expect(iconFor('Not A Known Park')).toBeUndefined();
   });
 });
 
