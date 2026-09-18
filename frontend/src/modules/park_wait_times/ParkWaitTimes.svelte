@@ -87,8 +87,8 @@
         bind:this={gridEl}
         use:gridShape={{ columns: gridColumns, rows: gridRows }}
       >
-        {#each pwtPayload.data.parks as park (park.id)}
-          <ParkCard {park} icon={iconFor(park.id)} {rotationSeconds} />
+        {#each pwtPayload.data.parks as park, index (index)}
+          <ParkCard {park} icon={iconFor(park.name)} {rotationSeconds} />
         {/each}
       </ol>
     {/if}

@@ -97,23 +97,23 @@ export function uniformCardWidth(measures: CardHeaderMeasure[]): number {
   return Math.ceil(Math.max(...measures.map(cardWidth)));
 }
 
-/** This module's icon set — the six parks it ships an icon for, keyed by each park's own upstream
-    entity id — the identifier the backend resolves a park to and carries as `id` across the boundary
-    (boundary/openapi.yaml's ParkWaitTimesPark.id) — so a known park chosen by its pretty name or by
-    its raw id alike resolves to one of these keys (the park-wait-times UI design spec § The park icon
-    set). Best-effort by owner ruling: this set is the frontend's own, with no shared source to gate
-    it against the backend, so a park the module has no key for simply gets the name-only fallback. */
+/** This module's icon set — the six parks it ships an icon for, keyed by each park's own pretty name
+    — the one identity the boundary carries (boundary/openapi.yaml's ParkWaitTimesPark.name) — so a
+    known park resolves to one of these keys regardless of the upstream identifier behind it (the
+    park-wait-times UI design spec § The park icon set). Best-effort by owner ruling: this set is the
+    frontend's own, with no shared source to gate it against the backend, so a park the module has no
+    key for simply gets the name-only fallback. */
 const ICONS: Record<string, string> = {
-  '75ea578a-adc8-4116-a54d-dccb60765ef9': castle, // Magic Kingdom
-  '47f90d2c-e191-4239-a466-5892ef59a88b': globe, // Epcot
-  '288747d1-8b4f-4a64-867e-ea7c9b27bad8': sorcererHat, // Hollywood Studios
-  '1c84a229-8862-4648-9c71-378ddd2c7693': tree, // Animal Kingdom
-  'eb3f4560-2383-4a36-9152-6b3e5ed6bc57': clapperboard, // Universal Studios
-  '267615cc-8943-4c2a-ae2c-5da728ca591f': coaster, // Islands of Adventure
+  'Magic Kingdom': castle,
+  Epcot: globe,
+  "Hollywood Studios": sorcererHat,
+  "Animal Kingdom": tree,
+  "Universal Studios": clapperboard,
+  "Islands of Adventure": coaster,
 };
 
 /** The park's glyph, or undefined for a park the module has none for — the spec's name-only
     fallback (the park-wait-times UI design spec § The park icon set). */
-export function iconFor(id: string): string | undefined {
-  return ICONS[id];
+export function iconFor(name: string): string | undefined {
+  return ICONS[name];
 }

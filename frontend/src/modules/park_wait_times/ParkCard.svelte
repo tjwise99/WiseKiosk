@@ -77,7 +77,7 @@
   }
 </script>
 
-<li class="card" data-pwt-card data-pwt-park={park.id}>
+<li class="card" data-pwt-card data-pwt-park={park.name}>
   <div class="header" data-pwt-header>
     <div class="identity">
       {#if icon}

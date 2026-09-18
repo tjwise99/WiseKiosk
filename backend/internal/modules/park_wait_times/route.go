@@ -134,14 +134,14 @@ func fetchParkExcluding(ctx context.Context, configured string, excluded exclusi
 		return boundary.ParkWaitTimesPark{}, err
 	}
 	if liveResult.Kind == upstream.UpstreamStatus && liveResult.Status == http.StatusNotFound {
-		return unavailable(entityID, label, errUnsupportedPark.Error()), nil
+		return unavailable(label, errUnsupportedPark.Error()), nil
 	}
 	if liveResult.Kind != upstream.Success {
-		return unavailable(entityID, label, failureMessage(liveResult)), nil
+		return unavailable(label, failureMessage(liveResult)), nil
 	}
 	rides, err := shapeRidesExcluding(liveResult.Body, excluded)
 	if err != nil {
-		return unavailable(entityID, label, errMalformedPayload.Error()), nil
+		return unavailable(label, errMalformedPayload.Error()), nil
 	}
 
 	var hours *boundary.ParkWaitTimesHours
@@ -163,7 +163,6 @@ func fetchParkExcluding(ctx context.Context, configured string, excluded exclusi
 	}
 
 	return boundary.ParkWaitTimesPark{
-		Id:        entityID,
 		Name:      label,
 		Available: true,
 		Hours:     hours,
@@ -172,13 +171,11 @@ func fetchParkExcluding(ctx context.Context, configured string, excluded exclusi
 }
 
 // unavailable is a park's payload entry where its own upstream calls could
-// not be read. Id carries the resolved fetch identifier (resolvePark's output —
-// a known park's entity id, or a passed-through string), the same as an
-// available park, so the frontend keys its icon on it uniformly. name is the
-// best identity in hand: a known park's pretty name, or the configured string
-// for a park whose own name the source never got to supply.
-func unavailable(entityID, name, message string) boundary.ParkWaitTimesPark {
-	return boundary.ParkWaitTimesPark{Id: entityID, Name: name, Available: false, Message: &message}
+// not be read. name is the best identity in hand: a known park's pretty
+// name, or the configured string for a park whose own name the source never
+// got to supply.
+func unavailable(name, message string) boundary.ParkWaitTimesPark {
+	return boundary.ParkWaitTimesPark{Name: name, Available: false, Message: &message}
 }
 
 // errMalformedPayload is what a readable-but-unshapeable response renders

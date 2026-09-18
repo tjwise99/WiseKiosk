@@ -356,16 +356,9 @@ components:
       type: object
       description: One park's reading, or why it has none.
       required:
-        - id
         - name
         - available
       properties:
-        id:
-          type: string
-          description: >-
-            The identifier the module resolved this park's configuration name to and fetched it by
-            — a recognized park's own upstream entity id, or an unrecognized name passed through
-            unchanged. Stable across the park's states, so the frontend keys its icon on it.
         name:
           type: string
           description: >-
