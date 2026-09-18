@@ -33,7 +33,7 @@ rationale: |
   (SRS011<!-- Upstream request rate is bounded, and the bound is not operator-tunable -->). The framework
   obliges there be a bound; this says what this module's is.
 ref: ''
-reviewed: 8o24BsAevR6rSg6zFG30cmcR5RHtEaWY97Sjq0jpd4w=
+reviewed: CdW8Y9qDOaDZcpgK4MnTVyUTceiUJHE_a20hKZAF0JA=
 status: accepted
 text: |
   The park-wait-times module shall issue no more than one request to its source for any one park in any
@@ -47,4 +47,7 @@ verification-justification: |
   chosen to sit at the source's own stated ceiling, and a check reads what this system emits rather than
   what another party thinks of it. It is also asserted over the window the harness runs, so a rate that
   drifts only over days is outside it.
+  Left unproven at this tier: the in-flight clause itself. Nothing this test drives calls the route
+  concurrently for one park, so whether a second request is ever outstanding while a first has not
+  answered rests on the framework's own dedup beneath this module, not on anything exercised here.
 verification-method: test
