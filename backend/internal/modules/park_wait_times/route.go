@@ -69,7 +69,7 @@ func (ParkWaitTimesRoute) PostApiParkWaitTimes(w http.ResponseWriter, r *http.Re
 			writeJSON(w, http.StatusServiceUnavailable, boundary.UpstreamFailure{
 				Module:  Source,
 				Cause:   router.CauseShuttingDown,
-				Message: "this backend stopped serving before this source could answer",
+				Message: router.MessageShuttingDown,
 			})
 			return
 		}

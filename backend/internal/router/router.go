@@ -92,6 +92,10 @@ const (
 // (park_wait_times) writes this same Cause.
 const CauseShuttingDown = "shutting-down"
 
+// MessageShuttingDown is CauseShuttingDown's own Message text. Exported
+// alongside it for the same reason.
+const MessageShuttingDown = "this backend stopped serving before this source could answer"
+
 // malformedMessage is what a module's own reshaping failure renders as.
 const malformedMessage = "the source's response could not be read as this module's payload"
 
@@ -167,7 +171,7 @@ func (rt *Route) Serve(w http.ResponseWriter, r *http.Request, key, target strin
 		// under one still connected, once a shutdown call exists to do it. Both
 		// are written the 503 outcome (ADR 0026 rev 2), where returning
 		// unwritten emits an empty 200. Only the second reads it.
-		rt.fail(w, http.StatusServiceUnavailable, CauseShuttingDown, "this backend stopped serving before this source could answer")
+		rt.fail(w, http.StatusServiceUnavailable, CauseShuttingDown, MessageShuttingDown)
 		return
 	}
 	rt.respond(w, result)
