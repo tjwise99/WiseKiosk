@@ -16,11 +16,6 @@ import (
 	"github.com/tjwise99/WiseKiosk/backend/internal/upstream"
 )
 
-// causeShuttingDown is the one Cause this route answers with; router.go's
-// private constant of the same name, named here since it is unexported
-// there.
-const causeShuttingDown = "shutting-down"
-
 // entry is the module's route registration (module contract part 5).
 // Shape shapes one park's live-data response; Serve is never reached, but
 // the field is required (router.Entry).
@@ -73,7 +68,7 @@ func (ParkWaitTimesRoute) PostApiParkWaitTimes(w http.ResponseWriter, r *http.Re
 			// outcome Route.Serve gives (ADR 0026 rev 2).
 			writeJSON(w, http.StatusServiceUnavailable, boundary.UpstreamFailure{
 				Module:  Source,
-				Cause:   causeShuttingDown,
+				Cause:   router.CauseShuttingDown,
 				Message: "this backend stopped serving before this source could answer",
 			})
 			return

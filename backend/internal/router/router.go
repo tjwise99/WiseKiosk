@@ -84,10 +84,13 @@ const (
 	// causeUpstreamFailure is what an outcome carrying no cause of its own is
 	// rendered as.
 	causeUpstreamFailure = "upstream-failure"
-	// causeShuttingDown is the one failure no upstream call produced: this
-	// backend stopped serving before the answer was ready (ADR 0026 rev 2).
-	causeShuttingDown = "shutting-down"
 )
+
+// CauseShuttingDown is the one failure no upstream call produced: this
+// backend stopped serving before the answer was ready (ADR 0026 rev 2).
+// Exported: a module route that answers its own 503 outside Route.Serve
+// (park_wait_times) writes this same Cause.
+const CauseShuttingDown = "shutting-down"
 
 // malformedMessage is what a module's own reshaping failure renders as.
 const malformedMessage = "the source's response could not be read as this module's payload"
@@ -164,7 +167,7 @@ func (rt *Route) Serve(w http.ResponseWriter, r *http.Request, key, target strin
 		// under one still connected, once a shutdown call exists to do it. Both
 		// are written the 503 outcome (ADR 0026 rev 2), where returning
 		// unwritten emits an empty 200. Only the second reads it.
-		rt.fail(w, http.StatusServiceUnavailable, causeShuttingDown, "this backend stopped serving before this source could answer")
+		rt.fail(w, http.StatusServiceUnavailable, CauseShuttingDown, "this backend stopped serving before this source could answer")
 		return
 	}
 	rt.respond(w, result)
