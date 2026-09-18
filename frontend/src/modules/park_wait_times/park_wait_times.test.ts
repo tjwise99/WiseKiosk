@@ -141,7 +141,7 @@ describe('clockTime', () => {
 describe('iconFor', () => {
   it('resolves a real glyph for a park the module has one for, keyed on its pretty name', () => {
     // The icon set is keyed on the pretty name (boundary/openapi.yaml's ParkWaitTimesPark.name),
-    // the one identity the wire carries (#344 closeout WI-3).
+    // the one identity the wire carries.
     const icon = iconFor('Magic Kingdom');
     expect(icon).toContain('<svg');
   });

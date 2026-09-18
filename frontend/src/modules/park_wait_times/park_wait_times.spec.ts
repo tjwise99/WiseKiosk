@@ -31,7 +31,7 @@ const ALMOST = 10_000;
 const HOST_TIME = new Date('2026-08-31T14:00:00Z');
 
 /** One park's answer, defaulting to available with no rides — every case fills in what it reads.
-    Takes the park's own name, not an id (#344 closeout WI-3): the response carries no id field. */
+    Takes the park's own name, not an id: the response carries no id field. */
 function onePark(name: string, fields: Partial<ParkWaitTimesPark> = {}): ParkWaitTimesPark {
   return { name, available: true, ...fields };
 }
@@ -86,7 +86,7 @@ const FOOTER_SEGMENT = '[data-pwt-footer-segment]';
 const WAIT = '[data-pwt-wait]';
 
 /** The six known parks by their own pretty name — the one identity the wire carries
-    (boundary/openapi.yaml's ParkWaitTimesPark.name; #344 closeout WI-3). A render fixture names
+    (boundary/openapi.yaml's ParkWaitTimesPark.name). A render fixture names
     parks by these strings for both the request (`parks`) and the response `onePark` builds. */
 const MAGIC_KINGDOM = 'Magic Kingdom';
 const EPCOT = 'Epcot';
@@ -100,7 +100,7 @@ const ISLANDS_OF_ADVENTURE = 'Islands of Adventure';
 const UNKNOWN_PARK = 'A Park With No Icon';
 
 /** Locates a rendered card by the park's own displayed name rather than the `data-pwt-park`
-    test-id (#344 closeout WI-3). */
+    test-id. */
 function cardNamed(page: import('@playwright/test').Page, name: string) {
   return page.locator(CARD).filter({ has: page.locator('.name', { hasText: name }) });
 }
@@ -164,7 +164,7 @@ test('TST074: draws every configured park at once, none absent awaiting a rotati
 test('renders two configured parks that resolve to the same name without throwing — the grid’s own each block is keyed positionally, never on identity', async ({
   page,
 }) => {
-  // Two parks sharing the one identity the wire carries, the name (#344 closeout WI-3) — the case
+  // Two parks sharing the one identity the wire carries, the name — the case
   // a name- or id-keyed `{#each}` throws Svelte's own each_key_duplicate on.
   const pageErrors: string[] = [];
   page.on('pageerror', (error) => pageErrors.push(error.message));
@@ -183,7 +183,7 @@ test('renders a park whose rides share a name without throwing — the ride each
   page,
 }) => {
   // Two rides sharing a name, the payload carrying no ride id
-  // (boundary/openapi.yaml's ParkWaitTimesRide; #344 closeout WI-8) — the case a name-keyed
+  // (boundary/openapi.yaml's ParkWaitTimesRide) — the case a name-keyed
   // `{#each}` throws Svelte's own each_key_duplicate on.
   const pageErrors: string[] = [];
   page.on('pageerror', (error) => pageErrors.push(error.message));
@@ -1071,7 +1071,7 @@ test('sizes every card to the widest rendered header, and no wider — the true 
     Math.abs(measured.cardWidth - expectedCardWidth),
     'the card is exactly the widest header’s own rendered width, no wider and no narrower',
   ).toBeLessThan(2);
-  // #344 closeout WI-4: the near-equality check above passes if both sides collapse to zero together.
+  // The near-equality check above passes if both sides collapse to zero together.
   expect(measured.cardWidth, 'the card actually has a width, not a collapsed one both sides agree on').toBeGreaterThan(0);
 });
 
@@ -1200,6 +1200,71 @@ test('suppresses the marquee under prefers-reduced-motion, an overflowing name l
   await expect(text).toHaveText(longName);
 });
 
+test('re-measures the marquee after a poll refresh reorders rows in place, not just at mount', async ({
+  page,
+}) => {
+  // The leaderboard's `{#each ... (index)}` keeps each row's DOM node across a reorder, and `marquee`
+  // measures overflow only once per mount — the `{#key ride.name}` wrapper (ParkCard.svelte) is what
+  // re-runs that measurement when the ride shown under a row changes without the row itself
+  // remounting.
+  const SHORT = 'A';
+  const LONG = 'Guardians of the Galaxy: Cosmic Rewind — The Complete Extended Experience Edition';
+
+  await holdHostClock(page, HOST_TIME);
+  await serveModuleData(page, () => ({
+    status: 200,
+    data: parksPayload([onePark(EPCOT, { rides: [ride(SHORT, 50), ride(LONG, 10)] })]),
+  }));
+  await render(page, placed([EPCOT]));
+
+  const names = page.locator('.ride-name-text');
+  await expect(names).toHaveCount(2);
+  const row0 = names.nth(0);
+  const row1 = names.nth(1);
+  await expect(row0, 'the higher wait ranks first').toHaveText(SHORT);
+  await expect(row1).toHaveText(LONG);
+
+  // Self-check the fixture, at this render's own geometry: a fixture where the long name did not
+  // actually overflow, or the short one did, could pass the invariant below without ever exercising
+  // the bug.
+  const overflowOf = (locator: typeof row0) =>
+    locator.evaluate((el) => el.scrollWidth - (el.parentElement as HTMLElement).clientWidth);
+  expect(await overflowOf(row1), 'the long name overflows its own column').toBeGreaterThan(0);
+  expect(await overflowOf(row0), 'the short name does not').toBeLessThanOrEqual(0);
+
+  // A poll refresh of the same card, not a remount: the waits reorder so the long name now ranks
+  // first (row 0, previously the short name's) and the short name second (row 1, previously the long
+  // name's) — the index-keyed rows persist across this, the precondition that makes the
+  // stale-measurement bug reachable.
+  await serveModuleData(page, () => ({
+    status: 200,
+    data: parksPayload([onePark(EPCOT, { rides: [ride(SHORT, 5), ride(LONG, 80)] })]),
+  }));
+  await advanceHostClock(page, READ_INTERVAL_MS);
+  await expect(row0, 'the reorder landed').toHaveText(LONG);
+  await expect(row1).toHaveText(SHORT);
+  // `page.clock` fakes requestAnimationFrame along with the timers `holdHostClock`/`advanceHostClock`
+  // drive, so `marquee`'s rAF-scheduled measurement stays queued rather than firing on a real frame —
+  // one more run of the fake clock is what lets it fire.
+  await page.clock.runFor(1000);
+
+  // The invariant itself: every `.ride-name-text` carries `.marquee` iff its own scrollWidth exceeds
+  // its `.ride-name` parent's clientWidth — derived from each row's live geometry, not a hardcoded
+  // "row 0 marquees", so it stays correct regardless of which name is overflowing.
+  await expect
+    .poll(
+      () =>
+        names.evaluateAll((els) =>
+          els.every((el) => {
+            const overflows = el.scrollWidth > (el.parentElement as HTMLElement).clientWidth;
+            return el.classList.contains('marquee') === overflows;
+          }),
+        ),
+      { message: 'each ride name carries .marquee iff it overflows its own column, after the reorder' },
+    )
+    .toBe(true);
+});
+
 test('draws the Closed card’s icon and label centred — the one deliberate exception to reading left', async ({
   page,
 }) => {
@@ -1308,7 +1373,7 @@ test('keeps a long park name on one line, never wrapping the header', async ({ p
 test('draws the park’s own icon beside its name in the header, for a park the module has a glyph for', async ({
   page,
 }) => {
-  // The fixture supplies no id (#344 closeout WI-3), so this proves the icon set is keyed on the
+  // The fixture supplies no id, so this proves the icon set is keyed on the
   // park's own pretty name.
   await serveModuleData(page, () => ({
     status: 200,

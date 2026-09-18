@@ -271,7 +271,7 @@ describe('the configuration validator', () => {
     });
   });
 
-  // The park-wait-times module's own required keys (#344 closeout WI-4): which parks are shown
+  // The park-wait-times module's own required keys: which parks are shown
   // and how the grid is shaped carry no default, the same way weather's location does not above.
   it('names the missing key when a park-wait-times placement omits its own parks list', () => {
     const result = validateConfiguration({

@@ -816,7 +816,7 @@ func TestPostApiParkWaitTimesFansOutOverEveryConfiguredPark(t *testing.T) {
 		t.Fatalf("parks = %d, want 2: %+v", len(payload.Parks), payload.Parks)
 	}
 	// Each park carries the pretty name it was resolved to, in the request's own order — the wire
-	// carries no id (#344 closeout WI-3) to check the order against instead.
+	// carries no id to check the order against instead.
 	if payload.Parks[0].Name != "Epcot" || payload.Parks[1].Name != "Magic Kingdom" {
 		t.Errorf("parks = [%s, %s], want the request's own order [Epcot, Magic Kingdom]",
 			payload.Parks[0].Name, payload.Parks[1].Name)
@@ -843,10 +843,10 @@ func TestPostApiParkWaitTimesFansOutOverEveryConfiguredPark(t *testing.T) {
 	}
 }
 
-// TestPostApiParkWaitTimesPayloadCarriesNoParkID reads #344 closeout WI-3: a
-// served park carries no `id` key on the wire, read off the raw JSON rather
-// than the generated struct so this stays meaningful once the field is gone
-// from boundary.ParkWaitTimesPark.
+// TestPostApiParkWaitTimesPayloadCarriesNoParkID proves a served park carries
+// no `id` key on the wire, read off the raw JSON rather than the generated
+// struct so this stays meaningful once the field is gone from
+// boundary.ParkWaitTimesPark.
 func TestPostApiParkWaitTimesPayloadCarriesNoParkID(t *testing.T) {
 	live := liveResponseBytes(t)
 	held := http.DefaultTransport
@@ -1249,7 +1249,7 @@ func TestPostApiParkWaitTimesAnswersShuttingDownWhenTheCallersContextEnds(t *tes
 		t.Fatalf("reading the failure body %q: %v", recorder.Body, err)
 	}
 	// Checked against the framework's own exported constant, not this package's identically-valued
-	// private one (#344 closeout WI-5).
+	// private one.
 	if failure.Cause != router.CauseShuttingDown {
 		t.Errorf("Cause = %q, want router.CauseShuttingDown (%q)", failure.Cause, router.CauseShuttingDown)
 	}
@@ -1805,9 +1805,8 @@ func (c *capturingTransport) sawURLContaining(substr string) bool {
 // a config entry naming a park by its known pretty name resolves to that
 // park's upstream entity id, and the upstream call this park's own fetch
 // makes carries that id — not the pretty name itself (TST086: fetched at the
-// identity recorded). The id itself never crosses the boundary (#344 closeout
-// WI-3), so this is read off the upstream call the transport captured, not a
-// wire field.
+// identity recorded). The id itself never crosses the boundary, so this is
+// read off the upstream call the transport captured, not a wire field.
 func TestPrettyNameResolvesToItsUUID(t *testing.T) {
 	transport := &capturingTransport{body: liveResponseBytes(t)}
 	held := http.DefaultTransport
@@ -2092,8 +2091,8 @@ func TestAKnownParkStaysAvailableWhenTheLiveResponseHasNoParkRow(t *testing.T) {
 // park's entity id — not its pretty name — still resolves to that park's own
 // pretty name, not the fuller name the source carries, and is fetched at that
 // same id (TST086: fetched at the identity recorded — the id itself never
-// crosses the boundary, #344 closeout WI-3). Configuring by the id is the
-// case FuzzResolvePark only line-covers; here it is asserted end to end.
+// crosses the boundary). Configuring by the id is the case FuzzResolvePark
+// only line-covers; here it is asserted end to end.
 func TestAPassThroughParkRecognizedByItsEntityIDShowsThePrettyName(t *testing.T) {
 	transport := &capturingTransport{body: liveResponseBytes(t)}
 	held := http.DefaultTransport
@@ -2170,7 +2169,7 @@ func TestAPassThroughParkIsNamedFromTheSchedule(t *testing.T) {
 	if payload.Parks[0].Name != scheduleName {
 		t.Errorf("Name = %q, want the source's own schedule name %q for a pass-through park", payload.Parks[0].Name, scheduleName)
 	}
-	// Fetched through as configured (TST086), not carried as a wire field (#344 closeout WI-3).
+	// Fetched through as configured (TST086), not carried as a wire field.
 	transport.mu.Lock()
 	_, sawConfigured := transport.calls[liveURL(configured)]
 	transport.mu.Unlock()
