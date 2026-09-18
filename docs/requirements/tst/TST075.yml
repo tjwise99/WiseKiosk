@@ -10,45 +10,45 @@ ref: ''
 references:
 - keyword: it('keeps only numeric waits, longest first', () => {
   path: frontend/src/modules/park_wait_times/park_wait_times.test.ts
-  sha: 6bd30bce582b70e6fc54fb9bec776dba95c73c4f73c46a5b1827786d5fea3cda
+  sha: ee21ddefb5cc169985d331f7bafea2d01e78173f137e72f5d0b5f537362563cd
   type: file
 - keyword: it('leaves a park with no numeric wait ranking nothing', () => {
   path: frontend/src/modules/park_wait_times/park_wait_times.test.ts
-  sha: 6bd30bce582b70e6fc54fb9bec776dba95c73c4f73c46a5b1827786d5fea3cda
+  sha: ee21ddefb5cc169985d331f7bafea2d01e78173f137e72f5d0b5f537362563cd
   type: file
 - keyword: it('holds the count longest numeric waits, in descending order', () =>
     {
   path: frontend/src/modules/park_wait_times/park_wait_times.test.ts
-  sha: 6bd30bce582b70e6fc54fb9bec776dba95c73c4f73c46a5b1827786d5fea3cda
+  sha: ee21ddefb5cc169985d331f7bafea2d01e78173f137e72f5d0b5f537362563cd
   type: file
 - keyword: it('holds fewer than the count when the park has fewer numeric waits',
     () => {
   path: frontend/src/modules/park_wait_times/park_wait_times.test.ts
-  sha: 6bd30bce582b70e6fc54fb9bec776dba95c73c4f73c46a5b1827786d5fea3cda
+  sha: ee21ddefb5cc169985d331f7bafea2d01e78173f137e72f5d0b5f537362563cd
   type: file
 - keyword: it('is true for a park whose every ride reports a not-operating state',
     () => {
   path: frontend/src/modules/park_wait_times/park_wait_times.test.ts
-  sha: 6bd30bce582b70e6fc54fb9bec776dba95c73c4f73c46a5b1827786d5fea3cda
+  sha: ee21ddefb5cc169985d331f7bafea2d01e78173f137e72f5d0b5f537362563cd
   type: file
 - keyword: it('is true for a park with no rides at all', () => {
   path: frontend/src/modules/park_wait_times/park_wait_times.test.ts
-  sha: 6bd30bce582b70e6fc54fb9bec776dba95c73c4f73c46a5b1827786d5fea3cda
+  sha: ee21ddefb5cc169985d331f7bafea2d01e78173f137e72f5d0b5f537362563cd
   type: file
 - keyword: it('is false as soon as one ride reports a numeric wait', () => {
   path: frontend/src/modules/park_wait_times/park_wait_times.test.ts
-  sha: 6bd30bce582b70e6fc54fb9bec776dba95c73c4f73c46a5b1827786d5fea3cda
+  sha: ee21ddefb5cc169985d331f7bafea2d01e78173f137e72f5d0b5f537362563cd
   type: file
 - keyword: it('is everything the leaderboard does not hold, in the source’s own order
     — not re-sorted', () => {
   path: frontend/src/modules/park_wait_times/park_wait_times.test.ts
-  sha: 6bd30bce582b70e6fc54fb9bec776dba95c73c4f73c46a5b1827786d5fea3cda
+  sha: ee21ddefb5cc169985d331f7bafea2d01e78173f137e72f5d0b5f537362563cd
   type: file
 - keyword: it('a not-operating ride, never held, tours in the remainder', () => {
   path: frontend/src/modules/park_wait_times/park_wait_times.test.ts
-  sha: 6bd30bce582b70e6fc54fb9bec776dba95c73c4f73c46a5b1827786d5fea3cda
+  sha: ee21ddefb5cc169985d331f7bafea2d01e78173f137e72f5d0b5f537362563cd
   type: file
-reviewed: l2shCFZImeIWpJvPzlgcuvvEke8NgdKNsOHftNDPtZ4=
+reviewed: JbWzlGKzCN4kkRU_zDlDR0CkvJfpS7yBr4nBtmqRTJI=
 status: accepted
 text: |
   Unit test of ranked, heldRides, remainingRides and noOpenRides, the pure functions the leaderboard is
