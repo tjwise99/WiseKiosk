@@ -1,0 +1,32 @@
+active: true
+derived: false
+header: |
+  A failing source is asked no more than once every five minutes per park
+level: 103
+links:
+- SRS064: I-HE1hytNsPPOboqMH7zgBVffYQ-F9dDPEpxNW7bokg=
+normative: true
+ref: ''
+references:
+- keyword: func TestTST081_ThePolicyComesToOnceEveryFiveMinutesForAFailingPark(t *testing.T)
+    {
+  path: backend/internal/modules/park_wait_times/park_wait_times_test.go
+  sha: c5d56cf6d91a0c7d5689b09733a03b0ca3fe09016b0476d63c712bf972f2ab3e
+  type: file
+- keyword: func TestTST081_IntegrationAFailingParkIsRetriedNoOftenerThanTheNegativeInterval(t
+    *testing.T) {
+  path: backend/internal/modules/park_wait_times/park_wait_times_test.go
+  sha: c5d56cf6d91a0c7d5689b09733a03b0ca3fe09016b0476d63c712bf972f2ab3e
+  type: file
+reviewed: Aria3PhSjCW9RL6OWq3_IjChD_dJHYkJ80zMjsqz_-s=
+status: accepted
+text: |
+  Unit test over the module's registered policy — the failure interval it declares holds the
+  five-minute bound. And an integration test over fetchPark against a source staged to fail, called far
+  oftener than the bound permits: a park held under the negative cache costs no further upstream call
+  on a second ask inside the failure window.
+verification-justification: |
+  Settles the failure-path rate under a driven clock over the suite window. Leaves unproven what the
+  source makes of being retried while down, and whether five minutes is the right recovery-and-politeness
+  trade, which is argued in the parent.
+verification-method: test

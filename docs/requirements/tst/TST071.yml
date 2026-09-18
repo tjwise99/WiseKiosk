@@ -1,0 +1,27 @@
+active: true
+derived: false
+header: |
+  The module reports on the parks its configuration names, in the region it names
+level: 93
+links:
+- SRS054: ShUci8ENoXNl50V-SY6lOE5d1TMwI2AJZT3dju5er5Q=
+normative: true
+ref: ''
+references:
+- keyword: 'test(''TST071: reports on the parks its configuration names, in the region
+    it names, and moves with a second configuration'', async ({'
+  path: frontend/src/modules/park_wait_times/park_wait_times.spec.ts
+  sha: 78eb517e4dece93bf01b5763ecb95e0f20cce59e67ab0919fff2e2766987fbad
+  type: file
+reviewed: VuDd7Rv6dkd6I7Adha_38lV4s8ezpQ3VipzIwVQovu0=
+status: accepted
+text: |
+  Render test loading the page under two placements, each naming a different park, against a source
+  staged to answer by the parks a request carries: the request each placement causes carries its own
+  park, and its own region shows the answer given for it. A second configuration renaming both
+  placements' parks moves both requests and both regions with it.
+verification-justification: |
+  Settles that the module fetches and shows the parks its configuration names and no other. Leaves
+  unproven that the source's answer is true of those parks, which is another party's system and outside
+  this one.
+verification-method: test

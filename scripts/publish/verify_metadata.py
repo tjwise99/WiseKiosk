@@ -27,7 +27,7 @@ passing run-time values into an invoked script:
 
 The platform children are re-derived here rather than passed in, matching sbom_attest.py and
 verify_release.py — each script computes them independently from the same index digest, per ADR
-0017 rev 8: no shared step output built by a `run:` block loop or filter.
+0017 rev 9: no shared step output built by a `run:` block loop or filter.
 
 What this has been run against, in both directions: cases/publish-verify.md
 """

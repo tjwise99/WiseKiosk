@@ -1,0 +1,48 @@
+active: true
+derived: false
+header: |
+  The park-wait-times module tours the remaining rides on an interval its configuration sets
+level: 62
+links:
+- SYS011: a3bqZRtHE8ujrhIgBKFUtcxWGSCLRHsqU6GgDgwwR38=
+normative: true
+rationale: |
+  Everything a park's held reading does not show still shows, in turn, so the module is both a glance -
+  how bad are the worst queues now - and, given a few seconds, a full reading of the park. Which rides
+  are held and which tour is SRS058's<!-- The park-wait-times module keeps each park's longest current
+  waits in view -->; what this item obliges is that the rest are reachable by a rotation that advances,
+  rather than a remainder shown once and then fixed.
+  Which one it is showing changes on an interval its configuration sets rather than a cadence fixed in
+  the module, for the same reason the clock's seconds are configuration
+  (SRS048<!-- The clock shows or omits seconds per its configuration -->) and the weather module's hourly
+  toggle is (SRS053<!-- The weather module's hourly outlook switches which measure it draws, on an
+  interval its configuration sets -->): an interval that suits one deployment does not suit another, and
+  the key's name and its default belong to the module's configuration schema, not here - restated here
+  they would drift out of step with the schema the moment either changed. That the key produces an
+  observable difference between its default and another schema-valid value, and that the page renders
+  without error across the values it admits, is SRS024's<!-- Every offered configuration key is exercised
+  at a non-default value --> and is not restated here.
+  How many rides tour at a time, and the counter that shows how far through them the rotation has come,
+  are composition and the UI design spec's, not this item's.
+  Reworded to another module the sentence names a different content that tours; abstracted, it reads that
+  a module advances what it shows on a configured interval, which is not a universal - a module showing
+  all it has at once advances nothing and satisfies it vacuously - so which content tours, and that it
+  tours at all, is this module's and is carried here, where the weather module's own measure-toggle also
+  landed.
+ref: ''
+reviewed: 4PWNslTdfxmy7P_uYLt4hBSHJHV7dCVJGIgLr_jZ-OU=
+status: accepted
+text: |
+  The park-wait-times module shall show the rides a park's held reading does not, a few at a time in
+  turn, advancing which it shows at the interval its configuration names rather than one fixed in the
+  module.
+verification-justification: |
+  Read from a rendered page handed a payload carrying more rides than a park's held reading shows, under
+  a driven clock and at least two distinct values of the rotation-interval configuration: which rides are
+  shown changes when each configuration's interval elapses and not before, and every ride not held is
+  shown across a full cycle.
+  What it cannot settle is that the interval used is exactly the configured number to the second - a
+  driven-clock render assertion reads before and after a boundary, not a stopwatch - nor whether touring
+  the remainder is a good way to present it, which is a design judgement this item does not reach. It is
+  bounded by the payloads and configurations the suite supplies.
+verification-method: test

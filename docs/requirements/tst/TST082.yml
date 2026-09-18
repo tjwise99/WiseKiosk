@@ -1,0 +1,26 @@
+active: true
+derived: false
+header: |
+  The park-wait-times module reads one external source and no other
+level: 104
+links:
+- SRS065: 8XXRPD9LZ5zZ6WmHtMsDibOsAH31QWM3hy5s4lM163Q=
+normative: true
+ref: ''
+references:
+- keyword: 'test(''TST082: draws the wait times its own route answered with, and reads
+    no other source'', async ({'
+  path: frontend/src/modules/park_wait_times/park_wait_times.spec.ts
+  sha: 78eb517e4dece93bf01b5763ecb95e0f20cce59e67ab0919fff2e2766987fbad
+  type: file
+reviewed: Qn6cZzpmPqE-iAAL8j47RyMgtoNQHZXfYosACztmQN4=
+status: accepted
+text: |
+  Render test driving the module against one staged wait-times source and asserting the wait rendered
+  is that source's answer, while observing the traffic the page causes and asserting no request beyond
+  the module's own route was made.
+verification-justification: |
+  Settles that this module asks one party and reads that party's answer. Leaves unproven that no second
+  source sits behind the first, the source being another party's system; and the absence half is
+  evidence over the traffic the harness observes rather than proof.
+verification-method: test

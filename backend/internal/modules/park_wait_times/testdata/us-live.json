@@ -1,0 +1,42 @@
+{
+ "id": "eb3f4560-2383-4a36-9152-6b3e5ed6bc57",
+ "name": "Universal Studios Florida",
+ "entityType": "PARK",
+ "timezone": "America/New_York",
+ "liveData": [
+  {
+   "id": "91cae293-64f8-48b6-88ec-02dcfcdd1f91",
+   "name": "MEN IN BLACK\u2122 Alien Attack!",
+   "entityType": "ATTRACTION",
+   "status": "OPERATING",
+   "queue": {
+    "STANDBY": {
+     "waitTime": 15
+    }
+   }
+  },
+  {
+   "id": "ec25d9a7-b4d4-4ebf-a6c4-c18389351764",
+   "name": "Revenge of the Mummy",
+   "entityType": "ATTRACTION",
+   "status": "OPERATING",
+   "queue": {
+    "STANDBY": {
+     "waitTime": 35
+    }
+   }
+  },
+  {
+   "id": "2122adff-52a3-49ca-9d20-5a6faafc8c77",
+   "name": "Hogwarts\u2122 Express - Last Train",
+   "entityType": "ATTRACTION",
+   "status": "CLOSED"
+  },
+  {
+   "id": "2436bad1-f319-44d5-98ac-a283b81956c6",
+   "name": "The Bourne Stuntacular",
+   "entityType": "SHOW",
+   "status": "CLOSED"
+  }
+ ]
+}

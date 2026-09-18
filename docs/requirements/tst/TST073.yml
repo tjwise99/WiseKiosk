@@ -1,0 +1,54 @@
+active: true
+derived: false
+header: |
+  The shaping builds each park's rides and hours from a captured response
+level: 95
+links:
+- SRS056: pLPYX71qA0PLRTzDfUqixDmNKL_5xsgMnwZq5aGwuMc=
+normative: true
+ref: ''
+references:
+- keyword: func TestTST073_ShapingBuildsTheParksRidesFromTheCapturedResponse(t *testing.T)
+    {
+  path: backend/internal/modules/park_wait_times/park_wait_times_test.go
+  sha: c5d56cf6d91a0c7d5689b09733a03b0ca3fe09016b0476d63c712bf972f2ab3e
+  type: file
+- keyword: func TestTST073_AResponseMissingAValueTheRideNeedsIsNotShaped(t *testing.T)
+    {
+  path: backend/internal/modules/park_wait_times/park_wait_times_test.go
+  sha: c5d56cf6d91a0c7d5689b09733a03b0ca3fe09016b0476d63c712bf972f2ab3e
+  type: file
+- keyword: func TestTST073_ShapingBuildsTheParksHoursFromTheCapturedResponse(t *testing.T)
+    {
+  path: backend/internal/modules/park_wait_times/park_wait_times_test.go
+  sha: c5d56cf6d91a0c7d5689b09733a03b0ca3fe09016b0476d63c712bf972f2ab3e
+  type: file
+- keyword: func TestShapeRidesFiltersAnOperatingRowWithNoPostedWait(t *testing.T)
+    {
+  path: backend/internal/modules/park_wait_times/park_wait_times_test.go
+  sha: c5d56cf6d91a0c7d5689b09733a03b0ca3fe09016b0476d63c712bf972f2ab3e
+  type: file
+- keyword: func TestAParkWithANoWaitLandmarkStaysAvailable(t *testing.T) {
+  path: backend/internal/modules/park_wait_times/park_wait_times_test.go
+  sha: c5d56cf6d91a0c7d5689b09733a03b0ca3fe09016b0476d63c712bf972f2ab3e
+  type: file
+reviewed: _dt9tv1cBe32Rrs3YbqieXuw8Q6pNjQR4NgNoGu6RJA=
+status: accepted
+text: |
+  Unit test that shapeRides and shapeHours, run against a captured live-data and schedule response with
+  no network, keep only the attraction rows and produce, for the captured park, its rides in the
+  source's own order — each with its name and its wait as a length of time or one of the three
+  not-operating states — and its opening and closing time for the day, drawn from the first OPERATING
+  entry whose calendar date, read in that entry's own UTC offset, matches the day of the moment read,
+  passing over an entry of another type and an OPERATING entry whose date does not match; and that an
+  attraction reporting no wait while operating is dropped from the park's rides rather than carried
+  with a wait it was not given.
+verification-justification: |
+  Settles the shaping of the responses that were captured, including a capture mutated so one
+  attraction reports OPERATING with no posted wait, dropped rather than shaped, and the park's own
+  fetch left available and carrying its other rides over that one row. Leaves unproven that the
+  payload is true of the queue, and any response shape no capture holds, including a schedule whose
+  day-selection turns on an OPERATING entry that is not the first of its type, a day with only
+  ticketed entries, an empty schedule, or an entry read against a UTC offset the captures do not
+  exercise.
+verification-method: test

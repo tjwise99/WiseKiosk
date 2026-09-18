@@ -1,0 +1,37 @@
+active: true
+derived: false
+header: |
+  An unrecognized park's failure is confined to it and told apart from a transient one
+level: 109
+links:
+- SRS067: 32McDmA67tMJCF1GTk_Wl2ZOXDFwjBb193mQ8trC0Tk=
+normative: true
+ref: ''
+references:
+- keyword: func TestUpstream404IsUnsupportedDistinctFromATransientFailure(t *testing.T)
+    {
+  path: backend/internal/modules/park_wait_times/park_wait_times_test.go
+  sha: c5d56cf6d91a0c7d5689b09733a03b0ca3fe09016b0476d63c712bf972f2ab3e
+  type: file
+- keyword: test('renders each unavailable park’s own message verbatim, transient or
+    permanent — the card never branches on the wording', async ({
+  path: frontend/src/modules/park_wait_times/park_wait_times.spec.ts
+  sha: 78eb517e4dece93bf01b5763ecb95e0f20cce59e67ab0919fff2e2766987fbad
+  type: file
+reviewed: 4hNKvlMc8Mo2LlECmOk04aqmj3XY5Tmkpzf6vT2CdTM=
+status: accepted
+text: |
+  Two checks. A unit test that serves a request naming two configured parks, one whose upstream call
+  answers not found and one whose call fails only transiently: both parks are carried unavailable,
+  each with its own message, the two messages differ rather than sharing the transient wording, and
+  the park named alongside either is unaffected. And a render test that a card draws whichever message
+  its own park was given, transient or permanent, without matching on the wording to treat either
+  specially.
+verification-justification: |
+  Settles that an upstream's own not-found answer costs only that park, is worded distinctly from a
+  transient failure, and that the frontend renders whichever message a park's own card carries
+  without branching on it.
+  What it cannot settle is that a park's identifier was ever valid to begin with - the source is the
+  only authority on that - nor how a card's unavailable state is otherwise drawn, which is a different
+  item's.
+verification-method: test

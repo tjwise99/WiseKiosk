@@ -596,7 +596,7 @@ func TestACallerWhoseContextEndedIsStillAnswered(t *testing.T) {
 	request := httptest.NewRequest(moduleRouteMethod, "/api/readings?station=one", nil).WithContext(ended)
 	rt.Serve(recorder, request, "one", fake.server.URL)
 
-	wantFailure(t, recorder, http.StatusServiceUnavailable, "readings", causeShuttingDown)
+	wantFailure(t, recorder, http.StatusServiceUnavailable, "readings", CauseShuttingDown)
 }
 
 // TST029
@@ -692,7 +692,7 @@ func TestARequestBodyIsReadNoFurtherThanTheBound(t *testing.T) {
 // TST029
 func TestNoTwoCausesShareASpelling(t *testing.T) {
 	// Every cause constant, compared against every other. The sweep above reads
-	// only what failure() returns, and causeShuttingDown and the rejection
+	// only what failure() returns, and CauseShuttingDown and the rejection
 	// causes leave by other paths; each one's own test compares a response
 	// against the same constant it asserts, so consolidating two onto one
 	// string stays green everywhere but here (ADR 0026 rev 2).
@@ -711,7 +711,7 @@ func TestNoTwoCausesShareASpelling(t *testing.T) {
 		{"causeSecretUnresolvable", causeSecretUnresolvable},
 		{"causeMalformedPayload", causeMalformedPayload},
 		{"causeUpstreamFailure", causeUpstreamFailure},
-		{"causeShuttingDown", causeShuttingDown},
+		{"CauseShuttingDown", CauseShuttingDown},
 	}
 
 	seen := make(map[string]string, len(all))

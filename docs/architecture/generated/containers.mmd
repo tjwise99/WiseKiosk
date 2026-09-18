@@ -8,6 +8,7 @@ graph TB
     Wisekiosk.Frontend@{ shape: rectangle, label: "Frontend" }
   end
   OpenMeteo@{ shape: rectangle, label: "Open-Meteo" }
+  ThemeParksWiki@{ shape: rectangle, label: "themeparks.wiki" }
   Viewer@{ icon: "fa:user", shape: rounded, label: "Viewer" }
   Operator -. "`Supplies the secret for each source`" .-> Wisekiosk.Backend
   Operator -. "`Places the configuration into the served 
@@ -18,6 +19,8 @@ unparsed`" .-> Wisekiosk.Backend
   Wisekiosk.Frontend -. "`Fetches the payload for each module`" .-> Wisekiosk.Backend
   Wisekiosk.Backend -. "`Fetches the weather for the location a 
 request names`" .-> OpenMeteo
+  Wisekiosk.Backend -. "`Fetches the wait times for the parks a 
+request names`" .-> ThemeParksWiki
   Wisekiosk.Frontend -. "`Renders the configured modules, legibly 
 says when one failed, and mirrors the 
 rest`" .-> Viewer

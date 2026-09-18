@@ -1,0 +1,34 @@
+active: true
+derived: false
+header: |
+  A park's rides answer intact when only its schedule call fails
+level: 106
+links:
+- SRS067: 32McDmA67tMJCF1GTk_Wl2ZOXDFwjBb193mQ8trC0Tk=
+normative: true
+ref: ''
+references:
+- keyword: func TestAParkWithNoOperatingScheduleEntryStillAnswersWithItsRides(t *testing.T)
+    {
+  path: backend/internal/modules/park_wait_times/park_wait_times_test.go
+  sha: c5d56cf6d91a0c7d5689b09733a03b0ca3fe09016b0476d63c712bf972f2ab3e
+  type: file
+- keyword: func TestFetchParkAnswersWithNilHoursWhenTheScheduleAnswersButCannotBeShaped(t
+    *testing.T) {
+  path: backend/internal/modules/park_wait_times/park_wait_times_test.go
+  sha: c5d56cf6d91a0c7d5689b09733a03b0ca3fe09016b0476d63c712bf972f2ab3e
+  type: file
+reviewed: i-ncgJjt7AXvOui9ar663gG_EhrolQLUZgBg70N7jmA=
+status: accepted
+text: |
+  Unit test of fetchPark's own assembly of a park's payload against a schedule call staged to fail two
+  ways - the call itself answering with a failing status, and the call answering 200 with a body
+  shapeHours cannot read - that in both cases the park answers available, carries its rides, and
+  carries no hours, rather than the schedule's own failure taking the park down.
+verification-justification: |
+  Settles that a schedule call's own failure, however it fails, costs a park only its hours: the park
+  stays available and its rides are carried unchanged from what its live call answered.
+  What it cannot settle is a schedule call that answers part of a schedule correctly and fails the
+  rest, which no capture holds, nor how a park's absent hours are drawn on a rendered page, which is a
+  different item's.
+verification-method: test

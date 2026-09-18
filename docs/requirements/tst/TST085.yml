@@ -1,0 +1,27 @@
+active: true
+derived: false
+header: |
+  A park's own upstream failure does not withhold the parks that answered
+level: 107
+links:
+- SRS067: 32McDmA67tMJCF1GTk_Wl2ZOXDFwjBb193mQ8trC0Tk=
+normative: true
+ref: ''
+references:
+- keyword: func TestAParksOwnFailureDoesNotFailTheWholeRequest(t *testing.T) {
+  path: backend/internal/modules/park_wait_times/park_wait_times_test.go
+  sha: c5d56cf6d91a0c7d5689b09733a03b0ca3fe09016b0476d63c712bf972f2ab3e
+  type: file
+reviewed: TxkocruaCZq1qXBopscccya60SYtwO2khgmxKiGcsJY=
+status: accepted
+text: |
+  Unit test that serves a request naming two configured parks with one park's own upstream calls
+  staged to fail while the other answers: the request still succeeds, the failed park is carried
+  unavailable with a message naming why and no rides, and the other park is carried available with its
+  rides unchanged.
+verification-justification: |
+  Settles that one park's own upstream failure costs only that park: the request succeeds, the failed
+  park carries why and no rides, and the parks named alongside it are unaffected.
+  What it cannot settle is a failure straddling two parks at once, which no capture stages, nor how a
+  failed park's unavailable state is drawn on a rendered page, which is a different item's.
+verification-method: test

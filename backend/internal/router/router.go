@@ -84,13 +84,22 @@ const (
 	// causeUpstreamFailure is what an outcome carrying no cause of its own is
 	// rendered as.
 	causeUpstreamFailure = "upstream-failure"
-	// causeShuttingDown is the one failure no upstream call produced: this
-	// backend stopped serving before the answer was ready (ADR 0026 rev 2).
-	causeShuttingDown = "shutting-down"
 )
 
-// malformedMessage is what a module's own reshaping failure renders as.
-const malformedMessage = "the source's response could not be read as this module's payload"
+// CauseShuttingDown is the one failure no upstream call produced: this
+// backend stopped serving before the answer was ready (ADR 0026 rev 2).
+// Exported: a module route that answers its own 503 outside Route.Serve
+// (park_wait_times) writes this same Cause.
+const CauseShuttingDown = "shutting-down"
+
+// MessageShuttingDown is CauseShuttingDown's own Message text. Exported
+// alongside it for the same reason.
+const MessageShuttingDown = "this backend stopped serving before this source could answer"
+
+// MalformedMessage is what a module's own reshaping failure renders as.
+// Exported: park_wait_times answers its own malformed-payload outcome
+// outside Route.Serve and writes this same Message.
+const MalformedMessage = "the source's response could not be read as this module's payload"
 
 // outbound is the client every route's fetch makes its call with. It follows no
 // redirect, returning the 3xx as the response, and sets no timeout of its own:
@@ -138,6 +147,18 @@ type Route struct {
 	proxy *upstream.Proxy
 }
 
+// Fetch runs the pipeline for one (key, target) pair without writing a
+// response: the same cache, rate-limit and outbound-timeout bounds Serve
+// answers a whole request with, for a caller that combines more than one
+// fetch into a single response — a module whose request names several
+// things this source is asked about individually, one Fetch per thing,
+// rather than the one-target-per-request shape Serve assumes. The
+// returned error means this caller's context ended, exactly as it does
+// for Serve, and is the caller's to answer.
+func (rt *Route) Fetch(ctx context.Context, key, target string) (upstream.Result, error) {
+	return rt.proxy.Do(ctx, rt.entry.Source, key, rt.fetch(target))
+}
+
 // Serve answers the request from the pipeline. The module has already judged
 // what the request named and reduced it to the two strings here: key names what
 // the answer is about, and is what the response cache and the rate budget are
@@ -145,14 +166,14 @@ type Route struct {
 // target is the upstream URL the module built for it. The pipeline's error
 // means this caller's context ended, and is answered as this module's failure.
 func (rt *Route) Serve(w http.ResponseWriter, r *http.Request, key, target string) {
-	result, err := rt.proxy.Do(r.Context(), rt.entry.Source, key, rt.fetch(target))
+	result, err := rt.Fetch(r.Context(), key, target)
 	if err != nil {
 		// The pipeline errors only where this caller's context ended: a client
 		// that has gone, which is what ends one here, or a server shutting down
 		// under one still connected, once a shutdown call exists to do it. Both
 		// are written the 503 outcome (ADR 0026 rev 2), where returning
 		// unwritten emits an empty 200. Only the second reads it.
-		rt.fail(w, http.StatusServiceUnavailable, causeShuttingDown, "this backend stopped serving before this source could answer")
+		rt.fail(w, http.StatusServiceUnavailable, CauseShuttingDown, MessageShuttingDown)
 		return
 	}
 	rt.respond(w, result)
@@ -234,13 +255,13 @@ func (rt *Route) respond(w http.ResponseWriter, result upstream.Result) {
 func (rt *Route) succeed(w http.ResponseWriter, body []byte) {
 	payload, err := rt.entry.Shape(body)
 	if err != nil {
-		rt.fail(w, http.StatusBadGateway, causeMalformedPayload, malformedMessage)
+		rt.fail(w, http.StatusBadGateway, causeMalformedPayload, MalformedMessage)
 		return
 	}
 
 	encoded, err := json.Marshal(payload)
 	if err != nil {
-		rt.fail(w, http.StatusBadGateway, causeMalformedPayload, malformedMessage)
+		rt.fail(w, http.StatusBadGateway, causeMalformedPayload, MalformedMessage)
 		return
 	}
 	writeEncoded(w, http.StatusOK, encoded)
