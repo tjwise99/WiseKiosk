@@ -225,6 +225,7 @@ model {
         #SRS066
         #SRS067
         #SRS068
+        link ../../../backend/internal/modules/park_wait_times
         description '''
           The park-wait-times module's half of this container. Serves the route
           the boundary schema declares for it: reads the park out of the request
