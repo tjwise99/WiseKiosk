@@ -179,8 +179,9 @@ func unavailable(name, message string) boundary.ParkWaitTimesPark {
 }
 
 // errMalformedPayload is what a readable-but-unshapeable response renders
-// as.
-var errMalformedPayload = errors.New("the source's response could not be read as this module's payload")
+// as — router.MalformedMessage, the same text the framework's own
+// malformed-payload path renders (ADR 0026 rev 2).
+var errMalformedPayload = errors.New(router.MalformedMessage)
 
 // errUnsupportedPark is a resolved-or-passed-through identifier the source
 // itself does not recognise (a 404) — this park's own permanent failure,

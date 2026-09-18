@@ -96,8 +96,10 @@ const CauseShuttingDown = "shutting-down"
 // alongside it for the same reason.
 const MessageShuttingDown = "this backend stopped serving before this source could answer"
 
-// malformedMessage is what a module's own reshaping failure renders as.
-const malformedMessage = "the source's response could not be read as this module's payload"
+// MalformedMessage is what a module's own reshaping failure renders as.
+// Exported: park_wait_times answers its own malformed-payload outcome
+// outside Route.Serve and writes this same Message.
+const MalformedMessage = "the source's response could not be read as this module's payload"
 
 // outbound is the client every route's fetch makes its call with. It follows no
 // redirect, returning the 3xx as the response, and sets no timeout of its own:
@@ -253,13 +255,13 @@ func (rt *Route) respond(w http.ResponseWriter, result upstream.Result) {
 func (rt *Route) succeed(w http.ResponseWriter, body []byte) {
 	payload, err := rt.entry.Shape(body)
 	if err != nil {
-		rt.fail(w, http.StatusBadGateway, causeMalformedPayload, malformedMessage)
+		rt.fail(w, http.StatusBadGateway, causeMalformedPayload, MalformedMessage)
 		return
 	}
 
 	encoded, err := json.Marshal(payload)
 	if err != nil {
-		rt.fail(w, http.StatusBadGateway, causeMalformedPayload, malformedMessage)
+		rt.fail(w, http.StatusBadGateway, causeMalformedPayload, MalformedMessage)
 		return
 	}
 	writeEncoded(w, http.StatusOK, encoded)
