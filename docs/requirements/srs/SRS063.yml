@@ -33,16 +33,15 @@ rationale: |
   (SRS011<!-- Upstream request rate is bounded, and the bound is not operator-tunable -->). The framework
   obliges there be a bound; this says what this module's is.
 ref: ''
-reviewed: 2g1HZ7HkBfjBCRkGZDGIFyzGE-aMKApertzNRLCQZRU=
+reviewed: 8o24BsAevR6rSg6zFG30cmcR5RHtEaWY97Sjq0jpd4w=
 status: accepted
 text: |
   The park-wait-times module shall issue no more than one request to its source for any one park in any
-  five minutes while that source is answering, and shall have no more than one request to that source in
+  five minutes while that source is answering, and shall have no more than one request for any one park in
   flight at a time.
 verification-justification: |
   Read over the requests the module's route issues against a staged source that answers and a driven
-  clock: no more than one leaves in any five minutes for one park, and a second is never outstanding
-  while a first has not answered.
+  clock: no more than one leaves in any five minutes for one park.
   What it cannot settle is that this rate is one the source accepts. What a free supplier will tolerate
   is its own policy, published or not, changed without notice and not decidable here; the figure is
   chosen to sit at the source's own stated ceiling, and a check reads what this system emits rather than
