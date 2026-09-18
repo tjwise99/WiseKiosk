@@ -17,13 +17,13 @@ rationale: |
   to a check rather than to this obligation, and an enumeration here would
   otherwise be read as the complete list of what may not leak.
 ref: ''
-reviewed: BT5IDdJPmgF5S9_XRTOvDrB7B0DuYVTDWS9kRYh3TsY=
+reviewed: KCTdZzjpiKOSY420UTE1A8ZiMat50t6i3wKFj2hmQmI=
 status: accepted
 text: |
   The backend's running footprint shall stay bounded: no resource it holds shall grow without bound
   across a continuous run.
 verification-justification: |
-  Asserted by sampling resident memory, handle count and task count across a run and failing on
+  Asserted by sampling live heap, handle count and task count across a run and failing on
   monotonic growth past a threshold. Because the obligation names no resource, what the check
   settles is narrower than what is stated: a resource nothing samples can grow unbounded and pass.
   Nor does any check settle the timescale this obligation is really about — an hour of sampling is
