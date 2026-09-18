@@ -34,11 +34,11 @@ func Config() upstream.Config {
 	}
 }
 
-// knownParks is the small offline set this module ships pretty-name and icon
+// knownParks is the small offline set this module ships pretty-name
 // resolution for: each park's canonical display name beside its upstream entity
 // id. A configured park matching one — its pretty name, case- and space-folded,
-// or its entity id — is shown under this name and fetched by this id; the
-// frontend keys the park's icon on the id.
+// or its entity id — is shown under this name and fetched by this id; the id is
+// backend-only and never crosses the boundary.
 var knownParks = []struct {
 	name string
 	id   string
