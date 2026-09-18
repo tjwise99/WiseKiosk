@@ -9,7 +9,7 @@ normative: true
 rationale: |
   A goroutine leak shows in neither live heap nor handle count until it is far advanced, so
   neither sibling item catches it. Sampled in the run
-  TST004<!-- Resident memory does not grow without bound --> describes.
+  TST004<!-- Live heap does not grow without bound --> describes.
 ref: ''
 references:
 - keyword: func TestRunningFootprintStaysBounded

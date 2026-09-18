@@ -1,7 +1,7 @@
 active: true
 derived: false
 header: |
-  Resident memory does not grow without bound
+  Live heap does not grow without bound
 level: 1.6
 links:
 - SRS022: hWy9-oSofYa69PBb3JcH377YzIssUi5xBa_pH53csvE=
