@@ -17,13 +17,15 @@ import (
 )
 
 // entry is the module's route registration (module contract part 5).
-// Shape shapes one park's live-data response; Serve is never reached, but
-// the field is required (router.Entry).
+// Shape shapes one park's live-data response, unfiltered — Serve is never
+// reached, but the field is required (router.Entry).
 func entry() router.Entry {
 	return router.Entry{
 		Config: Config(),
 		Source: Source,
-		Shape:  func(body []byte) (any, error) { return shapeRides(body) },
+		Shape: func(body []byte) (any, error) {
+			return shapeRides(body, func(liveRow) bool { return false })
+		},
 		// themeparks.wiki is keyless.
 	}
 }
@@ -58,7 +60,7 @@ func (ParkWaitTimesRoute) PostApiParkWaitTimes(w http.ResponseWriter, r *http.Re
 		router.Reject(w, router.InvalidParameters, err.Error())
 		return
 	}
-	excluded := newExclusion(blacklistToggle(request), blacklistNames(request))
+	excluded := newExclusion(request)
 	fetched := fetchParksConcurrently(r.Context(), request.Parks, excluded)
 
 	payload := boundary.ParkWaitTimesPayload{Parks: make([]boundary.ParkWaitTimesPark, 0, len(fetched))}
@@ -95,7 +97,7 @@ func fetchParksConcurrently(ctx context.Context, configuredParks []string, exclu
 		wg.Add(1)
 		go func(i int, configured string) {
 			defer wg.Done()
-			park, err := fetchParkExcluding(ctx, configured, excluded)
+			park, err := fetchPark(ctx, configured, excluded)
 			results[i] = fetchedPark{park: park, err: err}
 		}(i, configured)
 	}
@@ -104,23 +106,19 @@ func fetchParksConcurrently(ctx context.Context, configuredParks []string, exclu
 }
 
 // fetchPark reads rides (live endpoint) and hours (schedule endpoint),
-// cached under distinct keys. See
-// SRS067<!-- The park-wait-times module confines a failure to the part of
-// its own response the failure touches --> for why hours failing costs
-// this park only its hours, not its rides.
-func fetchPark(ctx context.Context, configured string) (boundary.ParkWaitTimesPark, error) {
-	return fetchParkExcluding(ctx, configured, noExclusion)
-}
-
-// fetchParkExcluding is fetchPark with a caller-supplied exclusion. It resolves
-// the configured park to what its card shows and what its requests fetch
-// (resolvePark): a recognized park keeps its pretty name throughout; an
-// unrecognized one is fetched as configured and named from the schedule
+// cached under distinct keys, dropping any row excluded carries away. It
+// resolves the configured park to what its card shows and what its requests
+// fetch (resolvePark): a recognized park keeps its pretty name throughout;
+// an unrecognized one is fetched as configured and named from the schedule
 // answer's own park name, falling back to the configured string until that
-// answer arrives. A 404 against the fetched identifier is this park's own
-// unsupported outcome — permanent, distinct from every other failure, which
-// stays transient/retryable (#309 build spec decisions 1-2).
-func fetchParkExcluding(ctx context.Context, configured string, excluded exclusion) (boundary.ParkWaitTimesPark, error) {
+// answer arrives. See
+// SRS067<!-- The park-wait-times module confines a failure to the part of
+// its own response the failure touches --> for why hours failing costs this
+// park only its hours, not its rides. A 404 against the fetched identifier
+// is this park's own unsupported outcome — permanent, distinct from every
+// other failure, which stays transient/retryable (#309 build spec decisions
+// 1-2).
+func fetchPark(ctx context.Context, configured string, excluded exclusion) (boundary.ParkWaitTimesPark, error) {
 	name, entityID, known := resolvePark(configured)
 	// label is the name shown until the schedule answer can better it: a known
 	// park's pretty name, or the configured string for a pass-through park.
@@ -129,7 +127,7 @@ func fetchParkExcluding(ctx context.Context, configured string, excluded exclusi
 		label = configured
 	}
 
-	liveResult, err := served.Fetch(ctx, entityID+":live", liveURL(entityID))
+	liveResult, err := served.Fetch(ctx, entityID+":live", entityBaseURL+entityID+"/live")
 	if err != nil {
 		return boundary.ParkWaitTimesPark{}, err
 	}
@@ -139,26 +137,25 @@ func fetchParkExcluding(ctx context.Context, configured string, excluded exclusi
 	if liveResult.Kind != upstream.Success {
 		return unavailable(label, failureMessage(liveResult)), nil
 	}
-	rides, err := shapeRidesExcluding(liveResult.Body, excluded)
+	rides, err := shapeRides(liveResult.Body, excluded)
 	if err != nil {
 		return unavailable(label, errMalformedPayload.Error()), nil
 	}
 
 	var hours *boundary.ParkWaitTimesHours
-	scheduleResult, err := served.Fetch(ctx, entityID+":schedule", scheduleURL(entityID))
+	scheduleResult, err := served.Fetch(ctx, entityID+":schedule", entityBaseURL+entityID+"/schedule")
 	if err != nil {
 		return boundary.ParkWaitTimesPark{}, err
 	}
 	if scheduleResult.Kind == upstream.Success {
-		if shaped, err := shapeHours(scheduleResult.Body, time.Now()); err == nil {
-			hours = shaped
+		scheduleName, shapedHours, err := shapeSchedule(scheduleResult.Body, time.Now())
+		if err == nil {
+			hours = shapedHours
 		}
 		// A pass-through park draws its name from the source's own; a
 		// recognized one keeps the pretty name resolvePark gave it.
-		if !known {
-			if upstreamName := shapeScheduleName(scheduleResult.Body); upstreamName != "" {
-				label = upstreamName
-			}
+		if !known && scheduleName != "" {
+			label = scheduleName
 		}
 	}
 
@@ -232,20 +229,6 @@ func decodeRequest(body []byte) (boundary.ParkWaitTimesRequest, error) {
 		return boundary.ParkWaitTimesRequest{}, errRequestNamesNoPark
 	}
 	return request, nil
-}
-
-// blacklistToggle reads useDefaultBlacklist, default on.
-func blacklistToggle(request boundary.ParkWaitTimesRequest) bool {
-	return request.UseDefaultBlacklist == nil || *request.UseDefaultBlacklist
-}
-
-// blacklistNames reads a request's own blacklist, defaulting to none where
-// the request omits it.
-func blacklistNames(request boundary.ParkWaitTimesRequest) []string {
-	if request.Blacklist == nil {
-		return nil
-	}
-	return *request.Blacklist
 }
 
 func writeJSON(w http.ResponseWriter, status int, value any) {

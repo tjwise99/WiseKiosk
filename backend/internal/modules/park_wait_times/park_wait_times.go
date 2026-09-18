@@ -80,17 +80,6 @@ const (
 	entityBaseURL = "https://api.themeparks.wiki/v1/entity/"
 )
 
-// liveURL is the upstream request for a park's rides and their current
-// waits.
-func liveURL(entityID string) string {
-	return entityBaseURL + entityID + "/live"
-}
-
-// scheduleURL is the upstream request for a park's operating hours.
-func scheduleURL(entityID string) string {
-	return entityBaseURL + entityID + "/schedule"
-}
-
 type liveResponse struct {
 	LiveData []liveRow `json:"liveData"`
 }
@@ -114,23 +103,9 @@ type standbyBlock struct {
 	WaitTime *int `json:"waitTime"`
 }
 
-// shapeRides reads the source's live-data response into the park's ride
-// list, attractions only and in the order the source gives them
-// (SRS056<!-- The park-wait-times module puts each park's identity, hours,
-// and ride waits across the boundary -->). A response missing a value a
-// kept row needs is an
-// error rather than a payload carrying a zero nobody reported, except an
-// attraction reporting OPERATING with no posted wait, which is left out of
-// the list rather than failing the whole park's shaping.
-func shapeRides(body []byte) ([]boundary.ParkWaitTimesRide, error) {
-	return shapeRidesExcluding(body, noExclusion)
-}
-
 // exclusion reports whether one live-data row is dropped before it is
 // read as a ride.
 type exclusion func(row liveRow) bool
-
-func noExclusion(liveRow) bool { return false }
 
 // defaultBlacklistIDs are entity ids the source tags ATTRACTION but the display omits by default
 // (SRS066<!-- The park-wait-times module excludes entities its configuration or its own defaults
@@ -216,14 +191,20 @@ func normalizeName(name string) string {
 	return quoteFold.Replace(name)
 }
 
-// newExclusion builds the request's exclusion: the default id list
-// (unless turned off) unioned with the request's blacklist names.
-func newExclusion(useDefaultBlacklist bool, userBlacklist []string) exclusion {
+// newExclusion builds the request's exclusion: the default id list —
+// unless the request turns it off (UseDefaultBlacklist, default on where
+// omitted) — unioned with the request's own blacklist names (Blacklist,
+// empty where omitted).
+func newExclusion(request boundary.ParkWaitTimesRequest) exclusion {
 	ids := make(map[string]bool)
-	if useDefaultBlacklist {
+	if request.UseDefaultBlacklist == nil || *request.UseDefaultBlacklist {
 		for _, id := range defaultBlacklistIDs {
 			ids[id] = true
 		}
+	}
+	var userBlacklist []string
+	if request.Blacklist != nil {
+		userBlacklist = *request.Blacklist
 	}
 	names := make(map[string]bool, len(userBlacklist))
 	for _, name := range userBlacklist {
@@ -237,9 +218,15 @@ func newExclusion(useDefaultBlacklist bool, userBlacklist []string) exclusion {
 	}
 }
 
-// shapeRidesExcluding is shapeRides with a caller-supplied exclusion run
-// first. See shapeRides for everything else this owes SRS056.
-func shapeRidesExcluding(body []byte, excluded exclusion) ([]boundary.ParkWaitTimesRide, error) {
+// shapeRides reads the source's live-data response into the park's ride
+// list, attractions only and in the order the source gives them
+// (SRS056<!-- The park-wait-times module puts each park's identity, hours,
+// and ride waits across the boundary -->), dropping any row excluded
+// carries away first. A response missing a value a kept row needs is an
+// error rather than a payload carrying a zero nobody reported, except an
+// attraction reporting OPERATING with no posted wait, which is left out of
+// the list rather than failing the whole park's shaping.
+func shapeRides(body []byte, excluded exclusion) ([]boundary.ParkWaitTimesRide, error) {
 	var read liveResponse
 	if err := json.Unmarshal(body, &read); err != nil {
 		return nil, fmt.Errorf("reading the source's response: %w", err)
@@ -308,38 +295,32 @@ type scheduleResponse struct {
 	Schedule []scheduleEntry `json:"schedule"`
 }
 
-// shapeScheduleName reads the park's own display name from the schedule
-// response's top-level name — the one name every park carries, the Universal
-// parks included, whose live response has no park-identity row to read. Used
-// only to name a park this module does not recognize; a known park shows its
-// configured pretty name (resolvePark). Empty where the response carries none.
-func shapeScheduleName(body []byte) string {
-	var read scheduleResponse
-	if err := json.Unmarshal(body, &read); err != nil {
-		return ""
-	}
-	if read.Name == nil {
-		return ""
-	}
-	return *read.Name
-}
-
 type scheduleEntry struct {
 	Type        *string `json:"type"`
 	OpeningTime *string `json:"openingTime"`
 	ClosingTime *string `json:"closingTime"`
 }
 
-// shapeHours reads today's operating hours from the schedule; today read
-// against `now` to stay pure
+// shapeSchedule reads one schedule response, parsed once, into the two
+// things it carries: name, the park's own display name from the response's
+// top-level name — the one name every park carries, the Universal parks
+// included, whose live response has no park-identity row to read; used only
+// to name a park this module does not recognize, a known park shows its
+// configured pretty name instead (resolvePark). Empty where the response
+// carries none. hours is today's operating hours, today read against `now`
+// to stay pure
 // (SRS056<!-- The park-wait-times module puts each park's identity, hours,
 // and ride waits across the boundary -->; boundary/openapi.yaml's
-// ParkWaitTimesHours). Returns nil where the source reports no OPERATING
-// entry.
-func shapeHours(body []byte, now time.Time) (*boundary.ParkWaitTimesHours, error) {
+// ParkWaitTimesHours) — nil where the source reports no OPERATING entry, or
+// where err reports that entry's own times could not be read; name is
+// returned regardless, the two being independent parts of the one response.
+func shapeSchedule(body []byte, now time.Time) (name string, hours *boundary.ParkWaitTimesHours, err error) {
 	var read scheduleResponse
 	if err := json.Unmarshal(body, &read); err != nil {
-		return nil, fmt.Errorf("reading the source's response: %w", err)
+		return "", nil, fmt.Errorf("reading the source's response: %w", err)
+	}
+	if read.Name != nil {
+		name = *read.Name
 	}
 
 	for _, entry := range read.Schedule {
@@ -347,25 +328,25 @@ func shapeHours(body []byte, now time.Time) (*boundary.ParkWaitTimesHours, error
 			continue
 		}
 		if entry.OpeningTime == nil || entry.ClosingTime == nil {
-			return nil, errors.New("an operating schedule entry carries no opening or closing time")
+			return name, nil, errors.New("an operating schedule entry carries no opening or closing time")
 		}
 		opens, err := time.Parse(time.RFC3339, *entry.OpeningTime)
 		if err != nil {
-			return nil, fmt.Errorf("the schedule's opening time is not one this module can read: %w", err)
+			return name, nil, fmt.Errorf("the schedule's opening time is not one this module can read: %w", err)
 		}
 		closes, err := time.Parse(time.RFC3339, *entry.ClosingTime)
 		if err != nil {
-			return nil, fmt.Errorf("the schedule's closing time is not one this module can read: %w", err)
+			return name, nil, fmt.Errorf("the schedule's closing time is not one this module can read: %w", err)
 		}
 		if !sameDay(now.In(opens.Location()), opens) {
 			continue
 		}
-		return &boundary.ParkWaitTimesHours{
+		return name, &boundary.ParkWaitTimesHours{
 			Open:  opens.Format(time.RFC3339),
 			Close: closes.Format(time.RFC3339),
 		}, nil
 	}
-	return nil, nil
+	return name, nil, nil
 }
 
 // sameDay reports whether a and b fall on the same calendar day, each read
