@@ -33,8 +33,9 @@ const (
 
 // epcotEntityID is Epcot's known themeparks.wiki entity id, one of the six in
 // knownParks — a second known-good id besides magicKingdomEntityID, for tests
-// distinguishing two parks' own cache keys and upstream calls.
-const epcotEntityID = "47f90d2c-e191-4239-a466-5892ef59a88b"
+// distinguishing two parks' own cache keys and upstream calls. Derived through
+// resolvePark rather than restated, so it cannot drift from knownParks.
+var _, epcotEntityID, _ = resolvePark("Epcot")
 
 // liveResponseBytes and scheduleResponseBytes read the captured responses.
 func liveResponseBytes(t *testing.T) []byte {
@@ -90,13 +91,23 @@ func freshRouteWithConfig(t *testing.T, cfg upstream.Config) {
 	served = router.NewRoute(router.Entry{
 		Config: cfg,
 		Source: Source,
-		Shape:  func(body []byte) (any, error) { return shapeRides(body) },
+		Shape:  func(body []byte) (any, error) { return shapeRides(body, noExclusion) },
 	})
 	t.Cleanup(func() { served = held })
 }
 
 // uuidShape is the shape of a themeparks.wiki entity id.
 var uuidShape = regexp.MustCompile(`^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$`)
+
+// liveURL and scheduleURL restate route.go's inline upstream-URL shape, test-local: a case that
+// checks which URL a request was captured under needs the same string production actually built, to
+// key against or compare against.
+func liveURL(entityID string) string     { return entityBaseURL + entityID + "/live" }
+func scheduleURL(entityID string) string { return entityBaseURL + entityID + "/schedule" }
+
+// noExclusion admits every row — every shapeRides/fetchPark call below with nothing of its own to
+// filter passes this.
+func noExclusion(liveRow) bool { return false }
 
 // intp is a pointer to an int literal — the shape waitMinutes takes on the
 // boundary, a posted wait or nil.
@@ -125,7 +136,7 @@ func showWaitMinutes(p *int) string {
 // attraction rows are kept, in the source's own order, each carrying its name,
 // its operating state, and its posted wait as the source reported it.
 func TestTST073_ShapingBuildsTheParksRidesFromTheCapturedResponse(t *testing.T) {
-	rides, err := shapeRides(liveResponseBytes(t))
+	rides, err := shapeRides(liveResponseBytes(t), noExclusion)
 	if err != nil {
 		t.Fatalf("shapeRides: unexpected error: %v", err)
 	}
@@ -167,7 +178,7 @@ func TestShapeRidesReadsTheBodyWithoutWritingToIt(t *testing.T) {
 	body := liveResponseBytes(t)
 	held := string(body)
 
-	if _, err := shapeRides(body); err != nil {
+	if _, err := shapeRides(body, noExclusion); err != nil {
 		t.Fatalf("shapeRides: unexpected error: %v", err)
 	}
 	if string(body) != held {
@@ -177,7 +188,7 @@ func TestShapeRidesReadsTheBodyWithoutWritingToIt(t *testing.T) {
 
 // TestShapeRidesRefusesABodyThatIsNotJSON is shapeRides's own decode failure.
 func TestShapeRidesRefusesABodyThatIsNotJSON(t *testing.T) {
-	if _, err := shapeRides([]byte("not json")); err == nil {
+	if _, err := shapeRides([]byte("not json"), noExclusion); err == nil {
 		t.Error("shapeRides: no error for a body that is not JSON")
 	}
 }
@@ -266,7 +277,7 @@ func TestTST073_AResponseMissingAValueTheRideNeedsIsNotShaped(t *testing.T) {
 				t.Fatalf("writing the broken response: %v", err)
 			}
 
-			rides, err := shapeRides(broken)
+			rides, err := shapeRides(broken, noExclusion)
 			if err == nil {
 				t.Fatalf("shapeRides: shaped %+v, want an error", rides)
 			}
@@ -300,7 +311,7 @@ func TestShapeRidesFiltersAnOperatingRowWithNoPostedWait(t *testing.T) {
 		t.Fatalf("writing the modified response: %v", err)
 	}
 
-	rides, err := shapeRides(body)
+	rides, err := shapeRides(body, noExclusion)
 	if err != nil {
 		t.Fatalf("shapeRides: unexpected error: %v", err)
 	}
@@ -329,12 +340,12 @@ func TestTST073_ShapingBuildsTheParksHoursFromTheCapturedResponse(t *testing.T) 
 	// same calendar day in -04:00 selects it.
 	now := time.Date(2026, 9, 13, 12, 0, 0, 0, time.UTC)
 
-	hours, err := shapeHours(scheduleResponseBytes(t), now)
+	_, hours, err := shapeSchedule(scheduleResponseBytes(t), now)
 	if err != nil {
-		t.Fatalf("shapeHours: unexpected error: %v", err)
+		t.Fatalf("shapeSchedule: unexpected error: %v", err)
 	}
 	if hours == nil {
-		t.Fatal("shapeHours: nil, want today's operating hours")
+		t.Fatal("shapeSchedule: nil hours, want today's operating hours")
 	}
 	if hours.Open != "2026-09-13T08:00:00-04:00" {
 		t.Errorf("Open = %q, want the day's OPERATING entry, not its early entry or its ticketed event", hours.Open)
@@ -344,29 +355,29 @@ func TestTST073_ShapingBuildsTheParksHoursFromTheCapturedResponse(t *testing.T) 
 	}
 }
 
-// TestShapeHoursReturnsNilForADayTheSourceReportsNoOperatingEntry is
-// shapeHours's absence path: a day the source reports no OPERATING entry for
+// TestShapeScheduleReturnsNilForADayTheSourceReportsNoOperatingEntry is
+// shapeSchedule's absence path: a day the source reports no OPERATING entry for
 // is nil rather than an error, the park may simply be closed that day
 // (boundary/openapi.yaml's ParkWaitTimesHours).
-func TestShapeHoursReturnsNilForADayTheSourceReportsNoOperatingEntry(t *testing.T) {
+func TestShapeScheduleReturnsNilForADayTheSourceReportsNoOperatingEntry(t *testing.T) {
 	// A day one past the capture's last OPERATING entry.
 	now := time.Date(2026, 9, 15, 12, 0, 0, 0, time.UTC)
 
-	hours, err := shapeHours(scheduleResponseBytes(t), now)
+	_, hours, err := shapeSchedule(scheduleResponseBytes(t), now)
 	if err != nil {
-		t.Fatalf("shapeHours: unexpected error: %v", err)
+		t.Fatalf("shapeSchedule: unexpected error: %v", err)
 	}
 	if hours != nil {
-		t.Errorf("shapeHours = %+v, want nil for a day the source reports no OPERATING entry for", hours)
+		t.Errorf("shapeSchedule = %+v, want nil hours for a day the source reports no OPERATING entry for", hours)
 	}
 }
 
-// TestShapeHoursRefusesAMalformedScheduleEntry covers shapeHours's own
+// TestShapeScheduleRefusesAMalformedScheduleEntry covers shapeSchedule's own
 // failure paths: a body that is not JSON, and an OPERATING entry missing a
 // timestamp or carrying one this module cannot read.
-func TestShapeHoursRefusesAMalformedScheduleEntry(t *testing.T) {
-	if _, err := shapeHours([]byte("not json"), time.Now()); err == nil {
-		t.Error("shapeHours: no error for a body that is not JSON")
+func TestShapeScheduleRefusesAMalformedScheduleEntry(t *testing.T) {
+	if _, _, err := shapeSchedule([]byte("not json"), time.Now()); err == nil {
+		t.Error("shapeSchedule: no error for a body that is not JSON")
 	}
 
 	cases := map[string]func(read map[string]any){
@@ -402,9 +413,9 @@ func TestShapeHoursRefusesAMalformedScheduleEntry(t *testing.T) {
 			}
 
 			now := time.Date(2026, 9, 13, 12, 0, 0, 0, time.UTC)
-			hours, err := shapeHours(broken, now)
+			_, hours, err := shapeSchedule(broken, now)
 			if err == nil {
-				t.Fatalf("shapeHours: shaped %+v, want an error", hours)
+				t.Fatalf("shapeSchedule: shaped hours %+v, want an error", hours)
 			}
 		})
 	}
@@ -449,45 +460,45 @@ func TestSameDay(t *testing.T) {
 	}
 }
 
-// TestShapeHoursReturnsNilForADayWhoseOnlyEntriesAreTicketed is
-// shapeHours's own day-selection read where a date carries schedule content
+// TestShapeScheduleReturnsNilForADayWhoseOnlyEntriesAreTicketed is
+// shapeSchedule's own day-selection read where a date carries schedule content
 // but none of it OPERATING-typed — distinct from
-// TestShapeHoursReturnsNilForADayTheSourceReportsNoOperatingEntry (a date
+// TestShapeScheduleReturnsNilForADayTheSourceReportsNoOperatingEntry (a date
 // past the capture's last entry entirely), this is a date the source
 // reports on, entirely as TICKETED_EVENT.
-func TestShapeHoursReturnsNilForADayWhoseOnlyEntriesAreTicketed(t *testing.T) {
+func TestShapeScheduleReturnsNilForADayWhoseOnlyEntriesAreTicketed(t *testing.T) {
 	body := []byte(`{"schedule":[{"type":"TICKETED_EVENT","openingTime":"2026-09-20T09:00:00-04:00","closingTime":"2026-09-20T22:00:00-04:00"}]}`)
 	now := time.Date(2026, 9, 20, 12, 0, 0, 0, time.UTC)
 
-	hours, err := shapeHours(body, now)
+	_, hours, err := shapeSchedule(body, now)
 	if err != nil {
-		t.Fatalf("shapeHours: unexpected error: %v", err)
+		t.Fatalf("shapeSchedule: unexpected error: %v", err)
 	}
 	if hours != nil {
-		t.Errorf("shapeHours = %+v, want nil for a day whose only entry is ticketed", hours)
+		t.Errorf("shapeSchedule = %+v, want nil hours for a day whose only entry is ticketed", hours)
 	}
 }
 
-// TestShapeHoursReturnsNilForAnEmptySchedule is shapeHours's own boundary at
+// TestShapeScheduleReturnsNilForAnEmptySchedule is shapeSchedule's own boundary at
 // zero: a `schedule` array with nothing in it at all, distinct from every
 // other absence case above which still carries entries to skip past.
-func TestShapeHoursReturnsNilForAnEmptySchedule(t *testing.T) {
-	hours, err := shapeHours([]byte(`{"schedule":[]}`), time.Now())
+func TestShapeScheduleReturnsNilForAnEmptySchedule(t *testing.T) {
+	_, hours, err := shapeSchedule([]byte(`{"schedule":[]}`), time.Now())
 	if err != nil {
-		t.Fatalf("shapeHours: unexpected error: %v", err)
+		t.Fatalf("shapeSchedule: unexpected error: %v", err)
 	}
 	if hours != nil {
-		t.Errorf("shapeHours = %+v, want nil for an empty schedule", hours)
+		t.Errorf("shapeSchedule = %+v, want nil hours for an empty schedule", hours)
 	}
 }
 
-// TestShapeHoursSelectsTheDayInTheOperatingEntrysOwnOffset reads
-// shapeHours's day-selection (SRS056<!-- The park-wait-times module puts each park's identity, hours, and ride waits across the boundary -->)
+// TestShapeScheduleSelectsTheDayInTheOperatingEntrysOwnOffset reads
+// shapeSchedule's day-selection (SRS056<!-- The park-wait-times module puts each park's identity, hours, and ride waits across the boundary -->)
 // against an offset other than the captured fixture's own -04:00: "today" is
 // judged in the OPERATING entry's own offset, never a fixed offset or the
 // caller's. sameDay's own semantics are pinned by TestSameDay; this is
-// shapeHours's wiring of it.
-func TestShapeHoursSelectsTheDayInTheOperatingEntrysOwnOffset(t *testing.T) {
+// shapeSchedule's wiring of it.
+func TestShapeScheduleSelectsTheDayInTheOperatingEntrysOwnOffset(t *testing.T) {
 	cases := []struct {
 		name              string
 		open, close       string
@@ -521,18 +532,18 @@ func TestShapeHoursSelectsTheDayInTheOperatingEntrysOwnOffset(t *testing.T) {
 	for _, c := range cases {
 		t.Run(c.name, func(t *testing.T) {
 			body := []byte(fmt.Sprintf(`{"schedule":[{"type":"OPERATING","openingTime":%q,"closingTime":%q}]}`, c.open, c.close))
-			hours, err := shapeHours(body, c.now)
+			_, hours, err := shapeSchedule(body, c.now)
 			if err != nil {
-				t.Fatalf("shapeHours: unexpected error: %v", err)
+				t.Fatalf("shapeSchedule: unexpected error: %v", err)
 			}
 			if !c.wantHoursSelected {
 				if hours != nil {
-					t.Errorf("shapeHours = %+v, want nil — the entry's own day does not match now in its own offset", hours)
+					t.Errorf("shapeSchedule = %+v, want nil — the entry's own day does not match now in its own offset", hours)
 				}
 				return
 			}
 			if hours == nil {
-				t.Fatal("shapeHours = nil, want the entry selected in its own offset")
+				t.Fatal("shapeSchedule = nil, want the entry selected in its own offset")
 			}
 			if hours.Open != c.open || hours.Close != c.close {
 				t.Errorf("Open/Close = %q/%q, want %q/%q", hours.Open, hours.Close, c.open, c.close)
@@ -541,24 +552,48 @@ func TestShapeHoursSelectsTheDayInTheOperatingEntrysOwnOffset(t *testing.T) {
 	}
 }
 
-// TestLiveAndScheduleURLsNameTheParksEntity reads the upstream requests
-// directly: both carry the entity id resolved for the park, and nothing
-// this module was not handed
+// TestLiveAndScheduleURLsNameTheParksEntity reads the upstream requests a
+// real fetch actually issues, not a URL-building helper in isolation: both
+// carry the entity id resolved for the park, and nothing this module was not
+// handed
 // (SRS065<!-- The park-wait-times module takes what it shows from one external wait-times source -->).
 func TestLiveAndScheduleURLsNameTheParksEntity(t *testing.T) {
 	entityID := magicKingdomEntityID
+	transport := &capturingTransport{body: liveResponseBytes(t)}
+	held := http.DefaultTransport
+	http.DefaultTransport = transport
+	t.Cleanup(func() { http.DefaultTransport = held })
+	freshRoute(t)
 
-	live := liveURL(entityID)
-	if !strings.Contains(live, entityID) || !strings.HasSuffix(live, "/live") {
-		t.Errorf("liveURL(%q) = %q, want the entity id and the /live suffix", entityID, live)
-	}
-	if !strings.HasPrefix(live, "https://") {
-		t.Errorf("liveURL(%q) = %q, want an https request", entityID, live)
+	recorder := serve(t, `{"parks":["Magic Kingdom"]}`)
+	if recorder.Code != http.StatusOK {
+		t.Fatalf("status = %d, want %d (%s)", recorder.Code, http.StatusOK, recorder.Body)
 	}
 
-	schedule := scheduleURL(entityID)
-	if !strings.Contains(schedule, entityID) || !strings.HasSuffix(schedule, "/schedule") {
-		t.Errorf("scheduleURL(%q) = %q, want the entity id and the /schedule suffix", entityID, schedule)
+	transport.mu.Lock()
+	urls := append([]string(nil), transport.urls...)
+	transport.mu.Unlock()
+
+	var sawLive, sawSchedule bool
+	for _, u := range urls {
+		if !strings.HasPrefix(u, "https://") {
+			t.Errorf("upstream request %q is not an https request", u)
+		}
+		if !strings.Contains(u, entityID) {
+			t.Errorf("upstream request %q does not carry the resolved entity id %q", u, entityID)
+		}
+		switch {
+		case strings.HasSuffix(u, "/live"):
+			sawLive = true
+		case strings.HasSuffix(u, "/schedule"):
+			sawSchedule = true
+		}
+	}
+	if !sawLive {
+		t.Errorf("no /live call among %v, want one carrying the entity id", urls)
+	}
+	if !sawSchedule {
+		t.Errorf("no /schedule call among %v, want one carrying the entity id", urls)
 	}
 }
 
@@ -682,10 +717,10 @@ func TestTST080_IntegrationParkKeysAreCachedIndependently(t *testing.T) {
 
 	ctx := context.Background()
 
-	if _, err := fetchPark(ctx, "Magic Kingdom"); err != nil {
+	if _, err := fetchPark(ctx, "Magic Kingdom", noExclusion); err != nil {
 		t.Fatalf("fetchPark(Magic Kingdom) #1: unexpected error: %v", err)
 	}
-	if _, err := fetchPark(ctx, "Magic Kingdom"); err != nil {
+	if _, err := fetchPark(ctx, "Magic Kingdom", noExclusion); err != nil {
 		t.Fatalf("fetchPark(Magic Kingdom) #2: unexpected error: %v", err)
 	}
 
@@ -699,7 +734,7 @@ func TestTST080_IntegrationParkKeysAreCachedIndependently(t *testing.T) {
 		t.Errorf("magic kingdom's own two endpoints cost %d upstream calls across two fetches, want 2 (one live, one schedule, the second fetch served from cache)", magicKingdomCalls)
 	}
 
-	if _, err := fetchPark(ctx, "Epcot"); err != nil {
+	if _, err := fetchPark(ctx, "Epcot", noExclusion); err != nil {
 		t.Fatalf("fetchPark(Epcot): unexpected error: %v", err)
 	}
 	epcotCalls := int64(0)
@@ -750,7 +785,7 @@ func TestTST081_IntegrationAFailingParkIsRetriedNoOftenerThanTheNegativeInterval
 
 	ctx := context.Background()
 
-	first, err := fetchPark(ctx, "Magic Kingdom")
+	first, err := fetchPark(ctx, "Magic Kingdom", noExclusion)
 	if err != nil {
 		t.Fatalf("fetchPark #1: unexpected error: %v", err)
 	}
@@ -758,7 +793,7 @@ func TestTST081_IntegrationAFailingParkIsRetriedNoOftenerThanTheNegativeInterval
 		t.Fatalf("fetchPark #1: available = true against a failing source, want false")
 	}
 
-	second, err := fetchPark(ctx, "Magic Kingdom")
+	second, err := fetchPark(ctx, "Magic Kingdom", noExclusion)
 	if err != nil {
 		t.Fatalf("fetchPark #2: unexpected error: %v", err)
 	}
@@ -775,7 +810,7 @@ func TestTST081_IntegrationAFailingParkIsRetriedNoOftenerThanTheNegativeInterval
 	// The interval elapses, and a further ask does retry.
 	time.Sleep(shrunkBound + 150*time.Millisecond)
 
-	third, err := fetchPark(ctx, "Magic Kingdom")
+	third, err := fetchPark(ctx, "Magic Kingdom", noExclusion)
 	if err != nil {
 		t.Fatalf("fetchPark #3: unexpected error: %v", err)
 	}
@@ -1016,7 +1051,7 @@ func TestAParkWhoseResponseCannotBeShapedIsUnavailable(t *testing.T) {
 	freshRoute(t)
 
 	ctx := context.Background()
-	park, err := fetchPark(ctx, "Magic Kingdom")
+	park, err := fetchPark(ctx, "Magic Kingdom", noExclusion)
 	if err != nil {
 		t.Fatalf("fetchPark: unexpected error: %v", err)
 	}
@@ -1053,7 +1088,7 @@ func TestAParkWithNoOperatingScheduleEntryStillAnswersWithItsRides(t *testing.T)
 	freshRoute(t)
 
 	ctx := context.Background()
-	park, err := fetchPark(ctx, "Magic Kingdom")
+	park, err := fetchPark(ctx, "Magic Kingdom", noExclusion)
 	if err != nil {
 		t.Fatalf("fetchPark: unexpected error: %v", err)
 	}
@@ -1101,7 +1136,7 @@ func TestAParkWithANoWaitLandmarkStaysAvailable(t *testing.T) {
 	freshRoute(t)
 
 	ctx := context.Background()
-	park, err := fetchPark(ctx, "Magic Kingdom")
+	park, err := fetchPark(ctx, "Magic Kingdom", noExclusion)
 	if err != nil {
 		t.Fatalf("fetchPark: unexpected error: %v", err)
 	}
@@ -1147,7 +1182,7 @@ func TestFetchParkDeliversHoursForATodayOperatingEntry(t *testing.T) {
 	freshRoute(t)
 
 	ctx := context.Background()
-	park, err := fetchPark(ctx, "Magic Kingdom")
+	park, err := fetchPark(ctx, "Magic Kingdom", noExclusion)
 	if err != nil {
 		t.Fatalf("fetchPark: unexpected error: %v", err)
 	}
@@ -1166,7 +1201,7 @@ func TestFetchParkDeliversHoursForATodayOperatingEntry(t *testing.T) {
 // fetchPark's own "quieter content" read: distinct from
 // TestAParkWithNoOperatingScheduleEntryStillAnswersWithItsRides (the
 // schedule call fails outright), this is a schedule call that answers 200
-// with a body shapeHours cannot read — costing the park only its hours,
+// with a body shapeSchedule cannot read — costing the park only its hours,
 // never its availability or its rides.
 func TestFetchParkAnswersWithNilHoursWhenTheScheduleAnswersButCannotBeShaped(t *testing.T) {
 	live := liveResponseBytes(t)
@@ -1183,7 +1218,7 @@ func TestFetchParkAnswersWithNilHoursWhenTheScheduleAnswersButCannotBeShaped(t *
 	freshRoute(t)
 
 	ctx := context.Background()
-	park, err := fetchPark(ctx, "Magic Kingdom")
+	park, err := fetchPark(ctx, "Magic Kingdom", noExclusion)
 	if err != nil {
 		t.Fatalf("fetchPark: unexpected error: %v", err)
 	}
@@ -1359,8 +1394,8 @@ func FuzzShapeRides(f *testing.F) {
 
 	f.Fuzz(func(t *testing.T, body []byte) {
 		runWithin(t, fuzzHangBudget, "FuzzShapeRides", func() error {
-			first, firstErr := shapeRides(body)
-			second, secondErr := shapeRides(body)
+			first, firstErr := shapeRides(body, noExclusion)
+			second, secondErr := shapeRides(body, noExclusion)
 			if (firstErr == nil) != (secondErr == nil) {
 				return fmt.Errorf("shapeRides is not deterministic: first = %v, second = %v", firstErr, secondErr)
 			}
@@ -1534,6 +1569,32 @@ func liveTransport(body []byte) http.RoundTripper {
 		}
 		return &http.Response{StatusCode: http.StatusServiceUnavailable, Body: io.NopCloser(bytes.NewReader(nil)), Header: make(http.Header)}, nil
 	})
+}
+
+// TestSupportedParksResolveWellFormedDistinctEntityIDs is
+// TestDefaultBlacklistIDsAreCuratedAndWellFormed's counterpart for the
+// module's own curated roster: every knownParks entry names a themeparks.wiki
+// entity in the shape that source uses, with no id and no pretty name
+// repeated.
+func TestSupportedParksResolveWellFormedDistinctEntityIDs(t *testing.T) {
+	if len(knownParks) == 0 {
+		t.Fatal("knownParks is empty, want the module's curated park roster")
+	}
+	seenIDs := make(map[string]bool, len(knownParks))
+	seenNames := make(map[string]bool, len(knownParks))
+	for _, p := range knownParks {
+		if !uuidShape.MatchString(p.id) {
+			t.Errorf("%q: id %q is not shaped like a themeparks.wiki entity id", p.name, p.id)
+		}
+		if seenIDs[p.id] {
+			t.Errorf("%q: id %q appears more than once in knownParks", p.name, p.id)
+		}
+		seenIDs[p.id] = true
+		if seenNames[p.name] {
+			t.Errorf("%q appears more than once in knownParks", p.name)
+		}
+		seenNames[p.name] = true
+	}
 }
 
 // TestDefaultBlacklistIDsAreCuratedAndWellFormed is
@@ -1767,8 +1828,9 @@ func TestUserBlacklistNameMatchIsNormalizedExact(t *testing.T) {
 //
 // magicKingdomEntityID is Magic Kingdom's entry in knownParks, named here for
 // the cases that assert which identifier a resolved park's own upstream call
-// carried.
-const magicKingdomEntityID = "75ea578a-adc8-4116-a54d-dccb60765ef9"
+// carried. Derived through resolvePark rather than restated, so it cannot
+// drift from knownParks.
+var _, magicKingdomEntityID, _ = resolvePark("Magic Kingdom")
 
 // capturingTransport answers a park's /live call with body and its /schedule
 // call with a failure (mirroring liveTransport), while recording every

@@ -906,7 +906,7 @@ test('holds the Closed card to a full card’s own height, without forcing an op
 
   // The Closed card (no ride reporting a length of time) matches a full leaderboard-plus-More-Waits
   // card's own height — not forced by anything external, but because its own hidden skeleton
-  // (`ParkCard.svelte`'s `.closed-frame`) draws that same structure itself.
+  // (`ParkCard.svelte`'s `.full-frame`) draws that same structure itself.
   expect(
     Math.abs(heights[ISLANDS_OF_ADVENTURE] - heights[MAGIC_KINGDOM]),
     'the Closed card matches the full card’s height',
@@ -962,7 +962,7 @@ test('holds every card to a full card’s own height when every park is Closed, 
   ).toBe(1);
 
   // The same roster, every park filled — the reference a Closed card's own hidden skeleton
-  // (`ParkCard.svelte`'s `.closed-frame`) draws, whether or not any other card on the page happens
+  // (`ParkCard.svelte`'s `.full-frame`) draws, whether or not any other card on the page happens
   // to be filled too.
   await serveModuleData(page, (_asked, body) => {
     const { parks } = body as { parks: string[] };
