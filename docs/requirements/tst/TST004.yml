@@ -29,7 +29,7 @@ status: proposed
 text: |
   Bounded-growth observation over a continuous run under sustained load, two minutes long and
   sampled every two seconds by default, discarding the first three samples as warm-up and requiring
-  at least eight judged samples for the run to be read at all. Resident memory fails on a rise from
+  at least eight judged samples for the run to be read at all. Live heap fails on a rise from
   the median of the judged series' first quartile to the median of its last quartile exceeding ten
   percent. Duration, interval and the threshold are tunable here rather than in the requirement.
 verification-justification: |
