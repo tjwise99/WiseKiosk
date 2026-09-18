@@ -7,7 +7,7 @@ links:
 - SRS022: hWy9-oSofYa69PBb3JcH377YzIssUi5xBa_pH53csvE=
 normative: true
 rationale: |
-  A goroutine leak shows in neither resident memory nor handle count until it is far advanced, so
+  A goroutine leak shows in neither live heap nor handle count until it is far advanced, so
   neither sibling item catches it. Sampled in the run
   TST004<!-- Resident memory does not grow without bound --> describes.
 ref: ''
