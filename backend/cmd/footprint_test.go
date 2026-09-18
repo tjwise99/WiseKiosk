@@ -9,10 +9,10 @@ import (
 	"time"
 )
 
-// memoryGrowthLimit is what the resident-memory predicate judges against,
+// memoryGrowthLimit is what the live-heap predicate judges against,
 // tunable so a longer observation can be judged on a tighter figure.
 var memoryGrowthLimit = flag.Float64("footprint-memory-growth", 0.10,
-	"the fractional rise in resident memory the footprint run fails past")
+	"the fractional rise in live heap the footprint run fails past")
 
 const (
 	// handleMargin is how far above the idle baseline the descriptor count may
@@ -31,12 +31,12 @@ const (
 // sample is one instant's reading of the three sampled resources.
 type sample struct {
 	at         time.Duration
-	rssKB      int
+	heapKB     int
 	fds        int
 	goroutines int
 }
 
-// memoryGrew reports the fractional change from the median resident memory of
+// memoryGrew reports the fractional change from the median live heap of
 // the series' first quartile to that of its last, and whether it exceeds limit.
 // A quartile median moves on a sustained rise and not on a single spike. A
 // series too short to hold a quartile, or one starting at zero, reports no
@@ -50,21 +50,21 @@ func memoryGrew(judged []sample, limit float64) (float64, bool) {
 		return 0, false
 	}
 
-	first := medianRSS(judged[:quartile])
+	first := medianHeap(judged[:quartile])
 	if first == 0 {
 		return 0, false
 	}
 
-	growth := (medianRSS(judged[len(judged)-quartile:]) - first) / first
+	growth := (medianHeap(judged[len(judged)-quartile:]) - first) / first
 	return growth, growth > limit
 }
 
-// medianRSS is the median resident memory of part, averaging the middle pair
+// medianHeap is the median live heap of part, averaging the middle pair
 // where part holds an even number of samples.
-func medianRSS(part []sample) float64 {
+func medianHeap(part []sample) float64 {
 	values := make([]int, len(part))
 	for i, s := range part {
-		values[i] = s.rssKB
+		values[i] = s.heapKB
 	}
 	sort.Ints(values)
 
@@ -106,10 +106,10 @@ func tasksGrew(judged []sample) (int, int, bool) {
 // rather than the verdict.
 func render(series []sample) string {
 	var out strings.Builder
-	out.WriteString("  elapsed\trss kB\tfds\tgoroutines\n")
+	out.WriteString("  elapsed\theap kB\tfds\tgoroutines\n")
 	for _, s := range series {
 		out.WriteString("  " + s.at.String())
-		out.WriteString("\t" + strconv.Itoa(s.rssKB))
+		out.WriteString("\t" + strconv.Itoa(s.heapKB))
 		out.WriteString("\t" + strconv.Itoa(s.fds))
 		out.WriteString("\t" + strconv.Itoa(s.goroutines) + "\n")
 	}
@@ -117,12 +117,12 @@ func render(series []sample) string {
 }
 
 // synthesise builds a series of n samples from a function per resource.
-func synthesise(n int, rssKB, fds, goroutines func(int) int) []sample {
+func synthesise(n int, heapKB, fds, goroutines func(int) int) []sample {
 	series := make([]sample, n)
 	for i := range series {
 		series[i] = sample{
 			at:         time.Duration(i) * time.Second,
-			rssKB:      rssKB(i),
+			heapKB:     heapKB(i),
 			fds:        fds(i),
 			goroutines: goroutines(i),
 		}
@@ -143,39 +143,39 @@ func flat(value int) func(int) int {
 func TestFootprintPredicatesJudgeSyntheticSeries(t *testing.T) {
 	const (
 		samples     = 40
-		steadyRSS   = 16000
+		steadyHeap  = 16000
 		steadyFDs   = 10
 		steadyTasks = 14
 	)
 
-	steady := synthesise(samples, flat(steadyRSS), flat(steadyFDs), flat(steadyTasks))
+	steady := synthesise(samples, flat(steadyHeap), flat(steadyFDs), flat(steadyTasks))
 
-	// A fifth of steadyRSS added linearly across the series, which the quartile
-	// comparison reads as about three quarters of that.
+	// A fifth of steadyHeap added linearly across the series, which the
+	// quartile comparison reads as about three quarters of that.
 	ramping := synthesise(samples, func(i int) int {
-		return steadyRSS + i*steadyRSS/5/(samples-1)
+		return steadyHeap + i*steadyHeap/5/(samples-1)
 	}, flat(steadyFDs), flat(steadyTasks))
 
 	spiking := synthesise(samples, func(i int) int {
 		if i == samples/2 {
-			return steadyRSS * 3
+			return steadyHeap * 3
 		}
-		return steadyRSS
+		return steadyHeap
 	}, flat(steadyFDs), flat(steadyTasks))
 
-	climbingFDs := synthesise(samples, flat(steadyRSS), func(i int) int {
+	climbingFDs := synthesise(samples, flat(steadyHeap), func(i int) int {
 		return steadyFDs + i
 	}, flat(steadyTasks))
 
-	churningFDs := synthesise(samples, flat(steadyRSS), func(i int) int {
+	churningFDs := synthesise(samples, flat(steadyHeap), func(i int) int {
 		return steadyFDs + i%3
 	}, flat(steadyTasks))
 
-	climbingTasks := synthesise(samples, flat(steadyRSS), flat(steadyFDs), func(i int) int {
+	climbingTasks := synthesise(samples, flat(steadyHeap), flat(steadyFDs), func(i int) int {
 		return steadyTasks + i/10
 	})
 
-	dippingTasks := synthesise(samples, flat(steadyRSS), flat(steadyFDs), func(i int) int {
+	dippingTasks := synthesise(samples, flat(steadyHeap), flat(steadyFDs), func(i int) int {
 		if i == samples/2 {
 			return steadyTasks + 6
 		}
@@ -201,10 +201,10 @@ func TestFootprintPredicatesJudgeSyntheticSeries(t *testing.T) {
 		judge  func([]sample) bool
 		want   bool
 	}{
-		{"resident memory holding steady", steady, judgeMemory, false},
-		{"resident memory ramping", ramping, judgeMemory, true},
-		{"resident memory spiking once", spiking, judgeMemory, false},
-		{"resident memory over too short a series", steady[:3], judgeMemory, false},
+		{"heap holding steady", steady, judgeMemory, false},
+		{"heap ramping", ramping, judgeMemory, true},
+		{"heap spiking once", spiking, judgeMemory, false},
+		{"heap over too short a series", steady[:3], judgeMemory, false},
 		{"descriptors holding steady", steady, judgeHandles, false},
 		{"descriptors climbing", climbingFDs, judgeHandles, true},
 		{"descriptors churning inside the margin", churningFDs, judgeHandles, false},

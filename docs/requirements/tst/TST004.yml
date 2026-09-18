@@ -1,10 +1,10 @@
 active: true
 derived: false
 header: |
-  Resident memory does not grow without bound
+  Live heap does not grow without bound
 level: 1.6
 links:
-- SRS022: 538EqpdHbQ1nebfzQj8OBwdB2Xo-7GVRXa8mb1_IKWc=
+- SRS022: hWy9-oSofYa69PBb3JcH377YzIssUi5xBa_pH53csvE=
 normative: true
 rationale: |
   One instrumented run serves this item,
@@ -18,22 +18,22 @@ ref: ''
 references:
 - keyword: func TestRunningFootprintStaysBounded
   path: backend/cmd/footprint_linux_test.go
-  sha: 15aeb841bcfe7a5a767dafb1870c8ced58b4f5c9a4efee90997b90a059260d8f
+  sha: 814404d6990a448af338a7992c44d6b1beb9bd80fbe7115a4214daedd47a5131
   type: file
 - keyword: func TestFootprintPredicatesJudgeSyntheticSeries
   path: backend/cmd/footprint_test.go
-  sha: e9a283c086971cf679678d070e1c9421d1b234fed5460f0259f4df6b71ed0001
+  sha: 0db8386cf987d92c87a2173d16008e22906af3769005f293d189f1576f177d59
   type: file
-reviewed: wZqdoAmlGiIZ_4q-uW0xND8yzwMVOH57I-jI-suicEc=
+reviewed: XLL2qXm9fDnk-vaK0EK32cqHTaJVyWMdCyfLL9gp-1Y=
 status: proposed
 text: |
   Bounded-growth observation over a continuous run under sustained load, two minutes long and
   sampled every two seconds by default, discarding the first three samples as warm-up and requiring
-  at least eight judged samples for the run to be read at all. Resident memory fails on a rise from
+  at least eight judged samples for the run to be read at all. Live heap fails on a rise from
   the median of the judged series' first quartile to the median of its last quartile exceeding ten
   percent. Duration, interval and the threshold are tunable here rather than in the requirement.
 verification-justification: |
-  Settles that resident memory does not rise past its threshold across the judged samples of the
+  Settles that live heap does not rise past its threshold across the judged samples of the
   run. The comparison is between quartile medians rather than endpoints, so a single spike does not
   fail it while a sustained rise does. What it does not settle is the timescale the obligation is
   about: a two-minute run is a per-commit smoke test, and a leak slower than that window is
