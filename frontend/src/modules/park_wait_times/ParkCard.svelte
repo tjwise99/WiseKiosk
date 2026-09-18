@@ -59,8 +59,9 @@
       `transform` is the one property animated — a compositor can move it without a layout pass —
       and only an overflowing row ever carries the class
       (SRS021<!-- Frontend runs on a Pi Zero-class browser host -->). Honors
-      `prefers-reduced-motion: reduce` by leaving the row static. Read once: `rideRow` keys each row
-      on the ride's own name. */
+      `prefers-reduced-motion: reduce` by leaving the row static. Read once: the row's own `{#each}`
+      keys on its position, since the boundary carries no stable ride id and two rides can share a
+      name. */
   function marquee(node: HTMLElement): void {
     // Measured next frame, not at mount: ParkWaitTimes.svelte sets `--pwt-card-width` on the grid
     // root, which mounts after this row's — reading `.ride-name`'s clientWidth before that applies
@@ -142,7 +143,7 @@
     </div>
   {:else}
     <ol class="leaderboard" data-pwt-leaderboard>
-      {#each held as ride (ride.name)}
+      {#each held as ride, index (index)}
         <li class="row" data-pwt-leaderboard-row>
           {@render rideRow(ride)}
         </li>
@@ -153,7 +154,7 @@
       <div class="more" data-pwt-more-waits>
         <div class="more-divider" data-pwt-more-divider aria-hidden="true"></div>
         <ol class="tour">
-          {#each shown as ride (ride.name)}
+          {#each shown as ride, index (index)}
             <li class="row" data-pwt-tour-row>
               {@render rideRow(ride)}
             </li>
