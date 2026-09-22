@@ -74,7 +74,9 @@
     {#if showSeconds || !twentyFourHour}
       <div class="annotations">
         {#if showSeconds}
-          <span class="seconds tabular-figures">{secondsText}</span>
+          <span class="seconds-slot tabular-figures">
+            <span class="seconds tabular-figures">{secondsText}</span>
+          </span>
         {/if}
         {#if !twentyFourHour}
           <span class="meridiem">{meridiemText}</span>
@@ -121,7 +123,7 @@
     align-items: flex-start;
   }
 
-  .seconds,
+  .seconds-slot,
   .meridiem {
     margin: 0;
     font-size: var(--type-annotation);
@@ -129,10 +131,42 @@
     line-height: 1;
   }
 
+  /* The reading is the only text on the display that changes every second, and in flow that
+     costs a whole-page layout: no box between it and the document has a content-independent
+     size, so the engine has no relayout boundary to root at and re-lays out every box on the
+     page once a second. The slot holds the reading's box open with values that never change;
+     the reading sits out of flow inside it under size containment, which is what makes it a
+     boundary the engine can root at. Both halves are needed — size containment alone leaves
+     the box in flow, where it still participates in its parent's sizing. */
+  .seconds-slot {
+    position: relative;
+  }
+
   /* The separator as CSS, not in the text node shared with `secondsText`: avoids the same
-     nullish-fallback branch App.svelte's edgeBandStyle comment describes. */
-  .seconds::before {
+     nullish-fallback branch App.svelte's edgeBandStyle comment describes. It sits on the slot
+     rather than the reading so that it is the slot, not the once-a-second text, that is laid
+     out against it. */
+  .seconds-slot::before {
     content: ':';
+  }
+
+  /* Never updated and never painted: it exists only to hold the slot as wide as the reading,
+     measured from the font rather than from a number written here. Tabular figures make every
+     two-digit reading exactly this wide. Generated content rather than an element, so the
+     digits that size the slot stay out of the module's text — a test reading the clock reads
+     the reading, not the reading twice. */
+  .seconds-slot::after {
+    content: '00';
+    visibility: hidden;
+  }
+
+  /* `inset` takes the box from the slot, so size containment has a definite box to apply and
+     cannot collapse it. Right-aligned to land on the digits the slot is sized by. */
+  .seconds {
+    position: absolute;
+    inset: 0;
+    text-align: right;
+    contain: size layout;
   }
 
   /* Pinned to the bottom by its own margin rather than by `justify-content: space-between` on the
