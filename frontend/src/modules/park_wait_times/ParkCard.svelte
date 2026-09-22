@@ -9,6 +9,7 @@
     remainingRides,
     tourPadding as tourPaddingOf,
   } from './park_wait_times';
+  import type { Action } from 'svelte/action';
 
   /**
    * One park's card (./README.md § The card). Owns its rotation timer, independent per card
@@ -59,24 +60,39 @@
       `transform` is the one property animated — a compositor can move it without a layout pass —
       and only an overflowing row ever carries the class
       (SRS021<!-- Frontend runs on a Pi Zero-class browser host -->). Honors
-      `prefers-reduced-motion: reduce` by leaving the row static. Measured once per mount: the row's
-      own `{#each}` keys on its position, not the ride's name, so a re-sort can leave this node in
-      place while the ride it shows changes underneath it — the `{#key ride.name}` wrapper below
-      remounts the node, and with it re-runs this measurement, whenever that happens. */
-  function marquee(node: HTMLElement): void {
+      `prefers-reduced-motion: reduce` by leaving the row static. The row's own `{#each}` keys on its
+      position, not the ride's name, so a re-sort leaves this node in place while the ride it shows
+      changes underneath it; `use:marquee={ride.name}` re-runs the measurement (the action's
+      `update`) on each such change and reconciles the class both ways, so the node scrolls or sits
+      static to match its current text without being rebuilt. */
+  // The `string` parameter is the ride name; the action never reads it — Svelte watches it to fire
+  // `update` when the ride under this row changes (`use:marquee={ride.name}`), and the measurement
+  // reads the rendered geometry live rather than the name.
+  const marquee: Action<HTMLElement, string> = (node) => {
     // Measured next frame, not at mount: ParkWaitTimes.svelte sets `--pwt-card-width` on the grid
     // root, which mounts after this row's — reading `.ride-name`'s clientWidth before that applies
     // would catch it unconstrained and never find an overflow.
-    requestAnimationFrame(() => {
-      // node itself is an unconstrained inline-block, sized to its own text — `.ride-name`, its
-      // parent, is the clipping column `scrollWidth` must be read against.
-      const column = node.parentElement as HTMLElement;
-      const overflow = node.scrollWidth - column.clientWidth;
-      if (overflow <= 0 || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-      node.style.setProperty('--pwt-marquee-distance', `-${overflow}px`);
-      node.classList.add('marquee');
-    });
-  }
+    function measure(): void {
+      requestAnimationFrame(() => {
+        // node itself is an unconstrained inline-block, sized to its own text — `.ride-name`, its
+        // parent, is the clipping column `scrollWidth` must be read against.
+        const column = node.parentElement as HTMLElement;
+        const overflow = node.scrollWidth - column.clientWidth;
+        if (overflow <= 0 || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+          // A name that fits — or a re-sort that moved a shorter ride under this row — carries no
+          // marquee: cleared here so a class left by a previous, wider ride cannot keep a
+          // now-fitting row scrolling.
+          node.classList.remove('marquee');
+          node.style.removeProperty('--pwt-marquee-distance');
+          return;
+        }
+        node.style.setProperty('--pwt-marquee-distance', `-${overflow}px`);
+        node.classList.add('marquee');
+      });
+    }
+    measure();
+    return { update: measure };
+  };
 </script>
 
 <li class="card" data-pwt-card data-pwt-park={park.name}>
@@ -98,9 +114,7 @@
 
   {#snippet rideRow(ride: ParkWaitTimesRide)}
     <span class="ride-name" data-pwt-ride-name>
-      {#key ride.name}
-        <span class="ride-name-text" use:marquee>{ride.name}</span>
-      {/key}
+      <span class="ride-name-text" use:marquee={ride.name}>{ride.name}</span>
     </span>
     {#if ride.state === ParkWaitTimesState.Operating}
       <span class="wait tabular-figures" data-pwt-wait data-pwt-wait-kind="minutes">{ride.waitMinutes}</span>
@@ -337,10 +351,14 @@
     white-space: nowrap;
   }
 
-  /* :global — `marquee` adds this class imperatively (`classList.add`), which the compiler cannot
+  /* :global — `marquee` toggles this class imperatively (`classList`), which the compiler cannot
      see statically the way a `class:` directive would, and would otherwise prune as unused. */
   .ride-name-text:global(.marquee) {
     animation: pwt-marquee 8s ease-in-out infinite;
+    /* Requests the compositor layer the animation needs up front, rather than leaving it to be
+       discovered on the animation's own first frame
+       (SRS021<!-- Frontend runs on a Pi Zero-class browser host -->). */
+    will-change: transform;
   }
 
   /* Paused at the start, scrolled left to reveal the end, paused, snapped back — the 65.01%/100%

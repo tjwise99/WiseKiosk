@@ -4,6 +4,7 @@ import {
   type ParkWaitTimesPayload,
   type ParkWaitTimesRide,
 } from '../../lib/boundary/client';
+import { LIVENESS_INTERVAL_MS } from '../../lib/liveness';
 import {
   advanceHostClock,
   asksBeyondTheShell,
@@ -11,6 +12,7 @@ import {
   expect,
   holdHostClock,
   render,
+  serveLiveness,
   serveModuleData,
   test,
   watchTraffic,
@@ -1160,6 +1162,11 @@ test('scrolls a ride name too wide for its own column, the full name still in th
   expect(animationName, 'the marquee animates, rather than being a static class with no motion').toContain(
     'pwt-marquee',
   );
+
+  // Not evidence a compositor layer was created, which no computed style can report. Paired with
+  // the base-row control in the no-marquee test below, which is what holds the hint scoped.
+  const willChange = await text.evaluate((el) => getComputedStyle(el).willChange);
+  expect(willChange, 'the marquee row carries the compositor hint').toBe('transform');
 });
 
 test('leaves a ride name that already fits its own column static, no marquee', async ({ page }) => {
@@ -1181,6 +1188,12 @@ test('leaves a ride name that already fits its own column static, no marquee', a
 
   const text = page.locator('.ride-name-text').first();
   await expect(text, 'a name that already fits never gets the marquee class').not.toHaveClass(/marquee/);
+
+  // The control for the marquee row's own `will-change` assertion above: a computed value read off
+  // a row carrying both classes cannot say which rule supplied it, so only this one goes red if the
+  // declaration moves to the base `.ride-name-text` rule and reaches every row.
+  const willChange = await text.evaluate((el) => getComputedStyle(el).willChange);
+  expect(willChange, 'the hint is scoped to the marquee, never the base ride-name row').toBe('auto');
 });
 
 test('suppresses the marquee under prefers-reduced-motion, an overflowing name left static', async ({ page }) => {
@@ -1203,10 +1216,11 @@ test('suppresses the marquee under prefers-reduced-motion, an overflowing name l
 test('re-measures the marquee after a poll refresh reorders rows in place, not just at mount', async ({
   page,
 }) => {
-  // The leaderboard's `{#each ... (index)}` keeps each row's DOM node across a reorder, and `marquee`
-  // measures overflow only once per mount — the `{#key ride.name}` wrapper (ParkCard.svelte) is what
-  // re-runs that measurement when the ride shown under a row changes without the row itself
-  // remounting.
+  // The leaderboard's `{#each ... (index)}` keeps each row's DOM node across a reorder, so the ride
+  // shown under a row changes without the row remounting — `use:marquee={ride.name}` (ParkCard.svelte)
+  // re-runs the measurement on that change (the action's `update`) and reconciles the class both ways,
+  // which is what this asserts: a row that gains an overflowing name marquees, one that loses it does
+  // not.
   const SHORT = 'A';
   const LONG = 'Guardians of the Galaxy: Cosmic Rewind — The Complete Extended Experience Edition';
 
@@ -1416,4 +1430,45 @@ test('stands down to nothing while the backend is unreachable, and stops asking 
   expect(whileGone.urls.length, 'it asked nothing further once the backend was gone').toBe(
     askedBeforeTheOutageWasKnown,
   );
+});
+
+test('is drawn again once the backend answers, the outage having left the page live', async ({
+  page,
+}) => {
+  // The tier's own recovery case (../../../tests/render/backend-unreachable.spec.ts) reads a stub
+  // module, which holds no element of its own across the transition. This one reads the real module,
+  // because what the outage tears down here is the measured grid: the width effect outlives the
+  // `{#if reachable}` block that owns the element, and Svelte writes `null` back through `bind:this`
+  // as that block goes. An effect that throws on it takes the whole page's rendering with it — the
+  // display then holds the outage report with the backend answering behind it, for as long as it
+  // runs, while every timer on the page goes on firing into a screen nothing reaches.
+  //
+  // Staged over one page rather than a load that is already unreachable: a page that never drew the
+  // grid never tears one down, which is the tier's blind spot rather than a second case.
+  const thrown: string[] = [];
+  page.on('pageerror', (error) => thrown.push(String(error)));
+
+  await serveModuleData(page, () => ({
+    status: 200,
+    data: parksPayload([onePark(MAGIC_KINGDOM, { rides: [ride('Space Mountain', 45)] })]),
+  }));
+  await render(page, placed([MAGIC_KINGDOM]));
+  await expect(page.locator(CARD)).toHaveCount(1);
+
+  await serveLiveness(page, 'abort');
+  await expect(page.locator('[data-backend-unreachable]')).toBeVisible({
+    timeout: 2 * LIVENESS_INTERVAL_MS,
+  });
+  await expect(page.locator(MODULE)).toHaveCount(0);
+
+  await serveLiveness(page, 'ok');
+
+  // Two intervals, the ask that reaches the restored backend being the next one after the answer
+  // changes. The card, not the module box alone: a page still rendering draws the grid it measured.
+  await expect(page.locator(CARD)).toHaveCount(1, { timeout: 2 * LIVENESS_INTERVAL_MS });
+  await expect(page.locator('[data-backend-unreachable]')).toHaveCount(0);
+
+  // Read last, and separately: the recovery above is the symptom, and this is the cause. A page that
+  // recovers while still having thrown is a page that was lucky about ordering.
+  expect(thrown, 'the outage raised no uncaught error').toEqual([]);
 });

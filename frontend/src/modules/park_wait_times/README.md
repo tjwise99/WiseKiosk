@@ -98,6 +98,13 @@ leaves it no room, it scrolls to reveal itself rather than wrapping, truncating,
 — paused, scrolled left to the end, paused, reset, on loop (a Spotify-style marquee); a name that
 already fits is left static.
 
+A scrolling row is given its own compositor layer (`will-change`), and only a scrolling row. The
+scroll loops for as long as the card is on screen, so that layer is held the whole time; confining it
+to the rows that actually overflow is what bounds a card's cost on a Pi Zero-class host
+(SRS021<!-- Frontend runs on a Pi Zero-class browser host -->). Promoting every ride-name row is
+rejected on that trade, not overlooked — it costs a held layer per row and buys nothing for a row
+that never moves (meta-wisekiosk #100 gpu-compositing).
+
 ## Type and spacing
 
 Every element takes a named step from the

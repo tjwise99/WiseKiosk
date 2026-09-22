@@ -36,7 +36,12 @@
     node.style.setProperty('--pwt-rows', String(shape.rows));
   }
 
-  let gridEl: HTMLElement | undefined = $state();
+  /** The grid's own element, while there is one. Three values, not two: `undefined` before the grid
+      first mounts, the element while it is on screen, and `null` once it leaves — Svelte writes
+      `null` back through `bind:this` as it destroys the `{#if reachable}` block the grid sits in
+      (`bind_this`'s teardown). Typing away that `null` is what let it reach `grid.querySelectorAll`
+      below. */
+  let gridEl: HTMLElement | null | undefined = $state();
 
   /** The width every card and grid column takes: the widest a park's own header draws across the
       roster. Read off the real rendered elements — each header's own `.identity` and `.hours`
@@ -49,7 +54,12 @@
   $effect(() => {
     void pwtPayload;
     const grid = gridEl;
-    if (grid === undefined) return;
+    // Both of the no-grid values, because this effect is the component's rather than the block's and
+    // so outlives the grid: the write that unbinds it is itself a state change, which re-runs this
+    // with no grid to measure. A throw here is not confined to this module — an uncaught error in an
+    // effect stops the whole page updating, the outage banner included, so the display would keep
+    // reporting an outage the backend had already recovered from.
+    if (grid === undefined || grid === null) return;
     // The reading is the browser's — each rendered card's own `.identity`/`.hours` box, the header
     // gap and the card chrome; `uniformCardWidth` (park_wait_times.ts) turns those into the one
     // width. `.identity` and `[data-pwt-header]` are drawn on every card (ParkCard.svelte), so they
