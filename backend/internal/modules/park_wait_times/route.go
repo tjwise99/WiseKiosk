@@ -60,6 +60,13 @@ func (ParkWaitTimesRoute) PostApiParkWaitTimes(w http.ResponseWriter, r *http.Re
 		router.Reject(w, router.InvalidParameters, err.Error())
 		return
 	}
+	// TEMPORARY — full_open_demo.go's owner-requested demonstration mode, which
+	// answers from the fixture and reaches no source. Its switch is the revert.
+	if fullOpenDemo {
+		writeJSON(w, http.StatusOK, fullOpenDemoPayload(request.Parks))
+		return
+	}
+
 	excluded := newExclusion(request)
 	fetched := fetchParksConcurrently(r.Context(), request.Parks, excluded)
 
