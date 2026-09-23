@@ -88,6 +88,14 @@ const MODULE = '[data-park-wait-times]';
 const CARD = '[data-pwt-card]';
 const LOADING = '[data-module-loading]';
 const MODULE_UNAVAILABLE = '[data-module-unavailable]';
+/**
+ * What the page draws where a module threw, in place of that module
+ * (../../../tests/render/fault-containment.spec.ts). Distinct from `MODULE_UNAVAILABLE`, which is this
+ * module's own report that its reading failed: a contained fault is read here because an uncaught
+ * error is no longer visible as one — it is caught, and the marker is the only thing left that says it
+ * happened.
+ */
+const MODULE_FAULTED = '[data-module-faulted]';
 const PARK_UNAVAILABLE = '[data-pwt-unavailable]';
 const HEADER = '[data-pwt-header]';
 const LEADERBOARD = '[data-pwt-leaderboard]';
@@ -191,13 +199,38 @@ test('renders two configured parks that resolve to the same name without throwin
   const pageErrors: string[] = [];
   page.on('pageerror', (error) => pageErrors.push(error.message));
 
+  // One ride each, and different ones: the two cards then differ by content while sharing the name
+  // they are keyed against, so a grid that collapsed them into one is caught by what is drawn rather
+  // than only by how many boxes there are.
   await serveModuleData(page, () => ({
     status: 200,
-    data: parksPayload([onePark(MAGIC_KINGDOM), onePark(MAGIC_KINGDOM)]),
+    data: parksPayload([
+      onePark(MAGIC_KINGDOM, { rides: [ride('Space Mountain', 45)] }),
+      onePark(MAGIC_KINGDOM, { rides: [ride('Big Thunder Mountain', 20)] }),
+    ]),
   }));
   await render(page, placed([MAGIC_KINGDOM, MAGIC_KINGDOM], { columns: 2, rows: 1 }));
 
+  // What the module drew, not what the page failed to raise. A throw here no longer reaches the page
+  // as an uncaught error — it is caught where the module is mounted and the module is replaced by the
+  // marker (../../../tests/render/fault-containment.spec.ts) — so the absence below would be satisfied
+  // by the very failure it was written to catch. Both cards, each with its own name and its own ride,
+  // is what a module that rendered the duplicate looks like and a contained one does not.
   await expect(page.locator(CARD)).toHaveCount(2);
+  await expect(page.locator(`${CARD} ${HEADER}`)).toHaveCount(2);
+  expect(
+    await page
+      .locator(CARD)
+      .evaluateAll((cards) => cards.map((card) => card.querySelector('.name')?.textContent ?? '')),
+  ).toEqual([MAGIC_KINGDOM, MAGIC_KINGDOM]);
+  await expect(page.locator(`${CARD} ${RIDE_NAME_COLUMN}`)).toHaveText([
+    'Space Mountain',
+    'Big Thunder Mountain',
+  ]);
+  await expect(page.locator(MODULE_FAULTED)).toHaveCount(0);
+
+  // Kept beside them rather than in place of them: a boundary catches what is thrown under a render,
+  // and an error raised anywhere else still arrives here.
   expect(pageErrors, 'the page raised nothing while rendering the duplicate').toHaveLength(0);
 });
 
@@ -216,7 +249,17 @@ test('renders a park whose rides share a name without throwing — the ride each
   }));
   await render(page, placed([EPCOT]));
 
+  // Both rows drawn, each carrying its own name and its own wait, for the reason the duplicate-park
+  // case above states: a throw is contained rather than raised at the page, so what the module drew is
+  // the reading and the absence of an uncaught error no longer is.
   await expect(page.locator(LEADERBOARD_ROW)).toHaveCount(2);
+  await expect(page.locator(`${LEADERBOARD_ROW} ${RIDE_NAME_COLUMN}`)).toHaveText([
+    'Test Track',
+    'Test Track',
+  ]);
+  await expect(page.locator(`${LEADERBOARD_ROW} ${WAIT}`)).toHaveText(['40', '15']);
+  await expect(page.locator(MODULE_FAULTED)).toHaveCount(0);
+
   expect(pageErrors, 'the page raised nothing while rendering the duplicate ride name').toHaveLength(0);
 });
 
@@ -1709,6 +1752,12 @@ test('is drawn again once the backend answers, the outage having left the page l
   });
   await expect(page.locator(MODULE)).toHaveCount(0);
 
+  // Stood down rather than faulted, read while the outage is up. The defect this case exists for
+  // throws during exactly this teardown, and once a boundary is catching it the throw is no longer
+  // visible at the page at all — the marker is, and only for as long as the fault lasts, so it is read
+  // here rather than only after the recovery has cleared it.
+  await expect(page.locator(MODULE_FAULTED)).toHaveCount(0);
+
   await serveLiveness(page, 'ok');
 
   // Two intervals, the ask that reaches the restored backend being the next one after the answer
@@ -1716,7 +1765,18 @@ test('is drawn again once the backend answers, the outage having left the page l
   await expect(page.locator(CARD)).toHaveCount(1, { timeout: 2 * LIVENESS_INTERVAL_MS });
   await expect(page.locator('[data-backend-unreachable]')).toHaveCount(0);
 
-  // Read last, and separately: the recovery above is the symptom, and this is the cause. A page that
-  // recovers while still having thrown is a page that was lucky about ordering.
+  // What it drew, read on the far side of the transition: the park's own header and its ride, the
+  // things the measured grid holds. The count above is a module that came back; these are a module
+  // that came back with its content, which is what the effect that threw was measuring.
+  await expect(page.locator(`${CARD} ${HEADER}`)).toHaveCount(1);
+  await expect(page.locator(`${CARD} ${RIDE_NAME_COLUMN}`)).toHaveText(['Space Mountain']);
+
+  // Read last, and separately: the recovery above is the symptom, and this is the cause. Both spellings
+  // of it, because the fix for this defect is a boundary at the module's mount point
+  // (../../../tests/render/fault-containment.spec.ts), and a boundary is exactly what stops a throw
+  // reaching the page as an uncaught error — so once one is there, the absence below is satisfied
+  // whether this module threw or not, and the marker is what tells the two apart. A module that
+  // recovers while having thrown is one that was lucky about ordering.
+  await expect(page.locator(MODULE_FAULTED)).toHaveCount(0);
   expect(thrown, 'the outage raised no uncaught error').toEqual([]);
 });
