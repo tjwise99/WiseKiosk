@@ -15,25 +15,17 @@
 }
 
 /* Weather Icons, bundled and served from the backend's own origin: `weathericons` 2.1.0's
-   `font/weathericons-regular-webfont.woff2` and `.woff` (font version 1.100), redistributed whole
-   and unmodified. What this face carries and how it is reached is
+   `font/weathericons-regular-webfont.woff2` (font version 1.100), redistributed whole and
+   unmodified. What this face carries and how it is reached is
    docs/contracts/display-styling-contract.md § Typeface. Licence text and attribution for both
    faces: ./assets/font-licences.txt. `block` matches Inter's, so no fallback face is ever
-   composited.
-
-   Two containers carry the one font, and the browser takes the first `src` whose format it
-   supports. The display host's WebKitGTK is built `USE_WOFF2=OFF`: it rejects a WOFF2 `src` before
-   fetching it, which leaves the face with no source at all, and this face has no fallback, so its
-   glyphs are absent rather than substituted. WOFF1 is decoded unconditionally and costs 11 KB
-   more. */
+   composited. */
 @font-face {
   font-family: 'Weather Icons';
   font-style: normal;
   font-weight: 400;
   font-display: block;
-  src:
-    url('./assets/weathericons-regular.woff2') format('woff2'),
-    url('./assets/weathericons-regular.woff') format('woff');
+  src: url('./assets/weathericons-regular.woff2') format('woff2');
 }
 
 :root {

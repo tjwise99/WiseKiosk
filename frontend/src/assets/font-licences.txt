@@ -1,7 +1,7 @@
 Both faces bundled in this directory are redistributed under the SIL Open Font License 1.1, which
-conditions redistribution on the copyright notice and the licence travelling with the font. No file
-below carries a licence of its own, so this file is where that obligation is discharged. What each
-face is used for is docs/contracts/display-styling-contract.md.
+conditions redistribution on the copyright notice and the licence travelling with the font. Each is
+a single file with no licence of its own, so this file is where that obligation is discharged. What
+each face is used for is docs/contracts/display-styling-contract.md.
 
 Each notice below is the one carried in that font file's own name table, read out of the file this
 repository ships rather than copied from a distribution page.
@@ -19,13 +19,11 @@ INTER
 
 WEATHER ICONS
 
-  File:       weathericons-regular.woff2, weathericons-regular.woff
+  File:       weathericons-regular.woff2
   Version:    1.100 (Version 1.100;PS 001.100;hotconv 1.0.70;makeotf.lib2.5.58329)
-  Provenance: weathericons 2.1.0's font/weathericons-regular-webfont.woff2 and
-              font/weathericons-regular-webfont.woff, redistributed whole and unmodified. Two
-              containers of the one font, both carrying the name table read out below; which one a
-              browser fetches is app.css's concern. That package ships no licence file of its own,
-              which is what makes this copy the only one travelling with them.
+  Provenance: weathericons 2.1.0's font/weathericons-regular-webfont.woff2, redistributed whole and
+              unmodified. That package ships no licence file of its own, which is what makes this
+              copy the only one travelling with it.
   Notice:     Weather Icons licensed under SIL OFL 1.1 — Code licensed under MIT License —
               Documentation licensed under CC BY 3.0
   Design:     Erik Flowers, Lukas Bischoff (v1 Art)
