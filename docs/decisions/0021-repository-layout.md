@@ -1,14 +1,21 @@
 # 0021 — Lay the repository out as the container decomposition: a root per container, and a home for what belongs to neither
 
 **Status:** accepted
-**Decided:** 2026-08-30 (the configuration-schema fragment dropped from the module directory,
-#156 config-schema composer; the layout itself taken 2026-08-12 at #5 repo layout, once #97 C4
-phase 2 Container closed and the decomposition this projects landed as
+**Decided:** 2026-09-23 (a diagnostic entry point admitted beside the product's under `cmd/`,
+#377 display consistency; the configuration-schema fragment dropped from the module directory
+2026-08-30 at #156 config-schema composer; the layout itself taken 2026-08-12 at #5 repo layout,
+once #97 C4 phase 2 Container closed and the decomposition this projects landed as
 [ADR 0019 rev 7](0019-boundary-at-what-deploys-and-tag-tier.md))
-**Rev:** 4
+**Rev:** 5
 
 ## Revisions
 
+- **rev 5** — 2026-09-23 — `cmd/` holds the backend's program entry points rather than *the* binary's:
+  a diagnostic main may sit beside the product's, and no image or step producing one builds it. Stated
+  because the singular reading had become false — `backend/cmd/fixtures` landed as a profiling origin
+  for the deployed board — and a record asserting one entry point is one a reader trusts against the
+  tree. This admits a case the layout did not rule on, so the `Decided` date moves with it
+  (#377 display consistency).
 - **rev 4** — 2026-09-15 — drops the "committed" clause and the "committed because the gate is a
   `git diff`" causal sentence: [ADR 0008 rev 6](0008-boundary-contract-openapi-codegen.md) generates
   the boundary types at build rather than committing them. The layout claim itself — which package
@@ -79,8 +86,11 @@ between them, and a fourth for what ships outside the boundary. The repository's
 product rather than running in it.
 
 - **`backend/` is the Go module root.** `go.mod` sits there and nowhere else; `cmd/` holds the
-  binary's entry point and `internal/` the shared framework half, which is every component the
-  Backend container draws.
+  program entry points and `internal/` the shared framework half, which is every component the
+  Backend container draws. **One of those entry points is the product**, and it is the one an image
+  builds; any other is a diagnostic, built by no image and by no step that produces one. The rule that
+  keeps them apart is what the image builds rather than where the source sits, because a diagnostic
+  that a build reaches is shipped whatever directory it was written in.
 - **`frontend/` is the npm package root.** `package.json` sits there; `src/` holds the sources Vite
   builds, with the framework half under `src/lib/`.
 - **`boundary/openapi.yaml` is the one boundary schema.** It is owned by neither package
@@ -181,6 +191,14 @@ listing minus one known entry.
 other modules import. Nothing outside this repository imports any of it, and `internal/` refuses that
 mechanically rather than by intent, which is the stronger statement for a private application.
 
+**A diagnostic behind a flag on the product binary, rather than a second entry point.** One program to
+build, one assembly to keep current, and the duplication the Consequences below record disappears.
+Rejected because the fixture data it serves would then be inside the shipped image, reachable by
+whatever reaches the flag, and an operator's deployment would carry a mode that answers the display
+from a fixture instead of the source. The rejection is evidenced rather than argued: that shape was
+built on #377's own branch, as a demonstration mode on the product route, and taken out again before
+the branch merged — a diagnostic on the product path is a diagnostic an operator can reach.
+
 **Say nothing about the `Dockerfile` or the release material**, on the ground that the tickets building
 them will decide. Rejected: each would then invent a path at build time, which is the plausible
 invention [`../../CONTRIBUTING.md`](../../CONTRIBUTING.md)'s design-first rule exists to prevent, and
@@ -212,6 +230,14 @@ the second one to be invented would have to argue against the first rather than 
   count its reasons — a claim about another record's argument goes stale when that record is revised,
   and a pinned citation is green either way, the pin being current while what it is attached to is
   not.
+- **A diagnostic entry point duplicates the product's assembly, and nothing holds the copy current.**
+  Keeping it out of the image means it cannot be the product's `main`, so it wires up the same
+  framework components itself; a component added to the product's assembly does not appear in the
+  diagnostic's, and the diagnostic goes on building and serving while it profiles something the
+  product no longer is. That is the known cost of the placement rather than a defect to fix here: the
+  alternative that removes it is the flag on the product binary, rejected above. What bounds it is that
+  a diagnostic which has drifted is misleading rather than shipped — no image carries it, so the
+  failure is a wasted measurement rather than a deployed one.
 - **Almost none of this is gated.** The root-manifest half is enforced today; the rest is a convention
   that becomes checkable as the module and framework structure checks
   [`../CI.md`](../CI.md) describes are built against these paths. Until then review is the control,

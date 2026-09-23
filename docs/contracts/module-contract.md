@@ -10,7 +10,7 @@ upstream-backed — adding one registration entry. There is no mechanism to regi
 
 The concrete locations — which directory holds a module's files, and where the registration list
 lives — are fixed by the repository layout
-([ADR 0021 rev 4](../decisions/0021-repository-layout.md)). This page names the parts, not their
+([ADR 0021 rev 5](../decisions/0021-repository-layout.md)). This page names the parts, not their
 paths.
 
 ## Two module shapes

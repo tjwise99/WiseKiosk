@@ -1,5 +1,5 @@
 // Package registry holds the boundary schema's module data routes: one embedded
-// field per upstream-backed module (ADR 0021 rev 4, ADR 0008 rev 6).
+// field per upstream-backed module (ADR 0021 rev 5, ADR 0008 rev 6).
 package registry
 
 import (

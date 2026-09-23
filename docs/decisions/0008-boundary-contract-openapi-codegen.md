@@ -57,7 +57,7 @@ ADR chooses the tool, which is the decision half of #7.
 
 #7 was gated on the repository layout — where the single schema and the two packages live. Choosing
 the mechanism does not need that layout; only *building* it does, so this ADR took the decision
-without one, and [ADR 0021 rev 4](0021-repository-layout.md) supplied the layout afterwards. #7's
+without one, and [ADR 0021 rev 5](0021-repository-layout.md) supplied the layout afterwards. #7's
 acceptance — schema file present, both generators wired, drift gate green — is what waited.
 
 **What rev 3 reopens.** Rev 2 read "both sides generated from it" as *both sides' types*, and the
@@ -71,7 +71,7 @@ notch too narrow, so rev 3 widens it to the whole wire contract rather than addi
 ## Decision
 
 - **One hand-authored OpenAPI schema is the single definition**, owned by neither package (it sits at
-  `boundary/openapi.yaml`, per [ADR 0021 rev 4](0021-repository-layout.md)). A module contributes its payload as a **named component inside
+  `boundary/openapi.yaml`, per [ADR 0021 rev 5](0021-repository-layout.md)). A module contributes its payload as a **named component inside
   that schema**: the *fragment* [the module contract](../contracts/module-contract.md) part 6 names is
   that component, a section of the one schema rather than a file of its own, so nothing recomposes and
   the schema stays authored rather than generated. Rejected — one fragment file per module, recomposed
@@ -309,7 +309,7 @@ notch too narrow, so rev 3 widens it to the whole wire contract rather than addi
 
 - **#7 becomes an implementation ticket**: the mechanism is settled; its build (schema file, wired
   generators, both sides compiling against generated output) has the layout it waited for
-  ([ADR 0021 rev 4](0021-repository-layout.md)).
+  ([ADR 0021 rev 5](0021-repository-layout.md)).
 - **Two pinned generators to keep current** — inherent to Go not sharing types (ADR 0001 rev 1 paid for
   this knowingly), tracked like any pinned tool. Rev 3 adds a third pin, `prettier`, which formats
   orval's output, pinned for the same reason as the two generators: deterministic, reviewable output

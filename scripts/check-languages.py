@@ -107,7 +107,7 @@ NO_EXTENSION = {
     "justfile": "derived — invoking `just`, named explicitly in ADR 0017 rev 9",
     "LICENSE": "documentation — legal text, not an authored program",
     "Dockerfile": "derived — the container build's own required input format, named explicitly in "
-    "ADR 0017 rev 9 (ADR 0021 rev 4)",
+    "ADR 0017 rev 9 (ADR 0021 rev 5)",
     ".gitignore": "derived — git's own required input format",
     ".gitattributes": "derived — git's own required input format",
     ".editorconfig": "derived — EditorConfig's own required input format",

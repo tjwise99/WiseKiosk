@@ -68,7 +68,7 @@ the one-in-page-enforcer this ADR builds on.)
   above need: a standard the generator, a future editor, the docsite renderer, and validators in any
   language can consume without executing the project's own code.
 - **One authored schema, with a section per module.** The configuration schema is a single JSON
-  Schema document under `frontend/src/config/` ([ADR 0021 rev 4](0021-repository-layout.md)),
+  Schema document under `frontend/src/config/` ([ADR 0021 rev 5](0021-repository-layout.md)),
   hand-authored and hand-edited. Each module's keys are a named section within it; there is no
   per-module file, nothing recomposes, and no gate regenerates the schema and compares it — there
   is no generated form of it to compare against. This is the same single-authored-file rule
