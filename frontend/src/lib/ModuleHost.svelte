@@ -23,6 +23,14 @@
   /** What a module reports when a read did not come back at all, there being no body to take a reason off. */
   const UNANSWERED = 'The reading did not come back in time.';
 
+  /**
+   * What the page draws where a module that threw stood. Distinct from a module's own report of a
+   * failed reading, which the module writes itself
+   * (SRS001<!-- A failed module shows why, and only that module -->): this one is the framework
+   * saying that the module is not drawing at all.
+   */
+  const FAULTED = 'This part of the display stopped working.';
+
   /** Capitalised so the markup below reads it as the component it is rather than as an element. */
   const Module = $derived(entry.component);
 
@@ -92,11 +100,56 @@
       clearInterval(polling);
     };
   });
+
+  /**
+   * The boundary's own reset, held from the moment a fault is caught until the backend answers again.
+   * A plain binding rather than `$state`: the effect below must re-run on reachability alone, and a
+   * reactive read here would re-enter it on the write that stores the reset.
+   */
+  let clearFault: (() => void) | undefined;
+
+  /**
+   * Catches what the module below raises. The boundary in the markup is drawn per placement rather
+   * than per region — a region may carry several placements, and one drawn around the region would
+   * take the faulting module's neighbours down with it — so an error is caught where the module is
+   * mounted rather than at the page, which is what leaves every other module rendering
+   * (SYS001<!-- Failure is legible and proportionate -->).
+   */
+  function holdFault(_error: unknown, reset: () => void): void {
+    clearFault = reset;
+  }
+
+  /**
+   * Draws the module again once the backend answers, a display on a wall having nobody to ask. The
+   * reachability handed to every module is the one signal the framework has that a module's
+   * conditions have changed, so it is what a held fault is cleared on; a fault raised by something
+   * else stands until the next such transition.
+   */
+  $effect(() => {
+    if (!reachable) return;
+    const reset = clearFault;
+    clearFault = undefined;
+    reset?.();
+  });
 </script>
 
-{#if entry.read === undefined}
-  <!-- A local module is handed no payload, there being none to hand it. -->
-  <Module {reachable} {config} />
-{:else}
-  <Module {reachable} {config} {payload} />
-{/if}
+<svelte:boundary onerror={holdFault}>
+  {#if entry.read === undefined}
+    <!-- A local module is handed no payload, there being none to hand it. -->
+    <Module {reachable} {config} />
+  {:else}
+    <Module {reachable} {config} {payload} />
+  {/if}
+
+  {#snippet failed()}
+    <p class="faulted" data-module-faulted role="alert">{FAULTED}</p>
+  {/snippet}
+</svelte:boundary>
+
+<style>
+  .faulted {
+    margin: 0;
+    font-size: var(--type-body);
+    font-weight: var(--type-body-weight);
+  }
+</style>

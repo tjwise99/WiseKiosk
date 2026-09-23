@@ -30,7 +30,11 @@
   // seconds are written straight to the DOM node (`secondsEl.textContent`), off the reactive graph
   // entirely; only the minute and the day — which change rarely — go through `$state`/`$derived`,
   // where a reactive update once a minute or once a day costs nothing.
-  let secondsEl: HTMLElement | undefined = $state();
+  // Typed to the three values the binding carries, not two: Svelte writes `null` back through
+  // `bind:this` as it destroys the block owning the element, so a type admitting only `undefined`
+  // leaves the guard below looking total to the compiler while a `null` passes it at runtime
+  // (the class abfcfbb fixed at its own site).
+  let secondsEl: HTMLElement | null | undefined = $state();
   let minuteDate = $state(new Date());
   let dayDate = $state(new Date());
   function pad2(n: number): string {
@@ -39,6 +43,11 @@
   $effect(() => {
     const write = (): void => {
       const d = new Date();
+      // The write is the fix, not an oversight: the seconds are kept off the reactive graph because
+      // Svelte's re-render of them once a second is what paced the periodic full GC on this host
+      // (meta-wisekiosk #100 gpu-compositing), so the rule's own remedy — render it reactively — is
+      // the defect here. Confined to this one text node, which no template expression also writes.
+      // eslint-disable-next-line svelte/no-dom-manipulating
       if (secondsEl) secondsEl.textContent = pad2(d.getSeconds());
       if (d.getHours() !== minuteDate.getHours() || d.getMinutes() !== minuteDate.getMinutes()) {
         minuteDate = d;
