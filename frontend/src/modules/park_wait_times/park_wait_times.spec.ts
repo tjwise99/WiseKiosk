@@ -18,6 +18,7 @@ import {
   watchTraffic,
   type Fixture,
 } from '../../../tests/render/harness';
+import { HOLD_END_S, HOLD_HOME_S, MARQUEE_PX_PER_S } from './marquee-clock';
 
 /**
  * The park-wait-times module's render tests. Every one answers the module's route from the test,
@@ -31,6 +32,16 @@ const ALMOST = 10_000;
 
 /** An instant to hold the host clock at, wherever a case drives time rather than waiting it out. */
 const HOST_TIME = new Date('2026-08-31T14:00:00Z');
+
+/** Enough driven time under a held clock for a marquee measurement's own animation frame to run.
+    `page.clock` fakes requestAnimationFrame along with the timers it drives, so the measurement
+    `ParkCard.svelte`'s `marquee` action schedules at mount stays queued until the clock is run. */
+const MEASURE_FRAME_MS = 100;
+
+/** The most a scroll reading may lag the instant it is taken at: the fake clock paces animation
+    frames at about 16ms and `scrollLeft` reports whole pixels, together under a pixel and a half of
+    travel at `MARQUEE_PX_PER_S`. */
+const FRAME_SLACK_PX = 2;
 
 /** One park's answer, defaulting to available with no rides — every case fills in what it reads.
     Takes the park's own name, not an id: the response carries no id field. */
@@ -86,6 +97,9 @@ const TOUR_ROW = '[data-pwt-tour-row]';
 const FOOTER = '[data-pwt-footer]';
 const FOOTER_SEGMENT = '[data-pwt-footer-segment]';
 const WAIT = '[data-pwt-wait]';
+/** The ride-name column — the clipping scroll container the marquee clock writes `scrollLeft` on,
+    not the oversized `.ride-name-text` inside it. */
+const RIDE_NAME_COLUMN = '[data-pwt-ride-name]';
 
 /** The six known parks by their own pretty name — the one identity the wire carries
     (boundary/openapi.yaml's ParkWaitTimesPark.name). A render fixture names
@@ -100,6 +114,12 @@ const ISLANDS_OF_ADVENTURE = 'Islands of Adventure';
 /** A name the module has no icon for — an unrecognized park, drawn name-only (the sanctioned
     fallback). */
 const UNKNOWN_PARK = 'A Park With No Icon';
+
+/** A ride name far wider than any ride-name column this module draws, at every viewport the render
+    tier runs — so a case about an overflowing name is about that and not about which viewport it
+    happened to run at. */
+const OVERFLOWING_RIDE_NAME =
+  'Guardians of the Galaxy: Cosmic Rewind — The Complete Extended Experience Edition';
 
 /** Locates a rendered card by the park's own displayed name rather than the `data-pwt-park`
     test-id. */
@@ -1147,70 +1167,169 @@ test('reserves one constant wait column across a numeric wait and the longest no
   expect(new Set(widths).size, 'every wait box the same width, numeric and state alike').toBe(1);
 });
 
-test('scrolls a ride name too wide for its own column, the full name still in the DOM', async ({ page }) => {
-  const longName = 'Guardians of the Galaxy: Cosmic Rewind — The Complete Extended Experience Edition';
+test('scrolls a ride name too wide for its own column — held home, one constant-speed pass to the end, then home until the next tick', async ({
+  page,
+}) => {
+  // The motion is the name COLUMN's own `scrollLeft` — `.ride-name`, the clipping scroll container
+  // the placement's marquee clock writes (marquee-clock.ts) — never a transform on the oversized
+  // text inside it.
+  //
+  // Every instant below is derived from the distance THIS render measures, so the schedule is read
+  // at each viewport's own geometry rather than against a figure written here. The name is
+  // deliberately short: it only has to overflow, and a smaller distance is a shorter cycle to drive.
+  const overflowingName = 'Cosmic Rewind';
+  await holdHostClock(page, HOST_TIME);
   await serveModuleData(page, () => ({
     status: 200,
-    data: parksPayload([onePark(EPCOT, { rides: [ride(longName, 40)] })]),
+    data: parksPayload([onePark(EPCOT, { rides: [ride(overflowingName, 40)] })]),
   }));
-  await render(page, placed([EPCOT]));
+  // A rotation interval longer than the whole cycle read below: the tick that starts the next pass
+  // must not land inside this one.
+  await render(page, placed([EPCOT], { rotationIntervalSeconds: 60 }));
 
-  const text = page.locator('.ride-name-text').first();
-  await expect(text, 'a name wider than its column gets the marquee class').toHaveClass(/marquee/);
-  await expect(text, 'the full name is in the DOM, not truncated').toHaveText(longName);
-  const animationName = await text.evaluate((el) => getComputedStyle(el).animationName);
-  expect(animationName, 'the marquee animates, rather than being a static class with no motion').toContain(
-    'pwt-marquee',
+  const column = page.locator(`${CARD} ${RIDE_NAME_COLUMN}`).first();
+  await expect(column, 'the full name is in the DOM, not truncated').toHaveText(overflowingName);
+  await page.clock.runFor(MEASURE_FRAME_MS);
+
+  // The distance the clock is registered with, and so the schedule's own scale: the column's own
+  // `scrollWidth - clientWidth` (marquee-clock.ts's `registerMarquee`).
+  const distance = await column.evaluate((el) => el.scrollWidth - el.clientWidth);
+  expect(distance, 'the fixture’s name really does overflow its own column').toBeGreaterThan(0);
+  const moveSeconds = distance / MARQUEE_PX_PER_S;
+
+  /** Drives the held clock to `seconds` after the cycle began, and reads the column's own offset.
+      The cycle begins on the first frame of the run above, so a reading lags its instant by at most
+      that frame's own worth of travel (`FRAME_SLACK_PX`). */
+  let drivenMs = MEASURE_FRAME_MS;
+  const scrolledAt = async (seconds: number): Promise<number> => {
+    const target = Math.round(seconds * 1000);
+    await page.clock.runFor(target - drivenMs);
+    drivenMs = target;
+    return column.evaluate((el) => el.scrollLeft);
+  };
+
+  expect(await scrolledAt(HOLD_HOME_S - 0.2), 'still home through the opening hold').toBe(0);
+
+  // One pace, not a duration fitted to the name: two samples a second apart each land where
+  // MARQUEE_PX_PER_S alone puts them, while the column still has travel left to give.
+  expect(
+    2 * MARQUEE_PX_PER_S,
+    'the later ramp sample still has travel left, so it reads the ramp rather than the clamp',
+  ).toBeLessThan(distance);
+  const afterOneSecond = await scrolledAt(HOLD_HOME_S + 1);
+  const afterTwoSeconds = await scrolledAt(HOLD_HOME_S + 2);
+  expect(
+    Math.abs(afterOneSecond - MARQUEE_PX_PER_S),
+    'a second into the pass, a second of travel at the module’s own pace',
+  ).toBeLessThanOrEqual(FRAME_SLACK_PX);
+  expect(Math.abs(afterTwoSeconds - 2 * MARQUEE_PX_PER_S), 'two seconds in, twice that').toBeLessThanOrEqual(
+    FRAME_SLACK_PX,
   );
 
-  // Not evidence a compositor layer was created, which no computed style can report. Paired with
-  // the base-row control in the no-marquee test below, which is what holds the hint scoped.
-  const willChange = await text.evaluate((el) => getComputedStyle(el).willChange);
-  expect(willChange, 'the marquee row carries the compositor hint').toBe('transform');
+  expect(
+    await scrolledAt(HOLD_HOME_S + moveSeconds + HOLD_END_S / 2),
+    'clamped at the end of the name and held there, so the end of it can be read',
+  ).toBe(distance);
+
+  expect(
+    await scrolledAt(HOLD_HOME_S + moveSeconds + HOLD_END_S + 0.3),
+    'home again once the closing hold elapses',
+  ).toBe(0);
+
+  // One pass per rotation tick, never a loop of its own: `startMarqueeCycle` is the only thing that
+  // begins another, and ParkWaitTimes.svelte calls it on the tick the cards flip on. A name long
+  // enough that one pass at this pace shows only part of it is read in part — the designed reading,
+  // not a shortfall the scroll should make up by going faster.
+  expect(
+    await scrolledAt(HOLD_HOME_S + moveSeconds + HOLD_END_S + 6),
+    'still home six seconds on — nothing but the next tick restarts the pass',
+  ).toBe(0);
 });
 
-test('leaves a ride name that already fits its own column static, no marquee', async ({ page }) => {
+test('leaves a ride name that already fits its own column unregistered, while an overflowing name on the same card scrolls', async ({
+  page,
+}) => {
   // A park with a long enough name/hours that its own header — the ride-name column's own width,
   // never a ride name — leaves genuine room for 'Test Track' to fit: a short park name (this
   // fixture's own default) produces too narrow a column, and 'Test Track' would overflow it for an
   // unrelated reason, a false positive for this specific invariant.
+  //
+  // The overflowing ride beside it is the control that makes the fitting row's bare absence of
+  // `.marquee` mean something. The action sets that class on the same animation frame it registers
+  // the column with the clock, so waiting for it on the overflowing row is what proves the
+  // measurement pass has run at all: an absence read before that pass would pass over a column that
+  // does get registered a frame later, and it is this one row rather than both that goes red if a
+  // pass ever registers every row regardless of overflow.
+  const fittingName = 'Test Track';
   await serveModuleData(page, () => ({
     status: 200,
     data: parksPayload([
       onePark(EPCOT, {
-        name: 'Islands of Adventure',
+        name: ISLANDS_OF_ADVENTURE,
         hours: { open: '2026-01-01T09:00:00Z', close: '2026-01-01T21:00:00Z' },
-        rides: [ride('Test Track', 40)],
+        rides: [ride(OVERFLOWING_RIDE_NAME, 80), ride(fittingName, 40)],
       }),
     ]),
   }));
   await render(page, placed([EPCOT]));
 
-  const text = page.locator('.ride-name-text').first();
-  await expect(text, 'a name that already fits never gets the marquee class').not.toHaveClass(/marquee/);
+  const columns = page.locator(`${CARD} ${RIDE_NAME_COLUMN}`);
+  await expect(columns).toHaveCount(2);
+  const overflowingRow = columns.nth(0);
+  const fittingRow = columns.nth(1);
+  await expect(overflowingRow, 'the longer wait ranks first').toHaveText(OVERFLOWING_RIDE_NAME);
+  await expect(fittingRow).toHaveText(fittingName);
 
-  // The control for the marquee row's own `will-change` assertion above: a computed value read off
-  // a row carrying both classes cannot say which rule supplied it, so only this one goes red if the
-  // declaration moves to the base `.ride-name-text` rule and reaches every row.
-  const willChange = await text.evaluate((el) => getComputedStyle(el).willChange);
-  expect(willChange, 'the hint is scoped to the marquee, never the base ride-name row').toBe('auto');
+  await expect(
+    overflowingRow.locator('.ride-name-text'),
+    'the overflowing name is registered with the marquee clock',
+  ).toHaveClass(/marquee/);
+  await expect(
+    fittingRow.locator('.ride-name-text'),
+    'a name that already fits its column is not',
+  ).not.toHaveClass(/marquee/);
+
+  // Self-check the fixture at this render's own geometry, and at the distance registration is
+  // measured on — the column's own, never the text node's against its parent. The two rows really
+  // are the two cases, rather than both overflowing or both fitting.
+  const overflowOf = (locator: typeof columns) => locator.evaluate((el) => el.scrollWidth - el.clientWidth);
+  expect(await overflowOf(overflowingRow), 'the long name really does overflow its own column').toBeGreaterThan(0);
+  expect(await overflowOf(fittingRow), 'the short one really does fit').toBeLessThanOrEqual(0);
 });
 
-test('suppresses the marquee under prefers-reduced-motion, an overflowing name left static', async ({ page }) => {
-  const longName = 'Guardians of the Galaxy: Cosmic Rewind — The Complete Extended Experience Edition';
+test('suppresses the marquee under prefers-reduced-motion — an overflowing name left unregistered and still', async ({
+  page,
+}) => {
   await page.emulateMedia({ reducedMotion: 'reduce' });
+  await holdHostClock(page, HOST_TIME);
   await serveModuleData(page, () => ({
     status: 200,
-    data: parksPayload([onePark(EPCOT, { rides: [ride(longName, 40)] })]),
+    data: parksPayload([onePark(EPCOT, { rides: [ride(OVERFLOWING_RIDE_NAME, 40)] })]),
   }));
-  await render(page, placed([EPCOT]));
+  await render(page, placed([EPCOT], { rotationIntervalSeconds: 60 }));
 
-  const text = page.locator('.ride-name-text').first();
+  const column = page.locator(`${CARD} ${RIDE_NAME_COLUMN}`).first();
+  await expect(column, 'the full text is still in the DOM, not truncated to fit').toHaveText(OVERFLOWING_RIDE_NAME);
+  await page.clock.runFor(MEASURE_FRAME_MS);
+
+  // Self-check the fixture: this name really does overflow, so a column that never moves below is a
+  // suppression rather than a column with nothing to scroll in the first place.
+  const distance = await column.evaluate((el) => el.scrollWidth - el.clientWidth);
+  expect(distance, 'the name overflows its own column').toBeGreaterThan(0);
   await expect(
-    text,
-    'reduced motion leaves an overflowing name static, the full text still in the DOM',
+    column.locator('.ride-name-text'),
+    'the column is left unregistered with the marquee clock',
   ).not.toHaveClass(/marquee/);
-  await expect(text).toHaveText(longName);
+
+  // And the behaviour that marker stands for, read off the column itself: driven past the opening
+  // hold and two seconds into what would otherwise be the pass, it has not moved. A registered
+  // column would be two seconds of travel along by here.
+  expect(2 * MARQUEE_PX_PER_S, 'a registered column would have visibly moved by this instant').toBeLessThan(distance);
+  await page.clock.runFor((HOLD_HOME_S + 2) * 1000);
+  expect(
+    await column.evaluate((el) => el.scrollLeft),
+    'the overflowing name never moves under reduced motion',
+  ).toBe(0);
 });
 
 test('re-measures the marquee after a poll refresh reorders rows in place, not just at mount', async ({
@@ -1218,11 +1337,14 @@ test('re-measures the marquee after a poll refresh reorders rows in place, not j
 }) => {
   // The leaderboard's `{#each ... (index)}` keeps each row's DOM node across a reorder, so the ride
   // shown under a row changes without the row remounting — `use:marquee={ride.name}` (ParkCard.svelte)
-  // re-runs the measurement on that change (the action's `update`) and reconciles the class both ways,
-  // which is what this asserts: a row that gains an overflowing name marquees, one that loses it does
-  // not.
+  // re-runs the measurement on that change (the action's `update`) and reconciles the registration
+  // both ways, which is what this asserts: a row that gains an overflowing name is registered with
+  // the marquee clock, one that loses it is dropped. `.marquee` is the probe because registration
+  // is the only thing that changes in the shrinking direction — a column with nothing left to
+  // scroll sits at offset zero whether or not a stale registration is still driving it, so its own
+  // `scrollLeft` cannot tell the two apart.
   const SHORT = 'A';
-  const LONG = 'Guardians of the Galaxy: Cosmic Rewind — The Complete Extended Experience Edition';
+  const LONG = OVERFLOWING_RIDE_NAME;
 
   await holdHostClock(page, HOST_TIME);
   await serveModuleData(page, () => ({
@@ -1238,13 +1360,15 @@ test('re-measures the marquee after a poll refresh reorders rows in place, not j
   await expect(row0, 'the higher wait ranks first').toHaveText(SHORT);
   await expect(row1).toHaveText(LONG);
 
-  // Self-check the fixture, at this render's own geometry: a fixture where the long name did not
-  // actually overflow, or the short one did, could pass the invariant below without ever exercising
-  // the bug.
-  const overflowOf = (locator: typeof row0) =>
-    locator.evaluate((el) => el.scrollWidth - (el.parentElement as HTMLElement).clientWidth);
-  expect(await overflowOf(row1), 'the long name overflows its own column').toBeGreaterThan(0);
-  expect(await overflowOf(row0), 'the short name does not').toBeLessThanOrEqual(0);
+  // Self-check the fixture, at this render's own geometry and at the distance registration is
+  // measured on: the COLUMN's own `scrollWidth - clientWidth` (marquee-clock.ts), never the text
+  // node's against its parent. A fixture where the long name did not actually overflow, or the
+  // short one did, could pass the invariant below without ever exercising the bug.
+  const columns = page.locator(`${CARD} ${RIDE_NAME_COLUMN}`);
+  await expect(columns).toHaveCount(2);
+  const overflowOf = (locator: typeof columns) => locator.evaluate((el) => el.scrollWidth - el.clientWidth);
+  expect(await overflowOf(columns.nth(1)), 'the long name overflows its own column').toBeGreaterThan(0);
+  expect(await overflowOf(columns.nth(0)), 'the short name does not').toBeLessThanOrEqual(0);
 
   // A poll refresh of the same card, not a remount: the waits reorder so the long name now ranks
   // first (row 0, previously the short name's) and the short name second (row 1, previously the long
@@ -1262,21 +1386,141 @@ test('re-measures the marquee after a poll refresh reorders rows in place, not j
   // one more run of the fake clock is what lets it fire.
   await page.clock.runFor(1000);
 
-  // The invariant itself: every `.ride-name-text` carries `.marquee` iff its own scrollWidth exceeds
-  // its `.ride-name` parent's clientWidth — derived from each row's live geometry, not a hardcoded
-  // "row 0 marquees", so it stays correct regardless of which name is overflowing.
+  // The invariant itself: a row is registered with the marquee clock iff its own COLUMN overflows —
+  // derived from each row's live geometry, not a hardcoded "row 0 marquees", so it stays correct
+  // regardless of which name is overflowing.
   await expect
     .poll(
       () =>
-        names.evaluateAll((els) =>
+        columns.evaluateAll((els) =>
           els.every((el) => {
-            const overflows = el.scrollWidth > (el.parentElement as HTMLElement).clientWidth;
-            return el.classList.contains('marquee') === overflows;
+            const overflows = el.scrollWidth > el.clientWidth;
+            return el.querySelector('.ride-name-text')?.classList.contains('marquee') === overflows;
           }),
         ),
-      { message: 'each ride name carries .marquee iff it overflows its own column, after the reorder' },
+      { message: 'each ride name is registered iff its own column overflows, after the reorder' },
     )
     .toBe(true);
+});
+
+test('starts every overflowing name on the placement’s one clock — two columns of different widths leave home together and share a pace, not a duration', async ({
+  page,
+}) => {
+  // One loop over one cycle timestamp, read by every registered column (marquee-clock.ts), is what
+  // starts them together. Two cards whose names need different distances is what tells that apart
+  // from both alternatives: columns given a shared DURATION would sit at different offsets at the
+  // same instant, and columns started separately would leave home at different ones.
+  const shorterName = 'Guardians of the Galaxy: Cosmic Rewind';
+  const longerName = 'Tron Lightcycle Run: The Complete Extended Experience';
+  await holdHostClock(page, HOST_TIME);
+  await serveModuleData(page, () => ({
+    status: 200,
+    data: parksPayload([
+      onePark(EPCOT, { rides: [ride(shorterName, 40)] }),
+      onePark(MAGIC_KINGDOM, { rides: [ride(longerName, 40)] }),
+    ]),
+  }));
+  await render(page, placed([EPCOT, MAGIC_KINGDOM], { rotationIntervalSeconds: 60 }));
+
+  const columns = page.locator(`${CARD} ${RIDE_NAME_COLUMN}`);
+  await expect(columns).toHaveCount(2);
+  await page.clock.runFor(MEASURE_FRAME_MS);
+
+  // Self-check the fixture: both names overflow, and by genuinely different distances — the grid
+  // gives both cards one width, so the two columns differ only in the name each holds.
+  const distances = await columns.evaluateAll((els) => els.map((el) => el.scrollWidth - el.clientWidth));
+  const [shorter, longer] = distances;
+  expect(shorter, 'the shorter name still overflows its own column').toBeGreaterThan(0);
+  expect(shorter, 'the two columns have genuinely different distances to cover').toBeLessThan(longer);
+
+  let drivenMs = MEASURE_FRAME_MS;
+  const scrolledAt = async (seconds: number): Promise<number[]> => {
+    const target = Math.round(seconds * 1000);
+    await page.clock.runFor(target - drivenMs);
+    drivenMs = target;
+    return columns.evaluateAll((els) => els.map((el) => el.scrollLeft));
+  };
+
+  expect(await scrolledAt(HOLD_HOME_S - 0.2), 'both still home through the one opening hold').toEqual([0, 0]);
+
+  // Together, and at the one pace: the same offset on both columns at the same instant, while each
+  // still has travel left to give.
+  expect(2 * MARQUEE_PX_PER_S, 'both columns are still ramping at the later sample').toBeLessThan(shorter);
+  const afterOneSecond = await scrolledAt(HOLD_HOME_S + 1);
+  expect(afterOneSecond[0], 'a second into the pass, the columns have left home').toBeGreaterThan(0);
+  expect(new Set(afterOneSecond).size, 'and are at the one offset between them').toBe(1);
+  expect(new Set(await scrolledAt(HOLD_HOME_S + 2)).size, 'two seconds in, still the one offset').toBe(1);
+
+  // The shorter column reaches its own end first and is held there while the longer one carries on
+  // past it — one velocity across the rows. A shared duration would have read as the two arriving
+  // together instead.
+  const atShorterEnd = await scrolledAt(HOLD_HOME_S + shorter / MARQUEE_PX_PER_S + 0.5);
+  expect(atShorterEnd[0], 'the shorter name is clamped at its own end').toBe(shorter);
+  expect(atShorterEnd[1], 'the longer one is already past that offset').toBeGreaterThan(shorter);
+  expect(atShorterEnd[1], 'and has not reached its own end yet').toBeLessThan(longer);
+});
+
+test('restarts every scroll on the rotation tick the cards flip on, rather than on a clock of its own', async ({
+  page,
+}) => {
+  // ParkWaitTimes.svelte's single rotation interval both advances the tick the cards page on and
+  // calls `startMarqueeCycle` (marquee-clock.ts) — a card flip and a marquee restart are one event
+  // on one clock rather than two that drift apart. Read on either side of a single tick: the
+  // footer's own filled segment advances, and a scroll that was in flight is back home and sets off
+  // again.
+  const ROTATION_S = 6;
+  await holdHostClock(page, HOST_TIME);
+  await serveModuleData(page, () => ({
+    status: 200,
+    data: parksPayload([
+      onePark(EPCOT, {
+        rides: [
+          // Ranked first, so this row keeps its place across the flip and its column is the one
+          // thing on the card a restart can be read off. The rest make the four remaining rides the
+          // tour needs for two pages, so the footer has a position to advance.
+          ride(OVERFLOWING_RIDE_NAME, 80),
+          ride('Soarin', 50),
+          ride('Spaceship Earth', 20),
+          ride('Mission: Space', 10),
+          ride('Imagination!', 5),
+          ride('The Seas', 8),
+          ride('Living with the Land', 3),
+        ],
+      }),
+    ]),
+  }));
+  await render(page, placed([EPCOT], { rotationIntervalSeconds: ROTATION_S }));
+
+  const column = page.locator(`${CARD} ${RIDE_NAME_COLUMN}`).first();
+  await expect(column, 'the scrolling name holds the card’s first row').toHaveText(OVERFLOWING_RIDE_NAME);
+  const segments = page.locator(CARD).locator(FOOTER_SEGMENT);
+  await expect(segments).toHaveCount(2);
+
+  let drivenMs = 0;
+  const driveTo = async (ms: number): Promise<void> => {
+    await page.clock.runFor(Math.round(ms) - drivenMs);
+    drivenMs = Math.round(ms);
+  };
+  const scrollLeft = () => column.evaluate((el) => el.scrollLeft);
+  const tickMs = ROTATION_S * 1000;
+
+  // Just short of the tick: the first page is still the one marked, and the scroll is under way.
+  await driveTo(tickMs - 200);
+  await expect(segments.nth(0), 'the tour has not advanced yet').toHaveClass(/filled/);
+  expect(await scrollLeft(), 'the scroll is in flight when the tick lands').toBeGreaterThan(0);
+
+  // Across it: the card flipped, and that same tick put the column back home.
+  await driveTo(tickMs + 300);
+  await expect(segments.nth(1), 'the tour advanced on the tick').toHaveClass(/filled/);
+  expect(await scrollLeft(), 'and the scroll is home again on that one tick').toBe(0);
+
+  // Home because the cycle restarted, not because the column stopped: the new cycle's own opening
+  // hold elapses and it sets off again at the module's own pace.
+  await driveTo(tickMs + (HOLD_HOME_S + 1) * 1000);
+  expect(
+    Math.abs((await scrollLeft()) - MARQUEE_PX_PER_S),
+    'a second past the new cycle’s own opening hold, a second of travel',
+  ).toBeLessThanOrEqual(FRAME_SLACK_PX);
 });
 
 test('draws the Closed card’s icon and label centred — the one deliberate exception to reading left', async ({
