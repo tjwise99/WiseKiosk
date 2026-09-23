@@ -1,6 +1,7 @@
 import { modules as product, type ModuleEntry } from '../../../src/lib/modules';
 import BrightImage from './BrightImage.svelte';
 import Card from './Card.svelte';
+import Churns from './Churns.svelte';
 import Fits from './Fits.svelte';
 import GradientFill from './GradientFill.svelte';
 import GradientScrim from './GradientScrim.svelte';
@@ -39,6 +40,10 @@ export const modules: Record<string, ModuleEntry> = {
   'gradient-fill': { component: GradientFill },
   'gradient-scrim': { component: GradientScrim },
   'modern-colour': { component: ModernColour },
+
+  // The steady-state allocation seed: a module that allocates per tick on purpose, so the gate
+  // reading that is proven to reject one (`../steady-state-allocation.spec.ts`).
+  churns: { component: Churns },
 
   ...product,
 };
