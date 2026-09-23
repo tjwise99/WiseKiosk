@@ -1346,6 +1346,10 @@ test('re-measures the marquee after a poll refresh reorders rows in place, not j
   const SHORT = 'A';
   const LONG = OVERFLOWING_RIDE_NAME;
 
+  // Driving the five-minute read interval costs some eighty times more under `page.clock` with the
+  // marquee's frame loop running (marquee-clock.ts).
+  test.setTimeout(3 * 60 * 1000);
+
   await holdHostClock(page, HOST_TIME);
   await serveModuleData(page, () => ({
     status: 200,
