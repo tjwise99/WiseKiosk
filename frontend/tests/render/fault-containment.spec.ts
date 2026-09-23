@@ -188,6 +188,12 @@ test('draws the module again once the fault clears, and takes the marker away wi
   await expect(page.locator(FAULTED)).toHaveCount(1);
   await expect(page.locator(THROWS)).toHaveCount(0);
 
+  // Held past the minute before the backend answers, which is what makes the reading below evidence
+  // of anything: the clock writes its seconds straight to the DOM node, off the reactive graph
+  // (../../src/modules/clock/Clock.svelte), so a page whose rendering has stopped still advances
+  // them and only the minute does not. Within the mount's own minute this reads the same either way.
+  await advanceHostClock(page, 65_000);
+
   await serveLiveness(page, 'ok');
   await advanceHostClock(page, 2 * LIVENESS_INTERVAL_MS);
 
