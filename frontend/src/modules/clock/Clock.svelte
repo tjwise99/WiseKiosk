@@ -24,28 +24,51 @@
   // second the page mounted, and each reading takes the host's value afresh, so nothing accumulates.
   const READ_INTERVAL_MS = 1000;
 
-  let now = $state(new Date());
+  // The per-second update is what paces the periodic full GC on this host: not the value it computes
+  // but Svelte's reactive re-render of it, once a second, for the life of the page (meta-wisekiosk
+  // #100 gpu-compositing — the reactive update is the driver, not the allocation inside it). So the
+  // seconds are written straight to the DOM node (`secondsEl.textContent`), off the reactive graph
+  // entirely; only the minute and the day — which change rarely — go through `$state`/`$derived`,
+  // where a reactive update once a minute or once a day costs nothing.
+  let secondsEl: HTMLElement | undefined = $state();
+  let minuteDate = $state(new Date());
+  let dayDate = $state(new Date());
+  function pad2(n: number): string {
+    return n < 10 ? '0' + n : String(n);
+  }
   $effect(() => {
-    const reading = setInterval(() => {
-      now = new Date();
-    }, READ_INTERVAL_MS);
+    const write = (): void => {
+      const d = new Date();
+      if (secondsEl) secondsEl.textContent = pad2(d.getSeconds());
+      if (d.getHours() !== minuteDate.getHours() || d.getMinutes() !== minuteDate.getMinutes()) {
+        minuteDate = d;
+      }
+      if (
+        d.getDate() !== dayDate.getDate() ||
+        d.getMonth() !== dayDate.getMonth() ||
+        d.getFullYear() !== dayDate.getFullYear()
+      ) {
+        dayDate = d;
+      }
+    };
+    write();
+    const reading = setInterval(write, READ_INTERVAL_MS);
     return () => clearInterval(reading);
   });
 
-  // `formatToParts()` splits one Intl.DateTimeFormat covering hour, minute, second and — in
-  // twelve-hour form — the day period into its named parts. Hour precedes minute in every locale's
-  // part ordering, but the day period does not reliably follow both (some locales lead the whole
-  // string with it), so the core time is sliced from hour's own index rather than from 0; second and
-  // day period feed the two sibling annotations below (./README.md § The reading).
+  // `formatToParts()` splits one Intl.DateTimeFormat covering hour, minute and — in twelve-hour form
+  // — the day period into its named parts, off `minuteDate` so it re-runs once a minute rather than
+  // once a second. Hour precedes minute in every locale's part ordering, but the day period does not
+  // reliably follow both (some locales lead the whole string with it), so the core time is sliced
+  // from hour's own index rather than from 0; the day period feeds the meridiem annotation below.
   const timeFormat = $derived(
     new Intl.DateTimeFormat(undefined, {
       hour: '2-digit',
       minute: '2-digit',
-      second: '2-digit',
       hourCycle: twentyFourHour ? 'h23' : 'h12',
     }),
   );
-  const timeParts = $derived(timeFormat.formatToParts(now));
+  const timeParts = $derived(timeFormat.formatToParts(minuteDate));
   const hoursMinutes = $derived(
     timeParts
       .slice(
@@ -55,11 +78,10 @@
       .map((part) => part.value)
       .join(''),
   );
-  const secondsText = $derived(partValue(timeParts, 'second'));
   const meridiemText = $derived(partValue(timeParts, 'dayPeriod'));
 
-  // The date's two lines each read from their own formatter — weekday, then day/month/year — each
-  // in its own locale ordering.
+  // The date's two lines each read from their own formatter — weekday, then day/month/year — off
+  // `dayDate`, so each re-runs once a day rather than once a second, in its own locale ordering.
   const weekdayFormat = new Intl.DateTimeFormat(undefined, { weekday: 'long' });
   const fullDateFormat = new Intl.DateTimeFormat(undefined, {
     day: 'numeric',
@@ -75,7 +97,7 @@
       <div class="annotations">
         {#if showSeconds}
           <span class="seconds-slot tabular-figures">
-            <span class="seconds tabular-figures">{secondsText}</span>
+            <span class="seconds tabular-figures" bind:this={secondsEl}></span>
           </span>
         {/if}
         {#if !twentyFourHour}
@@ -87,8 +109,8 @@
   {#if showDate}
     <div class="rule"></div>
     <div class="date" data-clock-date>
-      <p class="weekday section-label">{weekdayFormat.format(now)}</p>
-      <p class="full-date tabular-figures">{fullDateFormat.format(now)}</p>
+      <p class="weekday section-label">{weekdayFormat.format(dayDate)}</p>
+      <p class="full-date tabular-figures">{fullDateFormat.format(dayDate)}</p>
     </div>
   {/if}
 </div>

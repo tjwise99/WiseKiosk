@@ -6,6 +6,7 @@
   import type { CommonProps } from '../../lib/modules';
   import type { Payload } from '../../lib/payload';
 
+  import { startMarqueeCycle } from './marquee-clock';
   import { iconFor, uniformCardWidth } from './park_wait_times';
   import ParkCard from './ParkCard.svelte';
 
@@ -22,6 +23,21 @@
   /** The placement's rotation cadence; `config/schema.json`'s own `default: 8` is filled in by
       ajv's `useDefaults` (vite-plugin-config-validator.ts) before this component sees the config. */
   const rotationSeconds = $derived(pwtConfig.rotation_interval_seconds as number);
+
+  /** One rotation clock for the whole placement. Every card advances on this single tick (read
+      modulo its own page count in ParkCard.svelte), so the cards flip in step instead of each
+      running its own interval from its own mount moment and drifting apart. The same tick starts a
+      marquee cycle (`startMarqueeCycle`, marquee-clock.ts): every overflowing ride name across every
+      card returns home and scrolls again as the cards flip, one event rather than two clocks. */
+  let tick = $state(0);
+  $effect(() => {
+    startMarqueeCycle();
+    const toggle = setInterval(() => {
+      tick++;
+      startMarqueeCycle();
+    }, rotationSeconds * 1000);
+    return () => clearInterval(toggle);
+  });
 
   /** The grid's own column and row counts, read once rather than tracked: fixed at the config load
       that named the placement. `untrack` suppresses Svelte's "only captures the initial value"
@@ -98,7 +114,7 @@
         use:gridShape={{ columns: gridColumns, rows: gridRows }}
       >
         {#each pwtPayload.data.parks as park, index (index)}
-          <ParkCard {park} icon={iconFor(park.name)} {rotationSeconds} />
+          <ParkCard {park} icon={iconFor(park.name)} {tick} />
         {/each}
       </ol>
     {/if}
