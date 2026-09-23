@@ -67,6 +67,11 @@ series toggle). Every card advances on **one clock the placement owns**, so the 
 pages together on the same tick rather than each running its own timer from its own mount moment and
 drifting out of step with the others.
 
+A deployment may set that interval to anything the schema admits, and **production leaves it at the
+schema's default** (owner, 2026-09-23). That is the interval every timing below is read against — the
+marquee's reach in particular — so a deployment that overrides it is reading this composition at a
+pace it was not drawn for.
+
 ### Footer — the rotation counter
 
 A single segmented bar across the foot of the card: one segment per rotation page, filled to the
@@ -221,6 +226,15 @@ Confirmed against a photograph of the deployed display, not a monitor (the desig
 - the type steps against the type-size floor at the deployed viewing distance, once the grid's
   `nCol` × `nRows` for the placed region is set (a denser grid draws smaller cards);
 - the marquee's scroll speed and hold timing read comfortably at the deployed viewing distance, and
-  that the deployment's own Pi Zero-class host holds the frame rate the scrolling assumes
-  (SRS021<!-- Frontend runs on a Pi Zero-class browser host -->) — and, with it, whether a name long
-  enough to be cut short by the rotation interval is a real loss at the deployed geometry.
+  whether a name long enough to be cut short by the rotation interval is a real loss at the deployed
+  geometry.
+
+**That the deployed host holds the frame rate the scrolling assumes was confirmed on the board**
+(SRS021<!-- Frontend runs on a Pi Zero-class browser host -->; owner, 2026-09-23): the composition
+described here draws at roughly 38 frames a second, against roughly 14 for the design it replaced.
+The figure is a measurement rather than a bound — **no check asserts it, and none is meant to.** The
+render tier runs on a desktop browser, so a frame rate it read would be that machine's and not the
+board's, and a gate over it would report a number nobody deployed. What the figure is for is the
+comparison: the scrolling reads as motion at the one and as stutter at the other, which is why this
+paragraph records what was measured rather than what is required. Re-measuring belongs with any
+change to what the placement paints every frame.
