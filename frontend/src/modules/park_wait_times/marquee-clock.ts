@@ -51,9 +51,9 @@ let cycleStartMs = 0;
  * Every column reads the one elapsed time, so they leave home on the same frame. Each column's
  * `moveTime` is its own (`distance / MARQUEE_PX_PER_S`), so the rows share a velocity rather than a
  * duration and reach their ends at different moments. A name needing more travel than the cycle
- * leaves it — `MARQUEE_PX_PER_S × (rotation_interval_seconds - HOLD_HOME_S - HOLD_END_S)`, 120px at
- * the schema default of 8s, well above observed geometry — is cut short by the reset rather than
- * speeding up to fit.
+ * leaves it — `MARQUEE_PX_PER_S × (rotation_interval_seconds - HOLD_HOME_S - HOLD_END_S)`, well above
+ * observed geometry at `rotation_interval_seconds`'s schema default — is cut short by the reset
+ * rather than speeding up to fit.
  */
 function step(nowMs: number): void {
   // Floored at zero: a cycle reset timestamped inside an interval callback can sit later than the

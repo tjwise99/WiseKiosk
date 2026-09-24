@@ -117,8 +117,9 @@ The scroll runs **once per rotation tick**, not on a loop of its own: the tick t
 pages is the tick that returns every column home and starts it moving again, so a page turn and a
 name restarting are one event on one clock rather than two cadences drifting apart. A name needing
 more travel than a single interval allows is cut short by that reset rather than scrolling faster to
-fit — at the schema's default interval the reach is around 120px, above the width these rows draw at,
-but a long enough name is read in part rather than in full.
+fit — the reach at any given `rotation_interval_seconds` is the formula `marquee-clock.ts` derives it
+from, well above the width these rows draw at, but a long enough name is read in part rather than in
+full.
 
 ## Type and spacing
 
