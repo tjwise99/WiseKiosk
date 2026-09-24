@@ -15,15 +15,7 @@ import Throws from './Throws.svelte';
 import TypeScale from './TypeScale.svelte';
 import Unavailable from './Unavailable.svelte';
 
-/**
- * The registry the render tier serves: every module the display ships with, and beside them the
- * stubs the framework obligations are read against — a box that fits, one that overflows, the type
- * scale, the legal grouping vocabulary, the module that reports for itself, the module that throws,
- * and the emitting
- * surfaces that must be reported as above the ceiling. The display's own entries are spread last, so
- * a stub cannot take a module's name and a module's render test reads the registration the display
- * ships rather than a fixture standing in for it.
- */
+/** The display's own entries are spread last, so a stub cannot take a module's name. */
 export const modules: Record<string, ModuleEntry> = {
   fits: { component: Fits },
   overflows: { component: Overflows },

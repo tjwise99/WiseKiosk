@@ -26,18 +26,8 @@
   // second the page mounted, and each reading takes the host's value afresh, so nothing accumulates.
   const READ_INTERVAL_MS = 1000;
 
-  // The per-second update is what paces the periodic full GC on this host: not the value it computes
-  // but Svelte's reactive re-render of it, once a second, for the life of the page (meta-wisekiosk
-  // #100 gpu-compositing — the reactive update is the driver, not the allocation inside it). So the
-  // seconds are written straight to the DOM node (`secondsEl.textContent`), off the reactive graph
-  // entirely; only the minute and the day — which change rarely — go through `$state`/`$derived`,
-  // where a reactive update once a minute or once a day costs nothing.
-  // Typed to the three values the binding carries, not two: Svelte writes `null` back through
-  // `bind:this` as it destroys the block owning the element, so a type admitting only `undefined`
-  // leaves the guard below looking total to the compiler though a `null` is what the runtime writes.
-  // Precautionary, not a reachable path: this block is gated on `clockConfig`, fixed at load, so it
-  // only tears down with the whole component — unlike ParkWaitTimes.svelte's `gridEl`, which turns
-  // over on a live `reachable` toggle.
+  // Seconds are written to the node directly, off the reactive graph (meta-wisekiosk #100
+  // gpu-compositing); minute and day go through `$state`. `bind:this` writes `null` on teardown.
   let secondsEl: HTMLElement | null | undefined = $state();
   let minuteDate = $state(new Date());
   let dayDate = $state(new Date());
@@ -47,10 +37,6 @@
   $effect(() => {
     const write = (): void => {
       const d = new Date();
-      // The write is the fix, not an oversight: the seconds are kept off the reactive graph because
-      // Svelte's re-render of them once a second is what paced the periodic full GC on this host
-      // (meta-wisekiosk #100 gpu-compositing), so the rule's own remedy — render it reactively — is
-      // the defect here. Confined to this one text node, which no template expression also writes.
       // eslint-disable-next-line svelte/no-dom-manipulating
       if (secondsEl) secondsEl.textContent = pad2(d.getSeconds());
       if (d.getHours() !== minuteDate.getHours() || d.getMinutes() !== minuteDate.getMinutes()) {
@@ -64,21 +50,13 @@
         dayDate = d;
       }
     };
-    // `untrack`: called synchronously inside the effect, `write`'s reads of `secondsEl`,
-    // `minuteDate` and `dayDate` would otherwise register as this effect's own dependencies, and its
-    // writes to the latter two would then re-trigger it, tearing down and rebuilding the interval, on
-    // every minute change. The interval is what re-runs `write`; the effect itself has nothing else
-    // to react to.
+    // Untracked, so write's own reads and writes do not re-run this effect and rebuild the interval.
     untrack(write);
     const reading = setInterval(write, READ_INTERVAL_MS);
     return () => clearInterval(reading);
   });
 
-  // `formatToParts()` splits one Intl.DateTimeFormat covering hour, minute and — in twelve-hour form
-  // — the day period into its named parts, off `minuteDate` so it re-runs once a minute rather than
-  // once a second. Hour precedes minute in every locale's part ordering, but the day period does not
-  // reliably follow both (some locales lead the whole string with it), so the core time is sliced
-  // from hour's own index rather than from 0; the day period feeds the meridiem annotation below.
+  // Sliced from hour's index, not 0: some locales lead the string with the day period.
   const timeFormat = $derived(
     new Intl.DateTimeFormat(undefined, {
       hour: '2-digit',
@@ -98,8 +76,6 @@
   );
   const meridiemText = $derived(partValue(timeParts, 'dayPeriod'));
 
-  // The date's two lines each read from their own formatter — weekday, then day/month/year — off
-  // `dayDate`, so each re-runs once a day rather than once a second, in its own locale ordering.
   const weekdayFormat = new Intl.DateTimeFormat(undefined, { weekday: 'long' });
   const fullDateFormat = new Intl.DateTimeFormat(undefined, {
     day: 'numeric',
@@ -171,37 +147,23 @@
     line-height: 1;
   }
 
-  /* The reading is the only text on the display that changes every second, and in flow that
-     costs a whole-page layout: no box between it and the document has a content-independent
-     size, so the engine has no relayout boundary to root at and re-lays out every box on the
-     page once a second. The slot holds the reading's box open with values that never change;
-     the reading sits out of flow inside it under size containment, which is what makes it a
-     boundary the engine can root at. Both halves are needed — size containment alone leaves
-     the box in flow, where it still participates in its parent's sizing. */
+  /* Fixed-width slot with the reading out of flow under size containment: a relayout boundary
+     for the once-a-second text. */
   .seconds-slot {
     position: relative;
   }
 
-  /* The separator as CSS, not in the text node shared with `secondsText`: avoids the same
-     nullish-fallback branch App.svelte's edgeBandStyle comment describes. It sits on the slot
-     rather than the reading so that it is the slot, not the once-a-second text, that is laid
-     out against it. */
   .seconds-slot::before {
     content: ':';
   }
 
-  /* Never updated and never painted: it exists only to hold the slot as wide as the reading,
-     measured from the font rather than from a number written here. Tabular figures make every
-     two-digit reading exactly this wide. Generated content rather than an element, so the
-     digits that size the slot stay out of the module's text — a test reading the clock reads
-     the reading, not the reading twice. */
+  /* Sizes the slot to a two-digit tabular reading; generated content, so it is not module text. */
   .seconds-slot::after {
     content: '00';
     visibility: hidden;
   }
 
-  /* `inset` takes the box from the slot, so size containment has a definite box to apply and
-     cannot collapse it. Right-aligned to land on the digits the slot is sized by. */
+  /* `inset` gives size containment a definite box. */
   .seconds {
     position: absolute;
     inset: 0;

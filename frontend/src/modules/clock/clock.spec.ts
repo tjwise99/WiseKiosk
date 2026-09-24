@@ -208,13 +208,6 @@ test('TST055: goes on showing an advancing time while the backend is unreachable
 }) => {
   await holdHostClock(page, HOST_TIME);
 
-  // Staged over one page that was live, and with a sibling on it, because both are what the outage
-  // has to be survived *through*. A page loaded already unreachable never tore a module down, and a
-  // display carrying nothing but the clock has nothing that could take the clock with it — between
-  // them, the two gaps let a shipped display freeze its clock for fifty-two minutes while this item
-  // stayed green. The sibling throws as the outage destroys the element its effect reads
-  // (../../../tests/render/stubs/Throws.svelte), which is the defect class that stops Svelte's
-  // rendering page-wide; what it owes the clock is nothing, and that is the claim here.
   const time = page.locator(`[data-region="${REGION}"] ${CLOCK}`);
   await render(page, {
     modules: [
@@ -228,15 +221,9 @@ test('TST055: goes on showing an advancing time while the backend is unreachable
   await serveLiveness(page, 'abort');
   await advanceHostClock(page, 2 * LIVENESS_INTERVAL_MS);
 
-  // The outage is up, or what follows would be read against a display that never staged one.
   await expect(page.locator('[data-backend-unreachable]')).toBeVisible();
   await expect(time).toContainText(/03:04\D*15/);
 
-  // Advancing rather than presence alone: a clock frozen at the moment the backend went away is the
-  // failure that would otherwise read as survival. Advanced past the minute rather than by seconds
-  // alone, because the seconds are written straight to their DOM node, off the reactive graph
-  // (./Clock.svelte) — they go on moving on a page whose rendering has stopped, so seconds alone
-  // cannot tell a live display from a dead one. The minute can.
   await advanceHostClock(page, 65_000);
   await expect(time).toContainText(/03:05\D*20/);
 

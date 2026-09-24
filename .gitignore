@@ -95,8 +95,6 @@ frontend/playwright-report/
 # ADR 0020 rev 4), so neither is the local stand-in for it.
 frontend/public/config.json
 
-# The deployment's own configuration, the file deploy/compose.yaml bind-mounts into the served
-# tree. Site-specific by construction — it carries the installation's coordinates — and a
-# coordinate committed here is in the history irreversibly. deploy/config.example.json is the
-# tracked shape.
+# The deployment's configuration, bind-mounted by deploy/compose.yaml;
+# deploy/config.example.json is the tracked shape.
 deploy/config.json
