@@ -33,7 +33,7 @@
   // Typed to the three values the binding carries, not two: Svelte writes `null` back through
   // `bind:this` as it destroys the block owning the element, so a type admitting only `undefined`
   // leaves the guard below looking total to the compiler while a `null` passes it at runtime
-  // (the class abfcfbb fixed at its own site).
+  // (the same class of defect ParkWaitTimes.svelte's `gridEl` guard fixes at its own site).
   let secondsEl: HTMLElement | null | undefined = $state();
   let minuteDate = $state(new Date());
   let dayDate = $state(new Date());

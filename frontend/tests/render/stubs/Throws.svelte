@@ -1,9 +1,9 @@
 <script lang="ts">
   /**
-   * A module that throws as the backend goes away — the field failure `abfcfbb` fixed at one site,
-   * reproduced here as the shape rather than as that module's particular arithmetic. What the
-   * framework owes a module that throws is the same whichever module threw, so the obligation is read
-   * against a stub rather than against whichever module last held the defect.
+   * A module that throws as the backend goes away — the field failure ParkWaitTimes.svelte's `gridEl`
+   * guard fixed at one site, reproduced here as the shape rather than as that module's particular
+   * arithmetic. What the framework owes a module that throws is the same whichever module threw, so
+   * the obligation is read against a stub rather than against whichever module last held the defect.
    *
    * The shape matters and is not simplified. An `$effect` that merely throws is survivable: Svelte
    * reports it and goes on flushing, and a check staged on one would be green with no containment
