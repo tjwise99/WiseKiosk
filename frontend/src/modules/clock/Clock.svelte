@@ -1,5 +1,7 @@
 <script lang="ts">
-  import type { ClockOptions } from '../../config/types';
+  import { untrack } from 'svelte';
+
+import type { ClockOptions } from '../../config/types';
   import type { CommonProps } from '../../lib/modules';
   import { partValue } from './parts';
 
@@ -62,7 +64,11 @@
         dayDate = d;
       }
     };
-    write();
+    // `untrack`: called synchronously inside the effect, `write`'s reads of `secondsEl`,
+    // `minuteDate` and `dayDate` would otherwise register as this effect's own dependencies, and its
+    // writes to the latter two would then re-trigger it on every tick. The interval is what re-runs
+    // `write`; the effect itself has nothing else to react to.
+    untrack(write);
     const reading = setInterval(write, READ_INTERVAL_MS);
     return () => clearInterval(reading);
   });
