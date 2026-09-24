@@ -228,13 +228,3 @@ Confirmed against a photograph of the deployed display, not a monitor (the desig
 - the marquee's scroll speed and hold timing read comfortably at the deployed viewing distance, and
   whether a name long enough to be cut short by the rotation interval is a real loss at the deployed
   geometry.
-
-**That the deployed host holds the frame rate the scrolling assumes was confirmed on the board**
-(SRS021<!-- Frontend runs on a Pi Zero-class browser host -->; owner, 2026-09-23): the composition
-described here draws at roughly 38 frames a second, against roughly 14 for the design it replaced.
-The figure is a measurement rather than a bound — **no check asserts it, and none is meant to.** The
-render tier runs on a desktop browser, so a frame rate it read would be that machine's and not the
-board's, and a gate over it would report a number nobody deployed. What the figure is for is the
-comparison: the scrolling reads as motion at the one and as stutter at the other, which is why this
-paragraph records what was measured rather than what is required. Re-measuring belongs with any
-change to what the placement paints every frame.
