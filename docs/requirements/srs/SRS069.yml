@@ -41,7 +41,7 @@ rationale: |
   contained a fault and then held the report for ever would satisfy this item completely.
 ref: ''
 reviewed: 1wxv6oNvlEEnjmtG3zNI0rh3qyUu1cMb-Jf5S9RdVyU=
-status: proposed
+status: accepted
 text: |
   When a module's own rendering fails, the display shall say in that module's place that the module
   has stopped drawing, and no other module shall be affected, including one sharing its region.

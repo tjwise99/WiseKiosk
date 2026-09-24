@@ -33,7 +33,7 @@ rationale: |
   because it was restarted.
 ref: ''
 reviewed: B27l6QUiGfzFgkSrpwt9PTQ07s202uycvm-LugOXniU=
-status: proposed
+status: accepted
 text: |
   Once the backend is reachable again, the display shall stop reporting the outage and shall draw again
   a module it is holding behind a failure state, with nobody attending the display.
