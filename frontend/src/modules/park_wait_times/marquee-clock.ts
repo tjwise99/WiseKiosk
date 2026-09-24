@@ -3,7 +3,7 @@
  * overflowing ride-name column (ParkCard.svelte's `marquee`), and one cycle timestamp they all read.
  *
  * A scroll, not a transform. On the deployed host, painting a clipped container's `scrollLeft` costs
- * a fraction of `transform: translateX` with every marquee moving — measured at 38 fps against 14
+ * a fraction of `transform: translateX` with every marquee moving — measured on the board
  * (meta-wisekiosk #100 gpu-compositing, SRS021<!-- Frontend runs on a Pi Zero-class browser host
  * -->). One loop for the whole page rather than one per row holds the frame cost to a single
  * callback whatever the roster size, and the per-frame work is a `scrollLeft` write and nothing
@@ -14,9 +14,8 @@
  * it on the same rotation tick the cards flip on (SRS059<!-- The park-wait-times module tours the
  * remaining rides on an interval its configuration sets -->) — a card flip and a marquee restart are
  * one event on one clock rather than two that drift apart. Staggering the starts to spread their
- * first paint was measured on the board and rejected: it left the stall rate unchanged (0.042/s
- * against 0.04/s, still clustered at the scroll-start) and bought nothing for the synchronized start
- * it gave up.
+ * first paint was measured on the board and rejected: it left the stall rate unchanged, still
+ * clustered at the scroll-start, and bought nothing for the synchronized start it gave up.
  */
 
 /** The one pace every name scrolls at, px/s. Constant velocity across rows: a longer name takes
