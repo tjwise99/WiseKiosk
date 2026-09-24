@@ -106,6 +106,7 @@ specification {
   tag SRS069
   tag SRS070
   tag SRS071
+  tag SRS072
 }
 
 model {
@@ -379,11 +380,14 @@ model {
         #SRS061
         #SRS062
         #SRS071
+        #SRS072
         description '''
           Renders the park wait times into the region the configuration gives
           it: a card for every configured park, all of them held on screen at
           once, each card keeping the park's longest current waits in view and
-          touring the rest of its rides on a configured interval, and drawing
+          touring the rest of its rides on a configured interval, every card
+          with more than one page to show turning to its next at the same
+          moment as the others rather than on a cadence of its own, and drawing
           each wait as the length of time or the not-operating state it is
           handed rather than deciding for itself whether a ride can be ridden.
           A card is one width whatever it holds, so a ride name the card leaves

@@ -1,0 +1,48 @@
+active: true
+derived: false
+header: |
+  Cards of unequal page counts turn their pages on the one tick
+level: 113
+links:
+- SRS072: null
+normative: true
+rationale: |
+  The discriminator is the differing page counts, and without it the case asserts almost nothing. Two
+  cards holding equally many pages stay level under a module that shares one tick and under a module
+  that gives each card its own timer started when that card was first drawn, because the timers were
+  started at the same moment and nothing has yet pulled them apart; such a case passes for the
+  implementation the parent exists to forbid. Cards of different page counts come apart on their own -
+  the shorter tour returns to its first page while the longer is still working through its own - so the
+  positions the two cards show diverge while the moment they change at must not.
+  Two readings for that reason. The first is taken across a tick at which both cards have somewhere to
+  advance to, which establishes that they move at all and move together; the second across a tick at
+  which the shorter tour has wrapped, which is where cards showing different positions must still agree
+  on when. A module reading a shared count into each card's own page total passes both; a module
+  keeping a timer per card fails the second even where it passes the first.
+  The clock is driven rather than waited on, so what the cases read is which page each card shows at an
+  instant they choose, and neither asserts how long the module takes to get there or how close together
+  two advances land - the parent obliges no margin.
+ref: ''
+references:
+- keyword: test('advances every card’s tour on the one placement tick — two cards of different page counts turn together, not on timers of their own'
+  path: frontend/src/modules/park_wait_times/park_wait_times.spec.ts
+  type: file
+reviewed: null
+status: accepted
+text: |
+  A render test over a configuration placing two parks whose payloads give them different numbers of
+  pages to tour, asserting under a driven clock that both cards advance across the one tick while each
+  has somewhere to advance to, and that they still change together at a later tick, by which the
+  shorter tour has returned to its first page and the longer has not.
+verification-justification: |
+  Settles that the cards agree on the moment they turn, read off each card's own shown position rather
+  than off a count the module exposes, so a module recording one tick and then drawing from a per-card
+  timer is caught. The unequal page counts are what make it evidence at all: with equal counts the same
+  assertions pass for per-card timers started together, which is the implementation the parent forbids.
+  Leaves unproven that two advances land within any margin of one another - the readings are taken at
+  chosen instants and establish that no card is a whole tick out of step, which is what the parent
+  obliges and no more. Leaves unproven how the agreement is reached, the parent naming no mechanism.
+  And it is bounded by the two-park roster and the page counts the fixture carries and by the number of
+  turns the case drives, so a drift appearing only after more turns, or at a card count nothing
+  samples, passes.
+verification-method: test
