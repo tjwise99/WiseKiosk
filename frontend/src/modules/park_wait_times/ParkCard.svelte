@@ -52,23 +52,12 @@
       (`data-pwt-tour-placeholder`, below) rather than shrinking on the final page. */
   const tourPadding = $derived(tourPaddingOf(shown.length, TOUR_SIZE));
 
-  // The reduced-motion query is a constant for the life of the page, so the MediaQueryList is cached
-  // rather than made fresh on every re-registration — each `matchMedia` call otherwise leaves a
-  // document-retained object behind, promoted allocation that paces the periodic full GC on this
-  // host (meta-wisekiosk #100 gpu-compositing).
-  let reducedMotionQuery: MediaQueryList | undefined;
-  function reducedMotion(): boolean {
-    reducedMotionQuery ??= window.matchMedia('(prefers-reduced-motion: reduce)');
-    return reducedMotionQuery.matches;
-  }
-
   /** A ride name too wide for its own column scrolls to reveal itself rather than growing the card
       (ParkWaitTimes.svelte's fixed `--pwt-card-width`). The motion belongs to the placement's one
       marquee clock (marquee-clock.ts), which scrolls the clipping column itself rather than
       translating the text inside it — the cheaper paint on this host
       (SRS021<!-- Frontend runs on a Pi Zero-class browser host -->) — so this action only measures
-      and registers. Honors `prefers-reduced-motion: reduce` by leaving the row static and
-      unregistered. The row's own `{#each}` keys on its position, not the ride's name, so a re-sort
+      and registers. The row's own `{#each}` keys on its position, not the ride's name, so a re-sort
       leaves this node in place while the ride it shows changes underneath it;
       `use:marquee={ride.name}` re-runs the measurement (the action's `update`) on each such change
       and reconciles the registration both ways, so the column scrolls or sits static to match its
@@ -81,17 +70,16 @@
     // is the clipping column that scrolls and the element registered against the clock. Captured
     // here, while the node is still in place: `destroy` can run with the node already detached.
     const column = node.parentElement as HTMLElement;
-    let pending: number | null = null;
 
     // Measured next frame, not at mount: ParkWaitTimes.svelte sets `--pwt-card-width` on the grid
     // root, which mounts after this row's — reading `.ride-name`'s clientWidth before that applies
-    // would catch it unconstrained and never find an overflow.
+    // would catch it unconstrained and never find an overflow. A measurement still queued when this
+    // row goes away needs no cancelling: it reads a detached column, whose `scrollWidth` and
+    // `clientWidth` are both zero, and so takes the unregister path below.
     function measure(): void {
-      if (pending !== null) cancelAnimationFrame(pending);
-      pending = requestAnimationFrame(() => {
-        pending = null;
+      requestAnimationFrame(() => {
         const distance = column.scrollWidth - column.clientWidth;
-        if (distance <= 0 || reducedMotion()) {
+        if (distance <= 0) {
           // A name that fits — or a re-sort that moved a shorter ride under this row — does not
           // scroll: dropped here so a registration left by a previous, wider ride cannot keep a
           // now-fitting column moving, and returned home by `unregisterMarquee`.
@@ -108,9 +96,6 @@
     return {
       update: measure,
       destroy() {
-        // The pending measurement too: left to fire, it would register a detached column the clock
-        // would then hold and scroll for the life of the page.
-        if (pending !== null) cancelAnimationFrame(pending);
         unregisterMarquee(column);
       },
     };
