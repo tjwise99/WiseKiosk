@@ -1780,3 +1780,54 @@ test('is drawn again once the backend answers, the outage having left the page l
   await expect(page.locator(MODULE_FAULTED)).toHaveCount(0);
   expect(thrown, 'the outage raised no uncaught error').toEqual([]);
 });
+
+test('stops the marquee’s frame loop when the placement is torn down', async ({ page }) => {
+  // The placement's marquee clock runs one `requestAnimationFrame` loop for as long as any column is
+  // registered with it (marquee-clock.ts). Nothing on a torn-down page can drop a column left behind
+  // in it — the row that would is gone — so a teardown that does not unregister its own columns
+  // leaves that loop running for the life of the document: a frame callback every frame, forever, on
+  // a display that runs for weeks (SRS021<!-- Frontend runs on a Pi Zero-class browser host -->).
+  await holdHostClock(page, HOST_TIME);
+  await serveModuleData(page, () => ({
+    status: 200,
+    data: parksPayload([onePark(EPCOT, { rides: [ride(OVERFLOWING_RIDE_NAME, 40)] })]),
+  }));
+  await render(page, placed([EPCOT], { rotationIntervalSeconds: 60 }));
+
+  const column = page.locator(`${CARD} ${RIDE_NAME_COLUMN}`).first();
+  await expect(column).toHaveText(OVERFLOWING_RIDE_NAME);
+  await page.clock.runFor(MEASURE_FRAME_MS);
+
+  // The precondition, read rather than assumed: this column is registered, so there is a running
+  // loop for the teardown to leave behind. Torn down before the measurement fires, nothing would be
+  // registered and the case would pass whether or not a teardown drops anything.
+  await expect(
+    column.locator('.ride-name-text'),
+    'the column is registered with the clock, so its loop is running',
+  ).toHaveClass(/marquee/);
+
+  // Counted from here, so what is measured is the frames the page asks for *after* it is torn down.
+  await page.evaluate(() => {
+    const held = window as unknown as {
+      __frames: number;
+      requestAnimationFrame: typeof requestAnimationFrame;
+    };
+    held.__frames = 0;
+    const asking = held.requestAnimationFrame.bind(window);
+    held.requestAnimationFrame = (callback) => {
+      held.__frames += 1;
+      return asking(callback);
+    };
+  });
+
+  // The page's own teardown path, as `tests/render/unmount.spec.ts` drives it.
+  await page.evaluate("import('/src/main.ts').then((main) => main.unmount(main.default))");
+  await expect(page.locator(CARD), 'the placement is gone').toHaveCount(0);
+
+  await page.clock.runFor(2000);
+
+  expect(
+    await page.evaluate(() => (window as unknown as { __frames: number }).__frames),
+    'a torn-down placement asks for no further animation frames — a loop left running asks for one per frame',
+  ).toBe(0);
+});
