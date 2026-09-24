@@ -25,7 +25,7 @@ shape is a repository check, in [`CI.md`](CI.md), rather than a need.
 Those two containers project onto two package roots — `backend/` and `frontend/` — with the one
 boundary schema at `boundary/openapi.yaml` because it belongs to neither, and the release material in
 `deploy/` because it is outside the boundary
-([ADR 0021 rev 5](decisions/0021-repository-layout.md)).
+([ADR 0021 rev 4](decisions/0021-repository-layout.md)).
 
 Every diagram below is **generated from the validated [LikeC4 model](architecture/README.md)**, not
 drawn by hand. Edit `docs/architecture/model/` and run `just arch-export`, which regenerates each
@@ -114,7 +114,7 @@ rest`" .-> Viewer
 The Component level (C4 L3) is drawn per container, in the two sections below, and the Deployment level
 in [§ Deployment](#deployment). The Backend container and each of its components carry a `link` to the
 source implementing it; where that source sits is
-[ADR 0021 rev 5](decisions/0021-repository-layout.md).
+[ADR 0021 rev 4](decisions/0021-repository-layout.md).
 
 **Every accepted, active `SYS` or `SRS` item binds somewhere in this model, and where one cannot, the
 model grows to draw what it obliges** — there is no exemption record, and which items are unbound is
@@ -128,17 +128,14 @@ Deployment level, which is the level drawn to carry them.
 
 Its source root is `backend/`, the Go module root, holding the shared framework under `internal/` and
 each upstream-backed module's shaping library under `internal/modules/<name>/`
-([ADR 0021 rev 5](decisions/0021-repository-layout.md)). Language and
+([ADR 0021 rev 4](decisions/0021-repository-layout.md)). Language and
 boundary-contract decision: [ADR 0001 rev 1](decisions/0001-backend-language-go.md); config-blindness:
 [ADR 0007 rev 2](decisions/0007-config-validation-allocation.md). What the backend must do is the
 [requirements tree](requirements/README.md); which obligations bind this container is the
 [architecture model](architecture/README.md), as each is modelled (#119 C4 model completion). Neither is
 restated here.
 
-**One process, one port, three path spaces.** `cmd/` is the whole of the bootstrap — the package
-itself, not the directory, which also holds a diagnostic entry point that no image builds and that is
-therefore no part of this container
-([ADR 0021 rev 5](decisions/0021-repository-layout.md)). It builds the API
+**One process, one port, three path spaces.** `cmd/` is the whole of the bootstrap: it builds the API
 handler from the route registration list and the served tree from the directory it is pointed at, then
 mounts the two beside liveness on one multiplexer — `/healthz`, `/api/`, and every other path served as
 a file from that tree. Nothing is read at start-up but its own flags, so there is no configuration to
@@ -323,7 +320,7 @@ module revisits when its upstream lands.
 Its source root is `frontend/`, the npm package root, holding the
 framework half under `src/lib/`, each module's component under `src/modules/<name>/`, and the one
 configuration schema — carrying a named section per module, authored nowhere else — under
-`src/config/` ([ADR 0021 rev 5](decisions/0021-repository-layout.md)). Svelte 5 + Vite, a static single-page bundle
+`src/config/` ([ADR 0021 rev 4](decisions/0021-repository-layout.md)). Svelte 5 + Vite, a static single-page bundle
 served as static files ([ADR 0018 rev 1](decisions/0018-frontend-svelte-vite-static-spa.md)); each
 module's poll cadence is that module's own need
 ([the module contract](contracts/module-contract.md)); configuration validation is frontend-owned
@@ -457,7 +454,7 @@ generated and this backend's runtime dependency set empty
 ([ADR 0008 rev 6](decisions/0008-boundary-contract-openapi-codegen.md)).
 
 The one schema is `boundary/openapi.yaml`, and what is generated from it lands inside the package
-that compiles it ([ADR 0021 rev 5](decisions/0021-repository-layout.md)). What generation and
+that compiles it ([ADR 0021 rev 4](decisions/0021-repository-layout.md)). What generation and
 compilation between them assert, and what they leave unproven, is [`CI.md`](CI.md)
 § *Generated boundary contract*.
 
