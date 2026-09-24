@@ -27,12 +27,12 @@ rationale: |
   accumulated against real time, which this tier does not model.
 ref: ''
 references:
-- keyword: test('advances every card’s tour on the one placement tick — two cards
-    of different page counts turn together, not on timers of their own'
+- keyword: test('advances two cards of different page counts on the same tick — neither
+    moves early, and the shorter wraps home as the longer takes its last page'
   path: frontend/src/modules/park_wait_times/park_wait_times.spec.ts
-  sha: 446b4fb924488e4e57d0d1a4094813dde2025ce1d0d3eb2197724cda2d7b1d6b
+  sha: 48cb249126b82aac01643f18e2e49f43f2399a1dca9f6f8c308b4b65cca30817
   type: file
-reviewed: 7JnULoDS6JHr81GY34e4g9uvxmFzmvIdAzuJAvqgVaI=
+reviewed: 5UPXgfTancM0Y7uTG3LYIOOcreeI9JsyjHiKd-KvmDI=
 status: accepted
 text: |
   A render test over a configuration placing two parks whose payloads give them different numbers of

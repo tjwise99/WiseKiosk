@@ -394,7 +394,7 @@ async function filledSegment(card: ReturnType<import('@playwright/test').Page['l
     .evaluateAll((segments) => segments.findIndex((segment) => segment.classList.contains('filled')));
 }
 
-test('advances every card’s tour on the one placement tick — two cards of different page counts turn together, not on timers of their own', async ({
+test('advances two cards of different page counts on the same tick — neither moves early, and the shorter wraps home as the longer takes its last page', async ({
   page,
 }) => {
   // Different page counts are what make this a reading of the cards' agreement rather than of one

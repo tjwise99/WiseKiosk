@@ -22,14 +22,14 @@ references:
 - keyword: test('scrolls a ride name too wide for its own column — held home, one
     constant-speed pass to the end, then home until the next tick'
   path: frontend/src/modules/park_wait_times/park_wait_times.spec.ts
-  sha: 446b4fb924488e4e57d0d1a4094813dde2025ce1d0d3eb2197724cda2d7b1d6b
+  sha: 48cb249126b82aac01643f18e2e49f43f2399a1dca9f6f8c308b4b65cca30817
   type: file
 - keyword: test('leaves a ride name that already fits its own column unregistered,
     while an overflowing name on the same card scrolls'
   path: frontend/src/modules/park_wait_times/park_wait_times.spec.ts
-  sha: 446b4fb924488e4e57d0d1a4094813dde2025ce1d0d3eb2197724cda2d7b1d6b
+  sha: 48cb249126b82aac01643f18e2e49f43f2399a1dca9f6f8c308b4b65cca30817
   type: file
-reviewed: B21Xv_D_CkPirOehGzl4sC4gxlnQPKrru4RwMr1HrPc=
+reviewed: Ievgyl2yBxbmAfNLLjQ1x9eGMZ7MI0bDrU57PSV-B3I=
 status: accepted
 text: |
   Render tests over a fixture carrying a ride name that overflows the column it is drawn in, asserting
