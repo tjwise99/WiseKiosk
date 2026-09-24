@@ -32,8 +32,10 @@
   // where a reactive update once a minute or once a day costs nothing.
   // Typed to the three values the binding carries, not two: Svelte writes `null` back through
   // `bind:this` as it destroys the block owning the element, so a type admitting only `undefined`
-  // leaves the guard below looking total to the compiler while a `null` passes it at runtime
-  // (the same class of defect ParkWaitTimes.svelte's `gridEl` guard fixes at its own site).
+  // leaves the guard below looking total to the compiler though a `null` is what the runtime writes.
+  // Precautionary, not a reachable path: this block is gated on `clockConfig`, fixed at load, so it
+  // only tears down with the whole component — unlike ParkWaitTimes.svelte's `gridEl`, which turns
+  // over on a live `reachable` toggle.
   let secondsEl: HTMLElement | null | undefined = $state();
   let minuteDate = $state(new Date());
   let dayDate = $state(new Date());
