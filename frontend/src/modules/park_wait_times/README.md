@@ -209,6 +209,8 @@ module does.
 | a card per park, every configured park held on screen at once | SRS057<!-- The park-wait-times module holds every configured park on screen at once --> |
 | a persistent three-ride leaderboard of the longest current waits | SRS058<!-- The park-wait-times module keeps each park's longest current waits in view --> |
 | the remaining rides rotate two at a time, on a configured interval | SRS059<!-- The park-wait-times module tours the remaining rides on an interval its configuration sets --> |
+| a ride name too wide for its column scrolls to reveal itself rather than wrapping or truncating | SRS071<!-- The park-wait-times module brings the hidden part of a ride name into view --> |
+| every card's rotation advances on one clock the placement owns | SRS072<!-- The park-wait-times module advances every card's tour together --> |
 | the wait slot carries a wait in minutes, or a `Down` / `Closed` / `Refurb` state | SRS056<!-- The park-wait-times module puts each park's identity, hours, and ride waits across the boundary --> / SRS061<!-- The park-wait-times module draws a wait as the time or the not-operating state it is handed --> |
 | the grid shape (`nCol` × `nRows`) is configuration | SRS060<!-- The park-wait-times module arranges its parks in a grid its configuration shapes --> |
 | the hours line is absent, with no placeholder, when a park's hours cannot be read | SRS067<!-- The park-wait-times module confines a failure to the part of its own response the failure touches --> |
