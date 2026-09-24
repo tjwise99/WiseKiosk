@@ -16,9 +16,9 @@ references:
 - keyword: 'test(''TST079: follows its source to a new reading inside the freshness
     bound, without reloading'', async ({'
   path: frontend/src/modules/park_wait_times/park_wait_times.spec.ts
-  sha: d1f98919699fdba5ae37079c89a0e2aea76c9f6a5539ef97225115d1c245af0c
+  sha: 446b4fb924488e4e57d0d1a4094813dde2025ce1d0d3eb2197724cda2d7b1d6b
   type: file
-reviewed: g3SapfqSCbkemyufFpb3RJwEqo0It-4Y9_myqblkJ8k=
+reviewed: isFX9p03RgZ9W8MDWlHQOaFn40ud7MP3ZRPMedLplBE=
 status: accepted
 text: |
   Two checks. A unit test over the module's registered policy, asserting the interval a served answer
