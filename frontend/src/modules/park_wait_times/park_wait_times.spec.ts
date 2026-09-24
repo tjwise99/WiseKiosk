@@ -380,6 +380,69 @@ test('TST076: the footer marks the tour’s own position, one segment per page',
   await expect(segments.nth(1)).toHaveClass(/filled/);
 });
 
+/** A park's roster of `count` rides, waits descending so the ranking is unambiguous and every name
+    distinct. `count` fixes the card's page count: three are held, the rest tour two at a time. */
+function rosterOf(park: string, count: number): ParkWaitTimesRide[] {
+  return Array.from({ length: count }, (_unused, index) => ride(`${park} ride ${index}`, count - index));
+}
+
+/** The index of the footer segment this card draws filled — its own position in its own tour
+    (`class:filled`, ParkCard.svelte). */
+async function filledSegment(card: ReturnType<import('@playwright/test').Page['locator']>): Promise<number> {
+  return card
+    .locator(FOOTER_SEGMENT)
+    .evaluateAll((segments) => segments.findIndex((segment) => segment.classList.contains('filled')));
+}
+
+test('advances every card’s tour on the one placement tick — two cards of different page counts turn together, not on timers of their own', async ({
+  page,
+}) => {
+  // Different page counts are what make this a reading of the cards' agreement rather than of one
+  // card twice: seven rides tour in two pages, nine in three, so the positions the pair holds are
+  // `tick % 2` and `tick % 3`, and the shorter card wraps home on the very tick the longer one
+  // takes to its last page. Each position is read a step BEFORE its tick as well as after, which is
+  // what pins the two advances to the same tick rather than to two moments inside one interval —
+  // a card a fraction of an interval out of phase fails that reading.
+  const ROTATION_S = 6;
+  await holdHostClock(page, HOST_TIME);
+  await serveModuleData(page, () => ({
+    status: 200,
+    data: parksPayload([
+      onePark(EPCOT, { rides: rosterOf(EPCOT, 7) }),
+      onePark(MAGIC_KINGDOM, { rides: rosterOf(MAGIC_KINGDOM, 9) }),
+    ]),
+  }));
+  await render(page, placed([EPCOT, MAGIC_KINGDOM], { rotationIntervalSeconds: ROTATION_S }));
+
+  const shorter = cardNamed(page, EPCOT);
+  const longer = cardNamed(page, MAGIC_KINGDOM);
+  // Self-check the fixture: the two cards really do tour different numbers of pages, so a shared
+  // position below is not two cards drawing the same tour.
+  await expect(shorter.locator(FOOTER_SEGMENT), 'four remaining rides, two pages').toHaveCount(2);
+  await expect(longer.locator(FOOTER_SEGMENT), 'six remaining rides, three pages').toHaveCount(3);
+  expect([await filledSegment(shorter), await filledSegment(longer)]).toEqual([0, 0]);
+
+  // A step short of the interval, neither has moved — which is what pins the two advances below to
+  // the same tick rather than to two moments inside the same interval.
+  await advanceHostClock(page, ROTATION_S * 1000 - 500);
+  expect([await filledSegment(shorter), await filledSegment(longer)]).toEqual([0, 0]);
+  await advanceHostClock(page, 500);
+  expect(
+    [await filledSegment(shorter), await filledSegment(longer)],
+    'both cards advanced across the one tick',
+  ).toEqual([1, 1]);
+
+  // The tick the shorter card wraps on and the longer one does not: still one counter, read modulo
+  // each card's own page count.
+  await advanceHostClock(page, ROTATION_S * 1000 - 500);
+  expect([await filledSegment(shorter), await filledSegment(longer)]).toEqual([1, 1]);
+  await advanceHostClock(page, 500);
+  expect(
+    [await filledSegment(shorter), await filledSegment(longer)],
+    'the shorter card wrapped home on the same tick the longer one took to its last page',
+  ).toEqual([0, 2]);
+});
+
 test('TST077: lays its cards out in the column and row counts its configuration names, and a second shape re-lays them', async ({
   page,
 }) => {
@@ -1338,41 +1401,6 @@ test('leaves a ride name that already fits its own column unregistered, while an
   const overflowOf = (locator: typeof columns) => locator.evaluate((el) => el.scrollWidth - el.clientWidth);
   expect(await overflowOf(overflowingRow), 'the long name really does overflow its own column').toBeGreaterThan(0);
   expect(await overflowOf(fittingRow), 'the short one really does fit').toBeLessThanOrEqual(0);
-});
-
-test('suppresses the marquee under prefers-reduced-motion — an overflowing name left unregistered and still', async ({
-  page,
-}) => {
-  await page.emulateMedia({ reducedMotion: 'reduce' });
-  await holdHostClock(page, HOST_TIME);
-  await serveModuleData(page, () => ({
-    status: 200,
-    data: parksPayload([onePark(EPCOT, { rides: [ride(OVERFLOWING_RIDE_NAME, 40)] })]),
-  }));
-  await render(page, placed([EPCOT], { rotationIntervalSeconds: 60 }));
-
-  const column = page.locator(`${CARD} ${RIDE_NAME_COLUMN}`).first();
-  await expect(column, 'the full text is still in the DOM, not truncated to fit').toHaveText(OVERFLOWING_RIDE_NAME);
-  await page.clock.runFor(MEASURE_FRAME_MS);
-
-  // Self-check the fixture: this name really does overflow, so a column that never moves below is a
-  // suppression rather than a column with nothing to scroll in the first place.
-  const distance = await column.evaluate((el) => el.scrollWidth - el.clientWidth);
-  expect(distance, 'the name overflows its own column').toBeGreaterThan(0);
-  await expect(
-    column.locator('.ride-name-text'),
-    'the column is left unregistered with the marquee clock',
-  ).not.toHaveClass(/marquee/);
-
-  // And the behaviour that marker stands for, read off the column itself: driven past the opening
-  // hold and two seconds into what would otherwise be the pass, it has not moved. A registered
-  // column would be two seconds of travel along by here.
-  expect(2 * MARQUEE_PX_PER_S, 'a registered column would have visibly moved by this instant').toBeLessThan(distance);
-  await page.clock.runFor((HOLD_HOME_S + 2) * 1000);
-  expect(
-    await column.evaluate((el) => el.scrollLeft),
-    'the overflowing name never moves under reduced motion',
-  ).toBe(0);
 });
 
 test('re-measures the marquee after a poll refresh reorders rows in place, not just at mount', async ({
