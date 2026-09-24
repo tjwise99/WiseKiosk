@@ -32,7 +32,7 @@ references:
   sha: 33ffe20f6b8d2373e67b7ff98fab6ddc7f5a506d13a644e23ee2074f532c4c9d
   type: file
 reviewed: Sd_yPC43MXLb5U7WXXuXTSvpgjImw69hAykfQ8odK9I=
-status: proposed
+status: accepted
 text: |
   Render test staging a module that fails while rendering on a display that was whole, with a module
   sharing its region and a module elsewhere whose reading advances on its own, asserting that the page

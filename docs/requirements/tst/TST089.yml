@@ -42,7 +42,7 @@ references:
   sha: 33ffe20f6b8d2373e67b7ff98fab6ddc7f5a506d13a644e23ee2074f532c4c9d
   type: file
 reviewed: yzov-n1w7bUhCcVN2_g7plcPy26SyJe4v2xTaZ5ZGUc=
-status: proposed
+status: accepted
 text: |
   Render tests driving a display through an outage and out of it again on one loaded page - one with a
   module standing down behind the page's outage report, one with a module that failed while rendering -
