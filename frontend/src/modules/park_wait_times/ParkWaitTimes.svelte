@@ -6,6 +6,7 @@
   import type { CommonProps } from '../../lib/modules';
   import type { Payload } from '../../lib/payload';
 
+  import { startMarqueeCycle } from './marquee-clock';
   import { iconFor, uniformCardWidth } from './park_wait_times';
   import ParkCard from './ParkCard.svelte';
 
@@ -23,6 +24,21 @@
       ajv's `useDefaults` (vite-plugin-config-validator.ts) before this component sees the config. */
   const rotationSeconds = $derived(pwtConfig.rotation_interval_seconds as number);
 
+  /** One rotation clock for the whole placement. Every card advances on this single tick (read
+      modulo its own page count in ParkCard.svelte), so the cards flip in step instead of each
+      running its own interval from its own mount moment and drifting apart. The same tick starts a
+      marquee cycle (`startMarqueeCycle`, marquee-clock.ts): every overflowing ride name across every
+      card returns home and scrolls again as the cards flip, one event rather than two clocks. */
+  let tick = $state(0);
+  $effect(() => {
+    startMarqueeCycle();
+    const toggle = setInterval(() => {
+      tick++;
+      startMarqueeCycle();
+    }, rotationSeconds * 1000);
+    return () => clearInterval(toggle);
+  });
+
   /** The grid's own column and row counts, read once rather than tracked: fixed at the config load
       that named the placement. `untrack` suppresses Svelte's "only captures the initial value"
       warning — intentional here. */
@@ -36,7 +52,12 @@
     node.style.setProperty('--pwt-rows', String(shape.rows));
   }
 
-  let gridEl: HTMLElement | undefined = $state();
+  /** The grid's own element, while there is one. Three values, not two: `undefined` before the grid
+      first mounts, the element while it is on screen, and `null` once it leaves — Svelte writes
+      `null` back through `bind:this` as it destroys the `{#if reachable}` block the grid sits in
+      (`bind_this`'s teardown). Typing away that `null` is what let it reach `grid.querySelectorAll`
+      below. */
+  let gridEl: HTMLElement | null | undefined = $state();
 
   /** The width every card and grid column takes: the widest a park's own header draws across the
       roster. Read off the real rendered elements — each header's own `.identity` and `.hours`
@@ -49,7 +70,12 @@
   $effect(() => {
     void pwtPayload;
     const grid = gridEl;
-    if (grid === undefined) return;
+    // Both of the no-grid values, because this effect is the component's rather than the block's and
+    // so outlives the grid: the write that unbinds it is itself a state change, which re-runs this
+    // with no grid to measure. A throw here is not confined to this module — an uncaught error in an
+    // effect stops the whole page updating, the outage banner included, so the display would keep
+    // reporting an outage the backend had already recovered from.
+    if (grid === undefined || grid === null) return;
     // The reading is the browser's — each rendered card's own `.identity`/`.hours` box, the header
     // gap and the card chrome; `uniformCardWidth` (park_wait_times.ts) turns those into the one
     // width. `.identity` and `[data-pwt-header]` are drawn on every card (ParkCard.svelte), so they
@@ -88,7 +114,7 @@
         use:gridShape={{ columns: gridColumns, rows: gridRows }}
       >
         {#each pwtPayload.data.parks as park, index (index)}
-          <ParkCard {park} icon={iconFor(park.name)} {rotationSeconds} />
+          <ParkCard {park} icon={iconFor(park.name)} {tick} />
         {/each}
       </ol>
     {/if}

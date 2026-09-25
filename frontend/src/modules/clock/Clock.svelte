@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { untrack } from 'svelte';
+
   import type { ClockOptions } from '../../config/types';
   import type { CommonProps } from '../../lib/modules';
   import { partValue } from './parts';
@@ -24,28 +26,45 @@
   // second the page mounted, and each reading takes the host's value afresh, so nothing accumulates.
   const READ_INTERVAL_MS = 1000;
 
-  let now = $state(new Date());
+  // Seconds are written to the node directly, off the reactive graph (meta-wisekiosk #100
+  // gpu-compositing); minute and day go through `$state`. `bind:this` writes `null` on teardown.
+  let secondsEl: HTMLElement | null | undefined = $state();
+  let minuteDate = $state(new Date());
+  let dayDate = $state(new Date());
+  function pad2(n: number): string {
+    return n < 10 ? '0' + n : String(n);
+  }
   $effect(() => {
-    const reading = setInterval(() => {
-      now = new Date();
-    }, READ_INTERVAL_MS);
+    const write = (): void => {
+      const d = new Date();
+      // eslint-disable-next-line svelte/no-dom-manipulating
+      if (secondsEl) secondsEl.textContent = pad2(d.getSeconds());
+      if (d.getHours() !== minuteDate.getHours() || d.getMinutes() !== minuteDate.getMinutes()) {
+        minuteDate = d;
+      }
+      if (
+        d.getDate() !== dayDate.getDate() ||
+        d.getMonth() !== dayDate.getMonth() ||
+        d.getFullYear() !== dayDate.getFullYear()
+      ) {
+        dayDate = d;
+      }
+    };
+    // Untracked, so write's own reads and writes do not re-run this effect and rebuild the interval.
+    untrack(write);
+    const reading = setInterval(write, READ_INTERVAL_MS);
     return () => clearInterval(reading);
   });
 
-  // `formatToParts()` splits one Intl.DateTimeFormat covering hour, minute, second and — in
-  // twelve-hour form — the day period into its named parts. Hour precedes minute in every locale's
-  // part ordering, but the day period does not reliably follow both (some locales lead the whole
-  // string with it), so the core time is sliced from hour's own index rather than from 0; second and
-  // day period feed the two sibling annotations below (./README.md § The reading).
+  // Sliced from hour's index, not 0: some locales lead the string with the day period.
   const timeFormat = $derived(
     new Intl.DateTimeFormat(undefined, {
       hour: '2-digit',
       minute: '2-digit',
-      second: '2-digit',
       hourCycle: twentyFourHour ? 'h23' : 'h12',
     }),
   );
-  const timeParts = $derived(timeFormat.formatToParts(now));
+  const timeParts = $derived(timeFormat.formatToParts(minuteDate));
   const hoursMinutes = $derived(
     timeParts
       .slice(
@@ -55,11 +74,8 @@
       .map((part) => part.value)
       .join(''),
   );
-  const secondsText = $derived(partValue(timeParts, 'second'));
   const meridiemText = $derived(partValue(timeParts, 'dayPeriod'));
 
-  // The date's two lines each read from their own formatter — weekday, then day/month/year — each
-  // in its own locale ordering.
   const weekdayFormat = new Intl.DateTimeFormat(undefined, { weekday: 'long' });
   const fullDateFormat = new Intl.DateTimeFormat(undefined, {
     day: 'numeric',
@@ -74,7 +90,9 @@
     {#if showSeconds || !twentyFourHour}
       <div class="annotations">
         {#if showSeconds}
-          <span class="seconds tabular-figures">{secondsText}</span>
+          <span class="seconds-slot tabular-figures">
+            <span class="seconds tabular-figures" bind:this={secondsEl}></span>
+          </span>
         {/if}
         {#if !twentyFourHour}
           <span class="meridiem">{meridiemText}</span>
@@ -85,8 +103,8 @@
   {#if showDate}
     <div class="rule"></div>
     <div class="date" data-clock-date>
-      <p class="weekday section-label">{weekdayFormat.format(now)}</p>
-      <p class="full-date tabular-figures">{fullDateFormat.format(now)}</p>
+      <p class="weekday section-label">{weekdayFormat.format(dayDate)}</p>
+      <p class="full-date tabular-figures">{fullDateFormat.format(dayDate)}</p>
     </div>
   {/if}
 </div>
@@ -121,7 +139,7 @@
     align-items: flex-start;
   }
 
-  .seconds,
+  .seconds-slot,
   .meridiem {
     margin: 0;
     font-size: var(--type-annotation);
@@ -129,10 +147,28 @@
     line-height: 1;
   }
 
-  /* The separator as CSS, not in the text node shared with `secondsText`: avoids the same
-     nullish-fallback branch App.svelte's edgeBandStyle comment describes. */
-  .seconds::before {
+  /* Fixed-width slot with the reading out of flow under size containment: a relayout boundary
+     for the once-a-second text. */
+  .seconds-slot {
+    position: relative;
+  }
+
+  .seconds-slot::before {
     content: ':';
+  }
+
+  /* Sizes the slot to a two-digit tabular reading; generated content, so it is not module text. */
+  .seconds-slot::after {
+    content: '00';
+    visibility: hidden;
+  }
+
+  /* `inset` gives size containment a definite box. */
+  .seconds {
+    position: absolute;
+    inset: 0;
+    text-align: right;
+    contain: size layout;
   }
 
   /* Pinned to the bottom by its own margin rather than by `justify-content: space-between` on the

@@ -23,6 +23,9 @@
   /** What a module reports when a read did not come back at all, there being no body to take a reason off. */
   const UNANSWERED = 'The reading did not come back in time.';
 
+  /** SRS069<!-- A module that stops drawing says so in its own place --> */
+  const FAULTED = 'This part of the display stopped working.';
+
   /** Capitalised so the markup below reads it as the component it is rather than as an element. */
   const Module = $derived(entry.component);
 
@@ -92,11 +95,40 @@
       clearInterval(polling);
     };
   });
+
+  /** Plain, not `$state`: a reactive read would re-run the effect below on its own write. */
+  let clearFault: (() => void) | undefined;
+
+  /** SRS069<!-- A module that stops drawing says so in its own place --> */
+  function holdFault(_error: unknown, reset: () => void): void {
+    clearFault = reset;
+  }
+
+  /** SRS070<!-- The display comes back on its own when the backend does --> */
+  $effect(() => {
+    if (!reachable) return;
+    const reset = clearFault;
+    clearFault = undefined;
+    reset?.();
+  });
 </script>
 
-{#if entry.read === undefined}
-  <!-- A local module is handed no payload, there being none to hand it. -->
-  <Module {reachable} {config} />
-{:else}
-  <Module {reachable} {config} {payload} />
-{/if}
+<svelte:boundary onerror={holdFault}>
+  {#if entry.read === undefined}
+    <Module {reachable} {config} />
+  {:else}
+    <Module {reachable} {config} {payload} />
+  {/if}
+
+  {#snippet failed()}
+    <p class="faulted" data-module-faulted role="alert">{FAULTED}</p>
+  {/snippet}
+</svelte:boundary>
+
+<style>
+  .faulted {
+    margin: 0;
+    font-size: var(--type-body);
+    font-weight: var(--type-body-weight);
+  }
+</style>

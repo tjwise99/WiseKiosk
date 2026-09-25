@@ -1,11 +1,14 @@
 import type { Page } from '@playwright/test';
 
+import { LIVENESS_INTERVAL_MS } from '../../lib/liveness';
 import {
+  advanceHostClock,
   asksBeyondTheShell,
   channelsBeyondTheTier,
   expect,
   holdHostClock,
   render,
+  serveLiveness,
   test,
   watchTraffic,
   type Fixture,
@@ -204,20 +207,25 @@ test('TST055: goes on showing an advancing time while the backend is unreachable
   page,
 }) => {
   await holdHostClock(page, HOST_TIME);
-  await render(page, placed({}), 'frame', { healthz: 'abort' });
 
-  // The outage is up first, or what follows would be read against a display that never staged one.
-  await expect(page.locator('[data-backend-unreachable]')).toBeVisible();
-
-  // The whole clock: the seconds that prove advancing live in their own sibling beside
-  // `[data-clock-time]` rather than inside it.
   const time = page.locator(`[data-region="${REGION}"] ${CLOCK}`);
+  await render(page, {
+    modules: [
+      { region: REGION, module: 'clock', options: {} },
+      { region: 'top_left', module: 'throws' },
+    ],
+  });
   await expect(time).toContainText(/03:04\D*05/);
+  await expect(page.locator('[data-backend-unreachable]')).toHaveCount(0);
 
-  // Advancing rather than presence alone: a clock frozen at the moment the backend went away is the
-  // failure that would otherwise read as survival.
-  await page.clock.runFor(2000);
-  await expect(time).toContainText(/03:04\D*07/);
+  await serveLiveness(page, 'abort');
+  await advanceHostClock(page, 2 * LIVENESS_INTERVAL_MS);
+
+  await expect(page.locator('[data-backend-unreachable]')).toBeVisible();
+  await expect(time).toContainText(/03:04\D*15/);
+
+  await advanceHostClock(page, 65_000);
+  await expect(time).toContainText(/03:05\D*20/);
 
   // And nothing of the module's own stands where the time was — the region carries the clock, not a
   // state it raised about an outage that is the page's to report.

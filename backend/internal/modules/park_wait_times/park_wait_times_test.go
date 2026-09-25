@@ -872,6 +872,63 @@ func TestPostApiParkWaitTimesFansOutOverEveryConfiguredPark(t *testing.T) {
 	}
 }
 
+// TestTheProductRouteReachesTheSourceRatherThanAnEmbeddedFixture pins the one
+// thing a demonstration mode takes away: the route a display calls must answer
+// from the source
+// (SRS065<!-- The park-wait-times module takes what it shows from one external wait-times source -->),
+// so a fixture standing in for the source on the product path is a defect
+// however plausible the payload it writes reads. Asserted two ways, because
+// either alone is passable by a fixture that got better rather than a route
+// that reached the source: the route must have issued an upstream request at
+// all, and what it served must be what that request was answered with.
+func TestTheProductRouteReachesTheSourceRatherThanAnEmbeddedFixture(t *testing.T) {
+	// A roster no embedded fixture can be carrying, so the served rides
+	// matching it is explicable only by the response this transport wrote.
+	const sentinelRide = "Sentinel Upstream-Only Attraction"
+	sentinelLive := []byte(`{"liveData":[{"id":"sentinel-upstream-only","name":"` + sentinelRide +
+		`","entityType":"ATTRACTION","status":"OPERATING","queue":{"STANDBY":{"waitTime":42}}}]}`)
+
+	transport := successTransport{
+		calls:   make(map[string]*atomic.Int64),
+		bodyFor: func(string) []byte { return sentinelLive },
+	}
+	held := http.DefaultTransport
+	http.DefaultTransport = &transport
+	t.Cleanup(func() { http.DefaultTransport = held })
+	freshRoute(t)
+
+	recorder := serve(t, `{"parks":["Magic Kingdom"]}`)
+	if recorder.Code != http.StatusOK {
+		t.Fatalf("status = %d, want %d (%s)", recorder.Code, http.StatusOK, recorder.Body)
+	}
+
+	transport.mu.Lock()
+	reached := len(transport.calls)
+	transport.mu.Unlock()
+	if reached == 0 {
+		t.Errorf("the route answered without issuing one upstream request, want it to reach the source rather than short-circuit to an embedded fixture: %s", recorder.Body)
+	}
+
+	var payload boundary.ParkWaitTimesPayload
+	if err := json.Unmarshal(recorder.Body.Bytes(), &payload); err != nil {
+		t.Fatalf("reading the served payload: %v", err)
+	}
+	if len(payload.Parks) != 1 {
+		t.Fatalf("parks = %d, want 1: %+v", len(payload.Parks), payload.Parks)
+	}
+	park := payload.Parks[0]
+	if park.Rides == nil {
+		t.Fatalf("park %s carries no rides despite its own live call serving", park.Name)
+	}
+	servedRides := make([]string, 0, len(*park.Rides))
+	for _, ride := range *park.Rides {
+		servedRides = append(servedRides, ride.Name)
+	}
+	if !slices.Equal(servedRides, []string{sentinelRide}) {
+		t.Errorf("rides = %v, want exactly the source's own %q — a roster this transport never wrote was served from somewhere other than the source", servedRides, sentinelRide)
+	}
+}
+
 // TestPostApiParkWaitTimesPayloadCarriesNoParkID proves a served park carries
 // no `id` key on the wire, read off the raw JSON rather than the generated
 // struct so this stays meaningful once the field is gone from

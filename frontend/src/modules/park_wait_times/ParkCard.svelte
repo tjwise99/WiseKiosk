@@ -9,17 +9,20 @@
     remainingRides,
     tourPadding as tourPaddingOf,
   } from './park_wait_times';
+  import { registerMarquee, unregisterMarquee } from './marquee-clock';
+  import type { Action } from 'svelte/action';
 
   /**
-   * One park's card (./README.md § The card). Owns its rotation timer, independent per card
-   * (SRS059<!-- The park-wait-times module tours the remaining rides on an interval its
-   * configuration sets -->).
+   * One park's card (./README.md § The card). Advances on the placement's single shared rotation
+   * clock, passed in as `tick` (SRS059<!-- The park-wait-times module tours the remaining rides on
+   * an interval its configuration sets -->), so every card flips on the same tick rather than each
+   * running its own interval and drifting out of step with the others.
    */
   const {
     park,
     icon,
-    rotationSeconds,
-  }: { park: ParkWaitTimesPark; icon: string | undefined; rotationSeconds: number } = $props();
+    tick,
+  }: { park: ParkWaitTimesPark; icon: string | undefined; tick: number } = $props();
 
   /** How many rides the leaderboard holds, and how many the tour shows at a time — composition,
       fixed here rather than configured (./README.md § Leaderboard, § More waits). */
@@ -39,44 +42,64 @@
   const remaining = $derived(remainingRides(rides, held));
   const pageCount = $derived(pageCountOf(remaining.length, TOUR_SIZE));
 
-  /** The raw advancing counter; read modulo `pageCount` everywhere below, so a payload that shrinks
-      the pool between two ticks cannot leave this pointing past the end of it. */
-  let tick = $state(0);
-  $effect(() => {
-    const toggle = setInterval(() => {
-      tick++;
-    }, rotationSeconds * 1000);
-    return () => clearInterval(toggle);
-  });
-
+  /** `tick` is the placement's shared advancing counter (ParkWaitTimes.svelte owns the one interval);
+      read modulo `pageCount` everywhere below, so a payload that shrinks the pool between two ticks
+      cannot leave this pointing past the end of it. */
   const page = $derived(tick % pageCount);
   const shown = $derived(pageSlice(remaining, page, TOUR_SIZE));
-  const tourPadding = $derived(tourPaddingOf(shown.length, TOUR_SIZE));
   const pages = $derived(Array.from({ length: pageCount }, (_unused, index) => index));
+  /** A short last tour page draws hidden placeholder rows so the card keeps a full page's height
+      (`data-pwt-tour-placeholder`, below) rather than shrinking on the final page. */
+  const tourPadding = $derived(tourPaddingOf(shown.length, TOUR_SIZE));
 
-  /** A ride name too wide for its own column scrolls to reveal itself (`.marquee`'s keyframes,
-      below) rather than growing the card (ParkWaitTimes.svelte's fixed `--pwt-card-width`).
-      `transform` is the one property animated — a compositor can move it without a layout pass —
-      and only an overflowing row ever carries the class
-      (SRS021<!-- Frontend runs on a Pi Zero-class browser host -->). Honors
-      `prefers-reduced-motion: reduce` by leaving the row static. Measured once per mount: the row's
-      own `{#each}` keys on its position, not the ride's name, so a re-sort can leave this node in
-      place while the ride it shows changes underneath it — the `{#key ride.name}` wrapper below
-      remounts the node, and with it re-runs this measurement, whenever that happens. */
-  function marquee(node: HTMLElement): void {
+  /** A ride name too wide for its own column scrolls to reveal itself rather than growing the card
+      (ParkWaitTimes.svelte's fixed `--pwt-card-width`). The motion belongs to the placement's one
+      marquee clock (marquee-clock.ts), which scrolls the clipping column itself rather than
+      translating the text inside it — the cheaper paint on this host
+      (SRS021<!-- Frontend runs on a Pi Zero-class browser host -->) — so this action only measures
+      and registers. The row's own `{#each}` keys on its position, not the ride's name, so a re-sort
+      leaves this node in place while the ride it shows changes underneath it;
+      `use:marquee={ride.name}` re-runs the measurement (the action's `update`) on each such change
+      and reconciles the registration both ways, so the column scrolls or sits static to match its
+      current text without being rebuilt. */
+  // The `string` parameter is the ride name; the action never reads it — Svelte watches it to fire
+  // `update` when the ride under this row changes (`use:marquee={ride.name}`), and the measurement
+  // reads the rendered geometry live rather than the name.
+  const marquee: Action<HTMLElement, string> = (node) => {
+    // node itself is an unconstrained inline-block sized to its own text; `.ride-name`, its parent,
+    // is the clipping column that scrolls and the element registered against the clock. Captured
+    // here, while the node is still in place: `destroy` can run with the node already detached.
+    const column = node.parentElement as HTMLElement;
+
     // Measured next frame, not at mount: ParkWaitTimes.svelte sets `--pwt-card-width` on the grid
     // root, which mounts after this row's — reading `.ride-name`'s clientWidth before that applies
-    // would catch it unconstrained and never find an overflow.
-    requestAnimationFrame(() => {
-      // node itself is an unconstrained inline-block, sized to its own text — `.ride-name`, its
-      // parent, is the clipping column `scrollWidth` must be read against.
-      const column = node.parentElement as HTMLElement;
-      const overflow = node.scrollWidth - column.clientWidth;
-      if (overflow <= 0 || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-      node.style.setProperty('--pwt-marquee-distance', `-${overflow}px`);
-      node.classList.add('marquee');
-    });
-  }
+    // would catch it unconstrained and never find an overflow. A measurement still queued when this
+    // row goes away needs no cancelling: it reads a detached column, whose `scrollWidth` and
+    // `clientWidth` are both zero, and so takes the unregister path below.
+    function measure(): void {
+      requestAnimationFrame(() => {
+        const distance = column.scrollWidth - column.clientWidth;
+        if (distance <= 0) {
+          // A name that fits — or a re-sort that moved a shorter ride under this row — does not
+          // scroll: dropped here so a registration left by a previous, wider ride cannot keep a
+          // now-fitting column moving, and returned home by `unregisterMarquee`.
+          unregisterMarquee(column);
+          node.classList.remove('marquee');
+          return;
+        }
+        registerMarquee(column, distance);
+        node.classList.add('marquee');
+      });
+    }
+
+    measure();
+    return {
+      update: measure,
+      destroy() {
+        unregisterMarquee(column);
+      },
+    };
+  };
 </script>
 
 <li class="card" data-pwt-card data-pwt-park={park.name}>
@@ -98,9 +121,7 @@
 
   {#snippet rideRow(ride: ParkWaitTimesRide)}
     <span class="ride-name" data-pwt-ride-name>
-      {#key ride.name}
-        <span class="ride-name-text" use:marquee>{ride.name}</span>
-      {/key}
+      <span class="ride-name-text" use:marquee={ride.name}>{ride.name}</span>
     </span>
     {#if ride.state === ParkWaitTimesState.Operating}
       <span class="wait tabular-figures" data-pwt-wait data-pwt-wait-kind="minutes">{ride.waitMinutes}</span>
@@ -284,7 +305,7 @@
        Type and spacing) so this name out-weights the row readings below. */
     font-weight: var(--type-section-header-weight);
     /* A park name never wraps, even where a ride name may need to scroll to be read in full
-       (`.ride-name-text.marquee`, below) — the header is not part of that trade. */
+       (`.ride-name`, below) — the header is not part of that trade. */
     white-space: nowrap;
   }
 
@@ -322,42 +343,21 @@
   }
 
   .ride-name {
-    /* The name column — fixed by `flex: 1` against `.wait`'s own fixed reservation. `overflow:
-       hidden` is what a name too wide for it scrolls inside of (`.ride-name-text.marquee`, below).
-       Reads left (`.park-wait-times`, ParkWaitTimes.svelte); `.wait` opts back to `right`. */
+    /* The name column — `flex: 1` takes every pixel the row's own gap leaves between it and
+       `.wait`'s fixed reservation, so a name overflows only where it exceeds that whole width.
+       `overflow: hidden` both clips a name too wide for the column and makes this the scroll
+       container the marquee clock moves (marquee-clock.ts writes its `scrollLeft`). Reads left
+       (`.park-wait-times`, ParkWaitTimes.svelte); `.wait` opts back to `right`. */
     flex: 1 1 auto;
     min-width: 0;
     overflow: hidden;
   }
 
   .ride-name-text {
-    /* The element `marquee` measures and, for a name that overflows, animates — kept apart from
-       `.ride-name`'s own clipping box so the translation moves the text, not the column. */
+    /* Sized to its own text, unwrapped — what makes the column's content wider than the column, and
+       so what gives `.ride-name` something to scroll. */
     display: inline-block;
     white-space: nowrap;
-  }
-
-  /* :global — `marquee` adds this class imperatively (`classList.add`), which the compiler cannot
-     see statically the way a `class:` directive would, and would otherwise prune as unused. */
-  .ride-name-text:global(.marquee) {
-    animation: pwt-marquee 8s ease-in-out infinite;
-  }
-
-  /* Paused at the start, scrolled left to reveal the end, paused, snapped back — the 65.01%/100%
-     pair is what makes the reset read as a snap rather than a visible reverse scroll. */
-  @keyframes pwt-marquee {
-    0%,
-    15% {
-      transform: translateX(0);
-    }
-    50%,
-    65% {
-      transform: translateX(var(--pwt-marquee-distance));
-    }
-    65.01%,
-    100% {
-      transform: translateX(0);
-    }
   }
 
   .wait {
